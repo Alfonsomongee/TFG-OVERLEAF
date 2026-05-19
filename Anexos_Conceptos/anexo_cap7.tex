@@ -1,0 +1,322 @@
+% --- ARCHIVO: Anexos_Conceptos/anexo_cap7.tex ---
+% VERSION 2 — Entradas añadidas:
+%   · \label{anexo:ufls}  — referenciado en §7.1.1, no existía
+%   · \label{anexo:pu}    — referenciado en §7.1.2, no existía
+% Correcciones:
+%   · El capítulo usa \ref{anexo:statcom} → corregido a \ref{anexo:syncon}
+%     en resiliencia_futuro_v4.tex; esta entrada permanece bajo el label
+%     correcto \label{anexo:syncon}
+%   · El capítulo usaba \ref{anexo:grid_forming} → corregido a
+%     \ref{anexo:grid_following} en resiliencia_futuro_v4.tex
+% Tabla de referencias cruzadas al final del archivo (comentario)
+
+\chapter{Conceptos técnicos y regulatorios del Capítulo~7}
+\label{anexo:conceptos_cap7}
+
+% ------------------------------------------------------------------
+\section{Coste Nivelado de la Energía (LCOE)}
+\label{anexo:lcoe}
+% ------------------------------------------------------------------
+El \textit{Coste Nivelado de la Energía} (LCOE) es la métrica económica
+estándar que compara el coste unitario de producción entre distintas
+tecnologías a lo largo de su vida útil. Su principal limitación sistémica
+es que ignora el valor de los servicios ancilares aportados a la red;
+así, aunque los IBR presentan un LCOE tendente a cero, no proveen de
+forma nativa la inercia o potencia de cortocircuito que las centrales
+síncronas tradicionales ---con mayor LCOE--- aportaban implícitamente,
+originando la paradoja de escasez de firmeza en sistemas altamente
+renovables.
+
+% ------------------------------------------------------------------
+\section{Servicios Esenciales de Confiabilidad (ERS)}
+\label{anexo:ers}
+% ------------------------------------------------------------------
+Los \textit{Servicios Esenciales de Confiabilidad} (ERS) agrupan los
+atributos físicos indispensables para la operación segura de la red,
+tales como la inercia, la potencia de cortocircuito, la respuesta rápida
+de frecuencia y el control dinámico de tensión. Dado que las tecnologías
+asíncronas no proveen estos servicios de forma inherente como lo hacían
+las máquinas rotativas convencionales, los nuevos marcos regulatorios
+(como la reforma del P.O.~7.4 o el NC~RfG~2.0) exigen la creación de
+mercados específicos que definan y remuneren explícitamente su provisión.
+
+% ------------------------------------------------------------------
+\section{BESS con inversores \textit{Grid-Forming} (BESS-GFM)}
+\label{anexo:bess_gfm}
+% ------------------------------------------------------------------
+Los \textit{Sistemas de Almacenamiento en Baterías con Inversores
+Formadores de Red} (BESS-GFM) combinan alta densidad electroquímica con
+electrónica de potencia capaz de operar como una fuente de tensión ideal
+y autónoma. A diferencia de los inversores seguidores de red
+(\textit{grid-following}), la topología GFM permite al sistema ofrecer
+arranque autónomo (\textit{Black Start}), inercia sintética, respuesta
+rápida de frecuencia (FFR) y soporte activo de tensión, asumiendo así
+las responsabilidades de estabilización sistémica críticas en redes
+descarbonizadas.
+
+% ------------------------------------------------------------------
+\section{Fast Frequency Response (FFR)}
+\label{anexo:ffr}
+% ------------------------------------------------------------------
+La \textit{Respuesta Rápida de Frecuencia} (FFR) es un servicio de
+estabilización subcíclica, diseñado para sistemas de electrónica de
+potencia, que inyecta un bloque masivo de potencia activa en la ventana
+temporal crítica (típicamente inferior a 0{,}25~s) previa a la actuación
+de los reguladores mecánicos tradicionales. Al mitigar drásticamente la
+tasa de caída de frecuencia (RoCoF), la FFR compensa eficazmente la falta
+de inercia rotacional, habiendo demostrado en mercados pioneros como
+ERCOT su capacidad para reducir los umbrales críticos de seguridad del
+sistema.
+
+% ------------------------------------------------------------------
+\section{Estrategia \textit{Brownfield}}
+\label{anexo:brownfield}
+% ------------------------------------------------------------------
+En ingeniería de infraestructuras energéticas, la estrategia
+\textit{Brownfield} consiste en la reconversión de instalaciones
+industriales existentes ---como las centrales térmicas o nucleares
+clausuradas--- para dotarlas de nuevas funciones sistémicas. En este
+contexto, implica conservar los grandes alternadores originales operando
+en vacío como compensadores síncronos, aportando inercia natural y
+potencia de cortocircuito, y aprovechando las subestaciones y líneas de
+evacuación ya construidas para reducir drásticamente costes y tiempos de
+implementación.
+
+% ------------------------------------------------------------------
+\section{Programa DS3 de EirGrid}
+\label{anexo:ds3}
+% ------------------------------------------------------------------
+El programa \textit{Delivering a Secure, Sustainable Electricity System}
+(DS3) es el marco pionero de servicios ancilares de EirGrid (Irlanda),
+diseñado para operar el sistema insular con penetraciones renovables
+asíncronas de hasta el 75~\%. El programa fragmenta y remunera la
+estabilidad en 14~productos técnicos muy especializados ---como la
+Respuesta Inercial Síncrona (SIR) indexada al mínimo técnico, o la FFR
+con penalizaciones por rebote---, marcando el estándar internacional sobre
+cómo traducir las necesidades físicas de una red descarbonizada a
+incentivos económicos.
+
+% ------------------------------------------------------------------
+\section{Vehicle-to-Grid (V2G)}
+\label{anexo:v2g}
+% ------------------------------------------------------------------
+La tecnología \textit{Vehicle-to-Grid} (V2G) habilita la bidireccionalidad
+de las baterías de los vehículos eléctricos, permitiéndoles inyectar
+potencia activa y reactiva hacia la red. Bajo el nuevo marco europeo
+NC~RfG~2.0, las infraestructuras de recarga que agreguen más de 1~MW de
+capacidad conjunta serán catalogadas como Módulos de Almacenamiento
+significativos (Tipo~B), imponiéndoles la obligación de incorporar
+capacidades \textit{Grid-Forming} para transformar estos megaparques de
+movilidad en nodos activos de estabilización dinámica.
+
+% ------------------------------------------------------------------
+\section{Tasa de Cambio de Frecuencia (RoCoF)}
+\label{anexo:rocof}
+% ------------------------------------------------------------------
+La \textit{Rate of Change of Frequency} (RoCoF, tasa de cambio de
+frecuencia) cuantifica la velocidad de variación de la frecuencia del
+sistema ante una perturbación, expresada típicamente en Hz/s. Es el
+parámetro dinámico más crítico para la estabilidad transitoria: un RoCoF
+elevado reduce el tiempo disponible para que los sistemas de regulación
+actúen, acelerando la cascada de desconexiones de protecciones. El
+colapso del 28A evidenció que en sistemas con baja inercia y débil
+potencia de cortocircuito, un RoCoF de apenas 1--2~Hz/s es capaz de
+superar los tiempos mecánicos de respuesta de los relés de deslastre de
+carga (UFLS).
+
+% ------------------------------------------------------------------
+\section{Relés de Deslastre de Carga (UFLS)}
+\label{anexo:ufls}
+% ------------------------------------------------------------------
+El \textit{Under-Frequency Load Shedding} (UFLS, deslastre automático de
+carga por baja frecuencia) es el mecanismo de último recurso del sistema
+de defensa: cuando la frecuencia cae por debajo de umbrales predefinidos
+(habitualmente escalonados entre 49{,}0~Hz y 48{,}0~Hz en el Área
+Síncrona de Europa Continental), los relés de UFLS desconectan cargas de
+forma automática para restaurar el equilibrio generación-demanda. Su
+limitación intrínseca es la velocidad de actuación: los interruptores
+mecánicos de alta tensión requieren entre 60~ms y 100~ms para abrir, lo
+que los hace inoperables como primera barrera ante perturbaciones con
+RoCoF superior a 2~Hz/s. En sistemas con baja inercia ($H < 3$~s), el
+umbral de 49~Hz puede alcanzarse en menos de 200~ms, comprimiendo la
+ventana de actuación hasta hacerla mecánicamente inviable.
+
+% ------------------------------------------------------------------
+\section{Sistema por Unidad (p.u.)}
+\label{anexo:pu}
+% ------------------------------------------------------------------
+El \textit{sistema por unidad} (p.u.) es una convención de normalización
+utilizada en ingeniería eléctrica de potencia que expresa las magnitudes
+del sistema (tensión, corriente, potencia, impedancia) como cocientes
+adimensionales respecto a valores base de referencia. La base de tensión
+suele tomarse como el valor nominal de la red en el nudo de análisis, y
+la base de potencia como la potencia aparente nominal del equipo o del
+sistema. La ventaja principal es la eliminación de las transformaciones
+de escala al analizar redes con múltiples niveles de tensión
+interconectados mediante transformadores. En el contexto del análisis de
+inversores, la expresión de las corrientes de falta en p.u. permite
+comparar directamente la capacidad de inyección de los inversores
+(1{,}1--1{,}2~p.u.) con la de los generadores síncronos (5--7~p.u.)
+con independencia de la potencia nominal de cada tecnología.
+
+% ------------------------------------------------------------------
+\section{\textit{Grid-Following} vs.\ \textit{Grid-Forming}: arquitecturas
+de control de inversores}
+\label{anexo:grid_following}
+% ------------------------------------------------------------------
+La topología \textit{Grid-Following} (GFL) modela al inversor como una
+fuente de corriente controlada que depende de una medición externa de la
+tensión de red (a través del lazo de seguimiento de fase, PLL). Su
+ventaja es la simplicidad y el bajo coste; su limitación crítica es que
+no puede operar de forma autónoma ni establecer tensión en redes débiles.
+La topología \textit{Grid-Forming} (GFM) modela el inversor como una
+fuente de tensión ideal detrás de una reactancia virtual, permitiendo
+operación autónoma, inyección de corrientes de falta robustas e inercia
+sintética. El NC~RfG~2.0 establece la transición hacia GFM como
+obligatoria para nuevas instalaciones significativas.
+
+% ------------------------------------------------------------------
+\section{Inercia Sintética}
+\label{anexo:inercia_sintetica}
+% ------------------------------------------------------------------
+La \textit{inercia sintética} es un algoritmo de control implementado en
+inversores GFM que emula matemáticamente el comportamiento de la ecuación
+de oscilación de un rotor electromecánico. El algoritmo mide
+continuamente la derivada temporal de la frecuencia ($df/dt$) y ajusta
+la potencia inyectada de forma proporcional, liberando o absorbiendo
+energía del banco de baterías en decenas de milisegundos. Esta respuesta
+subcíclica ralentiza la tasa de caída de frecuencia, ampliando el margen
+temporal para la actuación de los sistemas de regulación convencionales,
+y es equivalente funcionalmente a la masa cinética de las máquinas
+síncronas tradicionales pero con mucha mayor velocidad de respuesta.
+
+% ------------------------------------------------------------------
+\section{Potencia de Cortocircuito}
+\label{anexo:potencia_cortocircuito}
+% ------------------------------------------------------------------
+La \textit{Potencia de Cortocircuito} ($S_{sc}$) en un nudo es la
+magnitud instantánea de corriente que el sistema puede inyectar ante una
+falta de tensión. Define la rigidez eléctrica del nudo: un $S_{sc}$
+elevado permite que las protecciones de distancia operen correctamente,
+que las protecciones de sobrecorriente se coordinen selectivamente y que
+los inversores mantengan sincronismo de sus algoritmos de control. Los
+inversores GFM pueden contribuir a $S_{sc}$ mediante la inyección de
+corrientes de falta controladas; sin embargo, su límite térmico
+(1{,}1--1{,}2~p.u.) es mucho menor que el de las máquinas síncronas
+(5--7~p.u.), requiriendo el complemento de compensadores síncronos en
+redes débiles.
+
+% ------------------------------------------------------------------
+\section{Compensadores Síncronos (SynCons)}
+\label{anexo:syncon}
+% ------------------------------------------------------------------
+Los \textit{Compensadores Síncronos} son máquinas rotativas síncronas
+operadas en vacío ---sin turbina primaria--- que aportan inercia
+rotacional genuina y capacidad de inyección de corrientes de falta de
+300--400~\% de su valor nominal. Su papel en la transición hacia sistemas
+dominados por IBR es el de proveer rigidez nodal (elevado $S_{sc}$) y
+masa cinética natural, complementando la velocidad y precisión de los
+inversores GFM. La estrategia \textit{Brownfield} aprovecha alternadores
+de centrales clausuradas, reduciendo drásticamente costes de capital.
+
+% ------------------------------------------------------------------
+\section{Curva de Pato (\textit{Duck Curve})}
+\label{anexo:duck_curve}
+% ------------------------------------------------------------------
+La \textit{curva de pato} describe el perfil diario de demanda neta de
+regulación en sistemas con alta penetración solar: una depresión profunda
+durante las horas centrales del día (cuando el consumo base es bajo pero
+la generación solar es máxima) seguida de una rampa vespertina
+pronunciada. La primavera es el período de máxima profundidad y
+vulnerabilidad. En el caso del 28A, la profundidad del valle coincidió
+con una rampa de inyección solar extraordinariamente aguda, dejando al
+sistema con mínima capacidad de absorción de reactiva en el instante
+crítico.
+
+% ------------------------------------------------------------------
+\section{Sistema VOLTAIRE}
+\label{anexo:voltaire}
+% ------------------------------------------------------------------
+El sistema VOLTAIRE (integrado en el Centro de Control de Energías
+Renovables, CECRE) es la arquitectura implantada por REE para la
+regulación dinámica de tensión en el sistema peninsular. Opera en dos
+capas jerárquicas: la Regulación Terciaria optimiza globalmente el
+perfil de tensiones a nivel nacional mediante flujos de cargas óptimos
+reactivos; la Regulación Secundaria envía consignas telemáticas en
+tiempo real a los inversores de los parques renovables con una resolución
+de muestreo máxima de 4~s, cerrando un bucle de control proporcional-integral
+que mantiene la tensión dentro de márgenes fijos. La retribución del
+servicio sigue la fórmula dinámica indexada al PMD establecida en la
+revisión de junio de 2025 del P.O.~7.4.
+
+% ------------------------------------------------------------------
+\section{Centro de Control de Energías Renovables (CECRE)}
+\label{anexo:cecre}
+% ------------------------------------------------------------------
+El \textit{Centro de Control de Energías Renovables} (CECRE) es la
+entidad operativa de REE responsable de la monitorización y despacho en
+tiempo real de los parques renovables y los sistemas de almacenamiento,
+así como de la ejecución de los algoritmos de control de tensión a través
+del sistema VOLTAIRE. Integra telemedida de alta resolución (PMU) de
+instalaciones significativas y ejecuta subastas sub-horarias de servicios
+ancilares.
+
+% ------------------------------------------------------------------
+\section{\textit{Power System Stabilizers} y \textit{Power Oscillation
+Damping} (PSS/POD)}
+\label{anexo:pss_pod}
+% ------------------------------------------------------------------
+Los \textit{Power System Stabilizers} (PSS) y los sistemas de
+\textit{Power Oscillation Damping} (POD) son módulos de control
+adicionales instalados en inversores (especialmente en modo GFM) que
+inyectan señales contrafase diseñadas para amortiguar oscilaciones
+electromecánicas de pequeña y gran perturbación. Detectan oscilaciones
+de frecuencia o tensión y producen inyecciones o absorciones de potencia
+sincronizadas que cancelan la amplitud oscilatoria, previniendo las
+oscilaciones sub-síncronas (SSO) observadas durante el colapso del 28A.
+El Real Decreto 997/2025 los hace obligatorios en inversores GFM de nueva
+instalación con potencia superior a 10~MW.
+
+% ------------------------------------------------------------------
+\section{\textit{Headroom}: Reserva de Capacidad del Inversor}
+\label{anexo:headroom}
+% ------------------------------------------------------------------
+El \textit{headroom} es la fracción de la capacidad aparente máxima
+($S_{\max}$) que un inversor GFM debe mantener reservada sin utilizarla
+para la inyección de potencia activa en estado estacionario. Esta reserva
+es necesaria para garantizar que el inversor dispone de margen suficiente
+para actuar ante perturbaciones rápidas de tensión o frecuencia. Exigir
+\textit{headroom} reduce los ingresos del mercado de energía, lo que
+constituye la fricción económica estructural que justifica la creación
+de mercados de Servicios Esenciales de Confiabilidad (ERS) para
+remunerar explícitamente esta capacidad de respuesta.
+
+% ------------------------------------------------------------------
+\section{Código de Red de Requisitos para Generadores (NC~RfG~2.0)}
+\label{anexo:nc_rfg}
+% ------------------------------------------------------------------
+El \textit{Network Code on Requirements for Generators} (NC~RfG), ahora
+en su versión 2.0, es el estándar técnico europeo que establece los
+requisitos que deben cumplir las nuevas instalaciones de generación y
+almacenamiento conectadas a la red. La versión 2.0, propuesta tras el
+colapso ibérico, introduce la obligatoriedad de capacidades
+\textit{grid-forming} para nuevas instalaciones de potencia significativa
+(Tipos B, C, D), exigiendo que la tecnología habilite la inercia
+sintética, el soporte dinámico de tensión y la inyección de corrientes
+de cortocircuito robustas.
+
+% ------------------------------------------------------------------
+\section{\textit{Low Voltage Ride Through} (LVRT)}
+\label{anexo:lvrt}
+% ------------------------------------------------------------------
+El \textit{Low Voltage Ride Through} (LVRT) es la capacidad de un
+inversor para mantener la inyección de energía durante un hueco de
+tensión en lugar de desconectarse por protección. Los requisitos del
+LVRT en España están regulados por el P.O.~12.3 e incluyen el parámetro
+dinámico $k$ (factor de proporcionalidad de corriente reactiva respecto
+a la profundidad del hueco). El apagón del 28A evidenció que en redes
+con $\mathrm{SCR} < 2$, la inyección masiva de reactiva según los
+perfiles tradicionales de LVRT puede amplificar la inestabilidad en lugar
+de contenerla, requiriendo revisión de la coordinación entre el control
+LVRT y la debilidad de red.
+
