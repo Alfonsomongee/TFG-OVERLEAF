@@ -1,0 +1,15 @@
+export default {
+  '0e384e19': [() => import(/* webpackChunkName: '0e384e19' */ '@site/docs/intro.md'), '@site/docs/intro.md', require.resolveWeak('@site/docs/intro.md')],
+  '11f9f4d4': [() => import(/* webpackChunkName: '11f9f4d4' */ '@site/docs/09-conclusiones.md'), '@site/docs/09-conclusiones.md', require.resolveWeak('@site/docs/09-conclusiones.md')],
+  '17896441': [() => import(/* webpackChunkName: '17896441' */ '@theme/DocItem'), '@theme/DocItem', require.resolveWeak('@theme/DocItem')],
+  '1be78505': [() => import(/* webpackChunkName: '1be78505' */ '@theme/DocPage'), '@theme/DocPage', require.resolveWeak('@theme/DocPage')],
+  '48ff1bfb': [() => import(/* webpackChunkName: '48ff1bfb' */ 'C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\.docusaurus\\docusaurus-plugin-content-docs\\default\\plugin-route-context-module-100.json'), 'C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\.docusaurus\\docusaurus-plugin-content-docs\\default\\plugin-route-context-module-100.json', require.resolveWeak('C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\.docusaurus\\docusaurus-plugin-content-docs\\default\\plugin-route-context-module-100.json')],
+  '4e977f7c': [() => import(/* webpackChunkName: '4e977f7c' */ '@site/docs/07-resiliencia-futuro.md'), '@site/docs/07-resiliencia-futuro.md', require.resolveWeak('@site/docs/07-resiliencia-futuro.md')],
+  '5ef47160': [() => import(/* webpackChunkName: '5ef47160' */ '@site/docs/03-sistema-espanol.md'), '@site/docs/03-sistema-espanol.md', require.resolveWeak('@site/docs/03-sistema-espanol.md')],
+  '6b2e4646': [() => import(/* webpackChunkName: '6b2e4646' */ '@site/docs/04-reaccion-reposicion.md'), '@site/docs/04-reaccion-reposicion.md', require.resolveWeak('@site/docs/04-reaccion-reposicion.md')],
+  '92d1ede7': [() => import(/* webpackChunkName: '92d1ede7' */ '@site/docs/06-impacto-comunicativo.md'), '@site/docs/06-impacto-comunicativo.md', require.resolveWeak('@site/docs/06-impacto-comunicativo.md')],
+  '935f2afb': [() => import(/* webpackChunkName: '935f2afb' */ '~docs/default/version-current-metadata-prop-751.json'), '~docs/default/version-current-metadata-prop-751.json', require.resolveWeak('~docs/default/version-current-metadata-prop-751.json')],
+  '987d1387': [() => import(/* webpackChunkName: '987d1387' */ '@site/docs/02-contexto.md'), '@site/docs/02-contexto.md', require.resolveWeak('@site/docs/02-contexto.md')],
+  '9bea8c07': [() => import(/* webpackChunkName: '9bea8c07' */ '@site/docs/05-analisis-informes.md'), '@site/docs/05-analisis-informes.md', require.resolveWeak('@site/docs/05-analisis-informes.md')],
+  'ba91a78d': [() => import(/* webpackChunkName: 'ba91a78d' */ '@site/docs/08-uso-ia.md'), '@site/docs/08-uso-ia.md', require.resolveWeak('@site/docs/08-uso-ia.md')],
+  'f9df1c7d': [() => import(/* webpackChunkName: 'f9df1c7d' */ '@site/docs/01-introduccion.md'), '@site/docs/01-introduccion.md', require.resolveWeak('@site/docs/01-introduccion.md')],};

@@ -16,15 +16,15 @@ const sidebars = {
   // But you can create a sidebar manually
   tutorialSidebar: [
     'intro',
-    '01-introduccion',
-    '02-contexto',
-    '03-sistema-espanol',
-    '04-reaccion-reposicion',
-    '05-analisis-informes',
-    '06-impacto-comunicativo',
-    '07-resiliencia-futuro',
-    '08-uso-ia',
-    '09-conclusiones',
+    'introduccion',
+    'contexto',
+    'sistema-espanol',
+    'reaccion-reposicion',
+    'analisis-informes',
+    'impacto-comunicativo',
+    'resiliencia-futuro',
+    'uso-ia',
+    'conclusiones',
   ],
 };
 

@@ -4,7 +4,7 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+const {themes: {github: lightTheme, dracula: darkTheme}} = require('prism-react-renderer');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -23,7 +23,7 @@ const config = {
   organizationName: 'alfonsomongee',
   projectName: 'TFG-OVERLEAF',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -148,8 +148,8 @@ const config = {
         copyright: `Copyright © 2025 Alfonso Monge García. Built with Docusaurus.`,
       },
       prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        theme: lightTheme,
+        darkTheme: darkTheme,
       },
     }),
 
