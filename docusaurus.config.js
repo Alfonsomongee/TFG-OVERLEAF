@@ -106,15 +106,15 @@ const config = {
             items: [
               {
                 label: 'Introducción',
-                to: '/docs/intro',
+                to: '/',
               },
               {
                 label: 'Contexto Técnico',
-                to: '/docs/02-contexto',
+                to: '/contexto',
               },
               {
                 label: 'Análisis del Incidente',
-                to: '/docs/03-sistema-espanol',
+                to: '/sistema-espanol',
               },
             ],
           },

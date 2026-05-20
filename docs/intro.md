@@ -33,11 +33,11 @@ El análisis investiga cómo un sistema eléctrico moderno, con más del 82% de 
 
 ### Información Académica
 
-**Autor:** Alfonso Monge García  
+**Autor:** Alfonso Monge Díaz Ángel  
 **Institución:** Escuela Técnica Superior de Ingeniería (ETSI), Universidad de Sevilla  
 **Tipo:** Trabajo Fin de Grado (TFG)  
 **Área:** Sistemas Eléctricos y Energías Renovables  
-**Año:** 2025
+**Año:** 2026
 
 ---
 

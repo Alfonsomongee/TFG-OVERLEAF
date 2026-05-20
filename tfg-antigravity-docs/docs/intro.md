@@ -1,3 +1,6 @@
+---
+slug: /
+---
 # Bienvenida
 
 ## Análisis Técnico del Apagón Ibérico de 28 Abril de 2025
@@ -41,4 +44,4 @@ El análisis investiga cómo un sistema eléctrico moderno, con más del 82% de 
 
 ---
 
-**Comienza leyendo:** [Introducción → Capítulo 1](docs/01-introduccion)
+**Comienza leyendo:** [Introducción → Capítulo 1](./01-introduccion.md)

@@ -22,11 +22,13 @@ export default {
     "localeConfigs": {
       "es": {
         "label": "Español",
-        "direction": "ltr"
+        "direction": "ltr",
+        "htmlLang": "es-ES"
       },
       "en": {
         "label": "English",
-        "direction": "ltr"
+        "direction": "ltr",
+        "htmlLang": "en-US"
       }
     },
     "path": "i18n"
@@ -38,6 +40,7 @@ export default {
         "docs": {
           "sidebarPath": "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\sidebars.js",
           "editUrl": "https://github.com/Alfonsomongee/TFG-OVERLEAF/blob/main/",
+          "routeBasePath": "/",
           "remarkPlugins": [
             [
               null,
@@ -99,15 +102,15 @@ export default {
           "items": [
             {
               "label": "Introducción",
-              "to": "/docs/intro"
+              "to": "/"
             },
             {
               "label": "Contexto Técnico",
-              "to": "/docs/02-contexto"
+              "to": "/contexto"
             },
             {
               "label": "Análisis del Incidente",
-              "to": "/docs/03-sistema-espanol"
+              "to": "/sistema-espanol"
             }
           ]
         },

@@ -36,10 +36,12 @@ const config = {
       es: {
         label: 'Español',
         direction: 'ltr',
+        htmlLang: 'es-ES',
       },
       en: {
         label: 'English',
         direction: 'ltr',
+        htmlLang: 'en-US',
       },
     },
   },
@@ -51,9 +53,8 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/Alfonsomongee/TFG-OVERLEAF/blob/main/',
+          routeBasePath: '/',
           remarkPlugins: [
             [require('remark-math'), { strict: false }],
           ],
@@ -106,15 +107,15 @@ const config = {
             items: [
               {
                 label: 'Introducción',
-                to: '/docs/intro',
+                to: '/',
               },
               {
                 label: 'Contexto Técnico',
-                to: '/docs/02-contexto',
+                to: '/contexto',
               },
               {
                 label: 'Análisis del Incidente',
-                to: '/docs/03-sistema-espanol',
+                to: '/sistema-espanol',
               },
             ],
           },

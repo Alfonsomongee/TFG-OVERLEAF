@@ -3,66 +3,78 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/en/docs',
-    component: ComponentCreator('/en/docs', '5da'),
+    path: '/en/',
+    component: ComponentCreator('/en/', '129'),
     routes: [
       {
-        path: '/en/docs/analisis-informes',
-        component: ComponentCreator('/en/docs/analisis-informes', 'b40'),
+        path: '/en/',
+        component: ComponentCreator('/en/', '64b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/conclusiones',
-        component: ComponentCreator('/en/docs/conclusiones', 'f45'),
+        path: '/en/analisis-informes',
+        component: ComponentCreator('/en/analisis-informes', 'b8d'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/contexto',
-        component: ComponentCreator('/en/docs/contexto', 'c03'),
+        path: '/en/conclusiones',
+        component: ComponentCreator('/en/conclusiones', '74b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/impacto-comunicativo',
-        component: ComponentCreator('/en/docs/impacto-comunicativo', '727'),
+        path: '/en/contexto',
+        component: ComponentCreator('/en/contexto', '764'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/intro',
-        component: ComponentCreator('/en/docs/intro', 'fb4'),
+        path: '/en/glosario',
+        component: ComponentCreator('/en/glosario', '17d'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/introduccion',
-        component: ComponentCreator('/en/docs/introduccion', 'ce0'),
+        path: '/en/impacto-comunicativo',
+        component: ComponentCreator('/en/impacto-comunicativo', '3ae'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/reaccion-reposicion',
-        component: ComponentCreator('/en/docs/reaccion-reposicion', '57b'),
+        path: '/en/introduccion',
+        component: ComponentCreator('/en/introduccion', '453'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/resiliencia-futuro',
-        component: ComponentCreator('/en/docs/resiliencia-futuro', 'c2e'),
+        path: '/en/reaccion-reposicion',
+        component: ComponentCreator('/en/reaccion-reposicion', '73c'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/sistema-espanol',
-        component: ComponentCreator('/en/docs/sistema-espanol', '4bc'),
+        path: '/en/referencias',
+        component: ComponentCreator('/en/referencias', 'aa4'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/docs/uso-ia',
-        component: ComponentCreator('/en/docs/uso-ia', 'b98'),
+        path: '/en/resiliencia-futuro',
+        component: ComponentCreator('/en/resiliencia-futuro', '83d'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/sistema-espanol',
+        component: ComponentCreator('/en/sistema-espanol', '986'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/uso-ia',
+        component: ComponentCreator('/en/uso-ia', '857'),
         exact: true,
         sidebar: "tutorialSidebar"
       }
