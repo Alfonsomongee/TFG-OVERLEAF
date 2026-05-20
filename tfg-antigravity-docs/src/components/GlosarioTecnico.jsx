@@ -348,7 +348,7 @@ export default function GlosarioTecnico() {
                 <h2 className={styles.letterHeader}>{letter}</h2>
                 <div className={styles.termsList}>
                   {groupedTerms[letter].map((term) => (
-                    <div key={term.id} className={styles.termItem}>
+                    <div key={term.id} id={term.id} className={styles.termItem}>
                       <h3 className={styles.termTitle}>
                         <a href={`#${term.id}`}>{term.term}</a>
                       </h3>
