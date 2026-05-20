@@ -19,10 +19,10 @@ export default function GlossaryLink({ term, children }) {
     <Link
       to={`/glosario#${glossaryId}`}
       className={styles.glossaryLink}
-      title={`Ver definición: ${term}`}
+      title={`Clic para ver: ${term}`}
     >
       {children || term}
-      <span className={styles.icon}>📖</span>
+      <span className={styles.superscript}>?</span>
     </Link>
   );
 }

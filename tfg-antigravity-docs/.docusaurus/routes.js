@@ -4,7 +4,7 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 export default [
   {
     path: '/en/',
-    component: ComponentCreator('/en/', 'ed4'),
+    component: ComponentCreator('/en/', 'f22'),
     routes: [
       {
         path: '/en/',
@@ -39,6 +39,12 @@ export default [
       {
         path: '/en/conclusiones',
         component: ComponentCreator('/en/conclusiones', '74b'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/conclusiones',
+        component: ComponentCreator('/en/conclusiones', '498'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
@@ -109,6 +115,12 @@ export default [
         sidebar: "tutorialSidebar"
       },
       {
+        path: '/en/resiliencia-futuro',
+        component: ComponentCreator('/en/resiliencia-futuro', 'aed'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
         path: '/en/sistema-espanol',
         component: ComponentCreator('/en/sistema-espanol', '986'),
         exact: true,
@@ -123,6 +135,12 @@ export default [
       {
         path: '/en/uso-ia',
         component: ComponentCreator('/en/uso-ia', '857'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/uso-ia',
+        component: ComponentCreator('/en/uso-ia', 'f4d'),
         exact: true,
         sidebar: "tutorialSidebar"
       }
