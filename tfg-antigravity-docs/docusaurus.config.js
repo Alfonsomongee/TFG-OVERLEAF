@@ -13,7 +13,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://tfg-antigravity.vercel.app',
+  url: 'https://tfg-overleaf.vercel.app',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages it is often '/<projectName>/'
   baseUrl: '/',
