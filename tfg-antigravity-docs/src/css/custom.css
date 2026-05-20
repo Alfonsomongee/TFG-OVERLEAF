@@ -1,263 +1,305 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap');
+
 /* ============================================================
-   TFG Apagón Ibérico 28A — Custom CSS
-   ETSI Universidad de Sevilla
+   TFG Apagón Ibérico 28A — Premium Custom CSS
    ============================================================ */
 
 :root {
-  /* Colores primarios — Azul ETSI/Ingeniería */
-  --ifm-color-primary: #1e40af;
-  --ifm-color-primary-dark: #1d3a9e;
-  --ifm-color-primary-darker: #1a358f;
-  --ifm-color-primary-darkest: #132876;
-  --ifm-color-primary-light: #2750c8;
-  --ifm-color-primary-lighter: #3060d8;
-  --ifm-color-primary-lightest: #4a78e8;
+  /* Vibrant Cyan / Neon Blue primary color for energy/electricity theme */
+  --ifm-color-primary: #0ea5e9;
+  --ifm-color-primary-dark: #0284c7;
+  --ifm-color-primary-darker: #0369a1;
+  --ifm-color-primary-darkest: #075985;
+  --ifm-color-primary-light: #38bdf8;
+  --ifm-color-primary-lighter: #7dd3fc;
+  --ifm-color-primary-lightest: #bae6fd;
 
-  /* Semánticos */
-  --ifm-color-success: #16a34a;
-  --ifm-color-warning: #ea580c;
-  --ifm-color-danger: #dc2626;
+  /* Semantics */
+  --ifm-color-success: #10b981;
+  --ifm-color-warning: #f59e0b;
+  --ifm-color-danger: #ef4444;
 
-  /* Tipografía */
+  /* Typography */
   --ifm-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --ifm-heading-font-family: 'Georgia', 'Times New Roman', serif;
-  --ifm-code-font-size: 93%;
+  --ifm-heading-font-family: 'Outfit', sans-serif;
+  --ifm-code-font-size: 90%;
   --ifm-font-size-base: 16px;
-  --ifm-line-height-base: 1.65;
+  --ifm-line-height-base: 1.7;
 
-  /* Cards */
+  /* Cards & Surfaces */
   --ifm-card-background-color: #ffffff;
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
 
   /* Code highlight */
-  --docusaurus-highlighted-code-line-bg: rgba(30, 64, 175, 0.08);
+  --docusaurus-highlighted-code-line-bg: rgba(14, 165, 233, 0.1);
+
+  /* Custom Glow/Shadows */
+  --neon-glow: 0 0 15px rgba(14, 165, 233, 0.5);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
-/* Dark mode */
+/* Dark mode overrides */
 html[data-theme='dark'] {
-  --ifm-color-primary: #60a5fa;
-  --ifm-color-primary-dark: #3b82f6;
-  --ifm-color-primary-darker: #2563eb;
-  --ifm-color-primary-darkest: #1d4ed8;
-  --ifm-color-primary-light: #7cb9fb;
-  --ifm-color-primary-lighter: #93c5fd;
-  --ifm-color-primary-lightest: #bfdbfe;
+  --ifm-color-primary: #38bdf8;
+  --ifm-color-primary-dark: #0ea5e9;
+  --ifm-color-primary-darker: #0284c7;
+  --ifm-color-primary-darkest: #0369a1;
+  --ifm-color-primary-light: #7dd3fc;
+  --ifm-color-primary-lighter: #bae6fd;
+  --ifm-color-primary-lightest: #e0f2fe;
 
+  --ifm-background-color: #0b1120;
+  --ifm-background-surface-color: #111827;
   --ifm-card-background-color: #1e293b;
-  --docusaurus-highlighted-code-line-bg: rgba(96, 165, 250, 0.12);
+  --ifm-navbar-background-color: rgba(11, 17, 32, 0.75);
+
+  --docusaurus-highlighted-code-line-bg: rgba(56, 189, 248, 0.15);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================================
-   TIPOGRAFÍA
+   GLOBAL & GLASSMORPHISM
    ============================================================ */
 
 body {
   font-size: var(--ifm-font-size-base);
   line-height: var(--ifm-line-height-base);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--ifm-heading-font-family);
-}
-
-h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 1.5rem; }
-h2 { font-size: 1.75rem; margin-top: 2.5rem; margin-bottom: 1rem; }
-h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; }
-h4 { font-size: 1.05rem; font-weight: 600; }
-
-/* ============================================================
-   ECUACIONES KATEX
-   ============================================================ */
-
-/* Inline math */
-.math.math-inline {
-  margin: 0 0.2em;
-}
-
-/* Block math */
-.math.math-display {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  background: rgba(30, 64, 175, 0.04);
-  border-left: 4px solid var(--ifm-color-primary);
-  border-radius: 0 4px 4px 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-html[data-theme='dark'] .math.math-display {
-  background: rgba(96, 165, 250, 0.06);
-}
-
-/* KaTeX overflow */
-.katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 6px 0;
-  -webkit-overflow-scrolling: touch;
-}
-
-.katex-display > .katex {
-  white-space: normal;
-}
-
-/* ============================================================
-   TABLAS
-   ============================================================ */
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5rem 0;
-  font-size: 0.92rem;
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 4px;
-}
-
-th {
-  background-color: #f0f4ff;
-  color: #0f172a;
-  font-weight: 700;
-  padding: 0.8rem 1rem;
-  text-align: left;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  white-space: nowrap;
-}
-
-html[data-theme='dark'] th {
-  background-color: #1e2d45;
-  color: #e2e8f0;
-  border-color: #334155;
-}
-
-td {
-  padding: 0.65rem 1rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  vertical-align: top;
-}
-
-html[data-theme='dark'] td {
-  border-color: #334155;
-}
-
-tr:nth-child(even) td {
-  background: rgba(0, 0, 0, 0.02);
-}
-
-html[data-theme='dark'] tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-/* ============================================================
-   CÓDIGO
-   ============================================================ */
-
-code {
-  font-size: 0.88em;
-  padding: 0.15em 0.4em;
-  border-radius: 3px;
-}
-
-/* ============================================================
-   ADMONITIONS (note, warning, caution)
-   ============================================================ */
-
-.theme-admonition {
-  margin: 1.5rem 0;
-  border-radius: 6px;
-}
-
-/* ============================================================
-   NAVBAR
-   ============================================================ */
-
+/* Glassmorphism Navbar */
 .navbar {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--glass-shadow);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+html[data-theme='dark'] .navbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .navbar__title {
-  font-family: var(--ifm-heading-font-family);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, var(--ifm-color-primary-dark), var(--ifm-color-primary-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: opacity 0.3s ease;
+}
+
+.navbar__title:hover {
+  opacity: 0.8;
+}
+
+/* Smooth transitions for interactive elements */
+a, .button, .menu__link, .pagination-nav__link {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================
-   SIDEBAR
+   TYPOGRAPHY
    ============================================================ */
 
-.theme-doc-sidebar-item-link-level-1 > a {
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ifm-heading-font-family);
+  letter-spacing: -0.015em;
+  color: var(--ifm-color-emphasis-900);
+}
+
+h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; }
+h2 { font-size: 2.2rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.2rem; border-bottom: 2px solid var(--ifm-color-emphasis-200); padding-bottom: 0.3em; }
+h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; }
+h4 { font-size: 1.2rem; font-weight: 600; }
+
+html[data-theme='dark'] h2 {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   SIDEBAR & NAVIGATION
+   ============================================================ */
+
+.menu__link {
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+.menu__link--active {
+  background-color: var(--ifm-color-primary-lightest) !important;
+  color: var(--ifm-color-primary-darkest) !important;
   font-weight: 600;
+  box-shadow: inset 4px 0 0 var(--ifm-color-primary);
+}
+
+html[data-theme='dark'] .menu__link--active {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+  color: var(--ifm-color-primary-light) !important;
+}
+
+.menu__list-item-collapsible:hover {
+  background-color: transparent;
 }
 
 /* ============================================================
-   FOOTER
+   TABLES
    ============================================================ */
 
-.footer {
-  padding: 2rem;
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  display: block;
+  overflow-x: auto;
 }
 
-.footer__title {
+html[data-theme='dark'] table {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255,255,255,0.1);
+}
+
+th {
+  background-color: var(--ifm-color-emphasis-100);
   font-family: var(--ifm-heading-font-family);
-  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-emphasis-800);
+}
+
+td {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+html[data-theme='dark'] td {
+  border-top-color: rgba(255,255,255,0.05);
+}
+
+tr:hover td {
+  background-color: var(--ifm-color-emphasis-50);
 }
 
 /* ============================================================
-   RESPONSIVE
+   KATEX MATH
    ============================================================ */
 
-@media (max-width: 768px) {
-  h1 { font-size: 1.75rem; }
-  h2 { font-size: 1.4rem; }
-  h3 { font-size: 1.15rem; }
+.math.math-display {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--ifm-color-emphasis-50);
+  border-radius: 12px;
+  border-left: 4px solid var(--ifm-color-primary);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  overflow-x: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-  .math.math-display {
-    padding: 0.75rem;
-  }
+.math.math-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+}
 
-  td, th {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.85rem;
-  }
+html[data-theme='dark'] .math.math-display {
+  background: rgba(15, 23, 42, 0.6);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 0;
 }
 
 /* ============================================================
-   IMÁGENES
+   IMAGES & MEDIA
    ============================================================ */
 
 .markdown img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
   display: block;
-  margin: 1rem auto;
+  margin: 2rem auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.markdown img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
 /* ============================================================
-   ALERTA DE INCIDENTE — clase especial para datos críticos 28A
+   CUSTOM ALERTS (INCIDENT BOX)
    ============================================================ */
 
 .incident-box {
-  background: linear-gradient(135deg, #fef2f2, #fff7ed);
-  border: 2px solid #dc2626;
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin: 1.5rem 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+}
+
+.incident-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--ifm-color-danger);
+  box-shadow: 0 0 10px var(--ifm-color-danger);
 }
 
 html[data-theme='dark'] .incident-box {
-  background: linear-gradient(135deg, #2d1515, #2d1f0f);
-  border-color: #ef4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.05));
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .incident-box h4 {
-  color: #dc2626;
+  color: var(--ifm-color-danger);
+  font-size: 1.3rem;
   margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 html[data-theme='dark'] .incident-box h4 {
   color: #fca5a5;
+}
+
+/* ============================================================
+   ADMONITIONS (Docusaurus Default Overrides)
+   ============================================================ */
+
+.theme-admonition {
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  border: none;
+  border-left: 4px solid;
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.8rem; }
+  
+  .incident-box {
+    padding: 1rem 1.25rem;
+  }
 }

@@ -8,6 +8,7 @@ const sidebars = {
       type: 'category',
       label: '📚 Capítulos',
       collapsible: false,
+      link: { type: 'generated-index' },
       items: [
         'introduccion',
         'contexto',

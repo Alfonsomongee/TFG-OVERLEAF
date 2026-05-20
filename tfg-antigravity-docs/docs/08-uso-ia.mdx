@@ -1,0 +1,85 @@
+---
+sidebar_position: 8
+---
+
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+# Discusión sobre el Uso de Inteligencia Artificial en el TFG (Capítulo 8)
+
+La elaboración de este Trabajo de Fin de Grado se ha desarrollado en un contexto metodológico atípico: la concurrencia simultánea, durante el bienio 2024–2026, de una crisis sistémica en el sistema eléctrico ibérico y de una transformación acelerada en las herramientas de procesamiento de lenguaje natural. La disponibilidad de *Large Language Models* (LLMs) capaces de procesar documentos técnicos de cientos de páginas en pocos minutos coincidió con la publicación de cuatro informes técnicos primarios sobre el evento. Este capítulo documenta de forma transparente cómo se han integrado estas herramientas en el flujo de trabajo, qué tareas concretas han desempeñado, qué errores sistemáticos se han detectado y corregido, y qué reflexión epistemológica se desprende de ello para la investigación en ingeniería.
+
+---
+
+## Aplicación Metodológica: Uso de IA en Estructuración, Síntesis y Extracción
+
+El cuerpo documental de partida abarca expedientes técnicos, normativas de ENTSO-E, informes oficiales, simulaciones <GlossaryLink term="PSS/E">PSS/E</GlossaryLink>, actas de la CNMC y registros oscilográficos. Su lectura lineal resultaba incompatible con plazos académicos. La integración de modelos generativos se ha articulado en torno a **cinco funciones operativas claramente delimitadas**, ninguna de las cuales involucra inferencia causal autónoma sobre la física del sistema.
+
+### Las cinco funciones de asistencia IA
+
+**1. Reconciliación cronológica**
+
+Los cuatro informes institucionales describen los mismos hechos físicos del 28 de abril de 2025 con distintos niveles de granularidad temporal y ocasionales desfases de hasta 200 ms. La asistencia automática ha permitido construir una tabla maestra unificada de *timestamps* que ha servido de andamiaje para los capítulos de anatomía del incidente.
+
+**2. Mapeo sistemático de divergencias**
+
+Cada informe pericial enmarca el incidente en un perímetro analítico distinto. La extracción asistida de pasajes homólogos ha permitido localizar las afirmaciones técnicamente incompatibles entre fuentes, constituyendo la base del análisis comparativo de informes.
+
+**3. Tabulación cuantitativa**
+
+Consolidación de magnitudes distribuidas a lo largo de los informes: valores de <GlossaryLink term="Inercia (H)">inercia</GlossaryLink>, penetración renovable instantánea, intercambios transfronterizos, cifras de <GlossaryLink term="UFLS">UFLS</GlossaryLink>. Estas cifras dispersas han permitido construir gráficas y tablas articulando la narrativa técnica.
+
+**4. Soporte redaccional técnico**
+
+Sugerencia de variantes léxicas, depuración de sinonimias y control de terminología. Este apoyo no ha alterado la estructura argumental ni las decisiones de contenido, responsabilidad exclusiva del autor.
+
+**5. Andamiaje de elementos gráficos**
+
+Generación de borradores en TikZ y `pgfplots` a partir de descripciones textuales, posteriormente revisados y validados manualmente para asegurar consistencia visual.
+
+### El filtro de validación física
+
+El elemento metodológicamente decisivo no es la asistencia LLM en sí, sino el **filtro de validación física** que se interpone entre cualquier salida del modelo y su incorporación al trabajo. Cuando el filtro detecta una inferencia incompatible con la mecánica del sistema (alucinación), el *prompt* se reformula con restricciones semánticas adicionales.
+
+```
+[Informes primarios] → [Asistencia LLM] → [Filtro validación física] → [Resultado validado]
+                                ↑                      |
+                                └──────────────────────┘
+                    Reformulación de prompt ante alucinación
+```
+
+---
+
+## Validación y Verificación: Contraste Riguroso con la Física
+
+La utilización de modelos generativos en un dominio denso en relaciones causales como la dinámica de sistemas de potencia revela un comportamiento sistemático: **la inferencia por analogía estadística**. Los LLM tienden a aplicar patrones causales *típicos* a casos cuya estructura física es *atípica*.
+
+El 28 de abril de 2025, por su naturaleza dual (<GlossaryLink term="Colapso Q-V">estabilidad de tensión</GlossaryLink> en lugar de balance de frecuencia), es atípico respecto a la mayoría de apagones documentados, haciendo especialmente productiva la observación de los puntos en los que la IA se desviaba del fenómeno real.
+
+### Casos representativos de alucinación detectada
+
+| Fenómeno | Inferencia errónea | Corrección física | Estrategia correctora |
+|----------|---------------------|------------------|----------------------|
+| **Paradoja del <GlossaryLink term="UFLS">UFLS</GlossaryLink>** | Deslastre "salvó" áreas recuperando balance activo. | <GlossaryLink term="UFLS">UFLS</GlossaryLink> ciego al voltaje; retira sumideros de reactiva en transitorio capacitivo, agravando sobretensión. | Restricción: razonar exclusivamente en plano Q-V. |
+| **<GlossaryLink term="Tap-Lag">Tap-Lag</GlossaryLink>** | <GlossaryLink term="OLTC">OLTC</GlossaryLink> responden correctamente de forma proporcional. | Retardos intencionales dejan <GlossaryLink term="OLTC">OLTC</GlossaryLink> desfasados frente a transitorio, multiplicando tensión a redes menores. | Inyección de constante temporal real; prohibición respuesta cuasi-instantánea. |
+| **Maniobra mallado** | Mallado reduce impedancia, aumenta estabilidad. | En baja carga, mallado activa efecto <GlossaryLink term="Efecto Ferranti">Ferranti</GlossaryLink>, inyectando 1.050 MVAr capacitivos precipitando sobretensión. | Restricción a régimen línea descargada; balance de reactiva con admitancia capacitiva. |
+| **Oscilación 0,6 Hz** | Modo electromecánico inter-área clásico análogo a 0,2 Hz. | Origen controvertido; forzado según ICAI; natural según REE. | Veto a elección unilateral; obligación presentar lecturas duales. |
+
+---
+
+## Reflexión Crítica sobre IA en Ingeniería de Investigación
+
+La experiencia documentada invita a una reflexión epistemológica más ampla. La conclusión no es triunfalista ni catastrofista, sino **estructural**: los modelos generativos son potentes aceleradores de procesos cognitivos del investigador, pero operan sobre lógica probabilística que no coincide con la lógica determinista que rige la física de sistemas materiales.
+
+### Primera implicación: metodológica
+
+El uso de IA no exime al investigador de dominar el contenido técnico; al contrario, lo exige con mayor severidad. **Solo un investigador con competencia técnica suficiente para identificar una inferencia físicamente imposible puede emplear con seguridad un modelo capaz de producirla con fluidez retórica.**
+
+### Segunda implicación: ético-académica
+
+La asistencia automática se ha empleado como herramienta de procesamiento, no como sustituto del razonamiento. **Toda decisión de contenido es responsabilidad exclusiva del autor**. El encuadre del problema, la jerarquía de fuentes, la formulación de la tesis causal, la valoración comparada de narrativas institucionales y las conclusiones son autoría del investigador. La IA no firma TFGs: el ingeniero rubrica con su nombre la causalidad material de los hechos expuestos.
+
+### Tercera implicación: disciplinar y prospectiva
+
+Los sistemas eléctricos de la próxima década ---dominados por electrónica de potencia, con dinámica relevante en escala sub-cíclica y con interacciones tensión-reactiva--- van a requerir herramientas de soporte a la decisión que combinen velocidad de procesamiento de modelos algorítmicos con robustez física de simuladores tipo <GlossaryLink term="PSS/E">PSS/E</GlossaryLink>.
+
+**La arquitectura híbrida** ---LLM como interfaz semántica y síntesis, simuladores físicos como motor de inferencia causal--- es, plausiblemente, la dirección hacia la que evolucionarán las herramientas de ingeniería de sistemas de potencia. Su desarrollo requerirá exactamente la misma vigilancia epistemológica que ha estructurado el flujo de trabajo del presente TFG: tener siempre presente qué hace cada herramienta y qué se le pide explícitamente que no haga.

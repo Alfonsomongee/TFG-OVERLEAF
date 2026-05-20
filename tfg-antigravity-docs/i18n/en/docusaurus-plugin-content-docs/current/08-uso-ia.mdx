@@ -1,0 +1,85 @@
+---
+sidebar_position: 8
+---
+
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+# Discussion on the Use of Artificial Intelligence in the TFG (Chapter 8)
+
+The development of this Final Degree Project has taken place in an atypical methodological context: the simultaneous occurrence, during 2024–2026, of a systemic crisis in the Iberian electrical system and accelerated transformation in natural language processing tools. The availability of *Large Language Models* (LLMs) capable of processing hundreds of pages of technical documents in minutes coincided with the publication of four primary technical reports on the event. This chapter documents transparently how these tools have been integrated into the workflow, what specific tasks they have performed, what systematic errors were detected and corrected, and what epistemological reflection emerges for research in engineering.
+
+---
+
+## Methodological Application: AI Usage in Structuring, Synthesis, and Extraction
+
+The source document corpus encompasses technical files, ENTSO-E standards, official reports, <GlossaryLink term="PSS/E">PSS/E</GlossaryLink> simulations, CNMC records, and oscillographic logs. Linear reading without computational mediation was incompatible with academic deadlines. Integration of generative models was articulated around **five clearly delimited operational functions**, none of which involves autonomous causal inference about system physics.
+
+### Five Functions of AI Assistance
+
+**1. Chronological Reconciliation**
+
+The four institutional reports describe the same physical facts of April 28, 2025 with different temporal granularity levels and occasional lags up to 200 ms. Automated assistance enabled construction of a unified master table of *timestamps* serving as scaffolding for incident anatomy chapters.
+
+**2. Systematic Mapping of Divergences**
+
+Each technical report frames the incident in a different analytical perimeter. Assisted extraction of homologous passages enabled locating technically incompatible assertions between sources, constituting the basis of comparative report analysis.
+
+**3. Quantitative Tabulation**
+
+Consolidation of magnitudes distributed across reports: <GlossaryLink term="Inercia (H)">inertia</GlossaryLink> values, instantaneous renewable penetration, cross-border exchanges, <GlossaryLink term="UFLS">UFLS</GlossaryLink> figures. These dispersed figures enabled construction of graphs and tables articulating technical narrative.
+
+**4. Technical Writing Support**
+
+Suggestion of lexical variants, synonym refinement, and terminology control. This support altered neither argument structure nor content decisions, author's exclusive responsibility.
+
+**5. Scaffolding Graphic Elements**
+
+Generation of TikZ and `pgfplots` drafts from textual descriptions, subsequently reviewed and manually validated to ensure visual consistency and data fidelity.
+
+### The Physical Validation Filter
+
+The methodologically decisive element is not LLM assistance itself, but the **physical validation filter** interposed between any model output and incorporation into the work. When the filter detects inference incompatible with system mechanics (hallucination), the *prompt* is reformulated with additional semantic constraints.
+
+```
+[Primary reports] → [LLM Assistance] → [Physical validation filter] → [Validated result]
+                                ↑                      |
+                                └──────────────────────┘
+                    Prompt reformulation upon detected hallucination
+```
+
+---
+
+## Validation and Verification: Rigorous Contrast with Physics
+
+Utilization of generative models in a domain as dense in causal relationships as power system dynamics systematically reveals a behavior electrical systems cannot tolerate: **inference by statistical analogy**. LLMs tend to apply typical causal patterns to cases whose physical structure is atypical.
+
+April 28, 2025, due to its dual nature (<GlossaryLink term="Colapso Q-V">voltage stability</GlossaryLink> rather than frequency balance), is atypical relative to most documented blackouts, making observation of deviation points from reality especially productive.
+
+### Representative Cases of Detected Hallucination
+
+| Phenomenon | Erroneous Inference | Physical Correction | Corrective Strategy |
+|----------|---------------------|------------------|----------------------|
+| **<GlossaryLink term="UFLS">UFLS</GlossaryLink> Paradox** | Load shedding "saved" areas by recovering active balance. | <GlossaryLink term="UFLS">UFLS</GlossaryLink> blind to voltage; removes reactive sinks during capacitive transient, worsening overvoltage. | Restriction: reason exclusively in Q-V plane. |
+| **<GlossaryLink term="Tap-Lag">Tap-Lag</GlossaryLink>** | <GlossaryLink term="OLTC">OLTC</GlossaryLink> responds correctly and proportionally. | Intentional delays leave <GlossaryLink term="OLTC">OLTC</GlossaryLink> out of phase against transient, multiplying voltage to lower grids. | Injection of real OLTC time constant; prohibition of quasi-instantaneous response. |
+| **Meshing Maneuver** | Meshing reduces impedance, increases stability. | At low load, meshing activates <GlossaryLink term="Efecto Ferranti">Ferranti effect</GlossaryLink>, injecting 1,050 MVAr capacitive precipitating overvoltage. | Restriction to unloaded line regime; reactive balance with capacitive admittance. |
+| **0.6 Hz Oscillation** | Classic inter-area electromechanical mode analogous to 0.2 Hz. | Origin disputed; forced by generator per ICAI; natural per REE. | Veto unilateral choice; obligation to present dual readings. |
+
+---
+
+## Critical Reflection on AI in Engineering Research
+
+The documented experience invites broader epistemological reflection. The conclusion is not triumphal nor catastrophist, but **structural**: generative models are powerful accelerators of researcher cognitive processes, but operate on probabilistic logic not coinciding with deterministic logic governing physical systems.
+
+### First Implication: Methodological
+
+AI use does not exempt researchers from mastering technical content; it demands greater rigor. **Only a researcher with sufficient technical competence to identify physically impossible inference can safely employ a model capable of producing it with rhetorical fluency.**
+
+### Second Implication: Ethical-Academic
+
+Automated assistance was employed as processing tool, not reasoning substitute. **All content decisions are author's exclusive responsibility**. Problem framing, source hierarchy, causal thesis formulation, comparative assessment of institutional narratives, and conclusions are researcher authorship. AI does not sign TFGs: the engineer certifies with their name the material causality of exposed facts.
+
+### Third Implication: Disciplinary and Prospective
+
+Next-decade electrical systems—dominated by power electronics, with relevant dynamics in sub-cycle scales and tension-reactive interactions—will require decision-support tools combining processing speed of algorithmic models with physical robustness of <GlossaryLink term="PSS/E">PSS/E</GlossaryLink>-type simulators.
+
+**Hybrid architecture**—LLM as semantic interface and synthesis, physical simulators as causal inference engine—is, plausibly, the direction toward which power systems engineering tools will evolve. Development will require exactly the same epistemological vigilance structuring this TFG's workflow: always knowing what each tool does and what is explicitly requested not to do.

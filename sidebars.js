@@ -16,15 +16,23 @@ const sidebars = {
   // But you can create a sidebar manually
   tutorialSidebar: [
     'intro',
-    'introduccion',
-    'contexto',
-    'sistema-espanol',
-    'reaccion-reposicion',
-    'analisis-informes',
-    'impacto-comunicativo',
-    'resiliencia-futuro',
-    'uso-ia',
-    'conclusiones',
+    {
+      type: 'category',
+      label: '📚 Capítulos',
+      collapsible: false,
+      link: { type: 'generated-index' },
+      items: [
+        'introduccion',
+        'contexto',
+        'sistema-espanol',
+        'reaccion-reposicion',
+        'analisis-informes',
+        'impacto-comunicativo',
+        'resiliencia-futuro',
+        'uso-ia',
+        'conclusiones',
+      ],
+    },
   ],
 };
 

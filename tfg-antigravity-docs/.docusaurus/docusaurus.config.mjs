@@ -6,8 +6,8 @@
 export default {
   "title": "Análisis del Apagón de 28 Abril de 2025",
   "tagline": "Estudio técnico sobre el colapso del sistema eléctrico ibérico y sus implicaciones para la estabilidad de redes con alta penetración renovable",
-  "favicon": "img/favicon.ico",
-  "url": "https://tfg-antigravity.vercel.app",
+  "favicon": "img/favicon.png",
+  "url": "https://tfg-overleaf.vercel.app",
   "baseUrl": "/en/",
   "organizationName": "alfonsomongee",
   "projectName": "TFG-OVERLEAF",
@@ -71,7 +71,7 @@ export default {
       "title": "TFG - Apagón Ibérico",
       "logo": {
         "alt": "ETSI Logo",
-        "src": "img/logo.svg"
+        "src": "img/logo.png"
       },
       "items": [
         {
@@ -369,7 +369,7 @@ export default {
     {
       "href": "https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css",
       "type": "text/css",
-      "integrity": "sha384-KiHDIsElUmTuWW57CX1TS1a7w5mQ9tYNZO5u4A5EC41f6CgVv06cKy1v2C6i2c9n",
+      "integrity": "sha384-SfHjyzed8eCsTSa4t2GoMc4WnsCLa6cQpFqPRCaizz0FlQUOyafw/AyIUCQU/KuM",
       "crossorigin": "anonymous"
     }
   ],
