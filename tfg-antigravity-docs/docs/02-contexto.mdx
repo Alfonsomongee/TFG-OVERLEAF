@@ -1,0 +1,137 @@
+---
+sidebar_position: 2
+---
+
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+# Contexto del Sector Eléctrico y Transición Energética
+
+## Nota preliminar sobre la distribución de fases
+
+A lo largo de este capítulo y de los siguientes se hará referencia recurrente a las cinco fases en que el Comité de Análisis del Consejo de Seguridad Nacional estructuró cronológicamente el incidente del 28 de abril de 2025: la **Fase 0** comprende los días previos y la mañana del 28A, caracterizada por la inestabilidad latente de tensiones; la **Fase 1** (12:00--12:30 CEST) corresponde a las <GlossaryLink term="Oscilaciones electromecánicas">oscilaciones electromecánicas</GlossaryLink> que precedieron al disparo raíz; la **Fase 2** (12:32:00--12:33:18 CEST) abarca las primeras pérdidas de generación asociadas a sobretensión; la **Fase 3** (12:33:18--12:33:30 CEST) recoge la cascada de desconexiones que culminó en el cero de tensión; y la **Fase 4** (a partir de las 12:33:30 CEST) describe la reposición progresiva del suministro. La cronología detallada de cada fase se presenta en los capítulos posteriores.
+
+---
+
+## Evolución de la potencia instalada
+
+A pesar de que la demanda máxima de electricidad en España lleva más de una década en estancamiento estructural, el parque de generación ha experimentado una transformación profunda impulsada por los objetivos de descarbonización europeos y el Plan Nacional Integrado de Energía y Clima (PNIEC). El análisis histórico de los últimos quince años evidencia un cambio sustancial en la composición del mix: si en 2010 las fuentes térmicas y nucleares representaban el 65% de la producción, en 2024 las renovables habían invertido esa proporción, alcanzando el 59% del mix total.
+
+![Evolución macroscópica del mix de generación en España (2010 vs. 2024)](/figuras/mix_comparativo_2010_2024.png)
+
+En el primer cuatrimestre de 2025, el sistema peninsular consolidó este escenario superando los 100 GW de capacidad renovable instalada. A enero de 2025, casi el 66% de la capacidad total procedía de fuentes descarbonizadas, con energía eólica y solar fotovoltaica en paridad técnica (24,9% cada una). Incluyendo el autoconsumo distribuido, la cuota fotovoltaica global ascendía a más de 48,1 GW, frente a los 33,1 GW eólicos.
+
+![Desglose de la capacidad de generación instalada a enero de 2025](/figuras/capacidad_instalada_2025.png)
+
+Como contrapartida directa a la situación presentada, la generación síncrona convencional ha sido progresivamente desplazada en el orden de mérito. El parque de carbón ha quedado relegado a un papel residual (1,6% de la capacidad instalada), el nuclear (5,5%) afronta un calendario de cierre progresivo, y los más de 26 GW de ciclo combinado de gas (20,4%) operan con factores de utilización inferiores al 15% anuales.
+
+Desde la perspectiva de la ingeniería de sistemas de potencia, esta alteración acelerada de la matriz electromecánica plantea retos operativos relevantes. La estabilidad histórica de las redes ha venido descansando en los generadores síncronos ---centrales térmicas, nucleares e hidráulicas--- cuyas masas rotativas aportan energía cinética ($E_k$) inmediata, <GlossaryLink term="Inercia (H)">inercia física</GlossaryLink> y elevadas corrientes de <GlossaryLink term="Potencia de cortocircuito">cortocircuito</GlossaryLink> ante cualquier perturbación.
+
+La práctica totalidad de las nuevas instalaciones solares y eólicas se conectan, en cambio, mediante inversores (de ahí su denominación <GlossaryLink term="IBR">*Inverter-Based Resources*, IBR</GlossaryLink>). Estos convertidores operan en modo estándar como "seguidores de red" (<GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos tipo <GlossaryLink term="Phase-Locked Loop (PLL)">PLL (*Phase-Locked Loop*)</GlossaryLink> y, al carecer de masas rotativas, no aportan <GlossaryLink term="Inercia (H)">inercia síncrona</GlossaryLink> ni responden intrínsecamente a las fluctuaciones de la red.
+
+El resultado de esta sustitución es que el sistema ibérico opera de forma rutinaria bajo un régimen característico de las redes con baja capacidad de <GlossaryLink term="Potencia de cortocircuito">cortocircuito</GlossaryLink> y elevada impedancia. La desconexión progresiva de los turboalternadores reduce la <GlossaryLink term="Inercia (H)">inercia síncrona</GlossaryLink> total y amplifica la <GlossaryLink term="RoCoF (Rate of Change of Frequency)">Velocidad de Cambio de Frecuencia (*Rate of Change of Frequency* RoCoF, $df/dt$)</GlossaryLink> ante desequilibrios de potencia activa. Más allá de la dinámica de frecuencia, la merma de máquinas síncronas reduce las fuentes y sumideros dinámicos de <GlossaryLink term="Potencia reactiva">potencia reactiva ($Q$)</GlossaryLink> disponibles en la red, lo que afecta a la capacidad del sistema para mantener la <GlossaryLink term="Estabilidad de tensión">estabilidad de tensión ($V$)</GlossaryLink> ante variaciones rápidas en los flujos de la red de transporte de 400 kV.
+
+---
+
+## Intensidad de emisiones del sistema ibérico
+
+La transformación topológica y operativa del sistema eléctrico ibérico durante las dos últimas décadas se enmarca en el contexto regulatorio común a toda la Unión Europea: el imperativo legal y medioambiental de descarbonizar la economía. La reducción de la intensidad de emisiones de Gases de Efecto Invernadero (GEI) ha sido el motor de la planificación energética nacional, impulsando la sustitución de tecnologías convencionales vinculadas a fuentes fósiles por fuentes renovables.
+
+A comienzos de siglo, el sistema peninsular presentaba una alta intensidad de carbono: aproximadamente el 56% de la electricidad producida procedía de centrales térmicas de combustibles fósiles, predominantemente carbón, con presencia significativa de fuelóleo y de un parque de ciclo combinado de gas natural en rápida expansión a partir de 2002. Las emisiones absolutas del sector eléctrico continuaron creciendo hasta alcanzar su máximo histórico en 2007, próximo a los 110 MtCO₂-eq anuales.
+
+![Evolución histórica de las emisiones de GEI en España](/figuras/esios_emisiones_historico.png)
+
+El éxito ambiental de la política de descarbonización se refleja en la evolución del factor de emisión específico del sistema, expresado en toneladas de CO₂ equivalente por megavatio-hora (tCO₂eq/MWh) o, equivalentemente, en gramos de CO₂ por kilovatio-hora (g CO₂/kWh). En 2015, el sistema emitía cerca de 80 MtCO₂-eq con un factor de 0,29 tCO₂-eq/MWh (≈ 290 g CO₂/kWh); en 2019, ese factor ya había descendido a 0,19 tCO₂-eq/MWh (≈ 190 g CO₂/kWh).
+
+La tendencia indicada se ha acelerado en los últimos años, previos al cero de tensión. Al cierre de 2024, coincidiendo con el máximo histórico de generación renovable (56,8%), las emisiones del sector eléctrico se redujeron hasta los 27,0 millones de toneladas de CO₂ equivalente, un descenso del 16,8% respecto a 2023 y del 75,7% frente al pico de 2007.
+
+![Evolución comparativa de la cuota renovable frente a las emisiones absolutas (2015-2024)](/figuras/ree_emisiones_renovables_2024.png)
+
+Desde la perspectiva de la ingeniería de sistemas de potencia, esta reducción de la intensidad de emisiones constituye un éxito medioambiental indiscutible. Su contrapartida operativa es que la sustitución de centrales térmicas por fuentes renovables conectadas a través de inversores conlleva la retirada progresiva de las masas síncronas que aportaban <GlossaryLink term="Inercia (H)">inercia</GlossaryLink>, <GlossaryLink term="Potencia de cortocircuito">potencia de cortocircuito</GlossaryLink> y control dinámico de tensión.
+
+---
+
+## Estado operativo en los días previos (abril de 2025)
+
+En los días previos al apagón, en particular durante la mañana del 28 de abril de 2025, el sistema eléctrico peninsular operó bajo unas condiciones que la literatura técnica ha denominado la "Paradoja de la abundancia". Las temperaturas primaverales inusualmente suaves (en torno a 25°C) y el calendario festivo en diversas regiones deprimieron la curva de demanda: a las 12:30 CEST, escasos minutos antes del colapso, la demanda instantánea se situaba en 25.184 MW, el 56% de la demanda punta histórica del sistema.
+
+Este escenario de demanda valle coincidió con una excepcional disponibilidad de recurso renovable, de modo que la generación no síncrona cubría el 82% del mix instantáneo. El balance estuvo dominado por la energía solar fotovoltaica, con aproximadamente 18.000 MW (53% del total), complementada por la eólica con cerca de 3.500 MW (11%).
+
+Para equilibrar este volumen de potencia activa ($P$), dada la baja demanda interna, el sistema recurrió simultáneamente a dos sumideros principales. Por un lado, al bombeo hidráulico para almacenar parte del excedente de producción solar: a las 12:30 CEST, las centrales de bombeo consumían cerca de 3.000 MW. Por otro, a la exportación neta hacia los tres sistemas vecinos ---Francia, Portugal y Marruecos---, que actuaron de hecho como sumideros externos de la sobreproducción peninsular.
+
+![Perfil de generación del sistema peninsular el 28 de abril de 2025](/figuras/ree_generation_mix_28april.png)
+
+La figura anterior ilustra cómo el valle de demanda coincidió con un pico extremo de producción fotovoltaica, lo que desplazó la generación síncrona a niveles mínimos y obligó al uso intensivo de los sumideros de potencia activa mencionados (bombeo hidráulico y exportación a los tres sistemas vecinos).
+
+Esta reducción de masas rotatorias se tradujo en valores de <GlossaryLink term="Inercia (H)">inercia</GlossaryLink> notablemente bajos en algunas zonas del sistema. Los registros periciales indican que la <GlossaryLink term="Inercia (H)">inercia síncrona</GlossaryLink> cayó a 1,3 s en el área Sur y 1,84 s en el área Centro, por debajo del umbral de 2 s recomendado por la Red Europea de Gestores de Redes de Transporte de Electricidad (ENTSO-E). La operación prolongada en estas condiciones ya había producido señales de estrés dinámico los días 16, 22 y 24 de abril, en los que se registraron episodios de <GlossaryLink term="Estabilidad de tensión">inestabilidad de tensión</GlossaryLink> en la red de transporte.
+
+![Oscilaciones de tensión registradas en Núñez de Balboa el 22 de abril de 2025](/figuras/precursor_overvoltage_22april.png)
+
+Este tipo de transitorios es interpretado como indicio del estrechamiento de los márgenes de control de <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink> en la red de transporte.
+
+El antecedente más severo ocurrió el martes 22 de abril, en torno a las 19:00 horas. Una confluencia de factores operativos ---gradientes pronunciados de bajada de generación solar y cambios bruscos en los flujos de interconexión--- desencadenó un pico de sobretensión superior a 430 kV. Este transitorio activó las protecciones de red y provocó la desconexión de múltiples plantas, principalmente fotovoltaicas y eólicas conectadas mediante inversores.
+
+Analizados en conjunto, estos episodios sugieren que el sistema peninsular operaba con sus márgenes de control dinámico de tensión estructuralmente estrechos. La elevada penetración de <GlossaryLink term="IBR">recursos basados en inversores (IBR)</GlossaryLink>, combinada con la desconexión de los grupos síncronos convencionales, disminuyó la capacidad de la red para gestionar <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink> de forma dinámica.
+
+---
+
+## Capacidad de las interconexiones
+
+### La península ibérica como "isla energética"
+
+Para comprender la dinámica del sistema eléctrico peninsular es necesario definir su posición estructural dentro del área síncrona de Europa Continental (ENTSO-E). Geográfica y eléctricamente, la península ibérica opera bajo la condición de "isla energética": sus interconexiones transfronterizas a través de los Pirineos son débiles en relación con el tamaño del sistema. La capacidad de intercambio entre España y Francia se sitúa históricamente entre el 3% y el 5% de la capacidad de generación instalada ---o un 7,9% medido frente a la demanda punta---, valores inferiores al objetivo vinculante del 15% fijado por la Unión Europea para 2030.
+
+Esta limitación topológica condiciona la seguridad del suministro. Al situarse en el extremo periférico de la red síncrona, el sistema ibérico experimenta un denominado "efecto látigo": las perturbaciones originadas en el centro de <GlossaryLink term="Inercia (H)">inercia</GlossaryLink> europeo se amplifican al propagarse hacia la península.
+
+### Límites de intercambio: comercial (NTC) frente a físico
+
+Es indispensable distinguir entre los límites comerciales y los flujos físicos reales. Desde la perspectiva del mercado, los intercambios se rigen por la <GlossaryLink term="Capacidad Neta de Transferencia (NTC)">Capacidad Neta de Transferencia (*Net Transfer Capacity*, NTC)</GlossaryLink>, un valor pactado *ex ante* entre Red Eléctrica de España (REE) y Réseau de Transport d'Électricité (RTE). Sin embargo, en regímenes transitorios rápidos, los flujos físicos de potencia activa ($P$) y <GlossaryLink term="Potencia reactiva">reactiva ($Q$)</GlossaryLink> obedecen las Leyes de Kirchhoff y los criterios de estabilidad angular, con independencia de los programas de mercado.
+
+![Desviación entre programa comercial (NTC) y flujo físico en la frontera ES-FR](/figuras/entsoe_flow_deviation.png)
+
+### Frontera norte (Francia)
+
+La interconexión con Francia combina líneas aéreas de corriente alterna (AC) con el enlace subterráneo de corriente continua de alta tensión (<GlossaryLink term="HVDC">HVDC VSC</GlossaryLink>) entre Santa Llogaia y Baixas, denominado INELFE-1, con una capacidad nominal de 2.000 MW.
+
+El enlace <GlossaryLink term="HVDC">HVDC</GlossaryLink> INELFE-1 admite varios modos de operación. En modo **PMODE1** (potencia constante) el convertidor mantiene fija una consigna de potencia activa pactada *ex ante*, sin reaccionar a las desviaciones de frecuencia o tensión del sistema. En modo **PMODE2** se introduce un bucle de control que modula la potencia transferida en función del desvío de frecuencia. En modo **PMODE3** (emulación AC) el enlace adapta la potencia transferida a la diferencia angular entre las tensiones de ambos extremos.
+
+Durante los prolegómenos del apagón, el enlace <GlossaryLink term="HVDC">HVDC</GlossaryLink> operaba inicialmente en modo PMODE3. Sin embargo, a las 12:08 CEST, con el fin de amortiguar las <GlossaryLink term="Oscilaciones electromecánicas">oscilaciones</GlossaryLink> de 0,6 Hz detectadas en el sistema, el modo de control se modificó a PMODE1, fijando una exportación de 1.000 MW hacia Francia.
+
+![Cambio del modo de control en el enlace HVDC INELFE-1 España-Francia](/figuras/hvdc_control_transition.png)
+
+### Frontera sur (Marruecos)
+
+El sistema peninsular se conecta con el norte de África mediante cables submarinos de corriente alterna (AC) a través del Estrecho de Gibraltar, con una capacidad técnica de 900 MW. Momentos antes del colapso, España importaba 314 MW desde Marruecos. A las 12:33:20 CEST, los relés de subfrecuencia del operador marroquí dispararon al alcanzarse el umbral de 49,5 Hz, desconectando el enlace para proteger su red ante una propagación de las inestabilidades del sistema español.
+
+---
+
+## El Sistema de Alerta Europeo (EAS)
+
+### Definición y función
+
+La coordinación de la seguridad en el área síncrona de Europa continental se articula a través del sistema de vigilancia de ENTSO-E (<GlossaryLink term="EAS (ENTSO-E Awareness System)">*ENTSO-E Awareness System*, EAS</GlossaryLink>). Esta plataforma constituye el pilar de la monitorización paneuropea: proporciona a los Gestores de Redes de Transporte (TSOs) una visión en tiempo real del estado operativo de la red síncrona.
+
+### Clasificación de los Estados Operativos (SO GL)
+
+Para estandarizar la evaluación de la seguridad, la normativa europea (<GlossaryLink term="SO GL (System Operation Guidelines)">*System Operation Guidelines*, SO GL</GlossaryLink>) establece cinco niveles progresivos de severidad:
+
+- **Normal**: el sistema opera dentro de los límites de seguridad, cumpliendo el <GlossaryLink term="Criterio N-1">Criterio N-1</GlossaryLink>.
+- **Alerta**: degradación de los márgenes de seguridad que exige acciones preventivas.
+- **Emergencia**: violación de límites de seguridad, pérdida de sincronismo o activación de deslastre de cargas.
+- **Apagón**: pérdida total de tensión en una parte significativa de la zona de control.
+- **Restauración**: implementación de estrategias de Black Start y reposición topológica de la red.
+
+### Estado previo al incidente
+
+El análisis de los registros del <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> revela una disonancia entre la dinámica de la red ibérica y su representación en la plataforma europea. Durante la mañana del 28 de abril, el sistema sufrió, al menos, dos <GlossaryLink term="Oscilaciones electromecánicas">oscilaciones</GlossaryLink> significativas: una oscilación forzada de 0,6 Hz a las 12:03 CEST y un modo inter-área de 0,2 Hz a las 12:19 CEST.
+
+A pesar de la gravedad de estos fenómenos, ni el operador español (REE) ni el portugués (REN) declararon el estado de Alerta en el <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink>. A las 12:32:00 CEST, el estado oficial declarado para la península ibérica seguía siendo "Normal". Los registros confirman que el sistema transitó abruptamente de "Normal" a "Blackout" a las 12:33:29 CEST, sin haber pasado preventivamente por ninguna de las fases intermedias.
+
+![Clasificación de las violaciones de seguridad (Criterios ICS) en la península ibérica](/figuras/ics_violations_iberia.png)
+
+### Visibilidad transfronteriza
+
+La ausencia de escalada en los estados de seguridad generó una situación de visibilidad limitada hacia los operadores vecinos. Los monitores del área síncrona y el Centro de Coordinación Regional percibían una robustez técnica estándar en el bloque ibérico. El operador francés (RTE) no recibía señales que indicasen una vulnerabilidad dinámica al sur de los Pirineos.
+
+El episodio puso de manifiesto que el <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> actuó no como una herramienta de alerta temprana (*early warning*), sino como un notificador *post mortem* del colapso.
+
+![Evolución de la frecuencia y la tensión en la subestación de Carmona (Sevilla)](/figuras/frequency_voltage_carmona.png)

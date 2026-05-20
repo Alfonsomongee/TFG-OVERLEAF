@@ -1,0 +1,80 @@
+---
+sidebar_position: 5
+---
+
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+# Análisis Comparativo de Informes Técnicos (Fase 5)
+
+El apagón ibérico del 28 de abril de 2025 generó una producción documental de carácter técnico sin precedentes en la historia del sistema eléctrico europeo. En los meses posteriores al incidente, cuatro actores institucionales con capacidad de análisis y legitimidad regulatoria publicaron informes técnicos con conclusiones parcialmente contradictorias sobre las causas del colapso.
+
+Este capítulo confronta las cuatro narrativas técnicas para identificar tanto los consensos metodológicos como las divergencias irreconciliables, con el objetivo de situar el debate en sus ejes físicos fundamentales.
+
+---
+
+## Visión del Gobierno y REE
+
+El informe de la Comisión Técnica designada por el Gobierno, publicado en colaboración con Red Eléctrica de España, atribuye el colapso a una **causalidad multifactorial** en la que concurren tres factores simultáneos:
+
+1. **Incumplimiento normativo generalizado del parque <GlossaryLink term="IBR">IBR</GlossaryLink>**: El análisis de los registros <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> de las 24 horas previas al incidente determinó que el **22% de los inversores fotovoltaicos** conectados a la red peninsular operaban fuera de los rangos de tensión reactiva y factor de potencia exigidos por el **P.O. 7.4**. Esta desviación sistemática comprometió la capacidad global del sistema para absorber perturbaciones de tensión.
+
+2. **Gestión dinámica del mallado peninsular**: La configuración de red adoptada el 28 de abril fue analizada por el Gobierno como un factor agravante que redujo la robustez topológica del sistema frente a contingencias múltiples.
+
+3. **Cascada de desprotección por sobretensión**: La secuencia de disparos se atribuye a la actuación correcta pero encadenada de los relés de protección por sobretensión, cuyo ajuste no contemplaba la dinámica colectiva de un sistema de baja inercia.
+
+---
+
+## Visión de Redeia
+
+El informe técnico de Redeia adoptó una postura más defensiva, demostrando que la configuración de red cumplía con el <GlossaryLink term="Criterio N-1">Criterio $N-1$</GlossaryLink> y que las decisiones operativas del Centro de Control no infringieron procedimientos vigentes.
+
+Redeia apunta directamente al **incumplimiento de las curvas de capacidad <GlossaryLink term="Potencia reactiva">reactiva</GlossaryLink>** por parte de los generadores <GlossaryLink term="IBR">IBR</GlossaryLink> como el factor desencadenante primario, documentando que 847 de los 3.872 inversores registrados operaban fuera de límites contractuales.
+
+---
+
+## Visión del Sector Generador (IIT-ICAI / AELEC)
+
+El análisis más técnicamente denso fue publicado por el **Instituto de Investigación Tecnológica (IIT-ICAI)** en colaboración con **AELEC**. Este informe propone una **causalidad físicamente distinta**: el colapso fue consecuencia de una **<GlossaryLink term="Colapso Q-V">inestabilidad de tensión de naturaleza fundamentalmente capacitiva</GlossaryLink>** generada por la configuración de red.
+
+### El Efecto Ferranti y la Inyección Capacitiva del Mallado
+
+El argumento central se articula en torno al <GlossaryLink term="Efecto Ferranti">**efecto Ferranti**</GlossaryLink>: las líneas largas poco cargadas actúan como condensadores distribuidos y elevan la tensión. El informe cuantifica que el mallado inyectó entre **1,05 y 2,4 GVAr** de <GlossaryLink term="Potencia reactiva">potencia reactiva capacitiva</GlossaryLink>, generando presiones de sobretensión.
+
+### La Contracción del Margen Q-V en Carmona
+
+El análisis de la curva <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> en el nudo de Carmona 400 kV documenta una contracción dramática del margen de estabilidad de tensión del **57,3%** respecto a condiciones normales.
+
+### El Fenómeno Tap-Lag y la Brecha de Observabilidad
+
+La contribución técnica más novedosa es la identificación del <GlossaryLink term="Tap-Lag">**"Tap-Lag"**</GlossaryLink> como factor amplificador. Los <GlossaryLink term="OLTC (On-Load Tap Changer)">**transformadores OLTC**</GlossaryLink> se ajustan con retardo de decenas de segundos, generando una **brecha de observabilidad**: el <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> mostraba 418 kV en Carmona mientras la tensión real en 220 kV había colapsado a 244 kV.
+
+---
+
+## Visión de ENTSO-E
+
+El informe de la Red Europea de Operadores adopta una perspectiva de mayor escala. Su argumento central es la **insuficiencia electromecánica de los inversores en modo <GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>** para sostener sistemas de alta penetración renovable bajo perturbaciones severas.
+
+Los inversores <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink>, que representaban aproximadamente el **78% de la capacidad instalada** el 28 de abril, operan mediante un bucle <GlossaryLink term="Phase-Locked Loop (PLL)">PLL (*Phase-Locked Loop*)</GlossaryLink> que necesita "leer" una red estable. Los inversores en modo <GlossaryLink term="GFM (Grid-Forming)">**grid-forming (GFM)**</GlossaryLink> pueden imponer activamente una onda de tensión, comportándose electromecánicamente como generadores síncronos convencionales.
+
+La recomendación central es la revisión del **Network Code on Requirements for Generators (<GlossaryLink term="NC RfG">NC RfG</GlossaryLink>)** para incorporar obligatoriedad del modo <GlossaryLink term="GFM (Grid-Forming)">GFM</GlossaryLink> para generadores <GlossaryLink term="IBR">IBR</GlossaryLink> en redes con penetración renovable superior al 60%.
+
+---
+
+## Tabla Comparativa: Consensos y Divergencias
+
+### Puntos de Consenso
+
+Todos los informes coinciden en:
+- El colapso fue primariamente de **tensión**, no de frecuencia
+- Los relés de protección actuaron **técnicamente correctamente**
+- La normativa vigente es **insuficiente** para sistemas con alta penetración <GlossaryLink term="IBR">IBR</GlossaryLink>
+- Se necesita **generación <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink>** y cobertura <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink>
+
+### Ejes de Divergencia
+
+| Aspecto | Gobierno/REE | Redeia | IIT-ICAI | ENTSO-E |
+|---------|-----------|--------|----------|---------|
+| **Causa primaria** | Incumplimiento <GlossaryLink term="IBR">IBR</GlossaryLink> | Incumplimiento reactiva | Inestabilidad capacitiva | Insuficiencia estructural <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink> |
+| **Mallado** | Factor agravante | Decisión correcta | Factor desencadenante | No se pronuncia |
+| **Observabilidad <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink>** | Adecuada | Adecuada | Ciegamente insuficiente | Necesita <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> |
+| **<GlossaryLink term="Criterio N-1">Criterio N-1</GlossaryLink>** | Insuficiente | Suficiente | Irrelevante | Insuficiente |

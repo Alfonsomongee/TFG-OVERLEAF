@@ -1,0 +1,137 @@
+---
+sidebar_position: 2
+---
+
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+# Context of the Electrical Sector and Energy Transition
+
+## Preliminary Note on Phase Distribution
+
+Throughout this chapter and subsequent ones, repeated reference will be made to the five phases in which the Analysis Committee of the National Security Council chronologically structured the incident of April 28, 2025: **Phase 0** encompasses the days prior and the morning of April 28, characterized by latent voltage instability; **Phase 1** (12:00--12:30 CEST) corresponds to the <GlossaryLink term="Oscilaciones electromecánicas">electromechanical oscillations</GlossaryLink> preceding the root trigger; **Phase 2** (12:32:00--12:33:18 CEST) covers the initial generation losses associated with overvoltage; **Phase 3** (12:33:18--12:33:30 CEST) captures the cascade of disconnections culminating in voltage collapse; and **Phase 4** (from 12:33:30 CEST onward) describes the progressive restoration of supply. The detailed chronology of each phase is presented in subsequent chapters.
+
+---
+
+## Evolution of Installed Generation Capacity
+
+Despite electricity maximum demand in Spain remaining structurally stagnant for over a decade, the generation fleet has undergone a profound transformation driven by European decarbonization objectives and the National Integrated Energy and Climate Plan (PNIEC). Historical analysis of the last fifteen years reveals substantial change in generation mix composition: if thermal and nuclear sources represented 65% of production in 2010, by 2024 renewables had inverted that proportion, reaching 59% of the total mix.
+
+![Macroscopic evolution of generation mix in Spain (2010 vs. 2024)](/figuras/mix_comparativo_2010_2024.png)
+
+In the first quarter of 2025, the peninsular system consolidated this scenario surpassing 100 GW of installed renewable capacity. As of January 2025, nearly 66% of total capacity derived from decarbonized sources, with wind and solar photovoltaic energy in technical parity (24.9% each). Including distributed self-consumption, the total photovoltaic share amounted to more than 48.1 GW, versus 33.1 GW of wind.
+
+![Breakdown of installed generation capacity as of January 2025](/figuras/capacidad_instalada_2025.png)
+
+As a direct counterpart to the situation presented, conventional synchronous generation has been progressively displaced in the merit order. The coal fleet has been relegated to a residual role (1.6% of installed capacity), nuclear (5.5%) faces a progressive shutdown schedule, and the more than 26 GW of combined cycle gas (20.4%) operate at utilization factors below 15% annually.
+
+From the perspective of power systems engineering, this accelerated alteration of the electromechanical matrix poses significant operational challenges. Historical network stability has rested on synchronous generators—thermal, nuclear, and hydroelectric plants—whose rotating masses provide immediate kinetic energy ($E_k$), <GlossaryLink term="Inercia (H)">physical inertia</GlossaryLink>, and high <GlossaryLink term="Potencia de cortocircuito">short-circuit currents</GlossaryLink> against any disturbance.
+
+The vast majority of new solar and wind installations connect, conversely, via inverters (hence their designation as <GlossaryLink term="IBR">*Inverter-Based Resources*, IBR</GlossaryLink>). These converters operate in standard mode as "grid followers" (<GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>): they synchronize their output with external voltage and frequency through <GlossaryLink term="Phase-Locked Loop (PLL)">PLL (*Phase-Locked Loop*)</GlossaryLink> algorithms and, lacking rotating masses, do not provide <GlossaryLink term="Inercia (H)">synchronous inertia</GlossaryLink> nor inherently respond to grid fluctuations.
+
+The result of this substitution is that the Iberian system routinely operates under a regime characteristic of networks with low <GlossaryLink term="Potencia de cortocircuito">short-circuit capacity</GlossaryLink> and high impedance. Progressive disconnection of turbo-generators reduces total <GlossaryLink term="Inercia (H)">synchronous inertia</GlossaryLink> and amplifies the <GlossaryLink term="RoCoF (Rate of Change of Frequency)">Rate of Change of Frequency (RoCoF, $df/dt$)</GlossaryLink> against active power imbalances. Beyond frequency dynamics, the decline of synchronous machines reduces dynamic sources and sinks of <GlossaryLink term="Potencia reactiva">reactive power ($Q$)</GlossaryLink> available on the network, affecting the system's capacity to maintain <GlossaryLink term="Estabilidad de tensión">voltage stability ($V$)</GlossaryLink> against rapid variations in 400 kV transmission network flows.
+
+---
+
+## Emissions Intensity of the Iberian System
+
+The topological and operational transformation of the Iberian electrical system over the last two decades is framed within the regulatory context common to the entire European Union: the legal and environmental imperative to decarbonize the economy. The reduction in greenhouse gas (GHG) emission intensity has been the driver of national energy planning, propelling substitution of conventional technologies linked to fossil sources with renewable sources.
+
+At the turn of the century, the peninsular system exhibited high carbon intensity: approximately 56% of electricity produced derived from thermal plants burning fossil fuels, predominantly coal, with significant presence of fuel oil and a combined cycle gas fleet in rapid expansion from 2002 onward. Absolute emissions from the electrical sector continued growing until reaching their historical maximum in 2007, approaching 110 MtCO₂-eq annually.
+
+![Historical evolution of GHG emissions in Spain](/figuras/esios_emisiones_historico.png)
+
+The environmental success of decarbonization policy is reflected in the evolution of the system's specific emission factor, expressed in tonnes of CO₂ equivalent per megawatt-hour (tCO₂eq/MWh) or, equivalently, in grams of CO₂ per kilowatt-hour (g CO₂/kWh). In 2015, the system emitted approximately 80 MtCO₂-eq with a factor of 0.29 tCO₂-eq/MWh (≈ 290 g CO₂/kWh); by 2019, that factor had declined to 0.19 tCO₂-eq/MWh (≈ 190 g CO₂/kWh).
+
+The indicated trend has accelerated in recent years, prior to the voltage collapse. At the close of 2024, coinciding with the historical maximum of renewable generation (56.8%), electrical sector emissions were reduced to 27.0 million tonnes of CO₂ equivalent, a decrease of 16.8% relative to 2023 and of 75.7% relative to the 2007 peak.
+
+![Comparative evolution of renewable share versus absolute emissions (2015-2024)](/figuras/ree_emisiones_renovables_2024.png)
+
+From the perspective of power systems engineering, this reduction in emission intensity constitutes an indisputable environmental success. Its operational counterpart is that substitution of thermal plants with renewable sources connected via inverters entails progressive retirement of the synchronous masses that provided <GlossaryLink term="Inercia (H)">inertia</GlossaryLink>, <GlossaryLink term="Potencia de cortocircuito">short-circuit power</GlossaryLink>, and dynamic voltage control.
+
+---
+
+## Operational State in the Days Prior (April 2025)
+
+In the days preceding the blackout, particularly during the morning of April 28, 2025, the peninsular electrical system operated under conditions that technical literature has termed the "Paradox of Abundance." Unusually mild spring temperatures (around 25°C) and holiday calendars in various regions depressed the demand curve: at 12:30 CEST, mere minutes before the collapse, instantaneous demand stood at 25,184 MW, 56% of the system's historical peak demand.
+
+This valley demand scenario coincided with exceptional renewable resource availability, such that non-synchronous generation covered 82% of the instantaneous mix. The balance was dominated by solar photovoltaic energy, with approximately 18,000 MW (53% of total), complemented by wind with approximately 3,500 MW (11%).
+
+To balance this volume of active power ($P$), given low internal demand, the system simultaneously resorted to two principal sinks. On one hand, to hydroelectric pumping to store part of the solar production surplus: at 12:30 CEST, pumping plants consumed approximately 3,000 MW. On the other, to net exports toward three neighboring systems—France, Portugal, and Morocco—which effectively acted as external sinks for peninsular overproduction.
+
+![Generation profile of the peninsular system on April 28, 2025](/figuras/ree_generation_mix_28april.png)
+
+The previous figure illustrates how the demand valley coincided with an extreme peak in photovoltaic production, which displaced synchronous generation to minimum levels and forced intensive use of the aforementioned active power sinks (hydroelectric pumping and exports to three neighboring systems).
+
+This reduction in rotating masses resulted in remarkably low <GlossaryLink term="Inercia (H)">inertia</GlossaryLink> values in certain system zones. Expert records indicate that <GlossaryLink term="Inercia (H)">synchronous inertia</GlossaryLink> fell to 1.3 s in the South area and 1.84 s in the Central area, below the 2 s threshold recommended by the European Network of Transmission System Operators (ENTSO-E). Prolonged operation under these conditions had already produced dynamic stress signals on April 16, 22, and 24, in which episodes of <GlossaryLink term="Estabilidad de tensión">voltage instability</GlossaryLink> were recorded in the transmission network.
+
+![Voltage oscillations recorded at Núñez de Balboa on April 22, 2025](/figuras/precursor_overvoltage_22april.png)
+
+This type of transient is interpreted as evidence of tightening <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink> control margins in the transmission network.
+
+The most severe precedent occurred on Tuesday, April 22, around 19:00 hours. A confluence of operational factors—pronounced gradients in solar generation ramp-down and abrupt changes in interconnection flows—triggered an overvoltage peak exceeding 430 kV. This transient activated network protections and caused disconnection of multiple plants, primarily photovoltaic and wind facilities connected via inverters.
+
+Analyzed together, these episodes suggest that the peninsular system operated with structurally tight dynamic voltage control margins. The high penetration of <GlossaryLink term="IBR">inverter-based resources (IBR)</GlossaryLink>, combined with disconnection of conventional synchronous units, reduced the network's capacity to dynamically manage <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>.
+
+---
+
+## Interconnection Capacity
+
+### The Iberian Peninsula as an "Energy Island"
+
+To understand the dynamics of the peninsular electrical system, it is necessary to define its structural position within the Continental European synchronous area (ENTSO-E). Geographically and electrically, the Iberian Peninsula operates under the condition of an "energy island": its cross-border interconnections through the Pyrenees are weak relative to system size. The exchange capacity between Spain and France has historically ranged between 3% and 5% of installed generation capacity—or 7.9% measured relative to peak demand—values below the binding European Union objective of 15% by 2030.
+
+This topological limitation conditions supply security. By situating itself at the periphery of the synchronous network, the Iberian system experiences a so-called "whip effect": disturbances originating at Europe's <GlossaryLink term="Inercia (H)">inertia</GlossaryLink> center are amplified as they propagate toward the peninsula.
+
+### Exchange Limits: Commercial (NTC) versus Physical
+
+It is essential to distinguish between commercial limits and actual physical flows. From a market perspective, exchanges are governed by <GlossaryLink term="Capacidad Neta de Transferencia (NTC)">Net Transfer Capacity (NTC)</GlossaryLink>, a value agreed *ex ante* between Red Eléctrica de España (REE) and Réseau de Transport d'Électricité (RTE). However, in rapid transient regimes, physical flows of active power ($P$) and <GlossaryLink term="Potencia reactiva">reactive power ($Q$)</GlossaryLink> obey Kirchhoff's Laws and angular stability criteria, independently of market programs.
+
+![Deviation between commercial program (NTC) and physical flow at ES-FR border](/figuras/entsoe_flow_deviation.png)
+
+### Northern Border (France)
+
+The interconnection with France combines alternating current (AC) overhead lines with the underground high-voltage direct current (<GlossaryLink term="HVDC">HVDC VSC</GlossaryLink>) link between Santa Llogaia and Baixas, named INELFE-1, with nominal capacity of 2,000 MW.
+
+The <GlossaryLink term="HVDC">HVDC</GlossaryLink> INELFE-1 link admits several operating modes. In **PMODE1** (constant power) mode, the converter maintains a fixed active power setpoint agreed *ex ante*, without reacting to system frequency or voltage deviations. In **PMODE2** mode, a control loop is introduced that modulates transferred power as a function of frequency deviation. In **PMODE3** mode (AC emulation), the link adapts transferred power to the angular difference between voltages at both ends.
+
+During the preliminary events before the blackout, the <GlossaryLink term="HVDC">HVDC</GlossaryLink> link initially operated in PMODE3 mode. However, at 12:08 CEST, to damp the 0.6 Hz <GlossaryLink term="Oscilaciones electromecánicas">oscillations</GlossaryLink> detected in the system, the control mode was changed to PMODE1, fixing an export of 1,000 MW toward France.
+
+![Control mode change in HVDC INELFE-1 Spain-France link](/figuras/hvdc_control_transition.png)
+
+### Southern Border (Morocco)
+
+The peninsular system connects with North Africa via alternating current (AC) submarine cables through the Strait of Gibraltar, with technical capacity of 900 MW. Moments before the collapse, Spain was importing 314 MW from Morocco. At 12:33:20 CEST, the Moroccan operator's underfrequency relays tripped at reaching the 49.5 Hz threshold, disconnecting the link to protect its network against propagation of instabilities from the Spanish system.
+
+---
+
+## The European Alert System (EAS)
+
+### Definition and Function
+
+Coordination of security in the Continental European synchronous area is articulated through ENTSO-E's surveillance system (<GlossaryLink term="EAS (ENTSO-E Awareness System)">*ENTSO-E Awareness System*, EAS</GlossaryLink>). This platform constitutes the pillar of paneuropean monitoring: it provides Transmission System Operators (TSOs) with a real-time view of synchronous network operational state.
+
+### Classification of Operational States (SO GL)
+
+To standardize security assessment, European regulations (<GlossaryLink term="SO GL (System Operation Guidelines)">*System Operation Guidelines*, SO GL</GlossaryLink>) establish five progressive severity levels:
+
+- **Normal**: the system operates within security limits, complying with the <GlossaryLink term="Criterio N-1">N-1 Criterion</GlossaryLink>.
+- **Alert**: degradation of security margins requiring preventive actions.
+- **Emergency**: violation of security limits, loss of synchronism, or activation of load shedding.
+- **Blackout**: total loss of voltage in a significant part of the control area.
+- **Restoration**: implementation of Black Start strategies and network topological reposition.
+
+### State Prior to Incident
+
+Analysis of <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> records reveals a disconnect between the dynamics of the Iberian network and its representation on the European platform. During the morning of April 28, the system experienced at least two significant <GlossaryLink term="Oscilaciones electromecánicas">oscillations</GlossaryLink>: a forced oscillation of 0.6 Hz at 12:03 CEST and an inter-area mode of 0.2 Hz at 12:19 CEST.
+
+Despite the severity of these phenomena, neither the Spanish operator (REE) nor the Portuguese operator (REN) declared an Alert state in the <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink>. At 12:32:00 CEST, the official state declared for the Iberian peninsula remained "Normal." Records confirm that the system transitioned abruptly from "Normal" to "Blackout" at 12:33:29 CEST, without preventively passing through any intermediate phases.
+
+![Classification of security violations (ICS Criteria) in the Iberian Peninsula](/figuras/ics_violations_iberia.png)
+
+### Cross-Border Visibility
+
+The absence of escalation in security states created a situation of limited visibility toward neighboring operators. Monitors of the synchronous area and the Regional Coordination Center perceived standard technical robustness in the Iberian bloc. The French operator (RTE) received no signals indicating dynamic vulnerability south of the Pyrenees.
+
+The episode revealed that the <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> functioned not as an early warning tool, but as a *post mortem* notifier of the collapse.
+
+![Evolution of frequency and voltage at Carmona substation (Seville)](/figuras/frequency_voltage_carmona.png)
