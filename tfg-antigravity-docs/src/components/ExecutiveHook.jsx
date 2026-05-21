@@ -93,6 +93,7 @@ export default function ExecutiveHook() {
           <span className={styles.techBadge}>Python Data Analytis</span>
           <span className={styles.techBadge}>Newton-Raphson Solver</span>
         </div>
+        </div>
       </div>
     </>
   );
