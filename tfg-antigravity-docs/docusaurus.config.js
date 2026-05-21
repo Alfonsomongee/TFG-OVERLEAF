@@ -53,7 +53,6 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/Alfonsomongee/TFG-OVERLEAF/blob/main/',
           routeBasePath: '/',
           remarkPlugins: [
             [require('remark-math'), { strict: false }],
