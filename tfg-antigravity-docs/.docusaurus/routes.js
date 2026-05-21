@@ -3,108 +3,108 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/en/',
-    component: ComponentCreator('/en/', '819'),
+    path: '/',
+    component: ComponentCreator('/', '0a3'),
     routes: [
       {
-        path: '/en/',
-        component: ComponentCreator('/en/', 'c7e'),
+        path: '/',
+        component: ComponentCreator('/', '616'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/analisis-incidente',
-        component: ComponentCreator('/en/analisis-incidente', '268'),
+        path: '/analisis-incidente',
+        component: ComponentCreator('/analisis-incidente', 'f1b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/analisis-informes',
-        component: ComponentCreator('/en/analisis-informes', 'a3b'),
+        path: '/analisis-informes',
+        component: ComponentCreator('/analisis-informes', '192'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/category/-capítulos',
-        component: ComponentCreator('/en/category/-capítulos', '7ad'),
+        path: '/category/-capítulos',
+        component: ComponentCreator('/category/-capítulos', 'b64'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/category/-dimensión-europea',
-        component: ComponentCreator('/en/category/-dimensión-europea', '080'),
+        path: '/category/-dimensión-europea',
+        component: ComponentCreator('/category/-dimensión-europea', 'de8'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/conclusiones',
-        component: ComponentCreator('/en/conclusiones', '498'),
+        path: '/conclusiones',
+        component: ComponentCreator('/conclusiones', 'fbb'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/contexto',
-        component: ComponentCreator('/en/contexto', 'e77'),
+        path: '/contexto',
+        component: ComponentCreator('/contexto', '807'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/coordinacion-continental',
-        component: ComponentCreator('/en/dimension-europea/coordinacion-continental', 'e5d'),
+        path: '/dimension-europea/coordinacion-continental',
+        component: ComponentCreator('/dimension-europea/coordinacion-continental', 'ec0'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/dia-despues',
-        component: ComponentCreator('/en/dimension-europea/dia-despues', '31e'),
+        path: '/dimension-europea/dia-despues',
+        component: ComponentCreator('/dimension-europea/dia-despues', 'dc9'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/francia-portugal',
-        component: ComponentCreator('/en/dimension-europea/francia-portugal', '81a'),
+        path: '/dimension-europea/francia-portugal',
+        component: ComponentCreator('/dimension-europea/francia-portugal', 'd3f'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/glosario',
-        component: ComponentCreator('/en/glosario', '0eb'),
+        path: '/glosario',
+        component: ComponentCreator('/glosario', '12b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/impacto-comunicativo',
-        component: ComponentCreator('/en/impacto-comunicativo', 'b6f'),
+        path: '/impacto-comunicativo',
+        component: ComponentCreator('/impacto-comunicativo', '85f'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/introduccion',
-        component: ComponentCreator('/en/introduccion', '6c7'),
+        path: '/introduccion',
+        component: ComponentCreator('/introduccion', 'c5b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/reaccion-reposicion',
-        component: ComponentCreator('/en/reaccion-reposicion', '759'),
+        path: '/reaccion-reposicion',
+        component: ComponentCreator('/reaccion-reposicion', '7a3'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/referencias',
-        component: ComponentCreator('/en/referencias', 'fde'),
+        path: '/referencias',
+        component: ComponentCreator('/referencias', '69b'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/resiliencia-futuro',
-        component: ComponentCreator('/en/resiliencia-futuro', 'aed'),
+        path: '/resiliencia-futuro',
+        component: ComponentCreator('/resiliencia-futuro', '9e6'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/uso-ia',
-        component: ComponentCreator('/en/uso-ia', 'f4d'),
+        path: '/uso-ia',
+        component: ComponentCreator('/uso-ia', '2e0'),
         exact: true,
         sidebar: "tutorialSidebar"
       }
