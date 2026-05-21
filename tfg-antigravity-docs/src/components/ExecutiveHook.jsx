@@ -4,13 +4,34 @@ import Link from '@docusaurus/Link';
 
 export default function ExecutiveHook() {
   return (
-    <div className={styles.heroContainer}>
-      {/* Top Banner / Event Scale */}
-      <div className={styles.statsBanner}>
-        <div className={styles.statItem}>
-          <span className={styles.statValue}>31 GW</span>
-          <span className={styles.statLabel}>Potencia Perdida</span>
+    <>
+      {/* Splash Screen */}
+      <div className={styles.splashContainer}>
+        <div className={styles.splashOverlay}></div>
+        <div className={styles.splashContent}>
+          <h1 className={styles.splashTitle}>
+            APAGÓN IBÉRICO 2025
+          </h1>
+          <p className={styles.splashSubtitle}>
+            Análisis Forense del Colapso Sistémico
+          </p>
+          <Link className={styles.splashButton} to="/contexto">
+            ADELANTE
+            <svg className={styles.arrowIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </Link>
+          <a href="#executive-hook" className={styles.scrollDownIndicator}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
         </div>
+      </div>
+
+      <div id="executive-hook" className={styles.heroContainer}>
+        {/* Top Banner / Event Scale */}
+        <div className={styles.statsBanner}>
+          <div className={styles.statItem}>
+            <span className={styles.statValue}>31 GW</span>
+            <span className={styles.statLabel}>Potencia Perdida</span>
+          </div>
         <div className={styles.statItem}>
           <span className={styles.statValue}>Scale 3</span>
           <span className={styles.statLabel}>Severidad ENTSO-E</span>
@@ -73,6 +94,6 @@ export default function ExecutiveHook() {
           <span className={styles.techBadge}>Newton-Raphson Solver</span>
         </div>
       </div>
-    </div>
+    </>
   );
 }
