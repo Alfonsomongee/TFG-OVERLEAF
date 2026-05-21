@@ -1,245 +1,81 @@
 ---
 sidebar_position: 2
 ---
-import GlossaryLink from '@site/src/components/GlossaryLink';
 
-:::note Note on incident chronology
-Throughout this chapter, reference is made to the five phases through which
-the National Security Council's Analysis Committee structured the incident:
-**Phase 0** (pre-incident days and morning of 28 April, latent voltage
-instability); **Phase 1** (12:00–12:30 CEST, electromechanical oscillations
-preceding the root trip); **Phase 2** (12:32:00–12:33:18 CEST, first
-generation losses from overvoltage); **Phase 3** (12:33:18–12:33:30 CEST,
-disconnection cascade to voltage collapse); **Phase 4** (from 12:33:30 CEST,
-progressive supply restoration). Detailed chronology is presented in
-Chapters 4 and 5.
-:::
+import GlossaryLink from "@site/src/components/GlossaryLink";
+
+# Contexto Técnico
+
+:::note Note on incident chronology Throughout this chapter, reference is made to the five phases through which the National Security Council's Analysis Committee structured the incident: **Phase 0** (pre-incident days and morning of 28 April, latent voltage instability); **Phase 1** (12:00–12:30 CEST, electromechanical oscillations preceding the root trip); **Phase 2** (12:32:00–12:33:18 CEST, first generation losses from overvoltage); **Phase 3** (12:33:18–12:33:30 CEST, disconnection cascade to voltage collapse); **Phase 4** (from 12:33:30 CEST, progressive supply restoration). Detailed chronology is presented in Chapters 4 and 5. :::
 
 ## Generation fleet evolution: from synchronous machines to IBR-dominated mix
 
-Despite more than a decade of structural stagnation in peak electricity
-demand in Spain, the generation fleet has undergone a profound
-transformation. Whereas in 2010 thermal and nuclear sources accounted for
-**65% of production**, by 2024 renewables had reversed that ratio, reaching
-**59% of the total mix**.
+Despite more than a decade of structural stagnation in peak electricity demand in Spain, the generation fleet has undergone a profound transformation. Whereas in 2010 thermal and nuclear sources accounted for **65% of production**, by 2024 renewables had reversed that ratio, reaching **59% of the total mix**.
 
-![Evolution of the generation mix in Spain (2010 vs. 2024)](/figuras/mix_comparativo_2010_2024.png)
-*Generation mix evolution in Spain: 2010 vs. 2024. Source: Peter Huber
-Centre / ESIOS.*
+![Evolution of the generation mix in Spain (2010 vs. 2024)](/figuras/mix_comparativo_2010_2024.png) _Generation mix evolution in Spain: 2010 vs. 2024. Source: Peter Huber Centre / ESIOS._
 
-By the first quarter of 2025, the peninsular system had consolidated this
-scenario, surpassing **100 GW of installed renewable capacity**. As of
-January 2025, almost 66% of total capacity came from decarbonised sources,
-with wind and solar PV in technical parity (24.9% each). Including
-distributed self-consumption, the global PV share exceeded **48.1 GW**,
-against **33.1 GW** of wind.
+By the first quarter of 2025, the peninsular system had consolidated this scenario, surpassing **100 GW of installed renewable capacity**. As of January 2025, almost 66% of total capacity came from decarbonised sources, with wind and solar PV in technical parity (24.9% each). Including distributed self-consumption, the global PV share exceeded **48.1 GW**, against **33.1 GW** of wind.
 
-![Breakdown of installed generation capacity as of January 2025](/figuras/capacidad_instalada_2025.png)
-*Installed generation capacity in the Spanish system as of 31 January 2025.
-Source: NREL / Red Eléctrica.*
+![Breakdown of installed generation capacity as of January 2025](/figuras/capacidad_instalada_2025.png) _Installed generation capacity in the Spanish system as of 31 January 2025. Source: NREL / Red Eléctrica._
 
-As a direct counterpart, conventional synchronous generation has been
-progressively displaced: coal plays a residual role (**1.6%** of installed
-capacity), nuclear (**5.5%**) faces a progressive closure schedule, and
-more than **26 GW of combined-cycle gas turbines** (**20.4%**) operate at
-annual utilisation rates below 15%.
+As a direct counterpart, conventional synchronous generation has been progressively displaced: coal plays a residual role (**1.6%** of installed capacity), nuclear (**5.5%**) faces a progressive closure schedule, and more than **26 GW of combined-cycle gas turbines** (**20.4%**) operate at annual utilisation rates below 15%.
 
-From a power systems engineering perspective, this transformation poses
-structural operational challenges. Historical network stability depended on
-synchronous generators — thermal, nuclear and hydraulic units — whose
-rotating masses provided immediate kinetic energy,
-<GlossaryLink term="Inercia (H)">physical inertia</GlossaryLink> and high
-fault currents. New solar and wind installations connect via
-<GlossaryLink term="IBR">inverters (*IBR*)</GlossaryLink>, which operate in
-standard <GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>
-mode: they synchronise their output to external voltage and frequency
-through <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink>
-algorithms and, lacking rotating masses, contribute neither synchronous
-inertia nor an intrinsic response to network fluctuations. The result is
-that the Iberian system routinely operates under conditions of low
-short-circuit capacity, high nodal impedance and amplified
-<GlossaryLink term="Tasa de Cambio de Frecuencia (RoCoF)">RoCoF</GlossaryLink>
-under any <GlossaryLink term="Potencia activa">active power</GlossaryLink>
-imbalance.
+From a power systems engineering perspective, this transformation poses structural operational challenges. Historical network stability depended on synchronous generators — thermal, nuclear and hydraulic units — whose rotating masses provided immediate kinetic energy, <GlossaryLink term="Inercia (H)">physical inertia</GlossaryLink> and high fault currents. New solar and wind installations connect via <GlossaryLink term="IBR">inverters (_IBR_)</GlossaryLink>, which operate in standard <GlossaryLink term="GFL (Grid-Following)">_grid-following_</GlossaryLink> mode: they synchronise their output to external voltage and frequency through <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> algorithms and, lacking rotating masses, contribute neither synchronous inertia nor an intrinsic response to network fluctuations. The result is that the Iberian system routinely operates under conditions of low short-circuit capacity, high nodal impedance and amplified <GlossaryLink term="Tasa de Cambio de Frecuencia (RoCoF)">RoCoF</GlossaryLink> under any <GlossaryLink term="Potencia activa">active power</GlossaryLink> imbalance.
 
 ## Decarbonisation and operational implications
 
-The environmental success of the Iberian energy transition is unambiguous.
-Sector emissions peaked at approximately **110 MtCO₂-eq** in 2007; by end-
-2024, coinciding with a record renewable generation share (**56.8%**), they
-had fallen to **27.0 million tonnes of CO₂-eq** — a reduction of **75.7%**
-from the peak. The emission factor dropped from around 290 gCO₂/kWh in
-2015 to approximately 80–100 gCO₂/kWh in 2024.
+The environmental success of the Iberian energy transition is unambiguous. Sector emissions peaked at approximately **110 MtCO₂-eq** in 2007; by end- 2024, coinciding with a record renewable generation share (**56.8%**), they had fallen to **27.0 million tonnes of CO₂-eq** — a reduction of **75.7%** from the peak. The emission factor dropped from around 290 gCO₂/kWh in 2015 to approximately 80–100 gCO₂/kWh in 2024.
 
-The operational counterpart is what this investigation examines: the
-substitution of thermal plants by inverter-connected renewable sources
-progressively withdraws the synchronous masses that provided inertia,
-dynamic <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>
-and voltage control. The accelerated transition has led the Iberian system
-to routinely operate under low-inertia, low-nodal-strength conditions —
-whose relationship with the voltage instability of 28 April is analysed in
-Chapter 4.
+The operational counterpart is what this investigation examines: the substitution of thermal plants by inverter-connected renewable sources progressively withdraws the synchronous masses that provided inertia, dynamic <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink> and voltage control. The accelerated transition has led the Iberian system to routinely operate under low-inertia, low-nodal-strength conditions — whose relationship with the voltage instability of 28 April is analysed in Chapter 4.
 
 ## Pre-incident operational state: the abundance paradox
 
-In the days preceding the blackout, the peninsular system operated under
-what technical literature has termed the **"abundance paradox"**. Unusually
-mild spring temperatures (~25 °C) and public holidays in several regions
-depressed the demand curve: at 12:30 CEST, minutes before the collapse,
-instantaneous demand stood at **25,184 MW** — **56%** of the system's
-historical peak demand.
+In the days preceding the blackout, the peninsular system operated under what technical literature has termed the **"abundance paradox"**. Unusually mild spring temperatures (~25 °C) and public holidays in several regions depressed the demand curve: at 12:30 CEST, minutes before the collapse, instantaneous demand stood at **25,184 MW** — **56%** of the system's historical peak demand.
 
-This valley-demand scenario coincided with exceptional renewable resource
-availability, with non-synchronous generation covering **82% of the
-instantaneous mix**: approximately **18,000 MW** of solar PV (**53%**) and
-**3,500 MW** of wind (**11%**). To balance the active power surplus, the
-system simultaneously relied on hydraulic pumping (~3,000 MW) and net
-exports to France, Portugal and Morocco. Conventional synchronous
-generation was pushed to historical lows: nuclear at **10%** (3.4 GW) and
-gas combined cycles at a bare **3%** (~1,600 MW).
+This valley-demand scenario coincided with exceptional renewable resource availability, with non-synchronous generation covering **82% of the instantaneous mix**: approximately **18,000 MW** of solar PV (**53%**) and **3,500 MW** of wind (**11%**). To balance the active power surplus, the system simultaneously relied on hydraulic pumping (~3,000 MW) and net exports to France, Portugal and Morocco. Conventional synchronous generation was pushed to historical lows: nuclear at **10%** (3.4 GW) and gas combined cycles at a bare **3%** (~1,600 MW).
 
-![Generation profile of the peninsular system on 28 April 2025](/figuras/ree_generation_mix_28april.png)
-*28 April generation profile: valley demand coincided with the solar PV
-peak, displacing synchronous generation to historical lows.
-Source: NREL / Red Eléctrica.*
+![Generation profile of the peninsular system on 28 April 2025](/figuras/ree_generation_mix_28april.png) _28 April generation profile: valley demand coincided with the solar PV peak, displacing synchronous generation to historical lows. Source: NREL / Red Eléctrica._
 
-This reduction in rotating masses translated into exceptionally low
-<GlossaryLink term="Inercia (H)">synchronous inertia</GlossaryLink> values:
-**1.3 s** in the Southern area and **1.84 s** in the Central area — both
-below the 2 s threshold recommended by
-<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>. Sustained operation
-under these conditions had already produced dynamic stress signals on
-**16, 22 and 24 April**, with voltage instability episodes on the
-transmission network.
+This reduction in rotating masses translated into exceptionally low <GlossaryLink term="Inercia (H)">synchronous inertia</GlossaryLink> values: **1.3 s** in the Southern area and **1.84 s** in the Central area — both below the 2 s threshold recommended by <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>. Sustained operation under these conditions had already produced dynamic stress signals on **16, 22 and 24 April**, with voltage instability episodes on the transmission network.
 
-![Voltage oscillations at Núñez de Balboa substation, 22 April 2025](/figuras/precursor_overvoltage_22april.png)
-*Voltage oscillations recorded at Núñez de Balboa (400 kV) during the
-precursor event of 22 April. Several plants that tripped on 28 April had
-already experienced identical trips during this prior event.
-Source: IIT-ICAI / Compass Lexecon.*
+![Voltage oscillations at Núñez de Balboa substation, 22 April 2025](/figuras/precursor_overvoltage_22april.png) _Voltage oscillations recorded at Núñez de Balboa (400 kV) during the precursor event of 22 April. Several plants that tripped on 28 April had already experienced identical trips during this prior event. Source: IIT-ICAI / Compass Lexecon._
 
-The most severe precursor occurred on **22 April at ~19:00 h**: an
-overvoltage spike exceeding **430 kV** triggered protection relays,
-disconnecting multiple PV and wind plants. The fact that several
-installations which tripped in the first seconds of 28 April had already
-experienced identical trips in this prior event is interpreted by the ICAI
-report as evidence that the system was operating with **structurally narrow
-dynamic voltage control margins**.
+The most severe precursor occurred on **22 April at ~19:00 h**: an overvoltage spike exceeding **430 kV** triggered protection relays, disconnecting multiple PV and wind plants. The fact that several installations which tripped in the first seconds of 28 April had already experienced identical trips in this prior event is interpreted by the ICAI report as evidence that the system was operating with **structurally narrow dynamic voltage control margins**.
 
 ## Interconnection capacity: the Iberian energy island
 
 ### The structural island condition
 
-The Iberian Peninsula operates as an **«energy island»** within the
-<GlossaryLink term="ENTSO-E">Continental European</GlossaryLink> synchronous
-area. Its exchange capacity with France historically sits between **3% and
-5%** of installed generation capacity — or **7.9%** relative to peak demand
-— well below the EU's binding **15% target for 2030**. This constraint
-conditions supply security in two ways: perturbations originating in the
-European inertia centre are amplified as they propagate to the Iberian
-periphery (**whip effect**), and in the event of a massive generation loss,
-the interconnection bottleneck physically limits the dynamic support
-importable from large central European alternators.
+The Iberian Peninsula operates as an **«energy island»** within the <GlossaryLink term="ENTSO-E">Continental European</GlossaryLink> synchronous area. Its exchange capacity with France historically sits between **3% and 5%** of installed generation capacity — or **7.9%** relative to peak demand — well below the EU's binding **15% target for 2030**. This constraint conditions supply security in two ways: perturbations originating in the European inertia centre are amplified as they propagate to the Iberian periphery (**whip effect**), and in the event of a massive generation loss, the interconnection bottleneck physically limits the dynamic support importable from large central European alternators.
 
 ### Commercial NTC versus physical power flows
 
-A critical distinction must be drawn between commercial limits and actual
-physical flows. Market exchanges are governed by the Net Transfer Capacity
-(NTC), agreed *ex ante* between
-<GlossaryLink term="REE">REE</GlossaryLink> and RTE. However, in fast
-transient conditions,
-<GlossaryLink term="Potencia activa">active</GlossaryLink> and
-<GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>
-flows obey Kirchhoff's laws regardless of market schedules. Forcing a
-physical flow beyond the angular stability limit — typically a 90° angular
-difference between terminals — does not increase transferred power but
-instead causes pole slip and consequent loss of
-<GlossaryLink term="Sincronismo">synchronism</GlossaryLink>: the mechanism
-that materialised on 28 April at **12:33:21 CEST**.
+A critical distinction must be drawn between commercial limits and actual physical flows. Market exchanges are governed by the Net Transfer Capacity (NTC), agreed _ex ante_ between <GlossaryLink term="REE">REE</GlossaryLink> and RTE. However, in fast transient conditions, <GlossaryLink term="Potencia activa">active</GlossaryLink> and <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink> flows obey Kirchhoff's laws regardless of market schedules. Forcing a physical flow beyond the angular stability limit — typically a 90° angular difference between terminals — does not increase transferred power but instead causes pole slip and consequent loss of <GlossaryLink term="Sincronismo">synchronism</GlossaryLink>: the mechanism that materialised on 28 April at **12:33:21 CEST**.
 
-![Deviation between commercial NTC schedule and physical flow at the ES-FR border](/figuras/entsoe_flow_deviation.png)
-*Deviation between the commercial exchange programme (NTC) and the actual
-physical power flow at the Spain–France border during the morning of 28 April.
-Source: ENTSO-E Factual Report.*
+![Deviation between commercial NTC schedule and physical flow at the ES-FR border](/figuras/entsoe_flow_deviation.png) _Deviation between the commercial exchange programme (NTC) and the actual physical power flow at the Spain–France border during the morning of 28 April. Source: ENTSO-E Factual Report._
 
 ### The HVDC INELFE-1 link and the critical control mode decision
 
-The French interconnection combines AC overhead lines with the underground
-<GlossaryLink term="HVDC">HVDC VSC</GlossaryLink> INELFE-1 link
-(Santa Llogaia–Baixas, **2,000 MW** nominal). This link supports three
-operationally relevant modes: **PMODE1** (constant power, no dynamic grid
-response), **PMODE2** (power modulation by frequency deviation) and
-**PMODE3** (AC emulation, responds to angular difference between terminals).
+The French interconnection combines AC overhead lines with the underground <GlossaryLink term="HVDC">HVDC VSC</GlossaryLink> INELFE-1 link (Santa Llogaia–Baixas, **2,000 MW** nominal). This link supports three operationally relevant modes: **PMODE1** (constant power, no dynamic grid response), **PMODE2** (power modulation by frequency deviation) and **PMODE3** (AC emulation, responds to angular difference between terminals).
 
-During the pre-incident period, INELFE-1 was operating in **PMODE3**.
-However, at **12:08 CEST**, to damp the 0.6 Hz oscillations detected in the
-system, the mode was switched to **PMODE1**, fixing an export of **1,000 MW**
-towards France. The consequences were critical: at the moment of collapse,
-AC transpyrenean lines attempted to import up to **4,609 MW** of emergency
-power from France, while the HVDC link — locked in PMODE1 — continued
-extracting 1,000 MW from the Iberian system, lacking an active frequency
-control loop that could reverse the flow direction. Effective support from
-the French system was thereby reduced relative to the theoretical maximum
-available. At **12:33:21 CEST**, the AC lines tripped on loss of synchronism,
-fully isolating the peninsula from the continental synchronous system.
+During the pre-incident period, INELFE-1 was operating in **PMODE3**. However, at **12:08 CEST**, to damp the 0.6 Hz oscillations detected in the system, the mode was switched to **PMODE1**, fixing an export of **1,000 MW** towards France. The consequences were critical: at the moment of collapse, AC transpyrenean lines attempted to import up to **4,609 MW** of emergency power from France, while the HVDC link — locked in PMODE1 — continued extracting 1,000 MW from the Iberian system, lacking an active frequency control loop that could reverse the flow direction. Effective support from the French system was thereby reduced relative to the theoretical maximum available. At **12:33:21 CEST**, the AC lines tripped on loss of synchronism, fully isolating the peninsula from the continental synchronous system.
 
-![Control mode transition in the HVDC INELFE-1 link](/figuras/hvdc_control_transition.png)
-*PMODE3 → PMODE1 transition at 12:08 CEST in the HVDC INELFE-1 link.
-The decision limited the link's dynamic response capability during the
-subsequent cascade. Source: IIT-ICAI / AELEC.*
+![Control mode transition in the HVDC INELFE-1 link](/figuras/hvdc_control_transition.png) _PMODE3 → PMODE1 transition at 12:08 CEST in the HVDC INELFE-1 link. The decision limited the link's dynamic response capability during the subsequent cascade. Source: IIT-ICAI / AELEC._
 
 ### Southern border: Morocco and black start capability
 
-The Moroccan connection (submarine AC cables, **900 MW** technical capacity)
-was supplying **314 MW** of imports moments before the collapse. At
-**12:33:20 CEST**, the Moroccan operator's underfrequency relays tripped
-at the **49.5 Hz** threshold, disconnecting the link to protect its network
-from Iberian instability propagation. While protective for Morocco, this
-disconnection had important implications for restoration: voltage injection
-from the south provided the reference needed hours later to initiate
-<GlossaryLink term="Black Start">*Black Start*</GlossaryLink> procedures
-for Andalusian combined-cycle plants.
+The Moroccan connection (submarine AC cables, **900 MW** technical capacity) was supplying **314 MW** of imports moments before the collapse. At **12:33:20 CEST**, the Moroccan operator's underfrequency relays tripped at the **49.5 Hz** threshold, disconnecting the link to protect its network from Iberian instability propagation. While protective for Morocco, this disconnection had important implications for restoration: voltage injection from the south provided the reference needed hours later to initiate <GlossaryLink term="Black Start">_Black Start_</GlossaryLink> procedures for Andalusian combined-cycle plants.
 
 ## The European awareness system (EAS) and the «false normality»
 
 ### Operational state classification (SO GL)
 
-The <GlossaryLink term="SO GL (System Operation Guidelines)">*System
-Operation Guidelines*</GlossaryLink> establish five progressive severity
-levels: **Normal** (compliance with the
-<GlossaryLink term="Criterio N-1">*N*−1 Criterion</GlossaryLink>),
-**Alert** (degraded security margins requiring preventive action),
-**Emergency** (security limit violations or
-<GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>
-activation), **Blackout** and **Restoration**.
+The <GlossaryLink term="SO GL (System Operation Guidelines)">_System Operation Guidelines_</GlossaryLink> establish five progressive severity levels: **Normal** (compliance with the <GlossaryLink term="Criterio N-1">*N*−1 Criterion</GlossaryLink>), **Alert** (degraded security margins requiring preventive action), **Emergency** (security limit violations or <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink> activation), **Blackout** and **Restoration**.
 
 ### The abrupt Normal → Blackout transition
 
-Analysis of
-<GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink>
-records reveals a critical dissonance between the actual dynamics of the
-Iberian network and its representation on the European platform. During the
-morning of 28 April, the system experienced at least two significant
-oscillations: a forced oscillation at **0.6 Hz** at **12:03 CEST** and an
-inter-area mode at **0.2 Hz** at **12:19 CEST**. Despite this, neither REE
-nor REN declared an Alert state. At **12:32:00 CEST**, the official status
-remained «Normal». Records confirm that the system transitioned abruptly
-from **Normal** to **Blackout** (criterion OB3) at **12:33:29 CEST**,
-without passing through any intermediate phase.
+Analysis of <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> records reveals a critical dissonance between the actual dynamics of the Iberian network and its representation on the European platform. During the morning of 28 April, the system experienced at least two significant oscillations: a forced oscillation at **0.6 Hz** at **12:03 CEST** and an inter-area mode at **0.2 Hz** at **12:19 CEST**. Despite this, neither REE nor REN declared an Alert state. At **12:32:00 CEST**, the official status remained «Normal». Records confirm that the system transitioned abruptly from **Normal** to **Blackout** (criterion OB3) at **12:33:29 CEST**, without passing through any intermediate phase.
 
-This failure to escalate generated limited visibility for neighbouring
-operators. The French operator (RTE) received no signals of dynamic
-vulnerability south of the Pyrenees; with the EAS remaining at «Normal»,
-no cross-border cooperation protocols were activated and the French network
-was not prepared for the transient that reached the border at 12:33:21
-CEST. The episode demonstrates that the EAS acted not as an early warning
-tool but as a **post-mortem notifier** of the collapse — a structural
-limitation of the European monitoring system's ability to capture fast
-voltage dynamics in low-inertia networks, and one of the central regulatory
-lessons of the incident.
+This failure to escalate generated limited visibility for neighbouring operators. The French operator (RTE) received no signals of dynamic vulnerability south of the Pyrenees; with the EAS remaining at «Normal», no cross-border cooperation protocols were activated and the French network was not prepared for the transient that reached the border at 12:33:21 CEST. The episode demonstrates that the EAS acted not as an early warning tool but as a **post-mortem notifier** of the collapse — a structural limitation of the European monitoring system's ability to capture fast voltage dynamics in low-inertia networks, and one of the central regulatory lessons of the incident.
 
-![Frequency and voltage evolution at Carmona substation (400 kV)](/figuras/frequency_voltage_carmona.png)
-*Frequency and voltage in the critical seconds of the incident. Carmona
-substation (400 kV). The abrupt Normal → Blackout transition is captured
-in the simultaneous collapse of both variables. Source: ENTSO-E / REE.*
-
+![Frequency and voltage evolution at Carmona substation (400 kV)](/figuras/frequency_voltage_carmona.png) _Frequency and voltage in the critical seconds of the incident. Carmona substation (400 kV). The abrupt Normal → Blackout transition is captured in the simultaneous collapse of both variables. Source: ENTSO-E / REE._

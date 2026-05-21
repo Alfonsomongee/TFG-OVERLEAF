@@ -2,32 +2,17 @@
 sidebar_position: 8
 ---
 
-This thesis was developed under an atypical methodological context: the
-simultaneous occurrence, during 2024–2026, of a systemic crisis in the
-Iberian power system and an accelerated transformation in natural language
-processing tools. The availability of Large Language Models (LLMs) capable
-of processing hundreds of pages of technical documentation within minutes
-coincided with the publication, within a single year, of four primary expert
-reports and a dozen academic analyses of the same event. This chapter
-transparently documents how these tools were integrated, what specific tasks
-they performed, what systematic errors were detected and corrected, and what
-epistemological reflection this experience yields for engineering research
-practice.
+# Uso de Inteligencia Artificial
+
+This thesis was developed under an atypical methodological context: the simultaneous occurrence, during 2024–2026, of a systemic crisis in the Iberian power system and an accelerated transformation in natural language processing tools. The availability of Large Language Models (LLMs) capable of processing hundreds of pages of technical documentation within minutes coincided with the publication, within a single year, of four primary expert reports and a dozen academic analyses of the same event. This chapter transparently documents how these tools were integrated, what specific tasks they performed, what systematic errors were detected and corrected, and what epistemological reflection this experience yields for engineering research practice.
 
 ## Methodological application: five operational functions
 
-The initial documentary body encompasses technical dossiers, ENTSO-E
-regulations, official reports exceeding 200 pages, IIT-ICAI PSS/E
-simulations, CNMC proceedings, NREL oscillographic records and a substantial
-volume of specialist press. Linear reading without computational mediation
-was incompatible with the TFG's academic timeline. Generative model
-integration was structured around five clearly delineated operational
-functions, **none of which involves autonomous causal inference about system
-physics**:
+The initial documentary body encompasses technical dossiers, ENTSO-E regulations, official reports exceeding 200 pages, IIT-ICAI PSS/E simulations, CNMC proceedings, NREL oscillographic records and a substantial volume of specialist press. Linear reading without computational mediation was incompatible with the TFG's academic timeline. Generative model integration was structured around five clearly delineated operational functions, **none of which involves autonomous causal inference about system physics**:
 
 | Function | Description |
-|---|---|
-| **Chronological reconciliation** | The four reports describe the same physical events of 28 April with different temporal granularity and occasional discrepancies of up to 200 ms between versions. Automated assistance enabled construction of a unified master *timestamp* table that served as scaffolding for Chapters 3 and 4. |
+| --- | --- |
+| **Chronological reconciliation** | The four reports describe the same physical events of 28 April with different temporal granularity and occasional discrepancies of up to 200 ms between versions. Automated assistance enabled construction of a unified master _timestamp_ table that served as scaffolding for Chapters 3 and 4. |
 | **Systematic divergence mapping** | Each report frames the incident within a distinct analytical perimeter. Assisted extraction of homologous passages allowed the identification of technically incompatible claims between sources — the basis of Chapter 5 and the comparative synthesis. |
 | **Quantitative tabulation** | Consolidation of magnitudes distributed across reports: zonal inertia values, instantaneous renewable penetration, cross-border exchanges, UFLS figures, meshing manoeuvre capacitive contributions. |
 | **Editorial support** | Suggestion of lexical variants, synonym resolution, terminology control and reformulation of dense academic prose passages. This support **did not alter the argumentative structure or content decisions**, which remain the author's exclusive responsibility. |
@@ -35,137 +20,57 @@ physics**:
 
 The workflow is structured in three sequential stages with a correction loop:
 
-[Primary sources] → [LLM assistance] → [Physical validation filter] → [TFG body]
-↑________________________|
-(prompt reformulation on detected hallucination)
+[Primary sources] → [LLM assistance] → [Physical validation filter] → [TFG body] ↑**********\_\_\_\_**********| (prompt reformulation on detected hallucination)
 
-The methodologically decisive element is not the LLM assistance itself, but
-the **physical validation filter** interposed between any model output and its
-incorporation into the text: Kirchhoff's laws, Q-V curves, rotor swing
-equation and primary source cross-checking. When the filter detects an
-inference incompatible with system mechanics, the prompt is reformulated with
-additional semantic constraints and the cycle restarts.
+The methodologically decisive element is not the LLM assistance itself, but the **physical validation filter** interposed between any model output and its incorporation into the text: Kirchhoff's laws, Q-V curves, rotor swing equation and primary source cross-checking. When the filter detects an inference incompatible with system mechanics, the prompt is reformulated with additional semantic constraints and the cycle restarts.
 
 ## Validation and verification: four cases of erroneous inference
 
-The use of generative models in a domain as causally dense as power system
-dynamics reveals, systematically, a behaviour that electrical systems do not
-tolerate: **inference by statistical analogy**. LLMs tend to apply *typical*
-causal patterns — the most frequent in their training corpus literature — to
-cases whose physical structure is *atypical*. The 28 April event is, due to
-its dual nature (voltage stability rather than frequency balance), atypical
-relative to the majority of blackouts documented in 20th-century technical
-literature, making the observation of where the AI «defaulted» away from the
-actual phenomenon especially productive.
+The use of generative models in a domain as causally dense as power system dynamics reveals, systematically, a behaviour that electrical systems do not tolerate: **inference by statistical analogy**. LLMs tend to apply _typical_ causal patterns — the most frequent in their training corpus literature — to cases whose physical structure is _atypical_. The 28 April event is, due to its dual nature (voltage stability rather than frequency balance), atypical relative to the majority of blackouts documented in 20th-century technical literature, making the observation of where the AI «defaulted» away from the actual phenomenon especially productive.
 
 | Phenomenon | LLM default erroneous inference | Physical correction applied | Corrective prompt strategy |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **UFLS paradox** | Underfrequency load shedding «saved» areas of the system by restoring active power balance. | UFLS is voltage-blind: by disconnecting load it removed inductive reactive power sinks during a capacitive transient, aggravating the overvoltage. | Explicit restriction: reason exclusively in the Q-V plane, ignoring the frequency–active power logic habitual in classic blackouts. |
-| **Tap-Lag** | OLTCs responded correctly to the transient, proportionally raising or lowering secondary voltage. | The intentional OLTC time delays — designed to prevent *hunting* — left them out of phase with a millisecond-scale transient, multiplying voltage towards the 220 kV and 132 kV networks. | Injection of the actual OLTC electromechanical time constants and prohibition of assuming quasi-instantaneous tap changer response. |
+| **Tap-Lag** | OLTCs responded correctly to the transient, proportionally raising or lowering secondary voltage. | The intentional OLTC time delays — designed to prevent _hunting_ — left them out of phase with a millisecond-scale transient, multiplying voltage towards the 220 kV and 132 kV networks. | Injection of the actual OLTC electromechanical time constants and prohibition of assuming quasi-instantaneous tap changer response. |
 | **Meshing capacitive injection** | The meshing manoeuvre reduced system impedance and therefore increased voltage stability. | Under low-load conditions, meshing activated the shunt admittance of the 400 kV lines (Ferranti Effect), injecting the 1,050 MVAr capacitive power that precipitated the overvoltage. | Restriction to «unloaded line» regime and requirement to calculate the reactive power balance with the capacitive admittance $Y_t$ in the line π model. |
-| **0.6 Hz oscillation** | Production of an *integrated* response — the «most probable» reading averaged across sources. | The mode origin (forced oscillation from a specific plant per ICAI; natural system mode aggravated by operational state per REE) is precisely the discrepancy the TFG must preserve, not editorially resolve. | Veto on unilateral choice between the two hypotheses and obligation to produce dual versions with explicit source attribution. |
+| **0.6 Hz oscillation** | Production of an _integrated_ response — the «most probable» reading averaged across sources. | The mode origin (forced oscillation from a specific plant per ICAI; natural system mode aggravated by operational state per REE) is precisely the discrepancy the TFG must preserve, not editorially resolve. | Veto on unilateral choice between the two hypotheses and obligation to produce dual versions with explicit source attribution. |
 
 ### The UFLS paradox case
 
-The most illustrative case of the error pattern: when queried about load
-shedding's role in the incident, models systematically produced an
-interpretation inherited from classic blackouts, where UFLS constitutes the
-last line of defence and typically preserves portions of the grid by
-recovering the frequency–active power balance. This inference is physically
-correct for the universe of events on which the model was trained, but invalid
-for 28 April: in a collapse dominated by the Q-V plane, UFLS activation
-simultaneously removed the inductive reactive power sinks provided by the
-disconnected loads, **aggravating the overvoltage instead of mitigating it**.
+The most illustrative case of the error pattern: when queried about load shedding's role in the incident, models systematically produced an interpretation inherited from classic blackouts, where UFLS constitutes the last line of defence and typically preserves portions of the grid by recovering the frequency–active power balance. This inference is physically correct for the universe of events on which the model was trained, but invalid for 28 April: in a collapse dominated by the Q-V plane, UFLS activation simultaneously removed the inductive reactive power sinks provided by the disconnected loads, **aggravating the overvoltage instead of mitigating it**.
 
-Correction required formulating the prompt with an explicit restriction on the
-analysis plane and manually verifying that the resulting reasoning was
-consistent with the NREL oscillography in the 12:33:19–12:33:27 CEST window.
+Correction required formulating the prompt with an explicit restriction on the analysis plane and manually verifying that the resulting reasoning was consistent with the NREL oscillography in the 12:33:19–12:33:27 CEST window.
 
 ### The Tap-Lag case
 
-The qualitative description models produce of OLTCs is correct in steady
-state, but by default assumes a proportional, instantaneous response that the
-actual electromechanical assembly does not possess. The intentional delay
-introduced to prevent *hunting* translated on 28 April into a transformation
-ratio out of phase with the electrical transient, multiplying the overvoltage
-towards the 220 kV and 132 kV networks — a phenomenon invisible to the
-operator's SCADA, anchored to 400 kV primary measurements. The entire Tap-Lag
-causal chain required pre-loading the model with the OLTC time constants and
-prohibiting it from assuming quasi-instantaneous response.
+The qualitative description models produce of OLTCs is correct in steady state, but by default assumes a proportional, instantaneous response that the actual electromechanical assembly does not possess. The intentional delay introduced to prevent _hunting_ translated on 28 April into a transformation ratio out of phase with the electrical transient, multiplying the overvoltage towards the 220 kV and 132 kV networks — a phenomenon invisible to the operator's SCADA, anchored to 400 kV primary measurements. The entire Tap-Lag causal chain required pre-loading the model with the OLTC time constants and prohibiting it from assuming quasi-instantaneous response.
 
 ### The meshing capacitive injection case
 
-The estimated injection of 1,050 MVAr capacitive had to correspond to the
-effect of the shunt admittance ($Y_t$) of the 400 kV lines operating in
-no-load conditions (Ferranti Effect). Validation consisted of reproducing the
-reactive power balance on the line π model, cross-checking the order of
-magnitude against oscillography and the IIT-ICAI report's independent
-diagnosis.
+The estimated injection of 1,050 MVAr capacitive had to correspond to the effect of the shunt admittance ($Y_t$) of the 400 kV lines operating in no-load conditions (Ferranti Effect). Validation consisted of reproducing the reactive power balance on the line π model, cross-checking the order of magnitude against oscillography and the IIT-ICAI report's independent diagnosis.
 
 ### The 0.6 Hz oscillation case
 
-This case illustrates a specific limitation of AI use in forensic contexts
-with institutional divergence. Models tend to produce an integrated response —
-the «most probable» reading averaged across sources — when forensic rigour
-requires preserving the divergence. The mode origin is precisely the datum
-the TFG must present as an unresolved discrepancy, not as an editorial
-consensus.
+This case illustrates a specific limitation of AI use in forensic contexts with institutional divergence. Models tend to produce an integrated response — the «most probable» reading averaged across sources — when forensic rigour requires preserving the divergence. The mode origin is precisely the datum the TFG must present as an unresolved discrepancy, not as an editorial consensus.
 
-The general observation these four cases support: **the utility of automated
-assistance is maximal in *processing* tasks** — extraction, synthesis,
-structuring, tabulation, assisted writing — **and minimal, to the point of
-being counterproductive, in *causal inference* tasks** about physical
-phenomena with low representation in training corpora.
+The general observation these four cases support: **the utility of automated assistance is maximal in _processing_ tasks** — extraction, synthesis, structuring, tabulation, assisted writing — **and minimal, to the point of being counterproductive, in _causal inference_ tasks** about physical phenomena with low representation in training corpora.
 
 ## Critical reflection: AI in engineering research
 
-The documented experience leads to a structural conclusion, neither
-triumphalist nor catastrophist: generative models are powerful *accelerators*
-of the researcher's cognitive processes, but operate on a probabilistic logic
-that does not coincide with the deterministic logic governing the physics of
-material systems.
+The documented experience leads to a structural conclusion, neither triumphalist nor catastrophist: generative models are powerful _accelerators_ of the researcher's cognitive processes, but operate on a probabilistic logic that does not coincide with the deterministic logic governing the physics of material systems.
 
 ### Methodological implication
 
-AI use **does not exempt the researcher from mastering the technical content**
-of their subject; on the contrary, it demands it with greater severity. Only
-a researcher with sufficient technical competence to identify a physically
-impossible inference can safely employ a model capable of producing it with
-rhetorical fluency. The asymmetry between the linguistic plausibility of the
-output and its material correctness constitutes the primary risk associated
-with using these tools in demanding technical domains, and can only be
-neutralised through content mastery that the tool cannot provide.
+AI use **does not exempt the researcher from mastering the technical content** of their subject; on the contrary, it demands it with greater severity. Only a researcher with sufficient technical competence to identify a physically impossible inference can safely employ a model capable of producing it with rhetorical fluency. The asymmetry between the linguistic plausibility of the output and its material correctness constitutes the primary risk associated with using these tools in demanding technical domains, and can only be neutralised through content mastery that the tool cannot provide.
 
 ### Ethical-academic implication
 
-Automated assistance was employed in this work as a processing tool, not as
-a substitute for reasoning. Every content decision — problem framing, source
-hierarchy, causal thesis formulation on the 28 April collapse, comparative
-assessment of institutional narratives, final conclusions — is the author's
-exclusive responsibility. **AI does not sign theses or sit before examination
-boards**: the engineer signs their name to the material causality of the
-facts presented, and that signature is non-transferable.
+Automated assistance was employed in this work as a processing tool, not as a substitute for reasoning. Every content decision — problem framing, source hierarchy, causal thesis formulation on the 28 April collapse, comparative assessment of institutional narratives, final conclusions — is the author's exclusive responsibility. **AI does not sign theses or sit before examination boards**: the engineer signs their name to the material causality of the facts presented, and that signature is non-transferable.
 
 ### Prospective disciplinary implication
 
-The power systems of the coming decade — dominated by power electronics, with
-dynamics relevant at the sub-cyclic scale and with voltage-reactive
-interactions that conventional operators cannot capture in real time — will
-require decision support tools combining the processing speed of algorithmic
-models with the physical robustness of PSS/E-type simulators. The integration
-is non-trivial: simulators solve equations; LLMs approximate probability
-distributions.
+The power systems of the coming decade — dominated by power electronics, with dynamics relevant at the sub-cyclic scale and with voltage-reactive interactions that conventional operators cannot capture in real time — will require decision support tools combining the processing speed of algorithmic models with the physical robustness of PSS/E-type simulators. The integration is non-trivial: simulators solve equations; LLMs approximate probability distributions.
 
-The hybrid architecture **— LLMs as semantic interface and synthesis engine,
-physical simulators as causal inference engine —** is plausibly the direction
-towards which power systems engineering tools will evolve. Its development
-will require exactly the same epistemological vigilance that structured this
-TFG's workflow: always maintaining clarity about what each tool does and what
-it is explicitly asked not to do.
+The hybrid architecture **— LLMs as semantic interface and synthesis engine, physical simulators as causal inference engine —** is plausibly the direction towards which power systems engineering tools will evolve. Its development will require exactly the same epistemological vigilance that structured this TFG's workflow: always maintaining clarity about what each tool does and what it is explicitly asked not to do.
 
-The detailed record of the restrictive prompt flows employed, together with
-representative examples of the corrections applied, is documented in the AI
-Methodology Annex, following the emerging best practice recommendations for
-transparent integration of generative models in undergraduate and postgraduate
-research.
-
+The detailed record of the restrictive prompt flows employed, together with representative examples of the corrections applied, is documented in the AI Methodology Annex, following the emerging best practice recommendations for transparent integration of generative models in undergraduate and postgraduate research.
