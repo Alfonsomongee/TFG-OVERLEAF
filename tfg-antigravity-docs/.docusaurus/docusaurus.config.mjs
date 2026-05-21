@@ -65,20 +65,6 @@ export default {
       }
     ]
   ],
-  "themes": [
-    [
-      "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\node_modules\\@easyops-cn\\docusaurus-search-local\\dist\\server\\server\\index.js",
-      {
-        "hashed": true,
-        "language": [
-          "es",
-          "en"
-        ],
-        "docsRouteBasePath": "/",
-        "indexDocs": true
-      }
-    ]
-  ],
   "clientModules": [
     "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\src\\js\\zen-mode.js"
   ],
@@ -402,6 +388,7 @@ export default {
   ],
   "customFields": {},
   "plugins": [],
+  "themes": [],
   "scripts": [],
   "headTags": [],
   "titleDelimiter": "|",

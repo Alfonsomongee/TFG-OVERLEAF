@@ -3,6 +3,8 @@ sidebar_position: 3
 ---
 
 import GlossaryLink from "@site/src/components/GlossaryLink";
+import SldDiagram from "@site/src/components/SldDiagram";
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 # Análisis del Incidente
 
@@ -49,7 +51,11 @@ Esta incapacidad mecánica creó un **«espejismo» en la sala de control de REE
 
 Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como **«disparos inadecuados»** argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas **actuaron correctamente** ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
 
-## Fase 3: el camino hacia el cero de tensión (12:33:18–12:33:29 CEST)
+## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST)
+
+<BrowserOnly>
+  {() => <SldDiagram />}
+</BrowserOnly>
 
 En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo vicioso dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR para autoprotegerse, la red perdía instantáneamente su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de **443 kV** en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
 
