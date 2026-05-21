@@ -11,37 +11,24 @@ import {
   ReferenceArea
 } from 'recharts';
 import styles from './FrequencyChart.module.css';
-
-const data = [
-  { time: '12:33:17', freq: 49.98, notes: 'Frecuencia nominal' },
-  { time: '12:33:18', freq: 49.85, notes: 'Inicio Cascada' },
-  { time: '12:33:19', freq: 49.70, notes: 'Desconexión IBR' },
-  { time: '12:33:20', freq: 49.48, notes: 'Caída < 49.5 Hz' },
-  { time: '12:33:21', freq: 49.15, notes: 'Pérdida Sincronismo (Francia)' },
-  { time: '12:33:22', freq: 48.95, notes: '' },
-  { time: '12:33:23', freq: 48.75, notes: '' },
-  { time: '12:33:24', freq: 48.50, notes: 'Pérdida > 15 GW' },
-  { time: '12:33:25', freq: 48.35, notes: '' },
-  { time: '12:33:26', freq: 48.20, notes: '' },
-  { time: '12:33:27', freq: 48.05, notes: '' },
-  { time: '12:33:28', freq: 47.90, notes: 'Colapso Inminente' },
-  { time: '12:33:29', freq: 47.70, notes: 'Cero de Tensión Definitivo' },
-];
+import { timelineData } from '../data/forensicData';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const dataPoint = payload[0].payload;
-    const isCritical = dataPoint.freq < 49.5;
+    const isCritical = dataPoint.frecuencia < 49.5;
     
     return (
-      <div className={`${styles.tooltipContainer} ${isCritical ? styles.tooltipCritical : ''}`}>
-        <p className={styles.tooltipTime}>{label} CEST</p>
+      <div className={`${styles.tooltipContainer} ${isCritical ? styles.tooltipCritical : ''}`} style={{ maxWidth: '300px' }}>
+        <p className={styles.tooltipTime}>T={dataPoint.tiempoS}s ({dataPoint.timestamp} CEST)</p>
         <p className={styles.tooltipFreq}>
-          Frecuencia: <strong>{dataPoint.freq} Hz</strong>
+          Frecuencia: <strong>{dataPoint.frecuencia.toFixed(3)} Hz</strong>
         </p>
-        {dataPoint.notes && (
+        <p style={{ margin: '0', fontSize: '0.9rem' }}>RoCoF: {dataPoint.rocof !== null ? dataPoint.rocof.toFixed(3) : 'N/A'} Hz/s</p>
+        <p style={{ margin: '0', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Pérdida Acum.: {dataPoint.acumuladoMW} MW</p>
+        {dataPoint.evento && (
           <div className={styles.tooltipNotes}>
-            <span className={styles.badge}>{dataPoint.notes}</span>
+            <span className={styles.badge} style={{ whiteSpace: 'normal', display: 'block', textAlign: 'left' }}>{dataPoint.evento}</span>
           </div>
         )}
       </div>
@@ -54,25 +41,26 @@ export default function FrequencyChart() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h3>Desplome de Frecuencia Continental (Fase 3)</h3>
-        <p>Evolución de la frecuencia y actuación del esquema UFLS entre las 12:33:17 y 12:33:29.</p>
+        <h3>Colapso de Frecuencia Continental (12:32:57 - 12:33:24)</h3>
+        <p>Evolución de la frecuencia, RoCoF y pérdida de generación en cascada.</p>
       </div>
       
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={timelineData}
             margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} vertical={false} />
             <XAxis 
-              dataKey="time" 
+              dataKey="tiempoS" 
               stroke="var(--ifm-color-emphasis-600)" 
               tick={{ fontSize: 12, fill: 'var(--ifm-color-emphasis-700)' }}
               tickMargin={10}
+              label={{ value: 'Tiempo (segundos)', position: 'insideBottom', offset: -10 }}
             />
             <YAxis 
-              domain={[47.5, 50.1]} 
+              domain={[46, 50.1]} 
               stroke="var(--ifm-color-emphasis-600)"
               tick={{ fontSize: 12, fill: 'var(--ifm-color-emphasis-700)' }}
               unit=" Hz"
@@ -84,18 +72,24 @@ export default function FrequencyChart() {
             <ReferenceArea y1={49.8} y2={50.1} fill="#10b981" fillOpacity={0.05} />
             
             {/* Zona Peligro UFLS */}
-            <ReferenceArea y1={47.5} y2={49.5} fill="#ef4444" fillOpacity={0.05} />
+            <ReferenceArea y1={46} y2={49.5} fill="#ef4444" fillOpacity={0.05} />
 
             <ReferenceLine 
               y={49.5} 
               stroke="#ef4444" 
               strokeDasharray="4 4" 
-              label={{ position: 'insideTopLeft', value: 'Umbral UFLS (49.5 Hz)', fill: '#ef4444', fontSize: 12, fontWeight: 700 }} 
+              label={{ position: 'insideTopRight', value: 'UFLS (49.5 Hz)', fill: '#ef4444', fontSize: 12, fontWeight: 700 }} 
+            />
+            <ReferenceLine 
+              y={48.46} 
+              stroke="#ef4444" 
+              strokeDasharray="4 4" 
+              label={{ position: 'insideBottomRight', value: 'Aislamiento FR', fill: '#ef4444', fontSize: 12, fontWeight: 700 }} 
             />
             
             <Line 
               type="monotone" 
-              dataKey="freq" 
+              dataKey="frecuencia" 
               stroke="var(--ifm-color-primary)" 
               strokeWidth={4}
               dot={{ r: 4, strokeWidth: 2, fill: 'var(--ifm-background-surface-color)' }}
