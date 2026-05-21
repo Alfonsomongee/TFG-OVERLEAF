@@ -102,6 +102,11 @@ const config = {
             position: 'right',
           },
           {
+            href: 'pathname:///tfg_antigravity(1).pdf',
+            label: 'Descargar PDF',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/Alfonsomongee/TFG-OVERLEAF',
             label: 'GitHub',
             position: 'right',
@@ -144,6 +149,10 @@ const config = {
           {
             title: 'Recursos',
             items: [
+              {
+                label: 'Descargar PDF del TFG',
+                href: 'pathname:///tfg_antigravity(1).pdf',
+              },
               {
                 label: 'GitHub',
                 href: 'https://github.com/Alfonsomongee/TFG-OVERLEAF',
