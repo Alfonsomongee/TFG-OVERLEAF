@@ -33,9 +33,6 @@ export default function GlossaryLink({ term, children }) {
       className={styles.glossaryLink}
       title={`Clic para ver definición de: ${term}`}
       onClick={handleClick}
-    >
-      {children || term}
-      <span className={styles.superscript}>?</span>
-    </a>
+    >{children || term}</a>
   );
 }
