@@ -19,6 +19,7 @@ const sidebars = {
         'resiliencia-futuro',
         'uso-ia',
         'conclusiones',
+        'galeria-imagenes',
       ],
     },
     {
