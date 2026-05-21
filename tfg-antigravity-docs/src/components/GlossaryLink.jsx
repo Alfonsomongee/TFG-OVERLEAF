@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './GlossaryLink.module.css';
 import { slugify } from '../data/glossary';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 /**
  * GlossaryLink — enlaza un término técnico al glosario con scroll exacto.
@@ -11,6 +12,9 @@ import { slugify } from '../data/glossary';
  */
 export default function GlossaryLink({ term, children }) {
   const glossaryId = slugify(term);
+
+  const baseUrl = useBaseUrl('/glosario');
+  const targetUrl = `${baseUrl}#${glossaryId}`;
 
   // Usamos <a> nativo en lugar del Link de Docusaurus para garantizar
   // que el hash navigation funcione correctamente en SPA con scroll al ancla.
@@ -23,15 +27,15 @@ export default function GlossaryLink({ term, children }) {
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       // Estamos en otra página: navegar al glosario con el hash
-      window.location.href = `/glosario#${glossaryId}`;
+      window.location.href = targetUrl;
     }
   };
 
   return (
     <a
-      href={`/glosario#${glossaryId}`}
+      href={targetUrl}
       className={styles.glossaryLink}
-      title={`Clic para ver definición de: ${term}`}
+      title={`Click to view definition of: ${term}`}
       onClick={handleClick}
     >{children || term}</a>
   );

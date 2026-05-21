@@ -1,9 +1,24 @@
 import React, { useState, useMemo } from 'react';
 import styles from './GlosarioTecnico.module.css';
 
-import { GLOSSARY_TERMS } from '../data/glossary';
+import { GLOSSARY_TERMS as esTerms } from '../data/glossary';
+import { GLOSSARY_TERMS as enTerms } from '../data/glossary_en';
 
-export default function GlosarioTecnico() {
+export default function GlosarioTecnico({ lang = 'es' }) {
+  const GLOSSARY_TERMS = lang === 'en' ? enTerms : esTerms;
+  
+  const strings = {
+    searchPlaceholder: lang === 'en' ? "Search term or definition..." : "Buscar término o definición...",
+    all: lang === 'en' ? "All" : "Todas",
+    showing: lang === 'en' ? "Showing" : "Mostrando",
+    of: lang === 'en' ? "of" : "de",
+    terms: lang === 'en' ? "terms" : "términos",
+    noResults: lang === 'en' ? "No terms found matching your search." : "No se encontraron términos que coincidan con tu búsqueda.",
+    reset: lang === 'en' ? "Reset search" : "Reiniciar búsqueda",
+    footer: lang === 'en' 
+      ? "Last updated: May 2026 — Alfonso Monge García, ETSI Universidad de Sevilla" 
+      : "Última actualización: mayo 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLetter, setSelectedLetter] = useState(null);
 
@@ -46,7 +61,7 @@ export default function GlosarioTecnico() {
       <div className={styles.searchSection}>
         <input
           type="text"
-          placeholder="Buscar término o definición..."
+          placeholder={strings.searchPlaceholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
@@ -71,7 +86,7 @@ export default function GlosarioTecnico() {
           }`}
           onClick={() => setSelectedLetter(null)}
         >
-          Todas
+          {strings.all}
         </button>
         {letters.map((letter) => (
           <button
@@ -88,7 +103,7 @@ export default function GlosarioTecnico() {
 
       {/* Results Count */}
       <div className={styles.resultsInfo}>
-        Mostrando {filteredTerms.length} de {GLOSSARY_TERMS.length} términos
+        {strings.showing} {filteredTerms.length} {strings.of} {GLOSSARY_TERMS.length} {strings.terms}
       </div>
 
       {/* Terms Display */}
@@ -114,7 +129,7 @@ export default function GlosarioTecnico() {
         </div>
       ) : (
         <div className={styles.noResults}>
-          <p>No se encontraron términos que coincidan con tu búsqueda.</p>
+          <p>{strings.noResults}</p>
           <button
             className={styles.resetButton}
             onClick={() => {
@@ -122,7 +137,7 @@ export default function GlosarioTecnico() {
               setSelectedLetter(null);
             }}
           >
-            Reiniciar búsqueda
+            {strings.reset}
           </button>
         </div>
       )}
@@ -131,8 +146,7 @@ export default function GlosarioTecnico() {
       <div className={styles.glossaryFooter}>
         <p>
           <em>
-            Última actualización: mayo 2026 — Alfonso Monge García, ETSI
-            Universidad de Sevilla
+            {strings.footer}
           </em>
         </p>
       </div>
