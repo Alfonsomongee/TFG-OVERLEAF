@@ -28,6 +28,8 @@ const sidebars = {
       link: { type: 'generated-index' },
       items: [
         'dimension-europea/01-francia-portugal',
+        'dimension-europea/02-coordinacion-continental',
+        'dimension-europea/03-dia-despues',
       ],
     },
     {

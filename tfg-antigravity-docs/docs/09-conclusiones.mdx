@@ -1,97 +1,210 @@
 ---
 sidebar_position: 9
 ---
-
 import GlossaryLink from '@site/src/components/GlossaryLink';
 
-# Conclusiones (Capítulo 9)
+Este capítulo cierra el análisis forense articulando dos planos complementarios:
+la síntesis comparativa de las posturas institucionales y las implicaciones
+estructurales que el episodio proyecta sobre la seguridad del suministro en el
+contexto de la transición energética europea. Ambos comparten una premisa
+metodológica sostenida a lo largo de todo el trabajo: el 28 de abril de 2025
+no es un incidente de frecuencia, sino un **colapso de tensión en el plano
+Q-V**, y esa distinción es el eje sobre el que pivota toda la arquitectura
+argumental que sigue.
 
-El análisis desarrollado en los ocho capítulos precedentes permite formular un conjunto de conclusiones técnicas, regulatorias y metodológicas de primer orden. El colapso del sistema eléctrico ibérico del 28 de abril de 2025 no fue un accidente impredecible: fue la cristalización de vulnerabilidades estructurales que los marcos de análisis disponibles no estaban diseñados para detectar.
+## Síntesis comparativa de las posturas institucionales
 
----
+La reconstrucción del 28-A ha producido cuatro familias de narrativas técnicamente
+autónomas, cada una anclada en un marco analítico y en un perímetro de
+responsabilidad distintos:
 
-## 1. El colapso del 28A fue un fallo de control, no de energía
+| Agente | Marco analítico | Causa raíz | Inercia ($H$)† | Medidas priorizadas |
+|---|---|---|---|---|
+| **Administración (Comité CSN / REE)** | Cumplimiento normativo y seguridad nacional; análisis multifactorial centrado en la respuesta del parque generador. | Inestabilidad de tensión precipitada por un déficit sistémico de absorción de <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink> inductiva; incumplimiento parcial del P.O. 7.4. | 2,3 s (global peninsular) | Actualización del P.O. 7.4 (BOE-A-2025-13076); régimen reforzado hasta 2030; despliegue progresivo de BESS con capacidad <GlossaryLink term="GFM (Grid-Forming)">*Grid-Forming*</GlossaryLink>. |
+| **Sector generador (IIT-ICAI / AELEC / Compass Lexecon)** | Análisis electromagnético del transitorio; crítica pericial a la operación del sistema. | Inestabilidad capacitiva inducida por la maniobra de <GlossaryLink term="Mallado">mallado</GlossaryLink> en condiciones de baja fortaleza síncrona, agravada por las limitaciones de observabilidad sobre la red de 220 kV (<GlossaryLink term="Tap-Lag">*Tap-Lag*</GlossaryLink>). | 1,3 s (Sur) / 1,84 s (Centro) | Revisión de los protocolos operativos de mallado; refuerzo de la observabilidad en 220 kV; despliegue selectivo de <GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores síncronos</GlossaryLink> en los nudos críticos. |
+| **Gestor europeo (<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>)** | Estabilidad del área síncrona continental; crítica al <GlossaryLink term="Criterio N-1">Criterio *N*−1</GlossaryLink> ante fenómenos dinámicos ultrarrápidos. | Propagación de <GlossaryLink term="Oscilaciones electromecánicas">oscilaciones inter-área</GlossaryLink> y pérdida de sincronismo en la frontera pirenaica; agotamiento del <GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> para anticipar el transitorio. | Magnitudes zonales compatibles con el análisis IIT-ICAI. | <GlossaryLink term="NC RfG">NC RfG</GlossaryLink> 2.0 con capacidad *Grid-Forming* obligatoria para PPMs tipos B–D (≥ 1 MW); reforma de los estados operativos del EAS. |
+| **Análisis académico independiente (NREL / MIT CEEPR / Brattle)** | Reconstrucción basada en registros <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> y análisis de estabilidad en sistemas dominados por <GlossaryLink term="IBR">IBR</GlossaryLink>. | Convergencia con la tesis capacitiva; énfasis en la erosión de la fortaleza nodal (SCR) y en la desconexión masiva de IBR por protección de sobretensión. | 1,3–1,8 s (sur peninsular) | Rediseño de los mercados de servicios ancilares hacia <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">ERS</GlossaryLink> que remuneren inercia, FFR, reactiva dinámica y potencia de cortocircuito. |
 
-La primera conclusión, y la más contraintuitiva para el debate público, es que el sistema eléctrico ibérico disponía de recursos energéticos suficientes en el momento del colapso. La generación total ascendía a 33.612 MW, con una demanda ligeramente inferior. Cuatro reactores nucleares estaban acoplados. El <GlossaryLink term="RoCoF">RoCoF</GlossaryLink> registrado no superó 1 Hz/s durante la mayor parte de la cascada. La constante de <GlossaryLink term="Inercia (H)">inercia equivalente</GlossaryLink> del sistema, $H = 2{,}3$ s, se encontraba por encima del umbral de 2,0 s recomendado por ENTSO-E.
+*† La discrepancia en los valores de inercia no es una divergencia metodológica
+menor: el valor global de 2,3 s corresponde al promedio peninsular, mientras
+que los valores zonales de 1,3 s (área Sur) reflejan la inercia disponible
+en el epicentro geográfico de las maniobras de mallado y de la cascada inicial
+de desconexiones. El 28-A no fue un fallo del promedio, sino un fallo de la
+**zona más débil bajo estrés local** — circunstancia que un indicador global
+no puede capturar por construcción.*
 
-El colapso fue un fallo de **control de tensión y <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink>**, no de balance de potencia activa. Esta distinción invalida una parte significativa del debate mediático posterior, que se articuló en torno a argumentos de "falta de generación firme", "insuficiencia de <GlossaryLink term="Inercia (H)">inercia</GlossaryLink>" o "exceso de renovables". Los cuatro informes técnicos analizados convergen en este punto.
+:::note Consensos técnicos robustos entre los cuatro agentes
+Del contraste entre las cuatro narrativas emergen tres puntos de convergencia
+que **ningún informe pericial contradice**:
 
----
+**Primero**, el mecanismo dominante del colapso no fue una pérdida de
+frecuencia por déficit de inercia, sino una
+<GlossaryLink term="Estabilidad de tensión">inestabilidad de tensión</GlossaryLink>
+en régimen capacitivo precipitada por la combinación de generación síncrona
+residual mínima y líneas de 400 kV subcargadas durante el valle de demanda.
 
-## 2. El mecanismo físico del colapso: cadena causal de tres eslabones
+**Segundo**, la operación prolongada en régimen de «red ligera», con
+penetración instantánea de generación no síncrona del 82 %, había agotado
+de forma estructural los márgenes de control dinámico de tensión en las
+semanas previas, como evidencian los eventos precursores del 22 y el 24 de
+abril.
 
-**Eslabón 1 — Fragilización estructural de la red**
+**Tercero**, el marco regulatorio vigente al 28-A — P.O. 7.4 con banda muerta
+asimétrica, NC RfG sin exigencia de *Grid-Forming* — resultó estructuralmente
+inadecuado para movilizar los recursos de amortiguamiento en el plazo que el
+transitorio requería.
+:::
 
-La producción masiva de energía solar había desplazado por orden de mérito a las centrales de ciclo combinado, eliminando las fuentes de <GlossaryLink term="Potencia de cortocircuito">potencia de cortocircuito</GlossaryLink> que dan rigidez eléctrica a los nudos de transporte. Amplias zonas operaban con $\mathrm{SCR} < 2$ (categoría "red muy débil"), condición que hace a los inversores <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink> especialmente vulnerables a perturbaciones de tensión.
+Las divergencias organizan la discrepancia institucional en dos ejes nítidos.
 
-**Eslabón 2 — Inyección capacitiva del mallado**
+**Eje del perímetro de medida.** El Comité CSN y REE computan la inercia
+como magnitud global del sistema peninsular (2,3 s), mientras que los
+informes del IIT-ICAI y del NREL trabajan con valores zonales desagregados
+(1,3 s en el área Sur). Ambos valores son aritméticamente correctos y
+sustantivamente diferentes: el 28-A no fue un fallo del promedio, sino de
+la zona más débil bajo estrés local.
 
-La configuración de red adoptada, con varias líneas de 400 kV operando prácticamente en vacío, activó el <GlossaryLink term="Efecto Ferranti">efecto Ferranti</GlossaryLink> en su versión más severa. La inyección estimada de 1,05–2,4 GVAr de <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink> capacitiva generó una presión de sobretensión sistémica que el parque de generación, operando mayoritariamente en modo <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink> con factor de potencia fijo, no tenía capacidad de contrarrestar.
+**Eje de la atribución del disparador.** El Comité CSN y REE sitúan el
+foco en la insuficiente absorción de reactiva por parte del parque generador
+— una omisión del sujeto obligado por el P.O. 7.4 —. El IIT-ICAI lo sitúa
+en la maniobra de mallado del Operador del Sistema y en la inobservabilidad
+estructural de la red de 220 kV por el *Tap-Lag* — una decisión operativa y
+una limitación instrumental —. Ambos diagnósticos son compatibles con la
+evidencia oscilográfica: el transitorio capacitivo superior a 2,4 GVAr
+requirió simultáneamente una decisión que lo provocase y una incapacidad de
+respuesta que impidiese contenerlo. La discrepancia **no es técnica sino
+distributiva**: se refiere a la imputación de responsabilidad dentro de una
+cadena causal que todos los informes reconocen.
 
-**Eslabón 3 — Brecha de observabilidad**
+Leídas en conjunto, las cuatro narrativas no constituyen interpretaciones
+mutuamente excluyentes del mismo hecho, sino **proyecciones parciales de un
+fenómeno multicapa** sobre los respectivos marcos analíticos y perímetros de
+responsabilidad institucional. La divergencia interpretativa no es ruido que
+deba resolverse a favor de una postura: es un dato forense en sí mismo, que
+revela cómo la complejidad dinámica de los sistemas eléctricos modernos
+desborda la capacidad de cualquier agente individual para producir una
+reconstrucción exhaustiva del incidente.
 
-El fenómeno <GlossaryLink term="Tap-Lag">Tap-Lag</GlossaryLink>, producido por el retardo electromecánico de los <GlossaryLink term="OLTC (On-Load Tap Changer)">OLTC</GlossaryLink>, creó una brecha de observabilidad crítica: el <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> mostraba 418 kV en Carmona mientras la tensión real en 220 kV había colapsado a 244 kV.
+## Implicaciones estructurales: el trilema de la transición energética
 
-La combinación produjo la cascada de 11 segundos entre 12:33:18 y 12:33:29 CEST, con pérdida de más de 15 GW y cero de tensión peninsular.
+El colapso del 28-A no puede leerse como un accidente aleatorio, sino como la
+manifestación empírica de un conjunto de tensiones estructurales que la
+transición energética europea mantiene irresueltas. La descarbonización no es
+la causa del colapso: es la condición de contorno que, al no acompañarse de
+una adaptación simétrica en los planos tecnológico, regulatorio y económico,
+convirtió la vulnerabilidad latente en incidente.
 
----
+El sistema eléctrico ibérico opera bajo un **trilema estructural** en el que
+cada arista representa una tensión operativa concreta entre dos de los vértices:
 
-## 3. Las narrativas institucionales son parcialmente irreconciliables
+| Tensión | Vértices en conflicto | Manifestación concreta el 28-A |
+|---|---|---|
+| **Marginación de síncronas / baja fortaleza de red** | Descarbonización ↔ Estabilidad dinámica | La orden de mérito desplazó los CCGTs, vaciando al sistema de inercia y potencia de cortocircuito en el instante crítico. |
+| **Orden de mérito / horas de precio cero o negativo** | Descarbonización ↔ Asequibilidad | Más de 500 horas de precio cero o negativo en 2024; precio medio diario de 18,50 €/MWh el propio 28-A. |
+| **Coste de los Servicios Esenciales de Confiabilidad (ERS)** | Estabilidad dinámica ↔ Asequibilidad | Los servicios ancilares de inercia, reactiva dinámica y FFR no estaban remunerados explícitamente en el diseño de mercado. |
 
-El análisis comparativo revela **selección asimétrica de evidencias**: cada actor institucional incorporó factores causales consistentes con su posición regulatoria y omitió los que la contradecían.
+*El 28 de abril de 2025 representa el episodio en que las tres tensiones
+convergieron sin que el marco normativo y de mercado vigente lograra arbitrar
+entre ellas.*
 
-- **Gobierno/REE** centran responsabilidad en incumplimiento del P.O. 7.4 por generadores <GlossaryLink term="IBR">IBR</GlossaryLink>, eludiendo debate sobre si la configuración de mallado fue factor desencadenante.
+### Tensión tecnológica
 
-- **Redeia** defiende que la configuración cumplía criterios del P.O. 1.1 y márgenes de seguridad adecuados, apuntando al incumplimiento de curvas de reactiva como causa primaria.
+La brecha entre el parque generador real y el que el sistema necesita para
+operar con seguridad en régimen dominado por
+<GlossaryLink term="IBR">IBR</GlossaryLink>. La sustitución de grandes
+alternadores síncronos por inversores en topología
+<GlossaryLink term="GFL (Grid-Following)">*Grid-Following*</GlossaryLink>
+ha privado a la red de dos servicios que las máquinas rotatorias proveían sin
+remuneración explícita: la
+<GlossaryLink term="Inercia (H)">inercia rotacional genuina</GlossaryLink>
+y la potencia de cortocircuito necesaria para sostener el SCR en los nudos de
+la red de transporte. La arquitectura técnica de salida — convergente entre
+los informes periciales — combina el despliegue distribuido de BESS con
+capacidad *Grid-Forming* para la gestión sub-cíclica de tensión con la
+instalación selectiva de
+<GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores
+síncronos</GlossaryLink>, incluyendo la reconversión
+<GlossaryLink term="Estrategia Brownfield">*Brownfield*</GlossaryLink> de
+alternadores de centrales fósiles clausuradas.
 
-- **IIT-ICAI/AELEC** proponen causalidad físicamente distinta: vulnerabilidad sistémica era estructural; el colapso habría ocurrido aunque todos los inversores hubiesen cumplido contratos.
+### Tensión regulatoria
 
-- **ENTSO-E** sitúan problema en paradigma tecnológico: insuficiencia de <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink> en sistemas de alta penetración renovable, solo resoluble mediante transición a <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink>.
+La inadecuación del marco operativo heredado para gobernar una red de dinámica
+acelerada. La actualización del P.O. 7.4 mediante la Resolución CNMC de
+12 de junio de 2025 — con exigencias dinámicas explícitas y la habilitación
+por primera vez de IBR y almacenamiento en el servicio de control de tensión
+— constituye un paso en la dirección correcta. Sin embargo, la desestimación
+en octubre de 2025 de la subida del umbral de cumplimiento del 75 % al 90 %
+evidencia la asimetría temporal entre las capacidades de los activos nuevos y
+las del parque síncrono que sustituyen. En el plano europeo, la
+<GlossaryLink term="SO GL (System Operation Guidelines)">consolidación
+de los requisitos *Grid-Forming*</GlossaryLink>
+en el Phase II Technical Report de ENTSO-E (noviembre de 2025) y su
+proyección sobre el futuro
+<GlossaryLink term="NC RfG">NC RfG 2.0</GlossaryLink>
+configuran el armazón técnico de la red poscarbónica — si bien la actual
+despriorización del calendario de adopción por la Comisión Europea introduce
+una ventana de incertidumbre que los operadores nacionales están cubriendo
+mediante medidas transitorias al margen del código de red.
 
-Los puntos de consenso son tan relevantes como las divergencias: naturaleza del colapso (tensión, no frecuencia), actuación correcta de protecciones, imprescindibilidad de <GlossaryLink term="Black Start">Black Start</GlossaryLink> hidroeléctrico, insuficiencia regulatoria, necesidad de <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink>, necesidad de <GlossaryLink term="GFM (Grid-Forming)">GFM</GlossaryLink>.
+### Tensión económica
 
----
+La que los informes periciales señalan como condicionante último de la
+viabilidad del rediseño técnico. El modelo marginalista puro de energía es
+estructuralmente incapaz de remunerar los atributos sistémicos que sostienen
+la estabilidad: inercia, potencia de cortocircuito, reactiva dinámica y
+<GlossaryLink term="Fast Frequency Response (FFR)">respuesta rápida de
+frecuencia</GlossaryLink>. La proliferación de horas de precio cero o negativo
+— más de **500 horas en 2024**, con un precio medio diario de **18,50 €/MWh**
+el propio 28-A — no es un defecto del diseño renovable, sino la señal de que
+los atributos de estabilidad están ausentes de la función objetivo del mercado.
+La transformación de estos servicios en productos comerciales explícitos, bajo
+la categoría de
+<GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">ERS</GlossaryLink>,
+constituye el requisito económico sin el cual el armazón técnico y regulatorio
+precedentes carecen de sostenibilidad a medio plazo.
 
-## 4. La recuperación demostró dependencia crítica de generación síncrona
+A escala de gobernanza europea, el episodio evidenció las limitaciones del
+<GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink> para
+cumplir su función declarada de alerta temprana. El sistema ibérico transitó
+del estado «Normal» al estado «Blackout» sin atravesar los estados intermedios
+previstos en las
+<GlossaryLink term="SO GL (System Operation Guidelines)">*System Operation
+Guidelines*</GlossaryLink>. La implicación es estructural: las herramientas de
+seguridad construidas sobre análisis de flujos de carga estáticos y sobre el
+Criterio *N*−1 son inadecuadas para redes con alta penetración de electrónica
+de potencia, cuya dinámica relevante ocurre en escalas de tiempo inferiores al
+segundo. La arquitectura de coordinación paneuropea requiere incorporar
+indicadores dinámicos de fortaleza nodal, índices zonales de
+<GlossaryLink term="Inercia (H)">inercia</GlossaryLink> y métricas de
+capacidad formadora de red como parámetros de estado homologables entre
+Gestores de Redes de Transporte.
 
-Las casi 19 horas de maniobras de recuperación dejaron una lección operativa de primera magnitud: **en un sistema de alta penetración renovable, la recuperación tras un colapso total depende de forma crítica de la disponibilidad de generación síncrona convencional con capacidad de <GlossaryLink term="Black Start">Black Start</GlossaryLink>**.
+## La lección del 28-A
 
-Las centrales hidroeléctricas fueron el primer eslabón de la cadena de salvamento, precisamente porque son las únicas instalaciones capaces de arrancar sin tensión externa. Los 78% de capacidad instalada activa ---inversores <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink>--- no podían contribuir a re-energización porque sus bucles <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> necesitan leer una red estable. La paradoja del 28A es que el mismo parque que lo provocó fue incapaz de contribuir a su solución.
+La lección estructural del 28 de abril, tomada en su conjunto, no es que la
+transición energética sea demasiado ambiciosa ni que la descarbonización
+comprometa la seguridad del suministro. La lección es que la transición, para
+ser operativamente sostenible, **debe producirse simultáneamente en los tres
+planos que el trilema identifica**: técnico, regulatorio y económico.
+Cualquier asimetría entre ellos — un parque generador transformado con un
+código de red heredado; un código de red actualizado sin mercado que remunere
+los servicios que exige; un mercado rediseñado sin los activos físicos capaces
+de prestarlos — reproduce las condiciones de vulnerabilidad que el 28-A
+materializó.
 
----
+El valor analítico de este trabajo reside, en último término, en haber
+mostrado que las cuatro narrativas institucionales **coexisten sin cancelarse
+entre sí** y que ninguna de ellas, por separado, agota la comprensión del
+incidente. La síntesis forense exige tratar a los informes periciales no como
+hipótesis rivales sobre un mismo hecho, sino como proyecciones parciales de
+un fenómeno complejo sobre los respectivos marcos de cada agente. Solo la
+lectura triangulada — que preserva las divergencias en lugar de disolverlas —
+permite extraer las condiciones estructurales que convirtieron un escenario
+operativo rutinario de descarbonización profunda en el primer *blackout*
+sistémico del área síncrona continental en dos décadas.
 
-## 5. Reformas regulatorias necesarias trascienden ajustes incrementales
+Esas condiciones, lejos de ser extraordinarias, están presentes en todo
+sistema eléctrico europeo en transición: **el 28 de abril de 2025 es, en este
+sentido, menos un accidente ibérico que un precedente europeo**.
 
-Las propuestas contenidas en los cuatro informes técnicos convergen en diagnóstico común: las reformas necesarias no son ajustes incrementales sino transformaciones estructurales del paradigma de operación y remuneración.
-
-**Tecnológicamente**, la transición de <GlossaryLink term="GFL (Grid-Following)">GFL</GlossaryLink> a <GlossaryLink term="GFM (Grid-Forming)">GFM</GlossaryLink> es ineludible para sistemas con penetración <GlossaryLink term="IBR">IBR</GlossaryLink> superior al 60–80%. La arquitectura híbrida ---BESS-GFM para velocidad de control y SynCons para <GlossaryLink term="Potencia de cortocircuito">potencia de cortocircuito</GlossaryLink> e <GlossaryLink term="Inercia (H)">inercia rotacional</GlossaryLink> genuina--- es la solución que la física del sistema descarbonizado impone.
-
-**En observabilidad**, el despliegue de <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> en todos los nudos de 400 kV e integración en sistemas de decisión del operador en tiempo real es condición necesaria para detectar fenómenos como <GlossaryLink term="Tap-Lag">Tap-Lag</GlossaryLink> antes de cascadas.
-
-**En mercado**, los atributos físicos que sistemas síncronos aportaban de forma inherente ---<GlossaryLink term="Inercia (H)">inercia</GlossaryLink>, <GlossaryLink term="Potencia de cortocircuito">potencia de cortocircuito</GlossaryLink>, control autónomo de tensión--- han dejado de ser externalidades gratuitas. Su provisión debe ser definida, verificada y remunerada explícitamente mediante mercados de Servicios Esenciales de Confiabilidad (ERS) con señales geográficamente granulares.
-
----
-
-## 6. El debate comunicativo como variable sistémica
-
-El capítulo de impacto comunicativo demostró que la distancia entre consenso técnico y narrativa mediática dominante es, en sí misma, una consecuencia del 28A con implicaciones regulatorias concretas. Las reformas requieren consenso político sostenido que la polarización del debate público dificultó.
-
-La respuesta institucional debe incluir **protocolos de comunicación de crisis** que ocupen el espacio informativo con mensajes técnicos verificables en las primeras horas. El vacío de cinco horas entre cero de tensión y primera comparecencia oficial fue, desde perspectiva de comunicación de crisis, tan costoso como la propia cascada.
-
----
-
-## 7. Implicaciones para el sistema eléctrico europeo
-
-El colapso ibérico no fue un evento aislado. Fue la primera manifestación documentada, a escala de sistema completo, de vulnerabilidades inherentes a sistemas de alta penetración <GlossaryLink term="IBR">IBR</GlossaryLink> operados con códigos diseñados para paradigma síncrono del siglo XX.
-
-Los escenarios de penetración renovable del 80–95% que objetivos climáticos 2035–2050 implican reproducirán las condiciones del 28A con frecuencia creciente, en sistemas sin reformas estructurales. El apagón ibérico no fue el último de este tipo: fue el aviso más costoso y mejor documentado que el sistema europeo ha recibido sobre lo que la física del próximo sistema energético exige.
-
----
-
-## Síntesis Final
-
-El 28 de abril de 2025 colapsó en 11 segundos el sistema eléctrico de la Península Ibérica. La recuperación requirió casi 19 horas. Las causas exactas permanecen técnicamente disputadas. Lo que no está en disputa es la lección central:
-
-**Un sistema con 82% de penetración renovable instantánea, operado con herramientas de control y observabilidad diseñadas para el paradigma síncrono, carece de los recursos electromecánicos necesarios para resistir perturbaciones que en redes convencionales habrían sido contingencias manejables.**
-
-La descarbonización del sistema eléctrico no es negociable desde perspectiva climática. Pero la forma en que se materializa ---las tecnologías que se instalan, los servicios que se definen y remuneran, los protocolos que se adoptan--- determina si el sistema resultante es resiliente o frágil ante la física de sus componentes. El 28A es la demostración empírica más contundente de que descarbonización y resiliencia son compatibles, pero solo si se abordan de forma simultánea y con el rigor técnico que la física del sistema impone.

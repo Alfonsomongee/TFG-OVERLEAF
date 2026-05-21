@@ -626,5 +626,53 @@ export const GLOSSARY_TERMS = [
     term: 'Capacidad Neta de Transferencia (NTC)',
     definition: 'Net Transfer Capacity (NTC). Capacidad máxima de intercambio de energía entre dos zonas de control pactada ex ante entre operadores de sistema vecinos (REE y RTE en el caso ibérico). El 28A, el NTC de la interconexión España-Francia estaba en torno al 3% de la demanda peninsular, muy por debajo del objetivo europeo del 15%.',
   },
+  {
+    id: slugify('Ratio de amortiguamiento'),
+    letter: 'R',
+    term: 'Ratio de amortiguamiento',
+    definition: 'El ratio de amortiguamiento (o amortiguamiento relativo) es un indicador adimensional que cuantifica la rapidez con la que una oscilación se atenúa tras una perturbación. Valores próximos al 5 \% se consideran un margen de seguridad operativo razonable en el sistema síncrono europeo; valores cercanos al 0 \% indican oscilaciones sostenidas, y valores negativos implican un crecimiento de la amplitud y, por tanto, un riesgo de inestabilidad.',
+  },
+  {
+    id: slugify('Potencia de cortocircuito'),
+    letter: 'P',
+    term: 'Potencia de cortocircuito',
+    definition: 'La potencia de cortocircuito ($S_{sc}$) en un nudo de la red es una medida de su "fortaleza" electromagnética. Representa la cantidad de corriente aparente que fluiría hacia ese nudo en caso de producirse un cortocircuito franco trifásico. Una elevada potencia de cortocircuito, típicamente aportada por los grandes generadores síncronos, implica que la tensión en ese nudo es muy robusta y resiliente, sufriendo variaciones mínimas ante perturbaciones, conexiones de cargas bruscas o maniobras en la red.',
+  },
+  {
+    id: slugify('Estrategia Brownfield'),
+    letter: 'E',
+    term: 'Estrategia Brownfield',
+    definition: 'En ingeniería de infraestructuras energéticas, la estrategia Brownfield consiste en la reconversión de instalaciones industriales existentes —como las centrales térmicas o nucleares clausuradas— para dotarlas de nuevas funciones sistémicas. En este contexto, implica conservar los grandes alternadores originales operando en vacío como compensadores síncronos, aportando inercia natural y potencia de cortocircuito, y aprovechando las subestaciones y líneas de evacuación ya construidas para reducir drásticamente costes y tiempos de implementación.',
+  },
+  {
+    id: slugify('Sistema por Unidad (p.u.)'),
+    letter: 'S',
+    term: 'Sistema por Unidad (p.u.)',
+    definition: 'El sistema por unidad (p.u.) es una convención de normalización utilizada en ingeniería eléctrica de potencia que expresa las magnitudes del sistema (tensión, corriente, potencia, impedancia) como cocientes adimensionales respecto a valores base de referencia. La base de tensión suele tomarse como el valor nominal de la red en el nudo de análisis, y la base de potencia como la potencia aparente nominal del equipo o del sistema. La ventaja principal es la eliminación de las transformaciones de escala al analizar redes con múltiples niveles de tensión interconectados mediante transformadores. En el contexto del análisis de inversores, la expresión de las corrientes de falta en p.u. permite comparar directamente la capacidad de inyección de los inversores (1{,}1–1{,}2 p.u.) con la de los generadores síncronos (5–7 p.u.) con independencia de la potencia nominal de cada tecnología.',
+  },
+  {
+    id: slugify('GFL vs GFM (Grid-Following vs Grid-Forming)'),
+    letter: 'G',
+    term: 'GFL vs GFM (Grid-Following vs Grid-Forming)',
+    definition: 'La topología Grid-Following (GFL) modela al inversor como una fuente de corriente controlada que depende de una medición externa de la tensión de red (a través del lazo de seguimiento de fase, PLL). Su ventaja es la simplicidad y el bajo coste; su limitación crítica es que no puede operar de forma autónoma ni establecer tensión en redes débiles. La topología Grid-Forming (GFM) modela el inversor como una fuente de tensión ideal detrás de una reactancia virtual, permitiendo operación autónoma, inyección de corrientes de falta robustas e inercia sintética. El NC RfG 2.0 establece la transición hacia GFM como obligatoria para nuevas instalaciones significativas.',
+  },
+  {
+    id: slugify('Curva de Pato (Duck Curve)'),
+    letter: 'C',
+    term: 'Curva de Pato (Duck Curve)',
+    definition: 'La curva de pato describe el perfil diario de demanda neta de regulación en sistemas con alta penetración solar: una depresión profunda durante las horas centrales del día (cuando el consumo base es bajo pero la generación solar es máxima) seguida de una rampa vespertina pronunciada. La primavera es el período de máxima profundidad y vulnerabilidad. En el caso del 28A, la profundidad del valle coincidió con una rampa de inyección solar extraordinariamente aguda, dejando al sistema con mínima capacidad de absorción de reactiva en el instante crítico.',
+  },
+  {
+    id: slugify('Headroom'),
+    letter: 'H',
+    term: 'Headroom',
+    definition: 'El headroom es la fracción de la capacidad aparente máxima ($S_{}$) que un inversor GFM debe mantener reservada sin utilizarla para la inyección de potencia activa en estado estacionario. Esta reserva es necesaria para garantizar que el inversor dispone de margen suficiente para actuar ante perturbaciones rápidas de tensión o frecuencia. Exigir headroom reduce los ingresos del mercado de energía, lo que constituye la fricción económica estructural que justifica la creación de mercados de Servicios Esenciales de Confiabilidad (ERS) para remunerar explícitamente esta capacidad de respuesta.',
+  },
+  {
+    id: slugify('LVRT (Low Voltage Ride Through)'),
+    letter: 'L',
+    term: 'LVRT (Low Voltage Ride Through)',
+    definition: 'El Low Voltage Ride Through (LVRT) es la capacidad de un inversor para mantener la inyección de energía durante un hueco de tensión en lugar de desconectarse por protección. Los requisitos del LVRT en España están regulados por el P.O. 12.3 e incluyen el parámetro dinámico $k$ (factor de proporcionalidad de corriente reactiva respecto a la profundidad del hueco). El apagón del 28A evidenció que en redes con $SCR < 2$, la inyección masiva de reactiva según los perfiles tradicionales de LVRT puede amplificar la inestabilidad en lugar de contenerla, requiriendo revisión de la coordinación entre el control LVRT y la debilidad de red.',
+  },
 ];
 

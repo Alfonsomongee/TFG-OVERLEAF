@@ -1,0 +1,227 @@
+---
+sidebar_position: 3
+---
+import GlossaryLink from '@site/src/components/GlossaryLink';
+
+The voltage collapse of 28 April was not an instantaneous event: it was
+the culmination of a progressive, measurable degradation of the network's
+static and dynamic stability. The forensic reconstruction of the four
+collapse phases — from the morning oscillations to the definitive isolation
+of the peninsula at 12:33:29 CEST — allows precise identification of the
+physical mechanisms that no conventional protection automation could arrest.
+
+## Phase 0: the weakened network and the meshing manoeuvre
+
+On the morning of 28 April, the system was operating on an extremely weak
+topology. With demand at minimum levels, **35.8% of the 400 kV network in
+the southern zone** and **34.3% in the central zone** remained disconnected,
+creating a high transfer impedance scenario. Against this background, system
+dynamics manifested as
+<GlossaryLink term="Oscilaciones electromecánicas">electromechanical
+oscillations</GlossaryLink> in two distinct modes:
+
+- **12:03 CEST** — Forced oscillation at **0.6 Hz**, amplitude 70 mHz,
+  taking 4 minutes and 42 seconds to damp out.
+- **12:19 CEST** — Inter-area mode at **0.2 Hz** (East-Centre-West):
+  the Iberian Peninsula began oscillating in counter-phase with respect
+  to the continent, stressing the Pyrenean interconnection links.
+
+During both transients, the
+<GlossaryLink term="Damping ratio">damping ratio</GlossaryLink>
+collapsed to values near **1%**, well below the minimum **5%** threshold
+required by P.O. 13.1. This behaviour was not unprecedented: analogous
+episodes on 16, 22 and 24 April had been treated as isolated incidents
+rather than symptoms of systemic degradation.
+
+![Voltages recorded at Núñez de Balboa 400 kV during precursor events and 28 April](/figuras/nunez_balboa_precursores.png)
+*Voltages at Núñez de Balboa (400 kV) during the 22, 24 and 28 April
+precursor events. The succession of overvoltage peaks evidences the
+progressive narrowing of
+<GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>
+control margins. Source: IIT-ICAI.*
+
+To contain these oscillations, REE executed a
+<GlossaryLink term="Mallado">meshing</GlossaryLink> manoeuvre:
+between 12:03 and 12:30 CEST it reconnected **11 400 kV lines** that had
+been open due to low demand. The manoeuvre achieved its immediate objective
+— reducing impedance and arresting the oscillation whip — but introduced,
+according to the IIT-ICAI expert report, a significant side effect: through
+the <GlossaryLink term="Efecto Ferranti">Ferranti Effect</GlossaryLink>,
+the no-load reconnected lines abruptly injected capacitive reactive power
+into a network that already lacked absorption margin. Quantification of
+this injection is one of the central axes of the technical dispute: the
+ICAI report estimates up to **2.4 GVAr**; the NREL's independent analysis
+adopts a more conservative estimate of **1,050 MVAr**. Both figures agree
+that the injection exceeded the system's residual absorption capacity,
+estimated at that moment at barely **3.3 GVAr** against the usual 5.8 GVAr.
+
+IIT-ICAI's expert simulations estimate that after the meshing manoeuvre,
+the distance to the collapse point at the Carmona 400 kV bus contracted
+from **2,964 MW** to **1,268 MW** — a **57% reduction** bringing the
+system to the threshold of capacitive saturation.
+
+![WAMS recording of the 0.6 Hz oscillation at 12:03 CEST in Carmona](/figuras/wams_oscilaciones_carmona.png)
+*<GlossaryLink term="WAMS (Wide Area Monitoring Systems)">WAMS</GlossaryLink>
+recording capturing the 0.6 Hz electromechanical oscillation at Carmona
+(Seville) at 12:03 CEST. WAMS systems, based on GPS-synchronised
+<GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink>
+networks, enable continental-scale dynamics to be observed with millisecond
+resolution. Source: ENTSO-E / REE.*
+
+## Phase 1: loss of damping and root trip (12:32:57 CEST)
+
+The nature of the first transient — the 0.6 Hz oscillation at 12:03 CEST —
+is the subject of direct technical controversy. REE classifies it as a
+forced oscillation originating in the control loop of a photovoltaic plant
+in Badajoz. The ICAI report argues, conversely, that it was a natural
+inter-area mode exacerbated by a systemic damping ratio of **1%**, which it
+links to the absence of Power System Stabilisers (PSS) in the Andalusian
+combined-cycle units that were offline.
+
+![System frequency evolution during Phase 1 — NREL analysis](/figuras/timeline_frecuencia_nrel.png)
+*Frequency evolution during Phase 1. The two electromechanical oscillations
+and the progressive loss of system damping preceding the collapse are
+clearly visible. Source: NREL.*
+
+The instability intensified at **12:19 CEST** with the **0.2 Hz** mode,
+confirmed by European PMU telemetry as the natural East-Centre-West mode
+of the continental synchronous area: the Iberian Peninsula's reduced
+rotating mass was oscillating in counter-phase with the European inertia
+centre, materialising the whip effect described in Chapter 2.
+
+The point of no return was reached at **12:32:57 CEST**. A 400/220 kV
+transformer at a collector substation in the province of **Granada**
+disconnected through overvoltage protection activation, having detected
+approximately **244 kV** on the 220 kV secondary — exceeding the equipment's
+dielectric safety threshold. The critical impact was not the 355 MW of
+<GlossaryLink term="Potencia activa">active power</GlossaryLink>
+lost — a manageable figure — but the instantaneous, irrecoverable loss
+of **165 MVAr** of inductive
+<GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>
+absorption capacity. In a system saturated with capacitive reactive power
+and operating with reduced
+<GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> margins, the
+disappearance of this sink caused a step increase in voltage at surrounding
+transmission nodes: the physical trigger of the chain reaction.
+
+## Phase 2: the Tap-Lag phenomenon and voltage decoupling (12:32:57–12:33:18 CEST)
+
+The 21 seconds following the root trip constitute the technical core of the
+forensic debate. After the Granada disconnection, the rising voltage trend
+on the transmission network revealed a divergence between the behaviour of
+the 400 kV infrastructure and the underlying collector networks: the
+<GlossaryLink term="Tap-Lag">*Tap-Lag*</GlossaryLink> phenomenon.
+
+During Phase 1, voltage fluctuations caused by frequency oscillations had
+led 400/220 kV and 400/132 kV transformers to adjust their
+<GlossaryLink term="OLTC (On-Load Tap Changer)">OLTCs</GlossaryLink>,
+raising tap positions to boost secondary voltages. When the overvoltage
+surge hit the 400 kV network, these transformers were trapped by their own
+mechanical inertia: OLTC motor and gear mechanisms are intentionally slowed
+by time delays to prevent mechanical hunting under transient disturbances.
+Faced with an ultra-fast electrical transient, the tap changers proved too
+slow to reverse their transformation ratios in time.
+
+![Oscillographic evidence of Tap-Lag voltage decoupling between 400 kV primary and collector secondary](/figuras/tap_lag_decoupling.png)
+*Voltage decoupling between the 400 kV primary and the collector secondary
+during Phase 2. While the voltage increase on the 400 kV side remained
+moderate, the OLTC inertia amplified the transient on the collector side.
+Source: ENTSO-E.*
+
+This mechanical failure created an **observability blindspot in REE's
+control room**. The
+<GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink>
+system monitored the 400 kV primary, showing high but apparently compliant
+voltages below the exceptional normative limit of **435 kV** (P.O. 1.1).
+However, downstream, in the 220 kV and 132 kV networks, voltages climbed
+above **1.2 p.u.** — thresholds invisible to the national dispatch centre
+due to its limited observability of the underlying network.
+
+![Overvoltage propagation heatmap across the transmission network during Phase 2](/figuras/heatmap_propagation.png)
+*Propagation of overvoltages across the 400 kV network during Phase 2
+(12:32:00–12:33:18 CEST). Source: Government Analysis Committee / REE.*
+
+Faced with voltages exceeding their power electronics tolerances, solar and
+wind plant inverters triggered their internal overvoltage protection systems
+(ANSI function 59). This is where one of the incident's most consequential
+forensic disagreements arises: REE classified these losses as
+**«inadequate trips»**, arguing that no disconnection thresholds were
+exceeded on its 400 kV network; the ICAI analysis contends that the plants
+**acted correctly and in conformity with regulations** given the actual
+voltages experienced at their connection points, downstream of the OLTC
+transformers. The Tap-Lag phenomenon thereby created the conditions for a
+positive-feedback disconnection cascade.
+
+## Phase 3: the path to voltage zero (12:33:18–12:33:29 CEST)
+
+In 11 seconds, the peninsular grid destroyed itself through a vicious cycle
+dictated by power flow equations. As IBR plants mass-disconnected to
+self-protect, the network instantly lost its capacity to absorb
+<GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>.
+Simultaneously, the falling
+<GlossaryLink term="Potencia activa">active power</GlossaryLink>
+reduced flow in the 400 kV lines, increasing their capacitive injection
+through the
+<GlossaryLink term="Efecto Ferranti">Ferranti Effect</GlossaryLink>
+and driving voltages above **443 kV** at the most stressed nodes. Every
+disconnection raised voltage, forcing further disconnections.
+
+![Spatial propagation of the generation loss cascade during Phase 3](/figuras/cascada_desconexiones.png)
+*Geographic propagation of the cascade during the eleven seconds of Phase 3.
+Source: Government Analysis Committee.*
+
+The most severe losses were concentrated initially in **Badajoz** (over
+**725 MW** lost at 12:33:16 CEST) and, one second later, at the
+**Segovia, Seville and Huelva** substations (930 MW additional at
+12:33:17 CEST). In the five-second window between 12:33:19 and 12:33:24
+CEST, the cascade disconnected more than **15 GW of generation** — nearly
+**60% of instantaneous national demand** — taking the system beyond any
+possibility of recovery.
+
+As the cascade destroyed remaining generation, frequency collapsed with
+extreme
+<GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>,
+activating
+<GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>
+schemes. At the **49.5 Hz** threshold crossing at 12:33:20 CEST, over
+**2,000 MW** of hydraulic pumping was automatically shed, followed by
+multiple industrial demand steps.
+
+![Coupled evolution of voltage and frequency during Phase 3](/figuras/tension_frecuencia_colapso.png)
+*Coupled evolution of voltage (kV) and frequency (Hz) during Phase 3.
+The voltage increase above 1.10 p.u. precedes the frequency collapse in
+time, confirming the incident as a primarily capacitive, not inertial,
+collapse. Source: Government Analysis Committee.*
+
+The UFLS activation revealed what analysts have termed the **UFLS
+paradox**: by shedding active load to stabilise frequency, the scheme
+simultaneously eliminated the inductive reactive power consumption of
+that same demand. In a network saturated with capacitive reactive power,
+removing the last inductive sinks — the disconnected motors and industrial
+loads — produced a renewed overvoltage surge, **reinforcing the very
+collapse the UFLS was designed to arrest**. Protection logic designed for
+frequency deficit events proved counterproductive against a collapse driven
+primarily by voltage instability.
+
+In the final moments, the massive internal generation deficit triggered a
+violent reversal of Pyrenean flows: the AC lines attempted to import up to
+**4,609 MW** of emergency power from France. Simultaneously, HVDC link
+INELFE-1 — locked in PMODE1 since 12:08 CEST — continued extracting
+**1,000 MW** from the Iberian system, reducing net support capacity from
+France by **22%**.
+
+![France interconnection exchange and loss of synchronism during Phase 3](/figuras/interconexion_francia_colapso.png)
+*Pyrenean flow reversal during Phase 3: emergency import of up to 4,609 MW
+via AC lines, simultaneous 1,000 MW HVDC extraction in PMODE1, and AC line
+trip on loss of synchronism at 12:33:21 CEST.
+Source: Government Analysis Committee / REE.*
+
+At **12:33:21 CEST**, loss-of-
+<GlossaryLink term="Sincronismo">synchronism</GlossaryLink>
+protections opened the AC interconnection links to prevent propagation
+to the continental European system, fully isolating the Iberian Peninsula.
+The definitive **voltage zero** was confirmed at **12:33:29.741 CEST**
+with the trip of the last generating unit — closing the most severe
+systemic incident documented in the history of the continental European
+power system.
+

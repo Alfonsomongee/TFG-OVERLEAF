@@ -1,71 +1,149 @@
 ---
 sidebar_position: 1
 ---
-
 import GlossaryLink from '@site/src/components/GlossaryLink';
 
-# Introducción
+El 28 de abril de 2025, el sistema síncrono ibérico sufrió un colapso de
+tensión que destruyó más de **15 GW de generación en cuestión de segundos**
+y dejó sin suministro eléctrico a cerca de **60 millones de personas**. Por
+magnitud y velocidad de propagación, el episodio no tiene precedentes en el
+sistema europeo continental de las últimas décadas. Este trabajo no es una
+reconstrucción cronológica del evento: es un análisis crítico y comparativo
+de las narrativas técnicas, regulatorias y operativas que han competido por
+explicarlo.
 
-## Objeto y alcance del trabajo
+## Objeto y alcance
 
-El objeto principal de este Trabajo de Fin de Grado (TFG) consiste en el estudio crítico y comparativo de las narrativas técnicas, regulatorias y operativas formuladas por los distintos actores del sector eléctrico, a partir de la información y los informes publicados en respuesta al evento de **Cero de Tensión** (*blackout*) acaecido en el sistema síncrono ibérico el 28 de abril de 2025. 
+El colapso —caracterizado por una cascada de desconexiones asociadas a
+fenómenos de sobretensión en un contexto de elevada penetración de
+<GlossaryLink term="IBR">Recursos Basados en Inversores (*IBR*)</GlossaryLink>—
+ha generado un profundo desacuerdo interpretativo sobre sus causas raíz y la
+asignación de responsabilidades. La investigación examina tres visiones
+institucionales predominantes:
 
-Dicho suceso implicó la pérdida súbita de más de **15 GW de generación** en apenas unos segundos y dejó sin suministro eléctrico a cerca de **60 millones de personas**, constituyendo uno de los episodios de inestabilidad sistémica de mayor magnitud registrados en Europa continental en las últimas décadas.
+**Visión de la Administración (Gobierno / <GlossaryLink term="REE">Redeia</GlossaryLink>).**
+El informe del Comité de Análisis del Consejo de Seguridad Nacional interpreta
+el colapso desde la óptica del cumplimiento normativo. Su tesis atribuye el
+agravamiento del evento a un déficit de absorción de
+<GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink>
+inductiva que impidió contener la escalada de tensión, en contravención de
+los requerimientos del Procedimiento de Operación P.O. 7.4.
 
-La naturaleza excepcional del colapso ---caracterizado por una cascada de desconexiones asociadas a fenómenos de sobretensión en un contexto de elevada penetración de <GlossaryLink term="IBR">*Recursos Basados en Inversores* (IBR)</GlossaryLink>--- ha generado un profundo desacuerdo interpretativo respecto a sus causas raíz y a la asignación de responsabilidades técnicas y operativas.
+**Visión del sector generador (Informe ICAI / AELEC).**
+El análisis pericial del IIT-ICAI y Compass Lexecon desplaza la
+responsabilidad hacia decisiones operativas concretas de Redeia. La tesis
+central cuestiona la maniobra de
+<GlossaryLink term="Mallado">mallado (*meshing*)</GlossaryLink>
+ejecutada por el operador, argumentando que incrementó la contribución
+capacitiva de la red en un escenario de baja fortaleza síncrona y generó un
+pulso de sobretensión amplificado por las limitaciones de observabilidad
+sobre la red de 220 kV —fenómeno denominado
+<GlossaryLink term="Tap-Lag">*Tap-Lag*</GlossaryLink>.
 
-### Las Tres Narrativas Institucionales
-
-La presente investigación se centra en el examen crítico de las divergencias y puntos de consenso existentes entre las tres visiones institucionales predominantes:
-
-#### Visión de la Administración (Gobierno y Redeia)
-
-El informe del Comité de Análisis del Consejo de Seguridad Nacional y del Operador del Sistema (OS) articula una interpretación fundamentada en el cumplimiento normativo y la disciplina técnica del parque generador. Según esta perspectiva, el sistema disponía de herramientas regulatorias suficientes para mitigar el transitorio, atribuyendo el agravamiento del evento a la insuficiente absorción de <GlossaryLink term="Potencia reactiva">potencia reactiva inductiva</GlossaryLink> ---un déficit que impidió contener la escalada de tensión--- conforme a los requerimientos establecidos en el Procedimiento de Operación **P.O. 7.4**.
-
-#### Visión del Sector Generador (Informe ICAI / AELEC)
-
-El informe pericial independiente elaborado por el IIT-ICAI y Compass Lexecon sitúa la causa raíz en decisiones operativas concretas adoptadas por el Operador del Sistema. Esta narrativa cuestiona la maniobra de mallado (*meshing*) ejecutada por Redeia, argumentando que incrementó de forma significativa la contribución capacitiva de la red en un escenario de baja <GlossaryLink term="Potencia de cortocircuito">fortaleza síncrona</GlossaryLink>, generando un pulso de sobretensión agravado por las limitaciones de observabilidad del operador sobre la red de 220 kV (fenómeno denominado <GlossaryLink term="Tap-Lag" />).
-
-#### Visión del Gestor Europeo (ENTSO-E)
-
-El informe factual publicado por ENTSO-E introduce una perspectiva orientada a la estabilidad del área síncrona continental, analizando la propagación de oscilaciones inter-área y señalando las limitaciones de los enfoques tradicionales de seguridad estática basados en el *Criterio N-1* frente a fenómenos dinámicos ultrarrápidos propios de sistemas con alta penetración de generación basada en electrónica de potencia.
+**Visión del gestor europeo
+(<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>).**
+El informe factual de ENTSO-E adopta una perspectiva de área síncrona
+continental: analiza la propagación de
+<GlossaryLink term="Oscilaciones electromecánicas">oscilaciones
+inter-área</GlossaryLink> y cuestiona la suficiencia del
+<GlossaryLink term="Criterio N-1">Criterio *N*−1</GlossaryLink> frente a
+fenómenos dinámicos ultrarrápidos propios de sistemas dominados por
+electrónica de potencia.
 
 ![Replicación de la secuencia del colapso](/figuras/albustami_ieee39_secuencia.png)
+*Secuencia del colapso del 28-A mostrando la interacción entre Acciones del Operador (OA) y Acciones Automáticas de protección (AA). Fuente: Albustami et al., 2025.*
 
-El alcance del presente TFG se circunscribe al escrutinio técnico de estos marcos argumentales mediante su contraste con los códigos de red europeos (*Network Codes*, especialmente el Reglamento RfG) y con los principios modernos de estabilidad en sistemas eléctricos dominados por inversores.
+El alcance del trabajo se articula sobre el contraste de estas tres
+narrativas con los *Network Codes* europeos —en particular el
+<GlossaryLink term="NC RfG">Reglamento RfG</GlossaryLink>— y con los
+principios modernos de
+<GlossaryLink term="Estabilidad de tensión">estabilidad de tensión</GlossaryLink>
+en sistemas dominados por inversores, con el propósito de identificar
+lecciones estructurales, limitaciones metodológicas y vacíos regulatorios
+que condicionan la resiliencia del sistema eléctrico europeo en la
+transición hacia la descarbonización.
 
----
+## La vulnerabilidad estructural del sistema ibérico
 
-## Justificación técnica: La vulnerabilidad del sistema ibérico
-
-La transición hacia un modelo de generación descarbonizado ha transformado de forma estructural la dinámica del sistema peninsular. La sustitución acelerada de centrales síncronas convencionales por Recursos Basados en Inversores reduce las masas rotatorias acopladas a la red y, con ellas, tanto la **<GlossaryLink term="Inercia (H)">inercia del sistema</GlossaryLink>** ($H$) ---que cayó a valores zonales de entre 1,3 s y 1,8 s en el sur peninsular, por debajo del umbral de 2 s que la literatura técnica del sector asocia con márgenes dinámicos comprometidos--- como la **potencia de cortocircuito** disponible en los nudos.
-
-Esta doble merma no afecta únicamente al eje frecuencia--potencia activa: debilita también, y de forma crítica, la capacidad del sistema para absorber dinámicamente potencia reactiva ($Q$) y sostener la tensión ante transitorios rápidos, que es precisamente el eje sobre el que se articuló el colapso del 28 de abril.
-
-Esta vulnerabilidad estructural se manifestó de forma extrema el 28 de abril de 2025. La mañana del incidente, el sistema operaba con un **82% de penetración renovable** no síncrona, en un contexto de *demanda valle* que redujo la carga en los pasillos de transporte y exacerbó el <GlossaryLink term="Efecto Ferranti">efecto capacitivo</GlossaryLink> de las líneas de 400 kV. Para equilibrar la generación, el operador desacopló la práctica totalidad de los grupos térmicos disponibles, dejando el número de generadores síncronos en mínimos históricos.
+La transición energética ha alterado de forma profunda la dinámica del
+sistema peninsular. La sustitución acelerada de centrales síncronas por IBR
+reduce las masas rotatorias acopladas a la red y, con ellas, dos parámetros
+críticos de forma simultánea: la
+<GlossaryLink term="Inercia (H)">inercia del sistema (*H*)</GlossaryLink>
+—que cayó a valores zonales de entre **1,3 s y 1,8 s** en el sur peninsular,
+por debajo del umbral de 2 s que la literatura técnica asocia con márgenes
+dinámicos comprometidos— y la potencia de cortocircuito disponible en los
+nudos. Esta doble merma no afecta únicamente al eje frecuencia–potencia
+activa: erosiona de forma crítica la capacidad del sistema para absorber
+dinámicamente potencia reactiva y sostener la tensión ante transitorios
+rápidos, que es precisamente el eje sobre el que se articuló el colapso.
 
 ![Metamorfosis electromecánica del sistema de potencia](/figuras/futured_grid_evolution.png)
+*El desplazamiento de grandes masas rotatorias por recursos IBR reduce drásticamente la inercia total del sistema. Fuente: FutuRed, 2024.*
 
-Operar bajo este paradigma de "red ligera" contrae los márgenes de estabilidad de forma no lineal. A diferencia de los alternadores síncronos, el parque IBR funciona prácticamente en su totalidad en modo <GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>: sus inversores necesitan una tensión ($V$) y una frecuencia ($f$) externas estables como referencia de sincronismo. Al reducirse drásticamente los grupos síncronos, el sistema perdió su principal mecanismo de absorción dinámica de potencia reactiva ($Q$), eliminando el amortiguamiento natural frente a transitorios de tensión.
+La mañana del incidente, el sistema operaba con un **82 % de penetración
+renovable no síncrona** en condiciones de demanda valle. Para equilibrar la
+generación, Redeia desacopló la práctica totalidad de los grupos térmicos
+disponibles, llevando el número de generadores síncronos a mínimos
+históricos. El parque IBR operaba prácticamente en su totalidad en modo
+<GlossaryLink term="GFL (Grid-Following)">*grid-following*</GlossaryLink>:
+inversores que necesitan una tensión y frecuencia externas estables como
+referencia de sincronismo. Al desaparecer los grupos síncronos, el sistema
+perdió su principal mecanismo de absorción dinámica de potencia reactiva y,
+con él, el amortiguamiento natural frente a transitorios de tensión.
 
-A esta fragilidad interna se añade la condición estructural de la Península Ibérica como **"isla energética"**: su capacidad de interconexión con Francia se sitúa muy por debajo de las directrices comunitarias, lo que impide importar estabilidad dinámica desde el núcleo continental. La convergencia de ambos factores ---baja fortaleza síncrona y aislamiento relativo de la red--- configuró la vulnerabilidad que hizo imposible frenar la cascada de sobretensiones.
+A esta fragilidad interna se añade el aislamiento estructural de la
+Península Ibérica. Con una capacidad de interconexión transfronteriza del
+**7,9 %** sobre la demanda punta —muy por debajo de los objetivos
+comunitarios—, el sistema ibérico no puede importar estabilidad dinámica
+desde el núcleo continental en situaciones de emergencia. La confluencia de
+baja fortaleza síncrona y aislamiento relativo de red configuró la
+vulnerabilidad que hizo imposible frenar la cascada de sobretensiones
+a las **12:33:24 CEST**.
 
-![Nivel de interconexión eléctrica nominal frente a demanda punta](/figuras/mit_interconnection_stats.png)
+| Estado Miembro | Interconexión / Demanda punta (%) |
+|---|---|
+| **Iberia (ES + PT)** | **7,9** |
+| Francia | ~14 |
+| Alemania | ~17 |
+| Objetivo UE 2030 | 15 |
 
----
+*Tabla: Nivel de interconexión eléctrica nominal frente a demanda punta
+(selección). Fuente: MIT CEEPR / Comisión Europea, 2025.*
 
-## Metodología de investigación
+## Metodología: triangulación forense y validación cruzada
 
-La metodología de esta investigación se basa en un **análisis forense comparativo** orientado a reconstruir la secuencia de eventos del 28 de abril de 2025 mediante la triangulación de fuentes primarias divergentes. El proceso se ha articulado en tres fases metodológicas:
+La investigación adopta un enfoque de análisis forense comparativo,
+estructurado en tres fases:
 
-1. **Compilación de fuentes primarias**: Estudio sistemático de los informes periciales oficiales, que a su vez se sustentan en el procesamiento de más de 170 GB de registros técnicos por parte del Operador del Sistema, incluyendo telemedidas del SCADA y registros oscilográficos.
+**1. Compilación de fuentes primarias.** Estudio sistemático de los informes
+periciales oficiales, sustentados en el procesamiento de más de **170 GB de
+registros técnicos** del Operador del Sistema, incluyendo telemedidas del
+<GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink>
+y registros oscilográficos.
 
-2. **Triangulación de narrativas**: Contraste sistemático de la tesis de la Administración frente al análisis pericial del sector generador en torno a la gestión del mallado y la inobservabilidad de la red de 220 kV.
+**2. Triangulación de narrativas.** Contraste sistemático de la tesis de la
+Administración frente al análisis pericial del sector generador en torno a
+los dos ejes de desacuerdo principal: la gestión de la maniobra de mallado
+y la inobservabilidad de la red de 220 kV.
 
-3. **Validación técnica cruzada**: Cotejo de las secuencias cronológicas de cada informe con el análisis independiente de las oscilaciones inter-área publicado por el NREL a partir de datos de <GlossaryLink term="PMU (Phasor Measurement Unit)">Unidades de Medición Fasorial (PMU)</GlossaryLink>, cuya cobertura continental permite arbitrar entre versiones divergentes.
+**3. Validación técnica cruzada.** Cotejo de las secuencias cronológicas con
+el análisis independiente del NREL sobre oscilaciones inter-área, obtenido a
+partir de registros de
+<GlossaryLink term="PMU (Phasor Measurement Unit)">Unidades de Medición
+Fasorial (*PMU*)</GlossaryLink> de cobertura continental —datos cuya
+independencia institucional permite arbitrar entre versiones divergentes.
 
-![Localización topológica de las Unidades de Medición Fasorial (PMU) en Europa](/figuras/pmu_sensors_europe.png)
+![Localización topológica de las PMU en el sistema síncrono europeo](/figuras/pmu_sensors_europe.png)
+*La densidad de cobertura de las PMU fue determinante para la verificación independiente de las oscilaciones inter-área. Fuente: NREL.*
 
-Dado el volumen de documentación técnica generada tras el incidente, se han empleado modelos de lenguaje de gran escala como herramienta de asistencia documental. Su aplicación se ha centrado en la clasificación y síntesis de informes, la extracción de datos críticos y la identificación de patrones de fallo recurrentes entre las distintas fuentes.
+Los modelos de lenguaje de gran escala se han empleado como herramienta de
+asistencia documental —clasificación, síntesis y extracción de datos
+críticos— dado el volumen excepcional de documentación técnica generada
+tras el incidente. Su aplicación se ha circunscrito estrictamente a la
+organización documental: presentan limitaciones conocidas ante fenómenos de
+dinámica rápida como el mecanismo del *Tap-Lag* o la paradoja del
+<GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>.
+La comparación técnica, la evaluación de causalidad y las conclusiones del
+trabajo son responsabilidad exclusiva del criterio del autor.
 
-No obstante, el uso de estas herramientas se ha circunscrito estrictamente a la organización y síntesis documental. Los modelos de lenguaje presentan limitaciones conocidas ante fenómenos de dinámica rápida ---como la interpretación de la paradoja del <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink> o el mecanismo del Tap-Lag---, por lo que la comparación técnica, la evaluación de causalidad y las conclusiones del trabajo son responsabilidad exclusiva del criterio del autor.
