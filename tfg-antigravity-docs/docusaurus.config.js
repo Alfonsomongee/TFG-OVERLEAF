@@ -95,7 +95,7 @@ const config = {
           {
             type: 'html',
             position: 'right',
-            value: '<button id="zen-mode-toggle" class="button button--secondary button--sm clean-btn" title="Modo Lectura / Zen Mode" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; margin-right: 0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>',
+            value: '<button id="zen-mode-toggle" class="button button--secondary button--sm clean-btn" title="Activar/Desactivar Modo Lectura" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: auto; height: 36px; padding: 0 12px; margin-right: 0.5rem; font-weight: 600;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><span class="zen-mode-text">Modo Lectura</span></button>',
           },
           {
             type: 'localeDropdown',
