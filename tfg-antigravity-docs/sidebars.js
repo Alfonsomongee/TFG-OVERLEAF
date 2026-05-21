@@ -20,6 +20,10 @@ const sidebars = {
         'uso-ia',
         'conclusiones',
         'galeria-imagenes',
+        'galeria-graficas',
+        'cronologia',
+        'documentos',
+        'sobre-el-autor',
       ],
     },
     {

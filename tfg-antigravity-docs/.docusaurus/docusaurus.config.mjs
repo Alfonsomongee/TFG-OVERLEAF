@@ -8,7 +8,7 @@ export default {
   "tagline": "Estudio técnico sobre el colapso del sistema eléctrico ibérico y sus implicaciones para la estabilidad de redes con alta penetración renovable",
   "favicon": "img/favicon.png",
   "url": "https://tfg-overleaf.vercel.app",
-  "baseUrl": "/",
+  "baseUrl": "/en/",
   "organizationName": "alfonsomongee",
   "projectName": "TFG-OVERLEAF",
   "onBrokenLinks": "warn",
@@ -39,7 +39,6 @@ export default {
       {
         "docs": {
           "sidebarPath": "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\sidebars.js",
-          "editUrl": "https://github.com/Alfonsomongee/TFG-OVERLEAF/blob/main/",
           "routeBasePath": "/",
           "remarkPlugins": [
             [
@@ -65,6 +64,17 @@ export default {
       }
     ]
   ],
+  "plugins": [
+    [
+      "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\node_modules\\docusaurus-lunr-search\\src\\index.js",
+      {
+        "languages": [
+          "es",
+          "en"
+        ]
+      }
+    ]
+  ],
   "clientModules": [
     "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\src\\js\\zen-mode.js"
   ],
@@ -86,7 +96,7 @@ export default {
         {
           "type": "html",
           "position": "right",
-          "value": "<button id=\"zen-mode-toggle\" class=\"button button--secondary button--sm clean-btn\" title=\"Activar/Desactivar Modo Lectura\" style=\"display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: auto; height: 36px; padding: 0 12px; margin-right: 0.5rem; font-weight: 600;\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7\"/></svg><span class=\"zen-mode-text\">Modo Lectura</span></button>"
+          "value": "<button id=\"zen-mode-toggle\" class=\"button button--secondary button--sm clean-btn\" title=\"Activar/Desactivar Pantalla Completa\" style=\"display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: auto; height: 36px; padding: 0 12px; margin-right: 0.5rem; font-weight: 600;\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7\"/></svg><span class=\"zen-mode-text\"><span class=\"zen-mode-text-default\">Pantalla Completa</span><span class=\"zen-mode-text-active\">Volver a modo menú</span></span></button>"
         },
         {
           "type": "localeDropdown",
@@ -167,7 +177,7 @@ export default {
           ]
         }
       ],
-      "copyright": "Copyright © 2025 Alfonso Monge García. Built with Docusaurus."
+      "copyright": "Copyright © 2026 Alfonso Monge Díaz-Ángel. alfonsomongediazangel@gmail.com. Built with Docusaurus."
     },
     "prism": {
       "theme": {
@@ -405,7 +415,6 @@ export default {
     "static"
   ],
   "customFields": {},
-  "plugins": [],
   "themes": [],
   "scripts": [],
   "headTags": [],

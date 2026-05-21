@@ -69,6 +69,15 @@ const config = {
     ],
   ],
 
+  plugins: [
+    [
+      require.resolve('docusaurus-lunr-search'),
+      {
+        languages: ['es', 'en'],
+      },
+    ],
+  ],
+
   clientModules: [
     require.resolve('./src/js/zen-mode.js'),
   ],
