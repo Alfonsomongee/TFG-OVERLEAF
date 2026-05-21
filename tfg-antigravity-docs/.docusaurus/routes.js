@@ -3,142 +3,141 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/en/',
-    component: ComponentCreator('/en/', 'a30'),
+    path: '/docs',
+    component: ComponentCreator('/docs', 'cbc'),
     routes: [
       {
-        path: '/en/',
-        component: ComponentCreator('/en/', 'c7e'),
+        path: '/docs/',
+        component: ComponentCreator('/docs/', '25a'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/analisis-incidente',
-        component: ComponentCreator('/en/analisis-incidente', '268'),
+        path: '/docs/analisis-incidente',
+        component: ComponentCreator('/docs/analisis-incidente', '603'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/analisis-informes',
-        component: ComponentCreator('/en/analisis-informes', 'a3b'),
+        path: '/docs/analisis-informes',
+        component: ComponentCreator('/docs/analisis-informes', '03a'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/category/-capítulos',
-        component: ComponentCreator('/en/category/-capítulos', '7ad'),
+        path: '/docs/category/-dimensión-europea',
+        component: ComponentCreator('/docs/category/-dimensión-europea', '4f1'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/category/-dimensión-europea',
-        component: ComponentCreator('/en/category/-dimensión-europea', '080'),
+        path: '/docs/conclusiones',
+        component: ComponentCreator('/docs/conclusiones', 'e16'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/conclusiones',
-        component: ComponentCreator('/en/conclusiones', '498'),
+        path: '/docs/contexto',
+        component: ComponentCreator('/docs/contexto', '2e4'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/contexto',
-        component: ComponentCreator('/en/contexto', 'e77'),
+        path: '/docs/cronologia',
+        component: ComponentCreator('/docs/cronologia', 'f4f'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/cronologia',
-        component: ComponentCreator('/en/cronologia', '5a3'),
+        path: '/docs/dimension-europea/coordinacion-continental',
+        component: ComponentCreator('/docs/dimension-europea/coordinacion-continental', 'cc0'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/coordinacion-continental',
-        component: ComponentCreator('/en/dimension-europea/coordinacion-continental', 'e5d'),
+        path: '/docs/dimension-europea/dia-despues',
+        component: ComponentCreator('/docs/dimension-europea/dia-despues', '297'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/dia-despues',
-        component: ComponentCreator('/en/dimension-europea/dia-despues', '31e'),
+        path: '/docs/dimension-europea/francia-portugal',
+        component: ComponentCreator('/docs/dimension-europea/francia-portugal', '8c6'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/dimension-europea/francia-portugal',
-        component: ComponentCreator('/en/dimension-europea/francia-portugal', '81a'),
+        path: '/docs/documentos',
+        component: ComponentCreator('/docs/documentos', 'bee'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/documentos',
-        component: ComponentCreator('/en/documentos', '9d5'),
+        path: '/docs/galeria-graficas',
+        component: ComponentCreator('/docs/galeria-graficas', '4c1'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/galeria-graficas',
-        component: ComponentCreator('/en/galeria-graficas', 'cf9'),
+        path: '/docs/galeria-imagenes',
+        component: ComponentCreator('/docs/galeria-imagenes', '8fb'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/galeria-imagenes',
-        component: ComponentCreator('/en/galeria-imagenes', 'bf0'),
+        path: '/docs/glosario',
+        component: ComponentCreator('/docs/glosario', '71d'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/glosario',
-        component: ComponentCreator('/en/glosario', '0eb'),
+        path: '/docs/impacto-comunicativo',
+        component: ComponentCreator('/docs/impacto-comunicativo', '526'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/impacto-comunicativo',
-        component: ComponentCreator('/en/impacto-comunicativo', 'b6f'),
+        path: '/docs/introduccion',
+        component: ComponentCreator('/docs/introduccion', '5f0'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/introduccion',
-        component: ComponentCreator('/en/introduccion', '6c7'),
+        path: '/docs/reaccion-reposicion',
+        component: ComponentCreator('/docs/reaccion-reposicion', '097'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/reaccion-reposicion',
-        component: ComponentCreator('/en/reaccion-reposicion', '759'),
+        path: '/docs/referencias',
+        component: ComponentCreator('/docs/referencias', '265'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/referencias',
-        component: ComponentCreator('/en/referencias', 'fde'),
+        path: '/docs/resiliencia-futuro',
+        component: ComponentCreator('/docs/resiliencia-futuro', '657'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/resiliencia-futuro',
-        component: ComponentCreator('/en/resiliencia-futuro', 'aed'),
+        path: '/docs/sobre-el-autor',
+        component: ComponentCreator('/docs/sobre-el-autor', '689'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
-        path: '/en/sobre-el-autor',
-        component: ComponentCreator('/en/sobre-el-autor', '3d2'),
-        exact: true,
-        sidebar: "tutorialSidebar"
-      },
-      {
-        path: '/en/uso-ia',
-        component: ComponentCreator('/en/uso-ia', 'f4d'),
+        path: '/docs/uso-ia',
+        component: ComponentCreator('/docs/uso-ia', 'c30'),
         exact: true,
         sidebar: "tutorialSidebar"
       }
     ]
+  },
+  {
+    path: '/',
+    component: ComponentCreator('/', 'ccc'),
+    exact: true
   },
   {
     path: '*',
