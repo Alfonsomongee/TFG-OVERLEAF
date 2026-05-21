@@ -3,6 +3,9 @@ sidebar_position: 3
 ---
 
 import GlossaryLink from "@site/src/components/GlossaryLink";
+import SldDiagram from "@site/src/components/SldDiagram";
+import FrequencyChart from "@site/src/components/FrequencyChart";
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 # Análisis del Incidente
 
@@ -29,6 +32,10 @@ IIT-ICAI's expert simulations estimate that after the meshing manoeuvre, the dis
 
 The nature of the first transient — the 0.6 Hz oscillation at 12:03 CEST — is the subject of direct technical controversy. REE classifies it as a forced oscillation originating in the control loop of a photovoltaic plant in Badajoz. The ICAI report argues, conversely, that it was a natural inter-area mode exacerbated by a systemic damping ratio of **1%**, which it links to the absence of Power System Stabilisers (PSS) in the Andalusian combined-cycle units that were offline.
 
+<BrowserOnly>
+  {() => <FrequencyChart />}
+</BrowserOnly>
+
 ![System frequency evolution during Phase 1 — NREL analysis](/figuras/timeline_frecuencia_nrel.png) _Frequency evolution during Phase 1. The two electromechanical oscillations and the progressive loss of system damping preceding the collapse are clearly visible. Source: NREL._
 
 The instability intensified at **12:19 CEST** with the **0.2 Hz** mode, confirmed by European PMU telemetry as the natural East-Centre-West mode of the continental synchronous area: the Iberian Peninsula's reduced rotating mass was oscillating in counter-phase with the European inertia centre, materialising the whip effect described in Chapter 2.
@@ -50,6 +57,10 @@ This mechanical failure created an **observability blindspot in REE's control ro
 Faced with voltages exceeding their power electronics tolerances, solar and wind plant inverters triggered their internal overvoltage protection systems (ANSI function 59). This is where one of the incident's most consequential forensic disagreements arises: REE classified these losses as **«inadequate trips»**, arguing that no disconnection thresholds were exceeded on its 400 kV network; the ICAI analysis contends that the plants **acted correctly and in conformity with regulations** given the actual voltages experienced at their connection points, downstream of the OLTC transformers. The Tap-Lag phenomenon thereby created the conditions for a positive-feedback disconnection cascade.
 
 ## Phase 3: the path to voltage zero (12:33:18–12:33:29 CEST)
+
+<BrowserOnly>
+  {() => <SldDiagram />}
+</BrowserOnly>
 
 In 11 seconds, the peninsular grid destroyed itself through a vicious cycle dictated by power flow equations. As IBR plants mass-disconnected to self-protect, the network instantly lost its capacity to absorb reactive power. Simultaneously, the falling active power reduced flow in the 400 kV lines, increasing their capacitive injection through the Ferranti Effect and driving voltages above **443 kV** at the most stressed nodes. Every disconnection raised voltage, forcing further disconnections.
 
