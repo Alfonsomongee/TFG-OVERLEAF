@@ -70,6 +70,10 @@ const config = {
     ],
   ],
 
+  clientModules: [
+    require.resolve('./src/js/zen-mode.js'),
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -87,6 +91,11 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Contenido',
+          },
+          {
+            type: 'html',
+            position: 'right',
+            value: '<button id="zen-mode-toggle" class="button button--secondary button--sm clean-btn" title="Modo Lectura / Zen Mode" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; margin-right: 0.5rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>',
           },
           {
             type: 'localeDropdown',
