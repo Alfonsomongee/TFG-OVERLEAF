@@ -50,7 +50,16 @@ El colapso simultáneo de los inversores fotovoltaicos en España y de la subred
 
 $$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
 
-donde <i>S<sub>ac,i</sub></i> es la capacidad de cortocircuito en corriente alterna del nudo de conexión $i$, $P_i$ la capacidad nominal del parque local y MIIF<sub>ji</sub> el Factor de Interacción de Múltiples Infeed entre los parques $j$ e $i$. Este factor cuantifica cómo las fluctuaciones de inyección de un parque $j$ «arrastran» el perfil de tensión del parque $i$ a través de las impedancias mutuas de la red de transporte.
+<div className="formula-legend">
+  <strong>Leyenda de términos:</strong>
+  <ul>
+    <li><b>MRSCR<sub>i</sub>:</b> Ratio de Cortocircuito Múltiple de Estaciones de Energía Renovable en el nudo <i>i</i>.</li>
+    <li><b>S<sub>ac,i</sub>:</b> Capacidad de cortocircuito en CA (MVA) aportada por generadores síncronos y red externa en el nudo <i>i</i>.</li>
+    <li><b>P<sub>i</sub>:</b> Potencia nominal (MW) del inversor bajo análisis en el nudo <i>i</i>.</li>
+    <li><b>P<sub>j</sub>:</b> Potencia nominal (MW) del inversor adyacente en el nudo <i>j</i>.</li>
+    <li><b>MIIF<sub>ji</sub>:</b> Factor de Interacción de Inversores Múltiples <i>(Multi-Infeed Interaction Factor)</i> entre el nudo <i>j</i> y el nudo <i>i</i>, cuantificando su acoplamiento eléctrico.</li>
+  </ul>
+</div>
 
 Institucionalmente, los nuevos códigos de red establecen el **Valor Crítico** (CMRSCR): por normativa legal obligatoria, el MRSCR calculado en el lado de baja tensión del transformador elevador de cualquier nueva planta IBR no debe ser inferior a **1,5**. Un MRSCR inferior a 1,5 indica una debilidad sistémica insoportable: frente a un hueco de tensión de la red, los lazos de control de los inversores se volverán inestables y desconectarán. Los TSOs están jurídicamente facultados para **bloquear la conexión** de cualquier parque eólico o solar que no cumpla este ratio, obligando a los promotores a instalar <GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores síncronos</GlossaryLink> distribuidos en el punto de conexión (_hibridación obligatoria_) para elevar <i>S<sub>ac</sub></i> hasta el umbral.
 
