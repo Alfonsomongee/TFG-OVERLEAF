@@ -155,8 +155,7 @@ table {
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--ifm-color-emphasis-200);
-  display: block;
-  overflow-x: auto;
+  display: table;
 }
 
 html[data-theme='dark'] table {
@@ -317,6 +316,8 @@ html.zen-mode .theme-doc-toc-mobile {
 html.zen-mode main[class*='docMainContainer'] {
   display: flex !important;
   justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 html.zen-mode main[class*='docMainContainer'] > .container {
@@ -330,14 +331,20 @@ html.zen-mode main[class*='docMainContainer'] .row {
   margin: 0 !important;
 }
 
-html.zen-mode main[class*='docMainContainer'] .row > .col {
+/* Force ANY column inside the main container to expand completely */
+html.zen-mode main[class*='docMainContainer'] .row [class*='col'],
+html.zen-mode [class*='docItemCol'] {
   max-width: 100% !important;
   flex: 1 1 100% !important;
   padding: 0 !important;
+  width: 100% !important;
 }
 
 html.zen-mode article,
 html.zen-mode .theme-doc-markdown {
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   width: 100%;
   transition: all 0.3s ease;
 }
