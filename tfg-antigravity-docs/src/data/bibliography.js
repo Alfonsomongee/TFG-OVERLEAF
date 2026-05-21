@@ -10,6 +10,7 @@ export const BIBLIOGRAPHY = [
   {
     id: 3,
     title: `Gobierno de España - Consejo de Seguridad Nacional. Versión no confidencial del informe del comité para el análisis de las circunstancias que concurrieron en la crisis de electricidad del 28 de abril de 2025. Inf. téc. Ministerio para la Transición Ecológica y el Reto Demográfico, 2025.`,
+    pdf: '/presentacion_gobierno.pdf'
   },
   {
     id: 4,
@@ -57,6 +58,7 @@ export const BIBLIOGRAPHY = [
   },
   {
     id: 15,
-    title: `Javier Quintana. «El impacto de las energías renovables sobre el precio mayorista de la electricidad». En: Boletín Económico – Banco de España 2024.T3, Art. 09 (2024). Documento de Trabajo, Banco de España. url: https://www.bde.es/wbe/es/publicaciones/analisis-economico-investigacion/boletin-economico/2024t3-articulo-09.`,
+    title: `Javier Quintana. “El impacto de las energías renovables sobre el precio mayorista de la electricidad”. En: Boletín Económico — Banco de España 2024.T3, Art. 09 (2024). Documento de Trabajo, Banco de España. url: https://www.bde.es/wbe/es/publicaciones/analisis-economico-investigacion/boletin-economico/2024t3-articulo-09.`,
+    pdf: '/informe_electricidad_mas_barata.pdf'
   },
 ];

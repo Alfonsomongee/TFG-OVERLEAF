@@ -24,6 +24,13 @@ export default function BiblioCard() {
             <div className={styles.refId}>[{ref.id}]</div>
             <div className={styles.title}>
               {ref.title}
+              {ref.pdf && (
+                <div style={{ marginTop: '0.75rem' }}>
+                  <a href={ref.pdf} target="_blank" rel="noopener noreferrer" className="button button--secondary button--sm">
+                    Descargar Informe PDF
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         ))}
