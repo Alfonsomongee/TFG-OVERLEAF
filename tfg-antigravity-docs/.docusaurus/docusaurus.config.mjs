@@ -141,6 +141,15 @@ export default {
           ]
         },
         {
+          "title": "Contacto",
+          "items": [
+            {
+              "label": "Alfonso Monge Díaz-Ángel",
+              "href": "mailto:alfonsomongediazangel@gmail.com"
+            }
+          ]
+        },
+        {
           "title": "Recursos",
           "items": [
             {
