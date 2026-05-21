@@ -8,7 +8,7 @@ export default {
   "tagline": "Estudio técnico sobre el colapso del sistema eléctrico ibérico y sus implicaciones para la estabilidad de redes con alta penetración renovable",
   "favicon": "img/favicon.png",
   "url": "https://tfg-overleaf.vercel.app",
-  "baseUrl": "/",
+  "baseUrl": "/en/",
   "organizationName": "alfonsomongee",
   "projectName": "TFG-OVERLEAF",
   "onBrokenLinks": "warn",
@@ -39,7 +39,7 @@ export default {
       {
         "docs": {
           "sidebarPath": "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\sidebars.js",
-          "routeBasePath": "/docs",
+          "routeBasePath": "/",
           "remarkPlugins": [
             [
               null,
@@ -125,15 +125,15 @@ export default {
           "items": [
             {
               "label": "Introducción",
-              "to": "/docs/intro"
+              "to": "/"
             },
             {
               "label": "Contexto Técnico",
-              "to": "/docs/contexto"
+              "to": "/contexto"
             },
             {
               "label": "Análisis del Incidente",
-              "to": "/docs/analisis-incidente"
+              "to": "/analisis-incidente"
             }
           ]
         },

@@ -53,7 +53,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          routeBasePath: '/docs',
+          routeBasePath: '/',
           remarkPlugins: [
             [require('remark-math'), { strict: false }],
           ],
@@ -129,15 +129,15 @@ const config = {
             items: [
               {
                 label: 'Introducción',
-                to: '/docs/intro',
+                to: '/',
               },
               {
                 label: 'Contexto Técnico',
-                to: '/docs/contexto',
+                to: '/contexto',
               },
               {
                 label: 'Análisis del Incidente',
-                to: '/docs/analisis-incidente',
+                to: '/analisis-incidente',
               },
             ],
           },
