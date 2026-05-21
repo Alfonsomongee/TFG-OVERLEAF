@@ -69,7 +69,7 @@ export default {
     "C:\\Users\\aphmo\\Proyectos\\TFG OVERLEAF\\tfg-antigravity-docs\\src\\js\\zen-mode.js"
   ],
   "themeConfig": {
-    "image": "img/docusaurus-social-card.jpg",
+    "image": "img/social-card.jpg",
     "navbar": {
       "title": "TFG - Apagón Ibérico",
       "logo": {
