@@ -70,18 +70,6 @@ const config = {
     ],
   ],
 
-  themes: [
-    [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
-      {
-        hashed: true,
-        language: ["es", "en"],
-        docsRouteBasePath: "/",
-        indexDocs: true,
-      },
-    ],
-  ],
-
   clientModules: [
     require.resolve('./src/js/zen-mode.js'),
   ],
