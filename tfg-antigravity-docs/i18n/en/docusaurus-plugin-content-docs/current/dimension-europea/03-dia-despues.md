@@ -120,8 +120,8 @@ Renewable Energy Stations Short-Circuit Ratio*) metric:
 
 $$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
 
-where $S_{ac,i}$ is the AC short-circuit capacity at connection node $i$,
-$P_i$ the local plant rated capacity, and $\mathrm{MIIF}_{ji}$ the Multiple
+where <i>S<sub>ac,i</sub></i> is the AC short-circuit capacity at connection node $i$,
+$P_i$ the local plant rated capacity, and MIIF<sub>ji</sub> the Multiple
 Infeed Interaction Factor between plants $j$ and $i$. This factor quantifies
 how injection fluctuations from plant $j$ «drag» the voltage profile of plant
 $i$ through the mutual impedances of the transmission network.
@@ -135,7 +135,7 @@ disconnect. TSOs are legally empowered to **block the connection** of any
 wind or solar park failing to meet this ratio, obliging developers to install
 distributed
 <GlossaryLink term="Compensadores Síncronos (SynCons)">synchronous condensers</GlossaryLink>
-at the connection point (*mandatory hybridisation*) to raise $S_{ac}$ to
+at the connection point (*mandatory hybridisation*) to raise <i>S<sub>ac</sub></i> to
 the threshold.
 
 ## Political and institutional reactions across Europe

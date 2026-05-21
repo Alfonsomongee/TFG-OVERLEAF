@@ -115,7 +115,7 @@ const config = {
               },
               {
                 label: 'Análisis del Incidente',
-                to: '/sistema-espanol',
+                to: '/analisis-incidente',
               },
             ],
           },

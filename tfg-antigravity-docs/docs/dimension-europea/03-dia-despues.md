@@ -126,9 +126,9 @@ cercanos. Los códigos de red europeos adoptaron forzosamente la métrica
 
 $$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
 
-donde $S_{ac,i}$ es la capacidad de cortocircuito en corriente alterna del
+donde <i>S<sub>ac,i</sub></i> es la capacidad de cortocircuito en corriente alterna del
 nudo de conexión $i$, $P_i$ la capacidad nominal del parque local y
-$\mathrm{MIIF}_{ji}$ el Factor de Interacción de Múltiples Infeed entre los
+MIIF<sub>ji</sub> el Factor de Interacción de Múltiples Infeed entre los
 parques $j$ e $i$. Este factor cuantifica cómo las fluctuaciones de inyección
 de un parque $j$ «arrastran» el perfil de tensión del parque $i$ a través de
 las impedancias mutuas de la red de transporte.
@@ -144,7 +144,7 @@ eólico o solar que no cumpla este ratio, obligando a los promotores a instalar
 <GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores
 síncronos</GlossaryLink>
 distribuidos en el punto de conexión (*hibridación obligatoria*) para elevar
-$S_{ac}$ hasta el umbral.
+<i>S<sub>ac</sub></i> hasta el umbral.
 
 ## Reacciones políticas e institucionales en Europa
 

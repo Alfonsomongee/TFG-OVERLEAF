@@ -4,11 +4,17 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 export default [
   {
     path: '/en/',
-    component: ComponentCreator('/en/', '11f'),
+    component: ComponentCreator('/en/', '819'),
     routes: [
       {
         path: '/en/',
         component: ComponentCreator('/en/', 'c7e'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/analisis-incidente',
+        component: ComponentCreator('/en/analisis-incidente', '268'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
@@ -25,6 +31,12 @@ export default [
         sidebar: "tutorialSidebar"
       },
       {
+        path: '/en/category/-dimensión-europea',
+        component: ComponentCreator('/en/category/-dimensión-europea', '080'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
         path: '/en/conclusiones',
         component: ComponentCreator('/en/conclusiones', '498'),
         exact: true,
@@ -37,8 +49,26 @@ export default [
         sidebar: "tutorialSidebar"
       },
       {
+        path: '/en/dimension-europea/coordinacion-continental',
+        component: ComponentCreator('/en/dimension-europea/coordinacion-continental', 'e5d'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/dimension-europea/dia-despues',
+        component: ComponentCreator('/en/dimension-europea/dia-despues', '31e'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
+        path: '/en/dimension-europea/francia-portugal',
+        component: ComponentCreator('/en/dimension-europea/francia-portugal', '81a'),
+        exact: true,
+        sidebar: "tutorialSidebar"
+      },
+      {
         path: '/en/glosario',
-        component: ComponentCreator('/en/glosario', '2f1'),
+        component: ComponentCreator('/en/glosario', '0eb'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
@@ -50,7 +80,7 @@ export default [
       },
       {
         path: '/en/introduccion',
-        component: ComponentCreator('/en/introduccion', 'f72'),
+        component: ComponentCreator('/en/introduccion', '6c7'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
@@ -62,19 +92,13 @@ export default [
       },
       {
         path: '/en/referencias',
-        component: ComponentCreator('/en/referencias', 'aa4'),
+        component: ComponentCreator('/en/referencias', 'fde'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
       {
         path: '/en/resiliencia-futuro',
         component: ComponentCreator('/en/resiliencia-futuro', 'aed'),
-        exact: true,
-        sidebar: "tutorialSidebar"
-      },
-      {
-        path: '/en/sistema-espanol',
-        component: ComponentCreator('/en/sistema-espanol', '098'),
         exact: true,
         sidebar: "tutorialSidebar"
       },
