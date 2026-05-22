@@ -1,0 +1,92 @@
+---
+sidebar_position: 4
+---
+
+import GlossaryLink from "@site/src/components/GlossaryLink";
+
+# Reazione e Ripristino
+
+Dopo la consumazione dello zero di tensione alle 12:33:30 CEST, il sistema elettrico peninsulare è passato da una crisi dinamica incontrollabile a una fase di gestione dell'emergenza e ripristino strutturale. La perdita di oltre 15 GW e la disconnessione totale dal sistema sincrono continentale hanno obbligato REE ad abbandonare la logica di operazione a regime permanente per attivare i protocolli di emergenza della **Procedura di Esercizio P.O. 1.6**. Il ripristino totale della fornitura ha richiesto quasi **19 ore** di manovre ininterrotte.
+
+## Cronologia del collasso e del restauro
+
+| Fase | Finestra temporale | Descrizione |
+| --- | --- | --- |
+| **Fase 0** | Giorni precedenti e mattina del 28-A | Instabilità latente delle tensioni |
+| **Fase 1** | 12:00–12:30 CEST | Oscillazioni elettromeccaniche |
+| **Fase 2** | 12:32:00–12:33:18 CEST | Perdite di generazione per sovratensione |
+| **Fase 3** | 12:33:18–12:33:30 CEST | Cascata fino allo zero di tensione |
+| **Fase 4** | 12:33:30 CEST – 14:36 del 29-A | Progressivo ripristino della fornitura |
+
+_Cronogramma ufficiale delle fasi secondo il Comitato di Analisi del Governo._
+
+## Gestione dell'emergenza: attivazione della P.O. 1.1 e P.O. 1.6
+
+La P.O. 1.1 stabilisce i criteri di funzionamento a regime permanente, basati sul rispetto del <GlossaryLink term="Criterio N-1">Criterio *N*−1</GlossaryLink> e sul mantenimento di tensioni tra 380 kV e 435 kV nella rete di trasmissione. La cascata del 28-A ha mostrato le limitazioni della validazione statica di questi criteri di fronte a transitori dinamici ultrarapidi in reti a bassa <GlossaryLink term="Inercia (H)">inerzia</GlossaryLink>: i limiti di sicurezza sono stati superati in una finestra di undici secondi, e gli schemi di difesa automatici —incluso l'<GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>— si sono rivelati controproducenti. REE ha assunto il controllo manuale in stato di _Blackout_ (criterio OB3).
+
+La reazione istituzionale è stata immediata e simultanea su più fronti:
+
+- **12:34 CEST** — REE conferma con REN che anche l'intera rete portoghese è priva di tensione.
+- **12:36 CEST** — Notifica formale agli altri operatori europei tramite l'<GlossaryLink term="EAS (ENTSO-E Awareness System)">EAS</GlossaryLink>,
+  modificando lo stato operativo del blocco iberico in «Restauro» (Restoration).
+- **12:44 CEST** — Sospensione di tutti i mercati infragiornalieri e dei servizi di dispacciamento da parte di REE e OMIE, conferendo piena autorità per dispacciare esclusivamente secondo criteri di fattibilità tecnica.
+
+La strategia di recupero ha dettato la frammentazione controllata della Penisola Iberica in **sette aree operative indipendenti** —Zona Sud, Tago-Centro, Levante e altre— durante la progressiva rienergizzazione.
+
+![Frammentazione topologica della penisola in sette isole elettriche durante il ripristino](/figuras/islas_reposicion_entsoe.png) _Frammentazione topologica conformemente alla P.O. 1.6. Ogni isola doveva essere stabilizzata individualmente in tensione e frequenza prima di autorizzarne la sincronizzazione con le isole adiacenti. Fonte: ENTSO-E / REE._
+
+La manovra ha combinato due fronti simultanei: una strategia **Top-Down** (supporto esterno da Francia e Marocco come riferimento di tensione) e una strategia **Bottom-Up** (avvio autonomo di centrali idroelettriche interne in Galizia, Asturie e bacino del Duero).
+
+## Strategia Black Start: idroelettrico e cicli combinati
+
+Con la quasi totalità del parco di generazione composto da <GlossaryLink term="IBR">IBR</GlossaryLink> in modalità <GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink> —tecnologicamente incapaci di generare un'onda di tensione senza una rete esterna stabile—, la sopravvivenza e il riavvio del sistema sono ricaduti esclusivamente sulle macchine sincrone con capacità di <GlossaryLink term="Black Start">avvio autonomo</GlossaryLink>.
+
+![Strategia duale di rienergizzazione Top-Down e Bottom-Up](/figuras/estrategia_reenergizacion_dual.png) _Strategia duale di rienergizzazione: via Top-Down da Francia e Marocco e via Bottom-Up dalle centrali idroelettriche interne. Fonte: ENTSO-E / REE._
+
+Le centrali idroelettriche —ad acqua fluente e di pompaggio— sono state le prime ad essere dispacciate per energizzare tratti isolati e creare le prime isole elettriche. Tuttavia, l'esercizio di questi microsistemi ha rivelato la difficoltà di operare con inerzie minime: l'energizzazione di linee a vuoto ha provocato significativi transitori capacitivi che hanno impedito di completare vari tentativi di avvio.
+
+![Dispiegamento temporale ed efficacia del Black Start idroelettrico](/figuras/black_start_hidroelectrico.png) _Tentativi di avvio autonomo idroelettrico durante la Fase 4. I punti grigi corrispondono a tentativi falliti. L'elevata percentuale di insuccessi riflette la complessità di energizzare una rete senza una massa sincrona accoppiata. Fonte: ENTSO-E / REE._
+
+I guasti sono stati significativi: le isole di Cantabria e Levante non hanno retto e hanno dovuto essere riavviate; la centrale assegnata a Madrid non è riuscita a stabilizzare i propri parametri dopo vari tentativi consecutivi; e l'avvio autonomo in Andalusia si è rivelato infruttuoso, costringendo a dare priorità al supporto esterno dal Marocco come riferimento di tensione per la zona sud.
+
+Una volta che le isole idroelettriche sono riuscite a stabilizzare minimamente i propri parametri, la strategia ha virato verso il loro consolidamento elettromeccanico mediante i Cicli Combinati a Gas Naturale (CCGT) e i servizi ausiliari delle centrali nucleari. Queste macchine non sono state connesse per soddisfare la domanda commerciale, ma per costituire l'**«impalcatura elettromagnetica»** del sistema: apportavano la potenza di cortocircuito ($S_{sc}$), l'inerzia ($H$) e la capacità di gestione dinamica della <GlossaryLink term="Potencia reactiva">potenza reattiva</GlossaryLink> indispensabili prima di autorizzare la riconnessione massiccia della domanda.
+
+Il sistema portoghese ha eseguito uno schema analogo basato sull'idroelettrico HPP 1-Centro e il ciclo combinato CCGT 1-Norte. Alle **20:22 CEST**, la sincronizzazione delle isole portoghesi con le zone spagnole già accoppiate alla frequenza continentale europea —verificata mediante relè _synchro-check_— ha garantito la fattibilità del ripristino totale della Penisola Iberica.
+
+## Coordinamento internazionale: RCC, Swissgrid e la risincronizzazione continentale
+
+Gli strumenti dei Centri di Coordinamento Regionale (RCC) —in particolare Coreso, responsabile dell'Europa Sud-occidentale— valutano la sicurezza mediante flussi di carico statici a regime permanente, senza capacità di anticipare fenomeni di <GlossaryLink term="Estabilidad de tensión">instabilità di tensione</GlossaryLink> o dinamiche ultrarapide associate alla bassa inerzia. Di conseguenza, tutte le loro analisi precedenti al collasso riportavano stato «OK», e il blocco iberico è rimasto etichettato come «Normale» nell'EAS fino all'istante stesso del blackout.
+
+Una volta consumatosi lo zero di tensione, la gerarchia di comando europea si è attivata attraverso i Monitori dell'Area Sincrona (SAM), operati da Swissgrid e Amprion. Tra le **12:49 e le 12:54 CEST** è stata stabilita la struttura di comando unificata:
+
+- **REE** → leader di frequenza per l'isola iberica disconnessa
+- **Swissgrid** → stabilizzazione del resto del continente
+- **RTE (Francia)** → leader di risincronizzazione generale
+
+Sotto questo schema, RTE ha attivato offerte nel proprio meccanismo di bilanciamento interno fino a **4.500 MW** per sostenere l'esportazione verso la Spagna, rendendo possibile l'energizzazione dei corridoi a 400 kV del nord e dell'est peninsulare.
+
+![Evoluzione del supporto transfrontaliero dalla Francia durante il ripristino](/figuras/evolucion_carga_repuesta_francia.png) _Supporto transfrontaliero dalla Francia durante il ripristino. Le iniezioni di RTE hanno sostenuto la stabilità di tensione durante la rienergizzazione dei corridoi nord ed est prima che i gruppi sincroni interni si accoppiassero in quantità sufficiente. Fonte: Comitato di Analisi del Governo._
+
+Sul confine sud, l'interconnessione con il Marocco (ONEE) è diventata l'**ancora elettromeccanica dell'Andalusia**. Alle **13:04 CEST** è stato abilitato il flusso attraverso la linea Puerto de la Cruz–Mellousa, iniettando circa **900 MW** e fornendo il riferimento di tensione necessario per energizzare il sud della penisola, dove i tentativi di _Black Start_ interno erano falliti.
+
+![Iniezione di potenza dal Marocco per il supporto Top-Down in Andalusia](/figuras/intercambio_marruecos_topdown.png) _Supporto Top-Down dal confine sud (ONEE). L'interconnessione marocchina si è rivelata decisiva per fornire la potenza di cortocircuito necessaria per energizzare l'Andalusia. Fonte: ENTSO-E / REE._
+
+Il panel di esperti di ENTSO-E ha successivamente riconosciuto questa cooperazione come un caso di **coordinamento efficace tra operatori europei** di fronte a eventi di massima gravità (OB3).
+
+## Evoluzione del mix e stabilizzazione finale
+
+Sebbene i parchi solari ed eolici fossero fisicamente intatti e con risorsa primaria disponibile, la loro riconnessione è stata limitata durante le prime fasi critiche. Gli inverter in modalità _grid-following_ necessitano di leggere preventivamente una rete esterna robusta per iniettare corrente attraverso i loro anelli <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink>: senza tale riferimento, sono incapaci di operare. L'intera responsabilità della rienergizzazione è ricaduta sull'accoppiamento sequenziale di CCGT, impianti a carbone rimanenti e centrali nucleari.
+
+![Evoluzione del mix tecnologico durante la rienergizzazione peninsulare](/figuras/evolucion_mix_reenergizacion.png) _Mix tecnologico durante la rienergizzazione. Nelle prime ore, il sistema è stato sostenuto esclusivamente da importazioni transfrontaliere e generazione sincrona. L'inserimento di IBR è stato limitato finché non è stata accertata la potenza di cortocircuito e l'inerzia minima necessaria. Fonte: ENTSO-E / REE._
+
+Il carico è stato riconnesso a blocchi discreti attentamente calcolati:
+
+- **13:07 CEST** — Primi **31 MW** alimentati dalla sottostazione di Irun.
+- **23:32 CEST** — Con 21 gruppi termici sincronizzati, la domanda soddisfatta ha raggiunto i **13.039 MW** (~55% del carico atteso).
+- **00:06 CEST (29-A)** — REE ha riattivato il controllore master della riserva di ripristino automatico della frequenza (aFRR), restituendo al sistema la propria capacità di regolazione secondaria automatizzata.
+- **01:38 CEST (29-A)** — Prime direttive per reintegrare i parchi eolici e gli impianti di cogenerazione.
+- **07:05 CEST (29-A)** — Rimozione delle restrizioni per la totalità del regime RCR. REE certifica la restituzione del **99,95%** della fornitura elettrica nazionale.
+
+![Crollo e recupero della domanda elettrica peninsulare nelle 19 ore successive](/figuras/recuperacion_demanda_peninsular.png) _Crollo e recupero della domanda peninsulare. Il ripristino dei 25 GW persi è stato completato dopo quasi 19 ore di manovre ininterrotte, con connessione a gradini del carico per evitare nuovi episodi di sottofrequenza. Fonte: Comitato di Analisi del Governo._
+
+La sequenza del ripristino costituisce una constatazione empirica dell'argomento tecnico centrale di questo lavoro: la generazione sincrona —assente in quantità sufficienti durante l'operazione precedente il collasso— si è dimostrata l'unico sostegno elettromeccanico capace di supportare il recupero. Il suo ruolo di «impalcatura» della rienergizzazione non è un artefatto operativo, ma una conseguenza diretta delle proprietà fisiche fondamentali che gli IBR in modalità grid-following non possono replicare.
