@@ -31,25 +31,25 @@ const COLORS = {
   solar: '#f1c40f'            // Amarillo solar
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, strings }) => {
   if (active && payload && payload.length) {
     return (
       <div className={styles.customTooltip}>
-        <h4 className={styles.tooltipTitle}>Año {label}</h4>
+        <h4 className={styles.tooltipTitle}>{strings.year} {label}</h4>
         <div className={styles.tooltipGrid}>
           {payload.map((entry, index) => {
             if (entry.dataKey === 'emisiones') {
               return (
                 <p key={index} className={styles.emissionsLabel} style={{ color: entry.color }}>
                   <span className={styles.dot} style={{ backgroundColor: entry.color }}></span>
-                  Emisiones CO2: <strong>{entry.value} Mt</strong>
+                  {strings.emissionsLabel}: <strong>{entry.value} Mt</strong>
                 </p>
               );
             }
             return (
               <p key={index} className={styles.techLabel} style={{ color: entry.color }}>
                 <span className={styles.dot} style={{ backgroundColor: entry.color }}></span>
-                {entry.name}: <strong>{entry.value}%</strong>
+                {strings.techs[entry.name] || entry.name}: <strong>{entry.value}%</strong>
               </p>
             );
           })}
@@ -60,7 +60,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function EnergyTransitionStreamgraph() {
+export default function EnergyTransitionStreamgraph({ lang = 'es' }) {
   const [activeSeries, setActiveSeries] = useState({
     carbon: true,
     cicloCombinado: true,
@@ -78,6 +78,18 @@ export default function EnergyTransitionStreamgraph() {
     }));
   };
 
+  const getStrings = (l) => {
+    switch (l) {
+      case 'en': return { title: 'Transition Strata (1990 - 2025)', desc1: 'Generation Mix Evolution (%) vs. CO2 Emissions (Mt).', desc2: 'Click on the legend to toggle technologies.', year: 'Year', emissionsLabel: 'CO2 Emissions', techs: { "Carbón": "Coal", "Nuclear": "Nuclear", "Hidráulica": "Hydro", "Ciclo Combinado": "Combined Cycle", "Eólica": "Wind", "Solar FV": "Solar PV", "Emisiones CO2": "CO2 Emissions" } };
+      case 'pt': return { title: 'Estratos de Transição (1990 - 2025)', desc1: 'Evolução do Mix de Geração (%) vs. Emissões de CO2 (Mt).', desc2: 'Clique na legenda para alternar as tecnologias.', year: 'Ano', emissionsLabel: 'Emissões CO2', techs: { "Carbón": "Carvão", "Nuclear": "Nuclear", "Hidráulica": "Hídrica", "Ciclo Combinado": "Ciclo Combinado", "Eólica": "Eólica", "Solar FV": "Solar FV", "Emisiones CO2": "Emissões CO2" } };
+      case 'fr': return { title: 'Strates de Transition (1990 - 2025)', desc1: 'Évolution du mix de production (%) vs Émissions de CO2 (Mt).', desc2: 'Cliquez sur la légende pour basculer les technologies.', year: 'Année', emissionsLabel: 'Émissions CO2', techs: { "Carbón": "Charbon", "Nuclear": "Nucléaire", "Hidráulica": "Hydraulique", "Ciclo Combinado": "Cycle Combiné", "Eólica": "Éolien", "Solar FV": "Solaire PV", "Emisiones CO2": "Émissions CO2" } };
+      case 'it': return { title: 'Strati di Transizione (1990 - 2025)', desc1: 'Evoluzione del mix di generazione (%) vs Emissioni di CO2 (Mt).', desc2: 'Fai clic sulla legenda per attivare/disattivare le tecnologie.', year: 'Anno', emissionsLabel: 'Emissioni CO2', techs: { "Carbón": "Carbone", "Nuclear": "Nucleare", "Hidráulica": "Idroelettrica", "Ciclo Combinado": "Ciclo Combinato", "Eólica": "Eolico", "Solar FV": "Solare FV", "Emisiones CO2": "Emissioni CO2" } };
+      case 'de': return { title: 'Übergangsschichten (1990 - 2025)', desc1: 'Entwicklung des Erzeugungsmixes (%) vs. CO2-Emissionen (Mt).', desc2: 'Klicken Sie auf die Legende, um Technologien umzuschalten.', year: 'Jahr', emissionsLabel: 'CO2-Emissionen', techs: { "Carbón": "Kohle", "Nuclear": "Kernkraft", "Hidráulica": "Wasser", "Ciclo Combinado": "GuD-Kraftwerk", "Eólica": "Wind", "Solar FV": "Solar-PV", "Emisiones CO2": "CO2-Emissionen" } };
+      default: return { title: 'Estratos de Transición (1990 - 2025)', desc1: 'Evolución del Mix de Generación (%) vs. Emisiones de CO2 (Mt).', desc2: 'Haz clic en la leyenda para activar/desactivar tecnologías.', year: 'Año', emissionsLabel: 'Emisiones CO2', techs: { "Carbón": "Carbón", "Nuclear": "Nuclear", "Hidráulica": "Hidráulica", "Ciclo Combinado": "Ciclo Combinado", "Eólica": "Eólica", "Solar FV": "Solar FV", "Emisiones CO2": "Emisiones CO2" } };
+    }
+  };
+  const strings = getStrings(lang);
+
   const renderLegend = (props) => {
     const { payload } = props;
     return (
@@ -90,7 +102,7 @@ export default function EnergyTransitionStreamgraph() {
             style={{ '--item-color': entry.color }}
           >
             <span className={styles.legendColor} style={{ backgroundColor: entry.color }}></span>
-            <span className={styles.legendLabel}>{entry.value}</span>
+            <span className={styles.legendLabel}>{strings.techs[entry.value] || entry.value}</span>
           </div>
         ))}
       </div>
@@ -100,8 +112,8 @@ export default function EnergyTransitionStreamgraph() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3>Estratos de Transición (1990 - 2025)</h3>
-        <p>Evolución del Mix de Generación (%) vs. Emisiones de CO2 (Mt).<br/><em>Haz clic en la leyenda para activar/desactivar tecnologías.</em></p>
+        <h3>{strings.title}</h3>
+        <p>{strings.desc1}<br/><em>{strings.desc2}</em></p>
       </div>
       
       <div className={styles.chartWrapper}>
@@ -136,7 +148,7 @@ export default function EnergyTransitionStreamgraph() {
               axisLine={false}
             />
             
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }} />
+            <Tooltip content={<CustomTooltip strings={strings} />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }} />
             <Legend content={renderLegend} verticalAlign="bottom" height={36}/>
 
             {/* Áreas Apiladas (Streamgraph) */}

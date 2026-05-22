@@ -10,11 +10,36 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-image: url('../../static/img/blackout-bg.png');
-  background-size: cover;
-  background-position: center;
   overflow: hidden;
   transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+}
+
+.splashBgIlluminated, .splashBgDark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+.splashBgIlluminated {
+  background-image: url('../../static/img/iberian-illuminated.png');
+}
+
+.splashBgDark {
+  background-image: url('../../static/img/blackout-bg.png');
+  opacity: 0;
+  animation: blackoutTransition 8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes blackoutTransition {
+  0% { opacity: 0; }
+  30% { opacity: 0; }
+  70% { opacity: 1; }
+  100% { opacity: 1; }
 }
 
 .fadeOut {

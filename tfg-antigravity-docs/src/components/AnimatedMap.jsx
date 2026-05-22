@@ -3,20 +3,35 @@ import styles from './AnimatedMap.module.css';
 
 // Approximate relative positions on a 100x100 grid for the Iberian Peninsula
 // Top Left: 0,0 (Galicia), Bottom Right: 100,100 (Almeria)
-const nodes = [
-  { id: 'segovia', name: 'Segovia', x: 45, y: 35, time: 2, event: 'Oscilaciones precursoras (12:32:00)' },
-  { id: 'badajoz', name: 'Badajoz', x: 25, y: 65, time: 4, event: 'Alerta Tap-Lag (12:32:45)' },
-  { id: 'granada', name: 'Granada', x: 60, y: 85, time: 6, event: 'Disparo Raíz (12:32:56)' },
-  { id: 'sevilla', name: 'Sevilla', x: 35, y: 80, time: 8, event: 'Propagación de Sobretensión (12:33:05)' },
-  { id: 'huelva', name: 'Huelva', x: 25, y: 85, time: 9, event: 'Desconexión Fotovoltaica (12:33:10)' },
-  { id: 'carmona', name: 'Carmona', x: 40, y: 82, time: 10, event: 'Pérdida de Reactiva (12:33:15)' },
-  { id: 'francia', name: 'Interconexión FR', x: 80, y: 15, time: 12, event: 'Pérdida de Sincronismo (12:33:21)' }
-];
+const getNodes = (lang) => {
+  const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
+  return [
+    { id: 'segovia', name: 'Segovia', x: 45, y: 35, time: 2, event: t('Oscilaciones precursoras', 'Precursor oscillations', 'Oscilações precursoras', 'Oscillations précurseurs', 'Oscillazioni precursori', 'Vorläufer-Oszillationen') + ' (12:32:00)' },
+    { id: 'badajoz', name: 'Badajoz', x: 25, y: 65, time: 4, event: t('Alerta Tap-Lag', 'Tap-Lag Alert', 'Alerta Tap-Lag', 'Alerte Tap-Lag', 'Allarme Tap-Lag', 'Tap-Lag-Alarm') + ' (12:32:45)' },
+    { id: 'granada', name: 'Granada', x: 60, y: 85, time: 6, event: t('Disparo Raíz', 'Root Trip', 'Disparo Raiz', 'Déclenchement Racine', 'Scatto Radice', 'Wurzel-Auslösung') + ' (12:32:56)' },
+    { id: 'sevilla', name: 'Sevilla', x: 35, y: 80, time: 8, event: t('Propagación de Sobretensión', 'Overvoltage Propagation', 'Propagação de Sobretensão', 'Propagation de Surtension', 'Propagazione della Sovratensione', 'Überspannungsausbreitung') + ' (12:33:05)' },
+    { id: 'huelva', name: 'Huelva', x: 25, y: 85, time: 9, event: t('Desconexión Fotovoltaica', 'PV Disconnection', 'Desconexão Fotovoltaica', 'Déconnexion Photovoltaïque', 'Disconnessione Fotovoltaica', 'PV-Trennung') + ' (12:33:10)' },
+    { id: 'carmona', name: 'Carmona', x: 40, y: 82, time: 10, event: t('Pérdida de Reactiva', 'Reactive Power Loss', 'Perda de Reativa', 'Perte de Puissance Réactive', 'Perdita di Potenza Reattiva', 'Blindleistungsverlust') + ' (12:33:15)' },
+    { id: 'francia', name: t('Interconexión FR', 'FR Interconnection', 'Interconexão FR', 'Interconnexion FR', 'Interconnessione FR', 'FR-Verbindungsleitung'), x: 80, y: 15, time: 12, event: t('Pérdida de Sincronismo', 'Loss of Synchronism', 'Perda de Sincronismo', 'Perte de Synchronisme', 'Perdita di Sincronismo', 'Synchronisationsverlust') + ' (12:33:21)' }
+  ];
+};
 
 export default function AnimatedMap({ lang = 'es' }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const isEn = lang === 'en';
+  const nodes = getNodes(lang);
+  
+  const getStrings = (l) => {
+    switch (l) {
+      case 'en': return { sim: 'Simulating Collapse...', play: '▶ Play Cascade Sequence', time: 'Time: ', caption: 'Abstract topological map of the overvoltage propagation and disconnection cascade across the Iberian network.' };
+      case 'pt': return { sim: 'Simulando Colapso...', play: '▶ Simular Cascata', time: 'Tempo: ', caption: 'Mapa topológico abstrato da propagação de sobretensão e cascata de desconexões na rede ibérica.' };
+      case 'fr': return { sim: 'Simulation en cours...', play: '▶ Simuler la Cascade', time: 'Temps : ', caption: 'Carte topologique abstraite de la propagation des surtensions et de la cascade de déconnexions sur le réseau ibérique.' };
+      case 'it': return { sim: 'Simulazione Collasso...', play: '▶ Simula Cascata', time: 'Tempo: ', caption: 'Mappa topologica astratta della propagazione delle sovratensioni e della cascata di disconnessioni nella rete iberica.' };
+      case 'de': return { sim: 'Kollaps wird simuliert...', play: '▶ Kaskade Simulieren', time: 'Zeit: ', caption: 'Abstrakte topologische Karte der Überspannungsausbreitung und Kaskadenabschaltungen im iberischen Netz.' };
+      default: return { sim: 'Simulando Colapso...', play: '▶ Simular Cascada', time: 'Tiempo: ', caption: 'Mapa topológico abstracto de la propagación de la sobretensión y cascata de desconexiones en la red ibérica.' };
+    }
+  };
+  const strings = getStrings(lang);
 
   useEffect(() => {
     let interval;
@@ -47,12 +62,10 @@ export default function AnimatedMap({ lang = 'es' }) {
           onClick={handlePlay} 
           disabled={isPlaying}
         >
-          {isPlaying 
-            ? (isEn ? 'Simulating Collapse...' : 'Simulando Colapso...') 
-            : (isEn ? '▶ Play Cascade Sequence' : '▶ Simular Cascada')}
+          {isPlaying ? strings.sim : strings.play}
         </button>
         <span className={styles.timer}>
-          {isEn ? 'Time: ' : 'Tiempo: '} T+ {currentTime}s
+          {strings.time} T+ {currentTime}s
         </span>
       </div>
 
@@ -93,9 +106,7 @@ export default function AnimatedMap({ lang = 'es' }) {
       </div>
       
       <div className={styles.caption}>
-        {isEn 
-          ? "Abstract topological map of the overvoltage propagation and disconnection cascade across the Iberian network."
-          : "Mapa topológico abstracto de la propagación de la sobretensión y cascada de desconexiones en la red ibérica."}
+        {strings.caption}
       </div>
     </div>
   );
