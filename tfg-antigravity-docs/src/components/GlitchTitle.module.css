@@ -1,0 +1,31 @@
+.glitch { position: relative; display: inline-block; color: var(--text-0); }
+.glitch::before, .glitch::after {
+  content: attr(data-text); position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+}
+.glitch.run::before {
+  animation: g-cyan 600ms steps(8) 1;
+  color: hsl(190 100% 60%); text-shadow: 1px 0 hsl(190 100% 60%);
+  mix-blend-mode: screen;
+}
+.glitch.run::after {
+  animation: g-magenta 600ms steps(8) 1;
+  color: hsl(340 100% 60%); text-shadow: -1px 0 hsl(340 100% 60%);
+  mix-blend-mode: screen;
+}
+@keyframes g-cyan {
+  0%,100% { opacity: 0; transform: translate(0); clip-path: inset(0 0 100% 0); }
+  20% { opacity: 1; transform: translate(-2px, 1px); clip-path: inset(10% 0 60% 0); }
+  40% { opacity: 1; transform: translate(2px, -1px); clip-path: inset(40% 0 30% 0); }
+  60% { opacity: 0.6; clip-path: inset(60% 0 20% 0); }
+  80% { opacity: 0; }
+}
+@keyframes g-magenta {
+  0%,100% { opacity: 0; transform: translate(0); }
+  25% { opacity: 1; transform: translate(2px, -1px); }
+  50% { opacity: 0.7; transform: translate(-2px, 1px); }
+  75% { opacity: 0.4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before, .glitch::after { animation: none !important; }
+}
