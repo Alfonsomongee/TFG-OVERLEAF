@@ -1,8 +1,12 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { energyMixData } from '../data/forensicData';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
-export default function EnergyMixChart({ lang = 'es' }) {
+export default function EnergyMixChart({ lang }) {
+  const { i18n } = useDocusaurusContext();
+  const currentLang = lang || i18n?.currentLocale || 'es';
+
   const getStrings = (l) => {
     switch (l) {
       case 'en': return { title: 'Pre-Collapse Energy Mix vs Abrupt Loss (GW)', yaxis: 'Power (GW)', inyectada: 'Injected Power (GW)', perdida: 'Cascading Loss (GW)', 
@@ -20,7 +24,7 @@ export default function EnergyMixChart({ lang = 'es' }) {
     }
   };
 
-  const strings = getStrings(lang);
+  const strings = getStrings(currentLang);
   const localizedData = energyMixData.map(d => ({
     ...d,
     tecnologia: strings.techs[d.tecnologia] || d.tecnologia

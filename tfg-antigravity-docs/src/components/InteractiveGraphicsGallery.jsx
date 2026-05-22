@@ -115,6 +115,7 @@ import PhasePlanePlot from './PhasePlanePlot';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
+  { id: 'energymix', icon: '⚡', component: EnergyMixChart },
   { id: 'map', icon: '🗺️', component: AnimatedMap },
   { id: 'timeline', icon: '⏱️', component: VerticalTimeline },
   { id: 'sld', icon: '🔌', component: SldDiagram },

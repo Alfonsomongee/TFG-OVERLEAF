@@ -19,8 +19,12 @@ const getSteps = (lang) => {
     { stepIndex: 5, title: t('12:33:23 — Colapso y paradoja UFLS', '12:33:23 — Collapse & UFLS Paradox', '12:33:23 — Colapso e Paradoxo UFLS', '12:33:23 — Effondrement et Paradoxe UFLS', '12:33:23 — Collasso e Paradosso UFLS', '12:33:23 — Kollaps & UFLS-Paradoxon'), text: t('El UFLS deslastra 10 GW de bombeo y demanda industrial. Paradójicamente, esto agrava la sobretensión al eliminar consumo inductivo. Segundos después, la central nuclear sufre SCRAM. Es el cero absoluto.', 'The UFLS sheds 10 GW of pumping and industrial demand. Paradoxically, this aggravates the overvoltage by removing inductive consumption. Seconds later, the nuclear plant suffers SCRAM. Absolute zero.', 'O UFLS corta 10 GW de bombeamento e demanda industrial. A usina nuclear sofre SCRAM. É o zero absoluto.', 'L\'UFLS décharge 10 GW de pompage et de demande industrielle. La centrale nucléaire subit un SCRAM.', 'L\'UFLS scarica 10 GW di pompaggio e domanda industriale. La centrale nucleare subisce uno SCRAM.', 'Das UFLS wirft 10 GW Pump- und Industrienachfrage ab. Das Kernkraftwerk erleidet einen SCRAM. Absoluter Nullpunkt.'), visibleUntilT: 26 }
   ];
 };
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
-export default function FrequencyChartScrolly({ isGallery = false, lang = 'es' }) {
+export default function FrequencyChartScrolly({ isGallery = false, lang }) {
+  const { i18n } = useDocusaurusContext();
+  const currentLang = lang || i18n.currentLocale || 'es';
+
   const getLoadingText = (l) => {
     switch(l) {
       case 'en': return 'Loading interactive visualization...';
@@ -33,13 +37,13 @@ export default function FrequencyChartScrolly({ isGallery = false, lang = 'es' }
   };
 
   return (
-    <BrowserOnly fallback={<div>{getLoadingText(lang)}</div>}>
-      {() => <FrequencyChartScrollyContent isGallery={isGallery} lang={lang} />}
+    <BrowserOnly fallback={<div>{getLoadingText(currentLang)}</div>}>
+      {() => <FrequencyChartScrollyContent isGallery={isGallery} lang={currentLang} />}
     </BrowserOnly>
   );
 }
 
-function FrequencyChartScrollyContent({ isGallery, lang = 'es' }) {
+function FrequencyChartScrollyContent({ isGallery, lang }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   
   const STEPS = getSteps(lang);
@@ -74,19 +78,23 @@ function FrequencyChartScrollyContent({ isGallery, lang = 'es' }) {
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
           {STEPS.map((s) => (
-            <button 
-              key={s.stepIndex}
-              onClick={() => setCurrentStepIndex(s.stepIndex)}
-              style={{
-                padding: '10px 15px',
-                borderRadius: '8px',
-                border: currentStepIndex === s.stepIndex ? '2px solid var(--ifm-color-primary)' : '1px solid var(--ifm-color-emphasis-300)',
-                backgroundColor: currentStepIndex === s.stepIndex ? 'var(--ifm-color-primary-lightest)' : 'var(--ifm-background-surface-color)',
-                color: currentStepIndex === s.stepIndex ? 'var(--ifm-color-primary-darker)' : 'var(--ifm-font-color-base)',
-                cursor: 'pointer',
-                fontWeight: currentStepIndex === s.stepIndex ? 'bold' : 'normal'
-              }}
-            >
+              <button 
+                key={s.stepIndex}
+                onClick={() => setCurrentStepIndex(s.stepIndex)}
+                style={{
+                  position: 'relative',
+                  padding: '10px 15px',
+                  borderRadius: '4px',
+                  border: '1px solid transparent',
+                  borderLeft: currentStepIndex === s.stepIndex ? '3px solid var(--ifm-color-primary)' : '3px solid transparent',
+                  backgroundColor: currentStepIndex === s.stepIndex ? 'color-mix(in srgb, var(--ifm-color-primary) 15%, transparent)' : 'transparent',
+                  color: currentStepIndex === s.stepIndex ? 'var(--ifm-color-primary)' : 'var(--ifm-font-color-base)',
+                  cursor: 'pointer',
+                  fontWeight: currentStepIndex === s.stepIndex ? 'bold' : 'normal',
+                  transition: 'all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                  boxShadow: currentStepIndex === s.stepIndex ? 'inset 200px 0 0 0 color-mix(in srgb, var(--ifm-color-primary) 5%, transparent)' : 'none'
+                }}
+              >
               {s.title.split(' — ')[0]}
             </button>
           ))}
