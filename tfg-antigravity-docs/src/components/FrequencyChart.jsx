@@ -17,21 +17,60 @@ const STEPS = [
   { stepIndex: 5, title: '12:33:23 — Colapso y paradoja UFLS', text: 'El UFLS deslastra 10 GW de bombeo y demanda industrial. Paradójicamente, esto agrava la sobretensión al eliminar consumo inductivo. Segundos después, la central nuclear sufre SCRAM. Es el cero absoluto.', visibleUntilT: 26 }
 ];
 
-export default function FrequencyChartScrolly() {
+export default function FrequencyChartScrolly({ isGallery = false }) {
   return (
     <BrowserOnly fallback={<div>Cargando visualización interactiva...</div>}>
-      {() => <FrequencyChartScrollyContent />}
+      {() => <FrequencyChartScrollyContent isGallery={isGallery} />}
     </BrowserOnly>
   );
 }
 
-function FrequencyChartScrollyContent() {
+function FrequencyChartScrollyContent({ isGallery }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   
   const currentStep = STEPS[currentStepIndex] || STEPS[0];
-  
-  // Filtramos los datos para que la línea de la gráfica "crezca" a medida que el usuario hace scroll
   const visibleData = validTimelineData.filter(d => d.tiempoS <= currentStep.visibleUntilT);
+
+  if (isGallery) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
+        <div style={{ height: '400px', background: 'var(--ifm-background-surface-color)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={visibleData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
+              <XAxis dataKey="tiempoS" domain={[0, 26]} type="number" stroke="var(--ifm-color-emphasis-600)" label={{ value: 'Segundos desde el detonante', position: 'insideBottom', offset: -10 }} />
+              <YAxis domain={[46, 50.1]} stroke="var(--ifm-color-emphasis-600)" unit=" Hz" />
+              <ReferenceLine y={49.5} stroke="#ef4444" strokeDasharray="4 4" label={{ position: 'insideBottomRight', value: 'UFLS (49.5 Hz)'}} />
+              <ReferenceLine y={48.46} stroke="#ef4444" strokeDasharray="4 4" label={{ position: 'insideTopRight', value: 'Aislamiento FR'}} />
+              <Line type="stepAfter" dataKey="frecuencia" stroke="#FF4D4D" strokeWidth={5} isAnimationActive={false} dot={{ r: 5, fill: 'var(--ifm-background-surface-color)', stroke: '#FF4D4D', strokeWidth: 2 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+          {STEPS.map((s) => (
+            <button 
+              key={s.stepIndex}
+              onClick={() => setCurrentStepIndex(s.stepIndex)}
+              style={{
+                padding: '10px 15px',
+                borderRadius: '8px',
+                border: currentStepIndex === s.stepIndex ? '2px solid var(--ifm-color-primary)' : '1px solid var(--ifm-color-emphasis-300)',
+                backgroundColor: currentStepIndex === s.stepIndex ? 'var(--ifm-color-primary-lightest)' : 'var(--ifm-background-surface-color)',
+                color: currentStepIndex === s.stepIndex ? 'var(--ifm-color-primary-darker)' : 'var(--ifm-font-color-base)',
+                cursor: 'pointer',
+                fontWeight: currentStepIndex === s.stepIndex ? 'bold' : 'normal'
+              }}
+            >
+              {s.title.split(' — ')[0]}
+            </button>
+          ))}
+        </div>
+        <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.05)', borderRadius: '8px', minHeight: '80px' }}>
+          <h4 style={{ color: 'var(--ifm-color-primary)', margin: '0 0 10px 0' }}>{currentStep.title}</h4>
+          <p style={{ margin: 0, fontSize: '0.95rem' }}>{currentStep.text}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.scrollyWrapper} style={{ position: 'relative', margin: '2rem 0' }}>
@@ -44,35 +83,12 @@ function FrequencyChartScrollyContent() {
           </div>
           <div style={{ height: 'calc(100% - 60px)', background: 'var(--ifm-background-surface-color)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={visibleData}
-                margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
-              >
-                <XAxis 
-                  dataKey="tiempoS" 
-                  domain={[0, 26]} 
-                  type="number"
-                  stroke="var(--ifm-color-emphasis-600)" 
-                  label={{ value: 'Segundos desde el detonante', position: 'insideBottom', offset: -10 }}
-                />
-                <YAxis 
-                  domain={[46, 50.1]} 
-                  stroke="var(--ifm-color-emphasis-600)"
-                  unit=" Hz"
-                />
-                
+              <LineChart data={visibleData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
+                <XAxis dataKey="tiempoS" domain={[0, 26]} type="number" stroke="var(--ifm-color-emphasis-600)" label={{ value: 'Segundos desde el detonante', position: 'insideBottom', offset: -10 }} />
+                <YAxis domain={[46, 50.1]} stroke="var(--ifm-color-emphasis-600)" unit=" Hz" />
                 <ReferenceLine y={49.5} stroke="#ef4444" strokeDasharray="4 4" label={{ position: 'insideBottomRight', value: 'UFLS (49.5 Hz)'}} />
                 <ReferenceLine y={48.46} stroke="#ef4444" strokeDasharray="4 4" label={{ position: 'insideTopRight', value: 'Aislamiento FR'}} />
-                
-                <Line 
-                  type="stepAfter" 
-                  dataKey="frecuencia" 
-                  stroke="#FF4D4D" 
-                  strokeWidth={5}
-                  isAnimationActive={true}
-                  animationDuration={600}
-                  dot={{ r: 5, fill: 'var(--ifm-background-surface-color)', stroke: '#FF4D4D', strokeWidth: 2 }}
-                />
+                <Line type="stepAfter" dataKey="frecuencia" stroke="#FF4D4D" strokeWidth={5} isAnimationActive={true} animationDuration={600} dot={{ r: 5, fill: 'var(--ifm-background-surface-color)', stroke: '#FF4D4D', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

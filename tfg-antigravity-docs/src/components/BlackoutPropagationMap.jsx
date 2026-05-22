@@ -54,6 +54,7 @@ function BlackoutMapContent() {
       minZoom: 0,
       maxZoom: 19,
       tileSize: 256,
+      opacity: Math.max(0.2, 1 - (time / 100)), // El mapa se apaga progresivamente
       renderSubLayers: props => {
         const { boundingBox } = props.tile;
         return new BitmapLayer(props, {

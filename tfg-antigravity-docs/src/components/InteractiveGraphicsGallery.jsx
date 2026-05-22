@@ -137,7 +137,7 @@ export default function InteractiveGraphicsGallery({ lang = 'es' }) {
         </div>
         <div className={styles.graphicStage}>
           <BrowserOnly fallback={<div>Cargando gráfico interactivo / Loading interactive graphic...</div>}>
-            {() => <ActiveComponent lang={lang} />}
+            {() => <ActiveComponent lang={lang} isGallery={true} />}
           </BrowserOnly>
         </div>
       </div>
