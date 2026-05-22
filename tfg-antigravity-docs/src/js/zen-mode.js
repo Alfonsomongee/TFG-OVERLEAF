@@ -47,7 +47,7 @@ if (typeof document !== 'undefined') {
   // Try to translate on load and when DOM changes
   document.addEventListener('DOMContentLoaded', translateZenMode);
   const observerLang = new MutationObserver(translateZenMode);
-  observerLang.observe(document.body, { childList: true, subtree: true });
+  observerLang.observe(document.documentElement, { childList: true, subtree: true });
 
   // Handle toggling
   document.addEventListener('click', (e) => {
