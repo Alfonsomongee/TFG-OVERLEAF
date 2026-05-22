@@ -93,7 +93,6 @@ function TopologyMapContent() {
       <ForceGraph2D
         ref={fgRef}
         graphData={GRID_DATA}
-        nodeLabel="name"
         nodeColor={node => highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.1)'}
         nodeRelSize={6}
         nodeVal={node => node.val}

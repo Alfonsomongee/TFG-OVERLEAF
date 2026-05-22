@@ -48,6 +48,21 @@ function BlackoutMapContent() {
   }, []);
 
   const layers = [
+    new TileLayer({
+      id: 'carto-dark-matter',
+      data: 'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      minZoom: 0,
+      maxZoom: 19,
+      tileSize: 256,
+      renderSubLayers: props => {
+        const { boundingBox } = props.tile;
+        return new BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]]
+        });
+      }
+    }),
     new ScatterplotLayer({
       id: 'stations-layer',
       data: STATIONS,
@@ -79,21 +94,6 @@ function BlackoutMapContent() {
       getSourceColor: [255, 0, 0, 200],
       getTargetColor: [255, 165, 0, 200],
       getTilt: d => (time / 100) * 15 - 7.5
-    }),
-    new TileLayer({
-      id: 'carto-dark-matter',
-      data: 'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-      minZoom: 0,
-      maxZoom: 19,
-      tileSize: 256,
-      renderSubLayers: props => {
-        const { boundingBox } = props.tile;
-        return new BitmapLayer(props, {
-          data: null,
-          image: props.data,
-          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]]
-        });
-      }
     })
   ];
 
