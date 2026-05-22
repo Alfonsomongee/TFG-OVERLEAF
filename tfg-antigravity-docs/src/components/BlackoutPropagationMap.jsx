@@ -39,13 +39,19 @@ const ARCS = [
 function BlackoutMapContent() {
   const [time, setTime] = useState(0);
   const [clickedObject, setClickedObject] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    const animation = setInterval(() => {
-      setTime(t => (t + 1) % 150); // Loop de 15 segundos
-    }, 100);
+    let animation;
+    if (isPlaying && time < 110) {
+      animation = setInterval(() => {
+        setTime(t => t + 1);
+      }, 100);
+    } else if (time >= 110) {
+      setIsPlaying(false);
+    }
     return () => clearInterval(animation);
-  }, []);
+  }, [isPlaying, time]);
 
   const layers = [
     new TileLayer({
@@ -91,7 +97,7 @@ function BlackoutMapContent() {
   ];
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#050505' }}>
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
@@ -121,8 +127,27 @@ function BlackoutMapContent() {
         <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#d1d5db', marginBottom: '15px' }}>
           El oscurecimiento geográfico progresivo simula el hundimiento de tensión a lo largo de los 11 segundos.
         </p>
-        <div style={{ background: 'var(--ifm-color-primary)', padding: '5px 10px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold', display: 'inline-block' }}>
-          Progreso de Simulación: {Math.min(11.0, time / 10).toFixed(1)}s {time > 120 && '(Reiniciando...)'}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button 
+            onClick={() => {
+              if (time >= 110) setTime(0);
+              setIsPlaying(!isPlaying);
+            }}
+            style={{
+              background: 'var(--ifm-color-primary)',
+              color: 'white',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            {time >= 110 ? 'Replay' : (isPlaying ? 'Pausa' : 'Play')}
+          </button>
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 10px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold' }}>
+            Progreso: {(time / 10).toFixed(1)}s
+          </div>
         </div>
         <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '15px', fontStyle: 'italic', margin: '15px 0 0 0' }}>
           <span style={{color: '#fff'}}>Interacción:</span> Arrastra para rotar la cámara en 3D. Haz clic en las esferas para ver el informe forense.
