@@ -3,22 +3,84 @@ import styles from './GlosarioTecnico.module.css';
 
 import { GLOSSARY_TERMS as esTerms } from '../data/glossary';
 import { GLOSSARY_TERMS as enTerms } from '../data/glossary_en';
+import { GLOSSARY_TERMS as ptTerms } from '../data/glossary_pt';
+import { GLOSSARY_TERMS as frTerms } from '../data/glossary_fr';
+import { GLOSSARY_TERMS as itTerms } from '../data/glossary_it';
+import { GLOSSARY_TERMS as deTerms } from '../data/glossary_de';
 
 export default function GlosarioTecnico({ lang = 'es' }) {
-  const GLOSSARY_TERMS = lang === 'en' ? enTerms : esTerms;
+  let GLOSSARY_TERMS = esTerms;
+  if (lang === 'en') GLOSSARY_TERMS = enTerms;
+  if (lang === 'pt') GLOSSARY_TERMS = ptTerms;
+  if (lang === 'fr') GLOSSARY_TERMS = frTerms;
+  if (lang === 'it') GLOSSARY_TERMS = itTerms;
+  if (lang === 'de') GLOSSARY_TERMS = deTerms;
   
-  const strings = {
-    searchPlaceholder: lang === 'en' ? "Search term or definition..." : "Buscar término o definición...",
-    all: lang === 'en' ? "All" : "Todas",
-    showing: lang === 'en' ? "Showing" : "Mostrando",
-    of: lang === 'en' ? "of" : "de",
-    terms: lang === 'en' ? "terms" : "términos",
-    noResults: lang === 'en' ? "No terms found matching your search." : "No se encontraron términos que coincidan con tu búsqueda.",
-    reset: lang === 'en' ? "Reset search" : "Reiniciar búsqueda",
-    footer: lang === 'en' 
-      ? "Last updated: May 2026 — Alfonso Monge García, ETSI Universidad de Sevilla" 
-      : "Última actualización: mayo 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+  const getStrings = (l) => {
+    switch (l) {
+      case 'en': return {
+        searchPlaceholder: "Search term or definition...",
+        noResults: "No terms found matching your search.",
+        showing: "Showing",
+        of: "of",
+        terms: "terms",
+        all: "All",
+        reset: "Reset search",
+        footer: "Last updated: May 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      case 'pt': return {
+        searchPlaceholder: "Pesquisar termo ou definição...",
+        noResults: "Nenhum termo encontrado para sua busca.",
+        showing: "Mostrando",
+        of: "de",
+        terms: "termos",
+        all: "Todas",
+        reset: "Reiniciar pesquisa",
+        footer: "Última atualização: maio 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      case 'fr': return {
+        searchPlaceholder: "Rechercher un terme ou une définition...",
+        noResults: "Aucun terme trouvé correspondant à votre recherche.",
+        showing: "Affichage",
+        of: "sur",
+        terms: "termes",
+        all: "Toutes",
+        reset: "Réinitialiser la recherche",
+        footer: "Dernière mise à jour : mai 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      case 'it': return {
+        searchPlaceholder: "Cerca termine o definizione...",
+        noResults: "Nessun termine trovato per la ricerca.",
+        showing: "Mostrando",
+        of: "di",
+        terms: "termini",
+        all: "Tutte",
+        reset: "Ripristina ricerca",
+        footer: "Ultimo aggiornamento: maggio 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      case 'de': return {
+        searchPlaceholder: "Begriff oder Definition suchen...",
+        noResults: "Keine Begriffe für Ihre Suche gefunden.",
+        showing: "Zeige",
+        of: "von",
+        terms: "Begriffe",
+        all: "Alle",
+        reset: "Suche zurücksetzen",
+        footer: "Letzte Aktualisierung: Mai 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      default: return {
+        searchPlaceholder: "Buscar término o definición...",
+        noResults: "No se encontraron términos que coincidan con tu búsqueda.",
+        showing: "Mostrando",
+        of: "de",
+        terms: "términos",
+        all: "Todas",
+        reset: "Reiniciar búsqueda",
+        footer: "Última actualización: mayo 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+    }
   };
+  const strings = getStrings(lang);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLetter, setSelectedLetter] = useState(null);
 
