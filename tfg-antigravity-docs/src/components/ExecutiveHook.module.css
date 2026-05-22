@@ -32,20 +32,19 @@
 .splashBgDark {
   background-image: url('../../static/img/blackout-bg.png');
   opacity: 0;
-  animation: blackoutTransition 8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: blackoutTransition 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 1.5s;
 }
 
 @keyframes blackoutTransition {
   0% { opacity: 0; }
-  30% { opacity: 0; }
-  70% { opacity: 1; }
   100% { opacity: 1; }
 }
 
 .fadeOut {
-  opacity: 0;
-  transform: translateY(-50px);
+  opacity: 0 !important;
   pointer-events: none;
+  backdrop-filter: blur(10px);
 }
 
 .splashOverlay {
@@ -73,7 +72,11 @@
   color: #ffffff;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  text-shadow: 0 4px 30px rgba(0,0,0,1);
+  opacity: 0;
+  transform: scale(0.95);
+  animation: cinematicTextIn 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.2s;
 }
 
 .splashSubtitle {
@@ -81,6 +84,10 @@
   color: #94a3b8;
   margin-bottom: 3rem;
   font-weight: 300;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cinematicTextIn 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.8s;
 }
 
 .splashButton {
@@ -146,17 +153,32 @@
   letter-spacing: 4px;
   margin-top: 2rem;
   opacity: 0;
-  animation: glowFadeIn 2s ease-in-out forwards;
-  animation-delay: 0.5s;
+  animation: cinematicFadeInGlow 2s ease-in-out forwards;
+  animation-delay: 1.5s;
 }
 
-@keyframes glowFadeIn {
+@keyframes cinematicTextIn {
   0% {
     opacity: 0;
+    transform: scale(0.95) translateY(15px);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes cinematicFadeInGlow {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
     text-shadow: 0 0 0px rgba(255, 255, 255, 0);
   }
   100% {
     opacity: 0.9;
+    transform: translateY(0);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
   }
 }

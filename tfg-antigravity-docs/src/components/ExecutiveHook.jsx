@@ -137,15 +137,15 @@ export default function ExecutiveHook() {
   const strings = getStrings(lang);
 
   useEffect(() => {
-    // Start fading out after 2.5 seconds (to make the whole thing ~3s)
+    // Start fading out after 4.5 seconds (gives time for blackout to finish)
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
-    }, 2500);
+    }, 4500);
 
-    // Completely remove from DOM after 4 seconds
+    // Completely remove from DOM after 6 seconds
     const hideTimer = setTimeout(() => {
       setIsHidden(true);
-    }, 4000);
+    }, 6000);
 
     return () => {
       clearTimeout(fadeTimer);
