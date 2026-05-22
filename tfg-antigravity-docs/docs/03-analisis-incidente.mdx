@@ -1,13 +1,11 @@
 ---
 sidebar_position: 3
+hide_title: true
 sidebar_label: "Análisis del incidente"
 title: "Análisis del incidente"
 ---
-
+import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
-import FrequencyChart from "@site/src/components/FrequencyChart";
-import EnergyMixChart from "@site/src/components/EnergyMixChart";
-import AnimatedMap from "@site/src/components/AnimatedMap";
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
@@ -35,18 +33,7 @@ Las simulaciones periciales del IIT-ICAI estiman que, tras el mallado, la distan
 
 La naturaleza del primer transitorio —la oscilación de 0,6 Hz de las 12:03 CEST— es objeto de controversia técnica directa. REE la clasifica como una oscilación forzada originada en el lazo de control de una planta fotovoltaica en Badajoz. El informe ICAI argumenta, en cambio, que se trató de un modo natural inter-área exacerbado por un ratio de amortiguamiento sistémico del **1 %**, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados andaluces que permanecían apagados.
 
-<ChartCard 
-  fig="03" 
-  title="Caída de frecuencia del área síncrona ibérica"
-  dek="Los 11 segundos previos al colapso, registrados por CECOEL."
-  source="Red Eléctrica de España (ENTSO-E open data)"
-  caption="La frecuencia cae de 50.00 Hz a 48.30 Hz entre t=0 y t=11 s, cruzando los umbrales de deslastre automático (49.0 Hz) y disparo de generación (48.5 Hz)."
-  fullBleed
->
-  <BrowserOnly fallback={<div>Cargando interactivo...</div>}>
-    {() => <FrequencyChart />}
-  </BrowserOnly>
-</ChartCard>
+![Evolución de la frecuencia del sistema durante la Fase 1. Análisis NREL](/figuras/timeline_frecuencia_nrel.png) _La frecuencia cae de 50.00 Hz a 48.30 Hz entre t=0 y t=11 s, cruzando los umbrales de deslastre automático (49.0 Hz) y disparo de generación (48.5 Hz). Fuente: Red Eléctrica de España (ENTSO-E open data)._
 
 La inestabilidad se intensificó a las **12:19 CEST** con el modo de **0,2 Hz**, confirmado por telemetría fasorial europea como el modo natural Este-Centro-Oeste del área síncrona: la reducida masa rotatoria ibérica oscilaba en contrafase respecto al centro de inercia europeo, materializando el efecto látigo descrito en el Capítulo 2.
 
@@ -68,15 +55,7 @@ Ante voltajes inasumibles para su electrónica de potencia, los inversores de la
 
 ## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST)
 
-<ChartCard 
-  fig="06" 
-  title="Simulación Geográfica del Colapso"
-  fullBleed
->
-  <BrowserOnly fallback={<div>Cargando mapa interactivo...</div>}>
-    {() => <AnimatedMap lang="es" />}
-  </BrowserOnly>
-</ChartCard>
+
 
 En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo vicioso dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR para autoprotegerse, la red perdía instantáneamente su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de **443 kV** en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
 
@@ -84,15 +63,7 @@ En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo 
 
 Los golpes más severos se concentraron inicialmente en **Badajoz** (más de **725 MW** perdidos a las 12:33:16 CEST) y, un segundo después, en las subestaciones de **Segovia, Sevilla y Huelva** (930 MW adicionales a las 12:33:17 CEST). En la ventana de cinco segundos entre las 12:33:19 y las 12:33:24 CEST, la cascada desconectó más de **15 GW de generación** —cerca del **60 % de la demanda instantánea nacional**— llevando al sistema más allá de cualquier posibilidad de recuperación.
 
-<ChartCard 
-  fig="08" 
-  title="Mix Energético Transitorio"
-  fullBleed
->
-  <BrowserOnly fallback={<div>Cargando mix...</div>}>
-    {() => <EnergyMixChart />}
-  </BrowserOnly>
-</ChartCard>
+
 
 A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink> extrema, activando los esquemas de <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>. Al cruzar el umbral de **49,5 Hz** a las 12:33:20 CEST, se desconectaron automáticamente más de **2.000 MW** de bombeo hidráulico, seguidos de múltiples escalones de demanda industrial.
 
