@@ -56,11 +56,15 @@ export default function AnimatedMap({ lang = 'es' }) {
         </span>
       </div>
 
-      <div className={styles.mapArea}>
-        {/* Abstract representation of Iberian Peninsula Coastline */}
-        <svg className={styles.coastline} viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path d="M 10,10 L 80,10 L 90,40 L 70,90 L 30,95 L 5,60 Z" fill="none" stroke="var(--ifm-color-emphasis-200)" strokeWidth="0.5" strokeDasharray="2 2" />
-        </svg>
+      <div 
+        className={styles.mapArea}
+        style={{ 
+          backgroundImage: `url('/img/iberian_satellite.png')`, 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center',
+          backgroundColor: '#050505'
+        }}
+      >
 
         {nodes.map(node => {
           const isActive = currentTime >= node.time;
