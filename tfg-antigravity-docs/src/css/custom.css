@@ -1,99 +1,142 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@300;400;700;900&family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 /* ============================================================
-   TFG Apagón Ibérico 28A — Premium Custom CSS
+   TFG Apagón Ibérico 28A — Cyberpunk Editorial Custom CSS
    ============================================================ */
 
 :root {
-  /* Vibrant Cyan / Neon Blue primary color for energy/electricity theme */
-  --ifm-color-primary: #0ea5e9;
-  --ifm-color-primary-dark: #0284c7;
-  --ifm-color-primary-darker: #0369a1;
-  --ifm-color-primary-darkest: #075985;
-  --ifm-color-primary-light: #38bdf8;
-  --ifm-color-primary-lighter: #7dd3fc;
-  --ifm-color-primary-lightest: #bae6fd;
+  /* ── Brand / acentos ─────────────────────────────────── */
+  --accent-electric: hsl(190 100% 60%);   /* cian CECOEL — datos fríos */
+  --accent-amber:    hsl(38 100% 56%);    /* ámbar — alarma / transición */
+  --accent-magenta:  hsl(322 100% 62%);   /* glitch / dato anómalo */
 
-  /* Semantics */
+  /* ── Backgrounds (dark, base) ─────────────────────────── */
+  --bg-0: hsl(220 60% 3%);     /* fondo deep — el "apagón" */
+  --bg-1: hsl(220 40% 6%);     /* cards base */
+  --bg-2: hsl(220 32% 10%);    /* surfaces elevadas */
+  --bg-3: hsl(220 25% 14%);    /* hover state */
+
+  /* ── Texto (jerarquía 4 niveles) ──────────────────────── */
+  --text-0: hsl(220 20% 98%);  /* primario — titulares */
+  --text-1: hsl(220 15% 88%);  /* secundario — body */
+  --text-2: hsl(220 12% 68%);  /* terciario — captions */
+  --text-3: hsl(220 10% 48%);  /* meta — fuentes, dek */
+
+  /* ── Escala danger/warning ────────────────────────────── */
+  --warn-300: hsl(38 95% 70%);
+  --warn-500: hsl(38 100% 56%);
+  --warn-700: hsl(28 100% 46%);
+  --danger-300: hsl(8 85% 70%);
+  --danger-500: hsl(0 75% 56%);
+  --danger-700: hsl(0 80% 38%);
+  --danger-900: hsl(0 70% 22%);  /* el rojo del colapso */
+
+  /* ── Gradients narrativos ─────────────────────────────── */
+  --grad-calm:     linear-gradient(180deg, hsl(220 60% 4%), hsl(220 50% 8%));
+  --grad-tension:  linear-gradient(180deg, hsl(220 50% 6%), hsl(38 50% 12%));
+  --grad-collapse: linear-gradient(180deg, hsl(0 70% 10%), hsl(220 60% 3%));
+
+  /* ── Docusaurus override ──────────────────────────────── */
+  --ifm-color-primary: var(--accent-electric);
+  --ifm-color-primary-dark: hsl(190 100% 50%);
+  --ifm-color-primary-darker: hsl(190 100% 45%);
+  --ifm-color-primary-darkest: hsl(190 100% 40%);
+  --ifm-color-primary-light: hsl(190 100% 70%);
+  --ifm-color-primary-lighter: hsl(190 100% 80%);
+  --ifm-color-primary-lightest: hsl(190 100% 90%);
+  --ifm-background-color: var(--bg-0);
+  --ifm-background-surface-color: var(--bg-1);
+  --ifm-font-color-base: var(--text-1);
+  
   --ifm-color-success: #10b981;
-  --ifm-color-warning: #f59e0b;
-  --ifm-color-danger: #ef4444;
+  --ifm-color-warning: var(--accent-amber);
+  --ifm-color-danger: var(--danger-500);
 
-  /* Typography */
-  --ifm-font-family-base: 'Merriweather', 'Charter', Georgia, serif;
-  --ifm-heading-font-family: 'Inter', Roboto, sans-serif;
-  --ifm-font-family-monospace: 'Fira Code', monospace;
-  --ifm-code-font-size: 90%;
-  --ifm-font-size-base: 16px;
-  --ifm-line-height-base: 1.7;
+  /* ── Tipografía (Fuentes y clamp) ──────────────────────── */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
 
-  /* Cards & Surfaces */
-  --ifm-card-background-color: #ffffff;
-  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
+  /* Type scale — Perfect Fourth (1.333) entre 320px y 1440px */
+  --fs-caption: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
+  --fs-meta:    clamp(0.8rem,  0.75rem + 0.25vw, 0.9rem);
+  --fs-body:    clamp(1rem,    0.95rem + 0.3vw,  1.125rem);
+  --fs-lead:    clamp(1.125rem, 1rem + 0.6vw,    1.35rem);
+  --fs-h6:      clamp(1rem,    0.9rem + 0.5vw,   1.2rem);
+  --fs-h5:      clamp(1.15rem, 1rem + 0.8vw,     1.45rem);
+  --fs-h4:      clamp(1.4rem,  1.1rem + 1.2vw,   1.85rem);
+  --fs-h3:      clamp(1.75rem, 1.3rem + 1.8vw,   2.4rem);
+  --fs-h2:      clamp(2.2rem,  1.6rem + 2.6vw,   3.2rem);
+  --fs-h1:      clamp(2.8rem,  2rem + 4vw,       4.8rem);
+  --fs-display: clamp(3.6rem,  2.5rem + 6vw,     7rem);
+
+  --lh-tight: 1.05;
+  --lh-snug:  1.2;
+  --lh-body:  1.65;
+
+  --tr-tight: -0.03em;
+  --tr-loose: 0.12em;
+
+  --ifm-font-family-base: var(--font-body);
+  --ifm-heading-font-family: var(--font-display);
+  --ifm-font-family-monospace: var(--font-mono);
+  --ifm-font-size-base: var(--fs-body);
+  --ifm-line-height-base: var(--lh-body);
 
   /* Code highlight */
-  --docusaurus-highlighted-code-line-bg: rgba(14, 165, 233, 0.1);
-
-  /* Custom Glow/Shadows */
-  --neon-glow: 0 0 15px rgba(14, 165, 233, 0.5);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  --docusaurus-highlighted-code-line-bg: hsl(190 100% 60% / 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-/* Dark mode overrides */
-html[data-theme='dark'] {
-  --ifm-color-primary: #38bdf8;
-  --ifm-color-primary-dark: #0ea5e9;
-  --ifm-color-primary-darker: #0284c7;
-  --ifm-color-primary-darkest: #0369a1;
-  --ifm-color-primary-light: #7dd3fc;
-  --ifm-color-primary-lighter: #bae6fd;
-  --ifm-color-primary-lightest: #e0f2fe;
-
-  --ifm-background-color: #0f172a;
-  --ifm-background-surface-color: #1e293b;
-  --ifm-card-background-color: #1e293b;
-  --ifm-navbar-background-color: rgba(15, 23, 42, 0.85);
+html[data-theme='light'] {
+  --bg-0: hsl(40 30% 97%);
+  --bg-1: hsl(40 25% 94%);
+  --bg-2: hsl(220 15% 90%);
+  --text-0: hsl(220 40% 8%);
+  --text-1: hsl(220 25% 22%);
+  --text-2: hsl(220 15% 38%);
+  --accent-electric: hsl(210 95% 42%);  /* azul más sobrio en light */
   
-  --ifm-font-color-base: #e2e8f0;
-
-  --docusaurus-highlighted-code-line-bg: rgba(56, 189, 248, 0.15);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --ifm-background-color: var(--bg-0);
+  --ifm-background-surface-color: var(--bg-1);
+  --ifm-card-background-color: var(--bg-1);
+  --ifm-font-color-base: var(--text-1);
+  --ifm-color-primary: var(--accent-electric);
+  --docusaurus-highlighted-code-line-bg: hsl(210 95% 42% / 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
 /* ============================================================
    GLOBAL & GLASSMORPHISM
    ============================================================ */
 
-body {
-  font-size: var(--ifm-font-size-base);
-  line-height: var(--ifm-line-height-base);
+body, p {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-1);
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* Glassmorphism Navbar */
 .navbar {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  background: color-mix(in srgb, var(--bg-1) 85%, transparent) !important;
   box-shadow: var(--glass-shadow);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid hsl(220 25% 20%);
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
 }
 
-html[data-theme='dark'] .navbar {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+html[data-theme='light'] .navbar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .navbar__title {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(90deg, var(--ifm-color-primary-dark), var(--ifm-color-primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-0) !important;
   transition: opacity 0.3s ease;
-}
-
-.navbar__title:hover {
-  opacity: 0.8;
 }
 
 /* Smooth transitions for interactive elements */
@@ -105,19 +148,38 @@ a, .button, .menu__link, .pagination-nav__link {
    TYPOGRAPHY
    ============================================================ */
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--ifm-heading-font-family);
-  letter-spacing: -0.015em;
-  color: var(--ifm-color-emphasis-900);
+h1, .h1 {
+  font: 700 var(--fs-h1)/var(--lh-tight) var(--font-display);
+  letter-spacing: var(--tr-tight); color: var(--text-0);
+  margin-bottom: 1.5rem;
+}
+h2 { font: 600 var(--fs-h2)/var(--lh-snug) var(--font-display); letter-spacing: var(--tr-tight); margin-top: 3rem; margin-bottom: 1.2rem; }
+h3 { font: 600 var(--fs-h3)/var(--lh-snug) var(--font-display); margin-top: 2rem; }
+h4 { font: 600 var(--fs-h4)/var(--lh-snug) var(--font-display); }
+h5 { font: 500 var(--fs-h5)/1.3 var(--font-body); }
+h6 { font: 500 var(--fs-h6)/1.3 var(--font-body); letter-spacing: 0.02em; }
+
+.lead { font-size: var(--fs-lead); color: var(--text-0); font-weight: 500; }
+
+.meta, .source, time, .fig, kbd {
+  font: 500 var(--fs-meta)/1.3 var(--font-mono);
+  letter-spacing: var(--tr-loose);
+  text-transform: uppercase;
+  color: var(--text-3);
 }
 
-h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; }
-h2 { font-size: 2.2rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.2rem; border-bottom: 2px solid var(--ifm-color-emphasis-200); padding-bottom: 0.3em; }
-h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; }
-h4 { font-size: 1.2rem; font-weight: 600; }
+code, pre, .number, .data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
 
-html[data-theme='dark'] h2 {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+/* Drop-cap editorial para el primer párrafo de cada capítulo */
+.chapter > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 4em; line-height: 0.85;
+  float: left; padding: 0.05em 0.1em 0 0;
+  color: var(--accent-electric);
+  text-shadow: 0 0 24px hsl(190 100% 60% / 0.4);
 }
 
 /* ============================================================
@@ -130,15 +192,10 @@ html[data-theme='dark'] h2 {
 }
 
 .menu__link--active {
-  background-color: var(--ifm-color-primary-lightest) !important;
-  color: var(--ifm-color-primary-darkest) !important;
+  background-color: hsl(190 100% 60% / 0.15) !important;
+  color: var(--accent-electric) !important;
   font-weight: 600;
-  box-shadow: inset 4px 0 0 var(--ifm-color-primary);
-}
-
-html[data-theme='dark'] .menu__link--active {
-  background-color: rgba(56, 189, 248, 0.15) !important;
-  color: var(--ifm-color-primary-light) !important;
+  box-shadow: inset 4px 0 0 var(--accent-electric);
 }
 
 .menu__list-item-collapsible:hover {
