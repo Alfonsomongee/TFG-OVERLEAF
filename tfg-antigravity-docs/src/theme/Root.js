@@ -30,6 +30,24 @@ function SmoothScrollRoot({ children }) {
     };
     
     initLenis();
+
+    // Workaround para prevenir que Lenis secuestre el scroll de la barra lateral (sidebar)
+    // Docusaurus no permite añadir atributos fácilmente sin hacer swizzle completo,
+    // así que lo inyectamos dinámicamente.
+    const applyLenisPrevent = () => {
+      const sidebars = document.querySelectorAll('.theme-doc-sidebar-menu, aside, .menu');
+      sidebars.forEach(el => {
+        if (!el.hasAttribute('data-lenis-prevent')) {
+          el.setAttribute('data-lenis-prevent', 'true');
+        }
+      });
+    };
+
+    applyLenisPrevent();
+    const observer = new MutationObserver(applyLenisPrevent);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
   }, []);
 
   return <>{children}</>;
