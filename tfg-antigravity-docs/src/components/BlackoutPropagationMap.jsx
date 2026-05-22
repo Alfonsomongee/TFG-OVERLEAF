@@ -49,18 +49,19 @@ function BlackoutMapContent() {
 
   const layers = [
     new TileLayer({
-      id: 'carto-dark-matter',
-      data: 'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      id: 'esri-satellite',
+      data: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       minZoom: 0,
       maxZoom: 19,
       tileSize: 256,
-      opacity: Math.max(0.2, 1 - (time / 100)), // El mapa se apaga progresivamente
+      opacity: Math.max(0.3, 1 - (time / 100)), // El mapa se oscurece pero no al 100%
       renderSubLayers: props => {
         const { boundingBox } = props.tile;
         return new BitmapLayer(props, {
           data: null,
           image: props.data,
-          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]]
+          // bounds: [left, bottom, right, top]
+          bounds: [boundingBox[0][0], boundingBox[1][1], boundingBox[1][0], boundingBox[0][1]]
         });
       }
     }),
