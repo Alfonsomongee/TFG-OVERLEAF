@@ -10,6 +10,7 @@ import AnimatedMap from './AnimatedMap';
 import VerticalTimeline from './VerticalTimeline';
 import SldDiagram from './SldDiagram';
 import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
+import FinancialWaterfallChart from './FinancialWaterfallChart';
 
 const graphicsData = [
   {
@@ -65,6 +66,15 @@ const graphicsData = [
     desc_en: 'Macro-structural evolution of the generation mix versus CO2 emissions.',
     icon: '🌍',
     component: EnergyTransitionStreamgraph
+  },
+  {
+    id: 'waterfall',
+    title_es: 'Auditoría Económica',
+    title_en: 'Economic Audit',
+    desc_es: 'Cascada financiera del impacto del apagón y el coste de resiliencia.',
+    desc_en: 'Financial waterfall of the blackout impact and resilience cost.',
+    icon: '💶',
+    component: FinancialWaterfallChart
   }
 ];
 
