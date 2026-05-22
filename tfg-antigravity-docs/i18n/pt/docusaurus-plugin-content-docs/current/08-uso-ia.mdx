@@ -1,0 +1,74 @@
+---
+sidebar_position: 8
+---
+
+# Uso de Inteligência Artificial
+
+A elaboração deste TFG desenvolveu-se num contexto metodológico atípico: a ocorrência simultânea, durante o biênio 2024–2026, de uma crise sistêmica no sistema elétrico ibérico e de uma transformação acelerada nas ferramentas de processamento de linguagem natural. A disponibilidade de _Large Language Models_ (LLMs) capazes de processar documentos técnicos de centenas de páginas em poucos minutos coincidiu com a publicação, no prazo de um ano, de quatro relatórios periciais primários e de uma dezena de análises acadêmicas sobre o mesmo evento. Este capítulo documenta de forma transparente como estas ferramentas foram integradas, que tarefas concretas desempenharam, que erros sistemáticos foram detectados e corrigidos, e que reflexão epistemológica se depreende disso para a prática da pesquisa em engenharia.
+
+## Aplicação metodológica: cinco funções operacionais
+
+O corpo documental de partida abrange processos técnicos, normativas da ENTSO-E, relatórios oficiais de extensão superior a 200 páginas, simulações PSS/E do IIT-ICAI, atas da CNMC, registros oscilográficos do NREL e um amplo volume de hemeroteca especializada. A sua leitura linear sem mediação informática resultava incompatível com os prazos acadêmicos do TFG. A integração de modelos generativos articulou-se em torno de cinco funções operacionais claramente delimitadas, **nenhuma das quais envolve inferência causal autônoma sobre a física do sistema**:
+
+| Função | Descrição |
+| --- | --- |
+| **Reconciliação cronológica** | Os quatro relatórios descrevem os mesmos fatos físicos de 28-A com diferentes níveis de granularidade e desfasamentos de até 200 ms entre versões. A assistência automática permitiu construir uma tabela mestra unificada de _timestamps_ e referências cruzadas que serviu de andaime para os capítulos 3 e 4. |
+| **Mapeamento sistemático de divergências** | Cada relatório enquadra o incidente num perímetro analítico distinto. A extração assistida de passagens homólogas permitiu localizar as afirmações tecnicamente incompatíveis entre fontes — base do Capítulo 5 e da síntese comparativa. |
+| **Tabulação quantitativa** | Consolidação de grandezas distribuídas ao longo dos relatórios: valores zonais de inércia, penetração renovável instantânea, intercâmbios transfronteiriços, números do UFLS, contribuições capacitivas da malha. |
+| **Suporte redacional** | Sugestão de variantes lexicais, depuração de sinonímias, controle de terminologia e reformulação de passagens de prosa acadêmica densa. Este apoio **não alterou a estrutura argumental nem as decisões de conteúdo**, que são responsabilidade exclusiva do autor. |
+| **Andaime de elementos gráficos** | Geração de rascunhos em TikZ e `pgfplots` a partir de descrições textuais, posteriormente revisados, depurados e validados manualmente para assegurar a consistência visual e a fidelidade aos dados representados. |
+
+O fluxo de trabalho estrutura-se em três etapas sequenciais com um laço de correção: [Fontes primárias] → [Assistência LLM] → [Filtro de validação física] → [Corpo do TFG] ↑**********\_\_\_\_**********| (reformulação de prompt perante alucinação detectada)
+
+O elemento metodologicamente decisivo não é a assistência do LLM em si mesma, mas o **filtro de validação física** que se interpõe entre qualquer saída do modelo e a sua incorporação ao texto: Leis de Kirchhoff, curvas Q-V, equação de oscilação do rotor e cotejo com a fonte primária. Quando o filtro detecta uma inferência incompatível com a mecânica do sistema, o _prompt_ é reformulado com restrições semânticas adicionais e o ciclo é reiniciado.
+
+## Validação e verificação: os quatro casos de inferência errônea
+
+A utilização de modelos generativos num domínio tão denso em relações causais como a dinâmica de sistemas de potência revela, de forma sistemática, um comportamento que os sistemas elétricos não toleram: a **inferência por analogia estatística**. Os LLMs tendem a aplicar padrões causais _típicos_ —os mais frequentes na literatura de seu corpus de treinamento— a casos cuja estrutura física é _atípica_. O 28-A é, pela sua natureza dual (estabilidade de tensão em vez de balanço de frequência), um caso atípico face à maioria dos apagões documentados na bibliografia técnica do século XX, o que tornou especialmente produtiva a observação dos pontos em que a IA «por defeito» se desviava do fenômeno real.
+
+| Fenômeno | Inferência errônea por defeito do LLM | Correção física aplicada | Estratégia de _prompt_ corretora |
+| --- | --- | --- | --- |
+| **Paradoxo do UFLS** | O corte de cargas por subfrequência «salvou» áreas do sistema ao recuperar o balanço de potência ativa. | O UFLS é cego à voltagem: ao desconectar carga, retirou sumidouros de reativa indutiva em pleno transitório capacitivo, agravando a sobretensão. | Restrição explícita: raciocinar exclusivamente no plano Q-V, ignorando a lógica frequência–potência ativa habitual em apagões clássicos. |
+| **Tap-Lag** | Os OLTC responderam corretamente ao transitório elevando ou rebaixando a tensão secundária de forma proporcional. | Os atrasos intencionais dos OLTC —projetados para evitar _hunting_— deixaram-nos defasados perante um transitório de dezenas de milissegundos, multiplicando a tensão em direção à rede de 220 kV e 132 kV. | Injeção da constante de tempo real do conjunto eletromecânico OLTC e proibição de assumir resposta quase instantânea. |
+| **Aporte capacitivo da malha** | A malha reduziu a impedância do sistema e, por conseguinte, aumentou a estabilidade de tensão. | Em condições de baixa carga, a malha ativou a admitância transversal das linhas de 400 kV (efeito Ferranti), injetando os 1.050 MVAr capacitivos que precipitaram a sobretensão. | Restrição ao regime «linha descarregada» e exigência de calcular o balanço de reativa com a admitância capacitiva $Y_t$ no modelo π da linha. |
+| **Oscilação de 0,6 Hz** | Produção de uma resposta _integrada_ — a leitura «mais provável» calculada como média sobre as fontes. | A origem do modo (oscilação forçada por uma usina concreta, segundo a ICAI; modo natural do sistema, segundo a REE) é precisamente a discrepância que o TFG deve preservar, não resolver editorialmente. | Veto à escolha unilateral entre ambas as hipóteses e obrigação de produzir versões duais com atribuição explícita à sua fonte. |
+
+### O caso do paradoxo do UFLS
+
+O caso mais ilustrativo do padrão de erro: diante da consulta sobre o papel do corte de cargas no desenvolvimento do incidente, os modelos ofereceram sistematicamente uma interpretação herdada dos apagões clássicos, nos quais o UFLS constitui a última linha de defesa e consegue habitualmente preservar parcelas da rede ao recuperar o balanço frequência-potência ativa. Esta inferência é fisicamente correta para o universo de eventos sobre os quais o modelo foi treinado, mas inválida para 28-A: num colapso dominado pelo plano Q-V, a ativação do UFLS retirou simultaneamente os sumidouros de potência reativa indutiva que as cargas desconectadas providenciavam, **agravando a sobretensão em vez de mitigá-la**.
+
+A correção requereu formular o _prompt_ com uma restrição explícita sobre o plano de análise e verificar manualmente que o raciocínio resultante fosse consistente com a oscilografia publicada pelo NREL na faixa temporal 12:33:19–12:33:27 CEST.
+
+### O caso do Tap-Lag
+
+A descrição qualitativa que os modelos produzem do OLTC é correta em regime estacionário, mas assume por defeito uma resposta proporcional e instantânea que o conjunto eletromecânico real não possui. O atraso intencional introduzido para evitar _hunting_ traduziu-se no 28-A numa relação de transformação defasada relativamente ao transitório elétrico, o que multiplicou a sobretensão na direção das redes de 220 kV e 132 kV — fenômeno invisível para o SCADA do operador, ancorado nas medições do primário de 400 kV. Toda a cadeia causal do Tap-Lag exigiu descrever ao modelo, antecipadamente, as constantes de tempo do OLTC e proibir-lhe de assumir uma resposta quase instantânea.
+
+### O caso do aporte capacitivo da malha
+
+A injeção estimada de 1.050 MVAr capacitivos devia corresponder ao efeito da admitância transversal ($Y_t$) das linhas de 400 kV operando em regime descarregado (efeito Ferranti). A validação consistiu em reproduzir o balanço de reativa sobre o modelo π da linha, contrastando a ordem de grandeza com a oscilografia e com o diagnóstico do relatório IIT-ICAI.
+
+### O caso da oscilação de 0,6 Hz
+
+Ilustra uma limitação específica do uso de IA em contextos forenses com divergência institucional. Os modelos tendem a produzir uma resposta integrada — a leitura «mais provável» com base na média das fontes — quando o rigor pericial exige preservar a divergência. A origem do modo é precisamente o dado que o TFG deve apresentar como discrepância irresoluta, não como consenso editorial.
+
+A observação de alcance geral que estes quatro casos permitem formular: **a utilidade da assistência automática é máxima em tarefas de _processamento_** —extração, síntese, estruturação, tabulação, redação assistida— **e mínima, a ponto de ser contraproducente, em tarefas de _inferência causal_** sobre fenômenos físicos com baixa representação nos corpora de treinamento.
+
+## Reflexão crítica: IA na pesquisa em engenharia
+
+A experiência documentada conduz a uma conclusão estrutural, nem triunfalista nem catastrofista: os modelos generativos são potentes _aceleradores_ dos processos cognitivos do pesquisador, mas operam sobre uma lógica probabilística que não coincide com a lógica determinista que rege a física dos sistemas materiais.
+
+### Implicação metodológica
+
+O uso de IA **não isenta o pesquisador de dominar o conteúdo técnico** do seu objeto de estudo; pelo contrário, exige-o com maior severidade. Apenas um pesquisador com competência técnica suficiente para identificar uma inferência fisicamente impossível pode empregar com segurança um modelo capaz de produzi-la com fluidez retórica. A assimetria entre a verossimilhança linguística do _output_ e a sua correção material constitui o principal risco associado ao uso destas ferramentas em domínios técnicos exigentes, e apenas pode ser neutralizado mediante um domínio do conteúdo que a ferramenta não pode fornecer.
+
+### Implicação ético-acadêmica
+
+A assistência automática foi empregada neste trabalho como ferramenta de processamento, não como substituto do raciocínio. Qualquer decisão de conteúdo — o enquadramento do problema, a hierarquia de fontes, a formulação da tese causal sobre o colapso do 28-A, a valoração comparada das narrativas institucionais, as conclusões finais — é de responsabilidade exclusiva do autor. **A IA não assina TFGs nem se senta perante um tribunal**: o engenheiro rubrica com o seu nome a causalidade material dos fatos expostos, e essa rubrica é intransferível.
+
+### Implicação disciplinar prospectiva
+
+Os sistemas elétricos da próxima década — dominados por eletrônica de potência, com dinâmica relevante na escala subcíclica e com interações tensão-reativa que o operador convencional não captura em tempo real — vão exigir ferramentas de suporte à decisão que combinem a velocidade de processamento dos modelos algorítmicos com a robustez física dos simuladores tipo PSS/E. A integração não é trivial: os simuladores resolvem equações; os LLMs aproximam distribuições de probabilidade.
+
+A arquitetura híbrida **— LLM como interface semântica e de síntese, simuladores físicos como motor de inferência causal —** é, plausivelmente, a direção para a qual evoluirão as ferramentas de engenharia de sistemas de potência. O seu desenvolvimento requererá exatamente a mesma vigilância epistemológica que estruturou o fluxo de trabalho do presente TFG: ter sempre presente o que cada ferramenta faz e o que lhe é pedido explicitamente para não fazer.
+
+O registro detalhado do fluxo de _prompts_ restritivos empregados, juntamente com exemplos representativos das correções aplicadas, está documentado no Anexo de Metodologia IA, seguindo as recomendações de boas práticas em transparência metodológica para a integração de modelos generativos em pesquisa de graduação e pós-graduação.

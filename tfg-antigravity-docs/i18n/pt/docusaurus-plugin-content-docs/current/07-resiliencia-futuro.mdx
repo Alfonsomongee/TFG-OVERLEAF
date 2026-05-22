@@ -1,0 +1,216 @@
+---
+sidebar_position: 7
+---
+
+import GlossaryLink from "@site/src/components/GlossaryLink";
+
+# Resiliência e Futuro
+
+A lição estrutural de 28 de abril não reside no colapso em si, mas no tipo de vulnerabilidade que ele revelou. A análise forense demonstrou que o zero de tensão não foi uma falha de reserva de potência ativa nem um erro pontual de operação: foi a manifestação terminal de uma incompatibilidade de fundo entre a física de um sistema dominado por inversores e um arcabouço técnico-regulatório concebido para redes síncronas. O cenário que propiciou o 28-A —alta penetração de <GlossaryLink term="IBR">IBR</GlossaryLink>, escassez de geração síncrona acoplada e demanda líquida deprimida— não foi uma anomalia climática, mas a antecipação de condições que se reproduzirão com frequência crescente à medida que a descarbonização avançar.
+
+## A física da fragilidade sistêmica
+
+### Inércia, RoCoF e a equação de oscilação
+
+A estabilidade dinâmica da frequência num sistema de potência é governada pela **Equação de Oscilação** (_Swing Equation_):
+
+$$
+\frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
+$$
+
+onde $H$ é a constante de inércia equivalente do sistema (em segundos), $f_0$ a frequência nominal (50 Hz), $df/dt$ a <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>, $P_m$ a potência mecânica total fornecida aos rotores síncronos acoplados, $P_e$ a potência elétrica líquida demandada e $D$ o coeficiente de amortecimento das cargas dependentes da frequência.
+
+O parâmetro central é $H$: a sua redução implica que qualquer desequilíbrio de potência se traduz numa RoCoF proporcionalmente mais aguda, encurtando a janela temporal disponível para a atuação dos sistemas de regulação. Os inversores <GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink> estão desacoplados da frequência de rede mediante os seus links de corrente contínua e **não fornecem inércia eletromecânica inerente** à equação de oscilação.
+
+O sistema certificou $H = 2,3$ s no momento do colapso — acima do limiar de 2,0 s recomendado pela <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>. O 28-A não foi um colapso de frequência por déficit de massa síncrona. Contudo, em cenários de penetração IBR superior a 80%, a redução contínua de $H$ converte perturbações de amplitude moderada em contingências críticas, porque o tempo disponível antes da ativação do <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink> é comprimido até se tornar inoperável à velocidade mecânica de abertura dos disjuntores.
+
+### Degradação do curto-circuito: a métrica da robustez da rede
+
+A dimensão mais diretamente vinculada ao mecanismo causal de 28-A é a degradação da Potência de Curto-Circuito ($S_{sc}$) nos nós da rede. Um gerador síncrono convencional pode injetar correntes de curto-circuito entre **5 e 7 vezes** o seu valor nominal durante os primeiros ciclos de um transitório. Os inversores limitam a injeção a **1,1–1,2 p.u.** para evitar a fusão de semicondutores.
+
+A parametrização habitual desta perda é o _Short Circuit Ratio_ (SCR):
+
+$$
+\mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
+$$
+
+| Categoria | Limiar SCR | Implicação operacional |
+| --- | --- | --- |
+| **Rede forte** | SCR > 3 | Os inversores GFL operam com estabilidade de pequeno sinal. Proteções de distância mantêm seletividade. |
+| **Rede fraca** | 2 ≤ SCR ≤ 3 | Degradação da margem de estabilidade do <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> perante perturbações rápidas. Risco de interação adversa entre laços de controle próximos. |
+| **Rede muito fraca** | SCR &lt; 2 | PLLs propensos a perda de sincronismo diante de pequenas variações de tensão. Proteções de distância perdem direcionalidade. |
+
+Durante as horas prévias ao colapso, amplas zonas da Península operavam como **redes muito fracas** (SCR &lt; 2): a produção massiva de energia solar havia deslocado, por ordem de mérito, os ciclos combinados, cuja desconexão eliminou precisamente as fontes de $S_{sc}$ que dão rigidez aos nós da rede de transporte. Nestas condições, com $X/R$ elevado mas $\mathrm{SCR} \ll 2$, a impedância global faz com que a tensão se torne sensível também a variações de <GlossaryLink term="Potencia activa">potência ativa</GlossaryLink>: as rampas de injeção solar adquirem um poder de perturbação de tensão que em redes síncronas convencionais resultaria inofensivo.
+
+![Mapas de tensão na rede peninsular de 400 kV na faixa crítica prévia ao colapso](/figuras/scr_iberia.png) _Evolução geográfica das tensões na rede de 400 kV antes do colapso (sequência a–d). As zonas de cores quentes mostram a progressão e concentração de sobretensões severas no sul e sudoeste peninsular —precisamente os nós com maior deficiência estrutural de potência de curto-circuito. Fonte: IIT-ICAI._
+
+### O paradoxo geométrico dos inversores: conflito P-Q
+
+Existe uma contradição estrutural inerente à geometria do triângulo de potência. A capacidade aparente máxima de um inversor está delimitada por:
+
+$$S_{\max} = \sqrt{P^2 + Q^2}$$
+
+Quando uma planta fotovoltaica experimenta um clareamento brusco de nebulosidade, seus algoritmos MPPT ordenam rampas de injeção de potência ativa $P$ de milhares de MW/h. Para não ultrapassar $S_{\max}$, o controlador deve reduzir simultaneamente sua margem de <GlossaryLink term="Potencia reactiva">potência reativa</GlossaryLink> $Q$. O paradoxo: esse é exatamente o instante em que o aumento brusco de $P$ sobre uma rede com SCR &lt; 2 provoca uma sobretensão severa, exigindo do inversor uma absorção massiva de reativa para contê-la. O inversor depara-se com duas obrigações físicas **simultaneamente incompatíveis**: maximizar $P$ por sinal de mercado e maximizar $Q$ por necessidade de estabilidade de tensão.
+
+Esta contradição explica por que o 28-A não foi um colapso de energia, mas de controle: o sistema dispunha de recursos suficientes, mas carecia da arquitetura de controle necessária para mobilizá-los coerentemente.
+
+### A duck curve e o efeito do autoconsumo distribuído
+
+O cenário operacional de 28-A situava-se no **vale profundo da _duck curve_**: demanda bruta estruturalmente baixa —análoga aos mínimos de há duas décadas— com irradiação próxima dos máximos de verão devido à menor degradação térmica da primavera.
+
+![Evolução do número de unidades síncronas convencionais acopladas entre as 12h e 13h](/figuras/conventionalunits.png) _Unidades síncronas convencionais acopladas diariamente entre as 12h e 13h. A tendência decrescente nos meses prévios a 28-A reflete a expulsão sistemática por ordem de mérito — esvaziando o sistema de inércia eletromecânica no instante crítico. Fonte: ENTSO-E / elaboração própria._
+
+Às 12:30 CEST, a REE esgotara as suas ferramentas de gestão manual: abertura preventiva de dezenas de linhas de muito alta tensão para aumentar a impedância em série, mais a operação de reatâncias a 85% da sua capacidade — sem conseguir conter o aumento de tensão.
+
+Um fator adicional identificado como relevante foi o **autoconsumo fotovoltaico distribuído**: a geração distribuída deduz demanda visível sem ser observável telematicamente à resolução temporal necessária. Durante os fenômenos oscilatórios prévios, as flutuações de tensão ativaram os relés anti-ilhamento de instalações domésticas e industriais leves que se desconectaram em bloco, fazendo aflorar subitamente a demanda que cobriam: o efeito equivalia a um degrau positivo de carga não antecipado, num instante em que o sistema já carecia de margem de reativa para absorvê-lo.
+
+## Tecnologias facilitadoras livres de emissões
+
+A superação da vulnerabilidade exige uma transição na arquitetura de controle: do parque de geração que _segue_ a tensão e a frequência em direção a uma infraestrutura capaz de as _formar_ de forma autônoma. Três famílias tecnológicas complementares articulam a resposta.
+
+### BESS com controle grid-forming: velocidade e precisão
+
+Diferentemente do inversor GFL, um inversor <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) opera como um equivalente de Thévenin: sintetiza de forma autônoma uma referência interna de tensão em magnitude e ângulo ($V\angle\delta$) por trás de uma impedância virtual de acoplamento. Ao impor este vetor de forma instantânea, o inversor GFM injeta ou absorve corrente ativa e reativa de modo inerente diante de qualquer variação da rede, sem depender de medições externas de fase nem de atrasos de cálculo.
+
+![Circuitos equivalentes das topologias Grid-Following (GFL) e Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Esquerda: inversor GFL como fonte de corrente controlada dependente do PLL. Direita: inversor GFM como fonte de tensão autônoma atrás de uma impedância virtual $Z_{\mathrm{GFM}}$. A diferença fundamental é que o GFM não necessita «ler» a rede para operar — ele a cria._
+
+Quando o inversor GFM está respaldado por um banco de baterias (BESS-GFM), a combinação providencia dois serviços adicionais:
+
+- **<GlossaryLink term="Inercia Sintética">Inércia sintética</GlossaryLink>**: o algoritmo mede continuamente $df/dt$ e ajusta a potência de saída de forma proporcional na faixa de **dezenas de milissegundos**, emulando o comportamento de uma massa rotatória.
+- **<GlossaryLink term="Fast Frequency Response (FFR)">FFR</GlossaryLink>**: diante da ultrapassagem de um limiar de RoCoF ou desvio de frequência, o BESS injeta um bloco de potência ativa predefinido de forma **subcíclica** (≤ 0,25 s), freando a inclinação de queda antes de os reguladores de velocidade dos grupos síncronos poderem processar a perturbação.
+
+A experiência operacional da ERCOT (Texas) quantifica o valor deste serviço. O limiar de inércia crítica estrutural situa-se em torno de **100.000 MW·s**: abaixo deste nível, o RoCoF face a uma contingência de categoria C (~2.750 MW) afunda a frequência antes que os governadores mecânicos possam atuar. O sistema opera com três zonas de alerta: **verde** (>120.000 MW·s), **amarela** (110.000–119.999 MW·s) e **vermelha** (&lt;100.000 MW·s, com despacho forçado de unidades síncronas fora da ordem de mérito).
+
+O mercado _Responsive Reserve Service – Fast Frequency Response_ (RRS-FFR) da ERCOT exige: detecção autônoma de queda abaixo de 59,85 Hz, injeção de 100% da potência contratada em no máximo **0,25 s**, e manutenção durante o mínimo de 15 minutos. Os resultados verificados mostram que a integração de **450 MW** sob este esquema permitiu reduzir o limiar de inércia crítica de 100.000 MW·s para **88.000 MW·s** — uma redução de 12% que reflete a equivalência funcional entre a atuação sub-segundo da eletrônica de potência e a massa cinética das máquinas síncronas.
+
+O caso de sucesso fundacional a nível mundial neste âmbito é a **Hornsdale Power Reserve** na Austrália do Sul (operada pela Neoen e Tesla). Após a sua atualização de firmware para *Grid-Forming* em 2022, este sistema BESS de 150 MW / 193,5 MWh logrou certificar a provisão operacional de **2.000 MWs de inércia equivalente**. O operador australiano AEMO aprovou esta contribuição, que, por si só, é capaz de cobrir aproximadamente 15% da inércia mínima requerida no estado, demonstrando empiricamente a viabilidade de sustentar redes em larga escala puramente com eletrônica de potência.
+
+Contudo, os semicondutores IGBT raramente sustentam correntes superiores a **1,2–1,5 vezes** seu valor nominal. Esta restrição implica que a contribuição dos BESS-GFM à potência de curto-circuito disponível no nó é quantitativamente limitada. O paper mais avançado sobre este limite é *Cross-Forming Control* (Dörfler et al., ETH Zürich, 2024), que propõe arquiteturas híbridas de controle para evitar a saturação de corrente durante as faltas.
+
+### Compensadores síncronos: curto-circuito e inércia rotacional genuína
+
+A limitação de corrente dos inversores justifica o desdobramento complementar de <GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores síncronos</GlossaryLink> (SynCons): máquinas rotativas de grande massa acopladas sincronamente, mas operadas a vazio, que intercâmbiam livremente potência reativa em função do nível de excitação.
+
+A sua contribuição é dupla: correntes de curto-circuito da ordem de **300–400%** do seu valor nominal durante os primeiros ciclos, incrementando o SCR no nó de conexão; e inércia rotacional genuína fisicamente disponível no **primeiro milissegundo** de um transitório, sem mediação de algoritmo nem latência de controle.
+
+A **<GlossaryLink term="Estrategia Brownfield">estratégia Brownfield</GlossaryLink>** propõe uma via de implantação que minimiza o investimento em novas obras civis: reconverter os grandes alternadores de centrais a carvão, ciclo combinado ou nucleares em processo de desmantelamento em compensadores síncronos, uma vez desacoplado o conjunto turbina-gerador. Esta reconversão transforma ativos encalhados em recursos de estabilidade sistêmica, conservando o valor dos nós de escoamento de 400 kV já instalados.
+
+### Arquitetura híbrida: a complementaridade como condição de resiliência
+
+Nenhuma das três famílias tecnológicas, implantada isoladamente, é suficiente:
+
+- Os **BESS-GFM** providenciam velocidade de resposta, precisão de controle e capacidade de _Black Start_, mas estão limitados em corrente de curto-circuito.
+- Os **SynCons** providenciam inércia rotacional genuína e potência de curto-circuito elevada, mas carecem da agilidade subcíclica da eletrônica de potência e não gerem energia ativa.
+- A **inércia sintética e a FFR** maximizam a utilização da margem energética do banco de baterias, mas dependem de uma rigidez nodal mínima —provida pelos SynCons— para que os seus algoritmos sejam efetivos.
+
+![Arquitetura híbrida para a resiliência sistêmica em redes descarbonizadas](/figuras/hitachi_hybrid.png) _Esquema de arquitetura híbrida: os BESS-GFM gerem a tensão em tempo real e fornecem FFR; os compensadores síncronos aportam inércia rotacional e potência de curto-circuito para a rigidez nodal. A resiliência exige ambos componentes — nenhum substitui o outro. Fonte: Hitachi Energy / FUTURED._
+
+A minimização do custo total do sistema não coincide com a minimização do <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, mas exige internalizar no desenho do mercado os <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Serviços Essenciais de Confiabilidade (ERS</GlossaryLink>) que as máquinas síncronas forneciam de forma implícita.
+
+![Otimização tecno-econômica da resiliência em sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _O mínimo de custo total do sistema é alcançado com um mix que remunera os ERS, não com a simples maximização da penetração renovável. A diferença entre o ótimo de LCOE e o ótimo sistêmico é o custo dos serviços ancilares não remunerados. Fonte: Julia Matevosyan (ESIG) / FUTURED._
+
+### IA e Redes Neurais de Grafos (GNN) para a estabilidade
+
+O vazio entre o estado da arte acadêmico e a realidade operacional dos TSOs europeus ficou patente no apagão ibérico. Enquanto despachos como o da REE ou RTE (França) continuam utilizando ferramentas de análise modal clássica para monitorar as Unidades de Medição Fasorial (PMU), a fronteira de pesquisa já resolveu a previsão do colapso através de *Deep Learning*.
+
+As arquiteturas de **Redes Neurais de Grafos (GNN)** são inerentemente topológicas: entendem a rede elétrica não como variáveis independentes, mas como um grafo interconectado de impedâncias. Modelos matemáticos recentes (como os de Nauck et al., 2023) aplicam GNNs sobre dados fasoriais para prever a *Bacia de Estabilidade* de um nó (SNBS) antes que a tensão comece a cair. De maneira semelhante, arquiteturas baseadas em *Transformers* (como o modelo StaaT, 2024) demonstraram superar com folga as redes LSTM na previsão de estabilidade de tensão a curto prazo utilizando apenas séries temporais de PMUs. A implementação de um sistema de Inteligência Artificial baseado nestas arquiteturas teria detectado o estreitamento da margem Q-V no nó de Granada minutos antes de o transformador colapsar termicamente.
+
+### Enxames Multi-Agente para Black-Start Descentralizado
+
+O *black-start* ibérico de 2025 necessitou quase de 16 horas para restabelecer por completo a península operando sob o clássico modelo *top-down* centralizado. O futuro da reposição de fornecimento, especialmente com a implantação do Grid-Forming, aponta para um modelo distribuído. Mediante Sistemas Multi-Agente (MAS), múltiplas microrredes equipadas com GFM podem pré-sincronizar-se de forma autônoma (comunicando-se entre elas mediante algoritmos de consenso) formando "ilhas vivas" que posteriormente se conectam entre si. Esta técnica, já testada em pilotos como o da Holy Cross Energy no Colorado (NREL, 2024), tem o potencial de reduzir os tempos de reposição de dias para meras horas.
+
+## A resposta normativa: do P.O. 7.4 obsoleto ao grid-forming obrigatório
+
+### As deficiências do arcabouço preexistente
+
+O P.O. 7.4 vigente no momento do apagão não havia sido revisado substancialmente há aproximadamente **vinte e cinco anos**. Apresentava duas deficiências críticas:
+
+1. **Assimetria de participação**: 82% do parque gerador operava com fator de potência fixo, inabilitado para injetar ou absorver reativa dinamicamente.
+2. **Banda morta**: os geradores síncronos estavam isentos de atuar se a tensão se mantivesse entre 405 kV e 410 kV, configurando uma resposta por degraus estruturalmente incompatível com a velocidade do transitório capacitivo documentado.
+
+![Curva característica do P.O. 7.4 original: banda morta entre 405 kV e 410 kV](/figuras/po74_banda_muerta.png) _A zona sombreada ilustra a «banda morta» do antigo P.O. 7.4: faixa na qual o parque gerador não era obrigado a fornecer resposta dinâmica, inabilitando a defesa do sistema face a transitórios capacitivos rápidos. Fonte: REE._
+
+### Revisão do P.O. 7.4, sistema VOLTAIRE e novo esquema retributivo
+
+A Resolução da CNMC de 12 de junho de 2025 (BOE-A-2025-13076) reformulou o P.O. 7.4 sob o novo quadro de serviços de não frequência. A inovação fundamental é a substituição do modelo de instruções estáticas por uma **prestação dinâmica retribuída**: seguimento preciso de _setpoints_ em tempo real enviados telematicamente pelo CECOEL através do CECRE.
+
+O canal de comunicação é articulado pelo sistema **VOLTAIRE**: um laço de controle proporcional-integral em duas camadas hierárquicas. A Regulação Terciária otimiza globalmente o perfil de tensões mediante fluxos de cargas ótimos reativos. A Regulação Secundária envia instruções telemáticas em tempo real com uma **resolução de amostragem de 4 s**, fechando o ciclo de controle em escala de parque e eliminando a dependência da resposta manual do operador ante transitórios de baixa amplitude. Esta arquitetura transforma o papel do parque renovável: de consumidor passivo da tensão da rede a **atuador ativo do sistema de regulação nacional**.
+
+A retribuição associada inclui: **2 €/MVArh** para a prestação em tempo real durante as horas de produção líquida positiva; e para as horas de produção nula —período noturno em que o Efeito Ferranti das linhas descarregadas gera sobretensões— uma retribuição indexada ao Preço Médio Diário:
+
+$$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
+
+Os sistemas BESS recebem adicionalmente um pagamento por disponibilidade de **2,7 €/MW/dia**, condicionado à manutenção de uma taxa de cumprimento de amostras válidas superior a **90%**.
+
+| Atributo operacional | P.O. 7.4 original (pré-2025) | Arcabouço atualizado (pós-2025) |
+| --- | --- | --- |
+| Natureza do controle | Estática e assimétrica. Operação por degraus. | Dinâmica, contínua e proporcional ao desvio. |
+| Participação IBR | _Grid-following_ passivo com fator de potência fixo. | _Grid-forming_ obrigatório. Controle ativo de $V$ e $Q$. |
+| Banda morta | 405–410 kV sem resposta obrigatória. | Eliminada ou reduzida a ±0,5% de $U_n$. |
+| Resposta em reativa | Degraus de instrução lenta após pedido do OS. | Resposta automática em laço fechado (_droop control_). |
+| Remuneração de Q | Baseada em disponibilidade técnica declarada. | Mercados zonais de serviços ERS. |
+| Observabilidade | Telemedidas SCADA 400 kV, resolução de vários segundos. | PMU e telemedida de 4 s para IBR distribuídos. |
+| Regime sancionador | Sem penalizações específicas por descumprimento de reativa. | Penalizações por descumprimento da taxa mínima de 90%. |
+
+O **Real Decreto 997/2025** complementou a reforma com quatro medidas de urgência: redefinição jurídica dos BESS como ativos de serviço de estabilidade sistêmica; saneamento do registro de permissões de conexão obsoletas; obrigatoriedade de telemedida com resolução &lt; 4 s para todo o parque IBR significativo; e obrigatoriedade do módulo PSS/POD em todos os inversores GFM de nova instalação com potência > 10 MW.
+
+Uma tensão reveladora emergiu durante o processo: em outubro de 2025, a REE solicitou elevar a exigência de cumprimento de 75% para 90% do tempo. A CNMC negou argumentando a **impossibilidade técnica dos grupos síncronos existentes** de alcançarem esse nível com as rampas de ajuste requeridas. O dado é significativo no sentido inverso: os inversores GFM conseguiriam cumprir essa exigência sem dificuldade. A adaptação do quadro operativo às capacidades dos IBR-GFM avança a uma velocidade maior do que a dos ativos síncronos que a norma substitui como fornecedores de serviços ancilares.
+
+### O quadro europeu: NC RfG 2.0 e Relatórios de Fase I e Fase II da ENTSO-E
+
+O <GlossaryLink term="NC RfG">NC RfG</GlossaryLink> vigente na última década foi desenhado sob o paradigma GFL: padronizava perfis de afundamento e limiares de frequência, mas não contemplava a possibilidade de não sobrar nenhuma máquina rotatória pesada para se seguir. Esta carência conceitual ficou demonstrada nos 8 segundos do colapso ibérico.
+
+O Grupo Técnico da ENTSO-E (TG GFC) cristalizou o seu trabalho em dois documentos:
+
+- **Relatório de Fase I (maio de 2024)**: Definição técnica fundamental do GFM requerida pelo novo código — «fonte de tensão por trás de uma reatância efetiva constante» durante os primeiros milissegundos. Este modelo fasorial proscreve de facto as dependências diretas de algoritmos PLL para o controle primário.
+- **Relatório de Fase II (novembro de 2025)**: Publicado sob o peso da evidência do colapso ibérico, com o aval transversal de CENELEC, WindEurope, SolarPower Europe e EASE. Estabelece de forma taxativa como as novas usinas baseadas em inversores devem estabilizar o sistema.
+
+As obrigações do **NC RfG 2.0** aplicam-se com um enfoque tecnologicamente agnóstico, classificando os módulos em quatro tipos:
+
+| Tipo | Potência / Conexão | Requisito GFM | Cronograma |
+| --- | --- | --- | --- |
+| **Tipo A** | &lt; 1 MW | Voluntário. Critério do DSO. | N/A |
+| **Tipo B** | 1–50 MW | Obrigatório. Inércia sintética e suporte dinâmico básico. | Máx. 3 anos após publicação do IGD da ENTSO-E. |
+| **Tipo C** | > 50 MW | Obrigatório e exaustivo. Operação plena como fonte de tensão; perfis de corrente de falta; funcionalidade POD. | 3 anos após adoção pela Comissão Europeia. |
+| **Tipo D** | ≥ 110 kV ou > 75 MW | Ídem Tipo C mais testes de certificação. | 3 anos após adoção pela Comissão Europeia. |
+| **ESM (BESS)** | Segundo a categoria | Ídem PPM equivalente. Sistemas V2G com capacidade conjunta > 1 MW classificados como ESM Tipo B. | Segundo a categoria. |
+
+Na data de redação, a adoção formal do NC RfG 2.0 pela Comissão Europeia **encontra-se despriorizada e sem calendário oficial**, gerando uma janela de incerteza regulatória que os operadores nacionais estão gerindo através de medidas preventivas à margem do código.
+
+## Mercados de Serviços Essenciais de Confiabilidade (ERS)
+
+### O problema do headroom: por que o mercado de energia não remunera a estabilidade
+
+Para que um inversor GFM possa atuar como fonte de tensão diante de uma RoCoF severa ou de uma perturbação, deve obrigatoriamente manter uma reserva da sua capacidade aparente ($S_{\max}$) não utilizada no estado estacionário. Esta reserva —o **_headroom_**— exige limitar deliberadamente a potência ativa injetada no mercado diário ou superdimensionar a etapa de potência de seus IGBTs, aumentando drasticamente o CAPEX. Sem compensação financeira direta, nenhuma das duas opções é viável comercialmente.
+
+O fracasso estrutural da arquitetura regulatória até 28-A residia no seu enfoque punitivo: penalizar os desvios técnicos sem remunerar os atributos de firmeza. Os ERS corrigem essa assimetria.
+
+### Três mecanismos de remuneração
+
+**1. Mercados regionais de inércia sintética e FFR.** O desenho avançará para leilões onde se pague uma quantia por disponibilidade aos ativos capazes de fornecer suporte inercial em margens &lt; 5 ms. A lógica do mecanismo é o **_revenue stacking (empilhamento de receitas)_**: os sistemas BESS recebem ganhos simultâneos de arbitragem de energia no mercado diário, dos leilões de regulação secundária e terciária (aFRR/mFRR), e de pagamentos por capacidade de inércia sintética e FFR. Esta multiplicidade de fluxos de receitas compensa o elevado CAPEX do superdimensionamento e a perda de ganhos por causa do _headroom_ de reativa.
+
+**2. Sinais geográficos de nível de curto-circuito.** Diferentemente da frequência —uma métrica global—, a SCR e as sobretensões são fenômenos **radicalmente locais**. Os nós vulneráveis do 28-A não coincidem com os de maior densidade de potência instalada. Os mercados de ERS adotarão sinais de preços espaciais granulares: tarifas de conexão descontadas ou leilões de capacidade de reativa nos nós perimetrais identificados matematicamente pelos TSOs como locais com SCR &lt; 2. A localização dos BESS-GFM nos nós corretos passa a ser determinante para a viabilidade econômica do projeto.
+
+**3. Remuneração _ex ante_ para SynCons.** Para infraestruturas como os SynCons —que fornecem inércia física pura e correntes de curto-circuito massivas, mas não podem vender energia no mercado horário— a regulação contempla modelos de _Rate of Return Regulation_ sem exposição ao risco de preço da energia, ou adjudicações a longo prazo que blindam o investimento de capital.
+
+![Diagrama de revenue stacking para um sistema BESS-GFM sob o arcabouço pós-28A](/figuras/ers_revenue_stacking.png) _Fontes de receitas empilhadas para um sistema BESS-GFM: mercado de energia diário, mercados de balanço de frequência (aFRR/mFRR), leilões de inércia sintética e FFR, e pagamentos por disponibilidade de reativa ERS. A multiplicidade de fluxos compensa o superdimensionamento técnico requerido. Fonte: elaboração própria com base na estrutura ENTSO-E._
+
+### Modelos de referência: DS3 da EirGrid e RRS-FFR da ERCOT
+
+EirGrid (Irlanda) e ERCOT (Texas) são as referências operacionais consolidadas para as quais o desenho europeu converge: ambos os operadores enfrentaram antecipadamente os desafios de penetrações não síncronas superiores a 75%.
+
+O programa **DS3** da EirGrid fragmentou o fornecimento de estabilidade em 14 produtos especializados. Os três mais relevantes para o contexto do 28-A:
+
+| Serviço | Definição técnica | Limiar / Janela |
+| --- | --- | --- |
+| **Synchronous Inertial Response (SIR)** | Fornecimento quase instantâneo de potência ativa e torque sincronizante diante de quedas de frequência. Remunerado através do índice SIRF = $E_k / P_{\min}$, que penaliza o despacho de usinas que injetam potência não desejada apenas para prover inércia marginal. | SIRF ≥ 15 s |
+| **Fast Frequency Response (FFR)** | Injeção rápida de potência ativa após queda abrupta de frequência. A energia validável é a integral da potência adicional injetada nos primeiros 10 s. Exige-se que a energia fornecida seja maior que a perda na recuperação (T+10s → T+20s). | Resposta entre 0,15 s e 2 s |
+| **Steady-State Reactive Power (SSRP)** | Faixa total de potência reativa despachável ($Q_{\mathrm{range}}$) que o inversor pode injetar ou absorver em operação contínua ao longo de toda a sua faixa de potência ativa. Inclui escalar remuneratório favorável para IBR capazes de fornecer reativa no vazio (_watt-less VARs_). | Estado estacionário; valorização anual através de modelos PLEXOS |
+
+A comparação entre o DS3 e o RRS-FFR sugere uma arquitetura de **mercados ERS de dupla camada** para o contexto europeu: uma camada de sinais geográficos de curto-circuito —análoga ao SSRP da EirGrid— e uma camada de resposta de frequência subcíclica —análoga ao RRS-FFR da ERCOT.
+
+### Evolução do quadro espanhol em 2026
+
+Em 8 de maio de 2026, a CNMC abriu um trâmite de audiência pública para a modificação dos Procedimentos de Operação P.O. 7.4 e P.O. 14.4 (Processo DCOOR/DE/006/26), orientado para a criação de mercados zonais de serviços de não frequência com participação ativa de IBR e BESS.
+
+A lição estrutural do 28-A inscreve no desenho regulatório europeu uma consequência de alcance maior que qualquer ajuste incremental aos procedimentos de operação: os atributos físicos que os sistemas síncronos forneciam de forma inerente —inércia, potência de curto-circuito, controle autônomo de tensão— **deixaram de ser externalidades gratuitas** para se converterem em serviços cuja prestação deve ser definida, verificada e remunerada explicitamente. O modelo marginalista puro de energia é estruturalmente incapaz de remunerar esses atributos. Sem essa tradução econômica da resiliência, nenhuma exigência técnica do NC RfG 2.0 resultará sustentável a médio prazo.
