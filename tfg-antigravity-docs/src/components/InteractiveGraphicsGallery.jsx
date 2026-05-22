@@ -11,6 +11,7 @@ import VerticalTimeline from './VerticalTimeline';
 import SldDiagram from './SldDiagram';
 import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
 import FinancialWaterfallChart from './FinancialWaterfallChart';
+import BlackoutPropagationMap from './BlackoutPropagationMap';
 import IberianGridTopology from './IberianGridTopology';
 
 const graphicsData = [
@@ -76,6 +77,15 @@ const graphicsData = [
     desc_en: 'Financial waterfall of the blackout impact and resilience cost.',
     icon: '💶',
     component: FinancialWaterfallChart
+  },
+  {
+    id: 'blackout3d',
+    title_es: 'Mapa 3D del Apagón (WebGL)',
+    title_en: '3D Blackout Map (WebGL)',
+    desc_es: 'Simulación geográfica interactiva con Deck.gl de la cascada de desconexiones y flujos masivos de reactiva.',
+    desc_en: 'Interactive geographic simulation with Deck.gl of the disconnection cascade.',
+    icon: '🌍',
+    component: BlackoutPropagationMap
   },
   {
     id: 'topology',
