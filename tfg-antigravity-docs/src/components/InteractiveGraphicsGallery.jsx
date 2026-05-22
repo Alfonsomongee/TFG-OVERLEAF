@@ -8,7 +8,7 @@ import FrequencyChart from './FrequencyChart';
 import EnergyMixChart from './EnergyMixChart';
 import AnimatedMap from './AnimatedMap';
 import VerticalTimeline from './VerticalTimeline';
-import SldDiagram from './SldDiagram';
+
 import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
 import FinancialWaterfallChart from './FinancialWaterfallChart';
 import BlackoutPropagationMap from './BlackoutPropagationMap';
@@ -50,14 +50,7 @@ const getGraphicData = (id, lang) => {
       it: { title: 'Cronologia dell\'Incidente', desc: 'Cronologia verticale interattiva degli eventi chiave.' },
       de: { title: 'Vorfall-Zeitachse', desc: 'Interaktive vertikale Zeitachse der Schlüsselereignisse.' }
     },
-    sld: {
-      es: { title: 'Diagrama Unifilar', desc: 'Esquema eléctrico interactivo de la red de transporte.' },
-      en: { title: 'Single Line Diagram', desc: 'Interactive electrical schematic of the transmission grid.' },
-      pt: { title: 'Diagrama Unifilar', desc: 'Esquema elétrico interativo da rede de transmissão.' },
-      fr: { title: 'Schéma Unifilaire', desc: 'Schéma électrique interactif du réseau de transport.' },
-      it: { title: 'Schema Unifilare', desc: 'Schema elettrico interattivo della rete di trasmissione.' },
-      de: { title: 'Einliniendiagramm', desc: 'Interaktives elektrisches Schema des Übertragungsnetzes.' }
-    },
+
     streamgraph: {
       es: { title: 'Transición y Emisiones', desc: 'Evolución macroestructural del mix de generación frente a las emisiones de CO2.' },
       en: { title: 'Transition & Emissions', desc: 'Macro-structural evolution of the generation mix versus CO2 emissions.' },
@@ -118,7 +111,7 @@ const graphicsData = [
   { id: 'energymix', icon: '⚡', component: EnergyMixChart },
   { id: 'map', icon: '🗺️', component: AnimatedMap },
   { id: 'timeline', icon: '⏱️', component: VerticalTimeline },
-  { id: 'sld', icon: '🔌', component: SldDiagram },
+
   { id: 'streamgraph', icon: '🌍', component: EnergyTransitionStreamgraph },
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
