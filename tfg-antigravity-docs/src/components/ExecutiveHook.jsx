@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { motion } from 'framer-motion';
 
 export default function ExecutiveHook() {
   const [isFading, setIsFading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
@@ -138,7 +138,6 @@ export default function ExecutiveHook() {
   const strings = getStrings(lang);
 
   useEffect(() => {
-    setIsMounted(true);
     // Start fading out after 4.5 seconds (gives time for blackout to finish)
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
@@ -158,19 +157,41 @@ export default function ExecutiveHook() {
   return (
     <>
       {/* Splash Screen */}
-      {isMounted && !isHidden && (
+      {!isHidden && (
         <div className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}>
           <div className={styles.splashBgIlluminated}></div>
-          <div className={styles.splashBgDark}></div>
+          <motion.div 
+            className={styles.splashBgDark}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2.5, ease: [0.4, 0, 0.2, 1], delay: 1.5 }}
+          />
           <div className={styles.splashOverlay}></div>
           <div className={styles.splashContent}>
-            <h1 className={styles.splashTitle}>
+            <motion.h1 
+              className={styles.splashTitle}
+              initial={{ opacity: 0, scale: 0.95, y: 15, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.2 }}
+            >
               {strings.splashTitle}
-            </h1>
-            <p className={styles.splashSubtitle}>
+            </motion.h1>
+            <motion.p 
+              className={styles.splashSubtitle}
+              initial={{ opacity: 0, scale: 0.95, y: 35, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, scale: 1, y: 20, filter: 'blur(0px)' }}
+              transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.8 }}
+            >
               {strings.splashSubtitle}
-            </p>
-            <p className={styles.authorName}>Alfonso Monge Díaz-Ángel</p>
+            </motion.p>
+            <motion.p 
+              className={styles.authorName}
+              initial={{ opacity: 0, y: 10, textShadow: '0 0 0px rgba(255,255,255,0)' }}
+              animate={{ opacity: 0.9, y: 0, textShadow: '0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4)' }}
+              transition={{ duration: 2, ease: "easeInOut", delay: 1.5 }}
+            >
+              Alfonso Monge Díaz-Ángel
+            </motion.p>
           </div>
         </div>
       )}

@@ -1,7 +1,15 @@
 import React, { useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useLocation } from '@docusaurus/router';
 
 function SmoothScrollRoot({ children }) {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Reset scroll to top on navigation to fix Next Chapter bug
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   useEffect(() => {
     // Solo cargamos Lenis en cliente
     const initLenis = async () => {
