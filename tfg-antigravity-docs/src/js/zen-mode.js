@@ -40,14 +40,18 @@ if (typeof document !== 'undefined') {
     const langKey = lang.split('-')[0];
     const trans = dict[langKey] || dict['es'];
     
-    defaultSpan.textContent = trans.default;
-    activeSpan.textContent = trans.active;
+    if (defaultSpan.textContent !== trans.default) defaultSpan.textContent = trans.default;
+    if (activeSpan.textContent !== trans.active) activeSpan.textContent = trans.active;
   };
   
-  // Try to translate on load and when DOM changes
+  // Try to translate on load and when lang attribute changes
   document.addEventListener('DOMContentLoaded', translateZenMode);
-  const observerLang = new MutationObserver(translateZenMode);
-  observerLang.observe(document.documentElement, { childList: true, subtree: true });
+  const observerLang = new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+      if (m.attributeName === 'lang') translateZenMode();
+    });
+  });
+  observerLang.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 
   // Handle toggling
   document.addEventListener('click', (e) => {
