@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './ImageGallery.module.css';
 import { imageGalleryData } from '../data/imageGalleryData';
 
-export default function ImageGallery({ lang = 'es' }) {
+export default function ImageGallery({ lang: propLang }) {
+  const { i18n } = useDocusaurusContext();
+  const lang = propLang || i18n.currentLocale || 'es';
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Prevent body scrolling when lightbox is open
@@ -41,11 +44,11 @@ export default function ImageGallery({ lang = 'es' }) {
       {imageGalleryData.chapters.map((chapter) => (
         <div key={chapter.id} className={styles.chapterGroup}>
           <h2 className={styles.chapterTitle}>
-            {lang === 'en' ? chapter.title_en : chapter.title_es}
+            {chapter[`title_${lang}`] || chapter.title_es}
           </h2>
           <div className={styles.imageGrid}>
             {chapter.images.map((img, index) => {
-              const caption = lang === 'en' ? img.caption_en : img.caption_es;
+              const caption = img[`caption_${lang}`] || img.caption_es;
               const imageUrl = useBaseUrl(img.src);
               
               return (

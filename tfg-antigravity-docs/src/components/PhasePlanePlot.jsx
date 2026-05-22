@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Plot from 'react-plotly.js';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 // Simulador de dinámica de fase
 const generatePhaseData = (type, timeLimit) => {
@@ -100,65 +100,72 @@ export default function PhasePlanePlot({ lang }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
       <div style={{ flex: 1, minHeight: '400px', width: '100%' }}>
-        <Plot
-          data={[
-            {
-              x: gflData.x,
-              y: gflData.y,
-              type: 'scatter',
-              mode: 'lines',
-              line: { color: '#ef4444', width: 3 },
-              name: texts.gfl
-            },
-            {
-              x: gfmData.x,
-              y: gfmData.y,
-              type: 'scatter',
-              mode: 'lines',
-              line: { color: '#10b981', width: 3 },
-              name: texts.gfm
-            },
-            {
-              x: sgData.x,
-              y: sgData.y,
-              type: 'scatter',
-              mode: 'lines',
-              line: { color: '#f59e0b', width: 2, dash: 'dot' },
-              name: texts.sg
-            }
-          ]}
-          layout={{
-            title: {
-              text: texts.title,
-              font: { color: '#ffffff', size: 16 }
-            },
-            paper_bgcolor: 'transparent',
-            plot_bgcolor: 'transparent',
-            font: { color: '#94a3b8' },
-            xaxis: { 
-              title: texts.xaxis, 
-              gridcolor: 'rgba(255,255,255,0.1)',
-              zerolinecolor: 'rgba(255,255,255,0.3)',
-              range: [-2, 2]
-            },
-            yaxis: { 
-              title: texts.yaxis, 
-              gridcolor: 'rgba(255,255,255,0.1)',
-              zerolinecolor: 'rgba(255,255,255,0.3)',
-              range: [-2, 2]
-            },
-            legend: {
-              orientation: 'h',
-              y: -0.2,
-              font: { color: '#e2e8f0' }
-            },
-            margin: { t: 60, r: 20, l: 60, b: 80 },
-            autosize: true
+        <BrowserOnly fallback={<div>Cargando gráfico interactivo...</div>}>
+          {() => {
+            const Plot = require('react-plotly.js').default;
+            return (
+              <Plot
+                data={[
+                  {
+                    x: gflData.x,
+                    y: gflData.y,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#ef4444', width: 3 },
+                    name: texts.gfl
+                  },
+                  {
+                    x: gfmData.x,
+                    y: gfmData.y,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#10b981', width: 3 },
+                    name: texts.gfm
+                  },
+                  {
+                    x: sgData.x,
+                    y: sgData.y,
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: { color: '#f59e0b', width: 2, dash: 'dot' },
+                    name: texts.sg
+                  }
+                ]}
+                layout={{
+                  title: {
+                    text: texts.title,
+                    font: { color: '#ffffff', size: 16 }
+                  },
+                  paper_bgcolor: 'transparent',
+                  plot_bgcolor: 'transparent',
+                  font: { color: '#94a3b8' },
+                  xaxis: { 
+                    title: texts.xaxis, 
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.3)',
+                    range: [-2, 2]
+                  },
+                  yaxis: { 
+                    title: texts.yaxis, 
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.3)',
+                    range: [-2, 2]
+                  },
+                  legend: {
+                    orientation: 'h',
+                    y: -0.2,
+                    font: { color: '#e2e8f0' }
+                  },
+                  margin: { t: 60, r: 20, l: 60, b: 80 },
+                  autosize: true
+                }}
+                useResizeHandler={true}
+                style={{ width: '100%', height: '100%' }}
+                config={{ responsive: true, displayModeBar: false }}
+              />
+            );
           }}
-          useResizeHandler={true}
-          style={{ width: '100%', height: '100%' }}
-          config={{ responsive: true, displayModeBar: false }}
-        />
+        </BrowserOnly>
       </div>
 
       <div style={{

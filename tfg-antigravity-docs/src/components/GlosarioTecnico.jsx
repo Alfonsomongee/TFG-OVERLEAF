@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './GlosarioTecnico.module.css';
 
 import { GLOSSARY_TERMS as esTerms } from '../data/glossary';
@@ -8,7 +9,10 @@ import { GLOSSARY_TERMS as frTerms } from '../data/glossary_fr';
 import { GLOSSARY_TERMS as itTerms } from '../data/glossary_it';
 import { GLOSSARY_TERMS as deTerms } from '../data/glossary_de';
 
-export default function GlosarioTecnico({ lang = 'es' }) {
+export default function GlosarioTecnico({ lang: propLang }) {
+  const { i18n } = useDocusaurusContext();
+  const lang = propLang || i18n.currentLocale || 'es';
+  
   let GLOSSARY_TERMS = esTerms;
   if (lang === 'en') GLOSSARY_TERMS = enTerms;
   if (lang === 'pt') GLOSSARY_TERMS = ptTerms;
