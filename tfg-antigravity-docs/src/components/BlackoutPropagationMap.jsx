@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import DeckGL from '@deck.gl/react';
-import { ScatterplotLayer, ArcLayer } from '@deck.gl/layers';
-import Map from 'react-map-gl/maplibre';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { ScatterplotLayer, ArcLayer, BitmapLayer } from '@deck.gl/layers';
+import { TileLayer } from '@deck.gl/geo-layers';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 const INITIAL_VIEW_STATE = {
   longitude: -4.5,
@@ -40,6 +38,7 @@ const ARCS = [
 
 function BlackoutMapContent() {
   const [time, setTime] = useState(0);
+  const [clickedObject, setClickedObject] = useState(null);
 
   useEffect(() => {
     const animation = setInterval(() => {
@@ -80,6 +79,21 @@ function BlackoutMapContent() {
       getSourceColor: [255, 0, 0, 200],
       getTargetColor: [255, 165, 0, 200],
       getTilt: d => (time / 100) * 15 - 7.5
+    }),
+    new TileLayer({
+      id: 'carto-dark-matter',
+      data: 'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      minZoom: 0,
+      maxZoom: 19,
+      tileSize: 256,
+      renderSubLayers: props => {
+        const { boundingBox } = props.tile;
+        return new BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [boundingBox[0][0], boundingBox[0][1], boundingBox[1][0], boundingBox[1][1]]
+        });
+      }
     })
   ];
 
@@ -90,9 +104,11 @@ function BlackoutMapContent() {
         controller={true}
         layers={layers}
         getTooltip={({object}) => object && (object.name || object.flow)}
-      >
-        <Map mapStyle={MAP_STYLE} />
-      </DeckGL>
+        onClick={({object}) => {
+          if (object) setClickedObject(object);
+          else setClickedObject(null);
+        }}
+      />
       <div style={{
         position: 'absolute',
         bottom: 20,
@@ -109,6 +125,26 @@ function BlackoutMapContent() {
         <span style={{color: '#00ff64'}}>●</span> Nudos Activos<br/>
         <span style={{color: '#0096ff'}}>●</span> Interconexión Europea
       </div>
+      {clickedObject && (
+        <div style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          backgroundColor: 'rgba(0,0,0,0.9)',
+          padding: '15px',
+          borderRadius: '8px',
+          color: 'white',
+          maxWidth: '250px',
+          border: '1px solid var(--ifm-color-primary)'
+        }}>
+          <h4 style={{margin: '0 0 10px 0'}}>{clickedObject.name || 'Flujo Eléctrico'}</h4>
+          {clickedObject.flow ? (
+            <p style={{margin: 0}}>{clickedObject.flow}</p>
+          ) : (
+            <p style={{margin: 0}}>Estado: {clickedObject.type.toUpperCase()}<br/>Capacidad Relativa: {clickedObject.capacity}%</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

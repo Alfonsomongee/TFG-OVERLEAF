@@ -103,6 +103,31 @@ function TopologyMapContent() {
         linkDirectionalParticleSpeed={0.01}
         linkDirectionalParticleWidth={2}
         onNodeHover={handleNodeHover}
+        onNodeClick={node => {
+          fgRef.current.centerAt(node.x, node.y, 1000);
+          fgRef.current.zoom(8, 2000);
+        }}
+        nodeCanvasObject={(node, ctx, globalScale) => {
+          const label = node.name;
+          const fontSize = 12/globalScale;
+          ctx.font = `${fontSize}px Sans-Serif`;
+          const textWidth = ctx.measureText(label).width;
+          const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2);
+
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+          ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2 - 10, ...bckgDimensions);
+
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.2)';
+          ctx.fillText(label, node.x, node.y - 10);
+
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.val / 3, 0, 2 * Math.PI, false);
+          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.1)';
+          ctx.fill();
+        }}
+        nodeCanvasObjectMode={() => 'replace'}
         cooldownTicks={100}
         onEngineStop={() => fgRef.current.zoomToFit(400, 50)}
       />
