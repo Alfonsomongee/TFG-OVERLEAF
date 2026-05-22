@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -45,7 +46,7 @@ const data = [
     name: 'Destrucción Total',
     value: [0, 2356],
     amount: 2356,
-    color: '#b91c1c', // Red-700
+    color: '#3f3f46', // Zinc-700 for total distinction
     desc: 'Impacto financiero total en los primeros 12 meses.'
   }
 ];
@@ -71,10 +72,13 @@ const renderCustomizedLabel = (props) => {
   const { x, y, width, height, index } = props;
   const dataItem = data[index];
   
-  // Si la barra es muy pequeña, dibujamos el texto por encima de ella para que no se superponga
   const isSmall = Math.abs(height) < 25;
-  const labelY = isSmall ? y - 10 : y + height / 2;
+  const isTotal = index === 4;
+  
+  // Posicionar la etiqueta: si es total o barra normal, en el medio. Si es pequeña, arriba.
+  const labelY = isSmall ? y - 15 : y + height / 2;
   const fill = isSmall ? 'var(--ifm-font-color-base)' : '#fff';
+  const prefix = isTotal ? '=' : '+';
   
   return (
     <text 
@@ -83,10 +87,10 @@ const renderCustomizedLabel = (props) => {
       fill={fill} 
       textAnchor="middle" 
       dominantBaseline="middle"
-      fontSize={12}
+      fontSize={13}
       fontWeight="bold"
     >
-      {dataItem.amount}
+      {prefix} {dataItem.amount}
     </text>
   );
 };
@@ -101,9 +105,9 @@ export default function FinancialWaterfallChart() {
       
       <div className={styles.chartWrapper}>
         <ResponsiveContainer width="100%" height={450}>
-          <BarChart
+          <ComposedChart
             data={data}
-            margin={{ top: 30, right: 30, left: 20, bottom: 40 }}
+            margin={{ top: 40, right: 30, left: 20, bottom: 40 }}
             accessibilityLayer={true}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
@@ -122,16 +126,30 @@ export default function FinancialWaterfallChart() {
               tickLine={false}
               axisLine={false}
               domain={[0, 2500]}
+              ticks={[0, 500, 1000, 1500, 2000, 2500]}
             />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} isAnimationActive={false} />
             
+            {/* Línea conectora tipo Waterfall (stepAfter) usando el límite superior de cada barra */}
+            <Line 
+              type="stepAfter" 
+              dataKey={(d) => d.value[1]} 
+              stroke="var(--ifm-color-emphasis-500)" 
+              strokeDasharray="4 4" 
+              strokeWidth={2} 
+              dot={false} 
+              activeDot={false} 
+              isAnimationActive={true}
+              animationDuration={1000}
+            />
+
             <Bar dataKey="value" radius={[4, 4, 4, 4]} isAnimationActive={true} animationDuration={1000}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
               <LabelList dataKey="value" content={renderCustomizedLabel} />
             </Bar>
-          </BarChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
       <div className={styles.footerInfo}>
