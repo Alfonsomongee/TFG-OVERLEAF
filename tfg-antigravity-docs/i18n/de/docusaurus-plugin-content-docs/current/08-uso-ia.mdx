@@ -1,0 +1,76 @@
+---
+sidebar_position: 8
+---
+
+# Einsatz von Künstlicher Intelligenz
+
+Die Erstellung dieser Bachelorarbeit erfolgte in einem untypischen methodischen Kontext: dem gleichzeitigen Zusammentreffen einer systemischen Krise im iberischen Stromnetz und einer beschleunigten Transformation der Werkzeuge zur Verarbeitung natürlicher Sprache im Zeitraum 2024–2026. Die Verfügbarkeit von _Large Language Models_ (LLMs), die in der Lage sind, technische Dokumente von Hunderten von Seiten in wenigen Minuten zu verarbeiten, fiel mit der Veröffentlichung von vier primären Gutachten und einem Dutzend akademischer Analysen zu demselben Ereignis innerhalb eines Jahres zusammen. Dieses Kapitel dokumentiert transparent, wie diese Werkzeuge integriert wurden, welche konkreten Aufgaben sie ausgeführt haben, welche systematischen Fehler erkannt und korrigiert wurden und welche erkenntnistheoretischen Überlegungen sich daraus für die Forschungspraxis in den Ingenieurwissenschaften ergeben.
+
+## Methodische Anwendung: fünf operative Funktionen
+
+Der dokumentarische Ausgangskorpus umfasst technische Unterlagen, ENTSO-E-Vorschriften, offizielle Berichte mit einem Umfang von über 200 Seiten, PSS/E-Simulationen des IIT-ICAI, Protokolle der CNMC, oszillographische Aufzeichnungen des NREL und einen großen Umfang an Fachpresse. Das lineare Lesen ohne computergestützte Vermittlung war mit den akademischen Fristen der Bachelorarbeit unvereinbar. Die Integration generativer Modelle wurde um fünf klar abgegrenzte operative Funktionen herum strukturiert, **von denen keine eine autonome kausale Schlussfolgerung über die Physik des Systems beinhaltet**:
+
+| Funktion | Beschreibung |
+| --- | --- |
+| **Chronologischer Abgleich** | Die vier Berichte beschreiben dieselben physikalischen Fakten des 28-A mit unterschiedlichem Detaillierungsgrad und zeitlichen Abweichungen von bis zu 200 ms zwischen den Versionen. Die automatische Unterstützung ermöglichte den Aufbau einer einheitlichen Mastertabelle von _Timestamps_ und Querverweisen, die als Gerüst für die Kapitel 3 und 4 diente. |
+| **Systematische Kartierung von Abweichungen** | Jeder Bericht ordnet den Vorfall in einen anderen analytischen Rahmen ein. Die computergestützte Extraktion homologer Passagen ermöglichte die Lokalisierung der technisch inkompatiblen Aussagen zwischen den Quellen – die Grundlage von Kapitel 5 und der vergleichenden Synthese. |
+| **Quantitative Tabellierung** | Konsolidierung von über die Berichte verteilten Größen: zonale Trägheitswerte, momentane Durchdringung erneuerbarer Energien, grenzüberschreitender Austausch, UFLS-Zahlen, kapazitive Beiträge der Vermaschung. |
+| **Redaktionelle Unterstützung** | Vorschlag von lexikalischen Varianten, Bereinigung von Synonymen, Terminologiekontrolle und Umformulierung von Passagen dichter akademischer Prosa. Diese Unterstützung **hat weder die argumentative Struktur noch inhaltliche Entscheidungen verändert**, die in der alleinigen Verantwortung des Autors liegen. |
+| **Gerüst für grafische Elemente** | Generierung von Entwürfen in TikZ und `pgfplots` aus Textbeschreibungen, die anschließend manuell überprüft, bereinigt und validiert wurden, um visuelle Konsistenz und Treue zu den dargestellten Daten zu gewährleisten. |
+
+Der Workflow ist in drei aufeinanderfolgende Phasen mit einer Korrekturschleife strukturiert:
+[Primärquellen] → [LLM-Unterstützung] → [Physikalischer Validierungsfilter] → [Hauptteil der Bachelorarbeit]
+↑**********\_\_\_\_**********| (Neuformulierung des Prompts bei erkannter Halluzination)
+
+Das methodisch entscheidende Element ist nicht die LLM-Unterstützung an sich, sondern der **physikalische Validierungsfilter**, der zwischen einer Modellausgabe und ihrer Aufnahme in den Text steht: Kirchhoffsche Gesetze, Q-V-Kurven, Rotor-Schwingungsgleichung und Abgleich mit der Primärquelle. Wenn der Filter eine mit der Systemmechanik unvereinbare Schlussfolgerung erkennt, wird der _Prompt_ mit zusätzlichen semantischen Einschränkungen neu formuliert und der Zyklus neu gestartet.
+
+## Validierung und Verifizierung: Die vier Fälle fehlerhafter Schlussfolgerungen
+
+Die Verwendung generativer Modelle in einer so dichten Domäne kausaler Zusammenhänge wie der Dynamik von Stromsystemen offenbart systematisch ein Verhalten, das Stromsysteme nicht tolerieren: die **Schlussfolgerung durch statistische Analogie**. LLMs neigen dazu, _typische_ kausale Muster – die am häufigsten in der Literatur ihres Trainingskorpus vorkommenden – auf Fälle anzuwenden, deren physikalische Struktur _untypisch_ ist. Der 28-A ist aufgrund seiner dualen Natur (Spannungsstabilität anstelle von Frequenzgleichgewicht) ein untypischer Fall im Vergleich zu den meisten dokumentierten Stromausfällen in der Fachliteratur des 20. Jahrhunderts. Dies machte die Beobachtung der Punkte, an denen die KI „standardmäßig“ vom tatsächlichen Phänomen abwich, besonders produktiv.
+
+| Phänomen | Standardmäßig fehlerhafte Schlussfolgerung des LLM | Angewandte physikalische Korrektur | Korrigierende _Prompt_-Strategie |
+| --- | --- | --- | --- |
+| **UFLS-Paradoxon** | Der Lastabwurf durch Unterfrequenz „rettete“ Systembereiche durch die Wiederherstellung des Wirkleistungsgleichgewichts. | Das UFLS ist spannungsblind: Durch das Abschalten von Lasten wurden induktive Blindleistungssenken mitten im kapazitiven Transienten entfernt, was die Überspannung verschärfte. | Explizite Einschränkung: Ausschließliche Argumentation in der Q-V-Ebene, wobei die bei klassischen Ausfällen übliche Logik Frequenz-Wirkleistung ignoriert wird. |
+| **Tap-Lag** | Die OLTC reagierten korrekt auf den Transienten, indem sie die Sekundärspannung proportional anhoben oder senkten. | Die absichtlichen Verzögerungen der OLTC – entwickelt zur Vermeidung von _Hunting_ – ließen sie gegenüber einem Transienten von mehreren zehn Millisekunden phasenverschoben reagieren, wodurch sich die Spannung in Richtung des 220-kV- und 132-kV-Netzes vervielfachte. | Injektion der echten Zeitkonstante der elektromechanischen OLTC-Baugruppe und Verbot der Annahme einer quasi-sofortigen Reaktion. |
+| **Kapazitiver Beitrag der Vermaschung** | Die Vermaschung reduzierte die Systemimpedanz und erhöhte damit die Spannungsstabilität. | Bei geringer Last aktivierte die Vermaschung die Queradmittanz der 400-kV-Leitungen (Ferranti-Effekt), wobei die 1.050 kapazitiven MVAr eingespeist wurden, die die Überspannung herbeiführten. | Beschränkung auf den Betriebszustand „unbelastete Leitung“ und Anforderung, die Blindleistungsbilanz mit der kapazitiven Admittanz $Y_t$ im π-Modell der Leitung zu berechnen. |
+| **0,6-Hz-Schwingung** | Erzeugung einer _integrierten_ Antwort – die „wahrscheinlichste“ über die Quellen gemittelte Lesart. | Der Ursprung der Mode (erzwungene Schwingung durch ein bestimmtes Kraftwerk laut ICAI; natürliche Systemmode laut REE) ist genau die Diskrepanz, die die Bachelorarbeit bewahren und nicht redaktionell auflösen muss. | Veto gegen die einseitige Wahl zwischen beiden Hypothesen und Verpflichtung, duale Versionen mit expliziter Zuordnung zu ihrer Quelle zu erstellen. |
+
+### Der Fall des UFLS-Paradoxons
+
+Das anschaulichste Beispiel für das Fehlermuster: Auf die Frage nach der Rolle des Lastabwurfs bei der Entwicklung des Vorfalls lieferten die Modelle konsequent eine von klassischen Ausfällen übernommene Interpretation, bei denen das UFLS die letzte Verteidigungslinie darstellt und durch die Wiederherstellung des Frequenz-Wirkleistungs-Gleichgewichts üblicherweise Teile des Netzes schützt. Diese Schlussfolgerung ist physikalisch korrekt für das Universum der Ereignisse, anhand derer das Modell trainiert wurde, für den 28-A jedoch ungültig: Bei einem durch die Q-V-Ebene dominierten Kollaps entfernte die Aktivierung des UFLS gleichzeitig die induktiven Blindleistungssenken, die von den abgeschalteten Lasten bereitgestellt wurden, **wodurch die Überspannung verschärft statt abgemildert wurde**.
+
+Die Korrektur erforderte die Formulierung des _Prompts_ mit einer expliziten Einschränkung hinsichtlich der Analyseebene und die manuelle Überprüfung, ob die resultierende Argumentation mit den vom NREL im Zeitfenster 12:33:19–12:33:27 MESZ veröffentlichten Oszillogrammen konsistent war.
+
+### Der Fall des Tap-Lag
+
+Die qualitative Beschreibung des OLTC, die die Modelle liefern, ist im stationären Zustand korrekt, geht jedoch standardmäßig von einer proportionalen und sofortigen Reaktion aus, die die tatsächliche elektromechanische Baugruppe nicht besitzt. Die absichtliche Verzögerung, die eingeführt wurde, um _Hunting_ zu vermeiden, führte am 28-A zu einem hinsichtlich des elektrischen Transienten phasenverschobenen Übersetzungsverhältnis, was die Überspannung in Richtung der 220-kV- und 132-kV-Netze multiplizierte – ein Phänomen, das für das SCADA-System des Betreibers unsichtbar blieb, da es in den Messungen des 400-kV-Primärsystems verankert war. Die gesamte Kausalkette des Tap-Lag erforderte, dass dem Modell vorab die Zeitkonstanten des OLTC beschrieben wurden und die Annahme einer quasi-sofortigen Reaktion untersagt wurde.
+
+### Der Fall des kapazitiven Beitrags der Vermaschung
+
+Die geschätzte Einspeisung von 1.050 kapazitiven MVAr musste der Wirkung der Queradmittanz ($Y_t$) der unbelastet betriebenen 400-kV-Leitungen (Ferranti-Effekt) entsprechen. Die Validierung bestand darin, die Blindleistungsbilanz auf dem π-Modell der Leitung zu reproduzieren und die Größenordnung mit dem Oszillogramm und der Diagnose des IIT-ICAI-Berichts zu vergleichen.
+
+### Der Fall der 0,6-Hz-Schwingung
+
+Veranschaulicht eine spezifische Einschränkung der Nutzung von KI in forensischen Kontexten mit institutioneller Divergenz. Die Modelle neigen dazu, eine integrierte Antwort zu liefern – die „wahrscheinlichste“ über die Quellen gemittelte Lesart – wenn forensische Strenge die Bewahrung der Divergenz erfordert. Der Ursprung der Mode ist genau der Aspekt, den die Bachelorarbeit als ungelöste Diskrepanz und nicht als redaktionellen Konsens präsentieren muss.
+
+Die allgemeingültige Beobachtung, die sich aus diesen vier Fällen ableiten lässt: **Die Nützlichkeit der automatisierten Unterstützung ist maximal bei _Verarbeitungsaufgaben_** – Extraktion, Synthese, Strukturierung, Tabellierung, computergestütztes Schreiben – **und minimal, bis hin zur Kontraproduktivität, bei _kausalen Schlussfolgerungen_** über physikalische Phänomene mit geringer Repräsentation in den Trainingskorpora.
+
+## Kritische Reflexion: KI in der ingenieurwissenschaftlichen Forschung
+
+Die dokumentierte Erfahrung führt zu einer strukturellen Schlussfolgerung, die weder triumphalistisch noch katastrophistisch ist: Generative Modelle sind leistungsstarke _Beschleuniger_ der kognitiven Prozesse des Forschers, aber sie arbeiten auf der Grundlage einer probabilistischen Logik, die nicht mit der deterministischen Logik übereinstimmt, die die Physik materieller Systeme bestimmt.
+
+### Methodische Implikation
+
+Die Verwendung von KI **entbindet den Forscher nicht von der Beherrschung des technischen Inhalts** seines Studienobjekts; im Gegenteil, sie erfordert dies mit größerer Strenge. Nur ein Forscher mit ausreichender fachlicher Kompetenz, um eine physikalisch unmögliche Schlussfolgerung zu erkennen, kann ein Modell sicher nutzen, das in der Lage ist, diese mit rhetorischer Flüssigkeit zu produzieren. Die Asymmetrie zwischen der sprachlichen Plausibilität des _Outputs_ und seiner materiellen Richtigkeit stellt das Hauptrisiko bei der Nutzung dieser Werkzeuge in anspruchsvollen technischen Bereichen dar und kann nur durch eine Beherrschung des Inhalts neutralisiert werden, die das Werkzeug nicht leisten kann.
+
+### Ethisch-akademische Implikation
+
+Die automatische Unterstützung wurde in dieser Arbeit als Verarbeitungswerkzeug und nicht als Ersatz für das Denken verwendet. Jede inhaltliche Entscheidung – die Eingrenzung des Problems, die Hierarchie der Quellen, die Formulierung der kausalen These zum Zusammenbruch des 28-A, die vergleichende Bewertung der institutionellen Narrative, die Schlussfolgerungen – liegt in der alleinigen Verantwortung des Autors. **Die KI unterschreibt keine Bachelorarbeiten und sitzt nicht in einer Prüfungskommission**: Der Ingenieur unterzeichnet mit seinem Namen für die materielle Kausalität der dargelegten Fakten, und diese Unterschrift ist nicht übertragbar.
+
+### Prospektive disziplinäre Implikation
+
+Die Stromnetze des nächsten Jahrzehnts – dominiert von Leistungselektronik, mit relevanter Dynamik im subzyklischen Bereich und mit Spannungs-Blindleistungs-Interaktionen, die der konventionelle Netzbetreiber in Echtzeit nicht erfasst – werden Entscheidungsunterstützungswerkzeuge benötigen, die die Verarbeitungsgeschwindigkeit algorithmischer Modelle mit der physikalischen Robustheit von Simulatoren wie PSS/E kombinieren. Die Integration ist nicht trivial: Simulatoren lösen Gleichungen; LLMs approximieren Wahrscheinlichkeitsverteilungen.
+
+Die hybride Architektur **– LLM als semantische und synthetisierende Schnittstelle, physikalische Simulatoren als Motor kausaler Inferenzen –** ist plausiblerweise die Richtung, in die sich die Werkzeuge der Stromsystemtechnik entwickeln werden. Ihre Entwicklung wird genau dieselbe erkenntnistheoretische Wachsamkeit erfordern, die den Arbeitsablauf dieser Bachelorarbeit strukturiert hat: stets präsent zu haben, was jedes Werkzeug tut und was man explizit von ihm verlangt, nicht zu tun.
+
+Die detaillierte Aufzeichnung des Ablaufs der verwendeten restriktiven _Prompts_ zusammen mit repräsentativen Beispielen der angewandten Korrekturen wird im Anhang zur KI-Methodik dokumentiert, wobei den Empfehlungen für gute Praktiken in der methodischen Transparenz bei der Integration generativer Modelle in die Bachelor- und Masterforschung gefolgt wird.
