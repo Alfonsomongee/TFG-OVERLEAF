@@ -35,6 +35,7 @@ const sidebars = {
         'impacto-comunicativo',
         'resiliencia-futuro',
         'uso-ia',
+        '07b-consecuencias-financieras',
         'conclusiones',
       ],
     },
