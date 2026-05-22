@@ -56,7 +56,6 @@ const sidebars = {
       collapsible: true,
       collapsed: false,
       items: [
-        'transicion-energetica',
         'galeria-imagenes',
         'galeria-graficas',
       ],

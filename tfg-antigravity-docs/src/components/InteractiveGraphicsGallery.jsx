@@ -9,6 +9,7 @@ import EnergyMixChart from './EnergyMixChart';
 import AnimatedMap from './AnimatedMap';
 import VerticalTimeline from './VerticalTimeline';
 import SldDiagram from './SldDiagram';
+import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
 
 const graphicsData = [
   {
@@ -55,6 +56,15 @@ const graphicsData = [
     desc_en: 'Interactive electrical schematic of the transmission grid.',
     icon: '🔌',
     component: SldDiagram
+  },
+  {
+    id: 'streamgraph',
+    title_es: 'Transición y Emisiones',
+    title_en: 'Transition & Emissions',
+    desc_es: 'Evolución macroestructural del mix de generación frente a las emisiones de CO2.',
+    desc_en: 'Macro-structural evolution of the generation mix versus CO2 emissions.',
+    icon: '🌍',
+    component: EnergyTransitionStreamgraph
   }
 ];
 
