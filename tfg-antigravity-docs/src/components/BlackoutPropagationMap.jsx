@@ -42,8 +42,8 @@ function BlackoutMapContent() {
 
   useEffect(() => {
     const animation = setInterval(() => {
-      setTime(t => (t + 1) % 100);
-    }, 50);
+      setTime(t => (t + 1) % 150); // Loop de 15 segundos
+    }, 100);
     return () => clearInterval(animation);
   }, []);
 
@@ -54,16 +54,7 @@ function BlackoutMapContent() {
       minZoom: 0,
       maxZoom: 19,
       tileSize: 256,
-      opacity: Math.max(0.3, 1 - (time / 100)), // El mapa se oscurece pero no al 100%
-      renderSubLayers: props => {
-        const { boundingBox } = props.tile;
-        return new BitmapLayer(props, {
-          data: null,
-          image: props.data,
-          // bounds: [left, bottom, right, top]
-          bounds: [boundingBox[0][0], boundingBox[1][1], boundingBox[1][0], boundingBox[0][1]]
-        });
-      }
+      opacity: Math.max(0.3, 1 - (time / 100))
     }),
     new ScatterplotLayer({
       id: 'stations-layer',
@@ -131,7 +122,7 @@ function BlackoutMapContent() {
           El oscurecimiento geográfico progresivo simula el hundimiento de tensión a lo largo de los 11 segundos.
         </p>
         <div style={{ background: 'var(--ifm-color-primary)', padding: '5px 10px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold', display: 'inline-block' }}>
-          Progreso de Simulación: {(time / 10).toFixed(1)}s
+          Progreso de Simulación: {Math.min(11.0, time / 10).toFixed(1)}s {time > 120 && '(Reiniciando...)'}
         </div>
         <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '15px', fontStyle: 'italic', margin: '15px 0 0 0' }}>
           <span style={{color: '#fff'}}>Interacción:</span> Arrastra para rotar la cámara en 3D. Haz clic en las esferas para ver el informe forense.
@@ -140,7 +131,8 @@ function BlackoutMapContent() {
       <div style={{
         position: 'absolute',
         bottom: 20,
-        left: 20,
+        right: 20,
+        zIndex: 5,
         backgroundColor: 'rgba(0,0,0,0.8)',
         padding: '10px 15px',
         borderRadius: '8px',
