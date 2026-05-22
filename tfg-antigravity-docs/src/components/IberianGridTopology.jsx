@@ -3,16 +3,16 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 
 const GRID_DATA = {
   nodes: [
-    { id: 'GRN', name: 'Caparacena (Fallo Inicial)', group: 1, val: 25, color: '#ef4444' }, // Rojo
-    { id: 'SEV', name: 'Alcores (Efecto Dominó Sur)', group: 1, val: 15, color: '#f97316' }, // Naranja
-    { id: 'BAD', name: 'Guillena (Colapso Tensión)', group: 1, val: 15, color: '#f97316' },
-    { id: 'MAD', name: 'Madrid Morata (Contención)', group: 2, val: 20, color: '#10b981' }, // Verde
-    { id: 'ALM', name: 'C.N. Almaraz (Inercia Base)', group: 2, val: 25, color: '#10b981' },
-    { id: 'ZAR', name: 'Aragón (Puente Norte)', group: 3, val: 15, color: '#10b981' },
-    { id: 'BAR', name: 'Rubí (Resistencia Este)', group: 3, val: 20, color: '#10b981' },
-    { id: 'LIS', name: 'Lisboa (Desequilibrio)', group: 4, val: 20, color: '#f59e0b' }, // Amarillo-naranja
-    { id: 'POR', name: 'Porto (Compensación)', group: 4, val: 15, color: '#10b981' },
-    { id: 'FR', name: 'Francia (Rescate Externo)', group: 5, val: 30, color: '#3b82f6' } // Azul
+    { id: 'GRN', name: 'Caparacena (Fallo Inicial)', group: 1, val: 25, activeColor: '#ef4444', defaultColor: '#10b981', activationTime: 2 },
+    { id: 'SEV', name: 'Alcores (Efecto Dominó Sur)', group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4 },
+    { id: 'BAD', name: 'Guillena (Colapso Tensión)', group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4 },
+    { id: 'MAD', name: 'Madrid Morata (Contención)', group: 2, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
+    { id: 'ALM', name: 'C.N. Almaraz (Inercia Base)', group: 2, val: 25, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
+    { id: 'ZAR', name: 'Aragón (Puente Norte)', group: 3, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
+    { id: 'BAR', name: 'Rubí (Resistencia Este)', group: 3, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
+    { id: 'LIS', name: 'Lisboa (Desequilibrio)', group: 4, val: 20, activeColor: '#f59e0b', defaultColor: '#10b981', activationTime: 6 },
+    { id: 'POR', name: 'Porto (Compensación)', group: 4, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
+    { id: 'FR', name: 'Francia (Rescate Externo)', group: 5, val: 30, activeColor: '#3b82f6', defaultColor: '#3b82f6', activationTime: 10 }
   ],
   links: [
     { source: 'GRN', target: 'SEV', isCritical: true, flow: 'Sobrecarga masiva', activationTime: 2 },
@@ -129,6 +129,8 @@ function TopologyMapContent() {
         linkDirectionalParticleWidth={2}
         onNodeHover={handleNodeHover}
         nodeCanvasObject={(node, ctx, globalScale) => {
+          const currentNodeColor = (simTime >= node.activationTime) ? node.activeColor : node.defaultColor;
+
           const label = node.name;
           const fontSize = 12/globalScale;
           ctx.font = `${fontSize}px Sans-Serif`;
@@ -140,12 +142,12 @@ function TopologyMapContent() {
 
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.2)';
+          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? currentNodeColor : 'rgba(255,255,255,0.2)';
           ctx.fillText(label, node.x, node.y - 10);
 
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.val / 3, 0, 2 * Math.PI, false);
-          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.1)';
+          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? currentNodeColor : 'rgba(255,255,255,0.1)';
           ctx.fill();
         }}
         nodeCanvasObjectMode={() => 'replace'}

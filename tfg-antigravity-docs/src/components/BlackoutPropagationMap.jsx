@@ -112,6 +112,32 @@ function BlackoutMapContent() {
       />
       <div style={{
         position: 'absolute',
+        top: 20,
+        left: 20,
+        backgroundColor: 'rgba(0,0,0,0.85)',
+        padding: '20px',
+        borderRadius: '8px',
+        color: 'white',
+        maxWidth: '350px',
+        border: '1px solid #30363d',
+        zIndex: 10
+      }}>
+        <h3 style={{ margin: '0 0 10px 0', color: '#ef4444' }}>Propagación del Colapso</h3>
+        <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#d1d5db' }}>
+          Este modelo 3D proyecta físicamente el apagón. Los <strong>arcos</strong> son flujos masivos de energía. Las <strong>esferas pulsantes</strong> representan sobretensiones en los nudos.
+        </p>
+        <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#d1d5db', marginBottom: '15px' }}>
+          El oscurecimiento geográfico progresivo simula el hundimiento de tensión a lo largo de los 11 segundos.
+        </p>
+        <div style={{ background: 'var(--ifm-color-primary)', padding: '5px 10px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold', display: 'inline-block' }}>
+          Progreso de Simulación: {(time / 10).toFixed(1)}s
+        </div>
+        <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '15px', fontStyle: 'italic', margin: '15px 0 0 0' }}>
+          <span style={{color: '#fff'}}>Interacción:</span> Arrastra para rotar la cámara en 3D. Haz clic en las esferas para ver el informe forense.
+        </p>
+      </div>
+      <div style={{
+        position: 'absolute',
         bottom: 20,
         left: 20,
         backgroundColor: 'rgba(0,0,0,0.8)',
