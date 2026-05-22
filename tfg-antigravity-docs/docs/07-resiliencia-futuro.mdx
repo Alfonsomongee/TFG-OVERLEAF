@@ -83,7 +83,9 @@ La experiencia operativa de ERCOT (Texas) cuantifica el valor de este servicio. 
 
 El mercado _Responsive Reserve Service – Fast Frequency Response_ (RRS-FFR) de ERCOT exige: detección autónoma de caída por debajo de 59,85 Hz, inyección del 100 % de la potencia contratada en máximo **0,25 s**, y mantenimiento durante mínimo 15 minutos. Los resultados verificados muestran que la integración de **450 MW** bajo este esquema permitió reducir el umbral de inercia crítica de 100.000 MW·s a **88.000 MW·s** — un descenso del 12 % que refleja la equivalencia funcional entre la actuación sub-segundo de la electrónica de potencia y la masa cinética de las máquinas síncronas.
 
-Sin embargo, los semiconductores IGBT raramente sostienen corrientes superiores a **1,2–1,5 veces** su valor nominal. Esta restricción implica que la contribución de los BESS-GFM a la potencia de cortocircuito disponible en el nudo es cuantitativamente limitada.
+El caso de éxito fundacional a nivel mundial en este ámbito es la **Hornsdale Power Reserve** en Australia del Sur (operada por Neoen y Tesla). Tras su actualización de firmware a *Grid-Forming* en 2022, este sistema BESS de 150 MW / 193,5 MWh logró certificar la provisión operativa de **2.000 MWs de inercia equivalente**. El operador australiano AEMO aprobó esta contribución, que por sí sola es capaz de cubrir aproximadamente el 15 % de la inercia mínima requerida en el estado, demostrando empíricamente la viabilidad de sostener redes a gran escala puramente con electrónica de potencia.
+
+Sin embargo, los semiconductores IGBT raramente sostienen corrientes superiores a **1,2–1,5 veces** su valor nominal. Esta restricción implica que la contribución de los BESS-GFM a la potencia de cortocircuito disponible en el nudo es cuantitativamente limitada. El paper más avanzado sobre este límite es *Cross-Forming Control* (Dörfler et al., ETH Zürich, 2024), que propone arquitecturas híbridas de control para evitar la saturación de corriente durante las faltas.
 
 ### Compensadores síncronos: cortocircuito e inercia rotacional genuina
 
@@ -106,6 +108,16 @@ Ninguna de las tres familias tecnológicas, desplegada de forma aislada, es sufi
 La minimización del coste total del sistema no coincide con la minimización del <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, sino que exige internalizar en el diseño de mercado los <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Servicios Esenciales de Confiabilidad (ERS</GlossaryLink>) que las máquinas síncronas aportaban de forma implícita.
 
 ![Optimización tecno-económica de la resiliencia en sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _El mínimo de coste total del sistema se alcanza con un mix que remunera los ERS, no con la simple maximización de la penetración renovable. La diferencia entre el óptimo de LCOE y el óptimo sistémico es el coste de los servicios ancilares no remunerados. Fuente: Julia Matevosyan (ESIG) / FUTURED._
+
+### IA y Redes Neuronales de Grafos (GNN) para la estabilidad
+
+El vacío entre el estado del arte académico y la realidad operativa de los TSOs europeos quedó patente en el apagón ibérico. Mientras que despachos como el de REE o RTE (Francia) siguen utilizando herramientas de análisis modal clásico para monitorizar las Unidades de Medición Fasorial (PMU), la frontera investigadora ha resuelto la predicción del colapso mediante *Deep Learning*.
+
+Las arquitecturas de **Redes Neuronales de Grafos (GNN)** son inherentemente topológicas: entienden la red eléctrica no como variables independientes, sino como un grafo interconectado de impedancias. Modelos matemáticos recientes (como los de Nauck et al., 2023) aplican GNNs sobre datos fasoriales para predecir la *Cuenca de Estabilidad* de un nodo (SNBS) antes de que la tensión empiece a caer. De manera similar, arquitecturas basadas en *Transformers* (como el modelo StaaT, 2024) han demostrado superar holgadamente a las redes LSTM en la predicción de estabilidad de tensión a corto plazo utilizando únicamente series temporales de PMUs. La implementación de un sistema de Inteligencia Artificial basado en estas arquitecturas habría detectado el estrechamiento del margen Q-V en el nudo de Granada minutos antes de que el transformador colapsara térmicamente.
+
+### Enjambres Multi-Agente para Black-Start Descentralizado
+
+El *black-start* ibérico de 2025 requirió casi 16 horas para restablecer por completo la península operando bajo el clásico modelo *top-down* centralizado. El futuro de la reposición de suministro, especialmente con el despliegue del Grid-Forming, apunta a un modelo distribuido. Mediante Sistemas Multi-Agente (MAS), múltiples microrredes equipadas con GFM pueden pre-sincronizarse de forma autónoma (comunicándose entre ellas mediante algoritmos de consenso) formando "islas vivas" que posteriormente se conectan entre sí. Esta técnica, ya probada en pilotos como el de Holy Cross Energy en Colorado (NREL, 2024), tiene el potencial de reducir los tiempos de reposición de días a meras horas.
 
 ## La respuesta normativa: del P.O. 7.4 obsoleto al grid-forming obligatorio
 
