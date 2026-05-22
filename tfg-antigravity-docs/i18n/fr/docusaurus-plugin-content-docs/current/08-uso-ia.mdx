@@ -1,0 +1,74 @@
+---
+sidebar_position: 8
+---
+
+# Utilisation de l'Intelligence Artificielle
+
+L'élaboration de ce TFE s'est déroulée dans un contexte méthodologique atypique : la concomitance simultanée, durant la période 2024–2026, d'une crise systémique du système électrique ibérique et d'une transformation accélérée des outils de traitement du langage naturel. La disponibilité de _Large Language Models_ (LLMs) capables de traiter des documents techniques de centaines de pages en quelques minutes a coïncidé avec la publication, en l'espace d'un an, de quatre rapports d'expertise primaires et d'une dizaine d'analyses académiques sur le même événement. Ce chapitre documente de manière transparente comment ces outils ont été intégrés, quelles tâches concrètes ils ont accomplies, quelles erreurs systématiques ont été détectées et corrigées, et quelle réflexion épistémologique en découle pour la pratique de la recherche en ingénierie.
+
+## Application méthodologique : cinq fonctions opérationnelles
+
+Le corpus documentaire de départ comprend des dossiers techniques, des réglementations de l'ENTSO-E, des rapports officiels de plus de 200 pages, des simulations PSS/E de l'IIT-ICAI, des actes de la CNMC, des enregistrements oscillographiques du NREL et un vaste volume d'archives spécialisées. Leur lecture linéaire sans médiation informatique était incompatible avec les délais académiques du TFE. L'intégration de modèles génératifs s'est articulée autour de cinq fonctions opérationnelles clairement délimitées, **dont aucune n'implique d'inférence causale autonome sur la physique du système** :
+
+| Fonction | Description |
+| --- | --- |
+| **Réconciliation chronologique** | Les quatre rapports décrivent les mêmes faits physiques du 28-A avec différents niveaux de granularité et des décalages allant jusqu'à 200 ms entre les versions. L'assistance automatique a permis de construire un tableau maître unifié de _timestamps_ et de références croisées qui a servi d'échafaudage pour les chapitres 3 et 4. |
+| **Cartographie systématique des divergences** | Chaque rapport inscrit l'incident dans un périmètre analytique différent. L'extraction assistée de passages homologues a permis de localiser les affirmations techniquement incompatibles entre les sources — base du Chapitre 5 et de la synthèse comparative. |
+| **Tabulation quantitative** | Consolidation des grandeurs réparties tout au long des rapports : valeurs zonales d'inertie, pénétration renouvelable instantanée, échanges transfrontaliers, chiffres de l'UFLS, apports capacitifs du maillage. |
+| **Soutien rédactionnel** | Suggestion de variantes lexicales, épuration des synonymies, contrôle de la terminologie et reformulation de passages de prose académique dense. Ce soutien **n'a altéré ni la structure argumentative ni les décisions de contenu**, qui relèvent de la responsabilité exclusive de l'auteur. |
+| **Échafaudage d'éléments graphiques** | Génération de brouillons en TikZ et `pgfplots` à partir de descriptions textuelles, ultérieurement révisés, épurés et validés manuellement pour assurer la cohérence visuelle et la fidélité aux données représentées. |
+
+Le flux de travail se structure en trois étapes séquentielles avec une boucle de correction : [Sources primaires] → [Assistance LLM] → [Filtre de validation physique] → [Corps du TFE] ↑**********\_\_\_\_**********| (reformulation du prompt face à une hallucination détectée)
+
+L'élément méthodologiquement décisif n'est pas l'assistance LLM en soi, mais le **filtre de validation physique** qui s'interpose entre toute sortie du modèle et son incorporation au texte : Lois de Kirchhoff, courbes Q-V, équation d'oscillation du rotor et confrontation avec la source primaire. Lorsque le filtre détecte une inférence incompatible avec la mécanique du système, le _prompt_ est reformulé avec des restrictions sémantiques supplémentaires et le cycle recommence.
+
+## Validation et vérification : les quatre cas d'inférence erronée
+
+L'utilisation de modèles génératifs dans un domaine si dense en relations causales que la dynamique des systèmes de puissance révèle, de manière systématique, un comportement que les réseaux électriques ne tolèrent pas : l'**inférence par analogie statistique**. Les LLMs ont tendance à appliquer des schémas causaux _typiques_ — les plus fréquents dans la littérature de leur corpus d'entraînement — à des cas dont la structure physique est _atypique_. Le 28-A est, de par sa double nature (stabilité de tension au lieu du bilan de fréquence), un cas atypique par rapport à la majorité des pannes documentées dans la bibliographie technique du XXe siècle, ce qui a rendu particulièrement productive l'observation des points où l'IA s'écartait « par défaut » du phénomène réel.
+
+| Phénomène | Inférence erronée par défaut du LLM | Correction physique appliquée | Stratégie de _prompt_ correctrice |
+| --- | --- | --- | --- |
+| **Paradoxe de l'UFLS** | Le délestage de charges par sous-fréquence a « sauvé » des zones du réseau en rétablissant le bilan de puissance active. | L'UFLS est aveugle à la tension : en déconnectant la charge, il a retiré des puits de réactif inductif en plein transitoire capacitif, aggravant la surtension. | Restriction explicite : raisonner exclusivement dans le plan Q-V, en ignorant la logique fréquence–puissance active habituelle dans les pannes classiques. |
+| **Tap-Lag** | Les OLTC ont répondu correctement au transitoire en élevant ou abaissant la tension secondaire de manière proportionnelle. | Les retards intentionnels des OLTC — conçus pour éviter le _hunting_ — les ont laissés déphasés face à un transitoire de quelques dizaines de millisecondes, multipliant la tension vers le réseau de 220 kV et 132 kV. | Injection de la constante de temps réelle de l'ensemble électromécanique OLTC et interdiction de supposer une réponse quasi-instantanée. |
+| **Apport capacitif du maillage** | Le maillage a réduit l'impédance du système et, par conséquent, augmenté la stabilité de tension. | Dans des conditions de faible charge, le maillage a activé l'admittance transversale des lignes de 400 kV (effet Ferranti), injectant les 1 050 MVAr capacitifs qui ont précipité la surtension. | Restriction au régime de « ligne à vide » et exigence de calculer le bilan de réactif avec l'admittance capacitive $Y_t$ dans le modèle π de la ligne. |
+| **Oscillation de 0,6 Hz** | Production d'une réponse _intégrée_ — la lecture « la plus probable » moyennée sur les sources. | L'origine du mode (oscillation forcée par une centrale concrète selon l'ICAI ; mode naturel du système selon REE) est précisément la divergence que le TFE doit préserver, et non résoudre sur le plan éditorial. | Veto sur le choix unilatéral entre les deux hypothèses et obligation de produire des versions doubles avec attribution explicite à leur source. |
+
+### Le cas du paradoxe de l'UFLS
+
+Le cas le plus illustratif du modèle d'erreur : interrogés sur le rôle du délestage dans le développement de l'incident, les modèles ont systématiquement proposé une interprétation héritée des pannes classiques, dans lesquelles l'UFLS constitue la dernière ligne de défense et parvient habituellement à préserver des portions du réseau en rétablissant le bilan fréquence-puissance active. Cette inférence est physiquement correcte pour l'univers d'événements sur lesquels le modèle a été entraîné, mais invalide pour le 28-A : dans un effondrement dominé par le plan Q-V, l'activation de l'UFLS a simultanément retiré les puits de puissance réactive inductive qu'apportaient les charges déconnectées, **aggravant la surtension au lieu de l'atténuer**.
+
+La correction a nécessité de formuler le _prompt_ avec une restriction explicite sur le plan d'analyse et de vérifier manuellement que le raisonnement résultant était cohérent avec l'oscillographie publiée par le NREL dans la plage horaire 12:33:19–12:33:27 CEST.
+
+### Le cas du Tap-Lag
+
+La description qualitative que les modèles produisent de l'OLTC est correcte en régime permanent, mais suppose par défaut une réponse proportionnelle et instantanée que l'ensemble électromécanique réel ne possède pas. Le retard intentionnel introduit pour éviter le _hunting_ s'est traduit le 28-A par un rapport de transformation déphasé par rapport au transitoire électrique, ce qui a multiplié la surtension vers les réseaux de 220 kV et 132 kV — un phénomène invisible pour le SCADA de l'opérateur, ancré sur les mesures du primaire de 400 kV. Toute la chaîne causale du Tap-Lag a exigé de décrire au modèle, à l'avance, les constantes de temps de l'OLTC et de lui interdire de supposer une réponse quasi-instantanée.
+
+### Le cas de l'apport capacitif du maillage
+
+L'injection estimée à 1 050 MVAr capacitifs devait correspondre à l'effet de l'admittance transversale ($Y_t$) des lignes de 400 kV fonctionnant en régime à vide (effet Ferranti). La validation a consisté à reproduire le bilan de réactif sur le modèle π de la ligne, en confrontant l'ordre de grandeur avec l'oscillographie et avec le diagnostic du rapport IIT-ICAI.
+
+### Le cas de l'oscillation de 0,6 Hz
+
+Il illustre une limitation spécifique de l'utilisation de l'IA dans des contextes d'investigation présentant une divergence institutionnelle. Les modèles tendent à produire une réponse intégrée — la lecture « la plus probable » moyennée sur les sources — alors que la rigueur de l'expertise exige de préserver la divergence. L'origine du mode est précisément la donnée que le TFE doit présenter comme une divergence non résolue, et non comme un consensus éditorial.
+
+L'observation de portée générale que ces quatre cas permettent de formuler : **l'utilité de l'assistance automatique est maximale dans les tâches de _traitement_** — extraction, synthèse, structuration, tabulation, rédaction assistée — **et minimale, au point d'être contre-productive, dans les tâches d'_inférence causale_** sur des phénomènes physiques sous-représentés dans les corpus d'entraînement.
+
+## Réflexion critique : l'IA dans la recherche en ingénierie
+
+L'expérience documentée conduit à une conclusion structurelle, ni triomphaliste ni catastrophiste : les modèles génératifs sont de puissants _accélérateurs_ des processus cognitifs du chercheur, mais ils opèrent selon une logique probabiliste qui ne coïncide pas avec la logique déterministe qui régit la physique des systèmes matériels.
+
+### Implication méthodologique
+
+L'utilisation de l'IA **ne dispense pas le chercheur de maîtriser le contenu technique** de son objet d'étude ; au contraire, elle l'exige avec une plus grande sévérité. Seul un chercheur doté d'une compétence technique suffisante pour identifier une inférence physiquement impossible peut utiliser en toute sécurité un modèle capable de la produire avec une grande fluidité rhétorique. L'asymétrie entre la vraisemblance linguistique de la sortie (_output_) et son exactitude matérielle constitue le principal risque associé à l'utilisation de ces outils dans des domaines techniques exigeants, et ne peut être neutralisée que par une maîtrise du contenu que l'outil ne peut pas fournir.
+
+### Implication éthico-académique
+
+L'assistance automatique a été employée dans ce travail comme un outil de traitement, et non comme un substitut au raisonnement. Toute décision de contenu — le cadrage du problème, la hiérarchie des sources, la formulation de la thèse causale sur l'effondrement du 28-A, l'évaluation comparée des récits institutionnels, les conclusions finales — relève de la responsabilité exclusive de l'auteur. **L'IA ne signe pas de TFE et ne siège pas devant un jury** : l'ingénieur appose son nom pour certifier la causalité matérielle des faits exposés, et cette signature est intransmissible.
+
+### Implication disciplinaire prospective
+
+Les systèmes électriques de la prochaine décennie — dominés par l'électronique de puissance, avec une dynamique pertinente à l'échelle sous-cyclique et avec des interactions tension-réactif que l'opérateur conventionnel ne capte pas en temps réel — nécessiteront des outils d'aide à la décision qui combinent la vitesse de traitement des modèles algorithmiques avec la robustesse physique des simulateurs de type PSS/E. L'intégration n'est pas triviale : les simulateurs résolvent des équations ; les LLMs approximent des distributions de probabilité.
+
+L'architecture hybride **— LLM comme interface sémantique et de synthèse, simulateurs physiques comme moteur d'inférence causale —** est, vraisemblablement, la direction vers laquelle évolueront les outils d'ingénierie des systèmes de puissance. Son développement nécessitera exactement la même vigilance épistémologique que celle qui a structuré le flux de travail du présent TFE : garder toujours à l'esprit ce que fait chaque outil et ce qu'on lui demande explicitement de ne pas faire.
+
+Le registre détaillé du flux de _prompts_ restrictifs employés, ainsi que des exemples représentatifs des corrections appliquées, est documenté dans l'Annexe de Méthodologie IA, conformément aux recommandations de bonnes pratiques en matière de transparence méthodologique pour l'intégration de modèles génératifs dans la recherche de premier cycle et de troisième cycle.
