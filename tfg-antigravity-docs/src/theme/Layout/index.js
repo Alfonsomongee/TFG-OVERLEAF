@@ -4,10 +4,12 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import BlackoutTransition from '@site/src/components/BlackoutTransition';
 
 function CursorComponent() {
-  const AnimatedCursor = require('react-animated-cursor').default;
+  const AnimatedCursor = require('react-animated-cursor');
+  // En v2.6.0 puede ser exportado directamente o tener un .default
+  const Cursor = AnimatedCursor.default || AnimatedCursor;
   return (
     <div className="custom-cursor-wrapper">
-      <AnimatedCursor
+      <Cursor
         innerSize={6}
         outerSize={36}
         color="0, 229, 255"
