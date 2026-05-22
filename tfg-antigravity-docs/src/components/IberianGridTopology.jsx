@@ -3,34 +3,28 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 
 const GRID_DATA = {
   nodes: [
-    { id: 'GRN', name: 'Granada 400kV (Detonante)', group: 1, val: 25, color: '#ef4444' }, // Rojo
-    { id: 'SEV', name: 'Sevilla 400kV', group: 1, val: 15, color: '#f97316' }, // Naranja
-    { id: 'BAD', name: 'Badajoz 400kV', group: 1, val: 15, color: '#f97316' },
-    { id: 'MAD', name: 'Madrid Sur', group: 2, val: 20, color: '#10b981' }, // Verde
-    { id: 'ALM', name: 'Almaraz Nuclear', group: 2, val: 25, color: '#10b981' },
-    { id: 'ZAR', name: 'Zaragoza', group: 3, val: 15, color: '#10b981' },
-    { id: 'BAR', name: 'Barcelona', group: 3, val: 20, color: '#10b981' },
-    { id: 'VAL', name: 'Valencia', group: 3, val: 15, color: '#10b981' },
-    { id: 'LIS', name: 'Lisboa REN', group: 4, val: 20, color: '#10b981' },
-    { id: 'POR', name: 'Porto REN', group: 4, val: 15, color: '#10b981' },
-    { id: 'FR', name: 'RTE Francia (Aislamiento)', group: 5, val: 30, color: '#3b82f6' } // Azul
+    { id: 'GRN', name: 'Caparacena (Fallo Inicial)', group: 1, val: 25, color: '#ef4444' }, // Rojo
+    { id: 'SEV', name: 'Alcores (Efecto Dominó Sur)', group: 1, val: 15, color: '#f97316' }, // Naranja
+    { id: 'BAD', name: 'Guillena (Colapso Tensión)', group: 1, val: 15, color: '#f97316' },
+    { id: 'MAD', name: 'Madrid Morata (Contención)', group: 2, val: 20, color: '#10b981' }, // Verde
+    { id: 'ALM', name: 'C.N. Almaraz (Inercia Base)', group: 2, val: 25, color: '#10b981' },
+    { id: 'ZAR', name: 'Aragón (Puente Norte)', group: 3, val: 15, color: '#10b981' },
+    { id: 'BAR', name: 'Rubí (Resistencia Este)', group: 3, val: 20, color: '#10b981' },
+    { id: 'LIS', name: 'Lisboa (Desequilibrio)', group: 4, val: 20, color: '#f59e0b' }, // Amarillo-naranja
+    { id: 'POR', name: 'Porto (Compensación)', group: 4, val: 15, color: '#10b981' },
+    { id: 'FR', name: 'Francia (Rescate Externo)', group: 5, val: 30, color: '#3b82f6' } // Azul
   ],
   links: [
     { source: 'GRN', target: 'SEV', isCritical: true, flow: 'Sobrecarga masiva' },
     { source: 'SEV', target: 'BAD', isCritical: true, flow: 'Sobrecarga masiva' },
-    { source: 'BAD', target: 'ALM', isCritical: false },
     { source: 'BAD', target: 'LIS', isCritical: true, flow: 'Oscilaciones Inter-área (0.8Hz)' },
     { source: 'LIS', target: 'POR', isCritical: false },
-    { source: 'POR', target: 'ALM', isCritical: false },
+    { source: 'BAD', target: 'ALM', isCritical: false },
     { source: 'ALM', target: 'MAD', isCritical: false },
-    { source: 'SEV', target: 'MAD', isCritical: false },
     { source: 'MAD', target: 'ZAR', isCritical: false },
     { source: 'ZAR', target: 'BAR', isCritical: false },
-    { source: 'ZAR', target: 'FR', isCritical: true, flow: 'Desconexión por subfrecuencia' },
-    { source: 'BAR', target: 'FR', isCritical: true, flow: 'Desconexión por subfrecuencia' },
-    { source: 'VAL', target: 'MAD', isCritical: false },
-    { source: 'VAL', target: 'BAR', isCritical: false },
-    { source: 'GRN', target: 'VAL', isCritical: true, flow: 'Caída de tensión (Collapse)' }
+    { source: 'ZAR', target: 'FR', isCritical: true, flow: 'Importación de emergencia (Subfrecuencia)' },
+    { source: 'BAR', target: 'FR', isCritical: true, flow: 'Importación de emergencia (Subfrecuencia)' }
   ]
 };
 
@@ -102,10 +96,6 @@ function TopologyMapContent() {
         linkDirectionalParticleSpeed={0.01}
         linkDirectionalParticleWidth={2}
         onNodeHover={handleNodeHover}
-        onNodeClick={node => {
-          fgRef.current.centerAt(node.x, node.y, 1000);
-          fgRef.current.zoom(8, 2000);
-        }}
         nodeCanvasObject={(node, ctx, globalScale) => {
           const label = node.name;
           const fontSize = 12/globalScale;
@@ -135,10 +125,19 @@ function TopologyMapContent() {
         top: 20,
         left: 20,
         pointerEvents: 'none',
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        padding: '15px',
+        borderRadius: '8px',
+        border: '1px solid #30363d',
+        maxWidth: '300px',
         color: '#fff'
       }}>
-        <h4 style={{ margin: 0, color: '#e5e7eb' }}>Grafo Topológico de Impedancias (GNN)</h4>
-        <p style={{ margin: 0, fontSize: '0.8rem', color: '#9ca3af' }}>Pasa el ratón sobre los nudos para analizar dependencias locales.</p>
+        <h4 style={{ margin: '0 0 10px 0', color: '#60a5fa' }}>Dependencias Topológicas</h4>
+        <p style={{ margin: 0, fontSize: '0.85rem', color: '#d1d5db', lineHeight: '1.4' }}>
+          Este grafo (Force-Directed) modela la resistencia eléctrica de la red. 
+          Pasa el ratón por encima de un nudo para ver su <strong>área de influencia directa</strong>. 
+          Observa cómo el cortocircuito en Granada se transmitió inevitablemente a Sevilla y Badajoz debido a su fuerte dependencia estructural, aislando el sur.
+        </p>
       </div>
     </div>
   );

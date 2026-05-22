@@ -13,18 +13,18 @@ const INITIAL_VIEW_STATE = {
   bearing: 0
 };
 
-// Nodos críticos de la red ibérica
+// Nodos críticos de la red ibérica con narrativa explicativa
 const STATIONS = [
-  { name: 'Subestación Granada (Detonante)', coordinates: [-3.5985, 37.1773], type: 'critical', capacity: 100 },
-  { name: 'Nudo Sevilla', coordinates: [-5.9844, 37.3890], type: 'lost', capacity: 80 },
-  { name: 'Nudo Badajoz', coordinates: [-6.9706, 38.8794], type: 'lost', capacity: 70 },
-  { name: 'C.N. Almaraz', coordinates: [-5.6961, 39.8142], type: 'active', capacity: 90 },
-  { name: 'Madrid Centro', coordinates: [-3.7037, 40.4167], type: 'active', capacity: 100 },
-  { name: 'Zaragoza', coordinates: [-0.8877, 41.6497], type: 'active', capacity: 60 },
-  { name: 'Barcelona', coordinates: [2.1734, 41.3852], type: 'active', capacity: 90 },
-  { name: 'Lisboa (REN)', coordinates: [-9.1393, 38.7222], type: 'active', capacity: 85 },
-  { name: 'Porto (REN)', coordinates: [-8.6291, 41.1579], type: 'active', capacity: 75 },
-  { name: 'Interconexión FR (Pirineos)', coordinates: [1.8845, 42.6397], type: 'border', capacity: 100 }
+  { name: 'Subestación Caparacena (Granada)', coordinates: [-3.5985, 37.1773], type: 'critical', desc: 'Punto cero (16:32:00). Doble cortocircuito que desencadena una brutal sobretensión local.' },
+  { name: 'Nudo Alcores (Sevilla)', coordinates: [-5.9844, 37.3890], type: 'lost', desc: 'Desconectada por protecciones para intentar aislar el incendio eléctrico del sur.' },
+  { name: 'Nudo Guillena (Badajoz)', coordinates: [-6.9706, 38.8794], type: 'lost', desc: 'Sufre la onda de choque de reactiva. Cae por colapso de tensión (Voltage Collapse).' },
+  { name: 'C.N. Almaraz (Cáceres)', coordinates: [-5.6961, 39.8142], type: 'active', desc: 'Soporta el transitorio gracias a la inercia pesada de sus alternadores síncronos.' },
+  { name: 'Madrid Sur / Morata', coordinates: [-3.7037, 40.4167], type: 'active', desc: 'Absorbe los desequilibrios pero sufre caídas de frecuencia hasta 48.7 Hz.' },
+  { name: 'Nudo Aragón (Zaragoza)', coordinates: [-0.8877, 41.6497], type: 'active', desc: 'Actúa como puente crítico para intentar importar energía de emergencia desde Francia.' },
+  { name: 'Nudo Rubí (Barcelona)', coordinates: [2.1734, 41.3852], type: 'active', desc: 'Se mantiene estable pero al límite operativo, exportando inercia al resto del país.' },
+  { name: 'Lisboa (Rede Eléctrica Nacional)', coordinates: [-9.1393, 38.7222], type: 'active', desc: 'La desconexión súbita de Andalucía genera oscilaciones letales hacia la red portuguesa.' },
+  { name: 'Porto (REN)', coordinates: [-8.6291, 41.1579], type: 'active', desc: 'Compensa la falta de generación del sur bombeando energía a la desesperada.' },
+  { name: 'Interconexión Francia (RTE)', coordinates: [1.8845, 42.6397], type: 'border', desc: 'Aporta 2.500 MW de emergencia para salvar a la Península del cero total.' }
 ];
 
 // Flujos de potencia masivos (Arcos)
@@ -75,7 +75,7 @@ function BlackoutMapContent() {
       radiusMaxPixels: 20,
       lineWidthMinPixels: 2,
       getPosition: d => d.coordinates,
-      getRadius: d => d.capacity * (d.type === 'critical' ? (1 + Math.sin(time / 5) * 0.3) : 1),
+      getRadius: d => (d.type === 'critical' ? (60 + Math.sin(time / 5) * 20) : 50),
       getFillColor: d => {
         if (d.type === 'critical') return [255, 0, 0];
         if (d.type === 'lost') return [255, 165, 0];
@@ -137,11 +137,11 @@ function BlackoutMapContent() {
           maxWidth: '250px',
           border: '1px solid var(--ifm-color-primary)'
         }}>
-          <h4 style={{margin: '0 0 10px 0'}}>{clickedObject.name || 'Flujo Eléctrico'}</h4>
+          <h4 style={{margin: '0 0 10px 0', fontSize: '1rem', color: '#60a5fa'}}>{clickedObject.name || 'Flujo de Energía Crítico'}</h4>
           {clickedObject.flow ? (
-            <p style={{margin: 0}}>{clickedObject.flow}</p>
+            <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.4'}}>{clickedObject.flow}</p>
           ) : (
-            <p style={{margin: 0}}>Estado: {clickedObject.type.toUpperCase()}<br/>Capacidad Relativa: {clickedObject.capacity}%</p>
+            <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.4'}}>{clickedObject.desc}</p>
           )}
         </div>
       )}
