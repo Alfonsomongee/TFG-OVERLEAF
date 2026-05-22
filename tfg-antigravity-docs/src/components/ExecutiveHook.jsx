@@ -6,6 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 export default function ExecutiveHook() {
   const [isFading, setIsFading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
@@ -137,6 +138,7 @@ export default function ExecutiveHook() {
   const strings = getStrings(lang);
 
   useEffect(() => {
+    setIsMounted(true);
     // Start fading out after 4.5 seconds (gives time for blackout to finish)
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
@@ -156,7 +158,7 @@ export default function ExecutiveHook() {
   return (
     <>
       {/* Splash Screen */}
-      {!isHidden && (
+      {isMounted && !isHidden && (
         <div className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}>
           <div className={styles.splashBgIlluminated}></div>
           <div className={styles.splashBgDark}></div>

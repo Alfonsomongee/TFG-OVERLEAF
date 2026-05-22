@@ -1,7 +1,6 @@
 import React from 'react';
 import OriginalLayout from '@theme-original/Layout';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import BlackoutTransition from '@site/src/components/BlackoutTransition';
 
 function CursorComponent() {
   const AnimatedCursor = require('react-animated-cursor');
@@ -34,9 +33,7 @@ export default function Layout(props) {
       <BrowserOnly>
         {() => <CursorComponent />}
       </BrowserOnly>
-      <BlackoutTransition>
-        <OriginalLayout {...props} />
-      </BlackoutTransition>
+      <OriginalLayout {...props} />
     </>
   );
 }
