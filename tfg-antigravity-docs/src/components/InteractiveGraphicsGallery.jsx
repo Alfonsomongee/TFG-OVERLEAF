@@ -115,13 +115,11 @@ import PhasePlanePlot from './PhasePlanePlot';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
-  { id: 'energymix', icon: '⚡', component: EnergyMixChart },
   { id: 'map', icon: '🗺️', component: AnimatedMap },
   { id: 'timeline', icon: '⏱️', component: VerticalTimeline },
   { id: 'sld', icon: '🔌', component: SldDiagram },
   { id: 'streamgraph', icon: '🌍', component: EnergyTransitionStreamgraph },
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
-  { id: 'blackout3d', icon: '🌍', component: BlackoutPropagationMap },
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot }

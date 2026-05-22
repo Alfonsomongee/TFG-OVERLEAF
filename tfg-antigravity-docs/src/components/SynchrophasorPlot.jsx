@@ -92,39 +92,42 @@ export default function SynchrophasorPlot({ lang }) {
       text: lang === 'es' ? 'Desviación Angular Fasorial (PMU)' : 'Phasor Angular Deviation (PMU)',
       subtext: lang === 'es' ? 'Falla del Transformador Granada 400/220kV' : 'Granada 400/220kV Transformer Fault',
       left: 'center',
-      textStyle: { color: '#ffffff', fontSize: 16, fontWeight: '600' },
-      subtextStyle: { color: '#94a3b8' }
+      top: '5%',
+      textStyle: { color: '#ffffff', fontSize: 22, fontWeight: '700', textShadowBlur: 10, textShadowColor: 'rgba(255,255,255,0.3)' },
+      subtextStyle: { color: '#94a3b8', fontSize: 14 }
     },
-    polar: { center: ['50%', '55%'], radius: '70%' },
+    polar: { center: ['50%', '60%'], radius: '65%' },
     angleAxis: {
       type: 'value',
       min: 0,
       max: 360,
       boundaryGap: false,
-      splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.1)', type: 'dashed' } },
-      axisLabel: { formatter: '{value}°', color: '#94a3b8' },
-      axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.2)' } }
+      splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.15)', type: 'dashed' } },
+      axisLabel: { formatter: '{value}°', color: '#cbd5e1', fontSize: 13, margin: 15 },
+      axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } }
     },
     radiusAxis: {
       type: 'value',
       min: 0,
       max: 1.2,
-      splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.1)' } },
-      axisLabel: { formatter: '{value} p.u.', color: '#94a3b8' },
-      axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.2)' } }
+      splitLine: { show: true, lineStyle: { color: 'rgba(255, 255, 255, 0.15)' } },
+      axisLabel: { formatter: '{value} p.u.', color: '#cbd5e1', fontSize: 12 },
+      axisLine: { lineStyle: { color: 'rgba(255, 255, 255, 0.3)' } }
     },
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(15, 23, 42, 0.9)',
-      borderColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: 'rgba(15, 23, 42, 0.95)',
+      borderColor: 'rgba(56, 189, 248, 0.5)',
+      borderWidth: 1,
       textStyle: { color: '#fff' },
       formatter: (params) => {
         const mag = params.value[0].toFixed(3);
         const ang = params.value[1].toFixed(2);
-        return `<div style="font-family: monospace;">
-                <strong>PMU Sensor</strong><br/>
-                Tensión RMS: <span style="color:#38bdf8">${mag} p.u.</span><br/>
-                Desviación Fase: <span style="color:#f472b6">${ang}°</span>
+        return `<div style="font-family: monospace; padding: 5px;">
+                <strong style="color: #cbd5e1">PMU Sensor</strong><br/>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 0;" />
+                Tensión RMS: <span style="color:#38bdf8; font-weight: bold;">${mag} p.u.</span><br/>
+                Desviación Fase: <span style="color:#f472b6; font-weight: bold;">${ang}°</span>
                 </div>`;
       }
     },
@@ -135,16 +138,17 @@ export default function SynchrophasorPlot({ lang }) {
         const value = [api.value(0), api.value(1)];
         const startPoint = api.coord([0, value[1]]);
         const endPoint = api.coord([value[0], value[1]]);
+        const color = api.visual('color');
         return {
           type: 'group',
           children: [{
             type: 'line',
             shape: { x1: startPoint[0], y1: startPoint[1], x2: endPoint[0], y2: endPoint[1] },
-            style: api.style({ stroke: api.visual('color'), lineWidth: 3 })
+            style: api.style({ stroke: color, lineWidth: 4, shadowBlur: 10, shadowColor: color })
           }, {
             type: 'circle',
-            shape: { cx: endPoint[0], cy: endPoint[1], r: 5 },
-            style: api.style({ fill: api.visual('color') })
+            shape: { cx: endPoint[0], cy: endPoint[1], r: 7 },
+            style: api.style({ fill: color, shadowBlur: 15, shadowColor: color })
           }]
         };
       },
@@ -167,13 +171,13 @@ export default function SynchrophasorPlot({ lang }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
-      <div style={{ flex: 1, minHeight: '400px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', minHeight: '650px' }}>
+      <div style={{ flex: 1, minHeight: '550px', backgroundColor: '#0a0f1c', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)' }}>
         <ReactEChartsCore
           ref={chartRef}
           echarts={echarts}
           option={baseOption}
-          style={{ height: '100%', width: '100%' }}
+          style={{ height: '100%', width: '100%', minHeight: '550px' }}
           theme="dark"
           notMerge={false}
           lazyUpdate={true}
