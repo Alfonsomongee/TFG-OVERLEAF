@@ -15,38 +15,37 @@ import styles from './FinancialWaterfallChart.module.css';
 const data = [
   {
     name: 'Impacto VoLL',
-    // [startY, endY]
-    value: [0, -1500],
-    amount: -1500,
-    color: '#D32F2F', // Rojo Carmesí
+    value: [0, 1500],
+    amount: 1500,
+    color: '#ef4444', // Red-500
     desc: 'Paralización comercial y caída del PIB (CEOE/ATA).'
   },
   {
     name: 'Daños Industria',
-    value: [-1500, -1525],
-    amount: -25,
-    color: '#B71C1C', // Rojo Óxido
+    value: [1500, 1525],
+    amount: 25,
+    color: '#f97316', // Orange-500
     desc: 'Daño directo y lucro cesante electrointensivas (AEGE).'
   },
   {
     name: 'Op. Reforzada (OPEX)',
-    value: [-1525, -2236],
-    amount: -711,
-    color: '#F57C00', // Naranja Advertencia
+    value: [1525, 2236],
+    amount: 711,
+    color: '#f59e0b', // Amber-500
     desc: 'Quemar gas innecesario cuesta el 25% del plan de resiliencia.'
   },
   {
     name: 'Multas CNMC',
-    value: [-2236, -2356],
-    amount: -120,
-    color: '#7f8c8d', // Gris Antracita (ajustado para dark mode)
+    value: [2236, 2356],
+    amount: 120,
+    color: '#8b5cf6', // Violet-500
     desc: 'Infracciones muy graves a operadores y promotoras.'
   },
   {
     name: 'Destrucción Total',
-    value: [0, -2356],
-    amount: -2356,
-    color: '#c0392b', // Rojo más oscuro total
+    value: [0, 2356],
+    amount: 2356,
+    color: '#b91c1c', // Red-700
     desc: 'Impacto financiero total en los primeros 12 meses.'
   }
 ];
@@ -69,17 +68,19 @@ const CustomTooltip = ({ active, payload }) => {
 
 // Componente para formatear los labels interiores de las barras
 const renderCustomizedLabel = (props) => {
-  const { x, y, width, height, value, index } = props;
+  const { x, y, width, height, index } = props;
   const dataItem = data[index];
   
-  // Posicionar el label en el centro de la barra
-  const radius = 10;
+  // Si la barra es muy pequeña, dibujamos el texto por encima de ella para que no se superponga
+  const isSmall = Math.abs(height) < 25;
+  const labelY = isSmall ? y - 10 : y + height / 2;
+  const fill = isSmall ? 'var(--ifm-font-color-base)' : '#fff';
   
   return (
     <text 
       x={x + width / 2} 
-      y={y + height / 2} 
-      fill="#fff" 
+      y={labelY} 
+      fill={fill} 
       textAnchor="middle" 
       dominantBaseline="middle"
       fontSize={12}
@@ -102,7 +103,8 @@ export default function FinancialWaterfallChart() {
         <ResponsiveContainer width="100%" height={450}>
           <BarChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
+            margin={{ top: 30, right: 30, left: 20, bottom: 40 }}
+            accessibilityLayer={true}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
             <XAxis 
@@ -119,11 +121,11 @@ export default function FinancialWaterfallChart() {
               tick={{ fill: 'var(--ifm-font-color-base)', opacity: 0.8 }}
               tickLine={false}
               axisLine={false}
-              domain={[-2500, 0]}
+              domain={[0, 2500]}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} isAnimationActive={false} />
             
-            <Bar dataKey="value" radius={[4, 4, 4, 4]} isAnimationActive={true}>
+            <Bar dataKey="value" radius={[4, 4, 4, 4]} isAnimationActive={true} animationDuration={1000}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
