@@ -89,10 +89,20 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Topologie de Réseau Neuronal (GNN)', desc: 'Graphe dirigé par la force des impédances du réseau de transport.' },
       it: { title: 'Topologia di Rete Neurale (GNN)', desc: 'Grafo diretto dalla forza delle impedenze della rete di trasmissione.' },
       de: { title: 'Neuronale Netztopologie (GNN)', desc: 'Kraftgesteuerter Graph der Übertragungsnetzimpedanzen.' }
+    },
+    phasor: {
+      es: { title: 'Gráfico Fasorial Transitorio', desc: 'Dispersión polar de Unidades de Medición Fasorial (PMU) a 50Hz ilustrando la divergencia angular y colapso de la estabilidad.' },
+      en: { title: 'Transient Phasor Plot', desc: 'Polar scatter of Phasor Measurement Units (PMU) at 50Hz illustrating angular divergence and stability collapse.' },
+      pt: { title: 'Gráfico Fasorial Transitório', desc: 'Dispersão polar de Unidades de Medição Fasorial (PMU) a 50Hz ilustrando a divergência angular.' },
+      fr: { title: 'Tracé Phasoriel Transitoire', desc: 'Dispersion polaire des unités de mesure de phase (PMU) à 50 Hz illustrant la divergence angulaire.' },
+      it: { title: 'Grafico Fasoriale Transitorio', desc: 'Dispersione polare delle unità di misura fasoriale (PMU) a 50Hz che illustra la divergenza angolare.' },
+      de: { title: 'Transientes Zeigerdiagramm', desc: 'Polare Streuung von Phasor Measurement Units (PMU) bei 50 Hz zur Veranschaulichung der Winkeldivergenz.' }
     }
   };
-  return dictionary[id][lang] || dictionary[id]['es'];
+  return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
 };
+
+import SynchrophasorPlot from './SynchrophasorPlot';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -103,7 +113,8 @@ const graphicsData = [
   { id: 'streamgraph', icon: '🌍', component: EnergyTransitionStreamgraph },
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
   { id: 'blackout3d', icon: '🌍', component: BlackoutPropagationMap },
-  { id: 'topology', icon: '🕸️', component: IberianGridTopology }
+  { id: 'topology', icon: '🕸️', component: IberianGridTopology },
+  { id: 'phasor', icon: '🧭', component: SynchrophasorPlot }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {
