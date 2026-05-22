@@ -97,12 +97,21 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Tracé Phasoriel Transitoire', desc: 'Dispersion polaire des unités de mesure de phase (PMU) à 50 Hz illustrant la divergence angulaire.' },
       it: { title: 'Grafico Fasoriale Transitorio', desc: 'Dispersione polare delle unità di misura fasoriale (PMU) a 50Hz che illustra la divergenza angolare.' },
       de: { title: 'Transientes Zeigerdiagramm', desc: 'Polare Streuung von Phasor Measurement Units (PMU) bei 50 Hz zur Veranschaulichung der Winkeldivergenz.' }
+    },
+    phaseplane: {
+      es: { title: 'Diagrama de Plano de Fase (GFM vs GFL)', desc: 'Comparación en el espacio de estados δ vs Δω de la convergencia de inversores Formadores de Red frente a Seguidores de Red.' },
+      en: { title: 'Phase-Plane Diagram (GFM vs GFL)', desc: 'State-space comparison δ vs Δω of Grid-Forming vs Grid-Following inverters convergence.' },
+      pt: { title: 'Diagrama de Plano de Fase (GFM vs GFL)', desc: 'Comparação no espaço de estados δ vs Δω da convergência de inversores Formadores de Rede versus Seguidores de Rede.' },
+      fr: { title: 'Diagramme de Plan de Phase (GFM vs GFL)', desc: 'Comparaison dans l\'espace d\'états δ vs Δω de la convergence des onduleurs Formateurs de Réseau vs Suiveurs de Réseau.' },
+      it: { title: 'Diagramma di Piano di Fase (GFM vs GFL)', desc: 'Confronto nello spazio degli stati δ vs Δω della convergenza degli inverter Grid-Forming vs Grid-Following.' },
+      de: { title: 'Phasenebenendiagramm (GFM vs GFL)', desc: 'Zustandsraumvergleich δ vs Δω der Konvergenz von netzbildenden vs. netzfolgenden Wechselrichtern.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
 };
 
 import SynchrophasorPlot from './SynchrophasorPlot';
+import PhasePlanePlot from './PhasePlanePlot';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -114,7 +123,8 @@ const graphicsData = [
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
   { id: 'blackout3d', icon: '🌍', component: BlackoutPropagationMap },
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
-  { id: 'phasor', icon: '🧭', component: SynchrophasorPlot }
+  { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
+  { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {

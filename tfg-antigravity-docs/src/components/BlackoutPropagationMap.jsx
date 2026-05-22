@@ -72,6 +72,11 @@ function BlackoutMapContent({ lang = 'es' }) {
     return () => clearInterval(animation);
   }, [isPlaying, time]);
 
+  const INERTIA_ARCS = [
+    { source: [-5.6961, 39.8142], target: [-5.9844, 37.3890], flow: 'Transferencia de Inercia Síncrona (Almaraz -> Sur)' },
+    { source: [2.1734, 41.3852], target: [-0.8877, 41.6497], flow: 'Soporte Reactivo (Rubí -> Aragón)' }
+  ];
+
   const layers = [
     new TileLayer({
       id: 'google-satellite',
@@ -81,6 +86,7 @@ function BlackoutMapContent({ lang = 'es' }) {
       tileSize: 256,
       opacity: Math.max(0.3, 1 - (time / 100))
     }),
+    // Nodos con deformación 3D (Voltage Sag)
     new ScatterplotLayer({
       id: 'stations-layer',
       data: STATIONS,
@@ -92,7 +98,14 @@ function BlackoutMapContent({ lang = 'es' }) {
       radiusMinPixels: 5,
       radiusMaxPixels: 20,
       lineWidthMinPixels: 2,
-      getPosition: d => d.coordinates,
+      getPosition: d => {
+        // Deformación Z (Voltage Sag) para nudos del sur a partir de T=20
+        let z = 0;
+        if (d.coordinates[1] < 39 && time > 20) {
+          z = -150000 * Math.min(1, (time - 20) / 40); // Se hunde 150km visuales
+        }
+        return [d.coordinates[0], d.coordinates[1], z];
+      },
       getRadius: d => (d.type === 'critical' ? (60 + Math.sin(time / 5) * 20) : 50),
       getFillColor: d => {
         if (d.type === 'critical') return [255, 0, 0];
@@ -102,16 +115,43 @@ function BlackoutMapContent({ lang = 'es' }) {
       },
       getLineColor: d => [0, 0, 0]
     }),
+    // Arcos de cortocircuito en cascada
     new ArcLayer({
       id: 'power-flows-layer',
       data: ARCS,
       pickable: true,
       getWidth: 3,
       getSourcePosition: d => d.source,
-      getTargetPosition: d => d.target,
+      getTargetPosition: d => {
+        // El objetivo se hunde con el Voltage Sag
+        let z = 0;
+        if (d.target[1] < 39 && time > 20) {
+          z = -150000 * Math.min(1, (time - 20) / 40);
+        }
+        return [d.target[0], d.target[1], z];
+      },
       getSourceColor: [255, 0, 0, 200],
       getTargetColor: [255, 165, 0, 200],
       getTilt: d => (time / 100) * 15 - 7.5
+    }),
+    // Arcos de Inercia Síncrona que colapsan
+    new ArcLayer({
+      id: 'inertia-arcs-layer',
+      data: INERTIA_ARCS,
+      pickable: true,
+      getWidth: 4,
+      getHeight: 0.8, // Arcos muy altos
+      visible: time < 60, // Colapsan y desaparecen en T=60
+      getSourcePosition: d => d.source,
+      getTargetPosition: d => {
+        let z = 0;
+        if (d.target[1] < 39 && time > 20) {
+          z = -150000 * Math.min(1, (time - 20) / 40);
+        }
+        return [d.target[0], d.target[1], z];
+      },
+      getSourceColor: [0, 255, 255, 255 - Math.max(0, (time - 40) * 12)], // Se desvanecen
+      getTargetColor: [0, 150, 255, 255 - Math.max(0, (time - 40) * 12)]
     })
   ];
 
