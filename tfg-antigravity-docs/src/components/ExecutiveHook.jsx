@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { useHistory } from '@docusaurus/router';
 
 export default function ExecutiveHook() {
   const [isFading, setIsFading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const history = useHistory();
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
@@ -144,17 +142,16 @@ export default function ExecutiveHook() {
       setIsFading(true);
     }, 2500);
 
-    // Completely remove from DOM after 4 seconds and navigate
+    // Completely remove from DOM after 4 seconds
     const hideTimer = setTimeout(() => {
       setIsHidden(true);
-      history.push('/introduccion');
     }, 4000);
 
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(hideTimer);
     };
-  }, [history]);
+  }, []);
 
   return (
     <>
