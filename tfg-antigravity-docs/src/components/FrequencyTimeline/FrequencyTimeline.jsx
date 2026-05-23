@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import GlitchTitle from '../GlitchTitle';
@@ -125,38 +125,38 @@ const FrequencyTimeline = () => {
         >
           <defs>
             <linearGradient id="freqGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#00ff88" />
-              <stop offset="50%" stopColor="#FFD700" />
-              <stop offset="75%" stopColor="#ff6644" />
-              <stop offset="100%" stopColor="#cc0000" />
+              <stop offset="0%" stopColor="#ffaa00" />
+              <stop offset="50%" stopColor="#ff8800" />
+              <stop offset="75%" stopColor="#ff5500" />
+              <stop offset="100%" stopColor="#cc1100" />
             </linearGradient>
           </defs>
 
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
           <XAxis 
             dataKey="time" 
-            stroke="rgba(255,255,255,0.5)"
-            tick={{ fontSize: 12 }}
+            stroke="rgba(255, 170, 0, 0.4)"
+            tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
             angle={-45}
             textAnchor="end"
             height={80}
           />
           <YAxis 
             domain={[45, 50.5]}
-            stroke="rgba(255,255,255,0.5)"
-            label={{ value: 'Frequency (Hz)', angle: -90, position: 'insideLeft' }}
+            stroke="rgba(255, 170, 0, 0.4)"
+            tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+            label={{ value: 'FREQUENCY (Hz)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
           />
 
           {/* Reference lines for thresholds */}
-          <ReferenceLine y={50.0} stroke="white" strokeDasharray="5 5" opacity={0.3} label="Nominal 50 Hz" />
-          <ReferenceLine y={49.8} stroke="#FFD700" strokeDasharray="5 5" label="UFLS Threshold" />
-          <ReferenceLine y={48.0} stroke="#cc0000" strokeDasharray="5 5" label="Collapse Zone" />
+          <ReferenceLine y={50.0} stroke="rgba(255, 255, 255, 0.2)" strokeDasharray="5 5" label={{ value: "NOMINAL", fill: "rgba(255, 255, 255, 0.3)" }} />
+          <ReferenceLine y={49.8} stroke="#ffaa00" strokeDasharray="3 3" opacity={0.5} label={{ value: "UFLS THRESHOLD", fill: "#ffaa00" }} />
+          <ReferenceLine y={48.0} stroke="#cc1100" strokeDasharray="3 3" opacity={0.5} label={{ value: "COLLAPSE ZONE", fill: "#cc1100" }} />
 
           {/* Reference zones */}
-          <ReferenceArea y1={50} y2={50.5} fill="rgba(0,255,136,0.1)" label="Safe" />
-          <ReferenceArea y1={49.0} y2={49.8} fill="rgba(255,215,0,0.1)" label="UFLS Active" />
-          <ReferenceArea y1={48.0} y2={49.0} fill="rgba(255,102,68,0.1)" label="Critical" />
-          <ReferenceArea y1={45} y2={48.0} fill="rgba(204,0,0,0.1)" label="Collapse" />
+          <ReferenceArea y1={49.0} y2={49.8} fill="rgba(255, 170, 0, 0.05)" />
+          <ReferenceArea y1={48.0} y2={49.0} fill="rgba(255, 85, 0, 0.05)" />
+          <ReferenceArea y1={45} y2={48.0} fill="rgba(204, 17, 0, 0.1)" />
 
           {/* Main frequency line */}
           <Line 
@@ -170,17 +170,18 @@ const FrequencyTimeline = () => {
           />
 
           {/* Current time marker (vertical line) */}
-          {isPlaying && <ReferenceLine x={getCurrentValue().time} stroke="rgba(0,255,136,0.8)" strokeWidth={2} />}
+          {isPlaying && <ReferenceLine x={getCurrentValue().time} stroke="#ffaa00" strokeWidth={1} opacity={0.8} />}
 
           <Tooltip 
-            contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)' }}
-            labelStyle={{ color: '#fff' }}
+            contentStyle={{ backgroundColor: '#050403', border: '1px solid rgba(255, 170, 0, 0.4)', borderRadius: '2px', fontFamily: 'monospace' }}
+            labelStyle={{ color: 'rgba(255, 210, 150, 0.8)' }}
+            itemStyle={{ color: '#ffaa00' }}
             formatter={(value, name) => {
-              if (name === 'freq') return [value.toFixed(2) + ' Hz', name];
+              if (name === 'freq') return [value.toFixed(2) + ' Hz', 'FREQ'];
               return [value, name];
             }}
           />
-          <Legend />
+          <Legend wrapperStyle={{ fontFamily: 'monospace', color: 'rgba(255, 210, 150, 0.6)' }} />
         </ComposedChart>
       </ResponsiveContainer>
 
@@ -189,27 +190,35 @@ const FrequencyTimeline = () => {
         <h3>Tasa de Cambio de Frecuencia (ROCOF)</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={filteredData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 170, 0, 0.1)" />
             <XAxis 
               dataKey="time" 
-              stroke="rgba(255,255,255,0.5)"
+              stroke="rgba(255, 170, 0, 0.4)"
+              tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
             <YAxis 
-              stroke="rgba(255,255,255,0.5)"
-              label={{ value: 'ROCOF (Hz/s)', angle: -90, position: 'insideLeft' }}
+              stroke="rgba(255, 170, 0, 0.4)"
+              tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+              label={{ value: 'ROCOF (Hz/s)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
             />
-            <ReferenceLine y={0.5} stroke="#FFD700" strokeDasharray="5 5" label="Protection Threshold" />
-            <ReferenceLine y={1.0} stroke="#cc0000" strokeDasharray="5 5" label="POLE-SLIP ZONE" />
+            <ReferenceLine y={0.5} stroke="rgba(255, 170, 0, 0.6)" strokeDasharray="3 3" />
+            <ReferenceLine y={1.0} stroke="#cc1100" strokeDasharray="3 3" opacity={0.6} />
             <Bar 
               dataKey="rocof" 
-              fill={(entry) => entry.rocof > 1.0 ? '#cc0000' : entry.rocof > 0.5 ? '#FFD700' : '#00ff88'}
+              fill="#ffaa00"
               name="ROCOF"
-            />
+            >
+              {filteredData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.rocof > 1.0 ? '#cc1100' : entry.rocof > 0.5 ? '#ff5500' : 'rgba(255, 170, 0, 0.4)'} />
+              ))}
+            </Bar>
             <Tooltip 
-              contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)' }}
+              contentStyle={{ backgroundColor: '#050403', border: '1px solid rgba(255, 170, 0, 0.4)', borderRadius: '2px', fontFamily: 'monospace' }}
+              labelStyle={{ color: 'rgba(255, 210, 150, 0.8)' }}
+              itemStyle={{ color: '#ffaa00' }}
               formatter={(value) => [value.toFixed(3) + ' Hz/s', 'ROCOF']}
             />
           </BarChart>
