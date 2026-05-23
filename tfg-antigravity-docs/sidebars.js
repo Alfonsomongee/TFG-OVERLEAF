@@ -34,8 +34,8 @@ const sidebars = {
         'analisis-informes',
         'impacto-comunicativo',
         'resiliencia-futuro',
-        'uso-ia',
         '07b-consecuencias-financieras',
+        '08.5-actualizacion-2026',
         'conclusiones',
       ],
     },
@@ -68,6 +68,7 @@ const sidebars = {
       collapsed: true,
       items: [
         'documentos',
+        'uso-ia',
         {
           type: 'doc',
           id: 'glosario',

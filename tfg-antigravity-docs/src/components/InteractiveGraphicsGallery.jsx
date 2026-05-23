@@ -5,7 +5,6 @@ import styles from './InteractiveGraphicsGallery.module.css';
 // Import components directly if they are safe for SSR, or we wrap their usage in BrowserOnly.
 // Since some of them need BrowserOnly, we'll wrap the active component renderer.
 import FrequencyChart from './FrequencyChart';
-import EnergyMixChart from './EnergyMixChart';
 import AnimatedMap from './AnimatedMap';
 import VerticalTimeline from './VerticalTimeline';
 
@@ -25,14 +24,6 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Chute de Fréquence (Hz)', desc: 'Graphique interactif de l\'évolution de la fréquence pendant l\'effondrement.' },
       it: { title: 'Caduta di Frequenza (Hz)', desc: 'Grafico interattivo dell\'evoluzione della frequenza durante il collasso.' },
       de: { title: 'Frequenzabfall (Hz)', desc: 'Interaktives Diagramm der Frequenzentwicklung während des Kollapses.' }
-    },
-    energymix: {
-      es: { title: 'Mix Energético', desc: 'Evolución interactiva de la cuota de generación renovable y convencional.' },
-      en: { title: 'Energy Mix', desc: 'Interactive evolution of renewable vs conventional generation share.' },
-      pt: { title: 'Matriz Energética', desc: 'Evolução interativa da cota de geração renovável e convencional.' },
-      fr: { title: 'Mix Énergétique', desc: 'Évolution interactive de la part de production renouvelable et conventionnelle.' },
-      it: { title: 'Mix Energetico', desc: 'Evoluzione interattiva della quota di generazione rinnovabile e convenzionale.' },
-      de: { title: 'Energiemix', desc: 'Interaktive Entwicklung des Anteils erneuerbarer vs. konventioneller Erzeugung.' }
     },
     map: {
       es: { title: 'Mapa Animado del Colapso', desc: 'Simulación geográfica interactiva de la cascada de desconexiones.' },
@@ -117,7 +108,6 @@ import InterconnectionDashboard from './InterconnectionDashboard';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
-  { id: 'energymix', icon: '⚡', component: EnergyMixChart },
   { id: 'map', icon: '🗺️', component: AnimatedMap },
   { id: 'timeline', icon: '⏱️', component: VerticalTimeline },
 
