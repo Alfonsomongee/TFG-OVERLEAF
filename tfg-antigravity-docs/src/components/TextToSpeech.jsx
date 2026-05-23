@@ -18,9 +18,12 @@ export default function TextToSpeech() {
   const contentRef = useRef(null);
   const activeWordRef = useRef(null);
 
-  // Mostrar botón solo en docs
+  // Mostrar botón solo en capítulos (evitar galerías, etc.)
   useEffect(() => {
-    if (pathname.includes('/docs/') && !pathname.includes('galeria') && !pathname.includes('documentos') && !pathname.includes('sobre-el-autor')) {
+    const ignoredPaths = ['galeria', 'documentos', 'sobre-el-autor', 'bibliografia'];
+    const isIgnored = ignoredPaths.some(p => pathname.includes(p));
+    
+    if (!isIgnored) {
       setShowButton(true);
     } else {
       setShowButton(false);
