@@ -1,0 +1,54 @@
+---
+sidebar_position: 8.8
+hide_title: true
+title: "Actualización 2026: Un Año Después"
+---
+
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import GlossaryLink from "@site/src/components/GlossaryLink";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<GlitchTitle>Actualización 2026: Un Año Después</GlitchTitle>
+
+El apagón del 28 de abril de 2025 supuso un punto de inflexión sistémico. A fecha de mayo de 2026, los informes finales de la <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink> (publicados el 20 de marzo de 2026) y las investigaciones forenses independientes han sacado a la luz una serie de revelaciones técnicas y regulatorias que alteran drásticamente la narrativa inicial del incidente.
+
+## 1. El Paradigma del "Overvoltage-Driven Blackout"
+
+Los primeros análisis sugerían un colapso clásico por falta de inercia o desvío de frecuencia. Sin embargo, el estudio independiente del Instituto de Investigación Tecnológica (IIT) de la Universidad Pontificia Comillas —validado por pares en *ScienceDirect* (Rouco, Lobato, Echavarren, 2026)— ha introducido un concepto técnico inédito: el **overvoltage-driven blackout** (apagón inducido por sobretensión).
+
+:::warning [Revelación Técnica]
+La secuencia fatal no fue una caída de tensión generalizada. Al activarse las lógicas de protección, la red sufrió una cascada de disparos por sobretensión masiva. La desconexión de carga y la enorme inyección de energía capacitiva de las líneas a 400 kV (sin reactancias suficientes conectadas) elevó las tensiones por encima del límite de las protecciones de generación. El disparo del transformador 400/220 kV en Granada a las 12:32:57, que perdió 355 MW, fue el detonante de la cascada.
+:::
+
+Según la reconstrucción forense, las plantas conectadas mediante inversores <GlossaryLink term="Grid-Following (GFL)">Grid-Following</GlossaryLink> que operaban en modo de **factor de potencia fijo** reaccionaron a las oscilaciones de activa inyectando enormes rampas de potencia reactiva. Ante una red debilitada (con bajo <GlossaryLink term="Short-Circuit Ratio (SCR)">Short-Circuit Ratio</GlossaryLink>), el bucle de enganche de fase (<GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink>) de estos inversores provocó inestabilidades que el sistema fue incapaz de amortiguar.
+
+## 2. Opacidad Operativa y el Rol del HVDC
+
+Uno de los puntos más polémicos de la investigación ha sido la actuación del operador del sistema (<GlossaryLink term="Red Eléctrica de España (REE)">REE</GlossaryLink>). En julio de 2025, el consorcio independiente (AELEC, INESC TEC, Compass Lexecon) denunció una severa falta de transparencia respecto a los datos de los estimadores de estado y las Unidades de Medición Fasorial (<GlossaryLink term="PMU">PMU</GlossaryLink>). 
+
+El hallazgo más crítico de las comisiones de investigación revela que, apenas unos minutos antes del apagón, REE modificó el modo de operación del enlace <GlossaryLink term="HVDC">HVDC</GlossaryLink> INELFE entre España y Francia. El enlace pasó de su modo de "emulación de CA" a un control de potencia en CC constante, neutralizando su capacidad para amortiguar la oscilación letal de 0,6 Hz.
+
+## 3. Consecuencias Institucionales y Litigios Multimillonarios
+
+El apagón no solo rompió el sistema eléctrico, sino también las relaciones institucionales del sector, provocando una avalancha judicial sin precedentes históricos:
+
+- **Expedientes de la CNMC**: Desde abril de 2025 se han incoado 66 expedientes sancionadores. REE y Almaraz se enfrentan a cargos "muy graves" (hasta 60 M€). Paralelamente, once productoras (incluyendo Endesa, Iberdrola y Mercuria Solar) se enfrentan a cargos "graves" por incumplimiento de los códigos de red.
+- **Demandas Civiles Masivas**: Al vencer el plazo de prescripción en abril de 2026, gigantes industriales como **Repsol** han formalizado demandas contra el sistema por **125 millones de euros** en concepto de lucro cesante y daños a complejos petroquímicos. Iryo y Moeve también han notificado su intención de demandar.
+- **Audios Clasificados**: Las audiencias de la Comisión de Investigación del Senado han hecho públicos audios de la sala de control de REE. En ellos, los operadores atribuían las severas oscilaciones e inestabilidades de tensión de las 12:00 a *"la mala gestión de una planta fotovoltaica de gran potencia en Badajoz"*, revelando que el riesgo era inminente minutos antes del colapso final.
+
+## 4. La Respuesta Regulatoria: El Mandato Grid-Forming
+
+Ante la evidencia del fallo estructural, la <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink> publicó en noviembre de 2025 su esperado "Phase II Report", sentando las bases del nuevo código de red europeo (NC RfG 2.0).
+
+:::info [El Nuevo Estándar GFM]
+El borrador regulatorio exige la obligatoriedad de la tecnología <GlossaryLink term="Grid-Forming (GFM)">Grid-Forming</GlossaryLink> para todas las nuevas plantas no síncronas y sistemas de almacenamiento mayores a **1 MW**. Exige un tiempo de respuesta de corriente < 10 ms, ride-through frente a saltos de ángulo de fase, y la provisión de inercia sintética equivalente a la de una máquina síncrona.
+:::
+
+A pesar del colapso ibérico, la adopción oficial del NC RfG 2.0 por parte de la Comisión Europea ha sido despriorizada hasta finales de 2026. Sin embargo, países como Reino Unido (proyecto *Stability Pathfinder*) y España han acelerado por su cuenta. 
+
+### El Boom del Almacenamiento Ibérico
+El coste sistémico de mantener el sistema reforzado con gas tras el apagón ascendió a **666 millones de euros** adicionales en solo diez meses. Como reacción directa, el mercado español de baterías experimentó un "electroshock": la capacidad BESS (Battery Energy Storage Systems) instalada se ha **multiplicado por 589%**, pasando de unos simbólicos 28 MW a casi 200 MW operativos en un solo año, impulsando una arquitectura de red nativa para servicios de <GlossaryLink term="Black Start">Black Start</GlossaryLink>.
+
+## Conclusión de la Crisis
+
+En retrospectiva, el "apagón de 2025" ya no se estudia en 2026 como un accidente fortuito derivado de la sequía hidráulica o el exceso solar. Es el primer exponente documentado de un colapso provocado por un estrangulamiento regulatorio y una transición tecnológica que retiró las máquinas síncronas antes de desplegar sus equivalentes electrónicos. La península ibérica se convirtió a la fuerza en el laboratorio vivo que ha obligado a Europa a reescribir las reglas de la estabilidad eléctrica de la próxima década.
