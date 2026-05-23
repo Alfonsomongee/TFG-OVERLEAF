@@ -1,8 +1,159 @@
 ---
-title: "05. Análise Técnica: Colapso de Frequência"
+hide_title: true
+title: "Análise Técnica: Colapso de Frequência"
 sidebar_position: 5
 ---
 
-// TODO: Translate from ES source (docs/05-analisis-tecnico-frecuencia.mdx)
-// This file is a stub to ensure Docusaurus builds correctly in all 6 languages.
-// The full technical analysis of the April 28 frequency collapse is available in ES and EN.
+import FrequencyTimeline from '@site/src/components/FrequencyTimeline/FrequencyTimeline';
+import TelemetryFallback from '@site/src/components/FrequencyTimeline/TelemetryFallback';
+import UFLSVisualizer from '@site/src/components/UFLSVisualizer/UFLSVisualizer';
+import GenerationMixWidget from '@site/src/components/GenerationMixWidget/GenerationMixWidget';
+import GlossaryLink from '@site/src/components/GlossaryLink';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+# Análise Técnica: O Colapso de Frequência em 27 Segundos
+
+## O Apagão Impulsionado por Sobretensão
+
+Diferente dos colapsos de frequência tradicionais, o evento de 28 de abril foi um **colapso impulsionado por sobretensão** — uma categoria rara, mas devastadora, de falha em cascata.
+
+### Contexto: A Equação de Balanço (Swing Equation)
+
+A frequência de um sistema elétrico é regida pelo equilíbrio de potência ativa:
+
+$$\frac{d\omega}{dt} = \frac{\omega_0}{2H} (P_m - P_e)$$
+
+Onde:
+- $H$ = <GlossaryLink term="Inercia del Sistema (H)" /> (segundos)
+- $\omega_0$ = Frequência nominal (50 Hz)
+- $P_m$ = Potência mecânica injetada
+- $P_e$ = Potência elétrica extraída pela carga
+
+O **ROCOF** (Rate of Change of Frequency) é:
+
+$$\text{ROCOF} = \frac{\Delta P}{2H \times S_{base}}$$
+
+Em 28 de abril, com $H = 2.45$ segundos (criticamente baixo devido aos 78% de penetração renovável) e $\Delta P = 2.200$ MW, o ROCOF inicial foi próximo a 0.014 Hz/s, mas a verdadeira dinâmica era multidimensional.
+
+<br />
+
+:::note RECONSTRUÇÃO FORENSE (12:32:30 — 12:33:30 CEST)
+A seguinte linha do tempo reconstrói os 27 segundos críticos baseando-se em registros PMU (Phasor Measurement Unit) de subestações ao longo do eixo sul. Mostra a falha em cascata impulsionada por sobretensão antes do colapso síncrono.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <FrequencyTimeline />}
+</BrowserOnly>
+
+<br />
+
+:::danger DÉFICIT DE INÉRCIA DO SISTEMA
+A topologia da rede no momento do incidente evidenciava um desajuste crítico entre recursos baseados em inversores (IBR) e massa rotacional síncrona. Esta é a raiz do porquê o ROCOF superou os limites de segurança térmica.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <GenerationMixWidget />}
+</BrowserOnly>
+
+<hr style={{ margin: "3rem 0", borderColor: "var(--forensic-border)" }} />
+
+## As Três Fases do Colapso
+
+### Fase 1: Oscilações Forçadas (12:03 — 12:32 CEST)
+
+Durante quase meia hora, operadores no centro de controle da Red Eléctrica observaram oscilações anômalas na zona sul:
+
+- **Oscilação local a 0.63 Hz**: Causada por instabilidade dos controles PLL (Phase-Locked Loop) dos inversores grid-following em uma <GlossaryLink term="Red Débil / Weak Grid" />
+- **Oscilação inter-área a 0.21 Hz**: A Península Ibérica balançava contra a rede continental europeia
+
+Estes modos oscilatórios apontavam para uma vulnerabilidade estrutural: a rede do sul operava sem geração síncrona local suficiente para proporcionar amortecimento e suporte de curto-circuito.
+
+### Fase 2: Queda de Frequência Rápida (12:32:57 — 12:33:18 CEST)
+
+A perda súbita de 2.200 MW de geração renovável em Granada, Badajoz e Sevilha precipitou uma queda de frequência a ROCOF = 0.90 Hz/s.
+
+**Paradoxo crítico:** Em um sistema de rede forte, a perda de geração causa **subfrequência e queda de tensão**. Em 28 de abril, resultou em **sobretensão**.
+
+Por quê? As usinas solares que se desconectaram estavam absorvendo ativamente <GlossaryLink term="Potencia Reactiva (Q)" /> para amortecer a região. Ao desaparecerem, o sumidouro de potência reativa também desapareceu. Simultaneamente, os 2.200 MW de perda de potência ativa fizeram com que a energia fluísse para trás através das linhas de transmissão de longo alcance, que atuaram como capacitores massivos (efeito Ferranti), injetando potência reativa sem compensação.
+
+### Fase 3: O Colapso em Cascata (12:33:18 — 12:33:24 CEST)
+
+Ao alcançar 49.0 Hz, os relés <GlossaryLink term="UFLS (Deslastre de Carga por Subfrecuencia)" /> foram ativados automaticamente, desconectando aproximadamente 3.100 MW de carga.
+
+<br />
+
+:::warning CASCATA DE PROTEÇÕES UFLS
+O sistema de alívio de carga por subfrequência ibérico é projetado para salvar a rede através da desconexão escalonada da demanda. Paradoxalmente, a execução perfeita da Etapa 1 causou a sobretensão que desencadeou o apagão.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <UFLSVisualizer />}
+</BrowserOnly>
+
+**O golpe letal:** A redução da demanda reduziu as correntes nas linhas. Correntes mais baixas significavam menores quedas de tensão indutiva ($I^2X$), permitindo que a capacitância parasita das linhas dominasse completamente. A tensão disparou para 435+ kV.
+
+As proteções de sobretensão nos inversores solares foram ativadas em cascata, desconectando milhares de megawatts adicionais em questão de segundos. Os relés de distância de proteção legada, incapazes de interpretar as assinaturas de falta distorcidas de recursos baseados em inversores (IBR), interpretaram erroneamente o caos como um curto-circuito massivo e interno.
+
+Às 12:33:21, os relés de distância abriram as linhas AC de interconexão com a França. Três segundos depois, o elo HVDC foi desconectado. O sistema síncrono ibérico ruiu.
+
+## Por Que Foi Inevitável
+
+Sob estas condições extremas (H = 2.21–2.71 s, 78% de renováveis, rede fraca no sul), **não havia maneira de deter o colapso uma vez iniciado**.
+
+### 1. Inércia Insuficiente
+
+Os 3.300 MW de geração nuclear não podiam fornecer controle de frequência primária suficiente contra um déficit de 2.200 MW quando $H < 3$ segundos.
+
+Controle primário de frequência teórico disponível:
+
+$$\Delta f_{recovered} = -\frac{\Delta P}{f_0} \times \frac{K_p}{1 + sT_{ag}}$$
+
+Com $K_p \approx 10$ e $T_{ag} = 30$ ms (tempo de ação do governador), a resposta foi muito lenta. O ROCOF superou os limites de proteção antes que a inércia rotacional pudesse estabilizar.
+
+### 2. Proteções Acionadas por ROCOF
+
+Uma vez que o ROCOF excedeu 1.0 Hz/s, as máquinas síncronas restantes executaram automaticamente desligamentos de autoproteção para evitar danos nos eixos por escorregamento polar.
+
+Este foi o **ponto de não retorno**. Ao perder a geração nuclear, o sistema perdeu sua única âncora estabilizadora. Sem inércia, sem potência reativa, sem suporte de curto-circuito, a rede colapsou em cascata.
+
+### 3. Falha de Arquitetura: Proteções Legadas vs. IBR
+
+A raiz profunda foi um **desajuste de arquitetura entre a proteção de relés de distância de 40 anos de idade e uma rede de 78% baseada em eletrônica de potência**.
+
+Os relés de distância calculam a impedância aparente:
+
+$$Z = \frac{V}{I}$$
+
+Em condições de falta, medem $Z$ para determinar se o evento está dentro ou fora da sua zona de proteção.
+
+**O problema:** O <GlossaryLink term="SCR (Relación de Cortocircuito)" /> limitado dos IBR significa que a corrente de falta é muito baixa. Os relés de distância recebem sinais de falta **distorcidos e de baixa magnitude**, que não conseguem interpretar corretamente.
+
+O painel de especialistas da ENTSO-E concluiu que **os relés interpretaram erroneamente o caos elétrico como um curto-circuito massivo interno** e abriram as linhas de interconexão com a França — a exata ação que garantiu o colapso total.
+
+## Contexto Regulatório e de Mercado
+
+O evento expôs uma falha regulatória profunda: **os marcos de mercado não foram projetados para uma rede com penetração de renováveis de 78%**.
+
+Embora muitas usinas solares de grande porte tivessem capacidades certificadas de suporte de tensão dinâmico e injeção de <GlossaryLink term="Potencia Reactiva (Q)" />, os mecanismos de mercado existentes não incentivavam (e inclusive proibiam legalmente) que fornecessem esses serviços em tempo real. O operador da rede não podia "despachar" potência reativa localmente no sul porque não havia um mercado para isso.
+
+**Resultado:** Quando a região sul necessitava desesperadamente de um sumidouro de potência reativa local, não havia nenhum disponível.
+
+## Restauração: A Operação de Black Start de 7 Zonas
+
+Após o colapso total às 12:33:24, a Red Eléctrica executou seu plano nacional de defesa e restauração. Reconstruir um sistema de 31 GW do "zero" exigiu 16 horas de operação delicada:
+
+1. **12:44** — Reenergização da primeira linha AC para a França (11 minutos após o colapso)
+2. **13:04** — Reconexão com o Marrocos
+3. **13:30** — Início das sequências de black start de usinas hidrelétricas espanholas
+4. **16:11** — Primeiro black start português
+5. **22:33** — Restauração de 50% da demanda pública
+6. **04:00 (29 de abril)** — Sistema completamente restaurado (16 horas depois)
+
+## Lições Técnicas
+
+Este evento é um ponto de inflexão para os sistemas de energia globais:
+
+1. **A inércia baixa é existencial**: Com $H < 3$ segundos, os colapsos podem ocorrer em < 30 segundos, mais rápido que a intervenção humana.
+2. **As proteções legadas não podem lidar com redes baseadas em IBR**: É necessária uma renovação arquitetônica fundamental.
+3. **A sobretensão é tão perigosa quanto a subfrequência**: Os esquemas de proteção devem proteger contra ambas.
+4. **O mercado deve priorizar a estabilidade sobre o preço**: Os serviços de rede não podem ser opcionais.
