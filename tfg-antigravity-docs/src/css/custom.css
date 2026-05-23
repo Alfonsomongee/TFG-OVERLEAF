@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Alfa+Slab+One&family=Playfair+Display:wght@700;800;900&display=swap');
 @import './designTokens.css';
 
 /* ============================================================
@@ -605,17 +605,202 @@ html.zen-mode .zen-mode-icon-active {
 .footer__copyright {
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  color: #fca5a5;
+}
+
+/* ============================================================
+   ADMONITIONS (Docusaurus Default Overrides)
+   ============================================================ */
+
+.theme-admonition {
+  border-radius: var(--radius-md);
+  background: var(--forensic-bg-surface) !important;
+  border: 1px solid var(--forensic-border) !important;
+  border-left: 4px solid var(--forensic-amber-primary) !important;
+  color: var(--forensic-text-primary) !important;
+  font-family: var(--font-body);
+}
+
+.theme-admonition-danger { border-left-color: var(--forensic-amber-critical) !important; }
+.theme-admonition-warning { border-left-color: var(--forensic-amber-warning) !important; }
+
+@media (max-width: 768px) {
+  .math.math-display {
+    padding: 1rem 0.5rem;
+    font-size: 0.9em;
+    overflow-x: auto;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  h2 { font-size: 1.8rem; }
+  
+  .incident-box {
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* ============================================================
+   ZEN MODE (FOCUS MODE)
+   ============================================================ */
+
+html.zen-mode .theme-doc-sidebar-container,
+html.zen-mode .theme-doc-toc-desktop,
+html.zen-mode .theme-doc-toc-mobile {
+  display: none !important;
+}
+
+html.zen-mode main[class*='docMainContainer'] {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+html.zen-mode main[class*='docMainContainer'] > .container {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  width: 100%;
+}
+
+html.zen-mode main[class*='docMainContainer'] .row {
+  justify-content: center !important;
+  margin: 0 !important;
+}
+
+/* Force ANY column inside the main container to expand completely */
+html.zen-mode main[class*='docMainContainer'] .row [class*='col'],
+html.zen-mode [class*='docItemCol'] {
+  max-width: 100% !important;
+  flex: 1 1 100% !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+
+html.zen-mode article,
+html.zen-mode .theme-doc-markdown {
+  max-width: 900px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .zen-mode-text {
+    display: none;
+  }
+}
+
+#zen-mode-toggle {
+  cursor: pointer;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ifm-navbar-link-color);
+  transition: all 0.2s ease;
+}
+
+#zen-mode-toggle:hover {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-primary);
+}
+
+html.zen-mode #zen-mode-toggle {
+  background: var(--ifm-color-primary-lightest);
+  color: var(--ifm-color-primary-darker);
+}
+
+html[data-theme='dark'].zen-mode #zen-mode-toggle {
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--ifm-color-primary-light);
+}
+
+/* Estilos para Formulas KaTeX */
+.math-display {
+  text-align: center;
+  font-size: 1.3em;
+  margin: 2rem 0;
+  overflow-x: auto;
+}
+
+
+.formula-legend {
+  background: var(--ifm-color-emphasis-100);
+  border-left: 4px solid var(--ifm-color-primary);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.formula-legend ul {
+  margin-bottom: 0;
+  padding-left: 1.2rem;
+}
+
+/* Zen mode text and icon toggling */
+.zen-mode-text-active,
+.zen-mode-icon-active {
+  display: none;
+}
+html.zen-mode .zen-mode-text-default,
+html.zen-mode .zen-mode-icon-default {
+  display: none;
+}
+html.zen-mode .zen-mode-text-active {
+  display: inline;
+}
+html.zen-mode .zen-mode-icon-active {
+  display: block;
+}
+
+
+/* Fix Lenis Sidebar Scroll Hijack */
+.theme-doc-sidebar-container, .theme-doc-sidebar-menu, aside { overscroll-behavior: contain; }
+
+/* ============================================================
+   FOOTER (Estética y tamaño reducido)
+   ============================================================ */
+
+.footer {
+  font-size: 0.85rem;
+  padding: 3rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-1);
+}
+
+.footer__title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+}
+
+.footer__link-item {
+  color: var(--text-3);
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+  line-height: 1.8;
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+  transform: translateX(4px);
+}
+
+.footer__copyright {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--text-3);
   letter-spacing: 0.05em;
   margin-top: 2rem;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
