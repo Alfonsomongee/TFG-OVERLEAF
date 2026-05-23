@@ -3,6 +3,7 @@ import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import Head from '@docusaurus/Head';
 import { motion } from 'framer-motion';
 
 export default function ExecutiveHook() {
@@ -163,10 +164,14 @@ export default function ExecutiveHook() {
     if (isFading || isHidden) return;
     fadeOutAudio(1500); // Audio fades out in sync with the splash
     setIsFading(true);
+    document.body.style.overflow = ''; // Restore scroll
     setTimeout(() => setIsHidden(true), 1500);
   };
 
   useEffect(() => {
+    // Lock body scroll during splash screen
+    document.body.style.overflow = 'hidden';
+
     const audio = audioRef.current;
     if (audio) {
       audio.muted = true;
@@ -191,6 +196,7 @@ export default function ExecutiveHook() {
     const fadeTimer = setTimeout(() => {
       fadeOutAudio(1500); // Audio fades out in sync with the splash fade
       setIsFading(true);
+      document.body.style.overflow = ''; // Restore scroll
     }, 4500);
 
     // Remove splash from DOM at 6s
@@ -199,18 +205,35 @@ export default function ExecutiveHook() {
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(hideTimer);
+      document.body.style.overflow = ''; // Restore scroll
     };
   }, []);
 
   return (
     <>
       {/* Splash Screen */}
+      <Head>
+        <link rel="preload" href={useBaseUrl('/img/cinematic_blackout.png')} as="image" />
+      </Head>
       <audio ref={audioRef} src={audioUrl} preload="auto" />
       {!isHidden && (
         <div 
           className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}
           onClick={handleSplashClick}
-          style={{ cursor: 'pointer' }}
+          style={{ 
+            cursor: 'pointer',
+            backgroundColor: '#000', // Fallback before image loads
+            position: 'fixed',       // Inline to prevent FOUC
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 99999,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <motion.div 
             className={styles.splashBgCinematic}
