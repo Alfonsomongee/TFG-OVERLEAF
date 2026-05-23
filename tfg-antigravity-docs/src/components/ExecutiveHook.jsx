@@ -214,6 +214,24 @@ export default function ExecutiveHook() {
       {/* Splash Screen */}
       <Head>
         <link rel="preload" href={useBaseUrl('/img/cinematic_blackout.png')} as="image" />
+        {!isHidden && (
+          <style>{`
+            .navbar, 
+            .theme-doc-sidebar-container, 
+            .theme-doc-breadcrumbs, 
+            .theme-doc-toc-desktop,
+            .theme-doc-footer {
+              opacity: 0 !important;
+              pointer-events: none !important;
+            }
+            .theme-doc-markdown {
+              opacity: 0 !important;
+            }
+            body { 
+              background-color: #000 !important; 
+            }
+          `}</style>
+        )}
       </Head>
       <audio ref={audioRef} src={audioUrl} preload="auto" />
       {!isHidden && (
@@ -271,7 +289,7 @@ export default function ExecutiveHook() {
         </div>
       )}
 
-      <div id="executive-hook" className={styles.heroContainer}>
+      <div id="executive-hook" className={styles.heroContainer} style={{ opacity: isHidden ? 1 : 0, transition: 'opacity 1s ease-in' }}>
         {/* Top Banner / Event Scale */}
         <div className={styles.statsBanner}>
           <div className={styles.statItem}>

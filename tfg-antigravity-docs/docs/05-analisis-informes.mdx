@@ -5,6 +5,7 @@ title: "Análisis de los Informes Oficiales"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>Análisis de los Informes Oficiales</GlitchTitle>
 
@@ -14,11 +15,10 @@ El análisis cruzado de los cuatro informes sobre el apagón del 28-A revela una
 
 La narrativa oficial tipifica el apagón no como un error de diseño operativo ni como consecuencia directa de las maniobras del despacho, sino como un evento de **naturaleza multifactorial**: la convergencia de demanda valle, penetración masiva de <GlossaryLink term="IBR">IBR</GlossaryLink> y comportamiento técnico inadecuado de los agentes privados que, actuando simultáneamente, superó los umbrales del <GlossaryLink term="Criterio N-1">Criterio *N*−1</GlossaryLink>.
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">MULTI-FACTOR CAUSALITY MODEL</div>
-    <div>SOURCE: COMITÉ DE ANÁLISIS DEL GOBIERNO</div>
-  </div>
+<ForensicTable 
+  title="MULTI-FACTOR CAUSALITY MODEL"
+  source="COMITÉ DE ANÁLISIS DEL GOBIERNO"
+>
 
 | Factor | Descripción |
 | --- | --- |
@@ -26,7 +26,7 @@ La narrativa oficial tipifica el apagón no como un error de diseño operativo n
 | **Oscilaciones electromecánicas** | Condicionantes del estado del sistema previo al colapso |
 | **Desconexiones de generación** | Algunas calificadas como prematuras → vector final de la sobretensión |
 
-</div>
+</ForensicTable>
 <div className="forensic-caption">_Esquema de causalidad multifactorial según el Comité de Análisis del Gobierno._</div>
 
 La defensa técnica de REE sobre la maniobra de <GlossaryLink term="Mallado">mallado</GlossaryLink> merece examen preciso. El informe subraya un aspecto frecuentemente omitido en las críticas: las oscilaciones iniciales no provocaron sobretensiones sino **caídas de tensión** en los nudos de la red de transporte. Ante este riesgo, el Centro de Control ejecutó acciones estrictamente protocolizadas —reconexión de circuitos, acoplamiento de reactancias, coordinación con RTE para conmutar el HVDC a PMODE1—, reconociendo que estas maniobras «contribuyeron al alza en las tensiones», pero calificándolas como necesarias. REE defiende que cualquier incremento tensional posterior habría sido absorbible si los agentes hubiesen cumplido sus obligaciones normativas.
@@ -43,12 +43,11 @@ La tabla completa de la **secuencia oficial de 18 eventos desencadenantes** seg�
 
 ### Secuencia oficial de eventos desencadenantes (REE)
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">OFFICIAL EVENT SEQUENCE LOG</div>
-    <div>SOURCE: RED ELÉCTRICA (OS)</div>
-    <div>TIME BASE: UTC+2 (CEST)</div>
-  </div>
+<ForensicTable 
+  title="OFFICIAL EVENT SEQUENCE LOG"
+  source="RED ELÉCTRICA (OS)"
+  timeBase="UTC+2 (CEST)"
+>
 
   <table>
     <thead>
@@ -131,15 +130,14 @@ La tabla completa de la **secuencia oficial de 18 eventos desencadenantes** seg�
       </tr>
     </tbody>
   </table>
-</div>
+</ForensicTable>
 
 ### Propuestas regulatorias de Redeia
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">PROPOSED REGULATORY AMENDMENTS</div>
-    <div>SOURCE: REDEIA</div>
-  </div>
+<ForensicTable 
+  title="PROPOSED REGULATORY AMENDMENTS"
+  source="REDEIA"
+>
 
 | Área | Medida propuesta |
 | --- | --- |
@@ -148,7 +146,7 @@ La tabla completa de la **secuencia oficial de 18 eventos desencadenantes** seg�
 | **Observabilidad** | Refuerzo del control de tensión en distribución. Dotación al OS de observabilidad sobre el autoconsumo. Ampliación del <GlossaryLink term="WAMS (Wide Area Monitoring Systems)">WAMS</GlossaryLink> con <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> por parque de transporte. |
 | **Monitorización** | Registros de faltas con muestreo mínimo de 20 ms y sincronización horaria. Plataforma centralizada de recopilación de datos de incidentes. |
 
-</div>
+</ForensicTable>
 
 ## La visión del sector generador (ICAI / AELEC): mallado excesivo y colapso inevitable
 
@@ -180,11 +178,10 @@ El análisis identifica una tensión técnica fundamental: la mayoría de las in
 
 Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actualización del **NC RfG 2.0**, que prevé imponer el <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> como requisito obligatorio para todos los módulos no síncronos ≥ 1 MW:
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON</div>
-    <div>SOURCE: ENTSO-E</div>
-  </div>
+<ForensicTable 
+  title="NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
+  source="ENTSO-E"
+>
 
 | Requisito | <GlossaryLink term="NC RfG">NC RfG vigente</GlossaryLink> | NC RfG 2.0 (propuesto) |
 | --- | --- | --- |
@@ -195,7 +192,7 @@ Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actua
 | _Black Start_ | No requerido en IBR | Capacidad de arranque en isla |
 | Referencia de sincronismo | Externa (PLL sobre red) | Generada internamente (fuente de tensión ideal) |
 
-</div>
+</ForensicTable>
 
 Sobre la topología del incidente, ENTSO-E analiza la pérdida de <GlossaryLink term="Sincronismo">sincronismo</GlossaryLink> a las **12:33:19 CEST**: el sistema pasó de exportar 469 MW (12:32:57) a importar un máximo de **3.807 MW** (12:33:19), momento de la pérdida de sincronismo. La divergencia de polos angular se volvió insostenible y las protecciones _Out-of-Step_ (OST) actuaron a las **12:33:21 CEST**, ordenando la apertura de los circuitos transpirenaicos (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
@@ -211,11 +208,10 @@ La advertencia final de ENTSO-E es estructural: los análisis de seguridad coord
 
 A pesar de la polarización del debate, los cuatro informes convergen en un conjunto de conclusiones técnicas que matizan o desmienten las narrativas mediáticas más extendidas:
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">TECHNICAL CONSENSUS MATRIX</div>
-    <div>SOURCE: MULTIPLE (CROSS-VERIFIED)</div>
-  </div>
+<ForensicTable 
+  title="TECHNICAL CONSENSUS MATRIX"
+  source="MULTIPLE (CROSS-VERIFIED)"
+>
 
 | Punto de consenso | Fundamento técnico compartido | GOB | REE | ICAI | ENTSO-E |
 | --- | --- | :-: | :-: | :-: | :-: |
@@ -227,15 +223,14 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 | **La normativa IBR era insuficiente** | El P.O. 7.4 y el RD 413/2014 impedían a los IBR participar en el control dinámico de tensión pese a disponer de capacidad tecnológica. | ✓ | ✓ | ✓ | ✓ |
 | **El Criterio N−1 estático es insuficiente** | Las herramientas de análisis estático evaluaron el sistema como seguro horas antes del colapso, sin capacidad para anticipar la dinámica ultrarrápida de inestabilidad capacitiva. | ✓ | ✓ | ✓ | ✓ |
 
-</div>
+</ForensicTable>
 
 ### Divergencias técnicas irreconciliables
 
-<div className="telemetry-table-container forensic-table">
-  <div className="telemetry-metadata">
-    <div className="telemetry-header">TECHNICAL DIVERGENCE MATRIX</div>
-    <div>SOURCE: MULTIPLE (CROSS-VERIFIED)</div>
-  </div>
+<ForensicTable 
+  title="TECHNICAL DIVERGENCE MATRIX"
+  source="MULTIPLE (CROSS-VERIFIED)"
+>
 
 | Eje de disputa | Gobierno / REE | ICAI / AELEC | ENTSO-E |
 | --- | --- | --- | --- |
@@ -245,7 +240,7 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 | **4. Despacho en la zona sur** | Reconoce la indisponibilidad del CCGT andaluz desde el 27-A. Justifica la no sustitución por niveles de tensión adecuados y disponibilidad de otros recursos. | La zona sur disponía de solo 0,2 GVAr de absorción frente a >0,7 GVAr de inyección capacitiva inducida por el propio operador. La no sustitución fue la decisión de despacho más determinante. | Señala la baja potencia de cortocircuito en Andalucía como factor estructural agravante, sin pronunciarse sobre la decisión individual. |
 | **5. Responsabilidad principal** | Los generadores incumplieron sus obligaciones de control de tensión. El apagón fue un fallo del parque generador privado. | REE llevó la red a un estado de colapso inevitable mediante el mallado. Los generadores actuaron conforme a la física y a la normativa. El apagón fue un fallo del operador y del regulador. | La causa raíz es normativa: la restricción que impedía a los IBR controlar tensión dinámicamente. El fallo es del sistema regulatorio europeo y nacional. |
 
-</div>
+</ForensicTable>
 
 ## Síntesis interpretativa: tres fracturas de gobernanza
 
