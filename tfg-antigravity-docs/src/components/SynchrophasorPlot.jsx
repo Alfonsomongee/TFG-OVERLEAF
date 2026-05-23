@@ -238,6 +238,38 @@ export default function SynchrophasorPlot({ lang }) {
           T = {(progress * 0.04).toFixed(2)}s
         </div>
       </div>
+      
+      {/* Explicación del diagrama */}
+      <div style={{
+        marginTop: '1rem',
+        padding: '1.5rem',
+        background: 'rgba(15, 23, 42, 0.5)',
+        borderRadius: '8px',
+        border: '1px solid rgba(56, 189, 248, 0.3)',
+        color: '#e2e8f0',
+        fontSize: '0.95rem',
+        lineHeight: '1.6'
+      }}>
+        <h4 style={{ color: '#38bdf8', margin: '0 0 0.5rem 0' }}>
+          {lang === 'es' ? '¿Qué muestra este gráfico?' : 'What does this graph show?'}
+        </h4>
+        <p style={{ margin: '0 0 0.5rem 0' }}>
+          {lang === 'es' 
+            ? 'Este es un "Diagrama Fasorial" o Polar. Representa la tensión eléctrica en distintos puntos de la red de transporte en tiempo real:'
+            : 'This is a "Phasor Diagram" (Polar). It represents the electrical voltage at different points of the transmission grid in real-time:'}
+        </p>
+        <ul style={{ margin: '0', paddingLeft: '1.5rem' }}>
+          <li style={{ marginBottom: '0.25rem' }}>
+            <strong>{lang === 'es' ? 'El Botón PLAY:' : 'The PLAY button:'}</strong> {lang === 'es' ? 'Simula los 4 segundos críticos del incidente, pasando de la estabilidad al colapso total.' : 'Simulates the 4 critical seconds of the incident, from stability to total collapse.'}
+          </li>
+          <li style={{ marginBottom: '0.25rem' }}>
+            <strong>{lang === 'es' ? 'Las Líneas (Vectores):' : 'The Lines (Vectors):'}</strong> {lang === 'es' ? 'Cada línea es un nudo de la red. Su longitud marca la fuerza del voltaje, y su ángulo marca la sincronización.' : 'Each line is a grid node. Its length marks the voltage strength, and its angle marks synchronization.'}
+          </li>
+          <li>
+            <strong>{lang === 'es' ? 'El círculo "p.u.":' : 'The "p.u." circle:'}</strong> {lang === 'es' ? 'Significa "Por Unidad" (Per Unit). 1.0 p.u. es el voltaje perfecto y normal al 100%. Verás que al final del colapso (cuando se vuelven rojos), los vectores se encogen hacia el centro (0 p.u.), lo que significa que la tensión eléctrica en la red cae a cero: el apagón absoluto.' : 'Stands for "Per Unit". 1.0 p.u. is the perfect 100% normal voltage. Notice how at the end of the collapse (when they turn red), the vectors shrink towards the center (0 p.u.), meaning the electrical voltage drops to zero: total blackout.'}
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
