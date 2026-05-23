@@ -1,0 +1,54 @@
+---
+sidebar_position: 8.8
+hide_title: true
+title: "Aggiornamento 2026: Un Anno Dopo"
+---
+
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import GlossaryLink from "@site/src/components/GlossaryLink";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+<GlitchTitle>Aggiornamento 2026: Un Anno Dopo</GlitchTitle>
+
+Il blackout del 28 aprile 2025 ha rappresentato un punto di svolta sistemico. A maggio 2026, i rapporti finali dell'<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink> (pubblicati il 20 marzo 2026) e le indagini forensi indipendenti hanno portato alla luce una serie di rivelazioni tecniche e normative che alterano drasticamente la narrativa iniziale dell'incidente.
+
+## 1. Il Paradigma del "Overvoltage-Driven Blackout"
+
+Le prime analisi suggerivano un collasso classico per mancanza di inerzia o deviazione di frequenza. Tuttavia, lo studio indipendente dell'Instituto de Investigación Tecnológica (IIT) dell'Universidad Pontificia Comillas —sottoposto a revisione paritaria su *ScienceDirect* (Rouco, Lobato, Echavarren, 2026)— ha introdotto un concetto tecnico inedito: il **overvoltage-driven blackout** (blackout indotto da sovratensione).
+
+:::warning [Rivelazione Tecnica]
+La sequenza fatale non è stata una caduta di tensione generalizzata. All'attivazione delle logiche di protezione, la rete ha subito una cascata di scatti per sovratensione di massa. La disconnessione del carico e l'enorme iniezione di energia capacitiva delle linee a 400 kV (senza reattanze sufficienti collegate) hanno innalzato le tensioni oltre il limite delle protezioni di generazione. Lo scatto del trasformatore 400/220 kV a Granada alle 12:32:57, che ha perso 355 MW, è stato l'innesco della cascata.
+:::
+
+Secondo la ricostruzione forense, gli impianti collegati tramite inverter <GlossaryLink term="Grid-Following (GFL)">Grid-Following</GlossaryLink> che operavano in modalità di **fattore di potenza fisso** hanno reagito alle oscillazioni di potenza attiva iniettando enormi rampe di potenza reattiva. Di fronte a una rete indebolita (con basso <GlossaryLink term="Short-Circuit Ratio (SCR)">Short-Circuit Ratio</GlossaryLink>), il Phase-Locked Loop (<GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink>) di questi inverter ha provocato instabilità che il sistema è stato incapace di smorzare.
+
+## 2. Opacità Operativa e il Ruolo dell'HVDC
+
+Uno dei punti più controversi dell'indagine è stato l'operato del gestore del sistema (<GlossaryLink term="Red Eléctrica de España (REE)">REE</GlossaryLink>). Nel luglio 2025, il consorzio indipendente (AELEC, INESC TEC, Compass Lexecon) ha denunciato una grave mancanza di trasparenza riguardo ai dati degli stimatori di stato e alle Unità di Misurazione Fasoriale (<GlossaryLink term="PMU">PMU</GlossaryLink>). 
+
+La scoperta più critica delle commissioni di inchiesta rivela che, appena pochi minuti prima del blackout, REE ha modificato la modalità di operazione del collegamento <GlossaryLink term="HVDC">HVDC</GlossaryLink> INELFE tra Spagna e Francia. Il collegamento è passato dalla sua modalità di "emulazione AC" a un controllo di potenza in DC costante, neutralizzando la sua capacità di smorzare l'oscillazione letale di 0,6 Hz.
+
+## 3. Conseguenze Istituzionali e Contenziosi Multimilionari
+
+Il blackout non ha solo interrotto il sistema elettrico, ma anche le relazioni istituzionali del settore, provocando una valanga giudiziaria senza precedenti storici:
+
+- **Fascicoli della CNMC**: Da aprile 2025 sono stati aperti 66 procedimenti sanzionatori. REE e Almaraz affrontano accuse "molto gravi" (fino a 60 M€). Parallelamente, undici produttori (tra cui Endesa, Iberdrola e Mercuria Solar) affrontano accuse "gravi" per violazione dei codici di rete.
+- **Cause Civili di Massa**: Alla scadenza del termine di prescrizione nell'aprile 2026, giganti industriali come **Repsol** hanno formalizzato cause contro il sistema per **125 milioni di euro** a titolo di mancato guadagno e danni a complessi petrolchimici. Anche Iryo e Moeve hanno notificato la loro intenzione di fare causa.
+- **Audio Classificati**: Le udienze della Commissione di Inchiesta del Senato hanno reso pubblici audio della sala di controllo di REE. In essi, gli operatori attribuivano le gravi oscillazioni e instabilità di tensione delle 12:00 alla *"cattiva gestione di un impianto fotovoltaico di grande potenza a Badajoz"*, rivelando che il rischio era imminente pochi minuti prima del collasso finale.
+
+## 4. La Risposta Normativa: Il Mandato Grid-Forming
+
+Di fronte all'evidenza del guasto strutturale, l'<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink> ha pubblicato nel novembre 2025 il suo atteso "Phase II Report", ponendo le basi per il nuovo codice di rete europeo (NC RfG 2.0).
+
+:::info [Il Nuovo Standard GFM]
+La bozza normativa richiede l'obbligatorietà della tecnologia <GlossaryLink term="Grid-Forming (GFM)">Grid-Forming</GlossaryLink> per tutti i nuovi impianti non sincroni e i sistemi di accumulo superiori a **1 MW**. Richiede un tempo di risposta della corrente < 10 ms, ride-through rispetto a salti dell'angolo di fase, e la fornitura di inerzia sintetica equivalente a quella di una macchina sincrona.
+:::
+
+Nonostante il collasso iberico, l'adozione ufficiale dell'NC RfG 2.0 da parte della Commissione Europea è stata depriorizzata fino alla fine del 2026. Tuttavia, paesi come il Regno Unito (progetto *Stability Pathfinder*) e la Spagna hanno accelerato per conto proprio. 
+
+### Il Boom dell'Accumulo Iberico
+Il costo sistemico per mantenere il sistema rafforzato con gas dopo il blackout è ammontato a **666 milioni di euro** aggiuntivi in soli dieci mesi. Come reazione diretta, il mercato spagnolo delle batterie ha subito un "elettroshock": la capacità BESS (Battery Energy Storage Systems) installata si è **moltiplicata del 589%**, passando da un valore simbolico di 28 MW a quasi 200 MW operativi in un solo anno, dando impulso a un'architettura di rete nativa per servizi di <GlossaryLink term="Black Start">Black Start</GlossaryLink>.
+
+## Conclusione della Crisi
+
+In retrospettiva, il "blackout del 2025" non viene più studiato nel 2026 come un incidente fortuito derivante dalla siccità idraulica o dall'eccesso solare. È il primo esponente documentato di un collasso provocato da una strozzatura normativa e da una transizione tecnologica che ha ritirato le macchine sincrone prima di dispiegare i loro equivalenti elettronici. La penisola iberica si è trasformata forzatamente nel laboratorio vivente che ha obbligato l'Europa a riscrivere le regole della stabilità elettrica del prossimo decennio.
