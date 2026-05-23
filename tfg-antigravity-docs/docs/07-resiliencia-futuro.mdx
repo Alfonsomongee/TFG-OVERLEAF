@@ -36,11 +36,19 @@ $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">SHORT CIRCUIT RATIO (SCR) THRESHOLDS</div>
+    <div>SOURCE: SYSTEM ENGINEERING STANDARDS</div>
+  </div>
+
 | Categoría | Umbral SCR | Implicación operativa |
 | --- | --- | --- |
 | **Red fuerte** | SCR > 3 | Los inversores GFL operan con estabilidad de pequeña señal. Protecciones de distancia mantienen selectividad. |
 | **Red débil** | 2 ≤ SCR ≤ 3 | Degradación del margen de estabilidad del <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> ante perturbaciones rápidas. Riesgo de interacción adversa entre lazos de control próximos. |
 | **Red muy débil** | SCR &lt; 2 | PLLs propensos a pérdida de sincronismo ante variaciones de tensión menores. Protecciones de distancia pierden direccionalidad. |
+
+</div>
 
 Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR &lt; 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
@@ -144,6 +152,12 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 
 Los sistemas BESS reciben adicionalmente un pago de disponibilidad de **2,7 €/MW/día**, condicionado al mantenimiento de una tasa de cumplimiento de muestras válidas superior al **90 %**.
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">P.O. 7.4 REGULATORY FRAMEWORK COMPARISON</div>
+    <div>SOURCE: BOE-A-2025-13076 / CNMC</div>
+  </div>
+
 | Atributo operativo | P.O. 7.4 original (pre-2025) | Marco actualizado (post-2025) |
 | --- | --- | --- |
 | Naturaleza del control | Estática y asimétrica. Operación por escalones. | Dinámica, continua y proporcional a la desviación. |
@@ -153,6 +167,8 @@ Los sistemas BESS reciben adicionalmente un pago de disponibilidad de **2,7 €/
 | Remuneración de Q | Basada en disponibilidad técnica declarada. | Mercados zonales de servicios ERS. |
 | Observabilidad | Telemedidas SCADA 400 kV, resolución de varios segundos. | PMU y telemedida de 4 s para IBR distribuidos. |
 | Régimen sancionador | Sin penalizaciones específicas por incumplimiento de reactiva. | Penalizaciones por incumplimiento de la tasa mínima del 90 %. |
+
+</div>
 
 El **Real Decreto 997/2025** complementó la reforma con cuatro medidas de urgencia: redefinición jurídica de los BESS como activos de servicio de estabilidad sistémica; saneamiento del registro de permisos de conexión obsoletos; obligatoriedad de telemedida con resolución &lt; 4 s para todo el parque IBR significativo; y obligatoriedad del módulo PSS/POD en todos los inversores GFM de nueva instalación con potencia > 10 MW.
 
@@ -169,6 +185,12 @@ El Grupo Técnico de ENTSO-E (TG GFC) cristalizó su trabajo en dos documentos:
 
 Las obligaciones del **NC RfG 2.0** se aplican con un enfoque tecnológicamente agnóstico, clasificando los módulos en cuatro tipos:
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS</div>
+    <div>SOURCE: ENTSO-E TG GFC</div>
+  </div>
+
 | Tipo | Potencia / Conexión | Requisito GFM | Cronograma |
 | --- | --- | --- | --- |
 | **Tipo A** | &lt; 1 MW | Voluntario. Criterio del DSO. | N/A |
@@ -176,6 +198,8 @@ Las obligaciones del **NC RfG 2.0** se aplican con un enfoque tecnológicamente 
 | **Tipo C** | > 50 MW | Obligatorio y exhaustivo. Operación plena como fuente de tensión; perfiles de corriente de falta; funcionalidad POD. | 3 años tras adopción por la Comisión Europea. |
 | **Tipo D** | ≥ 110 kV o > 75 MW | Ídem Tipo C más pruebas de certificación. | 3 años tras adopción por la Comisión Europea. |
 | **ESM (BESS)** | Según categoría | Ídem PPM equivalente. Sistemas V2G con capacidad conjunta > 1 MW clasificados como ESM Tipo B. | Según categoría. |
+
+</div>
 
 A la fecha de redacción, la adopción formal del NC RfG 2.0 por la Comisión Europea **se encuentra despriorizada y sin calendario oficial**, generando una ventana de incertidumbre regulatoria que los operadores nacionales están gestionando mediante medidas preventivas al margen del código.
 
@@ -203,11 +227,19 @@ EirGrid (Irlanda) y ERCOT (Texas) son las referencias operativas contrastadas ha
 
 El programa **DS3** de EirGrid fragmentó la provisión de estabilidad en 14 productos especializados. Los tres más relevantes para el contexto del 28-A:
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">EIRGRID DS3 SERVICES - CORE PARAMETERS</div>
+    <div>SOURCE: EIRGRID DS3 PROGRAMME</div>
+  </div>
+
 | Servicio | Definición técnica | Umbral / Ventana |
 | --- | --- | --- |
 | **Synchronous Inertial Response (SIR)** | Provisión cuasi-instantánea de potencia activa y par sincronizante ante caídas de frecuencia. Remunerado mediante índice SIRF = $E_k / P_{\min}$, que penaliza el despacho de plantas que inyectan potencia no deseada solo para aportar inercia marginal. | SIRF ≥ 15 s |
 | **Fast Frequency Response (FFR)** | Inyección rápida de potencia activa tras caída abrupta de frecuencia. La energía validable es la integral de la potencia adicional inyectada en los primeros 10 s. Se exige que la energía provista sea mayor que la pérdida en la recuperación (T+10s → T+20s). | Respuesta entre 0,15 s y 2 s |
 | **Steady-State Reactive Power (SSRP)** | Rango total de potencia reactiva despachable ($Q_{\mathrm{range}}$) que el inversor puede inyectar o absorber en operación continua a lo largo de su rango completo de potencia activa. Incluye escalar retributivo favorable para IBR capaces de proveer reactiva en vacío (_watt-less VARs_). | Estado estacionario; valoración anual mediante modelos PLEXOS |
+
+</div>
 
 La comparación entre DS3 y RRS-FFR sugiere una arquitectura de **mercados ERS de doble capa** para el contexto europeo: una capa de señales geográficas de cortocircuito —análoga al SSRP de EirGrid— y una capa de respuesta de frecuencia subcíclica —análoga al RRS-FFR de ERCOT.
 

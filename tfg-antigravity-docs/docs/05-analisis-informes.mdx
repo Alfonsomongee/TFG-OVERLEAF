@@ -14,13 +14,20 @@ El análisis cruzado de los cuatro informes sobre el apagón del 28-A revela una
 
 La narrativa oficial tipifica el apagón no como un error de diseño operativo ni como consecuencia directa de las maniobras del despacho, sino como un evento de **naturaleza multifactorial**: la convergencia de demanda valle, penetración masiva de <GlossaryLink term="IBR">IBR</GlossaryLink> y comportamiento técnico inadecuado de los agentes privados que, actuando simultáneamente, superó los umbrales del <GlossaryLink term="Criterio N-1">Criterio *N*−1</GlossaryLink>.
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">MULTI-FACTOR CAUSALITY MODEL</div>
+    <div>SOURCE: COMITÉ DE ANÁLISIS DEL GOBIERNO</div>
+  </div>
+
 | Factor | Descripción |
 | --- | --- |
 | **Control de tensión insuficiente** | Incumplimiento del P.O. 7.4 por generadores síncronos y RCR |
 | **Oscilaciones electromecánicas** | Condicionantes del estado del sistema previo al colapso |
 | **Desconexiones de generación** | Algunas calificadas como prematuras → vector final de la sobretensión |
 
-_Esquema de causalidad multifactorial según el Comité de Análisis del Gobierno._
+</div>
+<div className="forensic-caption">_Esquema de causalidad multifactorial según el Comité de Análisis del Gobierno._</div>
 
 La defensa técnica de REE sobre la maniobra de <GlossaryLink term="Mallado">mallado</GlossaryLink> merece examen preciso. El informe subraya un aspecto frecuentemente omitido en las críticas: las oscilaciones iniciales no provocaron sobretensiones sino **caídas de tensión** en los nudos de la red de transporte. Ante este riesgo, el Centro de Control ejecutó acciones estrictamente protocolizadas —reconexión de circuitos, acoplamiento de reactancias, coordinación con RTE para conmutar el HVDC a PMODE1—, reconociendo que estas maniobras «contribuyeron al alza en las tensiones», pero calificándolas como necesarias. REE defiende que cualquier incremento tensional posterior habría sido absorbible si los agentes hubiesen cumplido sus obligaciones normativas.
 
@@ -36,24 +43,103 @@ La tabla completa de la **secuencia oficial de 18 eventos desencadenantes** seg�
 
 ### Secuencia oficial de eventos desencadenantes (REE)
 
-| N.º | Ref. | Descripción |
-| --- | --- | --- |
-| 1 | N-1 | Oscilación forzada 0,6 Hz (posible origen: FV Badajoz). Maniobras protocolizadas: reactancias, acoplamiento de líneas, cambios de programa. |
-| 2 | N-2 | Modo inter-área natural 0,2 Hz. Nuevas maniobras de amortiguamiento. |
-| 3 | N-3 | Generación P.O. 7.4 no absorbe reactiva requerida por consigna. |
-| 4 | N-4 | Variaciones de generación RCR afectan control de tensión. ~22 % de plantas incumple factor de potencia. |
-| 5 | — | Generación convencional solicitada tras oscilaciones no llega a acoplarse. |
-| 6 | N-5 | Pérdidas de generación distribuida (&lt;1 MW) y autoconsumo (435 MW) antes de las 12:32:57. |
-| 7 | **N-6** | **Disparo del transformador de evacuación en Granada a las 12:32:57.** REE registra 418 kV en 400 kV, dentro de límites normativos. |
-| 8 | N-7 | Disparo termosolar y FV en Badajoz sin información en frontera con red de transporte. |
-| 9 | N-8 | Disparo FV Badajoz (subestación distinta), sin visibilidad en frontera. |
-| 10–14 | — | Disparos en Segovia, Huelva, Sevilla, Cáceres y Badajoz (varios), sin información en frontera. |
-| 15 | N-11 | Disparo de ciclo combinado en Valencia. |
-| 16 | — | UFLS provoca incremento adicional de tensión por descarga de líneas. |
-| 17 | — | HVDC INELFE-1 continúa exportando 1.000 MW en PMODE1. |
-| 18 | N-12 | Disparo de grupo nuclear. Pérdida de sincronismo y cero de tensión a las **12:33:29.741 CEST**. |
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">OFFICIAL EVENT SEQUENCE LOG</div>
+    <div>SOURCE: RED ELÉCTRICA (OS)</div>
+    <div>TIME BASE: UTC+2 (CEST)</div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>N.º</th>
+        <th>Ref.</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>N-1</td>
+        <td className="narrative-cell">Oscilación forzada 0,6 Hz (posible origen: FV Badajoz). Maniobras protocolizadas: reactancias, acoplamiento de líneas, cambios de programa.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>N-2</td>
+        <td className="narrative-cell">Modo inter-área natural 0,2 Hz. Nuevas maniobras de amortiguamiento.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>3</td>
+        <td>N-3</td>
+        <td className="narrative-cell">Generación P.O. 7.4 no absorbe reactiva requerida por consigna.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>4</td>
+        <td>N-4</td>
+        <td className="narrative-cell">Variaciones de generación RCR afectan control de tensión. ~22 % de plantas incumple factor de potencia.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>—</td>
+        <td className="narrative-cell">Generación convencional solicitada tras oscilaciones no llega a acoplarse.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>6</td>
+        <td>N-5</td>
+        <td className="narrative-cell">Pérdidas de generación distribuida (&lt;1 MW) y autoconsumo (435 MW) antes de las 12:32:57.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>7</td>
+        <td><strong>N-6</strong></td>
+        <td className="narrative-cell"><strong>Disparo del transformador de evacuación en Granada a las 12:32:57.</strong> REE registra 418 kV en 400 kV, dentro de límites normativos.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>8</td>
+        <td>N-7</td>
+        <td className="narrative-cell">Disparo termosolar y FV en Badajoz sin información en frontera con red de transporte.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>9</td>
+        <td>N-8</td>
+        <td className="narrative-cell">Disparo FV Badajoz (subestación distinta), sin visibilidad en frontera.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>10–14</td>
+        <td>—</td>
+        <td className="narrative-cell">Disparos en Segovia, Huelva, Sevilla, Cáceres y Badajoz (varios), sin información en frontera.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>15</td>
+        <td>N-11</td>
+        <td className="narrative-cell">Disparo de ciclo combinado en Valencia.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>16</td>
+        <td>—</td>
+        <td className="narrative-cell">UFLS provoca incremento adicional de tensión por descarga de líneas.</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>—</td>
+        <td className="narrative-cell">HVDC INELFE-1 continúa exportando 1.000 MW en PMODE1.</td>
+      </tr>
+      <tr className="state-blackout">
+        <td>18</td>
+        <td>N-12</td>
+        <td className="narrative-cell">Disparo de grupo nuclear. Pérdida de sincronismo y cero de tensión a las <strong>12:33:29.741 CEST</strong>.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ### Propuestas regulatorias de Redeia
+
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">PROPOSED REGULATORY AMENDMENTS</div>
+    <div>SOURCE: REDEIA</div>
+  </div>
 
 | Área | Medida propuesta |
 | --- | --- |
@@ -61,6 +147,8 @@ La tabla completa de la **secuencia oficial de 18 eventos desencadenantes** seg�
 | **Operación y estabilidad** | Extensión de rampas de cambio de programa a mínimo 10 minutos. Actualización de generación RCR anterior a Orden TED/749/2020. Activación de control potencia-frecuencia en enlaces HVDC actuales y futuros. |
 | **Observabilidad** | Refuerzo del control de tensión en distribución. Dotación al OS de observabilidad sobre el autoconsumo. Ampliación del <GlossaryLink term="WAMS (Wide Area Monitoring Systems)">WAMS</GlossaryLink> con <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> por parque de transporte. |
 | **Monitorización** | Registros de faltas con muestreo mínimo de 20 ms y sincronización horaria. Plataforma centralizada de recopilación de datos de incidentes. |
+
+</div>
 
 ## La visión del sector generador (ICAI / AELEC): mallado excesivo y colapso inevitable
 
@@ -92,6 +180,12 @@ El análisis identifica una tensión técnica fundamental: la mayoría de las in
 
 Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actualización del **NC RfG 2.0**, que prevé imponer el <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> como requisito obligatorio para todos los módulos no síncronos ≥ 1 MW:
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON</div>
+    <div>SOURCE: ENTSO-E</div>
+  </div>
+
 | Requisito | <GlossaryLink term="NC RfG">NC RfG vigente</GlossaryLink> | NC RfG 2.0 (propuesto) |
 | --- | --- | --- |
 | Modo de operación | _Grid-following_ | _Grid-forming_ obligatorio |
@@ -100,6 +194,8 @@ Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actua
 | Inercia | No requerida en IBR | <GlossaryLink term="Inercia Sintética">Inercia sintética</GlossaryLink> obligatoria |
 | _Black Start_ | No requerido en IBR | Capacidad de arranque en isla |
 | Referencia de sincronismo | Externa (PLL sobre red) | Generada internamente (fuente de tensión ideal) |
+
+</div>
 
 Sobre la topología del incidente, ENTSO-E analiza la pérdida de <GlossaryLink term="Sincronismo">sincronismo</GlossaryLink> a las **12:33:19 CEST**: el sistema pasó de exportar 469 MW (12:32:57) a importar un máximo de **3.807 MW** (12:33:19), momento de la pérdida de sincronismo. La divergencia de polos angular se volvió insostenible y las protecciones _Out-of-Step_ (OST) actuaron a las **12:33:21 CEST**, ordenando la apertura de los circuitos transpirenaicos (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
@@ -115,6 +211,12 @@ La advertencia final de ENTSO-E es estructural: los análisis de seguridad coord
 
 A pesar de la polarización del debate, los cuatro informes convergen en un conjunto de conclusiones técnicas que matizan o desmienten las narrativas mediáticas más extendidas:
 
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">TECHNICAL CONSENSUS MATRIX</div>
+    <div>SOURCE: MULTIPLE (CROSS-VERIFIED)</div>
+  </div>
+
 | Punto de consenso | Fundamento técnico compartido | GOB | REE | ICAI | ENTSO-E |
 | --- | --- | :-: | :-: | :-: | :-: |
 | **La inercia no fue la causa raíz** | El sistema operaba con H = 2,3 s (> umbral 2,0 s). Mayor inercia habría retardado la caída de frecuencia décimas de segundo, sin evitar el colapso por sobretensión. | ✓ | ✓ | ✓ | ✓ |
@@ -125,7 +227,15 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 | **La normativa IBR era insuficiente** | El P.O. 7.4 y el RD 413/2014 impedían a los IBR participar en el control dinámico de tensión pese a disponer de capacidad tecnológica. | ✓ | ✓ | ✓ | ✓ |
 | **El Criterio N−1 estático es insuficiente** | Las herramientas de análisis estático evaluaron el sistema como seguro horas antes del colapso, sin capacidad para anticipar la dinámica ultrarrápida de inestabilidad capacitiva. | ✓ | ✓ | ✓ | ✓ |
 
+</div>
+
 ### Divergencias técnicas irreconciliables
+
+<div className="telemetry-table-container forensic-table">
+  <div className="telemetry-metadata">
+    <div className="telemetry-header">TECHNICAL DIVERGENCE MATRIX</div>
+    <div>SOURCE: MULTIPLE (CROSS-VERIFIED)</div>
+  </div>
 
 | Eje de disputa | Gobierno / REE | ICAI / AELEC | ENTSO-E |
 | --- | --- | --- | --- |
@@ -134,6 +244,8 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 | **3. Legitimidad de los disparos (Tap-Lag)** | Los primeros disparos fueron «inadecuados» o prematuros: el SCADA registraba 418 kV en 400 kV, dentro de los límites del P.O. 1.1. | Los disparos fueron normativamente correctos. El Tap-Lag creó un punto ciego: las redes de 220 kV alcanzaban 244 kV (>1,10 p.u.), invisibles para el SCADA. El titular de la ICE de Granada confirmó que su protección actuó correctamente. | No califica los disparos como inadecuados. Subraya la inobservabilidad como limitación sistémica del operador y de los RCC. |
 | **4. Despacho en la zona sur** | Reconoce la indisponibilidad del CCGT andaluz desde el 27-A. Justifica la no sustitución por niveles de tensión adecuados y disponibilidad de otros recursos. | La zona sur disponía de solo 0,2 GVAr de absorción frente a >0,7 GVAr de inyección capacitiva inducida por el propio operador. La no sustitución fue la decisión de despacho más determinante. | Señala la baja potencia de cortocircuito en Andalucía como factor estructural agravante, sin pronunciarse sobre la decisión individual. |
 | **5. Responsabilidad principal** | Los generadores incumplieron sus obligaciones de control de tensión. El apagón fue un fallo del parque generador privado. | REE llevó la red a un estado de colapso inevitable mediante el mallado. Los generadores actuaron conforme a la física y a la normativa. El apagón fue un fallo del operador y del regulador. | La causa raíz es normativa: la restricción que impedía a los IBR controlar tensión dinámicamente. El fallo es del sistema regulatorio europeo y nacional. |
+
+</div>
 
 ## Síntesis interpretativa: tres fracturas de gobernanza
 
