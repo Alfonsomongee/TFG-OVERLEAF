@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -12,6 +12,7 @@ export default function ExecutiveHook() {
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
   const audioUrl = useBaseUrl('/audio/epic-hit.mp3');
+  const audioRef = useRef(null);
 
   const getStrings = (l) => {
     switch (l) {
@@ -142,20 +143,17 @@ export default function ExecutiveHook() {
   const handleSplashClick = () => {
     if (isFading || isHidden) return;
     
-    // Play the epic sound
-    try {
-      const audio = new Audio(audioUrl);
-      audio.volume = 0.6;
-      audio.play().catch(e => console.log('Audio autoplay blocked', e));
-    } catch (e) {
-      console.warn("Could not play sound", e);
+    // Play the epic sound via the audio DOM element
+    if (audioRef.current) {
+      audioRef.current.volume = 1.0;
+      audioRef.current.play().catch(e => console.error('Audio play failed:', e));
     }
 
     // Force fade out immediately on click
     setIsFading(true);
     setTimeout(() => {
       setIsHidden(true);
-    }, 1500); // Wait for CSS fade transition
+    }, 1500); // Wait for the fade out CSS transition
   };
 
   useEffect(() => {
@@ -178,6 +176,7 @@ export default function ExecutiveHook() {
   return (
     <>
       {/* Splash Screen */}
+      <audio ref={audioRef} src={audioUrl} preload="auto" />
       {!isHidden && (
         <div 
           className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}
