@@ -1,0 +1,74 @@
+{
+  "scheme_name": "UFLS Iberian Peninsula (REE + REN + E-REDES)",
+  "activation_criteria": "Frequency < 49.0 Hz detected at distribution substation relays",
+  "activation_delay_ms": 200,
+  "stages": [
+    {
+      "stage": 1,
+      "frequency_hz": 49.0,
+      "load_shed_percent_of_tnl": 10,
+      "load_shed_mw_spain": 2100,
+      "load_shed_mw_portugal": 590,
+      "time_delay_after_threshold_ms": 50,
+      "zones_affected": ["Andalucía", "Extremadura", "Castilla-La Mancha"],
+      "priority_load_excluded_pct": 47.27,
+      "relay_logic": "parallel",
+      "notes": "10% shed intended. Actual load shed slightly higher due to parallel relay redundancy"
+    },
+    {
+      "stage": 2,
+      "frequency_hz": 48.8,
+      "load_shed_percent_of_tnl": 8,
+      "load_shed_mw_spain": 1680,
+      "load_shed_mw_portugal": 472,
+      "time_delay_after_threshold_ms": 100,
+      "zones_affected": ["Galicia", "Asturias"],
+      "notes": "Did not activate in 28A cascade — frequency fell past 48.8 Hz too quickly"
+    },
+    {
+      "stage": 3,
+      "frequency_hz": 48.6,
+      "load_shed_percent_of_tnl": 8,
+      "load_shed_mw_spain": 1680,
+      "load_shed_mw_portugal": 472,
+      "time_delay_after_threshold_ms": 100,
+      "zones_affected": ["Cataluña", "Aragón"],
+      "notes": "Did not activate in 28A cascade"
+    },
+    {
+      "stage": 4,
+      "frequency_hz": 48.4,
+      "load_shed_percent_of_tnl": 8,
+      "load_shed_mw_spain": 1680,
+      "load_shed_mw_portugal": 472,
+      "time_delay_after_threshold_ms": 100,
+      "zones_affected": ["Madrid", "Castilla y León"],
+      "notes": "Did not activate in 28A cascade"
+    },
+    {
+      "stage": 5,
+      "frequency_hz": 48.2,
+      "load_shed_percent_of_tnl": 8,
+      "load_shed_mw_spain": 1680,
+      "load_shed_mw_portugal": 472,
+      "time_delay_after_threshold_ms": 100,
+      "zones_affected": ["Comunitat Valenciana", "Región de Murcia"],
+      "notes": "Did not activate in 28A cascade"
+    },
+    {
+      "stage": 6,
+      "frequency_hz": 48.0,
+      "load_shed_percent_of_tnl": 10,
+      "load_shed_mw_spain": 2100,
+      "load_shed_mw_portugal": 590,
+      "time_delay_after_threshold_ms": 100,
+      "zones_affected": ["All remaining zones"],
+      "notes": "Final stage. Total design shed capacity: 45% ± 7% of TNL. Actual in 28A: 37.39% due to priority load exemptions"
+    }
+  ],
+  "design_intent": "Arrest frequency decline by reducing demand to match available generation",
+  "actual_28A_outcome": "CATASTROPHIC FAILURE. Load shedding reduced line currents → Ferranti effect worsened → voltage spike → cascaded overvoltage protection trips of remaining renewables → accelerated collapse",
+  "cumulative_shed_mw_actual": 3100,
+  "cumulative_shed_percent_actual": 10.0,
+  "paradox_explanation": "In traditional under-frequency events, load shed solves the problem. In this overvoltage cascade, load shed worsened it. Protection architecture mismatched to inverter-based generation characteristics."
+}
