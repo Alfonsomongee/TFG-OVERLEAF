@@ -137,6 +137,25 @@ export default function ExecutiveHook() {
   };
   const strings = getStrings(lang);
 
+  const handleSplashClick = () => {
+    if (isFading || isHidden) return;
+    
+    // Play the epic sound
+    try {
+      const audio = new Audio('/audio/epic-hit.mp3');
+      audio.volume = 0.6;
+      audio.play().catch(e => console.log('Audio autoplay blocked', e));
+    } catch (e) {
+      console.warn("Could not play sound", e);
+    }
+
+    // Force fade out immediately on click
+    setIsFading(true);
+    setTimeout(() => {
+      setIsHidden(true);
+    }, 1500); // Wait for CSS fade transition
+  };
+
   useEffect(() => {
     // Start fading out after 4.5 seconds (gives time for blackout to finish)
     const fadeTimer = setTimeout(() => {
@@ -158,7 +177,11 @@ export default function ExecutiveHook() {
     <>
       {/* Splash Screen */}
       {!isHidden && (
-        <div className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}>
+        <div 
+          className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}
+          onClick={handleSplashClick}
+          style={{ cursor: 'pointer' }}
+        >
           <div className={styles.splashBgIlluminated}></div>
           <motion.div 
             className={styles.splashBgDark}
