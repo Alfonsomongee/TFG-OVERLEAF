@@ -107,8 +107,9 @@ export default function PhasePlanePlot({ lang }) {
   const texts = getTexts();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
-      <div style={{ flex: 1, minHeight: '400px', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      {/* Contenedor con altura estricta para evitar que el gráfico empuje el texto al redibujarse */}
+      <div style={{ height: '450px', width: '100%', position: 'relative', overflow: 'hidden' }}>
         <BrowserOnly fallback={<div>Cargando gráfico interactivo...</div>}>
           {() => {
             const Plot = require('react-plotly.js').default;
@@ -169,7 +170,7 @@ export default function PhasePlanePlot({ lang }) {
                   datarevision: currentTime // Evita que plotly redibuje y "rebote" calculando tamaños
                 }}
                 useResizeHandler={true}
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
                 config={{ responsive: true, displayModeBar: false }}
               />
             );
