@@ -12,6 +12,7 @@ const FrequencyTimeline = () => {
   const [currentTime, setCurrentTime] = useState(-1800);
   const [filteredData, setFilteredData] = useState([]);
   const [showCriticalPhaseOnly, setShowCriticalPhaseOnly] = useState(false);
+  const [zoomCollapse, setZoomCollapse] = useState(false);
   const [hasError, setHasError] = useState(false);
   const playbackIntervalRef = useRef(null);
   
@@ -134,7 +135,7 @@ const FrequencyTimeline = () => {
         // Normalize time display and compute ROCOF
         const processedData = data.map((point, idx) => ({
           ...point,
-          rocof: idx > 0 ? Math.abs(data[idx].freq - data[idx - 1].freq) / (data[idx].t - data[idx - 1].t) : 0,
+          rocof: point.rocof !== undefined && point.rocof !== null ? point.rocof : (idx > 0 ? Math.abs(data[idx].freq - data[idx - 1].freq) / (data[idx].t - data[idx - 1].t) : 0),
           status: point.freq > 49.8 ? 'NORMAL' : 
                   point.freq > 49.0 ? 'UFLS ACTIVE' :
                   point.freq > 48.0 ? 'CRITICAL' :
@@ -180,6 +181,7 @@ const FrequencyTimeline = () => {
   };
 
   const current = getCurrentValue();
+  const rocofChartData = zoomCollapse ? filteredData.filter(d => d.t >= -120) : filteredData;
 
   if (hasError) {
     return (
@@ -309,9 +311,29 @@ const FrequencyTimeline = () => {
 
       {/* ROCOF Secondary Chart */}
       <div className={styles.rocofSection}>
-        <h3>{t.rocofTitle}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h3 style={{ margin: 0 }}>{t.rocofTitle}</h3>
+          <button
+            onClick={() => setZoomCollapse(!zoomCollapse)}
+            style={{
+              background: zoomCollapse ? '#ff3333' : '#ffaa33',
+              color: '#000',
+              border: 'none',
+              padding: '4px 12px',
+              borderRadius: '4px',
+              fontFamily: 'var(--telemetry-font)',
+              fontSize: '11px',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              letterSpacing: '1px'
+            }}
+          >
+            {zoomCollapse ? '← Vista Completa' : '🔍 Zoom: Colapso (últimos 120s)'}
+          </button>
+        </div>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={filteredData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
+          <BarChart data={rocofChartData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
             <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 170, 0, 0.1)" />
             <XAxis 
@@ -325,10 +347,14 @@ const FrequencyTimeline = () => {
             <YAxis 
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
-              label={{ value: 'ROCOF (Hz/s)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
+              label={{ value: 'Hz/s', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
+              domain={[0, 2]}
+              allowDataOverflow={false}
+              tickCount={5}
+              ticks={[0, 0.5, 1.0, 1.5, 2.0]}
             />
-            <ReferenceLine y={0.5} stroke="var(--forensic-amber-muted)" strokeDasharray="3 3" />
-            <ReferenceLine y={1.0} stroke="var(--forensic-amber-critical)" strokeDasharray="3 3" opacity={0.6} />
+            <ReferenceLine y={0.5} stroke="var(--forensic-amber-muted)" strokeDasharray="3 3" label={{ value: 'Warning', position: 'insideRight', fill: 'var(--forensic-amber-muted)', fontSize: 10 }} />
+            <ReferenceLine y={1.0} stroke="#ff3333" strokeDasharray="6 4" label={{ value: 'Critical / Point of No Return', position: 'insideRight', fill: '#ff3333', fontSize: 10 }} />
             <Bar 
               dataKey="rocof" 
               fill="var(--forensic-amber-primary)"
@@ -336,8 +362,8 @@ const FrequencyTimeline = () => {
               radius={[2, 2, 0, 0]}
               barSize={12}
             >
-              {filteredData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.rocof > 1.0 ? 'var(--forensic-amber-critical)' : entry.rocof > 0.5 ? 'var(--forensic-amber-warning)' : 'var(--forensic-amber-primary)'} />
+              {rocofChartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.rocof >= 1.0 ? 'var(--forensic-amber-critical)' : entry.rocof >= 0.5 ? 'var(--forensic-amber-warning)' : 'var(--forensic-amber-primary)'} />
               ))}
             </Bar>
             <Tooltip 
