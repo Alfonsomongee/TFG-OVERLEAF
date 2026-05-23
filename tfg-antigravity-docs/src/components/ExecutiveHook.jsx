@@ -212,12 +212,11 @@ export default function ExecutiveHook() {
           onClick={handleSplashClick}
           style={{ cursor: 'pointer' }}
         >
-          <div className={styles.splashBgIlluminated}></div>
           <motion.div 
-            className={styles.splashBgDark}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2.5, ease: [0.4, 0, 0.2, 1], delay: 1.5 }}
+            className={styles.splashBgCinematic}
+            initial={{ scale: 1 }}
+            animate={{ scale: 1.15 }}
+            transition={{ duration: 20, ease: "linear" }}
           />
           <div className={styles.splashOverlay}></div>
           <div className={styles.splashContent}>
