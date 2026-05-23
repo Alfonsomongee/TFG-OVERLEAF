@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import { motion } from 'framer-motion';
 
 export default function ExecutiveHook() {
@@ -10,6 +11,7 @@ export default function ExecutiveHook() {
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
+  const audioUrl = useBaseUrl('/audio/epic-hit.mp3');
 
   const getStrings = (l) => {
     switch (l) {
@@ -125,7 +127,7 @@ export default function ExecutiveHook() {
         heroTitleHighlight: "Colapso Sistémico",
         heroSubtitle: "Análisis forense del apagón de la Península Ibérica de 2025: inestabilidad de tensión, déficit de inercia y la transición estructural hacia redes 100% basadas en inversores (IBR).",
         box1Title: "¿Qué ocurrió?",
-        box1Text: "La pérdida del transformador de Granada (400/220 kV) desencadenó una cascada de sobretensiones que colapsó la red ibérica en 11 segundos, arrastrando 31 GW de demanda y desconectando el enlace HVDC con Francia.",
+        box1Text: "La pérdida del transformador de Granada (400/220 kV) desencadenó una cascata de sobretensiones que colapsó la red ibérica en 11 segundos, arrastrando 31 GW de demanda y desconectando el enlace HVDC con Francia.",
         box2Title: "Herramientas y Metodología",
         box2Text: "Flujo de cargas Newton-Raphson, análisis de estabilidad transitoria, modelado RoCoF y evaluación de contingencia N-1. Infraestructura web basada en Docusaurus, MDX, KaTeX y React.",
         box3Title: "Conclusión Principal",
@@ -142,7 +144,7 @@ export default function ExecutiveHook() {
     
     // Play the epic sound
     try {
-      const audio = new Audio('/audio/epic-hit.mp3');
+      const audio = new Audio(audioUrl);
       audio.volume = 0.6;
       audio.play().catch(e => console.log('Audio autoplay blocked', e));
     } catch (e) {

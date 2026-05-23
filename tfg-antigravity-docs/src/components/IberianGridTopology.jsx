@@ -5,16 +5,16 @@ const getGridData = (lang) => {
   const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
   return {
     nodes: [
-      { id: 'GRN', name: t('Caparacena (Fallo Inicial)', 'Caparacena (Initial Failure)', 'Caparacena (Falha Inicial)', 'Caparacena (Défaillance Initiale)', 'Caparacena (Guasto Iniziale)', 'Caparacena (Anfänglicher Fehler)'), group: 1, val: 25, activeColor: '#ef4444', defaultColor: '#10b981', activationTime: 2 },
-      { id: 'SEV', name: t('Alcores (Efecto Dominó Sur)', 'Alcores (South Domino Effect)', 'Alcores (Efeito Dominó Sul)', 'Alcores (Effet Domino Sud)', 'Alcores (Effetto Domino Sud)', 'Alcores (Südlicher Dominoeffekt)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4 },
-      { id: 'BAD', name: t('Guillena (Colapso Tensión)', 'Guillena (Voltage Collapse)', 'Guillena (Colapso de Tensão)', 'Guillena (Effondrement de Tension)', 'Guillena (Collasso di Tensione)', 'Guillena (Spannungskollaps)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4 },
-      { id: 'MAD', name: t('Madrid Morata (Contención)', 'Madrid Morata (Containment)', 'Madrid Morata (Contenção)', 'Madrid Morata (Confinement)', 'Madrid Morata (Contenimento)', 'Madrid Morata (Eindämmung)'), group: 2, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
-      { id: 'ALM', name: t('C.N. Almaraz (Inercia Base)', 'C.N. Almaraz (Base Inertia)', 'C.N. Almaraz (Inércia Base)', 'C.N. Almaraz (Inertie de Base)', 'C.N. Almaraz (Inerzia di Base)', 'C.N. Almaraz (Basisträgheit)'), group: 2, val: 25, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
-      { id: 'ZAR', name: t('Aragón (Puente Norte)', 'Aragon (North Bridge)', 'Aragão (Ponte Norte)', 'Aragon (Pont Nord)', 'Aragona (Ponte Nord)', 'Aragonien (Nordbrücke)'), group: 3, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
-      { id: 'BAR', name: t('Rubí (Resistencia Este)', 'Rubí (East Resistance)', 'Rubí (Resistência Leste)', 'Rubí (Résistance Est)', 'Rubí (Resistenza Est)', 'Rubí (Ost-Widerstand)'), group: 3, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
-      { id: 'LIS', name: t('Lisboa (Desequilibrio)', 'Lisbon (Imbalance)', 'Lisboa (Desequilíbrio)', 'Lisbonne (Déséquilibre)', 'Lisbona (Squilibrio)', 'Lissabon (Ungleichgewicht)'), group: 4, val: 20, activeColor: '#f59e0b', defaultColor: '#10b981', activationTime: 6 },
-      { id: 'POR', name: t('Porto (Compensación)', 'Porto (Compensation)', 'Porto (Compensação)', 'Porto (Compensation)', 'Porto (Compensazione)', 'Porto (Kompensation)'), group: 4, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0 },
-      { id: 'FR', name: t('Francia (Rescate Externo)', 'France (External Rescue)', 'França (Resgate Externo)', 'France (Sauvetage Externe)', 'Francia (Salvataggio Esterno)', 'Frankreich (Externe Rettung)'), group: 5, val: 30, activeColor: '#3b82f6', defaultColor: '#3b82f6', activationTime: 10 }
+      { id: 'GRN', name: t('Caparacena (Fallo Inicial)', 'Caparacena (Initial Failure)', 'Caparacena (Falha Inicial)', 'Caparacena (Défaillance Initiale)', 'Caparacena (Guasto Iniziale)', 'Caparacena (Anfänglicher Fehler)'), group: 1, val: 25, activeColor: '#ef4444', defaultColor: '#10b981', activationTime: 2, fx: 10, fy: 100 },
+      { id: 'SEV', name: t('Alcores (Efecto Dominó Sur)', 'Alcores (South Domino Effect)', 'Alcores (Efeito Dominó Sul)', 'Alcores (Effet Domino Sud)', 'Alcores (Effetto Domino Sud)', 'Alcores (Südlicher Dominoeffekt)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4, fx: -40, fy: 80 },
+      { id: 'BAD', name: t('Guillena (Colapso Tensión)', 'Guillena (Voltage Collapse)', 'Guillena (Colapso de Tensão)', 'Guillena (Effondrement de Tension)', 'Guillena (Collasso di Tensione)', 'Guillena (Spannungskollaps)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4, fx: -60, fy: 40 },
+      { id: 'MAD', name: t('Madrid Morata (Contención)', 'Madrid Morata (Containment)', 'Madrid Morata (Contenção)', 'Madrid Morata (Confinement)', 'Madrid Morata (Contenimento)', 'Madrid Morata (Eindämmung)'), group: 2, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 0, fy: 0 },
+      { id: 'ALM', name: t('C.N. Almaraz (Inercia Base)', 'C.N. Almaraz (Base Inertia)', 'C.N. Almaraz (Inércia Base)', 'C.N. Almaraz (Inertie de Base)', 'C.N. Almaraz (Inerzia di Base)', 'C.N. Almaraz (Basisträgheit)'), group: 2, val: 25, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: -50, fy: 0 },
+      { id: 'ZAR', name: t('Aragón (Puente Norte)', 'Aragon (North Bridge)', 'Aragão (Ponte Norte)', 'Aragon (Pont Nord)', 'Aragona (Ponte Nord)', 'Aragonien (Nordbrücke)'), group: 3, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 50, fy: -50 },
+      { id: 'BAR', name: t('Rubí (Resistencia Este)', 'Rubí (East Resistance)', 'Rubí (Resistência Leste)', 'Rubí (Résistance Est)', 'Rubí (Resistenza Est)', 'Rubí (Ost-Widerstand)'), group: 3, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 120, fy: -60 },
+      { id: 'LIS', name: t('Lisboa (Desequilibrio)', 'Lisbon (Imbalance)', 'Lisboa (Desequilíbrio)', 'Lisbonne (Déséquilibre)', 'Lisbona (Squilibrio)', 'Lissabon (Ungleichgewicht)'), group: 4, val: 20, activeColor: '#f59e0b', defaultColor: '#10b981', activationTime: 6, fx: -120, fy: 30 },
+      { id: 'POR', name: t('Porto (Compensación)', 'Porto (Compensation)', 'Porto (Compensação)', 'Porto (Compensation)', 'Porto (Compensazione)', 'Porto (Kompensation)'), group: 4, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: -110, fy: -30 },
+      { id: 'FR', name: t('Francia (Rescate Externo)', 'France (External Rescue)', 'França (Resgate Externo)', 'France (Sauvetage Externe)', 'Francia (Salvataggio Esterno)', 'Frankreich (Externe Rettung)'), group: 5, val: 30, activeColor: '#3b82f6', defaultColor: '#3b82f6', activationTime: 10, fx: 100, fy: -120 }
     ],
     links: [
       { source: 'GRN', target: 'SEV', isCritical: true, flow: t('Sobrecarga masiva', 'Massive overload', 'Sobrecarga massiva', 'Surcharge massive', 'Sovraccarico massiccio', 'Massive Überlastung'), activationTime: 2 },
@@ -171,8 +171,8 @@ function TopologyMapContent({ lang = 'es' }) {
           ctx.fill();
         }}
         nodeCanvasObjectMode={() => 'replace'}
-        cooldownTicks={100}
-        onEngineStop={() => fgRef.current.zoomToFit(400, 50)}
+        cooldownTicks={0}
+        onEngineStop={() => {}}
       />
       <div style={{
         position: 'absolute',
