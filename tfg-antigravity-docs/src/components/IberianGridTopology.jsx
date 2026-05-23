@@ -49,12 +49,12 @@ function TopologyMapContent({ lang = 'es' }) {
   const EVENT_LOG = useMemo(() => getEventLog(lang), [lang]);
   const getStrings = (l) => {
     switch (l) {
-      case 'en': return { title: 'Topological Simulator', play: 'Play', pause: 'Pause', replay: 'Replay', desc: 'This graph models the grid using GNN. Hit <strong>Play</strong> to see the causal propagation of the collapse according to impedance flow.', loading: 'Loading Graph...' };
-      case 'pt': return { title: 'Simulador Topológico', play: 'Iniciar', pause: 'Pausar', replay: 'Repetir', desc: 'Este grafo modela a rede usando GNN. Clique em <strong>Iniciar</strong> para ver a propagação causal do colapso segundo o fluxo de impedâncias.', loading: 'Carregando Grafo...' };
-      case 'fr': return { title: 'Simulateur Topologique', play: 'Lecture', pause: 'Pause', replay: 'Rejouer', desc: 'Ce graphe modélise le réseau via GNN. Appuyez sur <strong>Lecture</strong> pour voir la propagation causale de l\'effondrement selon le flux d\'impédance.', loading: 'Chargement du Graphe...' };
-      case 'it': return { title: 'Simulatore Topologico', play: 'Play', pause: 'Pausa', replay: 'Riproduci', desc: 'Questo grafo modella la rete tramite GNN. Premi <strong>Play</strong> per vedere la propagazione causale del collasso secondo il flusso di impedenza.', loading: 'Caricamento Grafo...' };
-      case 'de': return { title: 'Topologischer Simulator', play: 'Abspielen', pause: 'Pause', replay: 'Wiederholen', desc: 'Dieser Graph modelliert das Netz mittels GNN. Drücken Sie <strong>Abspielen</strong>, um die kausale Ausbreitung des Kollapses gemäß dem Impedanzfluss zu sehen.', loading: 'Graph wird geladen...' };
-      default: return { title: 'Simulador Topológico', play: 'Play', pause: 'Pausa', replay: 'Replay', desc: 'Este grafo modela la red mediante GNN. Dale al <strong>Play</strong> para ver la propagación causal del colapso según el flujo de impedancias.', loading: 'Cargando Grafo...' };
+      case 'en': return { title: 'Topological Simulator', play: 'Play', pause: 'Pause', replay: 'Replay', desc: 'This graph models the grid using GNN. Hit <strong>Play</strong> to see the causal propagation of the collapse according to impedance flow.', zoomNote: '💡 Scroll mouse wheel to zoom in/out', loading: 'Loading Graph...' };
+      case 'pt': return { title: 'Simulador Topológico', play: 'Iniciar', pause: 'Pausar', replay: 'Repetir', desc: 'Este grafo modela a rede usando GNN. Clique em <strong>Iniciar</strong> para ver a propagação causal do colapso segundo o fluxo de impedâncias.', zoomNote: '💡 Deslize a roda do rato para ampliar/reduzir', loading: 'Carregando Grafo...' };
+      case 'fr': return { title: 'Simulateur Topologique', play: 'Lecture', pause: 'Pause', replay: 'Rejouer', desc: 'Ce graphe modélise le réseau via GNN. Appuyez sur <strong>Lecture</strong> pour voir la propagation causale de l\'effondrement selon le flux d\'impédance.', zoomNote: '💡 Utilisez la molette de la souris pour zoomer', loading: 'Chargement du Graphe...' };
+      case 'it': return { title: 'Simulatore Topologico', play: 'Play', pause: 'Pausa', replay: 'Riproduci', desc: 'Questo grafo modella la rete tramite GNN. Premi <strong>Play</strong> per vedere la propagazione causale del collasso secondo il flusso di impedenza.', zoomNote: '💡 Usa la rotellina del mouse per ingrandire/ridurre', loading: 'Caricamento Grafo...' };
+      case 'de': return { title: 'Topologischer Simulator', play: 'Abspielen', pause: 'Pause', replay: 'Wiederholen', desc: 'Dieser Graph modelliert das Netz mittels GNN. Drücken Sie <strong>Abspielen</strong>, um die kausale Ausbreitung des Kollapses gemäß dem Impedanzfluss zu sehen.', zoomNote: '💡 Mausrad drehen, um zu zoomen', loading: 'Graph wird geladen...' };
+      default: return { title: 'Simulador Topológico', play: 'Play', pause: 'Pausa', replay: 'Replay', desc: 'Este grafo modela la red mediante GNN. Dale al <strong>Play</strong> para ver la propagación causal del colapso según el flujo de impedancias.', zoomNote: '💡 Desliza la rueda del ratón para ampliar o desampliar el mapa', loading: 'Cargando Grafo...' };
     }
   };
   const strings = getStrings(lang);
@@ -212,8 +212,8 @@ function TopologyMapContent({ lang = 'es' }) {
           </div>
         </div>
         
-        <p style={{ margin: '0 0 10px 0', fontSize: '0.85rem', color: '#9ca3af' }} dangerouslySetInnerHTML={{__html: strings.desc}} />
-
+        <p style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: '#9ca3af' }} dangerouslySetInnerHTML={{__html: strings.desc}} />
+        <p style={{ margin: '0 0 10px 0', fontSize: '0.75rem', color: '#60a5fa', fontStyle: 'italic' }}>{strings.zoomNote}</p>
         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {visibleLogs.map((log, idx) => (
             <div key={idx} style={{
