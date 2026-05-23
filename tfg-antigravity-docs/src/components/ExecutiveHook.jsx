@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 export default function ExecutiveHook() {
   const [isFading, setIsFading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const [audioBlocked, setAudioBlocked] = useState(false);
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
@@ -143,21 +144,57 @@ export default function ExecutiveHook() {
   const handleSplashClick = () => {
     if (isFading || isHidden) return;
     
-    // Play the epic sound via the audio DOM element
+    // If audio is ready, ensure it plays at full volume on click
     if (audioRef.current) {
+      audioRef.current.muted = false;
       audioRef.current.volume = 1.0;
-      audioRef.current.play().catch(e => console.error('Audio play failed:', e));
+      audioRef.current.play().catch(e => console.error('Audio play failed on click:', e));
     }
 
     // Force fade out immediately on click
     setIsFading(true);
     setTimeout(() => {
       setIsHidden(true);
-    }, 1500); // Wait for the fade out CSS transition
+    }, 1500);
+  };
+
+  const handleManualPlay = (e) => {
+    e.stopPropagation();
+    if (audioRef.current) {
+      audioRef.current.muted = false;
+      audioRef.current.volume = 1.0;
+      audioRef.current.play().catch(e => console.error('Manual play failed:', e));
+    }
+    setAudioBlocked(false);
   };
 
   useEffect(() => {
-    // Start fading out after 4.5 seconds (gives time for blackout to finish)
+    // --- MUTED AUTOPLAY TRICK ---
+    // Browsers allow autoplay if the audio starts MUTED.
+    // We start muted, then unmute after 1.5s once the user is "engaged".
+    const audio = audioRef.current;
+    if (audio) {
+      audio.muted = true;
+      audio.volume = 1.0;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Autoplay succeeded (muted). Unmute after short delay.
+            setTimeout(() => {
+              if (audio) {
+                audio.muted = false;
+              }
+            }, 1200);
+          })
+          .catch(() => {
+            // Autoplay completely blocked — show fallback button
+            setAudioBlocked(true);
+          });
+      }
+    }
+
+    // Start fading out after 4.5 seconds
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
     }, 4500);
@@ -216,6 +253,29 @@ export default function ExecutiveHook() {
             >
               Alfonso Monge Díaz-Ángel
             </motion.p>
+            {/* Fallback button if browser blocks autoplay completely */}
+            {audioBlocked && (
+              <motion.button
+                onClick={handleManualPlay}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                style={{
+                  marginTop: '1.5rem',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,204,0,0.5)',
+                  color: '#ffcc00',
+                  padding: '0.4rem 1.2rem',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: '0.85rem',
+                  letterSpacing: '2px',
+                }}
+              >
+                🔊 REPRODUCIR SONIDO
+              </motion.button>
+            )}
           </div>
         </div>
       )}
