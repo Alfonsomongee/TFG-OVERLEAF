@@ -3,12 +3,15 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useLocation } from '@docusaurus/router';
 
 function SmoothScrollRoot({ children }) {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    // Reset scroll to top on navigation to fix Next Chapter bug
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    // Reset scroll to top on navigation to fix Next Chapter bug,
+    // ONLY if there is no hash anchor in the URL (e.g. Glossary links)
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
 
   useEffect(() => {
     // Solo cargamos Lenis en cliente
