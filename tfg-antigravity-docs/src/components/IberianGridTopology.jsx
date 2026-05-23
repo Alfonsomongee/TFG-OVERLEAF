@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 const getGridData = (lang) => {
@@ -45,8 +45,8 @@ const getEventLog = (lang) => {
 };
 
 function TopologyMapContent({ lang = 'es' }) {
-  const GRID_DATA = getGridData(lang);
-  const EVENT_LOG = getEventLog(lang);
+  const GRID_DATA = useMemo(() => getGridData(lang), [lang]);
+  const EVENT_LOG = useMemo(() => getEventLog(lang), [lang]);
   const getStrings = (l) => {
     switch (l) {
       case 'en': return { title: 'Topological Simulator', play: 'Play', pause: 'Pause', replay: 'Replay', desc: 'This graph models the grid using GNN. Hit <strong>Play</strong> to see the causal propagation of the collapse according to impedance flow.', loading: 'Loading Graph...' };
