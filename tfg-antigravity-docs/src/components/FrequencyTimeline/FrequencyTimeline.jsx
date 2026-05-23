@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar } from 'recharts';
 import { motion } from 'framer-motion';
-import { useBaseUrl } from '@docusaurus/useBaseUrl';
-import GlitchTitle from '../GlitchTitle/GlitchTitle';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import GlitchTitle from '../GlitchTitle';
 import styles from './FrequencyTimeline.module.css';
 
 const FrequencyTimeline = () => {
