@@ -3,6 +3,7 @@ import React from 'react';
 import MDXComponents from '@theme-original/MDXComponents';
 import ChartCard from '@site/src/components/ChartCard';
 import GlitchTitle from '@site/src/components/GlitchTitle';
+import ForensicReveal from '@site/src/components/ForensicReveal';
 
 export default {
   // Re-use the default mapping
@@ -10,4 +11,5 @@ export default {
   // Add our custom components globally so we don't have to import them in every .mdx
   ChartCard,
   GlitchTitle,
+  ForensicReveal,
 };

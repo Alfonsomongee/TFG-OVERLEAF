@@ -74,11 +74,15 @@ export default function Root({ children }) {
   return (
     <>
       <BrowserOnly fallback={<>{children}</>}>
-        {() => (
-          <SmoothScrollRoot>
-            {children}
-          </SmoothScrollRoot>
-        )}
+        {() => {
+          const CustomCursor = require('@site/src/components/CustomCursor').default;
+          return (
+            <SmoothScrollRoot>
+              <CustomCursor />
+              {children}
+            </SmoothScrollRoot>
+          );
+        }}
       </BrowserOnly>
     </>
   );
