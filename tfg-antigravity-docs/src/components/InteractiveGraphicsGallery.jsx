@@ -98,6 +98,14 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Diagramme de Plan de Phase (GFM vs GFL)', desc: 'Comparaison dans l\'espace d\'états δ vs Δω de la convergence des onduleurs Formateurs de Réseau vs Suiveurs de Réseau.' },
       it: { title: 'Diagramma di Piano di Fase (GFM vs GFL)', desc: 'Confronto nello spazio degli stati δ vs Δω della convergenza degli inverter Grid-Forming vs Grid-Following.' },
       de: { title: 'Phasenebenendiagramm (GFM vs GFL)', desc: 'Zustandsraumvergleich δ vs Δω der Konvergenz von netzbildenden vs. netzfolgenden Wechselrichtern.' }
+    },
+    interconnection: {
+      es: { title: 'Dashboard de Interconexiones', desc: 'Análisis del estrangulamiento estructural de los intercambios internacionales.' },
+      en: { title: 'Interconnection Dashboard', desc: 'Analysis of the structural bottleneck in international exchanges.' },
+      pt: { title: 'Dashboard de Interconexões', desc: 'Análise do estrangulamento estrutural das trocas internacionais.' },
+      fr: { title: 'Tableau de Bord des Interconnexions', desc: 'Analyse du goulot d\'étranglement structurel des échanges internationaux.' },
+      it: { title: 'Dashboard delle Interconnessioni', desc: 'Analisi del collo di bottiglia strutturale negli scambi internazionali.' },
+      de: { title: 'Verbindungs-Dashboard', desc: 'Analyse des strukturellen Engpasses im internationalen Austausch.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -105,6 +113,7 @@ const getGraphicData = (id, lang) => {
 
 import SynchrophasorPlot from './SynchrophasorPlot';
 import PhasePlanePlot from './PhasePlanePlot';
+import InterconnectionDashboard from './InterconnectionDashboard';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -116,7 +125,8 @@ const graphicsData = [
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
-  { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot }
+  { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot },
+  { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {
