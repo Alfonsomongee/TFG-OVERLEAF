@@ -209,6 +209,10 @@ const config = {
                 label: 'Alfonso Monge Díaz-Ángel',
                 href: 'mailto:alfonsomongediazangel@gmail.com',
               },
+              {
+                label: 'LinkedIn',
+                href: 'https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277',
+              },
             ],
           },
           {
