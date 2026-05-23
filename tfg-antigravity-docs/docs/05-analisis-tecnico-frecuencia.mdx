@@ -4,7 +4,11 @@ sidebar_position: 5
 ---
 
 import FrequencyTimeline from '@site/src/components/FrequencyTimeline/FrequencyTimeline';
+import TelemetryFallback from '@site/src/components/FrequencyTimeline/TelemetryFallback';
+import UFLSVisualizer from '@site/src/components/UFLSVisualizer/UFLSVisualizer';
+import GenerationMixWidget from '@site/src/components/GenerationMixWidget/GenerationMixWidget';
 import GlossaryLink from '@site/src/components/GlossaryLink';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 # Análisis Técnico: El Colapso de Frecuencia en 27 Segundos
 
@@ -30,7 +34,13 @@ $$\text{ROCOF} = \frac{\Delta P}{2H \times S_{base}}$$
 
 En el 28 de abril, con $H = 2.45$ segundos (críticamente bajo debido al 78% de penetración renovable) y $\Delta P = 2,200$ MW, el ROCOF inicial fue cercano a 0.014 Hz/s, pero la verdadera dinámica era multidimensional.
 
-<FrequencyTimeline />
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <FrequencyTimeline />}
+</BrowserOnly>
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <GenerationMixWidget />}
+</BrowserOnly>
 
 ## Las Tres Fases del Colapso
 
@@ -54,6 +64,10 @@ La pérdida súbita de 2,200 MW de generación renovable en Granada, Badajoz y S
 ### Fase 3: El Colapso en Cascada (12:33:18 — 12:33:24 CEST)
 
 Al alcanzar 49.0 Hz, los relevadores <GlossaryLink term="UFLS (Deslastre de Carga por Subfrecuencia)" /> se activaron automáticamente, desconectando aproximadamente 3,100 MW de carga.
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <UFLSVisualizer />}
+</BrowserOnly>
 
 **El golpe letal:** La reducción de demanda redujo las corrientes en las líneas. Corrientes más bajas significaban menores caídas de tensión inductiva ($I^2X$), permitiendo que la capacitancia parásita de las líneas dominara completamente. El voltaje se disparó a 435+ kV.
 

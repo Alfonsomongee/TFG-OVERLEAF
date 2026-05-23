@@ -4,7 +4,11 @@ sidebar_position: 5
 ---
 
 import FrequencyTimeline from '@site/src/components/FrequencyTimeline/FrequencyTimeline';
+import TelemetryFallback from '@site/src/components/FrequencyTimeline/TelemetryFallback';
+import UFLSVisualizer from '@site/src/components/UFLSVisualizer/UFLSVisualizer';
+import GenerationMixWidget from '@site/src/components/GenerationMixWidget/GenerationMixWidget';
 import GlossaryLink from '@site/src/components/GlossaryLink';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 # Technical Analysis: The 27-Second Frequency Collapse
 
@@ -32,9 +36,15 @@ $$
 \text{ROCOF} = \frac{\Delta P}{2H \times S_{base}}
 $$
 
-On April 28, with $H = 2.45$ seconds (critically low due to 78% renewable penetration) and $\Delta P = 2,200$ MW, the initial ROCOF was approximately 0.014 Hz/s, but the true dynamics were multidimensional.
+On April 28, with $H = 2.45$ seconds (critically low due to 78% renewable penetration) and $\Delta P = 2,200$ MW, the initial ROCOF was close to 0.014 Hz/s, but the true dynamics were multidimensional.
 
-<FrequencyTimeline />
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <FrequencyTimeline />}
+</BrowserOnly>
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <GenerationMixWidget />}
+</BrowserOnly>
 
 ## The Three Phases of the Collapse
 
@@ -59,7 +69,11 @@ Why? The solar plants that disconnected had been actively absorbing <GlossaryLin
 
 Upon reaching 49.0 Hz, the <GlossaryLink term="UFLS (Under-Frequency Load Shedding)" /> relays automatically activated, disconnecting approximately 3,100 MW of load.
 
-**The lethal blow:** The demand reduction lowered line currents. Lower currents meant lower inductive voltage drops ($I^2X$), allowing the parasitic capacitance of the lines to completely dominate. Voltage spiked to 435+ kV.
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <UFLSVisualizer />}
+</BrowserOnly>
+
+**The lethal blow:** The reduction in demand lowered line currents. Lower currents meant smaller inductive voltage drops ($I^2X$), allowing the parasitic capacitance of the lines to completely dominate. Voltage spiked to 435+ kV.
 
 Overvoltage protections in solar inverters activated in a cascade, disconnecting thousands of additional megawatts in a matter of seconds. Legacy distance protection relays, unable to interpret the distorted fault signatures of inverter-based resources, mistakenly interpreted the chaos as a massive, internal short-circuit.
 

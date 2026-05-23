@@ -262,7 +262,23 @@
   font-weight: 600;
 }
 
+@keyframes skeletonFade {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.skeletonPulse {
+  animation: skeletonFade 1.5s ease-in-out infinite;
+}
+
 @media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
   .eventsList { grid-template-columns: 1fr; }
-  .controls { flex-direction: column; width: 100%; align-items: flex-start; }
+  .controls { flex-direction: column; width: 100%; align-items: stretch; }
+  .playButton { width: 100%; }
+  .readoutRow { flex-direction: column; gap: 4px; padding-bottom: 12px; }
+  .rocofSection, .eventsSection { margin-top: 30px; margin-bottom: 30px; }
+  .rocofSection h3, .eventsSection h3, .context h3 { font-size: 0.9em; }
 }

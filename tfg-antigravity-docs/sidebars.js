@@ -22,7 +22,7 @@ const sidebars = {
       items: [
         'cronologia',
         'analisis-incidente',
-        '05-analisis-tecnico-frecuencia',
+        'analisis-tecnico-frecuencia',
         'reaccion-reposicion',
       ],
     },

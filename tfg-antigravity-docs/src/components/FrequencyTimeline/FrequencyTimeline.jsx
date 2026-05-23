@@ -11,6 +11,7 @@ const FrequencyTimeline = () => {
   const [currentTime, setCurrentTime] = useState(-1800);
   const [filteredData, setFilteredData] = useState([]);
   const [showCriticalPhaseOnly, setShowCriticalPhaseOnly] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const playbackIntervalRef = useRef(null);
 
   const dataUrl = useBaseUrl('/data/frequency_28A.json');
@@ -31,9 +32,13 @@ const FrequencyTimeline = () => {
         }));
         setFreqData(processedData);
         setFilteredData(showCriticalPhaseOnly ? processedData.filter(d => d.t >= -27) : processedData);
+        setHasError(false);
       })
-      .catch((err) => console.error('Error loading frequency data:', err));
-  }, [showCriticalPhaseOnly]);
+      .catch((err) => {
+        console.error('Error loading frequency data:', err);
+        setHasError(true);
+      });
+  }, [showCriticalPhaseOnly, dataUrl]);
 
   // Playback loop
   useEffect(() => {
@@ -65,6 +70,17 @@ const FrequencyTimeline = () => {
   };
 
   const current = getCurrentValue();
+
+  if (hasError) {
+    return (
+      <div className={styles.container} style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: '#ff3333', fontFamily: 'monospace', textAlign: 'center', border: '1px solid #cc1100', padding: '20px', backgroundColor: 'rgba(204, 17, 0, 0.1)' }}>
+          <h3>CRITICAL ERROR: DATA LAYER OFFLINE</h3>
+          <p>Failed to load frequency_28A.json</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
