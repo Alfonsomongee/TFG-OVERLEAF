@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useLocation } from '@docusaurus/router';
-import TextToSpeech from '../components/TextToSpeech';
 
 function SmoothScrollRoot({ children }) {
   const { pathname, hash } = useLocation();
@@ -72,7 +71,6 @@ export default function Root({ children }) {
         {() => (
           <SmoothScrollRoot>
             {children}
-            <TextToSpeech />
           </SmoothScrollRoot>
         )}
       </BrowserOnly>
