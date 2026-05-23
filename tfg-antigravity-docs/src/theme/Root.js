@@ -9,7 +9,11 @@ function SmoothScrollRoot({ children }) {
     // Reset scroll to top on navigation to fix Next Chapter bug,
     // ONLY if there is no hash anchor in the URL (e.g. Glossary links)
     if (!hash) {
-      window.scrollTo(0, 0);
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
     }
   }, [pathname, hash]);
 
@@ -24,6 +28,7 @@ function SmoothScrollRoot({ children }) {
         await import('lenis/dist/lenis.css');
         
         const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+        window.lenis = lenis;
         
         function raf(t) { 
           lenis.raf(t); 
@@ -34,6 +39,7 @@ function SmoothScrollRoot({ children }) {
         
         return () => {
           lenis.destroy();
+          delete window.lenis;
         };
       } catch (e) {
         console.warn('Lenis failed to load', e);
