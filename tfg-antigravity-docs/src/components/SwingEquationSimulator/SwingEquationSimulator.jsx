@@ -1,4 +1,4 @@
-﻿// SwingEquationSimulator.jsx
+// SwingEquationSimulator.jsx
 
 
 
@@ -789,7 +789,7 @@ const SwingEquationSimulator = () => {
 
               type="monotone" 
 
-              dataKey="freq" 
+              dataKey="frequency" 
 
               stroke="url(#freqGradient)"
 
@@ -843,15 +843,14 @@ const SwingEquationSimulator = () => {
 
 
 
-            <Bar 
-
-              dataKey="rocof"
-
-              fill={(entry) => entry.rocof > 1.0 ? '#cc0000' : entry.rocof > 0.5 ? '#FFD700' : '#00ff88'}
-
-              name="ROCOF"
-
-            />
+            <Bar dataKey="rocof" name="ROCOF">
+              {historyData.map((entry, index) => {
+                let color = '#00ff88';
+                if (entry.rocof > 1.0) color = '#cc0000';
+                else if (entry.rocof > 0.5) color = '#FFD700';
+                return <Cell key={`rocof-bar-${index}`} fill={color} />;
+              })}
+            </Bar>
 
 
 

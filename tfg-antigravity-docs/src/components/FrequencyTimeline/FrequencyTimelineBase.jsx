@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar, Cell } from 'recharts';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './FrequencyTimeline.module.css';
@@ -287,7 +287,7 @@ const FrequencyTimeline = () => {
                   if (rocof >= 0.5) return scadaWarn;
                   return '#52525B'; // Muted grey for normal
                 };
-                return <Cell key={cell-} fill={getBarColor(entry.rocof)} />;
+                return <Cell key={'rocof-bar-' + index} fill={getBarColor(entry.rocof)} />;
               })}
             </Bar>
             <Tooltip 
