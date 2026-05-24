@@ -9,7 +9,7 @@ import styles from './FrequencyTimeline.module.css';
 const FrequencyTimeline = () => {
   const [freqData, setFreqData] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(-1800);
+  const [currentTime, setCurrentTime] = useState(-27);
   const [filteredData, setFilteredData] = useState([]);
   const [showCriticalPhaseOnly, setShowCriticalPhaseOnly] = useState(false);
   const [zoomCollapse, setZoomCollapse] = useState(false);
@@ -169,7 +169,7 @@ const FrequencyTimeline = () => {
   }, [isPlaying]);
 
   const handlePlayPause = () => {
-    if (currentTime >= 0) setCurrentTime(-1800); // Reset
+    if (currentTime >= 0) setCurrentTime(-27); // Reset
     setIsPlaying(!isPlaying);
   };
 
@@ -290,9 +290,9 @@ const FrequencyTimeline = () => {
               label={{ value: 'FREQUENCY (Hz)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
             />
   
-            <ReferenceLine y={50.0} stroke="var(--forensic-border)" label={{ value: t.nominal, fill: "rgba(255, 255, 255, 0.3)" }} />
-            <ReferenceLine y={49.0} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '49.0 Hz — UFLS', position: 'insideRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
-            <ReferenceLine y={48.2} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '48.2 Hz — Point of No Return', position: 'insideRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={50.0} stroke="var(--forensic-border)" label={{ value: t.nominal, fill: "rgba(255, 255, 255, 0.3)", position: 'insideTopRight' }} />
+            <ReferenceLine y={49.0} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '49.0 Hz — UFLS', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={48.2} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '48.2 Hz — Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
 
           {/* Reference zones */}
           <ReferenceArea y1={49.0} y2={49.8} fill="rgba(255, 170, 0, 0.05)" />
@@ -375,8 +375,8 @@ const FrequencyTimeline = () => {
               tickCount={5}
               ticks={[0, 0.5, 1.0, 1.5, 2.0]}
             />
-            <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s — Warning', position: 'insideRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
-            <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s — Point of No Return', position: 'insideRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s — Warning', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s — Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
             <Bar 
               dataKey="rocof" 
               fill="var(--forensic-amber-primary)"
