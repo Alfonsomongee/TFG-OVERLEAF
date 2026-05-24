@@ -12,8 +12,11 @@ export default function ExecutiveHook() {
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
-  const audioUrl = useBaseUrl('/audio/epic-hit.mp3');
+  const audioMp3 = useBaseUrl('/audio/epic-hit.mp3');
+  const audioOgg = useBaseUrl('/audio/epic-hit.ogg');
   const audioRef = useRef(null);
+  const audioHasPlayed = useRef(false);
+  const audioUnlocked = useRef(false);
 
   const getStrings = (l) => {
     switch (l) {
@@ -141,7 +144,6 @@ export default function ExecutiveHook() {
   };
   const strings = getStrings(lang);
 
-  // Fade audio volume to 0 smoothly over `duration` ms
   const fadeOutAudio = (duration = 1500) => {
     const audio = audioRef.current;
     if (!audio || audio.muted) return;
@@ -169,43 +171,63 @@ export default function ExecutiveHook() {
   };
 
   useEffect(() => {
-    // Lock body scroll during splash screen
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('splash_seen')) {
+      setIsHidden(true);
+      return;
+    }
+    if (audioHasPlayed.current) return;
+    
+    audioHasPlayed.current = true;
     document.body.style.overflow = 'hidden';
 
     const audio = audioRef.current;
-    if (audio) {
-      audio.muted = true;
-      audio.volume = 0.25; // Low, non-invasive volume
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Muted autoplay succeeded — unmute gently after 1.2s
-            setTimeout(() => {
-              if (audio) audio.muted = false;
-            }, 1200);
-          })
-          .catch(() => {
-            // Blocked silently — no button shown, just no audio
-            console.log('Audio autoplay blocked by browser policy.');
-          });
+    
+    const playAudio = async () => {
+      if (!audio) return;
+      try {
+        audio.muted = true;
+        audio.volume = 0.25;
+        await audio.play();
+        setTimeout(() => { if (audio) audio.muted = false; }, 1200);
+      } catch (err) {
+        console.log('Audio autoplay blocked. Waiting for user interaction.');
       }
-    }
+    };
 
-    // Start splash fade at 4.5s
+    const unlockAudio = () => {
+      if (audioUnlocked.current || !audio) return;
+      audioUnlocked.current = true;
+      audio.muted = false;
+      audio.volume = 0.25;
+      audio.play().catch(() => {});
+      
+      ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => 
+        document.removeEventListener(evt, unlockAudio)
+      );
+    };
+
+    playAudio();
+
+    ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => 
+      document.addEventListener(evt, unlockAudio, { once: true, passive: true })
+    );
+
     const fadeTimer = setTimeout(() => {
-      fadeOutAudio(1500); // Audio fades out in sync with the splash fade
+      fadeOutAudio(1500);
       setIsFading(true);
-      document.body.style.overflow = ''; // Restore scroll
+      document.body.style.overflow = '';
+      if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('splash_seen', '1');
     }, 4500);
 
-    // Remove splash from DOM at 6s
     const hideTimer = setTimeout(() => setIsHidden(true), 6000);
 
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(hideTimer);
-      document.body.style.overflow = ''; // Restore scroll
+      document.body.style.overflow = '';
+      ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => 
+        document.removeEventListener(evt, unlockAudio)
+      );
     };
   }, []);
 
@@ -215,7 +237,10 @@ export default function ExecutiveHook() {
       <Head>
         <link rel="preload" href={useBaseUrl('/img/cinematic_blackout.png')} as="image" />
       </Head>
-      <audio ref={audioRef} src={audioUrl} preload="auto" />
+      <audio ref={audioRef} preload="auto">
+        <source src={audioOgg} type="audio/ogg" />
+        <source src={audioMp3} type="audio/mpeg" />
+      </audio>
       {!isHidden && (
         <div 
           className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}

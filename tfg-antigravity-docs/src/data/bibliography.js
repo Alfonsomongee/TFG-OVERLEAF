@@ -2,27 +2,32 @@ export const BIBLIOGRAPHY = [
   {
     id: 1,
     title: `ENTSO-E Expert Panel. Grid Incident in Spain and Portugal on 28 April 2025: ICS Investigation Expert Panel Factual Report. Inf. téc. European Network of Transmission System Operators for Electricity, 2025.`,
+    pdf: 'pathname:///informes/entso-e_incident_report_ES-PT_April_2025_06.pdf'
   },
   {
     id: 2,
     title: `C. Batlle et al. The (Hopefully) Enlightening Blackout in Spain: Questions and Lessons for the Future. Inf. téc. MIT Center for Energy and Environmental Policy Research (CEEPR), 2025.`,
+    pdf: 'pathname:///informes/95103.pdf'
   },
   {
     id: 3,
     title: `Gobierno de España - Consejo de Seguridad Nacional. Versión no confidencial del informe del comité para el análisis de las circunstancias que concurrieron en la crisis de electricidad del 28 de abril de 2025. Inf. téc. Ministerio para la Transición Ecológica y el Reto Demográfico, 2025.`,
-    pdf: '/presentacion_gobierno.pdf'
+    pdf: 'pathname:///informes/El%20informe%20del%20Gobierno%20sobre%20el%20apagoón,%20al%20_completo_%20con%20tachados%20(1).pdf'
   },
   {
     id: 4,
     title: `Red Eléctrica de España (Dirección General de Operación). Incidente en el Sistema Eléctrico Peninsular Español el 28 de abril de 2025. Inf. téc. Redeia, 2025.`,
+    pdf: 'pathname:///informes/El%20informe%20de%20Red%20Eléctrica%20sobre%20el%20apagón,%20al%20completo%20-%205457.pdf'
   },
   {
     id: 5,
     title: `Instituto de Investigación Tecnológica (IIT) - Universidad Pontificia Comillas, Compass Lexecon e INESC TEC. Análisis de los acontecimientos que condujeron al apagón peninsular del 28 de abril de 2025 / Resumen del informe preliminar. Inf. téc. Universidad Pontificia Comillas, 2025.`,
+    pdf: 'pathname:///informes/Compass%20Lexecon%20-%20INESC%20TEC%20(1).pdf'
   },
   {
     id: 6,
     title: `A. Albustami y A. F. Taha. Replicación de la secuencia del colapso e interacción de acciones OA/AA. 2025.`,
+    pdf: 'pathname:///informes/Informe%20ICAI%20(1).pdf'
   },
   {
     id: 7,
@@ -59,6 +64,11 @@ export const BIBLIOGRAPHY = [
   {
     id: 15,
     title: `Javier Quintana. “El impacto de las energías renovables sobre el precio mayorista de la electricidad”. En: Boletín Económico — Banco de España 2024.T3, Art. 09 (2024). Documento de Trabajo, Banco de España. url: https://www.bde.es/wbe/es/publicaciones/analisis-economico-investigacion/boletin-economico/2024t3-articulo-09.`,
-    pdf: '/informe_electricidad_mas_barata.pdf'
+    pdf: 'pathname:///informes/Informe_Vamos_realmente_hacia_una_electricidad_mas_barata%20(1).pdf'
+  },
+  {
+    id: 16,
+    title: `Presentación Gubernamental sobre el Apagón. Inf. téc. Gobierno de España, 2025.`,
+    pdf: 'pathname:///informes/Presentacioón%20Gobierno%20(1).pdf'
   },
 ];
