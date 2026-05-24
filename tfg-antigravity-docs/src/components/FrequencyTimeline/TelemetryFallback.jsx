@@ -15,12 +15,44 @@ const TelemetryFallback = () => {
   };
   
   const text = T[currentLocale] || T.en;
+  
   return (
-    <div className={styles.container} style={{ minHeight: '800px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <div className={styles.skeletonPulse} style={{ width: '80%', height: '40px', background: 'var(--forensic-amber-muted)', marginBottom: '20px', borderRadius: 'var(--radius-sm)' }}></div>
-      <div className={styles.skeletonPulse} style={{ width: '100%', height: '400px', background: 'var(--forensic-amber-bg-subtle)', marginBottom: '20px', borderRadius: 'var(--radius-sm)' }}></div>
-      <div className={styles.skeletonPulse} style={{ width: '100%', height: '200px', background: 'var(--forensic-amber-bg-subtle)', borderRadius: 'var(--radius-sm)' }}></div>
-      <div style={{ marginTop: '20px', color: 'var(--forensic-amber-primary)', fontFamily: 'var(--telemetry-font)', letterSpacing: '2px', opacity: 0.5 }}>
+    <div className={styles.container} style={{ 
+      minHeight: '600px', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      padding: '2rem'
+    }}>
+      <div className={styles.skeletonPulse} style={{ 
+        width: '80%', 
+        height: '40px', 
+        background: 'var(--forensic-amber-muted, #3f3f46)', 
+        marginBottom: '20px', 
+        borderRadius: 'var(--radius-sm, 4px)' 
+      }} />
+      <div className={styles.skeletonPulse} style={{ 
+        width: '100%', 
+        height: '400px', 
+        background: 'var(--forensic-amber-bg-subtle, #1f1f24)', 
+        marginBottom: '20px', 
+        borderRadius: 'var(--radius-sm, 4px)' 
+      }} />
+      <div className={styles.skeletonPulse} style={{ 
+        width: '100%', 
+        height: '200px', 
+        background: 'var(--forensic-amber-bg-subtle, #1f1f24)', 
+        borderRadius: 'var(--radius-sm, 4px)' 
+      }} />
+      <div style={{ 
+        marginTop: '20px', 
+        color: 'var(--forensic-amber-primary, #f5b042)', 
+        fontFamily: 'var(--telemetry-font, monospace)', 
+        letterSpacing: '2px', 
+        opacity: 0.6,
+        fontSize: '0.9rem'
+      }}>
         {text}
       </div>
     </div>

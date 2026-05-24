@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar, Cell } from 'recharts';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import TelemetryFallback from './TelemetryFallback';
 import styles from './FrequencyTimeline.module.css';
 
 const FrequencyTimeline = () => {
   const [freqData, setFreqData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(-27);
   const [filteredData, setFilteredData] = useState([]);
@@ -17,19 +19,19 @@ const FrequencyTimeline = () => {
   const T = {
     es: {
       title: "FRECUENCIA DEL SISTEMA - 28 ABRIL 2025",
-      subtitle: "Reconstruccion SCADA basada en registros ENTSO-E / PMU",
+      subtitle: "Reconstrucción SCADA basada en registros ENTSO-E / PMU",
       freq: "Frecuencia:",
       rocof: "ROCOF:",
       status: "Estado:",
       play: "REPRODUCIR (27s)",
       stop: "DETENER",
-      criticalOnly: "Foco critico",
+      criticalOnly: "Foco crítico",
       rocofTitle: "Tasa de Cambio de Frecuencia (ROCOF)",
       eventsTitle: "Registro de Eventos",
-      contextTitle: "Sintesis Tecnica",
+      contextTitle: "Síntesis Técnica",
       nominal: "NOMINAL",
       collapseZone: "ZONA DE COLAPSO",
-      error: "ERROR: TELEMETRIA OFFLINE",
+      error: "ERROR: TELEMETRÍA OFFLINE",
       errorSub: "No se pudo cargar el archivo de datos."
     },
     en: {
@@ -53,23 +55,33 @@ const FrequencyTimeline = () => {
 
   const t = T[currentLocale] || T.es;
 
+  // Carga de datos
   useEffect(() => {
+    setIsLoading(true);
     fetch('/data/frequency_28A.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(data => {
+        if (!Array.isArray(data) || data.length === 0) throw new Error('Empty or invalid data');
         setFreqData(data);
         setFilteredData(data);
+        setIsLoading(false);
       })
       .catch(err => {
         console.error('Error loading telemetry:', err);
         setHasError(true);
+        setIsLoading(false);
       });
   }, []);
 
+  // Filtro por fase crítica
   useEffect(() => {
     if (freqData.length === 0) return;
     if (showCriticalPhaseOnly) {
-      setFilteredData(freqData.filter(d => d.t >= 0 && d.t <= 20));
+      const criticalData = freqData.filter(d => d.t >= 0 && d.t <= 20);
+      setFilteredData(criticalData);
       setCurrentTime(0);
     } else {
       setFilteredData(freqData);
@@ -78,6 +90,7 @@ const FrequencyTimeline = () => {
     setIsPlaying(false);
   }, [showCriticalPhaseOnly, freqData]);
 
+  // Reproducción automática
   useEffect(() => {
     if (isPlaying) {
       playbackIntervalRef.current = setInterval(() => {
@@ -96,6 +109,8 @@ const FrequencyTimeline = () => {
     return () => clearInterval(playbackIntervalRef.current);
   }, [isPlaying, showCriticalPhaseOnly]);
 
+  // Estados de carga/error
+  if (isLoading) return <TelemetryFallback />;
   if (hasError) {
     return (
       <div className={styles.container} style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -106,11 +121,9 @@ const FrequencyTimeline = () => {
       </div>
     );
   }
+  if (freqData.length === 0) return <TelemetryFallback />;
 
-  if (freqData.length === 0) {
-    return <div className={styles.container}>Iniciando enlace de telemetria...</div>;
-  }
-
+  // Punto actual
   const currentPoint = freqData.find(d => d.t === currentTime) || freqData[0];
   const blackoutPoint = freqData.find(d => d.freq === 0 && d.t <= currentTime);
 
@@ -119,25 +132,39 @@ const FrequencyTimeline = () => {
     if (freq < 48.2) return '#DC2626';
     if (freq < 49.0) return '#D97706';
     if (freq > 50.2) return '#D97706';
-    return '#A1A1AA'; // Neutral grey instead of bright green
+    return '#A1A1AA';
   };
 
+  // Datos para el gráfico de líneas (frecuencia)
   const lineChartData = filteredData.map(d => ({
     ...d,
     freq: d.t <= currentTime ? d.freq : null
   }));
 
+  // Datos para el gráfico de barras (ROCOF) – manejo seguro de nulos
   const rocofChartData = filteredData.map(d => ({
     ...d,
-    rocof: d.t <= currentTime && d.rocof !== null ? Math.abs(d.rocof) : 0
+    rocof: (d.t <= currentTime && d.rocof != null) ? Math.abs(d.rocof) : 0
   }));
 
-  // Define SCADA colors
+  // Colores SCADA
   const scadaGrid = "rgba(255, 255, 255, 0.08)";
   const scadaText = "#A1A1AA";
-  const scadaLine = "#E4E4E7"; // Clean white/grey line
+  const scadaLine = "#E4E4E7";
   const scadaWarn = "#D97706";
   const scadaCrit = "#DC2626";
+
+  // Formateador para el eje X (muestra la hora real)
+  const formatXAxis = (tickValue) => {
+    const point = filteredData.find(d => d.t === tickValue);
+    return point ? point.time : tickValue;
+  };
+
+  // Formateador para tooltip del gráfico de frecuencia
+  const formatFreqTooltipLabel = (label) => {
+    const point = filteredData.find(d => d.t === label);
+    return point ? `Tiempo: ${point.time}` : `t = ${label}s`;
+  };
 
   return (
     <div className={styles.container}>
@@ -196,10 +223,7 @@ const FrequencyTimeline = () => {
               domain={['dataMin', 'dataMax']}
               stroke={scadaText}
               tick={{ fill: scadaText, fontSize: 11, fontFamily: 'var(--font-sans, sans-serif)' }}
-              tickFormatter={(val) => {
-                const pt = filteredData.find(d => d.t === val);
-                return pt ? pt.time : val;
-              }}
+              tickFormatter={formatXAxis}
               minTickGap={30}
             />
             <YAxis 
@@ -214,7 +238,6 @@ const FrequencyTimeline = () => {
             <ReferenceLine y={49.0} stroke={scadaWarn} strokeDasharray="4 4" strokeWidth={1} label={{ value: '49.0 Hz - UFLS', position: 'insideTopRight', fill: scadaWarn, fontSize: 10 }} />
             <ReferenceLine y={48.2} stroke={scadaCrit} strokeDasharray="4 4" strokeWidth={1} label={{ value: '48.2 Hz - CRITICAL', position: 'insideTopRight', fill: scadaCrit, fontSize: 10 }} />
 
-            {/* Critical Zone Shading */}
             <ReferenceArea y1={46.0} y2={48.2} fill={scadaCrit} fillOpacity={0.05} />
 
             <Line 
@@ -233,14 +256,15 @@ const FrequencyTimeline = () => {
               contentStyle={{ backgroundColor: '#111418', border: '1px solid #272A30', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
               labelStyle={{ color: scadaText, fontFamily: 'var(--font-sans, sans-serif)', fontSize: '12px' }}
               itemStyle={{ color: scadaLine, fontFamily: 'var(--font-mono, monospace)' }}
-              labelFormatter={(label) => Ts}
+              labelFormatter={formatFreqTooltipLabel}
+              formatter={(value) => [`${value.toFixed(2)} Hz`, 'Frecuencia']}
             />
           </ComposedChart>
         </ResponsiveContainer>
 
         {blackoutPoint && (
           <div className={styles.institutionalAlert}>
-            [INCIDENTE CRITICO] {blackoutPoint.time} - BLACKOUT - 0 Hz - 31 GW DESCONECTADOS
+            [INCIDENTE CRÍTICO] {blackoutPoint.time} - BLACKOUT - 0 Hz - 31 GW DESCONECTADOS
           </div>
         )}
       </div>
@@ -256,10 +280,7 @@ const FrequencyTimeline = () => {
               domain={['dataMin', 'dataMax']}
               stroke={scadaText}
               tick={{ fill: scadaText, fontSize: 11, fontFamily: 'var(--font-sans, sans-serif)' }}
-              tickFormatter={(val) => {
-                const pt = rocofChartData.find(d => d.t === val);
-                return pt ? pt.time : val;
-              }}
+              tickFormatter={formatXAxis}
               minTickGap={30}
             />
             <YAxis 
@@ -272,7 +293,6 @@ const FrequencyTimeline = () => {
             <ReferenceLine y={0.5} stroke={scadaWarn} strokeDasharray="4 4" strokeWidth={1} />
             <ReferenceLine y={1.0} stroke={scadaCrit} strokeDasharray="4 4" strokeWidth={1} />
             
-            {/* Warning Zone Shading */}
             <ReferenceArea y1={1.0} y2={2.0} fill={scadaCrit} fillOpacity={0.05} />
 
             <Bar 
@@ -285,16 +305,17 @@ const FrequencyTimeline = () => {
                 const getBarColor = (rocof) => {
                   if (rocof >= 1.0) return scadaCrit;
                   if (rocof >= 0.5) return scadaWarn;
-                  return '#52525B'; // Muted grey for normal
+                  return '#52525B';
                 };
-                return <Cell key={'rocof-bar-' + index} fill={getBarColor(entry.rocof)} />;
+                return <Cell key={`rocof-bar-${index}`} fill={getBarColor(entry.rocof)} />;
               })}
             </Bar>
             <Tooltip 
               contentStyle={{ backgroundColor: '#111418', border: '1px solid #272A30', borderRadius: '4px' }}
               labelStyle={{ color: scadaText, fontSize: '12px' }}
               itemStyle={{ color: scadaLine }}
-              formatter={(value) => [value.toFixed(3) + ' Hz/s', 'ROCOF']}
+              labelFormatter={formatFreqTooltipLabel}
+              formatter={(value) => [`${value.toFixed(3)} Hz/s`, 'ROCOF']}
             />
           </BarChart>
         </ResponsiveContainer>
