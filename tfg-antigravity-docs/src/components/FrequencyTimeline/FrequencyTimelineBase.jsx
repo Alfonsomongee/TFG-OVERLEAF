@@ -181,7 +181,17 @@ const FrequencyTimeline = () => {
   };
 
   const current = getCurrentValue();
-  const rocofChartData = zoomCollapse ? filteredData.filter(d => d.t >= -120) : filteredData;
+  
+  // Data for LineChart (exclude blackout t=0 point to preserve Y-axis scale)
+  const lineChartData = filteredData.filter(d => d.t < 0);
+  const blackoutPoint = filteredData.find(d => d.t === 0);
+  
+  // Data for ROCOF BarChart (enforce -120s limit in zoom)
+  const collapseData = filteredData.filter(d => d.t >= -120 && d.t <= 0);
+  const rocofChartData = (zoomCollapse ? collapseData : filteredData).map(d => ({
+    ...d,
+    rocof: d.rocof ?? 0
+  }));
 
   if (hasError) {
     return (
@@ -246,44 +256,48 @@ const FrequencyTimeline = () => {
       </div>
 
       {/* Main Frequency Chart */}
-      <ResponsiveContainer width="100%" height={400}>
-        <ComposedChart 
-          data={filteredData}
-          margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
-        >
-          <defs>
-            <linearGradient id="freqGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--forensic-amber-primary)" />
-              <stop offset="100%" stopColor="var(--forensic-amber-warning)" />
-            </linearGradient>
-          </defs>
-
-          <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
-
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-          <XAxis 
-            dataKey="time" 
-            stroke="rgba(255, 170, 0, 0.4)"
-            tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
-            angle={-45}
-            textAnchor="end"
-            height={80}
-          />
-          <YAxis 
-            domain={[45, 50.5]}
-            stroke="rgba(255, 170, 0, 0.4)"
-            tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
-            label={{ value: 'FREQUENCY (Hz)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
-          />
-
-          <ReferenceLine y={50.0} stroke="var(--forensic-border)" label={{ value: t.nominal, fill: "rgba(255, 255, 255, 0.3)" }} />
-          <ReferenceLine y={49.8} stroke="var(--forensic-amber-primary)" strokeDasharray="3 3" opacity={0.5} label={{ value: "UFLS", fill: "var(--forensic-amber-primary)" }} />
-          <ReferenceLine y={48.0} stroke="#cc1100" strokeDasharray="3 3" opacity={0.5} label={{ value: t.collapseZone, fill: "#cc1100" }} />
+      <div className={styles.chartWrapper}>
+        <div className={styles.chartTitle}>{t.title}</div>
+        <ResponsiveContainer width="100%" height={400}>
+          <ComposedChart 
+            data={lineChartData}
+            margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
+          >
+            <defs>
+              <linearGradient id="freqGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--forensic-amber-primary)" />
+                <stop offset="100%" stopColor="var(--forensic-amber-warning)" />
+              </linearGradient>
+            </defs>
+  
+            <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
+  
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
+            <XAxis 
+              dataKey="time" 
+              stroke="rgba(255, 170, 0, 0.4)"
+              tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+              angle={-45}
+              textAnchor="end"
+              height={80}
+            />
+            <YAxis 
+              domain={[46, 51]}
+              ticks={[47, 48, 49, 50]}
+              allowDataOverflow={false}
+              stroke="rgba(255, 170, 0, 0.4)"
+              tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+              label={{ value: 'FREQUENCY (Hz)', angle: -90, position: 'insideLeft', fill: 'rgba(255, 170, 0, 0.5)' }}
+            />
+  
+            <ReferenceLine y={50.0} stroke="var(--forensic-border)" label={{ value: t.nominal, fill: "rgba(255, 255, 255, 0.3)" }} />
+            <ReferenceLine y={49.0} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '49.0 Hz — UFLS', position: 'insideRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={48.2} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '48.2 Hz — Point of No Return', position: 'insideRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
 
           {/* Reference zones */}
           <ReferenceArea y1={49.0} y2={49.8} fill="rgba(255, 170, 0, 0.05)" />
-          <ReferenceArea y1={48.0} y2={49.0} fill="rgba(255, 85, 0, 0.05)" />
-          <ReferenceArea y1={45} y2={48.0} fill="rgba(204, 17, 0, 0.1)" />
+          <ReferenceArea y1={48.2} y2={49.0} fill="rgba(255, 85, 0, 0.05)" />
+          <ReferenceArea y1={46} y2={48.2} fill="rgba(204, 17, 0, 0.1)" />
 
           {/* Main frequency line */}
           <Line 
@@ -300,42 +314,50 @@ const FrequencyTimeline = () => {
           {isPlaying && <ReferenceLine x={getCurrentValue().time} stroke="var(--forensic-amber-primary)" strokeWidth={1} opacity={0.8} />}
 
           <Tooltip 
-            contentStyle={{ backgroundColor: 'var(--forensic-bg-primary)', border: '1px solid var(--forensic-border-strong)', borderRadius: 'var(--radius-sm)' }}
+            contentStyle={{ backgroundColor: '#0d0f1a', border: '1px solid #ffaa33', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
             labelStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)' }}
             itemStyle={{ color: 'var(--forensic-amber-primary)' }}
             labelFormatter={(label) => `T${label >= 0 ? '+' : ''}${label}s`}
           />
-          />
         </ComposedChart>
       </ResponsiveContainer>
 
+      {/* Blackout Marker Badge */}
+      {blackoutPoint && (
+        <div style={{ background: '#cc2222', color: '#fff', padding: '8px 16px', borderRadius: '4px', display: 'flex', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '12px', marginTop: '16px', letterSpacing: '1px' }}>
+          ⚡ {blackoutPoint.time} — BLACKOUT TOTAL — 0 Hz — 31 GW DESCONECTADOS
+        </div>
+      )}
+      </div>
+
       {/* ROCOF Secondary Chart */}
-      <div className={styles.rocofSection}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ margin: 0 }}>{t.rocofTitle}</h3>
+      <div className={styles.chartWrapper}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', paddingBottom: '8px', borderBottom: '1px solid rgba(255, 170, 51, 0.2)' }}>
+          <div className={styles.chartTitle} style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>{t.rocofTitle}</div>
           <button
             onClick={() => setZoomCollapse(!zoomCollapse)}
             style={{
-              background: zoomCollapse ? '#ff3333' : '#ffaa33',
-              color: '#000',
-              border: 'none',
-              padding: '4px 12px',
-              borderRadius: '4px',
-              fontFamily: 'var(--telemetry-font)',
-              fontSize: '11px',
+              background: 'transparent',
+              color: zoomCollapse ? '#cc2222' : '#ffaa33',
+              border: `1px solid ${zoomCollapse ? '#cc2222' : '#ffaa33'}`,
+              padding: '4px 14px',
+              borderRadius: '2px',
+              fontFamily: 'var(--telemetry-font, monospace)',
+              fontSize: '10px',
               fontWeight: '700',
               textTransform: 'uppercase',
+              letterSpacing: '1.5px',
               cursor: 'pointer',
-              letterSpacing: '1px'
+              transition: 'all 0.2s ease'
             }}
           >
-            {zoomCollapse ? '← Vista Completa' : '🔍 Zoom: Colapso (últimos 120s)'}
+            {zoomCollapse ? '← Vista General' : '⌕ Zoom Colapso'}
           </button>
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={rocofChartData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
             <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 170, 0, 0.1)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
               dataKey="time" 
               stroke="rgba(255, 170, 0, 0.4)"
@@ -353,8 +375,8 @@ const FrequencyTimeline = () => {
               tickCount={5}
               ticks={[0, 0.5, 1.0, 1.5, 2.0]}
             />
-            <ReferenceLine y={0.5} stroke="var(--forensic-amber-muted)" strokeDasharray="3 3" label={{ value: 'Warning', position: 'insideRight', fill: 'var(--forensic-amber-muted)', fontSize: 10 }} />
-            <ReferenceLine y={1.0} stroke="#ff3333" strokeDasharray="6 4" label={{ value: 'Critical / Point of No Return', position: 'insideRight', fill: '#ff3333', fontSize: 10 }} />
+            <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s — Warning', position: 'insideRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s — Point of No Return', position: 'insideRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
             <Bar 
               dataKey="rocof" 
               fill="var(--forensic-amber-primary)"
@@ -362,12 +384,17 @@ const FrequencyTimeline = () => {
               radius={[2, 2, 0, 0]}
               barSize={12}
             >
-              {rocofChartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.rocof >= 1.0 ? 'var(--forensic-amber-critical)' : entry.rocof >= 0.5 ? 'var(--forensic-amber-warning)' : 'var(--forensic-amber-primary)'} />
-              ))}
+              {rocofChartData.map((entry, index) => {
+                const getBarColor = (rocof) => {
+                  if (rocof >= 1.0) return '#cc2222';
+                  if (rocof >= 0.5) return '#cc7700';
+                  return '#2a7a3a';
+                };
+                return <Cell key={`cell-${index}`} fill={getBarColor(entry.rocof)} />;
+              })}
             </Bar>
             <Tooltip 
-              contentStyle={{ backgroundColor: 'var(--forensic-bg-primary)', border: '1px solid var(--forensic-border-strong)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--telemetry-font)' }}
+              contentStyle={{ backgroundColor: '#0d0f1a', border: '1px solid #ffaa33', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)', fontFamily: 'var(--telemetry-font, monospace)' }}
               labelStyle={{ color: 'var(--forensic-text-primary)' }}
               itemStyle={{ color: 'var(--forensic-amber-primary)' }}
               formatter={(value) => [value.toFixed(3) + ' Hz/s', 'ROCOF']}
