@@ -214,6 +214,9 @@ export default function ExecutiveHook() {
       {/* Splash Screen */}
       <Head>
         <link rel="preload" href={useBaseUrl('/img/cinematic_blackout.png')} as="image" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet" />
         {!isHidden && (
           <style>{`
             .navbar, 
@@ -255,6 +258,7 @@ export default function ExecutiveHook() {
         >
           <motion.div 
             className={styles.splashBgCinematic}
+            style={{ backgroundImage: `url(${useBaseUrl('/img/cinematic_blackout.png')})` }}
             initial={{ scale: 1 }}
             animate={{ scale: 1.15 }}
             transition={{ duration: 20, ease: "linear" }}
