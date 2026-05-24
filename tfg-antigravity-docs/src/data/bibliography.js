@@ -1,4 +1,4 @@
-export const BIBLIOGRAPHY = [
+﻿export const BIBLIOGRAPHY = [
   {
     id: 1,
     title: `ENTSO-E Expert Panel. Grid Incident in Spain and Portugal on 28 April 2025: ICS Investigation Expert Panel Factual Report. Inf. téc. European Network of Transmission System Operators for Electricity, 2025.`,
@@ -71,4 +71,15 @@ export const BIBLIOGRAPHY = [
     title: `Presentación Gubernamental sobre el Apagón. Inf. téc. Gobierno de España, 2025.`,
     pdf: '/informes/Presentación Gobierno (1).pdf'
   }
+  },{
+    id: 17,
+    title: "Kundur, P. (1994). *Power System Stability and Control*. EPRI."
+  },{
+    id: 18,
+    title: "ENTSO-E Expert Panel Final Report (2026). Grid Incident in Spain and Portugal, 28 April 2025."
+  },{
+    id: 19,
+    title: "IEEE Working Group on Frequency Stability (2023). Inertia Requirements in Low-Inertia Grids."
+  }
 ];
+

@@ -45,7 +45,13 @@ const SwingEquationSimulator = () => {
 
   const [rocof, setRocof] = useState(0); // dF/dt (Hz/s)
 
-  const [historyData, setHistoryData] = useState([]); // For chart
+  const [historyData, setHistoryData] = useState(() => {
+    const initial = [];
+    for(let i = -50; i <= 0; i++) {
+      initial.push({ time: i/10, freq: 50.0, rocof: 0 });
+    }
+    return initial;
+  }); // For chart
 
   const [currentUflsStage, setCurrentUflsStage] = useState(0); // Which UFLS stage is active
 
@@ -323,7 +329,11 @@ const SwingEquationSimulator = () => {
 
     previousFreqRef.current = 50.0;
 
-    setHistoryData([]);
+    const initial = [];
+    for(let i = -50; i <= 0; i++) {
+      initial.push({ time: i/10, freq: 50.0, rocof: 0 });
+    }
+    setHistoryData(initial);
 
   };
 

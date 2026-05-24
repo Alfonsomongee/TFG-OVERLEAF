@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -293,7 +293,7 @@ const FrequencyTimeline = () => {
             />
             <XAxis 
               type="number" 
-              domain={[0, lineChartData.length - 1]} 
+              domain={[0, Math.max(1, lineChartData.length - 1)]} 
               xAxisId="num" 
               hide={true} 
             />
