@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -233,7 +233,7 @@ export default function ExecutiveHook() {
                 zIndex: 100000,
                 backgroundImage: `url(${bgLit})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                backgroundPosition: 'center', transform: 'scale(1.05)',
               }}
             >
               <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)' }} />
@@ -253,7 +253,7 @@ export default function ExecutiveHook() {
                   textAlign: 'center'
                 }}
               >
-                — CLICK TO ENTER —
+                CLICK TO ENTER
               </motion.p>
             </motion.div>
           )}
@@ -263,8 +263,8 @@ export default function ExecutiveHook() {
               {showMap && (
                 <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: mapOpacity }}>
                   <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity }} />
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.05)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity, transform: "scale(1.05)" }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.05)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity, transform: "scale(1.05)" }} />
                   </div>
 
                   {flicker1Visible && <div style={{ position: 'absolute', inset: 0, backgroundColor: '#ffffff', pointerEvents: 'none', animation: 'flicker1Effect 0.08s ease-out' }} />}
@@ -302,7 +302,7 @@ export default function ExecutiveHook() {
                   textShadow: '2px 2px 0px #CC2200, 4px 4px 0px #AA1800, 6px 6px 0px #881000, 8px 8px 0px #660800, 10px 10px 0px rgba(0,0,0,0.6)',
                   WebkitTextStroke: '1.5px rgba(180,60,0,0.5)',
                   opacity: titleMainOpacity,
-                  filter: titleMainFilter
+                  filter: titleMainFilter, padding: "20px"
                 }}>
                   {strings.splashTitle1}<br/>{strings.splashTitle2}<br/>{strings.splashTitle3}
                 </h1>
@@ -419,3 +419,5 @@ export default function ExecutiveHook() {
     </>
   );
 }
+
+
