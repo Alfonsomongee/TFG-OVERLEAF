@@ -72,9 +72,11 @@ const SwingEquationSimulator = () => {
 
 
 
+  const dataUrl = useBaseUrl('/data/swing_equation_params.json');
+
   useEffect(() => {
 
-    fetch(useBaseUrl('/data/swing_equation_params.json'))
+    fetch(dataUrl)
 
       .then((res) => res.json())
 
@@ -82,7 +84,7 @@ const SwingEquationSimulator = () => {
 
       .catch((err) => console.error('Error loading swing equation params:', err));
 
-  }, []);
+  }, [dataUrl]);
 
 
 

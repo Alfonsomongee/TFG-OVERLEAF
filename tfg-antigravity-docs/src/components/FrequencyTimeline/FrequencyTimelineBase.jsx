@@ -159,11 +159,11 @@ const FrequencyTimeline = () => {
       setCurrentTime((prev) => {
         if (prev >= 0) {
           setIsPlaying(false);
-          return prev;
+          return 0; // Fix it precisely at 0 when it finishes
         }
-        return prev + 1; // Advance 1 second per tick
+        return prev + 0.05; // Advance 50ms per tick (0.05s)
       });
-    }, 1000); // 1 second per iteration (real-time)
+    }, 50); // 50ms per iteration (smooth real-time)
 
     return () => clearInterval(playbackIntervalRef.current);
   }, [isPlaying]);
@@ -274,9 +274,15 @@ const FrequencyTimeline = () => {
   
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
-              dataKey="time" 
+              dataKey="t" 
+              type="number"
+              domain={['dataMin', 'dataMax']}
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+              tickFormatter={(val) => {
+                const pt = filteredData.find(d => d.t === val);
+                return pt ? pt.time : val;
+              }}
               angle={-45}
               textAnchor="end"
               height={80}
@@ -311,7 +317,7 @@ const FrequencyTimeline = () => {
           />
 
           {/* Current time marker (vertical line) */}
-          {isPlaying && <ReferenceLine x={getCurrentValue().time} stroke="var(--forensic-amber-primary)" strokeWidth={1} opacity={0.8} />}
+          {isPlaying && <ReferenceLine x={currentTime} stroke="var(--forensic-amber-primary)" strokeWidth={1} opacity={0.8} />}
 
           <Tooltip 
             contentStyle={{ backgroundColor: '#0d0f1a', border: '1px solid #ffaa33', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
@@ -359,9 +365,15 @@ const FrequencyTimeline = () => {
             <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
-              dataKey="time" 
+              dataKey="t" 
+              type="number"
+              domain={['dataMin', 'dataMax']}
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
+              tickFormatter={(val) => {
+                const pt = rocofChartData.find(d => d.t === val);
+                return pt ? pt.time : val;
+              }}
               angle={-45}
               textAnchor="end"
               height={80}

@@ -92,11 +92,16 @@ export default function ExecutiveHook() {
 
   const handleStart = () => {
     if (audioRef.current) {
-      audioRef.current.volume = 0.8;
-      audioRef.current.play().catch(() => {});
-      setTimeout(() => {
-        if (audioRef.current) audioRef.current.pause();
-      }, 100); // Unlock audio context on mobile
+      audioRef.current.volume = 0.0; // Silenciar durante el desbloqueo
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+          }
+        }).catch(() => {});
+      }
     }
     setPhase('playing');
   };
