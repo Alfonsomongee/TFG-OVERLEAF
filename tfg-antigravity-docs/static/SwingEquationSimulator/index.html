@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Ecuación del Swing — TFG Apagón 28-A</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="header">
+      <h1>⚡ SIMULADOR ECUACIÓN DEL SWING</h1>
+      <div class="header-meta">Sistema Eléctrico Europeo — TFG Análisis Forense 28-A</div>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="control-panel">
+      <!-- Slider: Inercia del Sistema (H) -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Inercia del Sistema (H)</span>
+          <span class="value" id="label-h">2.45 s</span>
+        </div>
+        <input type="range" id="slider-h" min="1.0" max="8.0" step="0.1" value="2.45" disabled>
+        <div class="slider-hint">1.0 s (muy baja) ← → 8.0 s (legacy grid)</div>
+      </div>
+
+      <!-- Slider: Pérdida de Generación (ΔP) -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Pérdida de Generación (ΔP)</span>
+          <span class="value" id="label-dp">8.8 %</span>
+        </div>
+        <input type="range" id="slider-dp" min="0" max="50" step="0.5" value="8.8" disabled>
+        <div class="slider-hint">0 % (normal) ← → 50 % (pérdida masiva)</div>
+      </div>
+
+      <!-- Slider: Inercia Sintética (FFR) -->
+      <div class="slider-group">
+        <div class="slider-label">
+          <span>Inercia Sintética (FFR)</span>
+          <span class="value" id="label-ffr">0.00 pu</span>
+        </div>
+        <input type="range" id="slider-ffr" min="0" max="5.0" step="0.1" value="0.0" disabled>
+        <div class="slider-hint">0.0 (OFF) ← → 5.0 (FFR agresiva — riesgo en red débil)</div>
+      </div>
+
+      <!-- Control: Red Débil (SCR < 2.0) -->
+      <div class="slider-group">
+        <label style="display: flex; align-items: center; gap: var(--s-3); cursor: pointer; user-select: none;">
+          <input type="checkbox" id="toggle-weak-grid" disabled style="width: 18px; height: 18px; cursor: pointer;">
+          <span style="font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--fg-secondary);">
+            Red Débil (SCR &lt; 2.0)
+          </span>
+        </label>
+      </div>
+
+      <!-- Control Buttons -->
+      <div class="button-group">
+        <button class="btn-play" id="btn-play">▶ Simular</button>
+        <button class="btn-reset" id="btn-reset">⟲ Reset</button>
+        <button class="demo-button" id="btn-demo" title="Cargar preset 'Condiciones 28A' y ejecutar automáticamente">🎬 DEMO 28A</button>
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: flex-end; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--fg-secondary);">
+          <span>Tiempo: <span id="time-display">0.00</span> s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- READOUT PANEL -->
+    <div class="readout-panel">
+      <div class="readout-item">
+        <div class="readout-label">Frecuencia (Hz)</div>
+        <div class="readout-value" id="readout-freq">50.000</div>
+      </div>
+      <div class="readout-item">
+        <div class="readout-label">ROCOF (Hz/s) — con signo</div>
+        <div class="readout-value" id="readout-rocof">0.000</div>
+      </div>
+      <div class="readout-item">
+        <div class="readout-label">ΔF (pu)</div>
+        <div class="readout-value" id="readout-deltaf">0.00000</div>
+      </div>
+      <div class="readout-item">
+        <div class="readout-label">Estado del Sistema</div>
+        <div class="status-badge" id="status-badge">● NORMAL</div>
+      </div>
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <div class="chart-title">Frecuencia del Sistema (Hz)</div>
+        <canvas id="chart-frequency" class="chart-canvas"></canvas>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">ROCOF — Tasa de Cambio de Frecuencia (Hz/s)</div>
+        <canvas id="chart-rocof" class="chart-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- ALERTS SECTION -->
+    <div class="alerts-section">
+      <div class="alert warn" id="alert-ufls">
+        <span class="alert-icon">⚠️</span>
+        <span>UFLS Activo — Deslastre de carga en etapas escalonadas</span>
+      </div>
+      <div class="alert alarm" id="alert-rocof">
+        <span class="alert-icon">🚨</span>
+        <span>ROCOF > 1.0 Hz/s — PUNTO DE NO RETORNO. Pérdida de sincronismo de máquinas síncronas.</span>
+      </div>
+      <div class="alert alarm" id="alert-blackout">
+        <span class="alert-icon">⛔</span>
+        <span>BLACKOUT — Colapso de la red. Frecuencia por debajo de 48.0 Hz.</span>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-item"><strong>Simulación física:</strong> Integración numérica de la ecuación del swing (df/dt = (ΔP − D·ΔF) / (2·H)) en tiempo real.</div>
+      <div class="footer-item"><strong>Parámetros predefinidos:</strong> Condiciones del 28-A 2021 (H=2.45s, ΔP=8.8%, red débil SCR&lt;2.0). La inercia sintética en red débil causa oscilaciones subsincrónicas.</div>
+      <div class="footer-item"><strong>UFLS:</strong> Umbrales en 49.0, 48.7, 48.4, 48.0 Hz. Punto de no retorno: ROCOF &gt; 1.0 Hz/s o Freq &lt; 48.0 Hz.</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
