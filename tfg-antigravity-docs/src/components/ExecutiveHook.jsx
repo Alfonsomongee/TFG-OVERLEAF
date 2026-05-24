@@ -17,6 +17,7 @@ export default function ExecutiveHook() {
   const audioRef = useRef(null);
   const audioHasPlayed = useRef(false);
   const audioUnlocked = useRef(false);
+  const splashActive = useRef(true);
 
   const getStrings = (l) => {
     switch (l) {
@@ -181,21 +182,21 @@ export default function ExecutiveHook() {
     document.body.style.overflow = 'hidden';
 
     const audio = audioRef.current;
-    
+
     const playAudio = async () => {
-      if (!audio) return;
+      if (!audio || !splashActive.current) return;
       try {
         audio.muted = true;
         audio.volume = 0.25;
         await audio.play();
-        setTimeout(() => { if (audio) audio.muted = false; }, 1200);
+        setTimeout(() => { if (audio && splashActive.current) audio.muted = false; }, 1200);
       } catch (err) {
         console.log('Audio autoplay blocked. Waiting for user interaction.');
       }
     };
 
     const unlockAudio = () => {
-      if (audioUnlocked.current || !audio) return;
+      if (audioUnlocked.current || !audio || !splashActive.current) return;
       audioUnlocked.current = true;
       audio.muted = false;
       audio.volume = 0.25;
@@ -213,15 +214,20 @@ export default function ExecutiveHook() {
     );
 
     const fadeTimer = setTimeout(() => {
+      splashActive.current = false;
       fadeOutAudio(1500);
       setIsFading(true);
       document.body.style.overflow = '';
       if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('splash_seen', '1');
+      ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => 
+        document.removeEventListener(evt, unlockAudio)
+      );
     }, 4500);
 
     const hideTimer = setTimeout(() => setIsHidden(true), 6000);
 
     return () => {
+      splashActive.current = false;
       clearTimeout(fadeTimer);
       clearTimeout(hideTimer);
       document.body.style.overflow = '';

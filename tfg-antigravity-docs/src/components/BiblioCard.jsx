@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './BiblioCard.module.css';
 import { BIBLIOGRAPHY } from '../data/bibliography';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export default function BiblioCard() {
   return (
@@ -26,7 +27,7 @@ export default function BiblioCard() {
               {ref.title}
               {ref.pdf && (
                 <div style={{ marginTop: '0.75rem' }}>
-                  <a href={ref.pdf} target="_blank" rel="noopener noreferrer" className="button button--secondary button--sm">
+                  <a href={useBaseUrl(ref.pdf)} target="_blank" rel="noopener noreferrer" className="button button--secondary button--sm">
                     Descargar Informe PDF
                   </a>
                 </div>
