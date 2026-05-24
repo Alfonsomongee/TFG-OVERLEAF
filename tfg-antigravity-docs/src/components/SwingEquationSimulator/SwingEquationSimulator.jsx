@@ -789,7 +789,7 @@ const SwingEquationSimulator = () => {
 
               type="monotone" 
 
-              dataKey="frequency" 
+              dataKey="freq" 
 
               stroke="url(#freqGradient)"
 
@@ -958,4 +958,5 @@ const SwingEquationSimulator = () => {
 
 
 export default SwingEquationSimulator;
+
 
