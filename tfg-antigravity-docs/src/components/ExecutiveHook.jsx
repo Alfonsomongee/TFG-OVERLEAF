@@ -6,9 +6,17 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import Head from '@docusaurus/Head';
 import { motion } from 'framer-motion';
 
+const PHASES = {
+  BLACK:   { id: 0, duration: 600 },
+  MAP:     { id: 1, duration: 2000 },
+  TITLE:   { id: 2, duration: 2500 },
+  FADEOUT: { id: 3, duration: 800 },
+  DONE:    { id: 4, duration: 0 }
+};
+
 export default function ExecutiveHook() {
-  const [isFading, setIsFading] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
+  const [phase, setPhase] = useState(PHASES.BLACK.id);
+  const [visible, setVisible] = useState(true);
 
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
@@ -58,43 +66,43 @@ export default function ExecutiveHook() {
         download: "BAIXAR TESE"
       };
       case 'fr': return {
-        splashTitle: "BLACK-OUT IBÉRIQUE 2025",
-        splashSubtitle: "Analyse médico-légale de l'effondrement systémique",
+        splashTitle: "BLACKOUT IBÉRIQUE 2025",
+        splashSubtitle: "Analyse Légale du Collapsus Systémique",
         enter: "ENTRER",
         statPower: "Puissance Perdue",
         statSeverity: "Sévérité ENTSO-E",
-        statDate: "28 avril 2025",
-        statAffected: "Personnes Touchées",
+        statDate: "28 Avril 2025",
+        statAffected: "Affectés",
         heroTitle1: "Anatomie d'un",
-        heroTitleHighlight: "Effondrement Systémique",
-        heroSubtitle: "Analyse du black-out de la péninsule ibérique en 2025 : instabilité de tension, déficit d'inertie et transition structurelle vers des réseaux 100 % basés sur onduleurs (IBR).",
+        heroTitleHighlight: "Collapsus Systémique",
+        heroSubtitle: "Analyse légale du blackout de la Péninsule Ibérique de 2025 : instabilité de tension, déficit d'inertie et la transition structurelle vers des réseaux 100% basés sur des onduleurs (IBR).",
         box1Title: "Que s'est-il passé ?",
-        box1Text: "La perte du transformateur de Grenade (400/220 kV) a déclenché une cascade de surtensions qui a effondré le réseau ibérique en 11 secondes, entraînant 31 GW de demande et déconnectant la liaison HVDC avec la France.",
+        box1Text: "La perte du transformateur de Grenade (400/220 kV) a déclenché une cascade de surtensions qui a fait s'effondrer le réseau ibérique en 11 secondes, entraînant 31 GW de demande et déconnectant la liaison HVDC avec la France.",
         box2Title: "Outils et Méthodologie",
-        box2Text: "Écoulement de charge de Newton-Raphson, analyse de stabilité transitoire, modélisation RoCoF et évaluation de contingence N-1. Infrastructure Web basée sur Docusaurus, MDX, KaTeX et React.",
+        box2Text: "Flux de puissance Newton-Raphson, analyse de stabilité transitoire, modélisation RoCoF et évaluation de contingence N-1. Infrastructure web basée sur Docusaurus, MDX, KaTeX et React.",
         box3Title: "Conclusion Principale",
         box3Text: "L'incident n'était pas une défaillance fortuite, mais le symptôme d'une faiblesse structurelle (effondrement Q-V) induite par une pénétration solaire extrême sans support de court-circuit suffisant.",
-        startAnalysis: "Commencer l'analyse ⚡",
+        startAnalysis: "Démarrer l'Analyse ⚡",
         download: "TÉLÉCHARGER LA THÈSE"
       };
       case 'it': return {
         splashTitle: "BLACKOUT IBERICO 2025",
-        splashSubtitle: "Analisi forense del collasso sistemico",
-        enter: "ENTRA",
+        splashSubtitle: "Analisi Forense del Collasso Sistemico",
+        enter: "ENTRARE",
         statPower: "Potenza Persa",
         statSeverity: "Gravità ENTSO-E",
-        statDate: "28 aprile 2025",
-        statAffected: "Persone Coinvolte",
+        statDate: "28 Aprile 2025",
+        statAffected: "Colpiti",
         heroTitle1: "Anatomia di un",
         heroTitleHighlight: "Collasso Sistemico",
-        heroSubtitle: "Analisi forense del blackout della penisola iberica del 2025: instabilità della tensione, deficit di inerzia e transizione strutturale verso reti basate al 100% su inverter (IBR).",
+        heroSubtitle: "Analisi forense del blackout della Penisola Iberica del 2025: instabilità di tensione, deficit di inerzia e transizione strutturale verso reti basate al 100% su inverter (IBR).",
         box1Title: "Cosa è successo?",
-        box1Text: "La perdita del trasformatore di Granada (400/220 kV) ha innescato una cascata di sovratensioni che ha fatto collassare la rete iberica in 11 secondi, trascinando 31 GW di domanda e disconnettendo il collegamento HVDC con la Francia.",
+        box1Text: "La perdita del trasformatore di Granada (400/220 kV) ha innescato una cascata di sovratensioni che ha fatto collassare la rete iberica in 11 secondi, trascinando con sé 31 GW di domanda e disconnettendo il collegamento HVDC con la Francia.",
         box2Title: "Strumenti e Metodologia",
-        box2Text: "Flusso di carico Newton-Raphson, analisi della stabilità transitoria, modellazione RoCoF e valutazione delle contingenze N-1. Infrastruttura Web basata su Docusaurus, MDX, KaTeX e React.",
+        box2Text: "Flusso di potenza Newton-Raphson, analisi di stabilità transitoria, modellazione RoCoF e valutazione di contingenza N-1. Infrastruttura web basata su Docusaurus, MDX, KaTeX e React.",
         box3Title: "Conclusione Principale",
-        box3Text: "L'incidente non è stato un guasto fortuito, ma il sintomo di una debolezza strutturale (collasso Q-V) indotta da un'estrema penetrazione solare senza sufficiente supporto di cortocircuito.",
-        startAnalysis: "Inizia l'analisi ⚡",
+        box3Text: "L'incidente non è stato un guasto fortuito, ma il sintomo di una debolezza strutturale (collasso Q-V) indotta da una penetrazione solare estrema senza sufficiente supporto di cortocircuito.",
+        startAnalysis: "Avvia Analisi ⚡",
         download: "SCARICA LA TESI"
       };
       case 'de': return {
@@ -107,20 +115,21 @@ export default function ExecutiveHook() {
         statAffected: "Betroffene",
         heroTitle1: "Anatomie eines",
         heroTitleHighlight: "Systemkollapses",
-        heroSubtitle: "Forensische Analyse des Stromausfalls auf der Iberischen Halbinsel 2025: Spannungsinstabilität, Trägheitsdefizit und der strukturelle Übergang zu 100 % umrichterbasierten Ressourcen (IBR).",
+        heroSubtitle: "Forensische Analyse des Stromausfalls auf der Iberischen Halbinsel 2025: Spannungsinstabilität, Trägheitsdefizit und der strukturelle Übergang zu 100% wechselrichterbasierten Ressourcen (IBR).",
         box1Title: "Was ist passiert?",
-        box1Text: "Der Ausfall des Transformators in Granada (400/220 kV) löste eine Kaskade von Überspannungen aus, die das iberische Netz in 11 Sekunden zum Einsturz brachte, 31 GW Nachfrage mit sich zog und die HGÜ-Verbindung mit Frankreich trennte.",
+        box1Text: "Der Ausfall des Transformators in Granada (400/220 kV) löste eine Kaskade von Überspannungen aus, die das iberische Netz in 11 Sekunden zusammenbrechen ließ, 31 GW Nachfrage mit sich riss und die HVDC-Verbindung mit Frankreich trennte.",
         box2Title: "Werkzeuge & Methodik",
-        box2Text: "Newton-Raphson-Lastfluss, transiente Stabilitätsanalyse, RoCoF-Modellierung und N-1-Kontingenzbewertung. Web-Infrastruktur basierend auf Docusaurus, MDX, KaTeX und React.",
-        box3Title: "Hauptergebnis",
-        box3Text: "Der Vorfall war kein zufälliger Ausfall, sondern das Symptom einer strukturellen Schwäche (Q-V-Kollaps), die durch extreme solare Durchdringung ohne ausreichende Kurzschlussunterstützung hervorgerufen wurde.",
-        startAnalysis: "Analyse starten ⚡",
-        download: "THESE HERUNTERLADEN"
+        box2Text: "Newton-Raphson Lastfluss, transiente Stabilitätsanalyse, RoCoF-Modellierung und N-1 Kontingenzbewertung. Web-Infrastruktur basierend auf Docusaurus, MDX, KaTeX und React.",
+        box3Title: "Haupterkenntnis",
+        box3Text: "Der Vorfall war kein zufälliger Fehler, sondern das Symptom einer strukturellen Schwäche (Q-V-Kollaps), die durch extreme solare Durchdringung ohne ausreichende Kurzschlussunterstützung verursacht wurde.",
+        startAnalysis: "Analyse Starten ⚡",
+        download: "ARBEIT HERUNTERLADEN"
       };
+      case 'es':
       default: return {
         splashTitle: "APAGÓN IBÉRICO 2025",
         splashSubtitle: "Análisis Forense del Colapso Sistémico",
-        enter: "ADELANTE",
+        enter: "ENTRAR",
         statPower: "Potencia Perdida",
         statSeverity: "Severidad ENTSO-E",
         statDate: "28 Abril 2025",
@@ -131,22 +140,22 @@ export default function ExecutiveHook() {
         box1Title: "¿Qué ocurrió?",
         box1Text: "La pérdida del transformador de Granada (400/220 kV) desencadenó una cascata de sobretensiones que colapsó la red ibérica en 11 segundos, arrastrando 31 GW de demanda y desconectando el enlace HVDC con Francia.",
         box2Title: "Herramientas y Metodología",
-        box2Text: "Flujo de cargas Newton-Raphson, análisis de estabilidad transitoria, modelado RoCoF y evaluación de contingencia N-1. Infraestructura web basada en Docusaurus, MDX, KaTeX y React.",
+        box2Text: "Flujo de cargas Newton-Raphson, análisis de estabilidad transitoria, modelado RoCoF y evaluación de contingencias N-1. Infraestructura web basada en Docusaurus, MDX, KaTeX y React.",
         box3Title: "Conclusión Principal",
-        box3Text: "El incidente no fue un fallo fortuito, sino el síntoma de una debilidad estructural (colapso Q-V) inducida por una penetración solar extrema sin suficiente soporte de cortocircuito.",
-        startAnalysis: "Comenzar Análisis ⚡",
-        download: "DESCARGAR TFG"
+        box3Text: "El incidente no fue un fallo fortuito, sino el síntoma de una debilidad estructural (colapso Q-V) inducida por la extrema penetración solar sin suficiente soporte de cortocircuito.",
+        startAnalysis: "Iniciar Análisis ⚡",
+        download: "DESCARGAR TFM"
       };
     }
   };
+
   const strings = getStrings(lang);
 
-  // Fade audio volume to 0 smoothly over `duration` ms
-  const fadeOutAudio = (duration = 1500) => {
+  const fadeOutAudio = (durationMs) => {
     const audio = audioRef.current;
-    if (!audio || audio.muted) return;
-    const steps = 30;
-    const interval = duration / steps;
+    if (!audio) return;
+    const steps = 20;
+    const interval = durationMs / steps;
     const startVol = audio.volume;
     let step = 0;
     const fade = setInterval(() => {
@@ -160,64 +169,64 @@ export default function ExecutiveHook() {
     }, interval);
   };
 
-  const handleSplashClick = () => {
-    if (isFading || isHidden) return;
-    fadeOutAudio(1500); // Audio fades out in sync with the splash
-    setIsFading(true);
-    document.body.style.overflow = ''; // Restore scroll
-    setTimeout(() => setIsHidden(true), 1500);
-  };
-
   useEffect(() => {
-    // Lock body scroll during splash screen
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('splash_seen')) {
+      setVisible(false);
+      return;
+    }
+
     document.body.style.overflow = 'hidden';
 
     const audio = audioRef.current;
     if (audio) {
       audio.muted = true;
-      audio.volume = 0.25; // Low, non-invasive volume
+      audio.volume = 0.25; 
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            // Muted autoplay succeeded — unmute gently after 1.2s
-            setTimeout(() => {
-              if (audio) audio.muted = false;
-            }, 1200);
+            setTimeout(() => { if (audio) audio.muted = false; }, 1200);
           })
-          .catch(() => {
-            // Blocked silently — no button shown, just no audio
-            console.log('Audio autoplay blocked by browser policy.');
-          });
+          .catch(() => console.log('Audio autoplay blocked by browser policy.'));
       }
     }
 
-    // Start splash fade at 4.5s
-    const fadeTimer = setTimeout(() => {
-      fadeOutAudio(1500); // Audio fades out in sync with the splash fade
-      setIsFading(true);
-      document.body.style.overflow = ''; // Restore scroll
-    }, 4500);
+    const t1 = setTimeout(() => setPhase(PHASES.MAP.id),     PHASES.BLACK.duration);
+    const t2 = setTimeout(() => setPhase(PHASES.TITLE.id),   PHASES.BLACK.duration + PHASES.MAP.duration);
+    const t3 = setTimeout(() => {
+      setPhase(PHASES.FADEOUT.id);
+      fadeOutAudio(PHASES.FADEOUT.duration);
+    }, PHASES.BLACK.duration + PHASES.MAP.duration + PHASES.TITLE.duration);
+    const t4 = setTimeout(() => {
+      setVisible(false);
+      document.body.style.overflow = '';
+      if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('splash_seen', '1');
+    }, PHASES.BLACK.duration + PHASES.MAP.duration + PHASES.TITLE.duration + PHASES.FADEOUT.duration);
 
-    // Remove splash from DOM at 6s
-    const hideTimer = setTimeout(() => setIsHidden(true), 6000);
-
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(hideTimer);
-      document.body.style.overflow = ''; // Restore scroll
+    return () => { 
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); 
+      document.body.style.overflow = ''; 
     };
   }, []);
 
+  const handleSplashClick = () => {
+    if (phase >= PHASES.FADEOUT.id || !visible) return;
+    setPhase(PHASES.FADEOUT.id);
+    fadeOutAudio(PHASES.FADEOUT.duration);
+    setTimeout(() => {
+      setVisible(false);
+      document.body.style.overflow = '';
+      if (typeof sessionStorage !== 'undefined') sessionStorage.setItem('splash_seen', '1');
+    }, PHASES.FADEOUT.duration);
+  };
+
   return (
     <>
-      {/* Splash Screen */}
       <Head>
-        <link rel="preload" href={useBaseUrl('/img/cinematic_blackout.png')} as="image" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet" />
-        {!isHidden && (
+        {visible && (
           <style>{`
             .navbar, 
             .theme-doc-sidebar-container, 
@@ -237,63 +246,55 @@ export default function ExecutiveHook() {
         )}
       </Head>
       <audio ref={audioRef} src={audioUrl} preload="auto" />
-      {!isHidden && (
+      
+      {visible && (
         <div 
-          className={`${styles.splashContainer} ${isFading ? styles.fadeOut : ''}`}
+          className={styles.splashContainer}
           onClick={handleSplashClick}
           style={{ 
             cursor: 'pointer',
-            backgroundColor: '#000', // Fallback before image loads
-            position: 'fixed',       // Inline to prevent FOUC
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
+            backgroundColor: '#000',
+            position: 'fixed',
+            top: 0, left: 0, width: '100vw', height: '100vh',
             zIndex: 99999,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            opacity: phase === PHASES.FADEOUT.id ? 0 : 1,
+            pointerEvents: phase === PHASES.FADEOUT.id ? 'none' : 'auto'
           }}
         >
-          <motion.div 
-            className={styles.splashBgCinematic}
-            style={{ backgroundImage: `url(${useBaseUrl('/img/cinematic_blackout.png')})` }}
-            initial={{ scale: 1 }}
-            animate={{ scale: 1.15 }}
-            transition={{ duration: 20, ease: "linear" }}
-          />
+          {phase >= PHASES.MAP.id && (
+            <motion.div 
+              className={styles.splashBgCinematic}
+              style={{ backgroundImage: `url(${useBaseUrl('/img/cinematic_blackout.png')})` }}
+              initial={{ opacity: 0, scale: 1 }}
+              animate={{ opacity: 1, scale: 1.15 }}
+              transition={{ duration: 20, ease: "linear" }}
+            />
+          )}
           <div className={styles.splashOverlay}></div>
-          <div className={styles.splashContent}>
-            <motion.h1 
-              className={styles.splashTitle}
-              initial={{ opacity: 0, scale: 0.95, y: 15, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.2 }}
+          
+          {phase >= PHASES.TITLE.id && (
+            <motion.div 
+              className={styles.titleCard}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
             >
-              {strings.splashTitle}
-            </motion.h1>
-            <motion.p 
-              className={styles.splashSubtitle}
-              initial={{ opacity: 0, scale: 0.95, y: 35, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, scale: 1, y: 20, filter: 'blur(0px)' }}
-              transition={{ duration: 1.5, ease: [0.2, 0.8, 0.2, 1], delay: 0.8 }}
-            >
-              {strings.splashSubtitle}
-            </motion.p>
-            <motion.p 
-              className={styles.authorName}
-              initial={{ opacity: 0, y: 10, textShadow: '0 0 0px rgba(255,255,255,0)' }}
-              animate={{ opacity: 0.9, y: 0, textShadow: '0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4)' }}
-              transition={{ duration: 2, ease: "easeInOut", delay: 1.5 }}
-            >
-              Alfonso Monge Díaz-Ángel
-            </motion.p>
-          </div>
+              <p className={styles.authorName}>Alfonso Monge Díaz-Ángel</p>
+              <div className={styles.titleDivider} />
+              <h1 className={styles.workTitle}>
+                El Apagón Ibérico del 28 de Abril de 2025
+              </h1>
+              <div className={styles.titleDivider} />
+              <p className={styles.subtitle} style={{ color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '14px', fontFamily: 'monospace' }}>
+                Trabajo Fin de Grado · Universidad de Sevilla
+              </p>
+            </motion.div>
+          )}
         </div>
       )}
 
-      <div id="executive-hook" className={styles.heroContainer} style={{ opacity: isHidden ? 1 : 0, transition: 'opacity 1s ease-in' }}>
+      <div id="executive-hook" className={styles.heroContainer}>
         {/* Top Banner / Event Scale */}
         <div className={styles.statsBanner}>
           <div className={styles.statItem}>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AnimatedMap.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 // Approximate relative positions on a 100x100 grid for the Iberian Peninsula
 // Top Left: 0,0 (Galicia), Bottom Right: 100,100 (Almeria)
@@ -72,7 +73,7 @@ export default function AnimatedMap({ lang = 'es' }) {
       <div 
         className={styles.mapArea}
         style={{ 
-          backgroundImage: `url('/img/iberian_satellite.png')`, 
+          backgroundImage: `url(${useBaseUrl('/img/iberian_satellite.png')})`, 
           backgroundSize: 'cover', 
           backgroundPosition: 'center',
           backgroundColor: '#050505'
