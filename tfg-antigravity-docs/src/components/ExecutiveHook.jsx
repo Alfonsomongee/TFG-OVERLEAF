@@ -233,7 +233,7 @@ export default function ExecutiveHook() {
                 zIndex: 100000,
                 backgroundImage: `url(${bgLit})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center', transform: 'scale(1.05)',
+                backgroundPosition: 'center', transform: 'scale(1.15)',
               }}
             >
               <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)' }} />
@@ -248,7 +248,7 @@ export default function ExecutiveHook() {
                   letterSpacing: '0.15em',
                   textTransform: 'uppercase',
                   textShadow: '2px 2px 0px #CC2200, 4px 4px 0px #AA1800, 6px 6px 0px #881000, 8px 8px 0px #660800, 10px 10px 0px rgba(0,0,0,0.6)',
-                  WebkitTextStroke: '1px rgba(180,60,0,0.5)',
+                  
                   zIndex: 2,
                   textAlign: 'center'
                 }}
@@ -263,8 +263,8 @@ export default function ExecutiveHook() {
               {showMap && (
                 <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: mapOpacity }}>
                   <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.05)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity, transform: "scale(1.05)" }} />
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.05)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity, transform: "scale(1.05)" }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.15)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity, transform: "scale(1.15)" }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.15)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity, transform: "scale(1.15)" }} />
                   </div>
 
                   {flicker1Visible && <div style={{ position: 'absolute', inset: 0, backgroundColor: '#ffffff', pointerEvents: 'none', animation: 'flicker1Effect 0.08s ease-out' }} />}
@@ -300,7 +300,7 @@ export default function ExecutiveHook() {
                   margin: 0,
                   textAlign: 'center',
                   textShadow: '2px 2px 0px #CC2200, 4px 4px 0px #AA1800, 6px 6px 0px #881000, 8px 8px 0px #660800, 10px 10px 0px rgba(0,0,0,0.6)',
-                  WebkitTextStroke: '1.5px rgba(180,60,0,0.5)',
+                  
                   opacity: titleMainOpacity,
                   filter: titleMainFilter, padding: "20px"
                 }}>
@@ -419,5 +419,6 @@ export default function ExecutiveHook() {
     </>
   );
 }
+
 
 
