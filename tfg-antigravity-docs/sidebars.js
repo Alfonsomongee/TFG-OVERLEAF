@@ -21,8 +21,9 @@ const sidebars = {
     // BLOQUE 3: NARRATIVA DEL INCIDENTE
     {
       type: 'category',
-      label: '⚡ Análisis del Incidente',
+      label: 'ANÁLISIS DEL INCIDENTE',
       collapsed: false,
+      className: 'sidebar-icon-zap',
       items: [
         {
           type: 'doc',
@@ -45,8 +46,9 @@ const sidebars = {
     // BLOQUE 4: ANÁLISIS TÉCNICO PROFUNDO
     {
       type: 'category',
-      label: '📊 Análisis Técnico',
+      label: 'ANÁLISIS TÉCNICO',
       collapsed: false,
+      className: 'sidebar-icon-bar-chart',
       items: [
         {
           type: 'doc',
@@ -64,9 +66,9 @@ const sidebars = {
     // BLOQUE 5: SIMULACIÓN E IMPACTO
     {
       type: 'category',
-      label: '🎮 Experimentación Interactiva',
+      label: 'EXPERIMENTACIÓN INTERACTIVA',
       collapsed: false,
-      className: 'sidebar-category-interactive',
+      className: 'sidebar-category-interactive sidebar-icon-gamepad',
       items: [
         {
           type: 'doc',
@@ -79,8 +81,9 @@ const sidebars = {
     // BLOQUE 6: PROSPECTIVA
     {
       type: 'category',
-      label: '🔮 Futuro y Resiliencia',
+      label: 'FUTURO Y RESILIENCIA',
       collapsed: false,
+      className: 'sidebar-icon-compass',
       items: [
         {
           type: 'doc',
@@ -98,8 +101,9 @@ const sidebars = {
     // BLOQUE 7: HERRAMIENTAS 2026
     {
       type: 'category',
-      label: '🛠️ Métodos y Actualizaciones',
+      label: 'MÉTODOS Y ACTUALIZACIONES',
       collapsed: true,
+      className: 'sidebar-icon-tool',
       items: [
         {
           type: 'doc',
@@ -124,8 +128,9 @@ const sidebars = {
     // BLOQUE 9: CONTEXTO AMPLIADO
     {
       type: 'category',
-      label: '🌍 Dimensión Europea',
+      label: 'DIMENSIÓN EUROPEA',
       collapsed: true,
+      className: 'sidebar-icon-globe',
       items: [
         {
           type: 'doc',
@@ -148,8 +153,9 @@ const sidebars = {
     // BLOQUE 10: REFERENCIAS Y GLOSARIO
     {
       type: 'category',
-      label: '📚 Referencia',
+      label: 'REFERENCIA',
       collapsed: true,
+      className: 'sidebar-icon-book',
       items: [
         {
           type: 'doc',
@@ -167,8 +173,9 @@ const sidebars = {
     // BLOQUE 11: VISUALIZACIÓN
     {
       type: 'category',
-      label: '📈 Visualizaciones',
+      label: 'VISUALIZACIONES',
       collapsed: true,
+      className: 'sidebar-icon-trending',
       items: [
         {
           type: 'doc',
