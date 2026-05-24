@@ -12,9 +12,9 @@ export function TelemetryMetadata({ title, source, timeBase, confidence }) {
   );
 }
 
-export function ForensicTable({ title, source, timeBase, confidence, children }) {
+export function ForensicTable({ title, source, timeBase, confidence, fullWidth, children }) {
   return (
-    <div className="telemetry-table-container forensic-table">
+    <div className={`telemetry-table-container forensic-table ${fullWidth ? 'table-full-width' : ''}`}>
       {(title || source) && (
         <TelemetryMetadata 
           title={title} 
@@ -65,3 +65,4 @@ export function ForensicFigure({ src, alt, caption, source }) {
     </figure>
   );
 }
+

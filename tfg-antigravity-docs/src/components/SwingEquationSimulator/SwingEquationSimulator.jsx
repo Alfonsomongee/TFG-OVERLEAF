@@ -1,4 +1,4 @@
-// SwingEquationSimulator.jsx
+﻿// SwingEquationSimulator.jsx
 
 
 
@@ -769,7 +769,7 @@ const SwingEquationSimulator = () => {
 
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
 
-            <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)" />
+            <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickCount={7} stroke="rgba(255,255,255,0.5)" />
 
             <YAxis domain={[45, 50.5]} stroke="rgba(255,255,255,0.5)" />
 
@@ -831,7 +831,7 @@ const SwingEquationSimulator = () => {
 
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
 
-            <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)" />
+            <XAxis dataKey="time" type="number" domain={['dataMin', 'dataMax']} tickCount={7} stroke="rgba(255,255,255,0.5)" />
 
             <YAxis stroke="rgba(255,255,255,0.5)" />
 
@@ -958,3 +958,4 @@ const SwingEquationSimulator = () => {
 
 
 export default SwingEquationSimulator;
+
