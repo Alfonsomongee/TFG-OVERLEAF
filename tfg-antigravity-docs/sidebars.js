@@ -66,6 +66,7 @@ const sidebars = {
       type: 'category',
       label: '🎮 Experimentación Interactiva',
       collapsed: false,
+      className: 'sidebar-category-interactive',
       items: [
         {
           type: 'doc',

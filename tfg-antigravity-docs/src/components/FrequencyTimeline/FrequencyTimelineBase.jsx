@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer, ReferenceArea, ComposedChart, BarChart, Bar, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -20,30 +20,30 @@ const FrequencyTimeline = () => {
 
   const T = {
     es: {
-      title: "FRECUENCIA DEL SISTEMA — 28 ABRIL 2025",
-      subtitle: "Reconstrucción basada en datos verificados ENTSO-E / PMU del colapso cascada en 27 segundos",
+      title: "FRECUENCIA DEL SISTEMA â€” 28 ABRIL 2025",
+      subtitle: "ReconstrucciÃ³n basada en datos verificados ENTSO-E / PMU del colapso cascada en 27 segundos",
       freq: "Frecuencia:",
       rocof: "ROCOF:",
       status: "Estado:",
-      play: "▶ REPRODUCIR APAGÓN (27s)",
-      stop: "⏹ DETENER",
-      criticalOnly: "Mostrar solo fase crítica",
+      play: "â–¶ REPRODUCIR APAGÃ“N (27s)",
+      stop: "â¹ DETENER",
+      criticalOnly: "Mostrar solo fase crÃ­tica",
       rocofTitle: "Tasa de Cambio de Frecuencia (ROCOF)",
       eventsTitle: "Eventos Principales",
-      contextTitle: "Contexto Técnico",
+      contextTitle: "Contexto TÃ©cnico",
       nominal: "NOMINAL",
       collapseZone: "ZONA COLAPSO",
-      error: "ERROR CRÍTICO: CAPA DE DATOS OFFLINE",
+      error: "ERROR CRÃTICO: CAPA DE DATOS OFFLINE",
       errorSub: "Error al cargar frequency_28A.json"
     },
     en: {
-      title: "SYSTEM FREQUENCY — 28 APRIL 2025",
+      title: "SYSTEM FREQUENCY â€” 28 APRIL 2025",
       subtitle: "Reconstruction based on verified ENTSO-E / PMU data of the 27-second cascade collapse",
       freq: "Frequency:",
       rocof: "ROCOF:",
       status: "Status:",
-      play: "▶ REPLAY BLACKOUT (27s)",
-      stop: "⏹ STOP",
+      play: "â–¶ REPLAY BLACKOUT (27s)",
+      stop: "â¹ STOP",
       criticalOnly: "Show critical phase only",
       rocofTitle: "Rate of Change of Frequency (ROCOF)",
       eventsTitle: "Main Events",
@@ -54,47 +54,47 @@ const FrequencyTimeline = () => {
       errorSub: "Failed to load frequency_28A.json"
     },
     pt: {
-      title: "FREQUÊNCIA DO SISTEMA — 28 ABRIL 2025",
-      subtitle: "Reconstrução baseada em dados verificados ENTSO-E / PMU do colapso em cascata em 27 segundos",
-      freq: "Frequência:",
+      title: "FREQUÃŠNCIA DO SISTEMA â€” 28 ABRIL 2025",
+      subtitle: "ReconstruÃ§Ã£o baseada em dados verificados ENTSO-E / PMU do colapso em cascata em 27 segundos",
+      freq: "FrequÃªncia:",
       rocof: "ROCOF:",
       status: "Estado:",
-      play: "▶ REPRODUZIR APAGÃO (27s)",
-      stop: "⏹ PARAR",
-      criticalOnly: "Mostrar apenas fase crítica",
-      rocofTitle: "Taxa de Mudança de Frequência (ROCOF)",
+      play: "â–¶ REPRODUZIR APAGÃƒO (27s)",
+      stop: "â¹ PARAR",
+      criticalOnly: "Mostrar apenas fase crÃ­tica",
+      rocofTitle: "Taxa de MudanÃ§a de FrequÃªncia (ROCOF)",
       eventsTitle: "Eventos Principais",
-      contextTitle: "Contexto Técnico",
+      contextTitle: "Contexto TÃ©cnico",
       nominal: "NOMINAL",
       collapseZone: "ZONA COLAPSO",
-      error: "ERRO CRÍTICO: CAMADA DE DADOS OFFLINE",
+      error: "ERRO CRÃTICO: CAMADA DE DADOS OFFLINE",
       errorSub: "Falha ao carregar frequency_28A.json"
     },
     fr: {
-      title: "FRÉQUENCE DU SYSTÈME — 28 AVRIL 2025",
-      subtitle: "Reconstruction basée sur des données ENTSO-E / PMU vérifiées de l'effondrement en 27 secondes",
-      freq: "Fréquence:",
+      title: "FRÃ‰QUENCE DU SYSTÃˆME â€” 28 AVRIL 2025",
+      subtitle: "Reconstruction basÃ©e sur des donnÃ©es ENTSO-E / PMU vÃ©rifiÃ©es de l'effondrement en 27 secondes",
+      freq: "FrÃ©quence:",
       rocof: "ROCOF:",
       status: "Statut:",
-      play: "▶ JOUER PANNE (27s)",
-      stop: "⏹ ARRÊTER",
+      play: "â–¶ JOUER PANNE (27s)",
+      stop: "â¹ ARRÃŠTER",
       criticalOnly: "Afficher phase critique",
-      rocofTitle: "Taux de Variation de Fréquence (ROCOF)",
-      eventsTitle: "Événements Principaux",
+      rocofTitle: "Taux de Variation de FrÃ©quence (ROCOF)",
+      eventsTitle: "Ã‰vÃ©nements Principaux",
       contextTitle: "Contexte Technique",
       nominal: "NOMINAL",
       collapseZone: "ZONE D'EFFONDREMENT",
-      error: "ERREUR CRITIQUE : COUCHE DE DONNÉES HORS LIGNE",
-      errorSub: "Échec du chargement frequency_28A.json"
+      error: "ERREUR CRITIQUE : COUCHE DE DONNÃ‰ES HORS LIGNE",
+      errorSub: "Ã‰chec du chargement frequency_28A.json"
     },
     it: {
-      title: "FREQUENZA DEL SISTEMA — 28 APRILE 2025",
+      title: "FREQUENZA DEL SISTEMA â€” 28 APRILE 2025",
       subtitle: "Ricostruzione basata su dati verificati ENTSO-E / PMU del collasso a cascata in 27 secondi",
       freq: "Frequenza:",
       rocof: "ROCOF:",
       status: "Stato:",
-      play: "▶ RIPRODUCI BLACKOUT (27s)",
-      stop: "⏹ FERMA",
+      play: "â–¶ RIPRODUCI BLACKOUT (27s)",
+      stop: "â¹ FERMA",
       criticalOnly: "Mostra solo fase critica",
       rocofTitle: "Tasso di Variazione della Frequenza (ROCOF)",
       eventsTitle: "Eventi Principali",
@@ -105,15 +105,15 @@ const FrequencyTimeline = () => {
       errorSub: "Impossibile caricare frequency_28A.json"
     },
     de: {
-      title: "SYSTEMFREQUENZ — 28. APRIL 2025",
+      title: "SYSTEMFREQUENZ â€” 28. APRIL 2025",
       subtitle: "Rekonstruktion basierend auf verifizierten ENTSO-E / PMU-Daten des 27-Sekunden-Kaskadenkollapses",
       freq: "Frequenz:",
       rocof: "ROCOF:",
       status: "Status:",
-      play: "▶ BLACKOUT ABSPIELEN (27s)",
-      stop: "⏹ STOPP",
+      play: "â–¶ BLACKOUT ABSPIELEN (27s)",
+      stop: "â¹ STOPP",
       criticalOnly: "Nur kritische Phase zeigen",
-      rocofTitle: "Änderungsrate der Frequenz (ROCOF)",
+      rocofTitle: "Ã„nderungsrate der Frequenz (ROCOF)",
       eventsTitle: "Hauptereignisse",
       contextTitle: "Technischer Kontext",
       nominal: "NOMINAL",
@@ -285,7 +285,6 @@ const FrequencyTimeline = () => {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
               dataKey="time" 
-              xAxisId="cat"
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
               angle={-45}
@@ -308,8 +307,8 @@ const FrequencyTimeline = () => {
             />
   
             <ReferenceLine y={50.0} stroke="var(--forensic-border)" label={{ value: t.nominal, fill: "rgba(255, 255, 255, 0.3)", position: 'insideTopRight' }} />
-            <ReferenceLine y={49.0} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '49.0 Hz — UFLS', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
-            <ReferenceLine y={48.2} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '48.2 Hz — Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={49.0} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '49.0 Hz â€” UFLS', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={48.2} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '48.2 Hz â€” Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
 
           {/* Reference zones */}
           <ReferenceArea y1={49.0} y2={49.8} fill="rgba(255, 170, 0, 0.05)" />
@@ -318,7 +317,6 @@ const FrequencyTimeline = () => {
 
           {/* Main frequency line */}
           <Line 
-            xAxisId="cat"
             type="monotone" 
             dataKey="freq" 
             stroke="var(--forensic-amber-primary)" 
@@ -343,7 +341,7 @@ const FrequencyTimeline = () => {
       {/* Blackout Marker Badge */}
       {blackoutPoint && (
         <div style={{ background: '#cc2222', color: '#fff', padding: '8px 16px', borderRadius: '4px', display: 'flex', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 'bold', fontSize: '12px', marginTop: '16px', letterSpacing: '1px' }}>
-          ⚡ {blackoutPoint.time} — BLACKOUT TOTAL — 0 Hz — 31 GW DESCONECTADOS
+          âš¡ {blackoutPoint.time} â€” BLACKOUT TOTAL â€” 0 Hz â€” 31 GW DESCONECTADOS
         </div>
       )}
       </div>
@@ -369,7 +367,7 @@ const FrequencyTimeline = () => {
               transition: 'all 0.2s ease'
             }}
           >
-            {zoomCollapse ? '← Vista General' : '⌕ Zoom Colapso'}
+            {zoomCollapse ? 'â† Vista General' : 'âŒ• Zoom Colapso'}
           </button>
         </div>
         <ResponsiveContainer width="100%" height={300}>
@@ -378,7 +376,6 @@ const FrequencyTimeline = () => {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
               dataKey="time" 
-              xAxisId="cat"
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
               angle={-45}
@@ -394,10 +391,9 @@ const FrequencyTimeline = () => {
               tickCount={5}
               ticks={[0, 0.5, 1.0, 1.5, 2.0]}
             />
-            <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s — Warning', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
-            <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s — Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s â€” Warning', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
+            <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s â€” Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
             <Bar 
-              xAxisId="cat"
               dataKey="rocof" 
               fill="var(--forensic-amber-primary)"
               name={t.rocofTitle}
@@ -443,14 +439,14 @@ const FrequencyTimeline = () => {
         {currentLocale === 'es' && (
           <>
             <p>
-              El apagón del 28 de abril fue un colapso <strong>impulsado por sobretensión</strong>, no por subfrecuencia.
-              La pérdida de 2,200 MW de generación renovable en el sur de España eliminó una sumidero de potencia reactiva.
-              Simultáneamente, el efecto Ferranti en las líneas de transmisión descargadas causó un pico de voltaje a 435+ kV.
+              El apagÃ³n del 28 de abril fue un colapso <strong>impulsado por sobretensiÃ³n</strong>, no por subfrecuencia.
+              La pÃ©rdida de 2,200 MW de generaciÃ³n renovable en el sur de EspaÃ±a eliminÃ³ una sumidero de potencia reactiva.
+              SimultÃ¡neamente, el efecto Ferranti en las lÃ­neas de transmisiÃ³n descargadas causÃ³ un pico de voltaje a 435+ kV.
             </p>
             <p>
-              La <strong>paradoja del UFLS</strong>: la reducción de carga en el UFLS redujo las corrientes de línea, 
-              intensificando el efecto Ferranti y empeorando el colapso de voltaje. La arquitectura de protección legada 
-              no podía interpretar correctamente las firmas de falta distorsionadas de recursos basados en inversores.
+              La <strong>paradoja del UFLS</strong>: la reducciÃ³n de carga en el UFLS redujo las corrientes de lÃ­nea, 
+              intensificando el efecto Ferranti y empeorando el colapso de voltaje. La arquitectura de protecciÃ³n legada 
+              no podÃ­a interpretar correctamente las firmas de falta distorsionadas de recursos basados en inversores.
             </p>
           </>
         )}
@@ -474,3 +470,4 @@ const FrequencyTimeline = () => {
 };
 
 export default FrequencyTimeline;
+
