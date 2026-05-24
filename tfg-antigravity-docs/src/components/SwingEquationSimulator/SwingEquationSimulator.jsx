@@ -8,11 +8,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ComposedChart, BarChart, Bar } from 'recharts';
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
 import GlitchTitle from '../GlitchTitle';
 
 import styles from './SwingEquationSimulator.module.css';
+import params from '@site/static/data/swing_equation_params.json';
 
 
 
@@ -63,28 +62,6 @@ const SwingEquationSimulator = () => {
   const rocofHistoryRef = useRef([]);
 
   const previousFreqRef = useRef(50.0);
-
-
-
-  // ============ Load configuration JSON ============
-
-  const [params, setParams] = useState(null);
-
-
-
-  const dataUrl = useBaseUrl('/data/swing_equation_params.json');
-
-  useEffect(() => {
-
-    fetch(dataUrl)
-
-      .then((res) => res.json())
-
-      .then((data) => setParams(data))
-
-      .catch((err) => console.error('Error loading swing equation params:', err));
-
-  }, [dataUrl]);
 
 
 
@@ -395,10 +372,6 @@ const SwingEquationSimulator = () => {
     }
 
   };
-
-
-
-  if (!params) return <div>Loading simulator configuration...</div>;
 
 
 

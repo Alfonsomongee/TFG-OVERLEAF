@@ -193,6 +193,16 @@ const FrequencyTimeline = () => {
     rocof: d.rocof ?? 0
   }));
 
+  const getSmoothX = (dataArray, timeVal) => {
+    if (!dataArray || dataArray.length === 0) return 0;
+    const nextIndex = dataArray.findIndex(d => d.t > timeVal);
+    if (nextIndex === 0) return 0;
+    if (nextIndex === -1) return dataArray.length - 1;
+    const prevIndex = nextIndex - 1;
+    const factor = (timeVal - dataArray[prevIndex].t) / (dataArray[nextIndex].t - dataArray[prevIndex].t);
+    return prevIndex + factor;
+  };
+
   if (hasError) {
     return (
       <div className={styles.container} style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -274,18 +284,19 @@ const FrequencyTimeline = () => {
   
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
-              dataKey="t" 
-              type="number"
-              domain={['dataMin', 'dataMax']}
+              dataKey="time" 
+              xAxisId="cat"
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
-              tickFormatter={(val) => {
-                const pt = filteredData.find(d => d.t === val);
-                return pt ? pt.time : val;
-              }}
               angle={-45}
               textAnchor="end"
               height={80}
+            />
+            <XAxis 
+              type="number" 
+              domain={[0, lineChartData.length - 1]} 
+              xAxisId="num" 
+              hide={true} 
             />
             <YAxis 
               domain={[46, 51]}
@@ -307,6 +318,7 @@ const FrequencyTimeline = () => {
 
           {/* Main frequency line */}
           <Line 
+            xAxisId="cat"
             type="monotone" 
             dataKey="freq" 
             stroke="var(--forensic-amber-primary)" 
@@ -317,7 +329,7 @@ const FrequencyTimeline = () => {
           />
 
           {/* Current time marker (vertical line) */}
-          {isPlaying && <ReferenceLine x={currentTime} stroke="var(--forensic-amber-primary)" strokeWidth={1} opacity={0.8} />}
+          {isPlaying && <ReferenceLine xAxisId="num" x={getSmoothX(lineChartData, currentTime)} stroke="var(--forensic-amber-primary)" strokeWidth={1} opacity={0.8} />}
 
           <Tooltip 
             contentStyle={{ backgroundColor: '#0d0f1a', border: '1px solid #ffaa33', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
@@ -365,15 +377,10 @@ const FrequencyTimeline = () => {
             <Legend verticalAlign="top" height={36} wrapperStyle={{ color: 'var(--forensic-text-secondary)', fontFamily: 'var(--telemetry-font)', fontSize: '12px' }} />
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" vertical={false} />
             <XAxis 
-              dataKey="t" 
-              type="number"
-              domain={['dataMin', 'dataMax']}
+              dataKey="time" 
+              xAxisId="cat"
               stroke="rgba(255, 170, 0, 0.4)"
               tick={{ fill: "rgba(255, 210, 150, 0.6)", fontSize: 11, fontFamily: 'monospace' }}
-              tickFormatter={(val) => {
-                const pt = rocofChartData.find(d => d.t === val);
-                return pt ? pt.time : val;
-              }}
               angle={-45}
               textAnchor="end"
               height={80}
@@ -390,6 +397,7 @@ const FrequencyTimeline = () => {
             <ReferenceLine y={0.5} stroke="#cc7700" strokeDasharray="8 4" strokeWidth={1} label={{ value: '0.5 Hz/s — Warning', position: 'insideTopRight', fill: '#cc7700', fontSize: 9, fontFamily: 'monospace' }} />
             <ReferenceLine y={1.0} stroke="#cc2222" strokeDasharray="8 4" strokeWidth={1} label={{ value: '1.0 Hz/s — Point of No Return', position: 'insideTopRight', fill: '#cc2222', fontSize: 9, fontFamily: 'monospace' }} />
             <Bar 
+              xAxisId="cat"
               dataKey="rocof" 
               fill="var(--forensic-amber-primary)"
               name={t.rocofTitle}
