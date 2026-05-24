@@ -62,6 +62,26 @@ const sidebars = {
         'galeria-graficas',
       ],
     },
+    {
+      type: 'category',
+      label: '📚 Documentos y Referencias',
+      collapsible: true,
+      collapsed: true,
+      items: [
+        'documentos',
+        'uso-ia',
+        {
+          type: 'doc',
+          id: 'glosario',
+          label: 'Glosario Técnico',
+        },
+        {
+          type: 'doc',
+          id: 'referencias',
+          label: 'Referencias Bibliográficas',
+        },
+      ],
+    },
 
     {
       type: 'category',
