@@ -1,0 +1,407 @@
+{
+
+&#x20; "swing_equation": {
+
+&#x20;   "form": "linearized_frequency_domain",
+
+&#x20;   "canonical_equation": "2H * d(Δf)/dt + D*Δf = ΔP",
+
+&#x20;   "description": "Single-machine equivalent (Center of Inertia model). Δf in per-unit, ΔP in % of load, H in seconds, D in pu.",
+
+&#x20;   "numerical_integration": {
+
+&#x20;     "method": "Explicit Euler",
+
+&#x20;     "step_size_ms": 10,
+
+&#x20;     "updates_per_second": 100,
+
+&#x20;     "stability_domain": "H >= 1.0s, D <= 3.0pu, stable for all valid slider ranges"
+
+&#x20;   },
+
+&#x20;   "equations": {
+
+&#x20;     "frequency_derivative": "d(Δf)/dt = (1/2H) * (ΔP - D*Δf)",
+
+&#x20;     "frequency_update": "f[n+1] = 50 * (1 + Δf[n+1])",
+
+&#x20;     "rocof": "ROCOF = d(f)/dt (Hz/s)",
+
+&#x20;     "power_imbalance": "ΔP_pu = (P_lost_mw) / (P_base_mw) * 100"
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "sliders": {
+
+&#x20;   "H_inertia": {
+
+&#x20;     "label_es": "Inercia del Sistema (H)",
+
+&#x20;     "label_en": "System Inertia (H)",
+
+&#x20;     "unit": "seconds",
+
+&#x20;     "min": 1.0,
+
+&#x20;     "max": 8.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default_value": 2.45,
+
+&#x20;     "iberian_28A_value": 2.45,
+
+&#x20;     "historical_thermal_grid": 5.0,
+
+&#x20;     "notes": "Inertia constant H is the ratio of kinetic energy stored in rotating masses to the system base power. Lower H = faster frequency drop = higher ROCOF. The Iberian grid on 28A was critically low.",
+
+&#x20;     "reference_values": {
+
+&#x20;       "nuclear_plant_single": 7.0,
+
+&#x20;       "ccgt_single": 6.5,
+
+&#x20;       "hydro_single": 3.5,
+
+&#x20;       "wind_type4": 0,
+
+&#x20;       "solar_pv": 0,
+
+&#x20;       "synchronous_condenser": 1.5,
+
+&#x20;       "iberian_2025_all_synchronous": 8.0,
+
+&#x20;       "iberian_2025_78_percent_renewable": 2.45,
+
+&#x20;       "nordic_minimum_safe": 3.5
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "delta_p_power_loss": {
+
+&#x20;     "label_es": "Pérdida de Potencia (ΔP)",
+
+&#x20;     "label_en": "Power Loss (ΔP)",
+
+&#x20;     "unit": "% of total load",
+
+&#x20;     "min": 0,
+
+&#x20;     "max": 50,
+
+&#x20;     "step": 0.5,
+
+&#x20;     "default_value": 8.8,
+
+&#x20;     "iberian_28A_value": 8.8,
+
+&#x20;     "notes": "2,200 MW loss out of 25,000 MW = 8.8%. Represents a major generation trip. Higher ΔP = steeper frequency decline.",
+
+&#x20;     "historical_references": {
+
+&#x20;       "typical_large_generator_loss": 3,
+
+&#x20;       "multiple_generator_loss_scenario": 8.8,
+
+&#x20;       "continental_blackout_scenario": 20,
+
+&#x20;       "total_system_failure": 50
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "D_damping": {
+
+&#x20;     "label_es": "Amortiguamiento (D)",
+
+&#x20;     "label_en": "Damping Factor (D)",
+
+&#x20;     "unit": "pu (per-unit)",
+
+&#x20;     "min": 0.5,
+
+&#x20;     "max": 3.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default_value": 1.5,
+
+&#x20;     "iberian_28A_value": 1.5,
+
+&#x20;     "notes": "Damping represents frequency-dependent load (induction motors slowing down at lower freq) and generator AVR response. Higher D = faster recovery from transient, but does NOT prevent steady-state frequency nadir if ΔP is sustained.",
+
+&#x20;     "typical_ranges": {
+
+&#x20;       "low_damping_weak_grid": 0.8,
+
+&#x20;       "baseline_standard": 1.5,
+
+&#x20;       "high_damping_strong_grid": 2.5
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "synthetic_inertia_gain": {
+
+&#x20;     "label_es": "Inercia Sintética (FFR Gain)",
+
+&#x20;     "label_en": "Synthetic Inertia (FFR Gain)",
+
+&#x20;     "unit": "pu",
+
+&#x20;     "min": 0,
+
+&#x20;     "max": 5.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default_value": 0,
+
+&#x20;     "notes": "Simulates inverter-based Fast Frequency Response (FFR) control loops. Positive values inject active power proportional to df/dt, mimicking inertia. CAVEAT: In weak grids (low SCR), high FFR gains cause subsynchronous oscillations and control instability.",
+
+&#x20;     "pedagogy": "User will discover that synthetic inertia has limits. Too high a gain in a weak grid (simulated via low SCR toggle) causes instability rather than helping."
+
+&#x20;   },
+
+&#x20;   "scr_weak_grid_toggle": {
+
+&#x20;     "label_es": "Red Débil (SCR < 2.0)",
+
+&#x20;     "label_en": "Weak Grid (SCR < 2.0)",
+
+&#x20;     "type": "boolean",
+
+&#x20;     "default_value": false,
+
+&#x20;     "notes": "When enabled, simulates the electrical characteristics of low Short Circuit Ratio (SCR < 2.0). In weak grids, synthetic inertia control loops oscillate wildly, demonstrating the paradox that higher FFR gains can destabilize a low-SCR network.",
+
+&#x20;     "weak_grid_behavior": "If synthetic_inertia_gain > 2.0 AND scr_weak_grid is TRUE, then frequency oscillates with subsynchronous frequency \~0.63 Hz, matching the Granada node oscillation observed pre-blackout."
+
+&#x20;   },
+
+&#x20;   "ufls_stage_count": {
+
+&#x20;     "label_es": "Etapas de UFLS Activas",
+
+&#x20;     "label_en": "Active UFLS Stages",
+
+&#x20;     "unit": "integer (1-6)",
+
+&#x20;     "min": 1,
+
+&#x20;     "max": 6,
+
+&#x20;     "step": 1,
+
+&#x20;     "default_value": 6,
+
+&#x20;     "notes": "Number of automatic UFLS stages enabled. Each stage fires at lower frequency thresholds (49.0, 48.7, 48.4, 48.0 Hz for Spain). User can disable stages to observe UFLS limits."
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "ufls_configuration": {
+
+&#x20;   "spain_ree_po_1_6": [
+
+&#x20;     {
+
+&#x20;       "stage": 1,
+
+&#x20;       "frequency_threshold_hz": 49.0,
+
+&#x20;       "load_shed_percent": 15,
+
+&#x20;       "delay_ms": 200,
+
+&#x20;       "zone": "Andalucía, Extremadura, Castilla-La Mancha"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 2,
+
+&#x20;       "frequency_threshold_hz": 48.7,
+
+&#x20;       "load_shed_percent": 15,
+
+&#x20;       "delay_ms": 100,
+
+&#x20;       "zone": "Galicia, Asturias"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 3,
+
+&#x20;       "frequency_threshold_hz": 48.4,
+
+&#x20;       "load_shed_percent": 10,
+
+&#x20;       "delay_ms": 100,
+
+&#x20;       "zone": "Madrid, Castilla y León"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 4,
+
+&#x20;       "frequency_threshold_hz": 48.0,
+
+&#x20;       "load_shed_percent": 10,
+
+&#x20;       "delay_ms": 100,
+
+&#x20;       "zone": "All remaining"
+
+&#x20;     }
+
+&#x20;   ],
+
+&#x20;   "portugal_ren_e_redes": [
+
+&#x20;     {
+
+&#x20;       "stage": 1,
+
+&#x20;       "frequency_threshold_hz": 49.0,
+
+&#x20;       "load_shed_percent": 5.5,
+
+&#x20;       "delay_ms": 200
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 2,
+
+&#x20;       "frequency_threshold_hz": 48.8,
+
+&#x20;       "load_shed_percent": 5.7,
+
+&#x20;       "delay_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 3,
+
+&#x20;       "frequency_threshold_hz": 48.6,
+
+&#x20;       "load_shed_percent": 5.7,
+
+&#x20;       "delay_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 4,
+
+&#x20;       "frequency_threshold_hz": 48.4,
+
+&#x20;       "load_shed_percent": 5.7,
+
+&#x20;       "delay_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 5,
+
+&#x20;       "frequency_threshold_hz": 48.2,
+
+&#x20;       "load_shed_percent": 5.5,
+
+&#x20;       "delay_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 6,
+
+&#x20;       "frequency_threshold_hz": 48.0,
+
+&#x20;       "load_shed_percent": 9.3,
+
+&#x20;       "delay_ms": 100
+
+&#x20;     }
+
+&#x20;   ],
+
+&#x20;   "total_design_shed_capacity_percent": 45,
+
+&#x20;   "paradox_note": "UFLS successfully reduces active power demand to restore frequency. However, in the Iberian 28A event, this load shedding unexpectedly worsened voltage stability (Ferranti effect), causing additional generation losses and accelerating collapse."
+
+&#x20; },
+
+&#x20; "rocof_protection_thresholds": {
+
+&#x20;   "description": "ROCOF (dF/dt in Hz/s) triggers various protection actions. The simulator shows these as reference lines.",
+
+&#x20;   "threshold_0_5_hz_s": {
+
+&#x20;     "value": 0.5,
+
+&#x20;     "meaning": "Legacy distributed generation anti-islanding relays may begin to trip (if not firmware-updated)",
+
+&#x20;     "color": "yellow"
+
+&#x20;   },
+
+&#x20;   "threshold_1_0_hz_s": {
+
+&#x20;     "value": 1.0,
+
+&#x20;     "meaning": "POINT OF NO RETURN. Synchronous machine pole-slip and self-protective trips begin. ROCOF > 1.0 Hz/s is physically catastrophic for rotating machinery.",
+
+&#x20;     "event_on_28A": "ROCOF exceeded 1.0 Hz/s at 12:33:20 CEST, ensuring system collapse",
+
+&#x20;     "color": "red"
+
+&#x20;   },
+
+&#x20;   "threshold_2_0_hz_s": {
+
+&#x20;     "value": 2.0,
+
+&#x20;     "meaning": "ENTSO-E recommended withstand limit for all dispersed generation. Anything above is system-level emergency.",
+
+&#x20;     "color": "darkred"
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "physical_constants": {
+
+&#x20;   "nominal_frequency": 50,
+
+&#x20;   "angular_frequency_rad_s": 314.159,
+
+&#x20;   "iberian_base_power_mw": 32000,
+
+&#x20;   "iberian_demand_spain_mw": 25100,
+
+&#x20;   "iberian_demand_portugal_mw": 5900
+
+&#x20; }
+
+}

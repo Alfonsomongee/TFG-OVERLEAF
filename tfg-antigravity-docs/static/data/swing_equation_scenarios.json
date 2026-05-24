@@ -1,0 +1,183 @@
+[
+
+&#x20; {
+
+&#x20;   "id": "normal_operation",
+
+&#x20;   "name_es": "Operación Normal",
+
+&#x20;   "name_en": "Normal Operation",
+
+&#x20;   "description_es": "Grid estable con parámetros históricos de 2010. Sin presión en el sistema.",
+
+&#x20;   "description_en": "Stable grid with legacy 2010 parameters. No system stress.",
+
+&#x20;   "preset_values": {
+
+&#x20;     "H": 5.0,
+
+&#x20;     "delta_p": 0,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic_inertia": 0,
+
+&#x20;     "weak_grid": false,
+
+&#x20;     "ufls_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected_frequency_steady_state_hz": 50.0,
+
+&#x20;   "teaching_point": "Reference baseline. No dynamics."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "iberian_28A_conditions",
+
+&#x20;   "name_es": "Condiciones del 28A Ibérico",
+
+&#x20;   "name_en": "Iberian 28A Conditions",
+
+&#x20;   "description_es": "Replicar exactamente las condiciones del 28 de abril: baja inercia, 78% renovables, penetración solar extrema.",
+
+&#x20;   "description_en": "Replicate exactly the April 28 conditions: low inertia, 78% renewables, extreme solar penetration.",
+
+&#x20;   "preset_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic_inertia": 0,
+
+&#x20;     "weak_grid": true,
+
+&#x20;     "ufls_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected_frequency_nadir_hz": 47.5,
+
+&#x20;   "rocof_peak_hz_s": 1.05,
+
+&#x20;   "outcome": "Total system collapse. ROCOF exceeds 1.0 Hz/s. Synchronous machines trip. Cascade inevitable.",
+
+&#x20;   "teaching_point": "The exact conditions that led to the real blackout. Demonstrate why it was unstoppable."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "can_we_save_it_with_more_inertia",
+
+&#x20;   "name_es": "¿Salvable con Más Inercia?",
+
+&#x20;   "name_en": "Can We Save It With More Inertia?",
+
+&#x20;   "description_es": "Mismo evento (28A) pero con inercia aumentada a 4.5s (como si hubiera más plantas nucleares online).",
+
+&#x20;   "description_en": "Same event (28A) but with inertia increased to 4.5s (as if more nuclear plants were online).",
+
+&#x20;   "preset_values": {
+
+&#x20;     "H": 4.5,
+
+&#x20;     "delta_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic_inertia": 0,
+
+&#x20;     "weak_grid": true,
+
+&#x20;     "ufls_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected_frequency_nadir_hz": 48.8,
+
+&#x20;   "rocof_peak_hz_s": 0.65,
+
+&#x20;   "outcome": "Slower frequency decline. ROCOF stays below 1.0 Hz/s, avoiding pole-slip trips. UFLS can arrest the collapse.",
+
+&#x20;   "teaching_point": "Inertia delays the cascade but cannot prevent it without reserves. Shows why inercia is necessary but not sufficient."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "synthetic_inertia_discovery",
+
+&#x20;   "name_es": "Límites de la Inercia Sintética",
+
+&#x20;   "name_en": "Synthetic Inertia Limits",
+
+&#x20;   "description_es": "Baja inercia física (2.45s) pero con alto FFR sintético. En red débil, causa inestabilidad.",
+
+&#x20;   "description_en": "Low physical inertia (2.45s) but high synthetic FFR. In weak grid, causes instability.",
+
+&#x20;   "preset_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic_inertia": 3.0,
+
+&#x20;     "weak_grid": true,
+
+&#x20;     "ufls_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected_behavior": "Frequency oscillates violently at subsynchronous frequency (\~0.63 Hz). Simulating PLL instability. FFR makes it worse, not better.",
+
+&#x20;   "rocof_characteristic": "ROCOF oscillates wildly. Amplitude increases. User sees control instability.",
+
+&#x20;   "teaching_point": "Synthetic inertia is NOT a drop-in replacement for physical inertia. In weak grids, high FFR gains cause the exact 0.63 Hz oscillation observed pre-blackout."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "ufls_timing_test",
+
+&#x20;   "name_es": "Timing del UFLS",
+
+&#x20;   "name_en": "UFLS Timing Test",
+
+&#x20;   "description_es": "Explorar cuándo el UFLS puede salvar el sistema y cuándo es demasiado tarde.",
+
+&#x20;   "description_en": "Explore when UFLS can save the system and when it is too late.",
+
+&#x20;   "preset_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic_inertia": 0,
+
+&#x20;     "weak_grid": false,
+
+&#x20;     "ufls_stages": 6
+
+&#x20;   },
+
+&#x20;   "outcome": "With UFLS fully enabled, frequency arrest at \~48.2 Hz. Without UFLS, total collapse.",
+
+&#x20;   "teaching_point": "UFLS is the last line of defense. But in 28A, voltage instability rendered UFLS ineffective. Demonstrates non-linear coupling."
+
+&#x20; }
+
+]

@@ -1,0 +1,365 @@
+```mdx
+
+---
+
+title: "06. Simulador Interactivo: Ecuación del Swing"
+
+sidebar_position: 6
+
+---
+
+
+
+import SwingEquationSimulator from '@site/src/components/SwingEquationSimulator/SwingEquationSimulator';
+
+
+
+\# Simulador Interactivo: La Ecuación del Swing
+
+
+
+\## Introducción Teórica
+
+
+
+La **Ecuación del Swing** es el modelo fundamental de la estabilidad transitoria de sistemas eléctricos. Describe cómo la frecuencia de la red cambia en respuesta a un desbalance entre potencia suministrada (P_m) y potencia demandada (P_e).
+
+
+
+\### La Forma Linealizada (Dominio de Frecuencia)
+
+
+
+Para un simulador educativo en tiempo real, usamos la forma linealizada de la ecuación del Swing:
+
+
+
+$$
+
+2H \\frac{d(\\Delta f)}{dt} + D \\Delta f = \\Delta P
+
+$$
+
+
+
+**Dónde:**
+
+- $H$ = Constante de inercia equivalente del sistema (segundos)
+
+- $\\Delta f$ = Desviación de frecuencia en pu: $\\Delta f = (f - 50) / 50$
+
+- $D$ = Factor de amortiguamiento (pu)
+
+- $\\Delta P$ = Desbalance de potencia activa (% de la carga)
+
+
+
+\### Interpretación Física
+
+
+
+- **$H$ (inercia)** determina la **rapidez inicial** de cambio de frecuencia (ROCOF). Menor H = ROCOF más alto = colapso más rápido.
+
+- **$D$ (amortiguamiento)** determina el **estado estacionario** final. Mayor D = menor caída de frecuencia en estado permanente (pero solo si las reservas primarias pueden responder).
+
+
+
+**Punto crítico:** La inercia no previene el colapso; solo lo retrasa. Sin potencia activa disponible (ΔP negativo y sostenido), el sistema colapsará independientemente de H.
+
+
+
+---
+
+
+
+\## Simulador Interactivo
+
+
+
+Ajusta los parámetros físicos con los sliders y haz clic en "SIMULAR" para observar la dinámica en tiempo real. Los gráficos muestran la frecuencia y el ROCOF a lo largo del tiempo.
+
+
+
+<SwingEquationSimulator />
+
+
+
+---
+
+
+
+\## Parámetros Explicados
+
+
+
+\### Inercia del Sistema (H)
+
+
+
+El valor de $H$ en segundos representa cuánto tiempo podría una máquina síncrona suministrar su potencia nominal extrayendo solo su energía cinética almacenada.
+
+
+
+**Valores típicos:**
+
+
+
+| Tecnología | H (segundos) |
+
+|---|---|
+
+| Generador nuclear grande | 8–9 |
+
+| Turbina de gas (CCGT) | 6–7 |
+
+| Hidroeléctrica | 3–4 |
+
+| Turbina eólica (Tipo 4, converter completo) | 0 |
+
+| Solar PV | 0 |
+
+| Condensador síncrono | 1–2 |
+
+
+
+**En el 28 de abril de 2025:**
+
+- Sistema ibérico con 78% renovables: **H = 2.45 segundos** (crítico)
+
+- Sistema ibérico histórico (2015, más carbón/nuclear): **H ≈ 5 segundos** (seguro)
+
+
+
+\### Pérdida de Potencia (ΔP)
+
+
+
+Representa el porcentaje de carga total que se pierde repentinamente. En el 28A, la pérdida de 2,200 MW en un sistema de 25,000 MW = **8.8%**.
+
+
+
+Esta es la "magnitud del disturbio". Mayor ΔP = mayor ROCOF = colapso más rápido.
+
+
+
+\### Amortiguamiento (D)
+
+
+
+Representa dos efectos:
+
+1\. **Carga dependiente de frecuencia:** Los motores de inducción consumen menos potencia a menor frecuencia, proporcionando un "alivio automático"
+
+2\. **Respuesta del regulador de voltaje (AVR):** Las máquinas síncronas ajustan automáticamente su salida ante cambios de frecuencia
+
+
+
+Valores típicos: **D = 1.5 pu** (baseline)
+
+
+
+\### Inercia Sintética (FFR - Fast Frequency Response)
+
+
+
+Los inversores modernos pueden programarse para inyectar potencia activa en proporción a la tasa de cambio de frecuencia:
+
+
+
+$$
+
+P_{FFR} = -K_{FFR} \\frac{df}{dt}
+
+$$
+
+
+
+Esto imita artificialmente el comportamiento inercial de una máquina síncrona. **Pero con una caverna importante:** En redes débiles (bajo SCR), las altas ganancias FFR causan inestabilidad de control en lugar de ayudar.
+
+
+
+\### Red Débil (SCR < 2.0)
+
+
+
+**Short Circuit Ratio (SCR)** mide la "fortaleza" de la red:
+
+
+
+$$
+
+\\text{SCR} = \\frac{S_{cc}}{P_n}
+
+$$
+
+
+
+- **SCR > 3:** Red fuerte (voltaje estable)
+
+- **2 < SCR < 3:** Red media
+
+- **SCR < 2:** Red débil (voltaje inestable)
+
+- **SCR < 1.5:** Red muy débil (inestabilidad del PLL)
+
+
+
+En el sur de España (Granada, Badajoz), el SCR era < 2.0 debido a la altísima concentración de solar sin soporte síncrono.
+
+
+
+---
+
+
+
+\## Las Tres Interacciones Pedagógicas Clave
+
+
+
+\### 1️⃣ **El Retraso de la Inercia**
+
+
+
+**Acción:** Carga "Condiciones 28A" y observa el ROCOF ≈ 0.9 Hz/s. Luego carga "+ Inercia" (H=4.5s) y observa el mismo evento.
+
+
+
+**Observación:** El ROCOF se reduce a ≈ 0.6 Hz/s, pero la frecuencia sigue cayendo y alcanza aproximadamente el mismo valor mínimo.
+
+
+
+**Lección:** **La inercia no es una batería.** No previene el colapso; solo retrasa cuándo ocurre, comprando tiempo para que las reservas primarias respondan. Sin potencia disponible, el colapso es inevitable.
+
+
+
+---
+
+
+
+\### 2️⃣ **La Trampa de la Inercia Sintética en Redes Débiles**
+
+
+
+**Acción:** Carga "FFR Sintética" con "Red Débil" habilitada. Verás que el ROCOF inicial se reduce gracias a la inyección FFR. Pero...
+
+
+
+**Observación:** La frecuencia comienza a **oscilar violentamente** a \~0.63 Hz, el rango subsincrónico. El sistema se vuelve más inestable, no menos.
+
+
+
+**Lección:** **El control del inversor tiene límites.** En redes débiles, los PLL no pueden rastrear correctamente el voltaje cuando el propio inversor está inyectando potencia. Esto crea un bucle de realimentación que causa la misma instabilidad de 0.63 Hz observada en Granada antes del apagón.
+
+
+
+---
+
+
+
+\### 3️⃣ **Los Límites del UFLS**
+
+
+
+**Acción:** Ejecuta "Condiciones 28A". Verás que UFLS se activa en etapas (49.0 Hz, luego 48.7 Hz, etc.) reduciendo la carga.
+
+
+
+**Observación:** Cuando ROCOF excede 1.0 Hz/s y la frecuencia cae por debajo de 48.0 Hz, incluso el UFLS máximo no detiene el colapso.
+
+
+
+**Lección:** **UFLS es la última línea de defensa, pero tiene un punto de quiebre.** Una vez que la inercia es tan baja que ROCOF > 1.0 Hz/s, las máquinas síncronas se desenganchan por "pole-slip" (pérdida de sincronismo). En ese punto, el UFLS está jugando un juego perdido.
+
+
+
+---
+
+
+
+\## Ecuación del Swing: Forma Completa (Referencia)
+
+
+
+Para los estudiosos, aquí está la forma no lineal completa:
+
+
+
+$$
+
+\\frac{d^2 \\delta}{dt^2} = \\frac{\\omega_s}{2H}(P_m - P_e(\\delta) - D\\frac{d\\delta}{dt})
+
+$$
+
+
+
+Donde $P_e(\\delta) = \\frac{EV}{X}\\sin(\\delta)$ es la potencia eléctrica en función del ángulo del rotor $\\delta$.
+
+
+
+El simulador utiliza una versión linealizada que omite el ángulo y se enfoca directamente en la frecuencia, que es lo pedagógicamente más importante.
+
+
+
+---
+
+
+
+\## Referencias
+
+
+
+- Kundur, P. (1994). *Power System Stability and Control*. EPRI.
+
+- ENTSO-E Expert Panel Final Report (2026). Grid Incident in Spain and Portugal, 28 April 2025.
+
+- IEEE Working Group on Frequency Stability (2023). Inertia Requirements in Low-Inertia Grids.
+
+```
+
+
+
+---
+
+
+
+\## PART 4 — Translations
+
+
+
+Create translation stubs for all 6 locales (same as Week 1).
+
+
+
+---
+
+
+
+\## PART 5 — Styling Constraints
+
+
+
+- Dark theme, consistent with Week 1 FrequencyTimeline
+
+- Green (#00ff88) for safe states
+
+- Yellow (#FFD700) for warnings
+
+- Red (#cc0000, #ff4444) for critical/collapse
+
+- Monospace font for readouts (Courier New)
+
+- Slider styling with `accent-color: #00ff88`
+
+- Smooth transitions, no heavy animations on the simulator loop itself
+
+
+
+---
+
+
+
+\## PART 6 — Commit
+
+
+
+```bash
