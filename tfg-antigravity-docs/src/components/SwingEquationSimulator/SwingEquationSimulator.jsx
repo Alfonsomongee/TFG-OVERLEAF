@@ -20,13 +20,15 @@ const SwingEquationSimulator = () => {
   const [frequency, setFrequency] = useState(50.0);
   const [deltaF, setDeltaF] = useState(0);
   const [rocof, setRocof] = useState(0);
-  const [historyData, setHistoryData] = useState(() => {
-    const initial = [];
-    for (let i = -50; i <= 0; i++) {
-      initial.push({ time: i / 10, frequency: 50.0, rocof: 0 });
-    }
-    return initial;
-  });
+  const [historyData, setHistoryData] = useState([
+    {
+      time: 0,
+      frequency: 50.0,
+      rocof: 0,
+      deltaF: 0,
+      loadShed: 0,
+    },
+  ]);
   const [currentUflsStage, setCurrentUflsStage] = useState(0);
   const [systemStatus, setSystemStatus] = useState('NORMAL');
   const [loadShedAmount, setLoadShedAmount] = useState(0); // Total load shed (%) for display
@@ -132,7 +134,14 @@ const SwingEquationSimulator = () => {
     };
     
     freqHistoryRef.current.push(dataPoint);
-    if (freqHistoryRef.current.length > 300) freqHistoryRef.current.shift();
+    
+    // Mantener últimos 27 segundos
+    const MAX_POINTS = 2700;
+    
+    if (freqHistoryRef.current.length > MAX_POINTS) {
+      freqHistoryRef.current.shift();
+    }
+    
     setHistoryData([...freqHistoryRef.current]);
   };
   
@@ -143,7 +152,7 @@ const SwingEquationSimulator = () => {
     simulationIntervalRef.current = setInterval(() => {
       setSimulationTime((prevTime) => {
         const newTime = prevTime + 0.01;
-        if (newTime > 120) {
+        if (newTime > 27) {
           setIsRunning(false);
           return prevTime;
         }
@@ -158,26 +167,32 @@ const SwingEquationSimulator = () => {
   // ============ Control Handlers ============
   const handleReset = () => {
     setIsRunning(false);
+
     setSimulationTime(0);
     setFrequency(50.0);
     setDeltaF(0);
     setRocof(0);
+
     setCurrentUflsStage(0);
     setSystemStatus('NORMAL');
     setLoadShedAmount(0);
-    
-    // Reset refs
-    freqHistoryRef.current = [];
+
     previousFreqRef.current = 50.0;
+
     maxUflsStageRef.current = 0;
     cumulativeShedRef.current = 0;
-    
-    // Rebuild initial history
-    const initial = [];
-    for (let i = -50; i <= 0; i++) {
-      initial.push({ time: i / 10, frequency: 50.0, rocof: 0 });
-    }
-    setHistoryData(initial);
+
+    const initialPoint = {
+      time: 0,
+      frequency: 50.0,
+      rocof: 0,
+      deltaF: 0,
+      loadShed: 0,
+    };
+
+    freqHistoryRef.current = [initialPoint];
+
+    setHistoryData([initialPoint]);
   };
   
   const loadPreset = (presetId) => {
@@ -344,13 +359,19 @@ const SwingEquationSimulator = () => {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-            <XAxis 
-              dataKey="time" 
-              type="number" 
-              domain={['dataMin', 'dataMax']} 
-              tickCount={7} 
+            <XAxis
+              dataKey="time"
+              type="number"
+              domain={[0, 27]}
+              ticks={[0, 3, 6, 9, 12, 15, 18, 21, 24, 27]}
               stroke="rgba(255,255,255,0.5)"
-              label={{ value: 'Tiempo (s)', position: 'bottom', offset: 10, fill: 'rgba(255,255,255,0.7)' }}
+              tickFormatter={(value) => `${value}s`}
+              label={{
+                value: 'Tiempo (s)',
+                position: 'bottom',
+                offset: 10,
+                fill: 'rgba(255,255,255,0.7)',
+              }}
             />
             <YAxis domain={[45, 50.5]} stroke="rgba(255,255,255,0.5)" label={{ value: 'Hz', angle: -90, position: 'insideLeft', fill: 'rgba(255,255,255,0.7)' }} />
             <ReferenceLine y={50.0} stroke="white" strokeDasharray="5 5" opacity={0.3} label="Nominal" />
@@ -358,8 +379,15 @@ const SwingEquationSimulator = () => {
             <ReferenceLine y={49.0} stroke="#ff6644" strokeDasharray="5 5" label="Etapa 1" />
             <ReferenceLine y={48.0} stroke="#cc0000" strokeDasharray="5 5" label="Colapso" />
             <Line 
-              type="monotone" 
+              type="linear" 
               dataKey="frequency" 
+              stroke="url(#freqGradient)"
+              dot={false}
+              strokeWidth={2}
+              isAnimationActive={false}
+              name="Frecuencia"
+              connectNulls
+            />
               stroke="url(#freqGradient)"
               dot={false}
               strokeWidth={2}
@@ -381,13 +409,19 @@ const SwingEquationSimulator = () => {
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={historyData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-            <XAxis 
-              dataKey="time" 
-              type="number" 
-              domain={['dataMin', 'dataMax']} 
-              tickCount={7} 
+            <XAxis
+              dataKey="time"
+              type="number"
+              domain={[0, 27]}
+              ticks={[0, 3, 6, 9, 12, 15, 18, 21, 24, 27]}
               stroke="rgba(255,255,255,0.5)"
-              label={{ value: 'Tiempo (s)', position: 'bottom', offset: 10, fill: 'rgba(255,255,255,0.7)' }}
+              tickFormatter={(value) => `${value}s`}
+              label={{
+                value: 'Tiempo (s)',
+                position: 'bottom',
+                offset: 10,
+                fill: 'rgba(255,255,255,0.7)',
+              }}
             />
             <YAxis stroke="rgba(255,255,255,0.5)" label={{ value: 'Hz/s', angle: -90, position: 'insideLeft', fill: 'rgba(255,255,255,0.7)' }} />
             <ReferenceLine y={0.5} stroke="#FFD700" strokeDasharray="5 5" label="Alarma" />
@@ -449,3 +483,5 @@ const SwingEquationSimulator = () => {
 };
 
 export default SwingEquationSimulator;
+
+
