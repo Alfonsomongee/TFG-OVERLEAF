@@ -195,12 +195,6 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 12: DESCARGAS
-    {
-      type: 'doc',
-      id: 'documentos',
-      label: 'Descargas y Documentación',
-    },
 
     // BLOQUE 13: AUTOR
     {
