@@ -1,4 +1,4 @@
-@import './designTokens.css';
+﻿@import './designTokens.css';
 
 /* ============================================================
    TFG Apagón Ibérico 28A — Cyberpunk Editorial Custom CSS
@@ -180,26 +180,6 @@ code, pre, .number, .data {
   float: left; padding: 0.05em 0.1em 0 0;
   color: var(--accent-electric);
   text-shadow: 0 0 24px hsl(190 100% 60% / 0.4);
-}
-
-/* ============================================================
-   SIDEBAR & NAVIGATION
-   ============================================================ */
-
-.menu__link {
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-}
-
-.menu__link--active {
-  background-color: hsl(190 100% 60% / 0.15) !important;
-  color: var(--accent-electric) !important;
-  font-weight: 600;
-  box-shadow: inset 4px 0 0 var(--accent-electric);
-}
-
-.menu__list-item-collapsible:hover {
-  background-color: transparent;
 }
 
 /* ============================================================
@@ -822,89 +802,153 @@ html.zen-mode .zen-mode-icon-active {
   margin-top: 2rem;
 }
 
-/* ----------------------------------------------------------------
-   SIDEBAR VISUAL HIERARCHY
-   ---------------------------------------------------------------- */
+/* ════════════════════════════════════════════════════════════════
+   SIDEBAR MINIMALISM — Clean + Modern
+   ════════════════════════════════════════════════════════════════ */
 
-.sidebar {
+.menu {
   --ifm-font-family-base: 'JetBrains Mono', monospace;
+  padding: 0;
 }
 
-/* Items principales (no en categor�a) */
-.sidebar-item-intro,
-.sidebar-item-foundation,
-.sidebar-item-conclusion,
-.sidebar-item-downloads,
-.sidebar-item-author {
+/* Item base — sin decoración */
+.menu__list-item {
+  margin: 0;
+  padding: 0;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Links */
+.menu__link {
+  color: #E8E8E8;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 200ms ease;
+  position: relative;
+}
+
+.menu__link:hover {
+  background-color: rgba(255, 184, 0, 0.08);
+  color: #FFB800;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  margin: 12px 0;
 }
 
-/* Categor�as con espaciado visual */
-.sidebar-category-incident,
-.sidebar-category-technical {
-  margin-top: 24px;
-  margin-bottom: 24px;
-  padding: 12px 0;
-  border-left: 3px solid var(--forensic-amber-primary);
+.menu__link.menu__link--active {
+  color: #FFB800;
+  font-weight: 600;
+  background-color: rgba(255, 184, 0, 0.12);
+  box-shadow: inset -2px 0 0 #FFB800;
 }
 
-.sidebar-category-interactive {
-  margin-top: 24px;
-  margin-bottom: 24px;
-  padding: 12px 0;
-  background: rgba(255, 170, 0, 0.05);
-  border-left: 3px solid var(--forensic-amber-warning);
+/* Categorías — títulos */
+.menu__list-item-collapsible {
+  margin: 28px 0 12px 0; /* Espaciado jerárquico */
 }
 
-.sidebar-category-future {
-  margin-top: 24px;
-  margin-bottom: 24px;
-  padding: 12px 0;
-  border-left: 3px solid var(--forensic-amber-critical);
-}
-
-.sidebar-category-tools,
-.sidebar-category-european,
-.sidebar-category-reference,
-.sidebar-category-visualizations {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding: 8px 0;
-  opacity: 0.85;
-}
-
-/* Hover effects */
-.sidebar-item-intro:hover,
-.sidebar-category-incident:hover {
-  color: var(--forensic-amber-primary);
-  text-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
-}
-
-/* Iconos */
-[class*="sidebar"] label::before {
+.menu__caret {
   margin-right: 8px;
-  font-weight: bold;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
+  color: #888888;
+}
+
+.menu__list-item-collapsible.menu__list-item--collapsed .menu__caret {
+  transform: rotate(-90deg);
+}
+
+/* Categoría label (título del bloque) */
+.menu__link.menu__link--sublist-caret {
+  font-weight: 500;
+  color: #D0D0D0;
+  letter-spacing: 0.02em;
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.menu__link.menu__link--sublist-caret:hover {
+  color: #FFB800;
+  opacity: 1.0;
+}
+
+/* Items dentro de categoría */
+.menu__list-item .menu__list-item {
+  margin: 0;
+  padding: 0 0 0 12px;
+  border-left: 1px solid rgba(255, 184, 0, 0.1);
+  margin-left: 0;
+}
+
+.menu__list-item .menu__list-item .menu__link {
+  font-size: 12px;
+  padding: 6px 10px;
+  color: #888888;
+}
+
+.menu__list-item .menu__list-item .menu__link:hover {
+  color: #FFB800;
+  background-color: rgba(255, 184, 0, 0.05);
+}
+
+.menu__list-item .menu__list-item .menu__link.menu__link--active {
+  color: #FFB800;
+  background-color: rgba(255, 184, 0, 0.08);
+  box-shadow: inset -2px 0 0 #FFB800;
+  font-weight: 600;
+}
+
+/* Primera categoría (Introducción) — sin margen top */
+.menu__list > .menu__list-item:first-child {
+  margin-top: 0;
+}
+
+/* Separador visual sutil entre bloques principales */
+.menu__list > .menu__list-item-collapsible {
+  border-top: 1px solid rgba(255, 170, 0, 0.05);
+  padding-top: 12px;
+}
+
+/* Icono de carpeta/expand */
+.menu__list-item-collapsible .menu__caret::before {
+  content: "";
+  display: inline-block;
+  width: 0.6em;
+  height: 0.6em;
+  margin-right: 4px;
+  opacity: 0.5;
+}
+
+/* Collapsed state */
+.menu__list-item--collapsed {
   opacity: 0.8;
 }
 
-/* Categor�a collapsed state */
-.menu__list-item--collapsed {
-  opacity: 0.6;
-}
-
 .menu__list-item--collapsed:hover {
-  opacity: 1;
+  opacity: 1.0;
 }
 
-/* Separadores visuales */
-.menu__list > .menu__list-item {
-  margin-top: 8px;
+/* Scroll behavior */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 184, 0, 0.2) transparent;
 }
 
-.menu__list > .menu__list-item[class*="category"] {
-  margin-top: 16px;
-  border-top: 1px solid rgba(255, 170, 0, 0.1);
-  padding-top: 12px;
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 184, 0, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 184, 0, 0.4);
 }

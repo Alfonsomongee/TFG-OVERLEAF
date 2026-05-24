@@ -4,34 +4,25 @@
 const sidebars = {
   tutorialSidebar: [
     'intro',
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 1: INTRODUCCIÓN
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'doc',
       id: 'introduccion',
-      label: '📖 Introducción',
-      className: 'sidebar-item-intro',
+      label: 'Introducción',
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 2: FUNDAMENTOS
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'doc',
       id: 'contexto',
-      label: '🔌 Contexto Técnico',
-      className: 'sidebar-item-foundation',
+      label: 'Contexto Técnico',
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 3: NARRATIVA DEL INCIDENTE
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
       label: '⚡ Análisis del Incidente',
       collapsed: false,
-      className: 'sidebar-category-incident',
       items: [
         {
           type: 'doc',
@@ -43,17 +34,19 @@ const sidebars = {
           id: 'reaccion-reposicion',
           label: 'Reacción y Reposición',
         },
+        {
+          type: 'doc',
+          id: 'impacto-comunicativo',
+          label: 'Impacto Comunicativo',
+        },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 4: ANÁLISIS TÉCNICO PROFUNDO
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
       label: '📊 Análisis Técnico',
       collapsed: false,
-      className: 'sidebar-category-technical',
       items: [
         {
           type: 'doc',
@@ -68,36 +61,25 @@ const sidebars = {
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 5: SIMULACIÓN E IMPACTO
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
       label: '🎮 Experimentación Interactiva',
       collapsed: false,
-      className: 'sidebar-category-interactive',
       items: [
         {
           type: 'doc',
           id: 'swing-equation-simulator',
           label: 'Simulador: Ecuación del Swing',
         },
-        {
-          type: 'doc',
-          id: 'impacto-comunicativo',
-          label: 'Impacto Comunicativo',
-        },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
-    // BLOQUE 6: PROSPECTIVA (Futuro + Economía)
-    // ════════════════════════════════════════════════════════════════
+    // BLOQUE 6: PROSPECTIVA
     {
       type: 'category',
-      label: '🚀 Futuro y Resiliencia',
+      label: '🔮 Futuro y Resiliencia',
       collapsed: false,
-      className: 'sidebar-category-future',
       items: [
         {
           type: 'doc',
@@ -107,19 +89,16 @@ const sidebars = {
         {
           type: 'doc',
           id: '07b-consecuencias-financieras',
-          label: 'Consecuencias Financieras y Auditoría Económica',
+          label: 'Consecuencias Financieras',
         },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 7: HERRAMIENTAS 2026
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
-      label: '🤖 Métodos y Actualizaciones',
+      label: '🛠️ Métodos y Actualizaciones',
       collapsed: true,
-      className: 'sidebar-category-tools',
       items: [
         {
           type: 'doc',
@@ -129,29 +108,23 @@ const sidebars = {
         {
           type: 'doc',
           id: '08.5-actualizacion-2026',
-          label: 'Actualización 2026: Un Año Después',
+          label: 'Actualización 2026',
         },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 8: CIERRE NARRATIVO
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'doc',
       id: 'conclusiones',
-      label: '✔️ Conclusiones',
-      className: 'sidebar-item-conclusion',
+      label: 'Conclusiones',
     },
 
-    // ════════════════════════════════════════════════════════════════
-    // BLOQUE 9: CONTEXTO AMPLIADO (Desplegable)
-    // ════════════════════════════════════════════════════════════════
+    // BLOQUE 9: CONTEXTO AMPLIADO
     {
       type: 'category',
       label: '🌍 Dimensión Europea',
       collapsed: true,
-      className: 'sidebar-category-european',
       items: [
         {
           type: 'doc',
@@ -171,73 +144,61 @@ const sidebars = {
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 10: REFERENCIAS Y GLOSARIO
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
       label: '📚 Referencia',
       collapsed: true,
-      className: 'sidebar-category-reference',
       items: [
         {
           type: 'doc',
           id: 'glosario',
-          label: '📖 Glosario Técnico',
+          label: 'Glosario Técnico',
         },
         {
           type: 'doc',
           id: 'referencias',
-          label: '📑 Referencias y Bibliografía',
+          label: 'Referencias y Bibliografía',
         },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 11: VISUALIZACIÓN
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'category',
       label: '📈 Visualizaciones',
       collapsed: true,
-      className: 'sidebar-category-visualizations',
       items: [
         {
           type: 'doc',
           id: 'cronologia',
-          label: '⏱️ Cronograma del Incidente',
+          label: 'Cronograma del Incidente',
         },
         {
           type: 'doc',
           id: 'galeria-graficas',
-          label: '📊 Galería de Gráficas Interactivas',
+          label: 'Galería de Gráficas',
         },
         {
           type: 'doc',
           id: 'galeria-imagenes',
-          label: '🖼️ Galería de Imágenes',
+          label: 'Galería de Imágenes',
         },
       ],
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 12: DESCARGAS
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'doc',
       id: 'documentos',
-      label: '⬇️ Descargas y Documentación',
-      className: 'sidebar-item-downloads',
+      label: 'Descargas y Documentación',
     },
 
-    // ════════════════════════════════════════════════════════════════
     // BLOQUE 13: AUTOR
-    // ════════════════════════════════════════════════════════════════
     {
       type: 'doc',
       id: 'sobre-el-autor',
-      label: '👤 Sobre el Autor',
-      className: 'sidebar-item-author',
+      label: 'Sobre el Autor',
     },
   ],
 };
