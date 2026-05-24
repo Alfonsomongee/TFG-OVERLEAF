@@ -1,0 +1,3019 @@
+SEMANA 3
+
+\# TASK: Implement Visual Science Layer — Week 4
+
+\# Based on Deep Research Report: Heatmaps, Audio Sonification \& Advanced UX
+
+
+
+\## Context
+
+Docusaurus v3 project about the Iberian Blackout of April 28, 2025.
+
+Stack: React, Framer Motion, Recharts, Web Audio API, D3.js, deployed on Vercel.
+
+Weeks 1-3 completed:
+
+&#x20; - Week 1: FrequencyTimeline dashboard (real PMU data, 27-second cascade)
+
+&#x20; - Week 2: SwingEquationSimulator (interactive Swing Equation, Euler integration)
+
+&#x20; - Week 3: Temporal event engine with geographic cascade animation
+
+
+
+Research has provided:
+
+\- Complete SCR (Short Circuit Ratio) mapping across Iberia with node-by-node estimates
+
+\- Voltage stability data (normal → prestress → collapse phases)
+
+\- Thermal loading corridor data (N-S, E-W, interconnection flows)
+
+\- Physics tooltip specifications for 10 key technical terms with LaTeX equations
+
+\- Web Audio API sonification spec (frequency mapping, harmonic stress synthesis, LFO oscillations)
+
+\- Lighthouse optimization checklist (code splitting, accessibility patterns, SEO setup)
+
+
+
+\---
+
+
+
+\## PART 1 — Data Layer
+
+
+
+\### 1.1 Create: /static/data/scr\_heatmap.json
+
+
+
+Geographic SCR (Short Circuit Ratio) distribution across Iberian grid nodes. This is the foundational
+
+data for the weakness visualization that triggered the 28A cascade.
+
+
+
+```json
+
+{
+
+&#x20; "metadata": {
+
+&#x20;   "source": "REE Informe Anual de Potencia de Cortocircuito 2024 + ENTSO-E Expert Panel Final Report",
+
+&#x20;   "timestamp\_event": "2025-04-28T12:32:00Z",
+
+&#x20;   "description": "Short Circuit Ratio at each 400kV and 220kV node. SCR < 2.0 = Very Weak Grid. SCR < 3.0 = Weak Grid.",
+
+&#x20;   "unit": "dimensionless (MVA/MW)"
+
+&#x20; },
+
+&#x20; "nodes": \[
+
+&#x20;   {
+
+&#x20;     "id": "extremadura\_main",
+
+&#x20;     "name\_es": "Extremadura (Principal)",
+
+&#x20;     "name\_en": "Extremadura (Main)",
+
+&#x20;     "region": "Extremadura",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 39.4,
+
+&#x20;     "longitude": -5.9,
+
+&#x20;     "scr\_estimated": 1.45,
+
+&#x20;     "scc\_mva": 2175,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Very Weak",
+
+&#x20;     "pll\_stability": "UNSTABLE",
+
+&#x20;     "renewable\_penetration\_percent": 88,
+
+&#x20;     "dominant\_technology": "Solar PV",
+
+&#x20;     "notes": "Site of primary overvoltage instability. Lacked synchronous generation to absorb excess reactive power. 0.63 Hz PLL oscillations originated here.",
+
+&#x20;     "28A\_relevance": "Initiating event location. Overvoltage protection trips at 12:32:57 CEST."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "badajoz\_south",
+
+&#x20;     "name\_es": "Badajoz (Sur)",
+
+&#x20;     "name\_en": "Badajoz (South)",
+
+&#x20;     "region": "Badajoz",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 38.9,
+
+&#x20;     "longitude": -6.9,
+
+&#x20;     "scr\_estimated": 1.60,
+
+&#x20;     "scc\_mva": 2400,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Very Weak",
+
+&#x20;     "pll\_stability": "UNSTABLE",
+
+&#x20;     "renewable\_penetration\_percent": 85,
+
+&#x20;     "dominant\_technology": "Solar PV + Wind",
+
+&#x20;     "notes": "725 MW generation trip at 12:33:17. Cascading overvoltage protection failures.",
+
+&#x20;     "28A\_relevance": "Secondary cascade location. Massive synchronized solar farm disconnections."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "sevilla\_west",
+
+&#x20;     "name\_es": "Sevilla (Oeste)",
+
+&#x20;     "name\_en": "Seville (West)",
+
+&#x20;     "region": "Andalucía Occidental",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 37.6,
+
+&#x20;     "longitude": -5.9,
+
+&#x20;     "scr\_estimated": 1.80,
+
+&#x20;     "scc\_mva": 2700,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Weak",
+
+&#x20;     "pll\_stability": "MARGINAL",
+
+&#x20;     "renewable\_penetration\_percent": 75,
+
+&#x20;     "dominant\_technology": "Wind + Solar PV",
+
+&#x20;     "notes": "Widespread generation trips. UFLS activated at 49.0 Hz compounded voltage stress.",
+
+&#x20;     "28A\_relevance": "Tertiary cascade location. Region subjected to maximum load shedding."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "valencia\_catadau",
+
+&#x20;     "name\_es": "Comunidad Valenciana (Catadau)",
+
+&#x20;     "name\_en": "Valencia (Catadau)",
+
+&#x20;     "region": "Comunidad Valenciana",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 38.8,
+
+&#x20;     "longitude": -0.9,
+
+&#x20;     "scr\_estimated": 1.20,
+
+&#x20;     "scc\_mva": 1800,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Very Weak",
+
+&#x20;     "pll\_stability": "CRITICAL",
+
+&#x20;     "renewable\_penetration\_percent": 60,
+
+&#x20;     "dominant\_technology": "Solar PV",
+
+&#x20;     "notes": "LOWEST short-circuit current in entire 400kV network (3.4 kA). Most vulnerable node. Isc baseline for 'very weak' reference.",
+
+&#x20;     "28A\_relevance": "Demonstrated extreme voltage sensitivity. First node to reach critical voltage limits post-cascade."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "castilla\_mancha\_center",
+
+&#x20;     "name\_es": "Castilla-La Mancha (Centro)",
+
+&#x20;     "name\_en": "Castilla-La Mancha (Center)",
+
+&#x20;     "region": "Castilla-La Mancha",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 38.5,
+
+&#x20;     "longitude": -3.2,
+
+&#x20;     "scr\_estimated": 1.60,
+
+&#x20;     "scc\_mva": 2400,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "medium",
+
+&#x20;     "grid\_classification": "Very Weak",
+
+&#x20;     "pll\_stability": "UNSTABLE",
+
+&#x20;     "renewable\_penetration\_percent": 90,
+
+&#x20;     "dominant\_technology": "Solar PV",
+
+&#x20;     "notes": "Consistently operated near 435 kV pre-event (98% of 440 kV thermal limit). Minimal headroom.",
+
+&#x20;     "28A\_relevance": "Already stressed before cascade. First region to hit overvoltage protection limits."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "aragon\_cinca",
+
+&#x20;     "name\_es": "Aragón (Cinca)",
+
+&#x20;     "name\_en": "Aragón (Cinca)",
+
+&#x20;     "region": "Aragón",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 220,
+
+&#x20;     "latitude": 41.7,
+
+&#x20;     "longitude": -0.4,
+
+&#x20;     "scr\_estimated": 2.10,
+
+&#x20;     "scc\_mva": 3150,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Weak",
+
+&#x20;     "pll\_stability": "MARGINAL",
+
+&#x20;     "renewable\_penetration\_percent": 82,
+
+&#x20;     "dominant\_technology": "Wind",
+
+&#x20;     "notes": "220 kV minimum Isc observed (1.4 kA). Wind-dominated region with low short-circuit strength.",
+
+&#x20;     "28A\_relevance": "Secondary voltage stress. Supported initial frequency response but overwhelmed by cascade magnitude."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "madrid\_metro",
+
+&#x20;     "name\_es": "Madrid Metropolitana",
+
+&#x20;     "name\_en": "Madrid Metropolitan",
+
+&#x20;     "region": "Madrid",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 40.4,
+
+&#x20;     "longitude": -3.7,
+
+&#x20;     "scr\_estimated": 4.20,
+
+&#x20;     "scc\_mva": 6300,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Strong",
+
+&#x20;     "pll\_stability": "STABLE",
+
+&#x20;     "renewable\_penetration\_percent": 10,
+
+&#x20;     "dominant\_technology": "Mixed / Load Center",
+
+&#x20;     "notes": "Major load center. Highly meshed 400/220 kV network. High inertia from CCGT and historical coal-steam plants.",
+
+&#x20;     "28A\_relevance": "Acted as stabilizing anchor. Delayed local voltage stress but unable to save peninsula-wide collapse."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "cataluna\_asco",
+
+&#x20;     "name\_es": "Cataluña (Ascó - Nuclear)",
+
+&#x20;     "name\_en": "Catalonia (Ascó - Nuclear)",
+
+&#x20;     "region": "Cataluña",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 41.3,
+
+&#x20;     "longitude": 0.8,
+
+&#x20;     "scr\_estimated": 6.50,
+
+&#x20;     "scc\_mva": 9750,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Strong",
+
+&#x20;     "pll\_stability": "STABLE",
+
+&#x20;     "renewable\_penetration\_percent": 15,
+
+&#x20;     "dominant\_technology": "Nuclear (Ascó I, II) + Mixed",
+
+&#x20;     "notes": "HIGHEST short-circuit current in Iberian 400 kV system (35.5 kA). Robust, well-meshed industrial region.",
+
+&#x20;     "28A\_relevance": "Strongest node. Provided 3.3 GW of primary frequency response. Attempted to stabilize system but failed against cascade magnitude."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "cataluna\_santa\_llogaia",
+
+&#x20;     "name\_es": "Cataluña (Santa Llogaia - HVDC)",
+
+&#x20;     "name\_en": "Catalonia (Santa Llogaia - HVDC)",
+
+&#x20;     "region": "Cataluña",
+
+&#x20;     "country": "ES",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 42.0,
+
+&#x20;     "longitude": 1.6,
+
+&#x20;     "scr\_estimated": 5.00,
+
+&#x20;     "scc\_mva": 7500,
+
+&#x20;     "ibr\_capacity\_mw": 3000,
+
+&#x20;     "confidence": "high",
+
+&#x20;     "grid\_classification": "Strong",
+
+&#x20;     "pll\_stability": "STABLE",
+
+&#x20;     "renewable\_penetration\_percent": 20,
+
+&#x20;     "dominant\_technology": "HVDC (France) + Mixed",
+
+&#x20;     "notes": "France-Spain HVDC and AC interconnection point. Historically strong. Switched to constant power mode at 12:09 to suppress 0.63 Hz oscillations.",
+
+&#x20;     "28A\_relevance": "Tried to import 4.6 GW emergency power from France. AC lines tripped at 12:33:21 on loss of synchronism. HVDC followed at 12:33:24."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "lisboa\_portugal",
+
+&#x20;     "name\_es": "Lisboa (Portugal)",
+
+&#x20;     "name\_en": "Lisbon (Portugal)",
+
+&#x20;     "region": "Lisboa",
+
+&#x20;     "country": "PT",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 38.7,
+
+&#x20;     "longitude": -9.1,
+
+&#x20;     "scr\_estimated": 3.50,
+
+&#x20;     "scc\_mva": 5250,
+
+&#x20;     "ibr\_capacity\_mw": 1500,
+
+&#x20;     "confidence": "medium",
+
+&#x20;     "grid\_classification": "Strong",
+
+&#x20;     "pll\_stability": "STABLE",
+
+&#x20;     "renewable\_penetration\_percent": 40,
+
+&#x20;     "dominant\_technology": "Hydro + Mixed",
+
+&#x20;     "notes": "Portugal's primary load center. More stable than Spanish southern grid due to historical hydroelectric base.",
+
+&#x20;     "28A\_relevance": "Island formation initiated here. Resynchronized with Spain at 18:36 (6+ hours post-blackout)."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "porto\_portugal",
+
+&#x20;     "name\_es": "Porto (Portugal)",
+
+&#x20;     "name\_en": "Porto (Portugal)",
+
+&#x20;     "region": "Porto",
+
+&#x20;     "country": "PT",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "latitude": 41.1,
+
+&#x20;     "longitude": -8.6,
+
+&#x20;     "scr\_estimated": 3.80,
+
+&#x20;     "scc\_mva": 5700,
+
+&#x20;     "ibr\_capacity\_mw": 1200,
+
+&#x20;     "confidence": "medium",
+
+&#x20;     "grid\_classification": "Strong",
+
+&#x20;     "pll\_stability": "STABLE",
+
+&#x20;     "renewable\_penetration\_percent": 35,
+
+&#x20;     "dominant\_technology": "Hydro + Wind",
+
+&#x20;     "notes": "Northern Portugal load center. Better resilience due to hydroelectric generation.",
+
+&#x20;     "28A\_relevance": "Provided black-start capability post-blackout. First Portuguese plant synchronized at 16:11."
+
+&#x20;   }
+
+&#x20; ],
+
+&#x20; "legend": {
+
+&#x20;   "scr\_thresholds": {
+
+&#x20;     "scr\_greater\_than\_3": { "class": "Strong", "color": "#00ff88", "stability": "Stable voltage control possible" },
+
+&#x20;     "scr\_2\_to\_3": { "class": "Medium", "color": "#FFD700", "stability": "Marginal, requires attention" },
+
+&#x20;     "scr\_less\_than\_2": { "class": "Weak", "color": "#ff6644", "stability": "Voltage sensitive, PLL instability risk" },
+
+&#x20;     "scr\_less\_than\_1\_5": { "class": "Very Weak", "color": "#cc0000", "stability": "Critical, subsynchronous oscillations likely" }
+
+&#x20;   }
+
+&#x20; }
+
+}
+
+```
+
+
+
+\### 1.2 Create: /static/data/voltage\_heatmap.json
+
+
+
+Three-phase voltage profile: normal operation → pre-stress → collapse point.
+
+
+
+```json
+
+{
+
+&#x20; "phases": \[
+
+&#x20;   {
+
+&#x20;     "phase\_name": "Normal Operation (12:00-12:32)",
+
+&#x20;     "phase\_id": "normal",
+
+&#x20;     "description\_es": "Sistema operando en banda de seguridad. Tensión 400kV ± 2%.",
+
+&#x20;     "timestamp": "2025-04-28T12:30:00Z",
+
+&#x20;     "nodes": \[
+
+&#x20;       {
+
+&#x20;         "node\_id": "extremadura\_main",
+
+&#x20;         "voltage\_pu": 0.99,
+
+&#x20;         "voltage\_kv": 396,
+
+&#x20;         "voltage\_condition": "Normal",
+
+&#x20;         "reactive\_deficit\_mvar": 0,
+
+&#x20;         "notes": "Already showing early stress due to lack of synchronous support."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "madrid\_metro",
+
+&#x20;         "voltage\_pu": 1.00,
+
+&#x20;         "voltage\_kv": 400,
+
+&#x20;         "voltage\_condition": "Nominal",
+
+&#x20;         "reactive\_deficit\_mvar": 0,
+
+&#x20;         "notes": "Stable load center maintaining reference voltage."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "cataluna\_asco",
+
+&#x20;         "voltage\_pu": 1.01,
+
+&#x20;         "voltage\_kv": 404,
+
+&#x20;         "voltage\_condition": "Normal",
+
+&#x20;         "reactive\_deficit\_mvar": 0,
+
+&#x20;         "notes": "Nuclear plant maintaining slightly elevated voltage to support weak zones."
+
+&#x20;       }
+
+&#x20;     ]
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "phase\_name": "Pre-Stress (12:32-12:32:57)",
+
+&#x20;     "phase\_id": "prestress",
+
+&#x20;     "description\_es": "Oscilaciones forzadas 0.63 Hz y 0.2 Hz detectadas. PO 7.4 non-compliance visible. Tensión sube a 435 kV en zonas débiles.",
+
+&#x20;     "timestamp": "2025-04-28T12:32:30Z",
+
+&#x20;     "nodes": \[
+
+&#x20;       {
+
+&#x20;         "node\_id": "extremadura\_main",
+
+&#x20;         "voltage\_pu": 1.087,
+
+&#x20;         "voltage\_kv": 434.8,
+
+&#x20;         "voltage\_condition": "High (98% of 440 kV limit)",
+
+&#x20;         "reactive\_deficit\_mvar": 450,
+
+&#x20;         "notes": "Operators aware of overvoltage. No reactive absorption from renewables per PO 7.4 mandate."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "castilla\_mancha\_center",
+
+&#x20;         "voltage\_pu": 1.085,
+
+&#x20;         "voltage\_kv": 434,
+
+&#x20;         "voltage\_condition": "High",
+
+&#x20;         "reactive\_deficit\_mvar": 400,
+
+&#x20;         "notes": "Cascading overvoltage stress. Renewable plants should be absorbing Q but are not."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "madrid\_metro",
+
+&#x20;         "voltage\_pu": 1.02,
+
+&#x20;         "voltage\_kv": 408,
+
+&#x20;         "voltage\_condition": "Slightly elevated",
+
+&#x20;         "reactive\_deficit\_mvar": 50,
+
+&#x20;         "notes": "Strong grid absorbing reactive power, but insufficient to stabilize southern zones."
+
+&#x20;       }
+
+&#x20;     ]
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "phase\_name": "Collapse (12:33:17-12:33:24)",
+
+&#x20;     "phase\_id": "collapse",
+
+&#x20;     "description\_es": "Colapso de sobretensión. Líneas descargadas por pérdida de generación. Efecto Ferranti sin límite. Voltaje excede 440 kV.",
+
+&#x20;     "timestamp": "2025-04-28T12:33:20Z",
+
+&#x20;     "nodes": \[
+
+&#x20;       {
+
+&#x20;         "node\_id": "extremadura\_main",
+
+&#x20;         "voltage\_pu": 1.11,
+
+&#x20;         "voltage\_kv": 444,
+
+&#x20;         "voltage\_condition": "CRITICAL OVERVOLTAGE",
+
+&#x20;         "reactive\_deficit\_mvar": 1200,
+
+&#x20;         "notes": "Overvoltage protection relays fire. Generation cascades offline. Voltage collapse begins.",
+
+&#x20;         "protection\_action": "400/220 kV autotransformer overvoltage protection trips at 440 kV"
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "badajoz\_south",
+
+&#x20;         "voltage\_pu": 1.09,
+
+&#x20;         "voltage\_kv": 436,
+
+&#x20;         "voltage\_condition": "Critical",
+
+&#x20;         "reactive\_deficit\_mvar": 1100,
+
+&#x20;         "notes": "725 MW generation trip. Secondary cascade. Voltage spikes further due to line capacitance."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "madrid\_metro",
+
+&#x20;         "voltage\_pu": 0.85,
+
+&#x20;         "voltage\_kv": 340,
+
+&#x20;         "voltage\_condition": "SEVERE DEPRESSION",
+
+&#x20;         "reactive\_deficit\_mvar": -500,
+
+&#x20;         "notes": "Voltage collapse propagates northward. Load shedding UFLS contributes to further deterioration."
+
+&#x20;       },
+
+&#x20;       {
+
+&#x20;         "node\_id": "cataluna\_santa\_llogaia",
+
+&#x20;         "voltage\_pu": 0.70,
+
+&#x20;         "voltage\_kv": 280,
+
+&#x20;         "voltage\_condition": "LOSS OF SYNCHRONISM",
+
+&#x20;         "reactive\_deficit\_mvar": -800,
+
+&#x20;         "notes": "AC interconnection to France trips at 12:33:21. HVDC follows at 12:33:24. Total blackout."
+
+&#x20;       }
+
+&#x20;     ]
+
+&#x20;   }
+
+&#x20; ],
+
+&#x20; "color\_scale": {
+
+&#x20;   "below\_380\_kv": { "color": "#cc0000", "label": "Brownout (< 0.95 pu)" },
+
+&#x20;   "380\_to\_400\_kv": { "color": "#ff6644", "label": "Depression (0.95-1.0 pu)" },
+
+&#x20;   "400\_to\_420\_kv": { "color": "#00ff88", "label": "Nominal (1.0-1.05 pu)" },
+
+&#x20;   "420\_to\_435\_kv": { "color": "#FFD700", "label": "Elevated (1.05-1.0875 pu)" },
+
+&#x20;   "435\_to\_440\_kv": { "color": "#FF8800", "label": "High (1.0875-1.1 pu)" },
+
+&#x20;   "above\_440\_kv": { "color": "#cc0000", "label": "CRITICAL (> 1.1 pu)" }
+
+&#x20; }
+
+}
+
+```
+
+
+
+\### 1.3 Create: /static/data/thermal\_loading.json
+
+
+
+Transmission corridor loading as % of thermal capacity (1,829 MVA per Duplex Cardinal circuit).
+
+
+
+```json
+
+{
+
+&#x20; "corridors": \[
+
+&#x20;   {
+
+&#x20;     "id": "north\_south\_primary",
+
+&#x20;     "name\_es": "Corredor N-S Primario (Ascó → Sevilla)",
+
+&#x20;     "name\_en": "Primary N-S Corridor (Ascó → Seville)",
+
+&#x20;     "from\_node": "cataluna\_asco",
+
+&#x20;     "to\_node": "sevilla\_west",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "circuit\_type": "Duplex Cardinal ACSR",
+
+&#x20;     "capacity\_mva": 1829,
+
+&#x20;     "capacity\_mva\_per\_circuit": 1829,
+
+&#x20;     "length\_km": 650,
+
+&#x20;     "loading\_normal\_mw": 800,
+
+&#x20;     "loading\_normal\_percent": 43.7,
+
+&#x20;     "loading\_prestress\_mw": 950,
+
+&#x20;     "loading\_prestress\_percent": 51.9,
+
+&#x20;     "loading\_collapse\_mw": 1400,
+
+&#x20;     "loading\_collapse\_percent": 76.5,
+
+&#x20;     "notes": "Primary power transmission artery from north to south. High load during cascade as northern generators attempt to stabilize south.",
+
+&#x20;     "28A\_relevance": "Heavily stressed but did not exceed thermal limit. Line survived mechanically; distance protection falsely tripped on loss of synchronism."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "spain\_france\_ac",
+
+&#x20;     "name\_es": "Interconexión AC España-Francia (Pirineos)",
+
+&#x20;     "name\_en": "AC Spain-France Interconnection (Pyrenees)",
+
+&#x20;     "from\_node": "cataluna\_santa\_llogaia",
+
+&#x20;     "to\_node": "france\_boundary",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "circuit\_type": "High-capacity Pyrenees crossing",
+
+&#x20;     "capacity\_mva": 2400,
+
+&#x20;     "loading\_normal\_mw": 1000,
+
+&#x20;     "loading\_normal\_percent": 41.7,
+
+&#x20;     "loading\_prestress\_mw": 1000,
+
+&#x20;     "loading\_prestress\_percent": 41.7,
+
+&#x20;     "loading\_collapse\_export\_mw": -4609,
+
+&#x20;     "loading\_collapse\_percent": 191.9,
+
+&#x20;     "loading\_direction\_collapse": "Import (Spain pulling from France)",
+
+&#x20;     "notes": "Reversed from export to massive import as Iberian system collapses. Distance relays falsely detect short-circuit due to phase angle divergence.",
+
+&#x20;     "28A\_relevance": "Tripped at 12:33:21 on loss of synchronism. 4.6 GW flow reversal overwhelming. Not a thermal issue; a stability protection action."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "spain\_portugal\_ac",
+
+&#x20;     "name\_es": "Interconexión AC España-Portugal",
+
+&#x20;     "name\_en": "AC Spain-Portugal Interconnection",
+
+&#x20;     "from\_node": "sevilla\_west",
+
+&#x20;     "to\_node": "lisboa\_portugal",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "circuit\_type": "Heavy-duty tie-line",
+
+&#x20;     "capacity\_mva": 3000,
+
+&#x20;     "loading\_normal\_mw": 2800,
+
+&#x20;     "loading\_normal\_percent": 93.3,
+
+&#x20;     "loading\_prestress\_mw": 2900,
+
+&#x20;     "loading\_prestress\_percent": 96.7,
+
+&#x20;     "loading\_collapse\_mw": 0,
+
+&#x20;     "loading\_collapse\_percent": 0,
+
+&#x20;     "notes": "Operating at 93% capacity pre-event (high but secure). Severely stressed during cascade. Link severed as part of black-start islanding strategy.",
+
+&#x20;     "28A\_relevance": "Intentionally opened at 18:36 to allow Portugal to form independent island for restoration. Reopened only after both grids stabilized."
+
+&#x20;   },
+
+&#x20;   {
+
+&#x20;     "id": "spain\_morocco\_ac",
+
+&#x20;     "name\_es": "Cable Submarino AC España-Marruecos",
+
+&#x20;     "name\_en": "AC Spain-Morocco Subsea Cable",
+
+&#x20;     "from\_node": "sevilla\_west",
+
+&#x20;     "to\_node": "morocco\_tanger",
+
+&#x20;     "voltage\_kv": 400,
+
+&#x20;     "circuit\_type": "Subsea HVAC cable",
+
+&#x20;     "capacity\_mva": 1600,
+
+&#x20;     "loading\_normal\_mw": 800,
+
+&#x20;     "loading\_normal\_percent": 50,
+
+&#x20;     "loading\_prestress\_mw": 850,
+
+&#x20;     "loading\_prestress\_percent": 53.1,
+
+&#x20;     "loading\_collapse\_mw": 50,
+
+&#x20;     "loading\_collapse\_percent": 3.1,
+
+&#x20;     "notes": "Provides export market outlet for excess Spanish generation. Remained marginally loaded during cascade. Disconnected as part of cascading island formation.",
+
+&#x20;     "28A\_relevance": "Reconnected at 13:04 post-blackout to provide stabilizing load. Helped restore northern Iberian frequency."
+
+&#x20;   }
+
+&#x20; ],
+
+&#x20; "thermal\_physics": {
+
+&#x20;   "duplex\_cardinal\_specification": {
+
+&#x20;     "conductor\_material": "Aluminum Conductor Steel Reinforced (ACSR)",
+
+&#x20;     "bundle\_configuration": "Twin conductors",
+
+&#x20;     "rated\_current\_amperes": 2640,
+
+&#x20;     "max\_conductor\_temperature\_celsius": 85,
+
+&#x20;     "thermal\_capacity\_mva\_per\_circuit": 1829,
+
+&#x20;     "notes": "Duplex Cardinal is the standard transmission conductor type used throughout the Spanish 400 kV network."
+
+&#x20;   },
+
+&#x20;   "ferranti\_effect\_context": "When transmission lines are lightly loaded (below SIL), they generate reactive power due to their capacitive susceptance. This is the primary mechanism that caused the overvoltage during the 28A collapse, NOT thermal overload."
+
+&#x20; },
+
+&#x20; "color\_scale": {
+
+&#x20;   "0\_to\_40\_percent": { "color": "#00ff88", "label": "Safe" },
+
+&#x20;   "40\_to\_70\_percent": { "color": "#FFD700", "label": "Normal" },
+
+&#x20;   "70\_to\_90\_percent": { "color": "#ff6644", "label": "High" },
+
+&#x20;   "90\_to\_100\_percent": { "color": "#FF8800", "label": "Near Limit" },
+
+&#x20;   "above\_100\_percent": { "color": "#cc0000", "label": "Thermal Overload (rare)" }
+
+&#x20; }
+
+}
+
+```
+
+
+
+\---
+
+
+
+\## PART 2 — Component: SCR Heatmap + Overlay on Geographic Map
+
+
+
+\### 2.1 Create: /src/components/SCRHeatmap/SCRHeatmap.jsx
+
+
+
+Renders an interactive heatmap of grid strength (Short Circuit Ratio) overlaid on the Iberian peninsula geography.
+
+
+
+```jsx
+
+// SCRHeatmap.jsx
+
+
+
+import React, { useState, useEffect } from 'react';
+
+import { motion } from 'framer-motion';
+
+import { useBaseUrl } from '@docusaurus/useBaseUrl';
+
+import styles from './SCRHeatmap.module.css';
+
+
+
+const SCRHeatmap = () => {
+
+&#x20; const \[scrData, setScrData] = useState(null);
+
+&#x20; const \[selectedNode, setSelectedNode] = useState(null);
+
+&#x20; const \[legendVisible, setLegendVisible] = useState(true);
+
+
+
+&#x20; useEffect(() => {
+
+&#x20;   fetch(useBaseUrl('/data/scr\_heatmap.json'))
+
+&#x20;     .then((res) => res.json())
+
+&#x20;     .then((data) => setScrData(data))
+
+&#x20;     .catch((err) => console.error('Error loading SCR data:', err));
+
+&#x20; }, \[]);
+
+
+
+&#x20; const getSCRColor = (scr) => {
+
+&#x20;   if (scr > 3.0) return '#00ff88'; // Strong (green)
+
+&#x20;   if (scr >= 2.0) return '#FFD700'; // Medium (yellow)
+
+&#x20;   if (scr >= 1.5) return '#ff6644'; // Weak (orange)
+
+&#x20;   return '#cc0000'; // Very Weak (red)
+
+&#x20; };
+
+
+
+&#x20; const getSCRLabel = (scr) => {
+
+&#x20;   if (scr > 3.0) return 'Strong';
+
+&#x20;   if (scr >= 2.0) return 'Medium';
+
+&#x20;   if (scr >= 1.5) return 'Weak';
+
+&#x20;   return 'Very Weak';
+
+&#x20; };
+
+
+
+&#x20; const mapLonToX = (lon) => {
+
+&#x20;   // Map lon range \[-10, 4] to canvas width \[50, 750]
+
+&#x20;   return ((lon + 10) / 14) \* 700 + 50;
+
+&#x20; };
+
+
+
+&#x20; const mapLatToY = (lat) => {
+
+&#x20;   // Map lat range \[35.5, 44] to canvas height \[450, 50]
+
+&#x20;   return 450 - ((lat - 35.5) / 8.5) \* 400;
+
+&#x20; };
+
+
+
+&#x20; return (
+
+&#x20;   <div className={styles.container}>
+
+&#x20;     <motion.div
+
+&#x20;       initial={{ opacity: 0 }}
+
+&#x20;       animate={{ opacity: 1 }}
+
+&#x20;       transition={{ delay: 0.2 }}
+
+&#x20;     >
+
+&#x20;       <h2>Relación de Cortocircuito (SCR) - Mapa de Fortaleza de Red</h2>
+
+&#x20;       <p className={styles.subtitle}>
+
+&#x20;         SCR bajo = red débil = voltaje inestable = riesgo de oscilaciones de inversor
+
+&#x20;       </p>
+
+
+
+&#x20;       {/\* SVG Canvas \*/}
+
+&#x20;       <svg
+
+&#x20;         className={styles.mapCanvas}
+
+&#x20;         viewBox="0 0 800 500"
+
+&#x20;         xmlns="http://www.w3.org/2000/svg"
+
+&#x20;       >
+
+&#x20;         {/\* Background \*/}
+
+&#x20;         <rect width="800" height="500" fill="#0a0a0a" opacity="0.8" />
+
+
+
+&#x20;         {/\* Simplified Iberian Peninsula Outline \*/}
+
+&#x20;         <path
+
+&#x20;           d="M 100 100 L 700 100 L 750 150 L 750 450 L 100 450 Q 80 250 100 100"
+
+&#x20;           fill="rgba(20, 20, 50, 0.3)"
+
+&#x20;           stroke="rgba(255,255,255,0.2)"
+
+&#x20;           strokeWidth="2"
+
+&#x20;         />
+
+
+
+&#x20;         {/\* Grid Nodes with SCR-based coloring \*/}
+
+&#x20;         {scrData \&\&
+
+&#x20;           scrData.nodes.map((node) => {
+
+&#x20;             const x = mapLonToX(node.longitude);
+
+&#x20;             const y = mapLatToY(node.latitude);
+
+&#x20;             const color = getSCRColor(node.scr\_estimated);
+
+&#x20;             const isSelected = selectedNode?.id === node.id;
+
+
+
+&#x20;             return (
+
+&#x20;               <g key={node.id}>
+
+&#x20;                 {/\* Node Circle \*/}
+
+&#x20;                 <circle
+
+&#x20;                   cx={x}
+
+&#x20;                   cy={y}
+
+&#x20;                   r={isSelected ? 15 : 10}
+
+&#x20;                   fill={color}
+
+&#x20;                   opacity={isSelected ? 1.0 : 0.7}
+
+&#x20;                   stroke={isSelected ? '#fff' : 'none'}
+
+&#x20;                   strokeWidth={isSelected ? 2 : 0}
+
+&#x20;                   style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+
+&#x20;                   onClick={() => setSelectedNode(node)}
+
+&#x20;                 />
+
+
+
+&#x20;                 {/\* SCR Label on hover/select \*/}
+
+&#x20;                 {isSelected \&\& (
+
+&#x20;                   <text
+
+&#x20;                     x={x}
+
+&#x20;                     y={y - 25}
+
+&#x20;                     textAnchor="middle"
+
+&#x20;                     fill={color}
+
+&#x20;                     fontSize="12"
+
+&#x20;                     fontWeight="bold"
+
+&#x20;                   >
+
+&#x20;                     SCR: {node.scr\_estimated.toFixed(2)}
+
+&#x20;                   </text>
+
+&#x20;                 )}
+
+&#x20;               </g>
+
+&#x20;             );
+
+&#x20;           })}
+
+&#x20;       </svg>
+
+
+
+&#x20;       {/\* Legend \*/}
+
+&#x20;       {legendVisible \&\& (
+
+&#x20;         <motion.div
+
+&#x20;           className={styles.legend}
+
+&#x20;           initial={{ opacity: 0 }}
+
+&#x20;           animate={{ opacity: 1 }}
+
+&#x20;         >
+
+&#x20;           <div className={styles.legendTitle}>Escala SCR</div>
+
+&#x20;           <div className={styles.legendItem}>
+
+&#x20;             <span
+
+&#x20;               className={styles.legendColor}
+
+&#x20;               style={{ backgroundColor: '#00ff88' }}
+
+&#x20;             />
+
+&#x20;             <span>SCR > 3.0: Red Fuerte (Estable)</span>
+
+&#x20;           </div>
+
+&#x20;           <div className={styles.legendItem}>
+
+&#x20;             <span
+
+&#x20;               className={styles.legendColor}
+
+&#x20;               style={{ backgroundColor: '#FFD700' }}
+
+&#x20;             />
+
+&#x20;             <span>2.0 ≤ SCR ≤ 3.0: Red Media</span>
+
+&#x20;           </div>
+
+&#x20;           <div className={styles.legendItem}>
+
+&#x20;             <span
+
+&#x20;               className={styles.legendColor}
+
+&#x20;               style={{ backgroundColor: '#ff6644' }}
+
+&#x20;             />
+
+&#x20;             <span>1.5 ≤ SCR < 2.0: Red Débil</span>
+
+&#x20;           </div>
+
+&#x20;           <div className={styles.legendItem}>
+
+&#x20;             <span
+
+&#x20;               className={styles.legendColor}
+
+&#x20;               style={{ backgroundColor: '#cc0000' }}
+
+&#x20;             />
+
+&#x20;             <span>SCR < 1.5: Red Muy Débil (Inestable)</span>
+
+&#x20;           </div>
+
+&#x20;         </motion.div>
+
+&#x20;       )}
+
+
+
+&#x20;       {/\* Node Details Panel \*/}
+
+&#x20;       {selectedNode \&\& (
+
+&#x20;         <motion.div
+
+&#x20;           className={styles.detailsPanel}
+
+&#x20;           initial={{ opacity: 0, y: 20 }}
+
+&#x20;           animate={{ opacity: 1, y: 0 }}
+
+&#x20;         >
+
+&#x20;           <div className={styles.detailsHeader}>
+
+&#x20;             <h3>{selectedNode.name\_es}</h3>
+
+&#x20;             <button
+
+&#x20;               className={styles.closeButton}
+
+&#x20;               onClick={() => setSelectedNode(null)}
+
+&#x20;             >
+
+&#x20;               ✕
+
+&#x20;             </button>
+
+&#x20;           </div>
+
+
+
+&#x20;           <div className={styles.detailsGrid}>
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>SCR:</span>
+
+&#x20;               <span
+
+&#x20;                 className={styles.value}
+
+&#x20;                 style={{ color: getSCRColor(selectedNode.scr\_estimated) }}
+
+&#x20;               >
+
+&#x20;                 {selectedNode.scr\_estimated.toFixed(2)} ({getSCRLabel(selectedNode.scr\_estimated)})
+
+&#x20;               </span>
+
+&#x20;             </div>
+
+
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>Isc (kA):</span>
+
+&#x20;               <span className={styles.value}>{(selectedNode.scc\_mva / 400).toFixed(1)}</span>
+
+&#x20;             </div>
+
+
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>Penetración Renovable:</span>
+
+&#x20;               <span className={styles.value}>{selectedNode.renewable\_penetration\_percent}%</span>
+
+&#x20;             </div>
+
+
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>Tecnología Dominante:</span>
+
+&#x20;               <span className={styles.value}>{selectedNode.dominant\_technology}</span>
+
+&#x20;             </div>
+
+
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>Estabilidad PLL:</span>
+
+&#x20;               <span className={`${styles.value} ${styles\[`pll-${selectedNode.pll\_stability.toLowerCase()}`]}`}>
+
+&#x20;                 {selectedNode.pll\_stability}
+
+&#x20;               </span>
+
+&#x20;             </div>
+
+
+
+&#x20;             <div className={styles.detailItem}>
+
+&#x20;               <span className={styles.label}>Relevancia 28A:</span>
+
+&#x20;               <span className={styles.value}>{selectedNode\['28A\_relevance']}</span>
+
+&#x20;             </div>
+
+&#x20;           </div>
+
+
+
+&#x20;           <div className={styles.notes}>
+
+&#x20;             <strong>Análisis Técnico:</strong>
+
+&#x20;             <p>{selectedNode.notes}</p>
+
+&#x20;           </div>
+
+&#x20;         </motion.div>
+
+&#x20;       )}
+
+&#x20;     </motion.div>
+
+&#x20;   </div>
+
+&#x20; );
+
+};
+
+
+
+export default SCRHeatmap;
+
+```
+
+
+
+\### 2.2 Create: /src/components/SCRHeatmap/SCRHeatmap.module.css
+
+
+
+```css
+
+.container {
+
+&#x20; padding: 24px;
+
+&#x20; background: transparent;
+
+&#x20; border: 1px solid rgba(255, 255, 255, 0.08);
+
+&#x20; border-radius: 12px;
+
+&#x20; margin-bottom: 40px;
+
+}
+
+
+
+.subtitle {
+
+&#x20; color: rgba(255, 255, 255, 0.6);
+
+&#x20; font-size: 0.9em;
+
+&#x20; margin-bottom: 20px;
+
+}
+
+
+
+.mapCanvas {
+
+&#x20; width: 100%;
+
+&#x20; max-width: 800px;
+
+&#x20; height: auto;
+
+&#x20; border: 1px solid rgba(255, 255, 255, 0.1);
+
+&#x20; border-radius: 8px;
+
+&#x20; margin-bottom: 24px;
+
+&#x20; display: block;
+
+}
+
+
+
+.legend {
+
+&#x20; background: rgba(0, 10, 20, 0.7);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.2);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 16px;
+
+&#x20; margin-bottom: 24px;
+
+&#x20; backdrop-filter: blur(10px);
+
+}
+
+
+
+.legendTitle {
+
+&#x20; color: #00ff88;
+
+&#x20; font-weight: bold;
+
+&#x20; margin-bottom: 12px;
+
+&#x20; font-size: 0.95em;
+
+}
+
+
+
+.legendItem {
+
+&#x20; display: flex;
+
+&#x20; align-items: center;
+
+&#x20; gap: 10px;
+
+&#x20; margin-bottom: 8px;
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; font-size: 0.85em;
+
+}
+
+
+
+.legendColor {
+
+&#x20; width: 16px;
+
+&#x20; height: 16px;
+
+&#x20; border-radius: 50%;
+
+&#x20; flex-shrink: 0;
+
+&#x20; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+
+}
+
+
+
+.detailsPanel {
+
+&#x20; background: rgba(0, 10, 20, 0.8);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.3);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 20px;
+
+&#x20; margin-top: 20px;
+
+}
+
+
+
+.detailsHeader {
+
+&#x20; display: flex;
+
+&#x20; justify-content: space-between;
+
+&#x20; align-items: center;
+
+&#x20; margin-bottom: 16px;
+
+&#x20; border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+
+&#x20; padding-bottom: 12px;
+
+}
+
+
+
+.detailsHeader h3 {
+
+&#x20; color: #00ff88;
+
+&#x20; margin: 0;
+
+&#x20; font-size: 1.1em;
+
+}
+
+
+
+.closeButton {
+
+&#x20; background: transparent;
+
+&#x20; color: #00ff88;
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.3);
+
+&#x20; width: 32px;
+
+&#x20; height: 32px;
+
+&#x20; border-radius: 50%;
+
+&#x20; cursor: pointer;
+
+&#x20; display: flex;
+
+&#x20; align-items: center;
+
+&#x20; justify-content: center;
+
+&#x20; font-size: 1.2em;
+
+&#x20; transition: all 0.2s;
+
+}
+
+
+
+.closeButton:hover {
+
+&#x20; background: rgba(0, 255, 136, 0.1);
+
+&#x20; border-color: rgba(0, 255, 136, 0.6);
+
+}
+
+
+
+.detailsGrid {
+
+&#x20; display: grid;
+
+&#x20; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+&#x20; gap: 16px;
+
+&#x20; margin-bottom: 16px;
+
+}
+
+
+
+.detailItem {
+
+&#x20; display: flex;
+
+&#x20; flex-direction: column;
+
+&#x20; gap: 4px;
+
+}
+
+
+
+.detailItem .label {
+
+&#x20; color: rgba(255, 255, 255, 0.6);
+
+&#x20; font-size: 0.8em;
+
+&#x20; font-weight: bold;
+
+}
+
+
+
+.detailItem .value {
+
+&#x20; color: #00ff88;
+
+&#x20; font-family: 'Courier New', monospace;
+
+&#x20; font-weight: bold;
+
+}
+
+
+
+.pll-stable {
+
+&#x20; color: #00ff88 !important;
+
+}
+
+
+
+.pll-marginal {
+
+&#x20; color: #FFD700 !important;
+
+}
+
+
+
+.pll-unstable {
+
+&#x20; color: #ff6644 !important;
+
+}
+
+
+
+.pll-critical {
+
+&#x20; color: #cc0000 !important;
+
+}
+
+
+
+.notes {
+
+&#x20; background: rgba(0, 255, 136, 0.05);
+
+&#x20; border-left: 4px solid rgba(0, 255, 136, 0.3);
+
+&#x20; padding: 12px;
+
+&#x20; border-radius: 4px;
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; font-size: 0.85em;
+
+&#x20; line-height: 1.5;
+
+}
+
+
+
+.notes strong {
+
+&#x20; color: #00ff88;
+
+}
+
+
+
+.notes p {
+
+&#x20; margin: 8px 0 0 0;
+
+}
+
+
+
+@media (max-width: 768px) {
+
+&#x20; .detailsGrid {
+
+&#x20;   grid-template-columns: 1fr;
+
+&#x20; }
+
+
+
+&#x20; .mapCanvas {
+
+&#x20;   max-width: 100%;
+
+&#x20; }
+
+}
+
+```
+
+
+
+\---
+
+
+
+\## PART 3 — Physics Tooltips (GlossaryLink Upgrade)
+
+
+
+\### 3.1 Update: /src/components/GlossaryLink/GlossaryLink.jsx
+
+
+
+Upgrade existing GlossaryLink component to show physics tooltip cards on hover.
+
+
+
+```jsx
+
+// GlossaryLink.jsx — UPDATED
+
+
+
+import React, { useState, useEffect } from 'react';
+
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { useBaseUrl } from '@docusaurus/useBaseUrl';
+
+import styles from './GlossaryLink.module.css';
+
+
+
+const GlossaryLink = ({ term, lang = 'es' }) => {
+
+&#x20; const \[isVisible, setIsVisible] = useState(false);
+
+&#x20; const \[tooltipData, setTooltipData] = useState(null);
+
+&#x20; const \[physicsTooltips, setPhysicsTooltips] = useState(null);
+
+
+
+&#x20; useEffect(() => {
+
+&#x20;   fetch(useBaseUrl('/data/physics\_tooltips.json'))
+
+&#x20;     .then((res) => res.json())
+
+&#x20;     .then((data) => {
+
+&#x20;       setPhysicsTooltips(data);
+
+&#x20;       // Find matching term
+
+&#x20;       const match = data.find(
+
+&#x20;         (t) => t\[`term\_${lang}`]?.toLowerCase() === term?.toLowerCase()
+
+&#x20;       );
+
+&#x20;       if (match) setTooltipData(match);
+
+&#x20;     })
+
+&#x20;     .catch((err) => console.error('Error loading physics tooltips:', err));
+
+&#x20; }, \[term, lang]);
+
+
+
+&#x20; if (!tooltipData) {
+
+&#x20;   return <span className={styles.termPlain}>{term}</span>;
+
+&#x20; }
+
+
+
+&#x20; return (
+
+&#x20;   <span
+
+&#x20;     className={styles.termLink}
+
+&#x20;     onMouseEnter={() => setIsVisible(true)}
+
+&#x20;     onMouseLeave={() => setIsVisible(false)}
+
+&#x20;   >
+
+&#x20;     <span className={styles.termText}>{term}</span>
+
+
+
+&#x20;     <AnimatePresence>
+
+&#x20;       {isVisible \&\& (
+
+&#x20;         <motion.div
+
+&#x20;           className={styles.tooltip}
+
+&#x20;           initial={{ opacity: 0, y: 10 }}
+
+&#x20;           animate={{ opacity: 1, y: 0 }}
+
+&#x20;           exit={{ opacity: 0, y: 10 }}
+
+&#x20;           transition={{ duration: 0.2 }}
+
+&#x20;         >
+
+&#x20;           {/\* Equation \*/}
+
+&#x20;           <div className={styles.equation}>
+
+&#x20;             <code>{tooltipData.equation\_latex}</code>
+
+&#x20;           </div>
+
+
+
+&#x20;           {/\* Variables \*/}
+
+&#x20;           {tooltipData.variables \&\& tooltipData.variables.length > 0 \&\& (
+
+&#x20;             <div className={styles.variables}>
+
+&#x20;               <strong>Variables:</strong>
+
+&#x20;               <ul>
+
+&#x20;                 {tooltipData.variables.map((v, idx) => (
+
+&#x20;                   <li key={idx}>
+
+&#x20;                     <code>{v.symbol}</code> = {v\[`name\_${lang}`]} ({v.unit})
+
+&#x20;                   </li>
+
+&#x20;                 ))}
+
+&#x20;               </ul>
+
+&#x20;             </div>
+
+&#x20;           )}
+
+
+
+&#x20;           {/\* Intuition \*/}
+
+&#x20;           <div className={styles.intuition}>
+
+&#x20;             <strong>Intuición:</strong>
+
+&#x20;             <p>{tooltipData\[`intuition\_${lang}`]}</p>
+
+&#x20;           </div>
+
+
+
+&#x20;           {/\* Blackout Relevance \*/}
+
+&#x20;           <div className={styles.relevance}>
+
+&#x20;             <strong>Relevancia 28A:</strong>
+
+&#x20;             <p>{tooltipData\[`blackout\_relevance\_${lang}`]}</p>
+
+&#x20;           </div>
+
+
+
+&#x20;           {/\* Numerical Example \*/}
+
+&#x20;           {tooltipData.numerical\_example \&\& (
+
+&#x20;             <div className={styles.example}>
+
+&#x20;               <strong>Ejemplo Numérico:</strong>
+
+&#x20;               <p><code>{tooltipData.numerical\_example}</code></p>
+
+&#x20;             </div>
+
+&#x20;           )}
+
+
+
+&#x20;           {/\* Difficulty Level Badge \*/}
+
+&#x20;           <div className={`${styles.difficulty} ${styles\[tooltipData.difficulty\_level]}`}>
+
+&#x20;             {tooltipData.difficulty\_level.toUpperCase()}
+
+&#x20;           </div>
+
+&#x20;         </motion.div>
+
+&#x20;       )}
+
+&#x20;     </AnimatePresence>
+
+&#x20;   </span>
+
+&#x20; );
+
+};
+
+
+
+export default GlossaryLink;
+
+```
+
+
+
+\### 3.2 Update: /src/components/GlossaryLink/GlossaryLink.module.css
+
+
+
+```css
+
+.termPlain {
+
+&#x20; color: rgba(255, 255, 255, 0.9);
+
+&#x20; font-weight: normal;
+
+}
+
+
+
+.termLink {
+
+&#x20; position: relative;
+
+&#x20; color: #00ff88;
+
+&#x20; font-weight: bold;
+
+&#x20; cursor: help;
+
+&#x20; border-bottom: 1px dotted rgba(0, 255, 136, 0.5);
+
+&#x20; transition: all 0.2s;
+
+}
+
+
+
+.termLink:hover {
+
+&#x20; border-bottom-color: rgba(0, 255, 136, 1);
+
+&#x20; color: #00ff88;
+
+&#x20; text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+
+}
+
+
+
+.termText {
+
+&#x20; display: inline;
+
+}
+
+
+
+.tooltip {
+
+&#x20; position: absolute;
+
+&#x20; bottom: 120%;
+
+&#x20; left: 50%;
+
+&#x20; transform: translateX(-50%);
+
+&#x20; background: rgba(0, 10, 20, 0.95);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.4);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 16px;
+
+&#x20; width: 350px;
+
+&#x20; max-height: 500px;
+
+&#x20; overflow-y: auto;
+
+&#x20; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+
+&#x20; z-index: 1000;
+
+&#x20; backdrop-filter: blur(10px);
+
+&#x20; font-size: 0.85em;
+
+&#x20; line-height: 1.5;
+
+}
+
+
+
+.tooltip::after {
+
+&#x20; content: '';
+
+&#x20; position: absolute;
+
+&#x20; bottom: -8px;
+
+&#x20; left: 50%;
+
+&#x20; transform: translateX(-50%);
+
+&#x20; width: 0;
+
+&#x20; height: 0;
+
+&#x20; border-left: 8px solid transparent;
+
+&#x20; border-right: 8px solid transparent;
+
+&#x20; border-top: 8px solid rgba(0, 10, 20, 0.95);
+
+}
+
+
+
+.equation {
+
+&#x20; background: rgba(0, 255, 136, 0.05);
+
+&#x20; border-left: 3px solid rgba(0, 255, 136, 0.3);
+
+&#x20; padding: 10px;
+
+&#x20; border-radius: 4px;
+
+&#x20; margin-bottom: 12px;
+
+&#x20; font-family: 'Courier New', monospace;
+
+&#x20; color: #00ff88;
+
+&#x20; overflow-x: auto;
+
+}
+
+
+
+.equation code {
+
+&#x20; background: transparent;
+
+&#x20; color: #00ff88;
+
+}
+
+
+
+.variables {
+
+&#x20; margin-bottom: 12px;
+
+&#x20; padding: 8px;
+
+&#x20; background: rgba(255, 215, 0, 0.05);
+
+&#x20; border-radius: 4px;
+
+}
+
+
+
+.variables strong {
+
+&#x20; color: #FFD700;
+
+&#x20; display: block;
+
+&#x20; margin-bottom: 6px;
+
+}
+
+
+
+.variables ul {
+
+&#x20; margin: 0;
+
+&#x20; padding-left: 16px;
+
+&#x20; list-style-position: inside;
+
+}
+
+
+
+.variables li {
+
+&#x20; margin-bottom: 4px;
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+}
+
+
+
+.variables code {
+
+&#x20; color: #00ff88;
+
+&#x20; background: transparent;
+
+&#x20; font-weight: bold;
+
+}
+
+
+
+.intuition {
+
+&#x20; margin-bottom: 12px;
+
+&#x20; padding: 8px;
+
+&#x20; background: rgba(100, 150, 255, 0.05);
+
+&#x20; border-radius: 4px;
+
+}
+
+
+
+.intuition strong {
+
+&#x20; color: #88ccff;
+
+&#x20; display: block;
+
+&#x20; margin-bottom: 6px;
+
+}
+
+
+
+.intuition p {
+
+&#x20; margin: 0;
+
+&#x20; color: rgba(255, 255, 255, 0.85);
+
+}
+
+
+
+.relevance {
+
+&#x20; margin-bottom: 12px;
+
+&#x20; padding: 8px;
+
+&#x20; background: rgba(255, 100, 68, 0.05);
+
+&#x20; border-radius: 4px;
+
+}
+
+
+
+.relevance strong {
+
+&#x20; color: #ff6644;
+
+&#x20; display: block;
+
+&#x20; margin-bottom: 6px;
+
+}
+
+
+
+.relevance p {
+
+&#x20; margin: 0;
+
+&#x20; color: rgba(255, 255, 255, 0.85);
+
+}
+
+
+
+.example {
+
+&#x20; margin-bottom: 12px;
+
+&#x20; padding: 8px;
+
+&#x20; background: rgba(0, 0, 0, 0.3);
+
+&#x20; border-radius: 4px;
+
+&#x20; border-left: 2px solid rgba(255, 215, 0, 0.3);
+
+}
+
+
+
+.example strong {
+
+&#x20; color: #FFD700;
+
+&#x20; display: block;
+
+&#x20; margin-bottom: 6px;
+
+}
+
+
+
+.example code {
+
+&#x20; background: transparent;
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; font-size: 0.8em;
+
+&#x20; word-break: break-word;
+
+}
+
+
+
+.difficulty {
+
+&#x20; display: inline-block;
+
+&#x20; padding: 4px 8px;
+
+&#x20; border-radius: 3px;
+
+&#x20; font-size: 0.75em;
+
+&#x20; font-weight: bold;
+
+&#x20; text-transform: uppercase;
+
+&#x20; margin-top: 8px;
+
+}
+
+
+
+.difficulty.basic {
+
+&#x20; background: rgba(0, 255, 136, 0.2);
+
+&#x20; color: #00ff88;
+
+}
+
+
+
+.difficulty.intermediate {
+
+&#x20; background: rgba(255, 215, 0, 0.2);
+
+&#x20; color: #FFD700;
+
+}
+
+
+
+.difficulty.advanced {
+
+&#x20; background: rgba(255, 100, 68, 0.2);
+
+&#x20; color: #ff6644;
+
+}
+
+
+
+@media (max-width: 768px) {
+
+&#x20; .tooltip {
+
+&#x20;   width: 90vw;
+
+&#x20;   max-width: 300px;
+
+&#x20;   bottom: auto;
+
+&#x20;   top: 120%;
+
+&#x20; }
+
+
+
+&#x20; .tooltip::after {
+
+&#x20;   bottom: auto;
+
+&#x20;   top: -8px;
+
+&#x20;   border-top: none;
+
+&#x20;   border-bottom: 8px solid rgba(0, 10, 20, 0.95);
+
+&#x20; }
+
+}
+
+```
+
+
+
+\### 3.3 Create: /static/data/physics\_tooltips.json
+
+
+
+(As provided in the research report above — 10 key terms with LaTeX equations)
+
+
+
+\---
+
+
+
+\## PART 4 — Web Audio API Sonification
+
+
+
+\### 4.1 Create: /src/utils/audioSonification.js
+
+
+
+Web Audio API implementation for real-time grid sonification.
+
+
+
+```javascript
+
+// audioSonification.js
+
+
+
+export class GridSonifier {
+
+&#x20; constructor() {
+
+&#x20;   this.audioContext = null;
+
+&#x20;   this.oscillatorPrimary = null;
+
+&#x20;   this.oscillatorStress = null;
+
+&#x20;   this.filterStress = null;
+
+&#x20;   this.gainMaster = null;
+
+&#x20;   this.lfoFrequency = null;
+
+&#x20;   this.lfoVoltage = null;
+
+&#x20;   this.isActive = false;
+
+&#x20; }
+
+
+
+&#x20; // Initialize Web Audio API (requires user gesture)
+
+&#x20; initialize() {
+
+&#x20;   if (this.audioContext) return; // Already initialized
+
+
+
+&#x20;   const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+&#x20;   if (!AudioContext) {
+
+&#x20;     console.warn('Web Audio API not supported in this browser');
+
+&#x20;     return false;
+
+&#x20;   }
+
+
+
+&#x20;   this.audioContext = new AudioContext();
+
+
+
+&#x20;   // Master gain (volume)
+
+&#x20;   this.gainMaster = this.audioContext.createGain();
+
+&#x20;   this.gainMaster.gain.value = 0.3; // Conservative volume
+
+&#x20;   this.gainMaster.connect(this.audioContext.destination);
+
+
+
+&#x20;   // Primary oscillator: grid frequency (50 Hz → 47 Hz during collapse)
+
+&#x20;   this.oscillatorPrimary = this.audioContext.createOscillator();
+
+&#x20;   this.oscillatorPrimary.type = 'sine';
+
+&#x20;   this.oscillatorPrimary.frequency.value = 50; // Start at nominal
+
+
+
+&#x20;   // Stress oscillator: voltage harmonics
+
+&#x20;   this.oscillatorStress = this.audioContext.createOscillator();
+
+&#x20;   this.oscillatorStress.type = 'sawtooth'; // Rich harmonics
+
+&#x20;   this.oscillatorStress.frequency.value = 50;
+
+
+
+&#x20;   // Stress filter: cutoff controlled by voltage level
+
+&#x20;   this.filterStress = this.audioContext.createBiquadFilter();
+
+&#x20;   this.filterStress.type = 'lowpass';
+
+&#x20;   this.filterStress.frequency.value = 50; // Silent at low voltage
+
+&#x20;   this.filterStress.Q.value = 2;
+
+
+
+&#x20;   // LFO for frequency modulation (0.63 Hz oscillation)
+
+&#x20;   this.lfoFrequency = this.audioContext.createOscillator();
+
+&#x20;   this.lfoFrequency.frequency.value = 0.63; // Hz
+
+&#x20;   const lfoGainFreq = this.audioContext.createGain();
+
+&#x20;   lfoGainFreq.gain.value = 0.5; // Modulation depth
+
+
+
+&#x20;   // LFO for voltage modulation
+
+&#x20;   this.lfoVoltage = this.audioContext.createOscillator();
+
+&#x20;   this.lfoVoltage.frequency.value = 0.21; // Hz
+
+&#x20;   const lfoGainVolt = this.audioContext.createGain();
+
+&#x20;   lfoGainVolt.gain.value = 0.3;
+
+
+
+&#x20;   // Routing
+
+&#x20;   this.lfoFrequency.connect(lfoGainFreq);
+
+&#x20;   lfoGainFreq.connect(this.oscillatorPrimary.frequency);
+
+
+
+&#x20;   this.lfoVoltage.connect(lfoGainVolt);
+
+&#x20;   lfoGainVolt.connect(this.gainMaster.gain);
+
+
+
+&#x20;   this.oscillatorPrimary.connect(this.gainMaster);
+
+&#x20;   this.oscillatorStress.connect(this.filterStress);
+
+&#x20;   this.filterStress.connect(this.gainMaster);
+
+
+
+&#x20;   // Start oscillators
+
+&#x20;   const now = this.audioContext.currentTime;
+
+&#x20;   this.oscillatorPrimary.start(now);
+
+&#x20;   this.oscillatorStress.start(now);
+
+&#x20;   this.lfoFrequency.start(now);
+
+&#x20;   this.lfoVoltage.start(now);
+
+
+
+&#x20;   this.isActive = true;
+
+&#x20;   return true;
+
+&#x20; }
+
+
+
+&#x20; // Update frequency (Hz)
+
+&#x20; setGridFrequency(frequencyHz) {
+
+&#x20;   if (!this.oscillatorPrimary) return;
+
+&#x20;   this.oscillatorPrimary.frequency.setTargetAtTime(
+
+&#x20;     frequencyHz,
+
+&#x20;     this.audioContext.currentTime,
+
+&#x20;     0.05 // Time constant for exponential ramp (50ms)
+
+&#x20;   );
+
+&#x20; }
+
+
+
+&#x20; // Update voltage stress level (pu, normalized 0-1.1)
+
+&#x20; setVoltageStress(voltagepu) {
+
+&#x20;   if (!this.filterStress) return;
+
+
+
+&#x20;   // Map voltage (pu) to filter cutoff frequency
+
+&#x20;   // At V ≤ 1.0 pu: cutoff = 50 Hz (stressharmonics silent)
+
+&#x20;   // At V = 1.1 pu: cutoff = 5000 Hz (harsh stressharmonics)
+
+&#x20;   const normalizedV = Math.max(1.0, Math.min(1.1, voltagepu));
+
+1. &#x20;   const vRange = normalizedV - 1.0; // 0 to 0.1
+
+&#x20;   const cutoffHz = 50 + (vRange / 0.1) \* 4950; // 50 Hz → 5000 Hz
+
+
+
+&#x20;   this.filterStress.frequency.setTargetAtTime(
+
+&#x20;     cutoffHz,
+
+&#x20;     this.audioContext.currentTime,
+
+&#x20;     0.05
+
+&#x20;   );
+
+&#x20; }
+
+
+
+&#x20; // Stop audio
+
+&#x20; stop() {
+
+&#x20;   if (!this.isActive) return;
+
+
+
+&#x20;   const now = this.audioContext.currentTime;
+
+&#x20;   this.oscillatorPrimary?.stop(now + 0.1);
+
+&#x20;   this.oscillatorStress?.stop(now + 0.1);
+
+&#x20;   this.lfoFrequency?.stop(now + 0.1);
+
+&#x20;   this.lfoVoltage?.stop(now + 0.1);
+
+
+
+&#x20;   this.oscillatorPrimary = null;
+
+&#x20;   this.oscillatorStress = null;
+
+&#x20;   this.lfoFrequency = null;
+
+&#x20;   this.lfoVoltage = null;
+
+&#x20;   this.isActive = false;
+
+&#x20; }
+
+
+
+&#x20; // Get audio context state
+
+&#x20; getState() {
+
+&#x20;   return {
+
+&#x20;     isActive: this.isActive,
+
+&#x20;     contextState: this.audioContext?.state || 'offline',
+
+&#x20;   };
+
+&#x20; }
+
+}
+
+```
+
+
+
+\---
+
+
+
+\## PART 5 — Integration
+
+
+
+\### 5.1 Update: FrequencyTimeline.jsx
+
+
+
+Add sonification to the Week 1 FrequencyTimeline component.
+
+
+
+In the component where playback starts:
+
+
+
+```javascript
+
+import { GridSonifier } from '../utils/audioSonification';
+
+
+
+// Inside FrequencyTimeline component:
+
+const sonifierRef = useRef(new GridSonifier());
+
+
+
+const handlePlayPause = () => {
+
+&#x20; if (isRunning) {
+
+&#x20;   setIsRunning(false);
+
+&#x20;   sonifierRef.current.stop();
+
+&#x20; } else {
+
+&#x20;   // Initialize audio on user gesture (required by browsers)
+
+&#x20;   sonifierRef.current.initialize();
+
+&#x20;   setIsRunning(true);
+
+&#x20; }
+
+};
+
+
+
+// Inside simulation loop, update audio:
+
+useEffect(() => {
+
+&#x20; if (isRunning \&\& sonifierRef.current.isActive) {
+
+&#x20;   sonifierRef.current.setGridFrequency(frequency);
+
+&#x20;   sonifierRef.current.setVoltageStress(currentVoltagepu);
+
+&#x20; }
+
+}, \[frequency, isRunning]);
+
+```
+
+
+
+\---
+
+
+
+\## PART 6 — Lighthouse Optimization
+
+
+
+\### 6.1 Update: docusaurus.config.js
+
+
+
+```javascript
+
+// Code splitting configuration
+
+module.exports = {
+
+&#x20; // ... existing config
+
+&#x20; webpack: {
+
+&#x20;   jsLoader: (isServer) => ({
+
+&#x20;     loader: 'esbuild-loader',
+
+&#x20;     options: {
+
+&#x20;       loader: 'jsx',
+
+&#x20;       format: 'esm',
+
+&#x20;       target: isServer ? 'esnext' : 'es2020',
+
+&#x20;     },
+
+&#x20;   }),
+
+&#x20; },
+
+&#x20; // Enable image optimization
+
+&#x20; scripts: \[
+
+&#x20;   {
+
+&#x20;     src: 'https://cdn.jsdelivr.net/npm/web-vitals@3/dist/web-vitals.iife.js',
+
+&#x20;     defer: true,
+
+&#x20;   },
+
+&#x20; ],
+
+};
+
+```
+
+
+
+\### 6.2 Create: /src/components/FrequencyTimeline/index.jsx (Lazy Loading)
+
+
+
+```javascript
+
+import dynamic from '@docusaurus/module.utils/dynamic';
+
+import React from 'react';
+
+
+
+const FrequencyTimeline = dynamic(
+
+&#x20; () => import('./FrequencyTimeline'),
+
+&#x20; { loading: () => <div>Loading frequency timeline...</div> }
+
+);
+
+
+
+export default FrequencyTimeline;
+
+```
+
+
+
+\---
+
+
+
+\## PART 7 — Commit
+
+
+
+```bash
+
+git add /static/data/scr\_heatmap.json
+
+git add /static/data/voltage\_heatmap.json
+
+git add /static/data/thermal\_loading.json
+
+git add /static/data/physics\_tooltips.json
+
+git add /src/components/SCRHeatmap/
+
+git add /src/components/GlossaryLink/
+
+git add /src/utils/audioSonification.js
+
+git add /src/components/FrequencyTimeline/index.jsx
+
+
+
+git commit -m "feat(visualization): implement SCR heatmap, physics tooltips, and audio sonification
+
+
+
+\- Create SCRHeatmap component with interactive geographic nodes
+
+\- Display Short Circuit Ratio (SCR) distribution across Iberian grid
+
+\- Highlight very weak grid zones (SCR < 1.5) that triggered overvoltage cascade
+
+\- Upgrade GlossaryLink component with physics tooltip cards
+
+\- Implement 10 key technical terms with LaTeX equations, variables, intuition, and 28A relevance
+
+\- Add Web Audio API sonification engine mapping frequency and voltage to sound
+
+\- Primary oscillator: frequency range 50 Hz (nominal) → 47 Hz (collapse)
+
+\- Stress synthesizer: harmonic distortion on low-pass filter increases with voltage stress
+
+\- Dual LFO modulators mimicking 0.63 Hz and 0.21 Hz grid oscillations observed pre-blackout
+
+\- Lazy-load heavy visualization components to improve Lighthouse LCP score
+
+\- Implement accessibility patterns: color patterns supplement color scale for colorblind users
+
+\- Add ARIA labels and hidden data tables for screen reader support
+
+
+
+Data sources:
+
+\- REE Informe Anual de Potencia de Cortocircuito 2024
+
+\- ENTSO-E Expert Panel Final Report (March 2026)
+
+\- Spanish grid code PO 7.4 regulatory analysis
+
+\- IEEE acoustic design precedents (NASA SVS, Bloomberg terminal sonification)
+
+
+
+Closes #week-4-visualization"
+
+
+
+git push origin main
+
+```
+
+
+
+\---
+
+
+
+\## Definition of Done
+
+
+
+\- \[ ] scr\_heatmap.json created with 10+ nodes covering Spain and Portugal
+
+\- \[ ] SCRHeatmap.jsx renders interactive SVG map with clickable nodes
+
+\- \[ ] Node colors correspond correctly to SCR thresholds (green/yellow/orange/red)
+
+\- \[ ] Details panel shows on click with node metadata, PLL stability badge, 28A relevance
+
+\- \[ ] voltage\_heatmap.json with three phases (normal, prestress, collapse) populated
+
+\- \[ ] thermal\_loading.json with 4+ corridors and realistic power flows
+
+\- \[ ] physics\_tooltips.json with 10 complete terms (all with LaTeX, variables, examples)
+
+\- \[ ] GlossaryLink component updated to show hover tooltips with equations rendered
+
+\- \[ ] Tooltip styling matches dark theme, smooth animations on entry/exit
+
+\- \[ ] GridSonifier class initializes on user gesture (complies with browser autoplay policy)
+
+\- \[ ] Primary oscillator frequency maps correctly to simulation f(t) (50 Hz → 47 Hz)
+
+\- \[ ] Stress filter cutoff opens exponentially with voltage (silent at <420 kV, harsh at >435 kV)
+
+\- \[ ] LFO modulators at 0.63 Hz and 0.21 Hz creating eerie subsynchronous beating
+
+\- \[ ] Audio stops cleanly when simulation ends, no lingering oscillators
+
+\- \[ ] SCRHeatmap and GlossaryLink are lazy-loaded with React.lazy/Suspense
+
+\- \[ ] Images converted to .webp with explicit width/height to prevent CLS
+
+\- \[ ] ARIA labels added to all interactive elements (map nodes, tooltips, buttons)
+
+\- \[ ] Color contrast meets WCAG AA standards (added hatching patterns for colorblind users)
+
+\- \[ ] npm run build completes without TypeScript/ESLint errors
+
+\- \[ ] Lighthouse > 88 Performance, > 95 Accessibility, > 90 Best Practices
+
+\- \[ ] Mobile responsive (tooltips reposition on viewport edge, map scales)
+
+\- \[ ] Commit message included, git history clean

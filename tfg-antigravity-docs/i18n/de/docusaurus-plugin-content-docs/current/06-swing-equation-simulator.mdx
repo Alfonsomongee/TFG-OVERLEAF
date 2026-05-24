@@ -1,0 +1,159 @@
+---
+title: "06. Interaktiver Simulator: Swing-Gleichung"
+sidebar_position: 6
+hide_title: true
+---
+
+import SwingEquationSimulator from '@site/src/components/SwingEquationSimulator/SwingEquationSimulator';
+import GlitchTitle from "@site/src/components/GlitchTitle";
+
+<GlitchTitle>Interaktiver Simulator: Die Swing-Gleichung</GlitchTitle>
+
+## Theoretische Einführung
+
+Die **Swing-Gleichung** (Pendelgleichung) ist das grundlegende Modell für die transiente Stabilität elektrischer Systeme. Sie beschreibt, wie sich die Netzfrequenz als Reaktion auf ein Ungleichgewicht zwischen gelieferter Leistung (P_m) und abgerufener Leistung (P_e) ändert.
+
+### Die linearisierte Form (Frequenzbereich)
+
+Für einen edukativen Simulator in Echtzeit verwenden wir die linearisierte Form der Swing-Gleichung:
+
+$$
+2H \frac{d(\Delta f)}{dt} + D \Delta f = \Delta P
+$$
+
+**Wobei:**
+- $H$ = Äquivalente Trägheitskonstante des Systems (Sekunden)
+- $\Delta f$ = Frequenzabweichung in pu: $\Delta f = (f - 50) / 50$
+- $D$ = Dämpfungsfaktor (pu)
+- $\Delta P$ = Ungleichgewicht der Wirkleistung (% der Last)
+
+### Physikalische Interpretation
+
+- **$H$ (Trägheit)** bestimmt die **anfängliche Änderungsrate** der Frequenz (ROCOF). Geringeres H = höherer ROCOF = schnellerer Zusammenbruch.
+- **$D$ (Dämpfung)** bestimmt den finalen **stationären Zustand**. Höheres D = geringerer Frequenzabfall im Dauerzustand (aber nur, wenn die Primärreserven reagieren können).
+
+**Kritischer Punkt:** Die Trägheit verhindert nicht den Zusammenbruch; sie verzögert ihn nur. Ohne verfügbare Wirkleistung (negatives und anhaltendes ΔP) wird das System unabhängig von H zusammenbrechen.
+
+---
+
+## Interaktiver Simulator
+
+Passen Sie die physikalischen Parameter mit den Schiebereglern an und klicken Sie auf "SIMULIEREN", um die Dynamik in Echtzeit zu beobachten. Die Diagramme zeigen die Frequenz und den ROCOF im Zeitverlauf.
+
+<SwingEquationSimulator />
+
+---
+
+## Erläuterung der Parameter
+
+### Systemträgheit (H)
+
+Der Wert von $H$ in Sekunden gibt an, wie lange eine Synchronmaschine ihre Nennleistung liefern könnte, wenn sie nur ihre gespeicherte kinetische Energie entziehen würde.
+
+**Typische Werte:**
+
+| Technologie | H (Sekunden) |
+|---|---|
+| Großer Nukleargenerator | 8–9 |
+| Gasturbine (CCGT) | 6–7 |
+| Wasserkraft | 3–4 |
+| Windkraftanlage (Typ 4, Vollumrichter) | 0 |
+| Solar-PV | 0 |
+| Phasenschieber (Synchronkompensator) | 1–2 |
+
+**Am 28. April 2025:**
+- Iberisches System mit 78% Erneuerbaren: **H = 2,45 Sekunden** (kritisch)
+- Historisches iberisches System (2015, mehr Kohle/Kernkraft): **H ≈ 5 Sekunden** (sicher)
+
+### Leistungsverlust (ΔP)
+
+Stellt den Prozentsatz der Gesamtlast dar, der plötzlich verloren geht. Am 28A bedeutet der Verlust von 2.200 MW in einem System mit 25.000 MW = **8,8%**.
+
+Dies ist das "Ausmaß der Störung". Größeres ΔP = höherer ROCOF = schnellerer Zusammenbruch.
+
+### Dämpfung (D)
+
+Repräsentiert zwei Effekte:
+1. **Frequenzabhängige Last:** Asynchronmotoren verbrauchen bei niedrigerer Frequenz weniger Leistung und bieten eine "automatische Entlastung"
+2. **Reaktion des Spannungsreglers (AVR):** Synchronmaschinen passen ihre Abgabe bei Frequenzänderungen automatisch an
+
+Typische Werte: **D = 1,5 pu** (Baseline)
+
+### Synthetische Trägheit (FFR - Fast Frequency Response)
+
+Moderne Wechselrichter können so programmiert werden, dass sie Wirkleistung proportional zur Änderungsrate der Frequenz einspeisen:
+
+$$
+P_{FFR} = -K_{FFR} \frac{df}{dt}
+$$
+
+Dies ahmt künstlich das Trägheitsverhalten einer Synchronmaschine nach. **Aber mit einem wichtigen Vorbehalt:** In schwachen Netzen (niedriger SCR) verursachen hohe FFR-Verstärkungen Regelinstabilitäten, anstatt zu helfen.
+
+### Schwaches Netz (SCR < 2.0)
+
+Die **Kurzschlussleistung (Short Circuit Ratio - SCR)** misst die "Stärke" des Netzes:
+
+$$
+\text{SCR} = \frac{S_{cc}}{P_n}
+$$
+
+- **SCR > 3:** Starkes Netz (Spannung stabil)
+- **2 < SCR < 3:** Mittleres Netz
+- **SCR < 2:** Schwaches Netz (Spannung instabil)
+- **SCR < 1.5:** Sehr schwaches Netz (PLL-Instabilität)
+
+In Südspanien (Granada, Badajoz) war die SCR < 2,0 aufgrund der sehr hohen Konzentration von Solarenergie ohne synchrone Unterstützung.
+
+---
+
+## Die drei wichtigsten pädagogischen Interaktionen
+
+### 1️⃣ **Die Verzögerung durch Trägheit**
+
+**Aktion:** Laden Sie "Bedingungen 28A" und beobachten Sie den ROCOF ≈ 0,9 Hz/s. Laden Sie dann "+ Trägheit" (H=4,5s) und beobachten Sie dasselbe Ereignis.
+
+**Beobachtung:** Der ROCOF sinkt auf ≈ 0,6 Hz/s, aber die Frequenz fällt weiter und erreicht ungefähr den gleichen Minimalwert.
+
+**Lektion:** **Die Trägheit ist keine Batterie.** Sie verhindert nicht den Zusammenbruch; sie verzögert nur seinen Eintritt und kauft Zeit, damit die Primärreserven reagieren können. Ohne verfügbare Leistung ist der Zusammenbruch unvermeidlich.
+
+---
+
+### 2️⃣ **Die Falle der synthetischen Trägheit in schwachen Netzen**
+
+**Aktion:** Laden Sie "Synthetische FFR" mit aktivierter Option "Schwaches Netz". Sie werden sehen, dass der anfängliche ROCOF dank der FFR-Einspeisung abnimmt. Aber...
+
+**Beobachtung:** Die Frequenz beginnt bei ~0,63 Hz, dem subsynchronen Bereich, **heftig zu oszillieren**. Das System wird instabiler, nicht stabiler.
+
+**Lektion:** **Die Wechselrichterregelung hat Grenzen.** In schwachen Netzen können PLLs die Spannung nicht richtig verfolgen, wenn der Wechselrichter selbst Leistung einspeist. Dies erzeugt eine Rückkopplungsschleife, die dieselbe Instabilität von 0,63 Hz verursacht, die vor dem Stromausfall in Granada beobachtet wurde.
+
+---
+
+### 3️⃣ **Die Grenzen des UFLS**
+
+**Aktion:** Führen Sie "Bedingungen 28A" aus. Sie werden sehen, dass das UFLS in Stufen (49,0 Hz, dann 48,7 Hz usw.) aktiviert wird und die Last reduziert.
+
+**Beobachtung:** Wenn der ROCOF 1,0 Hz/s überschreitet und die Frequenz unter 48,0 Hz fällt, stoppt selbst das maximale UFLS den Zusammenbruch nicht.
+
+**Lektion:** **UFLS ist die letzte Verteidigungslinie, hat aber eine Bruchstelle.** Sobald die Trägheit so gering ist, dass ROCOF > 1,0 Hz/s beträgt, entkoppeln sich die Synchronmaschinen durch "Pole-Slip" (Polradschlüpfen, Synchronitätsverlust). An diesem Punkt spielt das UFLS ein verlorenes Spiel.
+
+---
+
+## Swing-Gleichung: Vollständige Form (Referenz)
+
+Für Wissenschaftler ist hier die vollständige nichtlineare Form:
+
+$$
+\frac{d^2 \delta}{dt^2} = \frac{\omega_s}{2H}(P_m - P_e(\delta) - D\frac{d\delta}{dt})
+$$
+
+Wobei $P_e(\delta) = \frac{EV}{X}\sin(\delta)$ die elektrische Leistung in Abhängigkeit vom Rotorwinkel $\delta$ ist.
+
+Der Simulator verwendet eine linearisierte Version, die den Winkel weglässt und sich direkt auf die Frequenz konzentriert, was pädagogisch am wichtigsten ist.
+
+---
+
+## Referenzen
+
+- Kundur, P. (1994). *Power System Stability and Control*. EPRI.
+- ENTSO-E Expert Panel Final Report (2026). Grid Incident in Spain and Portugal, 28 April 2025.
+- IEEE Working Group on Frequency Stability (2023). Inertia Requirements in Low-Inertia Grids.

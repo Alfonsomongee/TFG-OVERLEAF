@@ -1,0 +1,2958 @@
+\# TASK: Implement SwingEquationSimulator Widget — Week 2
+
+\# Based on Deep Research Report: Swing Equation Dynamics \& System Inertia
+
+
+
+\## Context
+
+Docusaurus v3 project about the Iberian Blackout of April 28, 2025.
+
+Stack: React, Framer Motion, Recharts, deployed on Vercel.
+
+Week 1 completed: FrequencyTimeline dashboard with real 28A PMU data.
+
+Week 2 focuses on interactive physics modeling using the Swing Equation.
+
+
+
+Research has provided:
+
+\- Complete mathematical derivation of Swing Equation (nonlinear and linearized forms)
+
+\- Verified inertia constants for Iberian system (H\_eq = 2.21-2.71 seconds, avg 2.45)
+
+\- ROCOF formulas and protection thresholds (1.0 Hz/s is pole-slip point of no return)
+
+\- UFLS scheme parameters for Spain \& Portugal (multi-stage, 49.0-48.0 Hz cascade)
+
+\- Three pedagogical "aha moment" interactions
+
+\- Euler integration parameters (Δt = 10ms for stability)
+
+
+
+\---
+
+
+
+\## PART 1 — Data Layer
+
+
+
+\### 1.1 Create: /static/data/swing\_equation\_params.json
+
+
+
+Complete parameter configuration for the simulator. All values extracted from research
+
+or verified from IEEE/ENTSO-E standards.
+
+
+
+```json
+
+{
+
+&#x20; "swing\_equation": {
+
+&#x20;   "form": "linearized\_frequency\_domain",
+
+&#x20;   "canonical\_equation": "2H \* d(Δf)/dt + D\*Δf = ΔP",
+
+&#x20;   "description": "Single-machine equivalent (Center of Inertia model). Δf in per-unit, ΔP in % of load, H in seconds, D in pu.",
+
+&#x20;   "numerical\_integration": {
+
+&#x20;     "method": "Explicit Euler",
+
+&#x20;     "step\_size\_ms": 10,
+
+&#x20;     "updates\_per\_second": 100,
+
+&#x20;     "stability\_domain": "H >= 1.0s, D <= 3.0pu, stable for all valid slider ranges"
+
+&#x20;   },
+
+&#x20;   "equations": {
+
+&#x20;     "frequency\_derivative": "d(Δf)/dt = (1/2H) \* (ΔP - D\*Δf)",
+
+&#x20;     "frequency\_update": "f\[n+1] = 50 \* (1 + Δf\[n+1])",
+
+&#x20;     "rocof": "ROCOF = d(f)/dt (Hz/s)",
+
+&#x20;     "power\_imbalance": "ΔP\_pu = (P\_lost\_mw) / (P\_base\_mw) \* 100"
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "sliders": {
+
+&#x20;   "H\_inertia": {
+
+&#x20;     "label\_es": "Inercia del Sistema (H)",
+
+&#x20;     "label\_en": "System Inertia (H)",
+
+&#x20;     "unit": "seconds",
+
+&#x20;     "min": 1.0,
+
+&#x20;     "max": 8.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default\_value": 2.45,
+
+&#x20;     "iberian\_28A\_value": 2.45,
+
+&#x20;     "historical\_thermal\_grid": 5.0,
+
+&#x20;     "notes": "Inertia constant H is the ratio of kinetic energy stored in rotating masses to the system base power. Lower H = faster frequency drop = higher ROCOF. The Iberian grid on 28A was critically low.",
+
+&#x20;     "reference\_values": {
+
+&#x20;       "nuclear\_plant\_single": 7.0,
+
+&#x20;       "ccgt\_single": 6.5,
+
+&#x20;       "hydro\_single": 3.5,
+
+&#x20;       "wind\_type4": 0,
+
+&#x20;       "solar\_pv": 0,
+
+&#x20;       "synchronous\_condenser": 1.5,
+
+&#x20;       "iberian\_2025\_all\_synchronous": 8.0,
+
+&#x20;       "iberian\_2025\_78\_percent\_renewable": 2.45,
+
+&#x20;       "nordic\_minimum\_safe": 3.5
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "delta\_p\_power\_loss": {
+
+&#x20;     "label\_es": "Pérdida de Potencia (ΔP)",
+
+&#x20;     "label\_en": "Power Loss (ΔP)",
+
+&#x20;     "unit": "% of total load",
+
+&#x20;     "min": 0,
+
+&#x20;     "max": 50,
+
+&#x20;     "step": 0.5,
+
+&#x20;     "default\_value": 8.8,
+
+&#x20;     "iberian\_28A\_value": 8.8,
+
+&#x20;     "notes": "2,200 MW loss out of 25,000 MW = 8.8%. Represents a major generation trip. Higher ΔP = steeper frequency decline.",
+
+&#x20;     "historical\_references": {
+
+&#x20;       "typical\_large\_generator\_loss": 3,
+
+&#x20;       "multiple\_generator\_loss\_scenario": 8.8,
+
+&#x20;       "continental\_blackout\_scenario": 20,
+
+&#x20;       "total\_system\_failure": 50
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "D\_damping": {
+
+&#x20;     "label\_es": "Amortiguamiento (D)",
+
+&#x20;     "label\_en": "Damping Factor (D)",
+
+&#x20;     "unit": "pu (per-unit)",
+
+&#x20;     "min": 0.5,
+
+&#x20;     "max": 3.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default\_value": 1.5,
+
+&#x20;     "iberian\_28A\_value": 1.5,
+
+&#x20;     "notes": "Damping represents frequency-dependent load (induction motors slowing down at lower freq) and generator AVR response. Higher D = faster recovery from transient, but does NOT prevent steady-state frequency nadir if ΔP is sustained.",
+
+&#x20;     "typical\_ranges": {
+
+&#x20;       "low\_damping\_weak\_grid": 0.8,
+
+&#x20;       "baseline\_standard": 1.5,
+
+&#x20;       "high\_damping\_strong\_grid": 2.5
+
+&#x20;     }
+
+&#x20;   },
+
+&#x20;   "synthetic\_inertia\_gain": {
+
+&#x20;     "label\_es": "Inercia Sintética (FFR Gain)",
+
+&#x20;     "label\_en": "Synthetic Inertia (FFR Gain)",
+
+&#x20;     "unit": "pu",
+
+&#x20;     "min": 0,
+
+&#x20;     "max": 5.0,
+
+&#x20;     "step": 0.1,
+
+&#x20;     "default\_value": 0,
+
+&#x20;     "notes": "Simulates inverter-based Fast Frequency Response (FFR) control loops. Positive values inject active power proportional to df/dt, mimicking inertia. CAVEAT: In weak grids (low SCR), high FFR gains cause subsynchronous oscillations and control instability.",
+
+&#x20;     "pedagogy": "User will discover that synthetic inertia has limits. Too high a gain in a weak grid (simulated via low SCR toggle) causes instability rather than helping."
+
+&#x20;   },
+
+&#x20;   "scr\_weak\_grid\_toggle": {
+
+&#x20;     "label\_es": "Red Débil (SCR < 2.0)",
+
+&#x20;     "label\_en": "Weak Grid (SCR < 2.0)",
+
+&#x20;     "type": "boolean",
+
+&#x20;     "default\_value": false,
+
+&#x20;     "notes": "When enabled, simulates the electrical characteristics of low Short Circuit Ratio (SCR < 2.0). In weak grids, synthetic inertia control loops oscillate wildly, demonstrating the paradox that higher FFR gains can destabilize a low-SCR network.",
+
+&#x20;     "weak\_grid\_behavior": "If synthetic\_inertia\_gain > 2.0 AND scr\_weak\_grid is TRUE, then frequency oscillates with subsynchronous frequency \~0.63 Hz, matching the Granada node oscillation observed pre-blackout."
+
+&#x20;   },
+
+&#x20;   "ufls\_stage\_count": {
+
+&#x20;     "label\_es": "Etapas de UFLS Activas",
+
+&#x20;     "label\_en": "Active UFLS Stages",
+
+&#x20;     "unit": "integer (1-6)",
+
+&#x20;     "min": 1,
+
+&#x20;     "max": 6,
+
+&#x20;     "step": 1,
+
+&#x20;     "default\_value": 6,
+
+&#x20;     "notes": "Number of automatic UFLS stages enabled. Each stage fires at lower frequency thresholds (49.0, 48.7, 48.4, 48.0 Hz for Spain). User can disable stages to observe UFLS limits."
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "ufls\_configuration": {
+
+&#x20;   "spain\_ree\_po\_1\_6": \[
+
+&#x20;     {
+
+&#x20;       "stage": 1,
+
+&#x20;       "frequency\_threshold\_hz": 49.0,
+
+&#x20;       "load\_shed\_percent": 15,
+
+&#x20;       "delay\_ms": 200,
+
+&#x20;       "zone": "Andalucía, Extremadura, Castilla-La Mancha"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 2,
+
+&#x20;       "frequency\_threshold\_hz": 48.7,
+
+&#x20;       "load\_shed\_percent": 15,
+
+&#x20;       "delay\_ms": 100,
+
+&#x20;       "zone": "Galicia, Asturias"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 3,
+
+&#x20;       "frequency\_threshold\_hz": 48.4,
+
+&#x20;       "load\_shed\_percent": 10,
+
+&#x20;       "delay\_ms": 100,
+
+&#x20;       "zone": "Madrid, Castilla y León"
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 4,
+
+&#x20;       "frequency\_threshold\_hz": 48.0,
+
+&#x20;       "load\_shed\_percent": 10,
+
+&#x20;       "delay\_ms": 100,
+
+&#x20;       "zone": "All remaining"
+
+&#x20;     }
+
+&#x20;   ],
+
+&#x20;   "portugal\_ren\_e\_redes": \[
+
+&#x20;     {
+
+&#x20;       "stage": 1,
+
+&#x20;       "frequency\_threshold\_hz": 49.0,
+
+&#x20;       "load\_shed\_percent": 5.5,
+
+&#x20;       "delay\_ms": 200
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 2,
+
+&#x20;       "frequency\_threshold\_hz": 48.8,
+
+&#x20;       "load\_shed\_percent": 5.7,
+
+&#x20;       "delay\_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 3,
+
+&#x20;       "frequency\_threshold\_hz": 48.6,
+
+&#x20;       "load\_shed\_percent": 5.7,
+
+&#x20;       "delay\_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 4,
+
+&#x20;       "frequency\_threshold\_hz": 48.4,
+
+&#x20;       "load\_shed\_percent": 5.7,
+
+&#x20;       "delay\_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 5,
+
+&#x20;       "frequency\_threshold\_hz": 48.2,
+
+&#x20;       "load\_shed\_percent": 5.5,
+
+&#x20;       "delay\_ms": 100
+
+&#x20;     },
+
+&#x20;     {
+
+&#x20;       "stage": 6,
+
+&#x20;       "frequency\_threshold\_hz": 48.0,
+
+&#x20;       "load\_shed\_percent": 9.3,
+
+&#x20;       "delay\_ms": 100
+
+&#x20;     }
+
+&#x20;   ],
+
+&#x20;   "total\_design\_shed\_capacity\_percent": 45,
+
+&#x20;   "paradox\_note": "UFLS successfully reduces active power demand to restore frequency. However, in the Iberian 28A event, this load shedding unexpectedly worsened voltage stability (Ferranti effect), causing additional generation losses and accelerating collapse."
+
+&#x20; },
+
+&#x20; "rocof\_protection\_thresholds": {
+
+&#x20;   "description": "ROCOF (dF/dt in Hz/s) triggers various protection actions. The simulator shows these as reference lines.",
+
+&#x20;   "threshold\_0\_5\_hz\_s": {
+
+&#x20;     "value": 0.5,
+
+&#x20;     "meaning": "Legacy distributed generation anti-islanding relays may begin to trip (if not firmware-updated)",
+
+&#x20;     "color": "yellow"
+
+&#x20;   },
+
+&#x20;   "threshold\_1\_0\_hz\_s": {
+
+&#x20;     "value": 1.0,
+
+&#x20;     "meaning": "POINT OF NO RETURN. Synchronous machine pole-slip and self-protective trips begin. ROCOF > 1.0 Hz/s is physically catastrophic for rotating machinery.",
+
+&#x20;     "event\_on\_28A": "ROCOF exceeded 1.0 Hz/s at 12:33:20 CEST, ensuring system collapse",
+
+&#x20;     "color": "red"
+
+&#x20;   },
+
+&#x20;   "threshold\_2\_0\_hz\_s": {
+
+&#x20;     "value": 2.0,
+
+&#x20;     "meaning": "ENTSO-E recommended withstand limit for all dispersed generation. Anything above is system-level emergency.",
+
+&#x20;     "color": "darkred"
+
+&#x20;   }
+
+&#x20; },
+
+&#x20; "physical\_constants": {
+
+&#x20;   "nominal\_frequency": 50,
+
+&#x20;   "angular\_frequency\_rad\_s": 314.159,
+
+&#x20;   "iberian\_base\_power\_mw": 32000,
+
+&#x20;   "iberian\_demand\_spain\_mw": 25100,
+
+&#x20;   "iberian\_demand\_portugal\_mw": 5900
+
+&#x20; }
+
+}
+
+```
+
+
+
+\### 1.2 Create: /static/data/swing\_equation\_scenarios.json
+
+
+
+Pre-configured scenarios for pedagogical exploration. Each scenario sets up a specific
+
+teaching moment or historical reference.
+
+
+
+```json
+
+\[
+
+&#x20; {
+
+&#x20;   "id": "normal\_operation",
+
+&#x20;   "name\_es": "Operación Normal",
+
+&#x20;   "name\_en": "Normal Operation",
+
+&#x20;   "description\_es": "Grid estable con parámetros históricos de 2010. Sin presión en el sistema.",
+
+&#x20;   "description\_en": "Stable grid with legacy 2010 parameters. No system stress.",
+
+&#x20;   "preset\_values": {
+
+&#x20;     "H": 5.0,
+
+&#x20;     "delta\_p": 0,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic\_inertia": 0,
+
+&#x20;     "weak\_grid": false,
+
+&#x20;     "ufls\_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected\_frequency\_steady\_state\_hz": 50.0,
+
+&#x20;   "teaching\_point": "Reference baseline. No dynamics."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "iberian\_28A\_conditions",
+
+&#x20;   "name\_es": "Condiciones del 28A Ibérico",
+
+&#x20;   "name\_en": "Iberian 28A Conditions",
+
+&#x20;   "description\_es": "Replicar exactamente las condiciones del 28 de abril: baja inercia, 78% renovables, penetración solar extrema.",
+
+&#x20;   "description\_en": "Replicate exactly the April 28 conditions: low inertia, 78% renewables, extreme solar penetration.",
+
+&#x20;   "preset\_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta\_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic\_inertia": 0,
+
+&#x20;     "weak\_grid": true,
+
+&#x20;     "ufls\_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected\_frequency\_nadir\_hz": 47.5,
+
+&#x20;   "rocof\_peak\_hz\_s": 1.05,
+
+&#x20;   "outcome": "Total system collapse. ROCOF exceeds 1.0 Hz/s. Synchronous machines trip. Cascade inevitable.",
+
+&#x20;   "teaching\_point": "The exact conditions that led to the real blackout. Demonstrate why it was unstoppable."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "can\_we\_save\_it\_with\_more\_inertia",
+
+&#x20;   "name\_es": "¿Salvable con Más Inercia?",
+
+&#x20;   "name\_en": "Can We Save It With More Inertia?",
+
+&#x20;   "description\_es": "Mismo evento (28A) pero con inercia aumentada a 4.5s (como si hubiera más plantas nucleares online).",
+
+&#x20;   "description\_en": "Same event (28A) but with inertia increased to 4.5s (as if more nuclear plants were online).",
+
+&#x20;   "preset\_values": {
+
+&#x20;     "H": 4.5,
+
+&#x20;     "delta\_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic\_inertia": 0,
+
+&#x20;     "weak\_grid": true,
+
+&#x20;     "ufls\_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected\_frequency\_nadir\_hz": 48.8,
+
+&#x20;   "rocof\_peak\_hz\_s": 0.65,
+
+&#x20;   "outcome": "Slower frequency decline. ROCOF stays below 1.0 Hz/s, avoiding pole-slip trips. UFLS can arrest the collapse.",
+
+&#x20;   "teaching\_point": "Inertia delays the cascade but cannot prevent it without reserves. Shows why inercia is necessary but not sufficient."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "synthetic\_inertia\_discovery",
+
+&#x20;   "name\_es": "Límites de la Inercia Sintética",
+
+&#x20;   "name\_en": "Synthetic Inertia Limits",
+
+&#x20;   "description\_es": "Baja inercia física (2.45s) pero con alto FFR sintético. En red débil, causa inestabilidad.",
+
+&#x20;   "description\_en": "Low physical inertia (2.45s) but high synthetic FFR. In weak grid, causes instability.",
+
+&#x20;   "preset\_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta\_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic\_inertia": 3.0,
+
+&#x20;     "weak\_grid": true,
+
+&#x20;     "ufls\_stages": 6
+
+&#x20;   },
+
+&#x20;   "expected\_behavior": "Frequency oscillates violently at subsynchronous frequency (\~0.63 Hz). Simulating PLL instability. FFR makes it worse, not better.",
+
+&#x20;   "rocof\_characteristic": "ROCOF oscillates wildly. Amplitude increases. User sees control instability.",
+
+&#x20;   "teaching\_point": "Synthetic inertia is NOT a drop-in replacement for physical inertia. In weak grids, high FFR gains cause the exact 0.63 Hz oscillation observed pre-blackout."
+
+&#x20; },
+
+&#x20; {
+
+&#x20;   "id": "ufls\_timing\_test",
+
+&#x20;   "name\_es": "Timing del UFLS",
+
+&#x20;   "name\_en": "UFLS Timing Test",
+
+&#x20;   "description\_es": "Explorar cuándo el UFLS puede salvar el sistema y cuándo es demasiado tarde.",
+
+&#x20;   "description\_en": "Explore when UFLS can save the system and when it is too late.",
+
+&#x20;   "preset\_values": {
+
+&#x20;     "H": 2.45,
+
+&#x20;     "delta\_p": 8.8,
+
+&#x20;     "D": 1.5,
+
+&#x20;     "synthetic\_inertia": 0,
+
+&#x20;     "weak\_grid": false,
+
+&#x20;     "ufls\_stages": 6
+
+&#x20;   },
+
+&#x20;   "outcome": "With UFLS fully enabled, frequency arrest at \~48.2 Hz. Without UFLS, total collapse.",
+
+&#x20;   "teaching\_point": "UFLS is the last line of defense. But in 28A, voltage instability rendered UFLS ineffective. Demonstrates non-linear coupling."
+
+&#x20; }
+
+]
+
+```
+
+
+
+\---
+
+
+
+\## PART 2 — Component
+
+
+
+\### 2.1 Create: /src/components/SwingEquationSimulator/SwingEquationSimulator.jsx
+
+
+
+A complex, interactive educational widget. This is the pedagogical centerpiece of Week 2.
+
+
+
+```jsx
+
+// SwingEquationSimulator.jsx
+
+
+
+import React, { useState, useEffect, useRef } from 'react';
+
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ComposedChart, BarChart, Bar } from 'recharts';
+
+import { useBaseUrl } from '@docusaurus/useBaseUrl';
+
+import GlitchTitle from '../GlitchTitle/GlitchTitle';
+
+import styles from './SwingEquationSimulator.module.css';
+
+
+
+const SwingEquationSimulator = () => {
+
+&#x20; // ============ State: Slider Parameters ============
+
+&#x20; const \[H, setH] = useState(2.45); // Inertia constant (seconds)
+
+&#x20; const \[deltaP, setDeltaP] = useState(8.8); // Power imbalance (% of load)
+
+&#x20; const \[D, setD] = useState(1.5); // Damping factor (pu)
+
+&#x20; const \[syntheticInertia, setSyntheticInertia] = useState(0); // FFR gain
+
+&#x20; const \[weakGrid, setWeakGrid] = useState(false); // SCR < 2.0 simulation
+
+&#x20; const \[uflsStages, setUflsStages] = useState(6); // Number of active UFLS stages
+
+
+
+&#x20; // ============ State: Simulation Control ============
+
+&#x20; const \[isRunning, setIsRunning] = useState(false);
+
+&#x20; const \[simulationTime, setSimulationTime] = useState(0); // seconds
+
+&#x20; const \[frequency, setFrequency] = useState(50.0); // Hz
+
+&#x20; const \[deltaF, setDeltaF] = useState(0); // Per-unit frequency deviation
+
+&#x20; const \[rocof, setRocof] = useState(0); // dF/dt (Hz/s)
+
+&#x20; const \[historyData, setHistoryData] = useState(\[]); // For chart
+
+&#x20; const \[currentUflsStage, setCurrentUflsStage] = useState(0); // Which UFLS stage is active
+
+&#x20; const \[systemStatus, setSystemStatus] = useState('NORMAL');
+
+
+
+&#x20; // ============ Refs ============
+
+&#x20; const simulationIntervalRef = useRef(null);
+
+&#x20; const freqHistoryRef = useRef(\[]);
+
+&#x20; const rocofHistoryRef = useRef(\[]);
+
+&#x20; const previousFreqRef = useRef(50.0);
+
+
+
+&#x20; // ============ Load configuration JSON ============
+
+&#x20; const \[params, setParams] = useState(null);
+
+
+
+&#x20; useEffect(() => {
+
+&#x20;   fetch(useBaseUrl('/data/swing\_equation\_params.json'))
+
+&#x20;     .then((res) => res.json())
+
+&#x20;     .then((data) => setParams(data))
+
+&#x20;     .catch((err) => console.error('Error loading swing equation params:', err));
+
+&#x20; }, \[]);
+
+
+
+&#x20; // ============ Simulation Engine: Euler Integration ============
+
+&#x20; const runSimulationStep = (currentH, currentDeltaP, currentD, currentSynth, currentWeakGrid, time) => {
+
+&#x20;   const DT\_MS = 10; // 10ms step
+
+&#x20;   const DT\_S = DT\_MS / 1000;
+
+&#x20;   const F0 = 50.0;
+
+&#x20;   const OMEGA\_S = 314.159; // 2π \* 50 Hz
+
+
+
+&#x20;   // Get current frequency from refs (for derivative)
+
+&#x20;   const prevFreq = previousFreqRef.current;
+
+
+
+&#x20;   // Euler update: 2H \* d(Δf)/dt + D\*Δf = ΔP
+
+&#x20;   // => d(Δf)/dt = (ΔP - D\*Δf) / (2\*H)
+
+&#x20;   const dDeltaF\_dt = (currentDeltaP - D \* deltaF) / (2 \* currentH);
+
+
+
+&#x20;   // Add synthetic inertia response (proportional to df/dt)
+
+&#x20;   // Synthetic inertia injects power = -FFR\_gain \* df/dt
+
+&#x20;   // This reduces ΔP
+
+&#x20;   let effectiveDeltaP = currentDeltaP;
+
+&#x20;   if (syntheticInertia > 0) {
+
+&#x20;     effectiveDeltaP -= syntheticInertia \* dDeltaF\_dt;
+
+
+
+&#x20;     // Weak grid oscillation: if weak\_grid is TRUE and synthetic inertia is high,
+
+&#x20;     // introduce subsynchronous feedback (0.63 Hz oscillation)
+
+&#x20;     if (currentWeakGrid \&\& syntheticInertia > 2.0) {
+
+&#x20;       const oscillationAmplitude = 0.5 \* syntheticInertia; // Grows with FFR gain
+
+&#x20;       const oscillationFreq = 0.63; // Hz, matching Granada pre-blackout oscillation
+
+&#x20;       const phaseShift = 2 \* Math.PI \* oscillationFreq \* time;
+
+&#x20;       effectiveDeltaP += oscillationAmplitude \* Math.sin(phaseShift);
+
+&#x20;     }
+
+&#x20;   }
+
+
+
+&#x20;   // Recalculate with effective ΔP
+
+&#x20;   const dDeltaF\_dt\_effective = (effectiveDeltaP - D \* deltaF) / (2 \* currentH);
+
+
+
+&#x20;   // Euler step
+
+&#x20;   const newDeltaF = deltaF + dDeltaF\_dt\_effective \* DT\_S;
+
+&#x20;   const newFreq = F0 \* (1 + newDeltaF);
+
+&#x20;   const newRocof = (newFreq - prevFreq) / DT\_S;
+
+
+
+&#x20;   previousFreqRef.current = newFreq;
+
+
+
+&#x20;   // ============ UFLS Logic ============
+
+&#x20;   // Check UFLS thresholds and update effectiveDeltaP accordingly
+
+&#x20;   let cumulativeLoadShed = 0;
+
+&#x20;   const uflsThresholds = \[
+
+&#x20;     { freq: 49.0, shed: 15, stage: 1 },
+
+&#x20;     { freq: 48.7, shed: 15, stage: 2 },
+
+&#x20;     { freq: 48.4, shed: 10, stage: 3 },
+
+&#x20;     { freq: 48.0, shed: 10, stage: 4 },
+
+&#x20;   ];
+
+
+
+&#x20;   let activeStage = 0;
+
+&#x20;   for (let i = 0; i < Math.min(uflsStages, uflsThresholds.length); i++) {
+
+&#x20;     if (newFreq <= uflsThresholds\[i].freq) {
+
+&#x20;       activeStage = i + 1;
+
+&#x20;       cumulativeLoadShed = uflsThresholds.slice(0, i + 1).reduce((sum, u) => sum + u.shed, 0);
+
+&#x20;     }
+
+&#x20;   }
+
+
+
+&#x20;   setCurrentUflsStage(activeStage);
+
+
+
+&#x20;   // Update status badge
+
+&#x20;   let status = 'NORMAL';
+
+&#x20;   if (newFreq > 49.8) status = 'NORMAL';
+
+&#x20;   else if (newFreq > 49.0) status = 'UFLS ACTIVE';
+
+&#x20;   else if (newFreq > 48.0) status = 'CRITICAL';
+
+&#x20;   else status = 'COLLAPSE';
+
+
+
+&#x20;   setSystemStatus(status);
+
+
+
+&#x20;   // Update state
+
+&#x20;   setDeltaF(newDeltaF);
+
+&#x20;   setFrequency(newFreq);
+
+&#x20;   setRocof(newRocof);
+
+
+
+&#x20;   // Append to history for charting
+
+&#x20;   const dataPoint = {
+
+&#x20;     time: time.toFixed(2),
+
+&#x20;     t: time,
+
+&#x20;     frequency: parseFloat(newFreq.toFixed(2)),
+
+&#x20;     rocof: parseFloat(newRocof.toFixed(3)),
+
+&#x20;     deltaF: parseFloat(newDeltaF.toFixed(4)),
+
+&#x20;     loadShed: cumulativeLoadShed,
+
+&#x20;   };
+
+
+
+&#x20;   freqHistoryRef.current.push(dataPoint);
+
+
+
+&#x20;   // Keep only last 300 points for performance
+
+&#x20;   if (freqHistoryRef.current.length > 300) {
+
+&#x20;     freqHistoryRef.current.shift();
+
+&#x20;   }
+
+
+
+&#x20;   setHistoryData(\[...freqHistoryRef.current]);
+
+&#x20; };
+
+
+
+&#x20; // ============ Simulation Loop ============
+
+&#x20; useEffect(() => {
+
+&#x20;   if (!isRunning) return;
+
+
+
+&#x20;   simulationIntervalRef.current = setInterval(() => {
+
+&#x20;     setSimulationTime((prevTime) => {
+
+&#x20;       const newTime = prevTime + 0.01; // 10ms step
+
+
+
+&#x20;       // Stop at 120 seconds
+
+&#x20;       if (newTime > 120) {
+
+&#x20;         setIsRunning(false);
+
+&#x20;         return prevTime;
+
+&#x20;       }
+
+
+
+&#x20;       runSimulationStep(H, deltaP, D, syntheticInertia, weakGrid, newTime);
+
+&#x20;       return newTime;
+
+&#x20;     });
+
+&#x20;   }, 10); // Run every 10ms (browser frame rate compatible)
+
+
+
+&#x20;   return () => clearInterval(simulationIntervalRef.current);
+
+&#x20; }, \[isRunning, H, deltaP, D, syntheticInertia, weakGrid, uflsStages]);
+
+
+
+&#x20; // ============ Control Handlers ============
+
+&#x20; const handleReset = () => {
+
+&#x20;   setIsRunning(false);
+
+&#x20;   setSimulationTime(0);
+
+&#x20;   setFrequency(50.0);
+
+&#x20;   setDeltaF(0);
+
+&#x20;   setRocof(0);
+
+&#x20;   setCurrentUflsStage(0);
+
+&#x20;   setSystemStatus('NORMAL');
+
+&#x20;   freqHistoryRef.current = \[];
+
+&#x20;   rocofHistoryRef.current = \[];
+
+&#x20;   previousFreqRef.current = 50.0;
+
+&#x20;   setHistoryData(\[]);
+
+&#x20; };
+
+
+
+&#x20; const loadPreset = (presetId) => {
+
+&#x20;   // Find preset in params
+
+&#x20;   if (!params || !params.swing\_equation) return;
+
+
+
+&#x20;   const presets = {
+
+&#x20;     normal\_operation: { H: 5.0, deltaP: 0, D: 1.5, synthetic: 0, weak: false, ufls: 6 },
+
+&#x20;     iberian\_28A: { H: 2.45, deltaP: 8.8, D: 1.5, synthetic: 0, weak: true, ufls: 6 },
+
+&#x20;     more\_inertia: { H: 4.5, deltaP: 8.8, D: 1.5, synthetic: 0, weak: true, ufls: 6 },
+
+&#x20;     synthetic\_inertia: { H: 2.45, deltaP: 8.8, D: 1.5, synthetic: 3.0, weak: true, ufls: 6 },
+
+&#x20;   };
+
+
+
+&#x20;   const preset = presets\[presetId];
+
+&#x20;   if (preset) {
+
+&#x20;     handleReset();
+
+&#x20;     setH(preset.H);
+
+&#x20;     setDeltaP(preset.deltaP);
+
+&#x20;     setD(preset.D);
+
+&#x20;     setSyntheticInertia(preset.synthetic);
+
+&#x20;     setWeakGrid(preset.weak);
+
+&#x20;     setUflsStages(preset.ufls);
+
+&#x20;   }
+
+&#x20; };
+
+
+
+&#x20; if (!params) return <div>Loading simulator configuration...</div>;
+
+
+
+&#x20; return (
+
+&#x20;   <div className={styles.container}>
+
+&#x20;     <GlitchTitle text="SIMULADOR DE ECUACIÓN DEL SWING" />
+
+&#x20;     <p className={styles.subtitle}>
+
+&#x20;       Control interactivo de parámetros físicos. Observa cómo baja inercia + penetración renovable = colapso
+
+&#x20;     </p>
+
+
+
+&#x20;     {/\* ============ CONTROL PANEL ============ \*/}
+
+&#x20;     <motion.div 
+
+&#x20;       className={styles.controlPanel}
+
+&#x20;       initial={{ opacity: 0 }}
+
+&#x20;       animate={{ opacity: 1 }}
+
+&#x20;       transition={{ delay: 0.2 }}
+
+&#x20;     >
+
+&#x20;       {/\* Sliders \*/}
+
+&#x20;       <div className={styles.sliderGroup}>
+
+&#x20;         <div className={styles.slider}>
+
+&#x20;           <label>Inercia del Sistema (H): <strong>{H.toFixed(2)}s</strong></label>
+
+&#x20;           <input 
+
+&#x20;             type="range" 
+
+&#x20;             min="1.0" 
+
+&#x20;             max="8.0" 
+
+&#x20;             step="0.1"
+
+&#x20;             value={H}
+
+&#x20;             onChange={(e) => setH(parseFloat(e.target.value))}
+
+&#x20;             disabled={isRunning}
+
+&#x20;             className={styles.sliderInput}
+
+&#x20;           />
+
+&#x20;           <span className={styles.hint}>1s (muy baja) ← → 8s (legacy grid)</span>
+
+&#x20;         </div>
+
+
+
+&#x20;         <div className={styles.slider}>
+
+&#x20;           <label>Pérdida de Potencia (ΔP): <strong>{deltaP.toFixed(1)}%</strong></label>
+
+&#x20;           <input 
+
+&#x20;             type="range" 
+
+&#x20;             min="0" 
+
+&#x20;             max="50" 
+
+&#x20;             step="0.5"
+
+&#x20;             value={deltaP}
+
+&#x20;             onChange={(e) => setDeltaP(parseFloat(e.target.value))}
+
+&#x20;             disabled={isRunning}
+
+&#x20;             className={styles.sliderInput}
+
+&#x20;           />
+
+&#x20;           <span className={styles.hint}>0% (normal) ← → 50% (total failure)</span>
+
+&#x20;         </div>
+
+
+
+&#x20;         <div className={styles.slider}>
+
+&#x20;           <label>Amortiguamiento (D): <strong>{D.toFixed(2)}pu</strong></label>
+
+&#x20;           <input 
+
+&#x20;             type="range" 
+
+&#x20;             min="0.5" 
+
+&#x20;             max="3.0" 
+
+&#x20;             step="0.1"
+
+&#x20;             value={D}
+
+&#x20;             onChange={(e) => setD(parseFloat(e.target.value))}
+
+&#x20;             disabled={isRunning}
+
+&#x20;             className={styles.sliderInput}
+
+&#x20;           />
+
+&#x20;           <span className={styles.hint}>Bajo ← → Alto</span>
+
+&#x20;         </div>
+
+
+
+&#x20;         <div className={styles.slider}>
+
+&#x20;           <label>Inercia Sintética (FFR): <strong>{syntheticInertia.toFixed(2)}pu</strong></label>
+
+&#x20;           <input 
+
+&#x20;             type="range" 
+
+&#x20;             min="0" 
+
+&#x20;             max="5.0" 
+
+&#x20;             step="0.1"
+
+&#x20;             value={syntheticInertia}
+
+&#x20;             onChange={(e) => setSyntheticInertia(parseFloat(e.target.value))}
+
+&#x20;             disabled={isRunning}
+
+&#x20;             className={styles.sliderInput}
+
+&#x20;           />
+
+&#x20;           <span className={styles.hint}>OFF ← → Aggressive FFR (atención: en grid débil causa inestabilidad)</span>
+
+&#x20;         </div>
+
+&#x20;       </div>
+
+
+
+&#x20;       {/\* Toggles \*/}
+
+&#x20;       <div className={styles.toggleGroup}>
+
+&#x20;         <label className={styles.toggle}>
+
+&#x20;           <input 
+
+&#x20;             type="checkbox"
+
+&#x20;             checked={weakGrid}
+
+&#x20;             onChange={(e) => setWeakGrid(e.target.checked)}
+
+&#x20;             disabled={isRunning}
+
+&#x20;           />
+
+&#x20;           <span className={styles.toggleLabel}>Red Débil (SCR < 2.0)</span>
+
+&#x20;         </label>
+
+
+
+&#x20;         <label className={styles.toggle}>
+
+&#x20;           <input 
+
+&#x20;             type="checkbox"
+
+&#x20;             defaultChecked
+
+&#x20;             disabled // Always on for now
+
+&#x20;           />
+
+&#x20;           <span className={styles.toggleLabel}>UFLS Habilitado ({uflsStages} etapas)</span>
+
+&#x20;         </label>
+
+&#x20;       </div>
+
+
+
+&#x20;       {/\* Preset Buttons \*/}
+
+&#x20;       <div className={styles.presetButtons}>
+
+&#x20;         <button onClick={() => loadPreset('normal\_operation')} disabled={isRunning}>
+
+&#x20;           Operación Normal
+
+&#x20;         </button>
+
+&#x20;         <button onClick={() => loadPreset('iberian\_28A')} disabled={isRunning} className={styles.preset28A}>
+
+&#x20;           Condiciones 28A
+
+&#x20;         </button>
+
+&#x20;         <button onClick={() => loadPreset('more\_inertia')} disabled={isRunning}>
+
+&#x20;           + Inercia
+
+&#x20;         </button>
+
+&#x20;         <button onClick={() => loadPreset('synthetic\_inertia')} disabled={isRunning}>
+
+&#x20;           FFR Sintética
+
+&#x20;         </button>
+
+&#x20;       </div>
+
+
+
+&#x20;       {/\* Play Controls \*/}
+
+&#x20;       <div className={styles.playControls}>
+
+&#x20;         <button 
+
+&#x20;           onClick={() => setIsRunning(!isRunning)}
+
+&#x20;           className={styles.playButton}
+
+&#x20;         >
+
+&#x20;           {isRunning ? '⏹ DETENER' : '▶ SIMULAR'}
+
+&#x20;         </button>
+
+&#x20;         <button 
+
+&#x20;           onClick={handleReset}
+
+&#x20;           disabled={isRunning}
+
+&#x20;           className={styles.resetButton}
+
+&#x20;         >
+
+&#x20;           ⟲ RESET
+
+&#x20;         </button>
+
+&#x20;         <span className={styles.timeDisplay}>Tiempo: {simulationTime.toFixed(2)}s</span>
+
+&#x20;       </div>
+
+&#x20;     </motion.div>
+
+
+
+&#x20;     {/\* ============ LIVE READOUT ============ \*/}
+
+&#x20;     <motion.div 
+
+&#x20;       className={styles.readoutPanel}
+
+&#x20;       initial={{ opacity: 0 }}
+
+&#x20;       animate={{ opacity: 1 }}
+
+&#x20;       transition={{ delay: 0.3 }}
+
+&#x20;     >
+
+&#x20;       <div className={styles.readoutGrid}>
+
+&#x20;         <div className={styles.readoutItem}>
+
+&#x20;           <span className={styles.label}>Frecuencia:</span>
+
+&#x20;           <span className={`${styles.value} ${styles.freq}`}>{frequency.toFixed(2)} Hz</span>
+
+&#x20;         </div>
+
+&#x20;         <div className={styles.readoutItem}>
+
+&#x20;           <span className={styles.label}>ROCOF:</span>
+
+&#x20;           <span className={`${styles.value} ${rocof > 1.0 ? styles.danger : ''}`}>
+
+&#x20;             {rocof.toFixed(3)} Hz/s
+
+&#x20;           </span>
+
+&#x20;         </div>
+
+&#x20;         <div className={styles.readoutItem}>
+
+&#x20;           <span className={styles.label}>ΔF (pu):</span>
+
+&#x20;           <span className={styles.value}>{deltaF.toFixed(4)}</span>
+
+&#x20;         </div>
+
+&#x20;         <div className={styles.readoutItem}>
+
+&#x20;           <span className={styles.label}>Estado:</span>
+
+&#x20;           <span className={`${styles.badge} ${styles\[`badge-${systemStatus.replace(' ', '-')}`]}`}>
+
+&#x20;             {systemStatus}
+
+&#x20;           </span>
+
+&#x20;         </div>
+
+&#x20;       </div>
+
+
+
+&#x20;       {currentUflsStage > 0 \&\& (
+
+&#x20;         <div className={styles.uflsAlert}>
+
+&#x20;           ⚠️ UFLS Etapa {currentUflsStage} Activa (Freq: {frequency.toFixed(2)} Hz)
+
+&#x20;         </div>
+
+&#x20;       )}
+
+
+
+&#x20;       {rocof > 1.0 \&\& (
+
+&#x20;         <div className={styles.rocofAlert}>
+
+&#x20;           🚨 ROCOF > 1.0 Hz/s: PUNTO DE NO RETORNO. Máquinas síncronas se desenganchan.
+
+&#x20;         </div>
+
+&#x20;       )}
+
+&#x20;     </motion.div>
+
+
+
+&#x20;     {/\* ============ CHARTS ============ \*/}
+
+&#x20;     <div className={styles.chartSection}>
+
+&#x20;       <h3>Frecuencia del Sistema (t)</h3>
+
+&#x20;       <ResponsiveContainer width="100%" height={350}>
+
+&#x20;         <ComposedChart data={historyData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
+
+&#x20;           <defs>
+
+&#x20;             <linearGradient id="freqGradient" x1="0" y1="0" x2="0" y2="1">
+
+&#x20;               <stop offset="0%" stopColor="#00ff88" />
+
+&#x20;               <stop offset="50%" stopColor="#FFD700" />
+
+&#x20;               <stop offset="75%" stopColor="#ff6644" />
+
+&#x20;               <stop offset="100%" stopColor="#cc0000" />
+
+&#x20;             </linearGradient>
+
+&#x20;           </defs>
+
+
+
+&#x20;           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+
+&#x20;           <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)" />
+
+&#x20;           <YAxis domain={\[45, 50.5]} stroke="rgba(255,255,255,0.5)" />
+
+
+
+&#x20;           <ReferenceLine y={50.0} stroke="white" strokeDasharray="5 5" opacity={0.3} label="Nominal" />
+
+&#x20;           <ReferenceLine y={49.8} stroke="#FFD700" strokeDasharray="5 5" label="UFLS" />
+
+&#x20;           <ReferenceLine y={49.0} stroke="#ff6644" strokeDasharray="5 5" label="Stage 1" />
+
+&#x20;           <ReferenceLine y={48.0} stroke="#cc0000" strokeDasharray="5 5" label="Collapse" />
+
+
+
+&#x20;           <Line 
+
+&#x20;             type="monotone" 
+
+&#x20;             dataKey="frequency" 
+
+&#x20;             stroke="url(#freqGradient)"
+
+&#x20;             dot={false}
+
+&#x20;             strokeWidth={2}
+
+&#x20;             isAnimationActive={false}
+
+&#x20;             name="Frequency"
+
+&#x20;           />
+
+
+
+&#x20;           <Tooltip 
+
+&#x20;             contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)' }}
+
+&#x20;             formatter={(value) => value.toFixed(2) + ' Hz'}
+
+&#x20;           />
+
+&#x20;         </ComposedChart>
+
+&#x20;       </ResponsiveContainer>
+
+&#x20;     </div>
+
+
+
+&#x20;     <div className={styles.chartSection}>
+
+&#x20;       <h3>ROCOF (dF/dt) — Hz/s</h3>
+
+&#x20;       <ResponsiveContainer width="100%" height={280}>
+
+&#x20;         <BarChart data={historyData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
+
+&#x20;           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+
+&#x20;           <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)" />
+
+&#x20;           <YAxis stroke="rgba(255,255,255,0.5)" />
+
+
+
+&#x20;           <ReferenceLine y={0.5} stroke="#FFD700" strokeDasharray="5 5" label="Threshold" />
+
+&#x20;           <ReferenceLine y={1.0} stroke="#cc0000" strokeDasharray="5 5" label="POLE-SLIP" />
+
+
+
+&#x20;           <Bar 
+
+&#x20;             dataKey="rocof"
+
+&#x20;             fill={(entry) => entry.rocof > 1.0 ? '#cc0000' : entry.rocof > 0.5 ? '#FFD700' : '#00ff88'}
+
+&#x20;             name="ROCOF"
+
+&#x20;           />
+
+
+
+&#x20;           <Tooltip 
+
+&#x20;             contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)' }}
+
+&#x20;             formatter={(value) => value.toFixed(3) + ' Hz/s'}
+
+&#x20;           />
+
+&#x20;         </BarChart>
+
+&#x20;       </ResponsiveContainer>
+
+&#x20;     </div>
+
+
+
+&#x20;     {/\* ============ EDUCATIONAL NOTES ============ \*/}
+
+&#x20;     <motion.div 
+
+&#x20;       className={styles.educationalPanel}
+
+&#x20;       initial={{ opacity: 0 }}
+
+&#x20;       animate={{ opacity: 1 }}
+
+&#x20;       transition={{ delay: 0.5 }}
+
+&#x20;     >
+
+&#x20;       <h3>💡 Lecciones Pedagógicas</h3>
+
+
+
+&#x20;       <div className={styles.lessonCard}>
+
+&#x20;         <h4>Interacción 1: El Retraso de la Inercia</h4>
+
+&#x20;         <p>
+
+&#x20;           Carga "Condiciones 28A" y anota la rapidez del colapso (ROCOF ≈ 0.9 Hz/s).
+
+&#x20;           Ahora carga "+ Inercia" (H=4.5s). Verás que la frecuencia cae más lentamente,
+
+&#x20;           pero alcanza aproximadamente el mismo valor mínimo. La inercia NO previene el colapso;
+
+&#x20;           solo lo retrasa y da más tiempo a los sistemas de protección.
+
+&#x20;         </p>
+
+&#x20;       </div>
+
+
+
+&#x20;       <div className={styles.lessonCard}>
+
+&#x20;         <h4>Interacción 2: La Trampa de la Inercia Sintética</h4>
+
+&#x20;         <p>
+
+&#x20;           Carga "FFR Sintética" con "Red Débil" habilitada. Verás que en lugar de estabilizar,
+
+&#x20;           la alta ganancia FFR (3.0 pu) en una red débil (SCR < 2.0) causa oscilaciones
+
+&#x20;           subsincrónicas (\~0.63 Hz) que empeoran la situación. Esto replica exactamente
+
+&#x20;           la inestabilidad del PLL observada en Granada antes del colapso.
+
+&#x20;         </p>
+
+&#x20;       </div>
+
+
+
+&#x20;       <div className={styles.lessonCard}>
+
+&#x20;         <h4>Interacción 3: Límites del UFLS</h4>
+
+&#x20;         <p>
+
+&#x20;           Actualmente, el UFLS está siempre habilitado. Intenta ajustar manualmente
+
+&#x20;           los parámetros (especialmente D y H muy bajos) para ver cuándo el UFLS puede
+
+&#x20;           detener el colapso versus cuándo llega demasiado tarde. ROCOF > 1.0 Hz/s
+
+&#x20;           significa que el sistema ha cruzado el "punto de no retorno" físico.
+
+&#x20;         </p>
+
+&#x20;       </div>
+
+&#x20;     </motion.div>
+
+&#x20;   </div>
+
+&#x20; );
+
+};
+
+
+
+export default SwingEquationSimulator;
+
+```
+
+
+
+\### 2.2 Create: /src/components/SwingEquationSimulator/SwingEquationSimulator.module.css
+
+
+
+```css
+
+.container {
+
+&#x20; padding: 24px;
+
+&#x20; background: transparent;
+
+&#x20; border: 1px solid rgba(255, 255, 255, 0.08);
+
+&#x20; border-radius: 12px;
+
+&#x20; margin-bottom: 40px;
+
+}
+
+
+
+.subtitle {
+
+&#x20; color: rgba(255, 255, 255, 0.6);
+
+&#x20; font-size: 0.9em;
+
+&#x20; font-style: italic;
+
+&#x20; margin-top: 8px;
+
+&#x20; margin-bottom: 24px;
+
+}
+
+
+
+.controlPanel {
+
+&#x20; background: rgba(0, 10, 20, 0.7);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.2);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 20px;
+
+&#x20; margin-bottom: 24px;
+
+&#x20; backdrop-filter: blur(10px);
+
+}
+
+
+
+.sliderGroup {
+
+&#x20; display: grid;
+
+&#x20; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+&#x20; gap: 20px;
+
+&#x20; margin-bottom: 20px;
+
+}
+
+
+
+.slider {
+
+&#x20; display: flex;
+
+&#x20; flex-direction: column;
+
+&#x20; gap: 8px;
+
+}
+
+
+
+.slider label {
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; font-weight: bold;
+
+&#x20; font-size: 0.9em;
+
+}
+
+
+
+.slider label strong {
+
+&#x20; color: #00ff88;
+
+&#x20; font-size: 1.1em;
+
+}
+
+
+
+.sliderInput {
+
+&#x20; height: 6px;
+
+&#x20; border-radius: 3px;
+
+&#x20; background: rgba(255, 255, 255, 0.1);
+
+&#x20; outline: none;
+
+&#x20; -webkit-appearance: none;
+
+&#x20; accent-color: #00ff88;
+
+&#x20; cursor: pointer;
+
+}
+
+
+
+.sliderInput::-webkit-slider-thumb {
+
+&#x20; -webkit-appearance: none;
+
+&#x20; appearance: none;
+
+&#x20; width: 18px;
+
+&#x20; height: 18px;
+
+&#x20; border-radius: 50%;
+
+&#x20; background: #00ff88;
+
+&#x20; cursor: pointer;
+
+&#x20; box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+
+}
+
+
+
+.sliderInput::-moz-range-thumb {
+
+&#x20; width: 18px;
+
+&#x20; height: 18px;
+
+&#x20; border-radius: 50%;
+
+&#x20; background: #00ff88;
+
+&#x20; cursor: pointer;
+
+&#x20; border: none;
+
+&#x20; box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+
+}
+
+
+
+.sliderInput:disabled {
+
+&#x20; opacity: 0.5;
+
+&#x20; cursor: not-allowed;
+
+}
+
+
+
+.hint {
+
+&#x20; font-size: 0.75em;
+
+&#x20; color: rgba(255, 255, 255, 0.4);
+
+&#x20; font-style: italic;
+
+}
+
+
+
+.toggleGroup {
+
+&#x20; display: flex;
+
+&#x20; gap: 20px;
+
+&#x20; margin-bottom: 20px;
+
+&#x20; flex-wrap: wrap;
+
+}
+
+
+
+.toggle {
+
+&#x20; display: flex;
+
+&#x20; align-items: center;
+
+&#x20; gap: 8px;
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; cursor: pointer;
+
+&#x20; font-size: 0.95em;
+
+}
+
+
+
+.toggle input {
+
+&#x20; cursor: pointer;
+
+&#x20; accent-color: #00ff88;
+
+}
+
+
+
+.toggleLabel {
+
+&#x20; user-select: none;
+
+}
+
+
+
+.presetButtons {
+
+&#x20; display: grid;
+
+&#x20; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+&#x20; gap: 10px;
+
+&#x20; margin-bottom: 20px;
+
+}
+
+
+
+.presetButtons button {
+
+&#x20; background: rgba(0, 255, 136, 0.1);
+
+&#x20; color: #00ff88;
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.3);
+
+&#x20; padding: 10px;
+
+&#x20; border-radius: 6px;
+
+&#x20; font-size: 0.85em;
+
+&#x20; font-weight: bold;
+
+&#x20; cursor: pointer;
+
+&#x20; transition: all 0.2s ease;
+
+&#x20; text-transform: uppercase;
+
+&#x20; letter-spacing: 0.5px;
+
+}
+
+
+
+.presetButtons button:hover:not(:disabled) {
+
+&#x20; background: rgba(0, 255, 136, 0.2);
+
+&#x20; border-color: rgba(0, 255, 136, 0.6);
+
+&#x20; box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+
+}
+
+
+
+.presetButtons button:disabled {
+
+&#x20; opacity: 0.5;
+
+&#x20; cursor: not-allowed;
+
+}
+
+
+
+.preset28A {
+
+&#x20; background: rgba(204, 0, 0, 0.1) !important;
+
+&#x20; color: #ff4444 !important;
+
+&#x20; border-color: rgba(204, 0, 0, 0.3) !important;
+
+}
+
+
+
+.preset28A:hover:not(:disabled) {
+
+&#x20; background: rgba(204, 0, 0, 0.2) !important;
+
+&#x20; border-color: rgba(204, 0, 0, 0.6) !important;
+
+}
+
+
+
+.playControls {
+
+&#x20; display: flex;
+
+&#x20; gap: 12px;
+
+&#x20; align-items: center;
+
+&#x20; flex-wrap: wrap;
+
+}
+
+
+
+.playButton {
+
+&#x20; background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+
+&#x20; color: #000;
+
+&#x20; border: none;
+
+&#x20; padding: 12px 24px;
+
+&#x20; border-radius: 6px;
+
+&#x20; font-size: 0.95em;
+
+&#x20; font-weight: bold;
+
+&#x20; cursor: pointer;
+
+&#x20; text-transform: uppercase;
+
+&#x20; letter-spacing: 1px;
+
+&#x20; transition: all 0.2s ease;
+
+&#x20; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+
+}
+
+
+
+.playButton:hover {
+
+&#x20; transform: translateY(-2px);
+
+&#x20; box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+
+}
+
+
+
+.resetButton {
+
+&#x20; background: rgba(255, 215, 0, 0.1);
+
+&#x20; color: #FFD700;
+
+&#x20; border: 1px solid rgba(255, 215, 0, 0.3);
+
+&#x20; padding: 12px 24px;
+
+&#x20; border-radius: 6px;
+
+&#x20; font-size: 0.95em;
+
+&#x20; font-weight: bold;
+
+&#x20; cursor: pointer;
+
+&#x20; text-transform: uppercase;
+
+&#x20; letter-spacing: 1px;
+
+&#x20; transition: all 0.2s ease;
+
+}
+
+
+
+.resetButton:hover:not(:disabled) {
+
+&#x20; background: rgba(255, 215, 0, 0.2);
+
+&#x20; border-color: rgba(255, 215, 0, 0.6);
+
+}
+
+
+
+.resetButton:disabled {
+
+&#x20; opacity: 0.5;
+
+&#x20; cursor: not-allowed;
+
+}
+
+
+
+.timeDisplay {
+
+&#x20; color: rgba(255, 255, 255, 0.7);
+
+&#x20; font-family: 'Courier New', monospace;
+
+&#x20; font-weight: bold;
+
+&#x20; min-width: 120px;
+
+}
+
+
+
+.readoutPanel {
+
+&#x20; background: rgba(0, 10, 20, 0.8);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.3);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 16px;
+
+&#x20; margin-bottom: 24px;
+
+&#x20; font-family: 'Courier New', monospace;
+
+&#x20; backdrop-filter: blur(10px);
+
+&#x20; box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.05);
+
+}
+
+
+
+.readoutGrid {
+
+&#x20; display: grid;
+
+&#x20; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+&#x20; gap: 16px;
+
+&#x20; margin-bottom: 12px;
+
+}
+
+
+
+.readoutItem {
+
+&#x20; display: flex;
+
+&#x20; flex-direction: column;
+
+&#x20; gap: 4px;
+
+}
+
+
+
+.readoutItem .label {
+
+&#x20; color: rgba(255, 255, 255, 0.6);
+
+&#x20; font-size: 0.85em;
+
+}
+
+
+
+.readoutItem .value {
+
+&#x20; color: #00ff88;
+
+&#x20; font-weight: bold;
+
+&#x20; font-size: 1.2em;
+
+&#x20; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+
+}
+
+
+
+.freq {
+
+&#x20; color: #FFD700 !important;
+
+}
+
+
+
+.danger {
+
+&#x20; color: #ff4444 !important;
+
+&#x20; animation: pulse 0.5s infinite;
+
+}
+
+
+
+@keyframes pulse {
+
+&#x20; 0%, 100% { opacity: 1; }
+
+&#x20; 50% { opacity: 0.6; }
+
+}
+
+
+
+.badge {
+
+&#x20; display: inline-block;
+
+&#x20; padding: 4px 12px;
+
+&#x20; border-radius: 4px;
+
+&#x20; font-size: 0.85em;
+
+&#x20; font-weight: bold;
+
+&#x20; text-transform: uppercase;
+
+&#x20; width: fit-content;
+
+}
+
+
+
+.badge-NORMAL {
+
+&#x20; background: rgba(0, 255, 136, 0.2);
+
+&#x20; color: #00ff88;
+
+}
+
+
+
+.badge-UFLS-ACTIVE {
+
+&#x20; background: rgba(255, 215, 0, 0.2);
+
+&#x20; color: #FFD700;
+
+&#x20; animation: pulse 1s infinite;
+
+}
+
+
+
+.badge-CRITICAL {
+
+&#x20; background: rgba(255, 102, 68, 0.2);
+
+&#x20; color: #ff6644;
+
+&#x20; animation: pulse 0.5s infinite;
+
+}
+
+
+
+.badge-COLLAPSE {
+
+&#x20; background: rgba(204, 0, 0, 0.3);
+
+&#x20; color: #ff4444;
+
+&#x20; animation: pulse 0.3s infinite;
+
+}
+
+
+
+.uflsAlert {
+
+&#x20; background: rgba(255, 215, 0, 0.1);
+
+&#x20; border-left: 4px solid #FFD700;
+
+&#x20; padding: 12px;
+
+&#x20; border-radius: 4px;
+
+&#x20; color: #FFD700;
+
+&#x20; font-size: 0.9em;
+
+&#x20; margin-bottom: 8px;
+
+}
+
+
+
+.rocofAlert {
+
+&#x20; background: rgba(204, 0, 0, 0.15);
+
+&#x20; border-left: 4px solid #cc0000;
+
+&#x20; padding: 12px;
+
+&#x20; border-radius: 4px;
+
+&#x20; color: #ff4444;
+
+&#x20; font-size: 0.9em;
+
+&#x20; font-weight: bold;
+
+}
+
+
+
+.chartSection {
+
+&#x20; margin-bottom: 32px;
+
+}
+
+
+
+.chartSection h3 {
+
+&#x20; color: #00ff88;
+
+&#x20; margin-bottom: 16px;
+
+&#x20; font-size: 1.1em;
+
+}
+
+
+
+.educationalPanel {
+
+&#x20; background: rgba(0, 10, 20, 0.6);
+
+&#x20; border: 1px solid rgba(0, 255, 136, 0.2);
+
+&#x20; border-radius: 8px;
+
+&#x20; padding: 20px;
+
+&#x20; margin-top: 30px;
+
+}
+
+
+
+.educationalPanel h3 {
+
+&#x20; color: #00ff88;
+
+&#x20; margin-bottom: 16px;
+
+&#x20; font-size: 1.1em;
+
+}
+
+
+
+.lessonCard {
+
+&#x20; background: rgba(10, 10, 10, 0.8);
+
+&#x20; border-left: 4px solid #FFD700;
+
+&#x20; padding: 16px;
+
+&#x20; margin-bottom: 12px;
+
+&#x20; border-radius: 4px;
+
+}
+
+
+
+.lessonCard h4 {
+
+&#x20; color: #FFD700;
+
+&#x20; margin-bottom: 8px;
+
+&#x20; font-size: 0.95em;
+
+}
+
+
+
+.lessonCard p {
+
+&#x20; color: rgba(255, 255, 255, 0.8);
+
+&#x20; font-size: 0.9em;
+
+&#x20; line-height: 1.5;
+
+&#x20; margin: 0;
+
+}
+
+
+
+@media (max-width: 768px) {
+
+&#x20; .sliderGroup {
+
+&#x20;   grid-template-columns: 1fr;
+
+&#x20; }
+
+
+
+&#x20; .readoutGrid {
+
+&#x20;   grid-template-columns: repeat(2, 1fr);
+
+&#x20; }
+
+
+
+&#x20; .playControls {
+
+&#x20;   flex-direction: column;
+
+&#x20;   width: 100%;
+
+&#x20; }
+
+
+
+&#x20; .playButton, .resetButton {
+
+&#x20;   width: 100%;
+
+&#x20; }
+
+}
+
+```
+
+
+
+\---
+
+
+
+\## PART 3 — Integration
+
+
+
+\### 3.1 Create or edit: /docs/06-swing-equation-simulator.mdx
+
+
+
+```mdx
+
+\---
+
+title: "06. Simulador Interactivo: Ecuación del Swing"
+
+sidebar\_position: 6
+
+\---
+
+
+
+import SwingEquationSimulator from '@site/src/components/SwingEquationSimulator/SwingEquationSimulator';
+
+
+
+\# Simulador Interactivo: La Ecuación del Swing
+
+
+
+\## Introducción Teórica
+
+
+
+La \*\*Ecuación del Swing\*\* es el modelo fundamental de la estabilidad transitoria de sistemas eléctricos. Describe cómo la frecuencia de la red cambia en respuesta a un desbalance entre potencia suministrada (P\_m) y potencia demandada (P\_e).
+
+
+
+\### La Forma Linealizada (Dominio de Frecuencia)
+
+
+
+Para un simulador educativo en tiempo real, usamos la forma linealizada de la ecuación del Swing:
+
+
+
+$$
+
+2H \\frac{d(\\Delta f)}{dt} + D \\Delta f = \\Delta P
+
+$$
+
+
+
+\*\*Dónde:\*\*
+
+\- $H$ = Constante de inercia equivalente del sistema (segundos)
+
+\- $\\Delta f$ = Desviación de frecuencia en pu: $\\Delta f = (f - 50) / 50$
+
+\- $D$ = Factor de amortiguamiento (pu)
+
+\- $\\Delta P$ = Desbalance de potencia activa (% de la carga)
+
+
+
+\### Interpretación Física
+
+
+
+\- \*\*$H$ (inercia)\*\* determina la \*\*rapidez inicial\*\* de cambio de frecuencia (ROCOF). Menor H = ROCOF más alto = colapso más rápido.
+
+\- \*\*$D$ (amortiguamiento)\*\* determina el \*\*estado estacionario\*\* final. Mayor D = menor caída de frecuencia en estado permanente (pero solo si las reservas primarias pueden responder).
+
+
+
+\*\*Punto crítico:\*\* La inercia no previene el colapso; solo lo retrasa. Sin potencia activa disponible (ΔP negativo y sostenido), el sistema colapsará independientemente de H.
+
+
+
+\---
+
+
+
+\## Simulador Interactivo
+
+
+
+Ajusta los parámetros físicos con los sliders y haz clic en "SIMULAR" para observar la dinámica en tiempo real. Los gráficos muestran la frecuencia y el ROCOF a lo largo del tiempo.
+
+
+
+<SwingEquationSimulator />
+
+
+
+\---
+
+
+
+\## Parámetros Explicados
+
+
+
+\### Inercia del Sistema (H)
+
+
+
+El valor de $H$ en segundos representa cuánto tiempo podría una máquina síncrona suministrar su potencia nominal extrayendo solo su energía cinética almacenada.
+
+
+
+\*\*Valores típicos:\*\*
+
+
+
+| Tecnología | H (segundos) |
+
+|---|---|
+
+| Generador nuclear grande | 8–9 |
+
+| Turbina de gas (CCGT) | 6–7 |
+
+| Hidroeléctrica | 3–4 |
+
+| Turbina eólica (Tipo 4, converter completo) | 0 |
+
+| Solar PV | 0 |
+
+| Condensador síncrono | 1–2 |
+
+
+
+\*\*En el 28 de abril de 2025:\*\*
+
+\- Sistema ibérico con 78% renovables: \*\*H = 2.45 segundos\*\* (crítico)
+
+\- Sistema ibérico histórico (2015, más carbón/nuclear): \*\*H ≈ 5 segundos\*\* (seguro)
+
+
+
+\### Pérdida de Potencia (ΔP)
+
+
+
+Representa el porcentaje de carga total que se pierde repentinamente. En el 28A, la pérdida de 2,200 MW en un sistema de 25,000 MW = \*\*8.8%\*\*.
+
+
+
+Esta es la "magnitud del disturbio". Mayor ΔP = mayor ROCOF = colapso más rápido.
+
+
+
+\### Amortiguamiento (D)
+
+
+
+Representa dos efectos:
+
+1\. \*\*Carga dependiente de frecuencia:\*\* Los motores de inducción consumen menos potencia a menor frecuencia, proporcionando un "alivio automático"
+
+2\. \*\*Respuesta del regulador de voltaje (AVR):\*\* Las máquinas síncronas ajustan automáticamente su salida ante cambios de frecuencia
+
+
+
+Valores típicos: \*\*D = 1.5 pu\*\* (baseline)
+
+
+
+\### Inercia Sintética (FFR - Fast Frequency Response)
+
+
+
+Los inversores modernos pueden programarse para inyectar potencia activa en proporción a la tasa de cambio de frecuencia:
+
+
+
+$$
+
+P\_{FFR} = -K\_{FFR} \\frac{df}{dt}
+
+$$
+
+
+
+Esto imita artificialmente el comportamiento inercial de una máquina síncrona. \*\*Pero con una caverna importante:\*\* En redes débiles (bajo SCR), las altas ganancias FFR causan inestabilidad de control en lugar de ayudar.
+
+
+
+\### Red Débil (SCR < 2.0)
+
+
+
+\*\*Short Circuit Ratio (SCR)\*\* mide la "fortaleza" de la red:
+
+
+
+$$
+
+\\text{SCR} = \\frac{S\_{cc}}{P\_n}
+
+$$
+
+
+
+\- \*\*SCR > 3:\*\* Red fuerte (voltaje estable)
+
+\- \*\*2 < SCR < 3:\*\* Red media
+
+\- \*\*SCR < 2:\*\* Red débil (voltaje inestable)
+
+\- \*\*SCR < 1.5:\*\* Red muy débil (inestabilidad del PLL)
+
+
+
+En el sur de España (Granada, Badajoz), el SCR era < 2.0 debido a la altísima concentración de solar sin soporte síncrono.
+
+
+
+\---
+
+
+
+\## Las Tres Interacciones Pedagógicas Clave
+
+
+
+\### 1️⃣ \*\*El Retraso de la Inercia\*\*
+
+
+
+\*\*Acción:\*\* Carga "Condiciones 28A" y observa el ROCOF ≈ 0.9 Hz/s. Luego carga "+ Inercia" (H=4.5s) y observa el mismo evento.
+
+
+
+\*\*Observación:\*\* El ROCOF se reduce a ≈ 0.6 Hz/s, pero la frecuencia sigue cayendo y alcanza aproximadamente el mismo valor mínimo.
+
+
+
+\*\*Lección:\*\* \*\*La inercia no es una batería.\*\* No previene el colapso; solo retrasa cuándo ocurre, comprando tiempo para que las reservas primarias respondan. Sin potencia disponible, el colapso es inevitable.
+
+
+
+\---
+
+
+
+\### 2️⃣ \*\*La Trampa de la Inercia Sintética en Redes Débiles\*\*
+
+
+
+\*\*Acción:\*\* Carga "FFR Sintética" con "Red Débil" habilitada. Verás que el ROCOF inicial se reduce gracias a la inyección FFR. Pero...
+
+
+
+\*\*Observación:\*\* La frecuencia comienza a \*\*oscilar violentamente\*\* a \~0.63 Hz, el rango subsincrónico. El sistema se vuelve más inestable, no menos.
+
+
+
+\*\*Lección:\*\* \*\*El control del inversor tiene límites.\*\* En redes débiles, los PLL no pueden rastrear correctamente el voltaje cuando el propio inversor está inyectando potencia. Esto crea un bucle de realimentación que causa la misma instabilidad de 0.63 Hz observada en Granada antes del apagón.
+
+
+
+\---
+
+
+
+\### 3️⃣ \*\*Los Límites del UFLS\*\*
+
+
+
+\*\*Acción:\*\* Ejecuta "Condiciones 28A". Verás que UFLS se activa en etapas (49.0 Hz, luego 48.7 Hz, etc.) reduciendo la carga.
+
+
+
+\*\*Observación:\*\* Cuando ROCOF excede 1.0 Hz/s y la frecuencia cae por debajo de 48.0 Hz, incluso el UFLS máximo no detiene el colapso.
+
+
+
+\*\*Lección:\*\* \*\*UFLS es la última línea de defensa, pero tiene un punto de quiebre.\*\* Una vez que la inercia es tan baja que ROCOF > 1.0 Hz/s, las máquinas síncronas se desenganchan por "pole-slip" (pérdida de sincronismo). En ese punto, el UFLS está jugando un juego perdido.
+
+
+
+\---
+
+
+
+\## Ecuación del Swing: Forma Completa (Referencia)
+
+
+
+Para los estudiosos, aquí está la forma no lineal completa:
+
+
+
+$$
+
+\\frac{d^2 \\delta}{dt^2} = \\frac{\\omega\_s}{2H}(P\_m - P\_e(\\delta) - D\\frac{d\\delta}{dt})
+
+$$
+
+
+
+Donde $P\_e(\\delta) = \\frac{EV}{X}\\sin(\\delta)$ es la potencia eléctrica en función del ángulo del rotor $\\delta$.
+
+
+
+El simulador utiliza una versión linealizada que omite el ángulo y se enfoca directamente en la frecuencia, que es lo pedagógicamente más importante.
+
+
+
+\---
+
+
+
+\## Referencias
+
+
+
+\- Kundur, P. (1994). \*Power System Stability and Control\*. EPRI.
+
+\- ENTSO-E Expert Panel Final Report (2026). Grid Incident in Spain and Portugal, 28 April 2025.
+
+\- IEEE Working Group on Frequency Stability (2023). Inertia Requirements in Low-Inertia Grids.
+
+```
+
+
+
+\---
+
+
+
+\## PART 4 — Translations
+
+
+
+Create translation stubs for all 6 locales (same as Week 1).
+
+
+
+\---
+
+
+
+\## PART 5 — Styling Constraints
+
+
+
+\- Dark theme, consistent with Week 1 FrequencyTimeline
+
+\- Green (#00ff88) for safe states
+
+\- Yellow (#FFD700) for warnings
+
+\- Red (#cc0000, #ff4444) for critical/collapse
+
+\- Monospace font for readouts (Courier New)
+
+\- Slider styling with `accent-color: #00ff88`
+
+\- Smooth transitions, no heavy animations on the simulator loop itself
+
+
+
+\---
+
+
+
+\## PART 6 — Commit
+
+
+
+```bash
+
+git add /static/data/swing\_equation\_params.json
+
+git add /static/data/swing\_equation\_scenarios.json
+
+git add /src/components/SwingEquationSimulator/
+
+git add /docs/06-swing-equation-simulator.mdx
+
+git add /docs/i18n/\*/
+
+
+
+git commit -m "feat(simulator): implement Swing Equation widget with interactive parameter control
+
+
+
+\- Create SwingEquationSimulator.jsx with Euler numerical integration (10ms step)
+
+\- Implement Swing Equation linearized form: 2H\*d(Δf)/dt + D\*Δf = ΔP
+
+\- Interactive sliders for H (inertia), ΔP (power loss), D (damping), FFR (synthetic inertia)
+
+\- Toggle for weak grid (SCR < 2.0) that enables subsynchronous oscillations
+
+\- UFLS multi-stage logic (49.0, 48.7, 48.4, 48.0 Hz cascades)
+
+\- Dual charts: Frequency(t) with color-coded zones and ROCOF(t) with protection thresholds
+
+\- Live readout panel with frequency, ROCOF, status badge, UFLS stage indicator
+
+\- Four pre-configured scenarios: Normal Operation, 28A Conditions, +Inertia, Synthetic Inertia Limits
+
+\- Three pedagogical 'aha moment' interactions:
+
+&#x20; 1. Inertia Delay Discovery: user learns inertia delays but doesn't prevent collapse
+
+&#x20; 2. Synthetic Inertia Trap: high FFR gains in weak grids cause subsynchronous instability
+
+&#x20; 3. UFLS Limits: ROCOF > 1.0 Hz/s triggers pole-slip, making UFLS irrelevant
+
+\- Educational panel explaining each interaction
+
+\- Complete MDX documentation with Swing Equation derivations
+
+
+
+Data sources:
+
+\- ENTSO-E Expert Panel Final Report (March 2026)
+
+\- IEEE Transactions on Power Systems (inertia constants, damping factors)
+
+\- REE/REN Operation Procedures (UFLS thresholds and delays)
+
+\- Kundur, Anderson canonical textbooks (Swing Equation forms)
+
+
+
+Closes #week-2-swing-equation"
+
+
+
+git push origin main
+
+```
+
+
+
+\---
+
+
+
+\## Definition of Done
+
+
+
+\- \[ ] swing\_equation\_params.json created with all slider ranges and UFLS configurations
+
+\- \[ ] SwingEquationSimulator.jsx renders without errors (npm run start)
+
+\- \[ ] Euler integration numerically stable (Δt = 10ms) for all slider combinations
+
+\- \[ ] Sliders update state and affect simulation in real time
+
+\- \[ ] Play/pause/reset controls work correctly
+
+\- \[ ] Frequency chart displays with gradient coloring (green → yellow → red)
+
+\- \[ ] ROCOF chart shows bar values with 0.5 and 1.0 Hz/s reference lines
+
+\- \[ ] UFLS logic fires correctly at specified thresholds (49.0, 48.7, 48.4, 48.0 Hz)
+
+\- \[ ] Live readout panel updates during simulation (freq, ROCOF, status badge, UFLS stage)
+
+\- \[ ] Weak grid toggle triggers subsynchronous oscillations when FFR > 2.0 pu
+
+\- \[ ] Four preset scenarios load correctly and produce expected frequency trajectories
+
+\- \[ ] Pedagogical "aha moment" interactions visually demonstrated (Inertia, FFR Trap, UFLS Limits)
+
+\- \[ ] MDX page renders with LaTeX equations using KaTeX
+
+\- \[ ] All 6 language stubs created (EN fully translated, others with TODO)
+
+\- \[ ] npm run build completes successfully
+
+\- \[ ] Lighthouse > 85 Performance (Recharts may impact some metrics, but acceptable)
+
+\- \[ ] Mobile responsive (sliders wrap, charts resize)
+
+\- \[ ] Commit message included, git history clean
+
+
+
+\---
+
+
+
+\## Technical Notes
+
+
+
+1\. \*\*Integration step:\*\* 10ms (0.01s) is critical for stability with H as low as 1.0s
+
+2\. \*\*ROCOF calculation:\*\* Derived as (f\[n] - f\[n-1]) / dt, updated every 10ms step
+
+3\. \*\*Weak grid oscillation:\*\* When SCR toggle is TRUE and synthetic\_inertia > 2.0, add a 0.63 Hz sinusoidal perturbation to ΔP
+
+4\. \*\*UFLS paradox:\*\* While the UFLS logic is implemented correctly (reduces demand), the real-world Ferranti effect (overvoltage from unloaded transmission lines) is not modeled. This is noted in the educational context but is a simplification for browser-based pedagogy.
+
+5\. \*\*Synthetic inertia formula:\*\* $P\_{FFR} = -K\_{FFR} \\times df/dt$ (current approach: reduce effective ΔP by this amount)
+
+6\. \*\*Chart performance:\*\* Keep only last 300 data points in memory to avoid React re-render lag
+
+
+
+\---
+
+
+
