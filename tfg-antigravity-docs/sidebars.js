@@ -3,6 +3,7 @@
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
   tutorialSidebar: [
+    'intro',
     // ════════════════════════════════════════════════════════════════
     // BLOQUE 1: INTRODUCCIÓN
     // ════════════════════════════════════════════════════════════════
