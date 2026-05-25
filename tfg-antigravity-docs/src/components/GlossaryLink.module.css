@@ -1,29 +1,56 @@
-.glossaryLink {
+﻿.glossaryLink {
   color: inherit;
-  text-decoration: none;
-  cursor: help;
-  border-bottom: 1.5px dashed var(--ifm-color-primary);
-  padding-bottom: 1px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(14, 165, 233, 0.4);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease-out;
   position: relative;
 }
 
 .glossaryLink:hover {
-  color: var(--ifm-color-primary-dark);
-  border-bottom-style: solid;
-  border-bottom-color: var(--ifm-color-primary-dark);
-  background-color: var(--docusaurus-highlighted-code-line-bg);
-  border-radius: 4px;
-  padding: 0.15em 0.3em;
-  margin: 0 -0.3em;
+  text-decoration-color: rgba(14, 165, 233, 1);
+  text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+  color: inherit;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.glossaryLink::after {
+  content: ' ⊙';
+  font-size: 0.75em;
+  color: rgba(14, 165, 233, 0.6);
+  vertical-align: super;
+  transition: all 0.3s ease-out;
+}
+
+.glossaryLink:hover::after {
+  color: rgba(14, 165, 233, 1);
+  text-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
 }
 
 .superscript {
-  display: none; /* The question mark is redundant and clutters the reading experience */
+  display: none;
+}
+
+html[data-theme='dark'] .glossaryLink {
+  text-decoration-color: rgba(56, 189, 248, 0.3);
 }
 
 html[data-theme='dark'] .glossaryLink:hover {
-  color: var(--ifm-color-primary-light);
-  border-bottom-color: var(--ifm-color-primary-light);
+  text-decoration-color: rgba(56, 189, 248, 0.9);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+html[data-theme='dark'] .glossaryLink::after {
+  color: rgba(56, 189, 248, 0.5);
+}
+
+html[data-theme='dark'] .glossaryLink:hover::after {
+  color: rgba(56, 189, 248, 1);
 }
