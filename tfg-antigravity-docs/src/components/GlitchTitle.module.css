@@ -1,54 +1,31 @@
-.glitch {
-  position: relative;
-  display: inline-block;
-  color: var(--text-0, hsl(220 20% 98%));
+.glitch { position: relative; display: inline-block; color: var(--text-0); }
+.glitch::before, .glitch::after {
+  content: attr(data-text); position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
 }
-
-.glitch::before {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  color: var(--accent-electric, hsl(190 100% 60%));
-  mix-blend-mode: screen;
-  overflow: hidden;
-}
-
 .glitch.run::before {
-  animation: glitch-cyan 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 1 forwards;
+  animation: g-cyan 1500ms ease-out 1;
+  color: hsl(190 100% 60%); text-shadow: 1px 0 hsl(190 100% 60%);
+  mix-blend-mode: screen;
 }
-
-@keyframes glitch-cyan {
-  0% {
-    opacity: 0;
-    transform: translate(0);
-    clip-path: inset(0 0 100% 0);
-  }
-  25% {
-    opacity: 0.85;
-    transform: translate(-1.5px, 0.5px);
-    clip-path: inset(8% 0 58% 0);
-  }
-  55% {
-    opacity: 0.6;
-    transform: translate(1.5px, -0.5px);
-    clip-path: inset(42% 0 28% 0);
-  }
-  85% {
-    opacity: 0.2;
-    transform: translate(0);
-    clip-path: inset(72% 0 5% 0);
-  }
-  100% {
-    opacity: 0;
-    clip-path: inset(0 0 100% 0);
-  }
+.glitch.run::after {
+  animation: g-magenta 1500ms ease-out 1;
+  color: hsl(340 100% 60%); text-shadow: -1px 0 hsl(340 100% 60%);
+  mix-blend-mode: screen;
 }
-
+@keyframes g-cyan {
+  0%,100% { opacity: 0; transform: translate(0); clip-path: inset(0 0 100% 0); }
+  20% { opacity: 1; transform: translate(-2px, 1px); clip-path: inset(10% 0 60% 0); }
+  40% { opacity: 1; transform: translate(2px, -1px); clip-path: inset(40% 0 30% 0); }
+  60% { opacity: 0.6; clip-path: inset(60% 0 20% 0); }
+  80% { opacity: 0; }
+}
+@keyframes g-magenta {
+  0%,100% { opacity: 0; transform: translate(0); }
+  25% { opacity: 1; transform: translate(2px, -1px); }
+  50% { opacity: 0.7; transform: translate(-2px, 1px); }
+  75% { opacity: 0.4; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .glitch::before {
-    animation: none !important;
-    opacity: 0 !important;
-  }
+  .glitch::before, .glitch::after { animation: none !important; }
 }
