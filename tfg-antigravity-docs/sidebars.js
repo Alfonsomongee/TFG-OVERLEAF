@@ -100,14 +100,37 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 8: CIERRE NARRATIVO
+    // BLOQUE 8: RESUMEN DE CIFRAS
     {
-      type: 'doc',
-      id: 'conclusiones',
-      label: 'Conclusiones',
+      type: 'category',
+      label: 'RESUMEN DE CIFRAS',
+      collapsed: false,
+      className: 'sidebar-icon-bar-chart',
+      items: [
+        {
+          type: 'doc',
+          id: 'resumen-de-cifras',
+          label: 'Resumen de Cifras',
+        },
+      ],
     },
 
-    // BLOQUE 9: CONTEXTO AMPLIADO
+    // BLOQUE 9: CIERRE NARRATIVO
+    {
+      type: 'category',
+      label: 'CONCLUSIONES',
+      collapsed: false,
+      className: 'sidebar-icon-flag',
+      items: [
+        {
+          type: 'doc',
+          id: 'conclusiones',
+          label: 'Conclusiones',
+        },
+      ],
+    },
+
+    // BLOQUE 10: CONTEXTO AMPLIADO
     {
       type: 'category',
       label: 'DIMENSIÓN EUROPEA',
