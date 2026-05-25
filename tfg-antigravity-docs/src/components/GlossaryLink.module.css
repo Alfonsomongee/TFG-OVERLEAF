@@ -1,29 +1,56 @@
-.glossaryLink {
+﻿.glossaryLink {
   color: inherit;
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 25%, transparent);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  cursor: help;
-  font-weight: inherit;
-  transition: text-decoration-color 0.15s ease-out, text-shadow 0.15s ease-out;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-color: rgba(14, 165, 233, 0.4);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease-out;
+  position: relative;
 }
 
 .glossaryLink:hover {
-  text-decoration-style: solid;
-  text-decoration-color: var(--color-data, hsl(190 100% 60%));
-  text-shadow: 0 0 8px color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 30%, transparent);
+  text-decoration-color: rgba(14, 165, 233, 1);
+  text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
   color: inherit;
   background-color: transparent;
+  padding: 0;
+  margin: 0;
+  border: none;
 }
 
-.glossaryLink:visited {
-  text-decoration-color: color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 18%, transparent);
+.glossaryLink::after {
+  content: ' ⊙';
+  font-size: 0.75em;
+  color: rgba(14, 165, 233, 0.6);
+  vertical-align: super;
+  transition: all 0.3s ease-out;
 }
 
-.glossaryLink:focus-visible {
-  outline: 2px solid var(--color-data, hsl(190 100% 60%));
-  outline-offset: 3px;
-  border-radius: 2px;
+.glossaryLink:hover::after {
+  color: rgba(14, 165, 233, 1);
+  text-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+}
+
+.superscript {
+  display: none;
+}
+
+html[data-theme='dark'] .glossaryLink {
+  text-decoration-color: rgba(56, 189, 248, 0.3);
+}
+
+html[data-theme='dark'] .glossaryLink:hover {
+  text-decoration-color: rgba(56, 189, 248, 0.9);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+html[data-theme='dark'] .glossaryLink::after {
+  color: rgba(56, 189, 248, 0.5);
+}
+
+html[data-theme='dark'] .glossaryLink:hover::after {
+  color: rgba(56, 189, 248, 1);
 }

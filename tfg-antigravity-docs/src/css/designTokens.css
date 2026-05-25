@@ -1,105 +1,86 @@
 /* ============================================================
    DESIGN TOKENS — TFG OVERLEAF FORENSIC THEME
-   VERSIÓN 2.0 — Sistema unificado (reemplaza el sistema dual ámbar+cian)
    ============================================================ */
 
 :root {
+  /* ── 1. COLOR SYSTEM ─────────────────────────────────── */
+  --forensic-amber-primary: #ffaa00;
+  --forensic-amber-warning: #ff5500;
+  --forensic-amber-critical: #cc1100;
+  --forensic-amber-muted: rgba(255, 170, 0, 0.4);
+  --forensic-amber-bg-subtle: rgba(255, 170, 0, 0.05);
+  
+  --forensic-bg-primary: #050403;
+  --forensic-bg-secondary: #0b0806;
+  --forensic-bg-surface: rgba(15, 10, 5, 0.5);
+  
+  --forensic-border: rgba(255, 170, 0, 0.15);
+  --forensic-border-strong: rgba(255, 170, 0, 0.3);
+  
+  --forensic-text-primary: rgba(255, 210, 150, 0.9);
+  --forensic-text-secondary: rgba(255, 210, 150, 0.6);
+  --forensic-text-dim: rgba(255, 210, 150, 0.4);
 
-  /* ── 1. COLORES RAW (paleta primitiva) ──────────────────────────────── */
-  --raw-bg-void:    hsl(220 65% 2%);
-  --raw-bg-deep:    hsl(220 55% 4%);
-  --raw-bg-base:    hsl(220 40% 7%);
-  --raw-bg-raised:  hsl(220 30% 11%);
-  --raw-bg-hover:   hsl(220 22% 16%);
+  /* Sync Generation Specific Colors */
+  --forensic-sync-1: #0077ff;
+  --forensic-sync-2: #0044aa;
+  --forensic-sync-3: #002255;
 
-  --raw-cyan-200:   hsl(190 100% 85%);
-  --raw-cyan-400:   hsl(190 100% 70%);
-  --raw-cyan-500:   hsl(190 100% 60%);
-  --raw-cyan-600:   hsl(190 100% 50%);
-  --raw-cyan-700:   hsl(190 100% 38%);
-  --raw-cyan-900:   hsl(190 100% 22%);
+  /* ── 2. TYPOGRAPHY SCALE ─────────────────────────────── */
+  --telemetry-font: 'JetBrains Mono', 'Courier New', monospace;
+  --telemetry-xs: 0.75rem;
+  --telemetry-sm: 0.85rem;
+  --telemetry-md: 1rem;
+  --telemetry-lg: 1.1em;
+  --telemetry-display: 1.8em;
 
-  --raw-amber-300:  hsl(44 100% 72%);
-  --raw-amber-400:  hsl(40 100% 62%);
-  --raw-amber-500:  hsl(38 100% 56%);
-  --raw-amber-600:  hsl(32 100% 48%);
-  --raw-amber-700:  hsl(25 100% 40%);
+  /* ── 3. SPACING SYSTEM ───────────────────────────────── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
 
-  --raw-red-400:    hsl(0 85% 68%);
-  --raw-red-500:    hsl(0 75% 56%);
-  --raw-red-700:    hsl(0 80% 38%);
-  --raw-red-900:    hsl(0 70% 22%);
+  /* ── 4. BORDER RADIUS ────────────────────────────────── */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
 
-  --raw-magenta-500: hsl(322 100% 62%);
-  --raw-green-500:  hsl(150 60% 45%);
+  /* ── 5. ANIMATION TIMINGS ────────────────────────────── */
+  --transition-fast: 0.15s ease-out;
+  --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s ease-in-out;
 
-  --raw-text-0:     hsl(220 20% 98%);
-  --raw-text-1:     hsl(220 15% 88%);
-  --raw-text-2:     hsl(220 12% 68%);
-  --raw-text-3:     hsl(220 10% 48%);
+  /* WEEK 2.5 ADDITIONS */
+  --forensic-amber: var(--forensic-amber-primary);
+  --forensic-orange: var(--forensic-amber-warning);
+  --forensic-critical: var(--forensic-amber-critical);
+  --forensic-bg: var(--forensic-bg-primary);
 
-  /* ── 2. TOKENS SEMÁNTICOS (lo que usan los componentes) ─────────────── */
-  --bg-void:        var(--raw-bg-void);
-  --bg-0:           var(--raw-bg-deep);
-  --bg-1:           var(--raw-bg-base);
-  --bg-2:           var(--raw-bg-raised);
-  --bg-3:           var(--raw-bg-hover);
+  --telemetry-border: rgba(255,170,0,0.12);
+  --telemetry-soft: rgba(255,210,150,0.72);
 
-  --color-data:     var(--raw-cyan-500);
-  --color-alert:    var(--raw-amber-500);
-  --color-danger:   var(--raw-red-500);
-  --color-glitch:   var(--raw-magenta-500);
-  --color-safe:     var(--raw-green-500);
+  --incident-spacing-xl: 5rem;
+  --incident-spacing-lg: 3rem;
+  --incident-spacing-md: 1.5rem;
 
-  --text-0:         var(--raw-text-0);
-  --text-1:         var(--raw-text-1);
-  --text-2:         var(--raw-text-2);
-  --text-3:         var(--raw-text-3);
+  --scada-radius: 8px;
+}
 
-  --border-subtle:  1px solid color-mix(in srgb, var(--color-data) 12%, transparent);
-  --border-data:    1px solid color-mix(in srgb, var(--color-data) 30%, transparent);
-  --border-alert:   1px solid color-mix(in srgb, var(--color-alert) 40%, transparent);
-  --border-accent:  2px solid var(--color-data);
-
-  --grad-calm:     linear-gradient(180deg, hsl(220 55% 4%), hsl(220 45% 8%));
-  --grad-tension:  linear-gradient(180deg, hsl(220 45% 6%), hsl(38 40% 12%));
-  --grad-collapse: linear-gradient(180deg, hsl(0 60% 10%), hsl(220 55% 3%));
-
-  --radius-sm:   6px;
-  --radius-md:   12px;
-  --radius-lg:   20px;
-  --radius-pill: 999px;
-
-  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-lg:  0 16px 48px rgba(0, 0, 0, 0.45);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
-  /* ── 3. ALIASES DE COMPATIBILIDAD ────────────────────────────────── */
-  --accent-electric:          var(--color-data);
-  --accent-amber:             var(--color-alert);
-  --accent-magenta:           var(--color-glitch);
-  --forensic-amber-primary:   var(--raw-amber-500);
-  --forensic-amber-warning:   var(--raw-amber-700);
-  --forensic-amber-critical:  var(--raw-red-700);
-  --forensic-amber-muted:     color-mix(in srgb, var(--raw-amber-500) 40%, transparent);
-  --forensic-amber-bg-subtle: color-mix(in srgb, var(--raw-amber-500) 5%, transparent);
-  --forensic-bg-primary:      var(--bg-0);
-  --forensic-bg-secondary:    var(--bg-1);
-  --forensic-bg-surface:      color-mix(in srgb, var(--bg-1) 50%, transparent);
-  --forensic-border:          var(--border-subtle);
-  --forensic-border-strong:   var(--border-alert);
-  --forensic-text-primary:    var(--text-1);
-  --forensic-text-secondary:  var(--text-2);
-  --forensic-text-dim:        var(--text-3);
-  --forensic-sync-1: hsl(214 100% 58%);
-  --forensic-sync-2: hsl(214 100% 40%);
-  --forensic-sync-3: hsl(214 100% 24%);
-  --warn-300:   var(--raw-amber-300);
-  --warn-500:   var(--raw-amber-500);
-  --warn-700:   var(--raw-amber-700);
-  --danger-300: var(--raw-red-400);
-  --danger-500: var(--raw-red-500);
-  --danger-700: var(--raw-red-700);
-  --danger-900: var(--raw-red-900);
+/* Light Theme Overrides (if required, keep it accessible but distinct) */
+html[data-theme='light'] {
+  --forensic-amber-primary: #d97700;
+  --forensic-amber-warning: #cc4400;
+  --forensic-amber-critical: #aa0000;
+  --forensic-amber-muted: rgba(217, 119, 0, 0.6);
+  
+  --forensic-bg-primary: #faf8f5;
+  --forensic-bg-secondary: #f4f0ea;
+  --forensic-bg-surface: #ffffff;
+  
+  --forensic-border: rgba(217, 119, 0, 0.2);
+  --forensic-text-primary: #332211;
+  --forensic-text-secondary: #664422;
+  --forensic-text-dim: #997755;
 }
