@@ -1,10 +1,8 @@
-
 const fs = require('fs');
 let code = fs.readFileSync('docusaurus.config.js', 'utf8');
 
-// Replace stylesheets
 code = code.replace(/stylesheets:\s*\[[\s\S]*?\],/, 
-\stylesheets: [
+`stylesheets: [
     {
       href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css',
       type: 'text/css',
@@ -16,19 +14,16 @@ code = code.replace(/stylesheets:\s*\[[\s\S]*?\],/,
       type: 'text/css',
       rel: 'stylesheet',
     },
-  ],\);
+  ],`);
 
-// Remove any existing headTags
 code = code.replace(/headTags:\s*\[[\s\S]*?\],/, '');
 
-// Add new headTags
 code = code.replace(/(stylesheets:\s*\[[\s\S]*?\],)/, 
-\\
+`$1
   headTags: [
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
-  ],\);
+  ],`);
 
 fs.writeFileSync('docusaurus.config.js', code);
 console.log('Updated docusaurus.config.js');
-

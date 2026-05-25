@@ -2,13 +2,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useInView, motion } from 'framer-motion';
 import styles from './styles.module.css';
 
-// Forensic characters (more professional/documentary style)
 const CHARSET = '█▓▒░0123456789X';
-
 const getRandomChar = () => CHARSET[Math.floor(Math.random() * CHARSET.length)];
 
 export default function ForensicReveal({ children, className }) {
-  // Safely extract string from children
   const text = React.Children.toArray(children).join('');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.4 });
@@ -18,15 +15,25 @@ export default function ForensicReveal({ children, className }) {
 
   useEffect(() => {
     if (!isInView || started || !text) return;
-
     setStarted(true);
+
     const finalChars = text.split('');
     const revealed = new Array(finalChars.length).fill(false);
     let revealIndex = 0;
-    const REVEAL_STAGGER = 30; // Faster reveal
-    const SCRAMBLE_TICK = 50;
+    let mounted = true;
+    const pendingTimers = new Set();
+
+    const safeTimeout = (fn, delay) => {
+      const id = setTimeout(() => {
+        pendingTimers.delete(id);
+        fn();
+      }, delay);
+      pendingTimers.add(id);
+      return id;
+    };
 
     const scrambleInterval = setInterval(() => {
+      if (!mounted) return;
       setDisplayText(
         finalChars
           .map((char, i) => {
@@ -35,34 +42,37 @@ export default function ForensicReveal({ children, className }) {
           })
           .join('')
       );
-    }, SCRAMBLE_TICK);
+    }, 50);
 
     const revealNext = () => {
+      if (!mounted) return;
       if (revealIndex < finalChars.length) {
         revealed[revealIndex] = true;
         revealIndex++;
-        // Reveal up to 3 chars at once to speed up long texts
         if (revealIndex < finalChars.length) {
           revealed[revealIndex] = true;
           revealIndex++;
         }
-        setTimeout(revealNext, REVEAL_STAGGER);
+        safeTimeout(revealNext, 30);
       } else {
         clearInterval(scrambleInterval);
-        setDisplayText(text);
-        setIsFinished(true);
+        if (mounted) {
+          setDisplayText(text);
+          setIsFinished(true);
+        }
       }
     };
 
-    const firstTimer = setTimeout(revealNext, 200); // Small initial delay
+    safeTimeout(revealNext, 200);
 
     return () => {
+      mounted = false;
       clearInterval(scrambleInterval);
-      clearTimeout(firstTimer);
+      pendingTimers.forEach(clearTimeout);
+      pendingTimers.clear();
     };
   }, [isInView, started, text]);
 
-  // Initial render state
   if (!started && !isFinished) {
     return (
       <span ref={ref} className={`${styles.forensicText} ${styles.redacted} ${className || ''}`}>
@@ -74,10 +84,8 @@ export default function ForensicReveal({ children, className }) {
   return (
     <motion.span
       ref={ref}
-      className={`${styles.forensicText} ${isFinished ? styles.finished : ''} ${className || ''}`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2 }}
+      className={`${styles.forensicText} ${isFinished ? styles.finished : styles.scrambling} ${className || ''}`}
+      animate={isFinished ? { opacity: 1 } : {}}
     >
       {displayText}
     </motion.span>

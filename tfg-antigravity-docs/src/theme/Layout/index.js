@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import OriginalLayout from '@theme-original/Layout';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 function CursorComponent() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    setIsDesktop(window.matchMedia('(pointer: fine)').matches);
+  }, []);
+  if (!isDesktop) return null;
   const AnimatedCursor = require('react-animated-cursor');
-  // En v2.6.0 puede ser exportado directamente o tener un .default
   const Cursor = AnimatedCursor.default || AnimatedCursor;
   return (
     <div className="custom-cursor-wrapper">
       <Cursor
-        innerSize={6}
-        outerSize={36}
+        innerSize={5}
+        outerSize={30}
         color="0, 229, 255"
-        outerAlpha={0.15}
-        innerScale={0.6}
-        outerScale={2.2}
-        trailingSpeed={5}
+        outerAlpha={0.1}
+        innerScale={0.5}
+        outerScale={2.0}
+        trailingSpeed={6}
         outerStyle={{
-          border: '1px solid rgba(0,229,255,0.5)',
+          border: '1px solid rgba(0,229,255,0.4)',
           mixBlendMode: 'screen',
-          boxShadow: '0 0 24px rgba(0,229,255,0.4)',
         }}
-        clickables={['a', 'button', '.chart-card', ':is(input,textarea,select)', '.clickable', '.menu__link', '.pagination-nav__link']}
+        clickables={['a', 'button', '.chart-card', ':is(input,textarea,select)', '.menu__link']}
       />
     </div>
   );
