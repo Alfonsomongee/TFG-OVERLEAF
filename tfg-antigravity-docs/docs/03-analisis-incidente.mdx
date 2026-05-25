@@ -47,11 +47,29 @@ Durante la Fase 1, las fluctuaciones y caídas de tensión originadas por las os
 
 ![Desacoplamiento Tap-Lag](/figuras/tap_lag_decoupling.png) _Desacoplamiento entre el primario de 400 kV y el secundario colector durante la Fase 2. Mientras el incremento de tensión en el lado de 400 kV se mantuvo en valores moderados, la inercia del OLTC amplificó el transitorio en el lado colector. Fuente: ENTSO-E._
 
-Esta incapacidad mecánica creó un **«espejismo» en la sala de control de REE**. El <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> del operador monitorizaba el primario de 400 kV, observando tensiones altas pero teóricamente por debajo del límite excepcional normativo de **435 kV** (P.O. 1.1). Sin embargo, aguas abajo, en las redes de 220 kV y 132 kV, el voltaje escaló por encima de **1,2 p.u.** —umbrales invisibles para el despacho nacional por la inobservabilidad de la red subyacente.
+Esta incapacidad mecánica creó un **"espejismo" en la sala de control de REE**. El <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> del operador monitorizaba el primario de 400 kV, observando tensiones altas pero teóricamente por debajo del límite excepcional normativo de **435 kV** (P.O. 1.1). Sin embargo, aguas abajo, en las redes de 220 kV y 132 kV, el voltaje escaló por encima de **1,2 p.u.** —umbrales invisibles para el despacho nacional por la inobservabilidad de la red subyacente.
+
+```mermaid
+sequenceDiagram
+    participant Red400 as Red 400 kV
+    participant OLTC as Transformador con OLTC
+    participant RedColectora as Red Colectora (220kV/132kV)
+    participant IBR as Inversores (Plantas Solares/Eólicas)
+
+    Red400->>OLTC: Transitorio rápido de sobretensión
+    Note over OLTC: Retardo mecánico intencional<br/>para evitar oscilaciones efímeras
+    OLTC--xRedColectora: Falla en ajustar la relación de transformación a tiempo
+    Red400->>RedColectora: Propagación de sobretensión amplificada
+    RedColectora->>IBR: Voltaje > 1.2 p.u.
+    Note over IBR: Activación de protección de sobretensión<br/>(Función 59 ANSI)
+    IBR->>RedColectora: Desconexión de plantas
+    Note over Red400: El SCADA muestra tensión alta,<br/>pero bajo el límite crítico de 435 kV
+```
+
 
 ![Mapa de Calor: Propagación de Sobretensiones](/figuras/heatmap_propagation.png) _Propagación de las sobretensiones en la red de 400 kV durante la Fase 2 (12:32:00–12:33:18 CEST). Fuente: Comité de Análisis del Gobierno / REE._
 
-Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como **«disparos inadecuados»** argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas **actuaron correctamente** ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
+Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como **"disparos inadecuados"** argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas **actuaron correctamente** ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
 
 ## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST)
 
@@ -71,8 +89,8 @@ A medida que la cascada destruía la generación remanente, la frecuencia comenz
 
 La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, **reforzando el colapso que el propio UFLS pretendía frenar**. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión.
 
-En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC intentaron importar hasta **4.609 MW** de emergencia desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo **1.000 MW** del sistema ibérico, reduciendo en un **22 %** la capacidad de soporte neto desde Francia.
+En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC intentaron importar hasta **4.609 MVAr (potencia reactiva)** de emergencia desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo **1.000 MW** del sistema ibérico, reduciendo en un **22 %** la capacidad de soporte neto desde Francia.
 
-![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Inversión de flujos en la frontera pirenaica durante la Fase 3: importación de emergencia de hasta 4.609 MW por las líneas AC, extracción simultánea de 1.000 MW por el HVDC, y apertura por pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._
+![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Inversión de flujos en la frontera pirenaica durante la Fase 3: importación de emergencia de hasta 4.609 MVAr por las líneas AC, extracción simultánea de 1.000 MW por el HVDC, y apertura por pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._
 
-A las **12:33:21 CEST**, las protecciones de pérdida de <GlossaryLink term="Sincronismo">sincronismo</GlossaryLink> abrieron los enlaces AC para evitar el contagio al sistema europeo continental, aislando la península ibérica. El **«Cero de Tensión»** definitivo se confirmó a las **12:33:29.741 CEST** con el disparo del último grupo generador — cerrando el incidente sistémico más severo documentado en la historia del sistema eléctrico europeo continental.
+A las **12:33:21 CEST**, las protecciones de pérdida de <GlossaryLink term="Sincronismo">sincronismo</GlossaryLink> abrieron los enlaces AC para evitar el contagio al sistema europeo continental, aislando la península ibérica. El **"Cero de Tensión"** definitivo se confirmó a las **12:33:29.741 CEST** con el disparo del último grupo generador — cerrando el incidente sistémico más severo documentado en la historia del sistema eléctrico europeo continental.

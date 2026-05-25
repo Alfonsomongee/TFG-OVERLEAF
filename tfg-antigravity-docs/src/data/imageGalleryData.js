@@ -177,7 +177,7 @@ export const imageGalleryData = {
         },
         {
           src: "/figuras/interconexion_francia_colapso.png",
-          caption_es: "Inversión de flujos en la frontera pirenaica durante la Fase 3: importación de emergencia de hasta 4.609 MW por las líneas AC, extracción simultánea de 1.000 MW por el HVDC en PMODE1, y apertura de las líneas AC por pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE.",
+          caption_es: "Inversión de flujos en la frontera pirenaica durante la Fase 3: importación de emergencia de hasta 4.609 MVAr por las líneas AC, extracción simultánea de 1.000 MW por el HVDC en PMODE1, y apertura de las líneas AC por pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE.",
           caption_en: "Reversal of flows at the Pyrenean border during Phase 3: emergency import of up to 4,609 MW through AC lines, simultaneous extraction of 1,000 MW through HVDC in PMODE1, and opening of AC lines due to loss of synchronism at 12:33:21 CEST. Source: Government Analysis Committee / REE.",
           caption_pt: "Inversão de fluxos na fronteira pirenaica durante a Fase 3: importação de emergência de até 4.609 MW pelas linhas AC, extração simultânea de 1.000 MW pelo HVDC em PMODE1, e abertura das linhas AC por perda de sincronismo às 12:33:21 CEST. Fonte: Comitê de Análise do Governo / REE.",
           caption_fr: "Inversion des flux à la frontière pyrénéenne pendant la Phase 3 : importation d'urgence jusqu'à 4 609 MW par les lignes AC, extraction simultanée de 1 000 MW par le HVDC en PMODE1, et ouverture des lignes AC suite à la perte de synchronisme à 12:33:21 CEST. Source : Comité d'Analyse du Gouvernement / REE.",
@@ -251,7 +251,7 @@ export const imageGalleryData = {
         },
         {
           src: "/figuras/recuperacion_demanda_peninsular.png",
-          caption_es: "Desplome y recuperación de la demanda peninsular. La reposición de los 25 GW perdidos se completó tras casi 19 horas de maniobras ininterrumpidas, con conexión de carga escalonada para evitar nuevos episodios de subfrecuencia. Fuente: Comité de Análisis del Gobierno.",
+          caption_es: "Desplome y recuperación de la demanda peninsular. La reposición de los 25 GW perdidos se completó tras aproximadamente 18,5 horas de maniobras ininterrumpidas, con conexión de carga escalonada para evitar nuevos episodios de subfrecuencia. Fuente: Comité de Análisis del Gobierno.",
           caption_en: "Collapse and recovery of peninsular demand. The replacement of the 25 GW lost was completed after almost 19 hours of uninterrupted maneuvers, with staggered load connection to avoid new subfrequency episodes. Source: Government Analysis Committee.",
           caption_pt: "Colapso e recuperação da demanda peninsular. A reposição dos 25 GW perdidos foi concluída após quase 19 horas de manobras ininterruptas, com conexão de carga escalonada para evitar novos episódios de subfrequência. Fonte: Comitê de Análise do Governo.",
           caption_fr: "Effondrement et reprise de la demande péninsulaire. Le rétablissement des 25 GW perdus s'est achevé après près de 19 heures de manœuvres ininterrompues, avec une connexion de charge échelonnée pour éviter de nouveaux épisodes de sous-fréquence. Source : Comité d'Analyse du Gouvernement.",

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 10
+sidebar_label: "Cifras Maestras"
 hide_title: true
 title: "Resumen de Cifras"
 ---
@@ -16,9 +17,9 @@ import Bloque6Cronologia from '@site/src/components/ResumenCifras/Bloque6Cronolo
 
 ## El mayor apagón del sistema europeo continental en más de 20 años
 
-El 28 de abril de 2025 quedará grabado como la fecha en que la Península Ibérica experimentó un colapso eléctrico total sin precedentes en la historia moderna europea. En tan solo 27 segundos —entre las 12:32:57 y las 12:33:27 CEST—, una cascada de desconexiones de generación envolvió a España peninsular y Portugal continental en un apagón que interrumpió el suministro de ~31 GW de potencia a aproximadamente 55 millones de personas.
+El 28 de abril de 2025 quedará grabado como la fecha en que la península ibérica experimentó un colapso eléctrico total sin precedentes en la historia moderna europea. En tan solo 32 segundos —entre las 12:32:57 y las 12:33:29 CEST—, una cascada de desconexiones de generación envolvió a España peninsular y Portugal continental en un apagón que interrumpió el suministro de ~25,2 GW de demanda a aproximadamente 57 millones de personas.
 
-Lo que sigue es un resumen numérico del incidente a través de seis visualizaciones interactivas que documentan la magnitud del evento, sus causas técnicas, el mecanismo de su desarrollo y la excepcional respuesta operativa que permitió la recuperación en menos de 18 horas.
+Lo que sigue es un resumen numérico del incidente a través de seis visualizaciones interactivas que documentan la magnitud del evento, sus causas técnicas, el mecanismo de su desarrollo y la excepcional respuesta operativa que permitió la recuperación en aproximadamente 18,5 horas.
 
 ---
 
@@ -28,7 +29,7 @@ Lo que sigue es un resumen numérico del incidente a través de seis visualizaci
 
 El colapso fue tan rápido y total que la mayoría de operadores regionales no tuvieron tiempo de implementar maniobras correctivas. Los primeros disparos de generación —ocurridos entre los segundos 0 y 20 de la cascada— eliminaron ~2.500 MW de capacidad de generación de una red peninsular que operaba con una demanda de ~29,6 GW.
 
-Pero estas cifras, aunque enormes, ocultan una realidad más sutil: el apagón no fue causado por la falta de energía disponible (el sistema contaba con generación suficiente), sino por un fallo catastrófico en el control de tensión de una red donde el 82% de la generación estaba operada por electrónica de potencia sin capacidad de estabilización dinámica.
+Pero estas cifras, aunque enormes, ocultan una realidad más sutil: el apagón no fue causado por la falta de energía disponible (el sistema contaba con generación suficiente), sino por un fallo catastrófico en el control de tensión de una red donde la gran mayoría de la generación estaba operada por electrónica de potencia sin capacidad de estabilización dinámica (el 82% detallado en el §2.3).
 
 ---
 
@@ -46,11 +47,11 @@ A las 12:30 CEST, instantes antes del colapso, el sistema peninsular español op
 
 Esta distribución es el contexto estructural del incidente. La generación síncrona —es decir, máquinas rotatorias (nucleares, hidráulicas, turbinas de gas) que producen corriente alterna por rotación electromagnética— representaba solo el 18% del mix instantáneo. El 82% restante operaba a través de inversores electrónicos de potencia (Solar PV + Eólica mayormente) configurados en ese momento para control de potencia reactiva en modo "factor-de-potencia fijo", sin capacidad de ajuste dinámico de tensión.
 
-Este desequilibrio es fundamental para comprender por qué el apagón ocurrió. En una red tradicional del siglo XX, dominada por generación síncrona, una pérdida súbita de ~2.500 MW habría causado una caída de frecuencia severa pero controlable mediante la inercia rotacional de los generadores (típicamente H > 3 segundos). En la Península Ibérica del 28 de abril, la inercia equivalente del sistema era de solo ~2,3 segundos, apenas suficiente para los márgenes normativos, y la respuesta a la perturbación dependía íntegramente de la capacidad de los inversores para sostener tensión y ángulo de fase. Cuando esa capacidad colapsó, el sistema colapsó con ella.
+Este desequilibrio es fundamental para comprender por qué el apagón ocurrió. En una red tradicional del siglo XX, dominada por generación síncrona, una pérdida súbita de ~2.500 MW habría causado una caída de frecuencia severa pero controlable mediante la inercia rotacional de los generadores (típicamente H > 3 segundos). En la península ibérica del 28 de abril, la inercia equivalente del sistema era de solo ~2,3 segundos, apenas suficiente para los márgenes normativos, y la respuesta a la perturbación dependía íntegramente de la capacidad de los inversores para sostener tensión y ángulo de fase. Cuando esa capacidad colapsó, el sistema colapsó con ella.
 
 ---
 
-### 3. La cascada de 27 segundos: Cronología del colapso
+### 3. La cascada de 32 segundos: Cronología del colapso
 
 <Bloque3Cascada />
 
@@ -66,13 +67,13 @@ La cascada comienza con el disparo de un transformador de evacuación en la cent
 La ventana más crítica: 650 milisegundos de desconexiones en cadena de generación renovable en cinco provincias del sur de España. Se registraron disparos sucesivos de eólica y FV en Segovia (23 MW), Badajoz (118 MW FV), Huelva (34 MW eólica), Sevilla (550 MW en la colectora de evacuación —el disparo más severo de esta oleada—), Cáceres (37,5 MW FV) y Badajoz nuevamente (72 MW FV). La pérdida total estimada en esta ventana es de aproximadamente 1.150 MW, elevando el total acumulado a ~2.232 MW.
 
 **Evento 4 (t = 23,53 s, 12:33:21.535 CEST): Aislamiento de Iberia (Trip AC Francia–España, ANSI 78)**
-Las protecciones de pérdida de sincronismo (out-of-step / ANSI 78) de las líneas de interconexión AC entre Francia y España se activan en ambos extremos. La Península Ibérica queda aislada del continente europeo. En ese instante, el sistema había sufrido una importación desde Francia que había alcanzado un pico de 4.609 MW de potencia reactiva en intento de sostener tensión, pero esa fuente de apoyo desaparece con el trip de la interconexión. Frecuencia en ese instante: 48,46 Hz.
+Las protecciones de pérdida de sincronismo (out-of-step / ANSI 78) de las líneas de interconexión AC entre Francia y España se activan en ambos extremos. La península ibérica queda aislada del continente europeo. En ese instante, el sistema había sufrido una importación desde Francia que había alcanzado un pico de 4.609 MVAr (potencia reactiva) en intento de sostener tensión, pero esa fuente de apoyo desaparece con el trip de la interconexión. Frecuencia en ese instante: 48,46 Hz.
 
 **Evento 5 (t ≈ 25,88 s, 12:33:23 CEST): Nadir de frecuencia (47,79 Hz)**
-La frecuencia cae a su mínimo registrado: 47,79 Hz. Por debajo del umbral de 47,5 Hz, las protecciones UFLS (Under-Frequency Load Shedding) finales de los escalones superiores se activan. Simultáneamente, los generadores nucleares se disparan por protección de sobreexcitación (V/Hz), eliminando toda generación síncrona remanente. El enlace HVDC INELFE (España–Francia, 2.000 MW nominales, operando a 1.000 MW en modo PMODE1) se bloquea por fallo en la conmutación (12:33:23.960 CEST).
+La frecuencia cae a su mínimo registrado: 47,79 Hz. Como la frecuencia nunca bajó del umbral crítico de 47,5 Hz, las protecciones UFLS finales de los últimos escalones de desconexión de carga NO saltaron completos. Sin embargo, simultáneamente, los generadores nucleares se disparan por protección de sobreexcitación (V/Hz), eliminando toda generación síncrona remanente. El enlace HVDC INELFE (España–Francia, 2.000 MW nominales, operando a 1.000 MW en modo PMODE1) se bloquea por fallo en la conmutación (12:33:23.960 CEST).
 
-**Evento 6 (t = 27,18 s, 12:33:27.300 CEST): Cero eléctrico — Colapso total**
-La tensión en 400 kV cae por debajo de 1 kV. Apagón total en España peninsular y Portugal continental. La potencia total interrumpida alcanza ~31 GW. El mayor apagón registrado jamás en el sistema eléctrico europeo continental.
+**Evento 6 (t = 32,6 s, 12:33:29.741 CEST): Cero eléctrico — Colapso total**
+La tensión en 400 kV cae por debajo de 1 kV. Apagón total en España peninsular y Portugal continental. La potencia total interrumpida alcanza ~25,2 GW. El mayor apagón registrado jamás en el sistema eléctrico europeo continental en más de veinte años.
 
 ---
 
@@ -100,7 +101,7 @@ El ROCOF (Rate of Change of Frequency) máximo registrado fue aproximadamente 1,
 
 <Bloque5Interconexiones />
 
-Uno de los factores estructurales del colapso fue la baja interconexión de la Península Ibérica con el resto del sistema europeo continental. A las 12:30 CEST:
+Uno de los factores estructurales del colapso fue la baja interconexión de la península ibérica con el resto del sistema europeo continental. A las 12:30 CEST:
 
 - **Francia AC (interconexión alterna 400 kV)**: 870 MW export / 2.700 MW capacity = 32% utilización
 - **HVDC INELFE (Santa Llogaia–Baixas)**: 1.000 MW constante / 2.000 MW nominales = 50% utilización
@@ -109,13 +110,13 @@ Uno de los factores estructurales del colapso fue la baja interconexión de la P
 
 La ratio de interconexión —el cociente entre capacidad de importación y demanda total— era de aproximadamente 3–5%. Esto significa que, incluso en el mejor escenario, España peninsular contaba con una capacidad de apoyo externo de solo ~900 MW a ~1.500 MW de un sistema de 25–30 GW de demanda típica. Es decir, ~3–5 minutos de cobertura en caso de pérdida de generación interna.
 
-Durante la cascada (12:33:19), cuando el sistema intentó importar masivamente desde Francia para sostener tensión, los inversores solicitaron flujos transitorios de hasta 4.609 MW de potencia reactiva por la interconexión AC, superando su capacidad nominal de 2.700 MW. Esto aceleró la propagación de la inestabilidad hacia Francia, activando protecciones ENTSO-E de aislamiento fronterizo (trip de líneas AC a los 48,46 Hz, 12:33:21.535).
+Durante la cascada (12:33:19), cuando el sistema intentó importar masivamente desde Francia para sostener tensión, los inversores solicitaron flujos transitorios de hasta 4.609 MVAr (potencia reactiva), que superaron los límites de operación segura de la interconexión AC, cuya capacidad nominal de potencia activa es de 2.700 MW (límite térmico equivalente ~3.000 MVA en potencia aparente). Esto aceleró la propagación de la inestabilidad hacia Francia, activando protecciones ENTSO-E de aislamiento fronterizo (trip de líneas AC a los 48,46 Hz, 12:33:21.535).
 
-A diferencia de Italia (2003) o Francia (2006), donde mayor interconexión permitió una rápida distribución del esfuerzo de recuperación, la Península Ibérica quedó confinada y aislada, forzando una reposición autónoma desde cero.
+A diferencia de Italia (2003) o Francia (2006), donde mayor interconexión permitió una rápida distribución del esfuerzo de recuperación, la península ibérica quedó confinada y aislada, forzando una reposición autónoma desde cero.
 
 ---
 
-### 6. La reposición: 18 horas desde el cero eléctrico
+### 6. La reposición: ~18,5 horas desde el cero eléctrico
 
 <Bloque6Cronologia />
 
@@ -126,7 +127,7 @@ La cronología fue la siguiente:
 **12:43–12:44 CEST (Duración: 10–11 minutos desde cero)**
 Reenergización de la primera arteria de transporte: la subestación de Hernani en el País Vasco recibe suministro desde la interconexión con Francia. Importación inicial: ~31 MW (apenas el 0,1% de la demanda pre-apagón).
 
-**12:45 CEST (WEST: 11:45)**
+**12:45 CEST (WEST: 11:45, _Western European Summer Time_ utilizado en Portugal)**
 Castelo do Bode (Portugal) se conecta exitosamente a barra 220 kV de REN. Arranque autónomo en ~10 minutos. Primera isla eléctrica portuguesa creada. Operadores de REN comienzan expansión gradual hacia Lisboa y el Tejo.
 
 **13:35 CEST**
@@ -162,4 +163,4 @@ Las seis visualizaciones que preceden no son meros números. Son la traducción 
 
 El apagón del 28 de abril de 2025 fue inevitable dados los parámetros de ese día. Pero fue evitable con políticas de largo plazo: mayor inercia síncrona, mejor interconexión, control dinámico obligatorio en renovables, y —más fundamentalmente— una velocidad de transición energética que respetara los límites de inercia y estabilidad de la red.
 
-La lección, grabada en 27 segundos de cascada y 18 horas de reposición, ha reformado la arquitectura eléctrica europea. El 28 de abril de 2025 fue el día en que la ingeniería eléctrica continental tuvo que admitir que el siglo XX había terminado y el futuro requería nuevas leyes, no solo nuevas máquinas.
+La lección, grabada en 27 segundos de cascada y aproximadamente 18,5 horas de reposición, ha reformado la arquitectura eléctrica europea. El 28 de abril de 2025 fue el día en que la ingeniería eléctrica continental tuvo que admitir que el siglo XX había terminado y el futuro requería nuevas leyes, no solo nuevas máquinas.

@@ -21,7 +21,7 @@ $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
 $$
 
-donde $H$ es la constante de inercia equivalente del sistema (en segundos), $f_0$ la frecuencia nominal (50 Hz), $df/dt$ la <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>, $P_m$ la potencia mecánica total aportada a los rotores síncronos acoplados, $P_e$ la potencia eléctrica neta demandada y $D$ el coeficiente de amortiguamiento de las cargas dependientes de la frecuencia.
+donde $H$ es la constante de inercia equivalente del sistema (en segundos), $f_0$ la frecuencia nominal (50 Hz), $df/dt$ la <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>, $P_m$ la potencia mecánica total aportada a los rotores síncronos acoplados, $P_e$ la potencia eléctrica generada (potencia de salida del alternador al sistema) y $D$ el coeficiente de amortiguamiento de las cargas dependientes de la frecuencia.
 
 El parámetro central es $H$: su reducción implica que cualquier desequilibrio de potencia se traduce en un RoCoF proporcionalmente más agudo, acortando la ventana temporal disponible para la actuación de los sistemas de regulación. Los inversores <GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink> están desacoplados de la frecuencia de red mediante sus enlaces de corriente continua y **no aportan inercia electromecánica inherente** a la ecuación de oscilación.
 
@@ -46,11 +46,11 @@ $$
 | --- | --- | --- |
 | **Red fuerte** | SCR > 3 | Los inversores GFL operan con estabilidad de pequeña señal. Protecciones de distancia mantienen selectividad. |
 | **Red débil** | 2 ≤ SCR ≤ 3 | Degradación del margen de estabilidad del <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> ante perturbaciones rápidas. Riesgo de interacción adversa entre lazos de control próximos. |
-| **Red muy débil** | SCR &lt; 2 | PLLs propensos a pérdida de sincronismo ante variaciones de tensión menores. Protecciones de distancia pierden direccionalidad. |
+| **Red muy débil** | SCR < 2 | PLL propensos a pérdida de sincronismo ante variaciones de tensión menores. Protecciones de distancia pierden direccionalidad.<br/>*(Nota: En zonas de alta densidad de inversores, esta debilidad estructural se evalúa mediante la métrica MRSCR, discutida en el apartado de Dimensión Europea)* |
 
 </ForensicTable>
 
-Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR &lt; 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
+Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
 ![Mapas de tensión en la red peninsular de 400 kV en la franja crítica previa al colapso](/figuras/scr_iberia.png) _Evolución geográfica de las tensiones en la red de 400 kV previa al colapso (secuencia a–d). Las zonas de color cálido muestran la progresión y concentración de sobretensiones severas en el sur y suroeste peninsular —precisamente los nudos con mayor deficiencia estructural de potencia de cortocircuito. Fuente: IIT-ICAI._
 
@@ -82,7 +82,7 @@ La superación de la vulnerabilidad exige una transición en la arquitectura de 
 
 A diferencia del inversor GFL, un inversor <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión en magnitud y ángulo ($V\angle\delta$) detrás de una impedancia virtual de acoplamiento. Al imponer este vector de forma instantánea, el inversor GFM inyecta o absorbe corriente activa y reactiva de forma inherente ante cualquier variación de la red, sin depender de mediciones externas de fase ni de retardos de cálculo.
 
-![Circuitos equivalentes de las topologías Grid-Following (GFL) y Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Izquierda: inversor GFL como fuente de corriente controlada dependiente del PLL. Derecha: inversor GFM como fuente de tensión autónoma detrás de una impedancia virtual $Z_{\mathrm{GFM}}$. La diferencia fundamental es que el GFM no necesita «leer» la red para operar — la crea._
+![Circuitos equivalentes de las topologías Grid-Following (GFL) y Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Izquierda: inversor GFL como fuente de corriente controlada dependiente del PLL. Derecha: inversor GFM como fuente de tensión autónoma detrás de una impedancia virtual $Z_{\mathrm{GFM}}$. La diferencia fundamental es que el GFM no necesita "leer" la red para operar — la crea._
 
 Cuando el inversor GFM está respaldado por un banco de baterías (BESS-GFM), la combinación provee dos servicios adicionales:
 
@@ -138,7 +138,7 @@ El P.O. 7.4 vigente en el momento del apagón no había sido revisado sustancial
 1. **Asimetría de participación**: el 82 % del parque generador operaba con factor de potencia fijo, inhabilitado para inyectar o absorber reactiva dinámicamente.
 2. **Banda muerta**: los generadores síncronos estaban eximidos de actuar si la tensión se mantenía entre 405 kV y 410 kV, configurando una respuesta por escalones estructuralmente incompatible con la velocidad del transitorio capacitivo documentado.
 
-![Curva característica del P.O. 7.4 original: banda muerta entre 405 kV y 410 kV](/figuras/po74_banda_muerta.png) _La zona sombreada ilustra la «banda muerta» del antiguo P.O. 7.4: rango en el que el parque generador no estaba obligado a proveer respuesta dinámica, inhabilitando la defensa del sistema frente a transitorios capacitivos rápidos. Fuente: REE._
+![Curva característica del P.O. 7.4 original: banda muerta entre 405 kV y 410 kV](/figuras/po74_banda_muerta.png) _La zona sombreada ilustra la "banda muerta" del antiguo P.O. 7.4: rango en el que el parque generador no estaba obligado a proveer respuesta dinámica, inhabilitando la defensa del sistema frente a transitorios capacitivos rápidos. Fuente: REE._
 
 ### Revisión del P.O. 7.4, sistema VOLTAIRE y nuevo esquema retributivo
 
@@ -179,7 +179,7 @@ El <GlossaryLink term="NC RfG">NC RfG</GlossaryLink> vigente en la última déca
 
 El Grupo Técnico de ENTSO-E (TG GFC) cristalizó su trabajo en dos documentos:
 
-- **Informe de Fase I (mayo 2024)**: Definición técnica fundamental del GFM requerida por el nuevo código — «fuente de tensión detrás de una reactancia efectiva constante» durante los primeros milisegundos. Este modelo fasorial proscribe de facto las dependencias directas de algoritmos PLL para el control primario.
+- **Informe de Fase I (mayo 2024)**: Definición técnica fundamental del GFM requerida por el nuevo código — "fuente de tensión detrás de una reactancia efectiva constante" durante los primeros milisegundos. Este modelo fasorial proscribe de facto las dependencias directas de algoritmos PLL para el control primario.
 - **Informe de Fase II (noviembre 2025)**: Publicado bajo el peso de la evidencia del colapso ibérico, con el aval transversal de CENELEC, WindEurope, SolarPower Europe y EASE. Establece de forma taxativa cómo las nuevas plantas basadas en inversores deben estabilizar el sistema.
 
 Las obligaciones del **NC RfG 2.0** se aplican con un enfoque tecnológicamente agnóstico, clasificando los módulos en cuatro tipos:

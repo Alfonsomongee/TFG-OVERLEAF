@@ -11,7 +11,7 @@ const INTERCONNECTIONS_DATA = [
 
 const KEY_DATA = {
   title: 'Dato clave de la cascada',
-  content: 'Durante la cascada (12:33:19 CEST), la importación desde Francia alcanzó un pico de 4.609 MW por AC, superando la capacidad nominal de 2.700 MW, antes de que las protecciones ANSI 78 (out-of-step) abrieran la interconexión a los 48,46 Hz.'
+  content: 'Durante la cascada (12:33:19 CEST), la importación desde Francia alcanzó un pico de 4.609 MVAr (reactiva) por AC, superando la capacidad dinámica de la interconexión (capacidad nominal 2.700 MW activos), antes de que las protecciones ANSI 78 (out-of-step) abrieran la interconexión a los 48,46 Hz.'
 };
 
 const getUtilizationColor = (percentage) => {

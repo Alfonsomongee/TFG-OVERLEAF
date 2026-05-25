@@ -9,7 +9,7 @@ const STATUS_ICONS = {
 };
 
 const TIMELINE_DATA = [
-  { time: '12:33 CEST', date: '28 abr', color: '#E24B4A', title: 'Cero eléctrico confirmado', description: 'Tensión 400 kV < 1 kV. ~31 GW interrumpidos. ~55 millones de personas sin suministro.', demand: 0 },
+  { time: '12:33 CEST', date: '28 abr', color: '#E24B4A', title: 'Cero eléctrico confirmado', description: 'Tensión 400 kV < 1 kV. ~25,2 GW interrumpidos. ~57 millones de personas sin suministro.', demand: 0 },
   { time: '12:35 CEST', date: '28 abr', color: '#EF9F27', title: 'Solicitud black-start a EDP Portugal', description: 'Arranque autónomo a C. do Bode (hidroeléctrica, 138 MW, cuenca Zêzere). REN cursó la orden en ~2 min.', demand: 0 },
   { time: '12:43 CEST', date: '28 abr', color: '#EF9F27', title: 'Primera reenergización: Hernani (País Vasco)', description: 'Arteria 400 kV desde Francia. Importación: ~31 MW confirmados en Irún.', demand: 1 },
   { time: '12:45 CEST', date: '28 abr', color: '#1D9E75', title: 'C. do Bode conectado a barra 220 kV REN', description: 'Arranque exitoso en ~10 min. Primera isla eléctrica de Portugal creada.', demand: 0.5 },

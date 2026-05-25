@@ -72,11 +72,11 @@ export const timelineEvents = [
   {
     id: "t8",
     date: "28 de abril de 2025",
-    time: "12:33:24 CEST",
+    time: "12:33:29.741 CEST",
     title_es: "Cero Eléctrico (Blackout)",
     title_en: "System Blackout",
-    desc_es: "Pérdida total de 15 GW de generación y caída a 0 Hz. El sistema ibérico se apaga por completo dejando a 60 millones sin suministro.",
-    desc_en: "Total loss of 15 GW generation and drop to 0 Hz. The Iberian system completely shuts down, leaving 60 million without supply.",
+    desc_es: "Pérdida total de 15 GW de generación y colapso a cero de tensión. El sistema ibérico queda deenergizado.",
+    desc_en: "Total loss of 15 GW generation and voltage collapse to zero. The Iberian system is de-energized.",
     type: "critical"
   },
   {
@@ -92,11 +92,11 @@ export const timelineEvents = [
   {
     id: "t10",
     date: "29 de abril de 2025",
-    time: "07:30 CEST",
+    time: "07:00 CEST",
     title_es: "Reposición Completa de la Demanda",
     title_en: "Full Demand Restoration",
-    desc_es: "Tras 19 horas ininterrumpidas de maniobras y conexión escalonada de carga (Top-Down desde FR/MA), se recuperan los 25 GW de demanda perdidos.",
-    desc_en: "After 19 uninterrupted hours of maneuvers and staggered load connection (Top-Down from FR/MA), the lost 25 GW of demand is recovered.",
+    desc_es: "Tras aproximadamente 18,5 horas de maniobras y conexión escalonada de carga (Top-Down desde FR/MA), se recupera el suministro a nivel peninsular.",
+    desc_en: "After approximately 18.5 hours of maneuvers and staggered load connection (Top-Down from FR/MA), supply is recovered at the peninsular level.",
     type: "success"
   }
 ];

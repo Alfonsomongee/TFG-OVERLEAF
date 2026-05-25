@@ -110,7 +110,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'resumen-de-cifras',
-          label: 'Resumen de Cifras',
+          label: 'Cifras Maestras',
         },
       ],
     },
@@ -125,7 +125,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'conclusiones',
-          label: 'Conclusiones',
+          label: 'Conclusiones Finales',
         },
       ],
     },
