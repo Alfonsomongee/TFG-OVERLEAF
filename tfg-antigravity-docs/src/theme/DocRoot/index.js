@@ -5,30 +5,16 @@ import DocRoot from '@theme-original/DocRoot';
 import styles from './styles.module.css';
 
 const variants = {
-  initial: {
-    opacity: 0,
-    filter: 'blur(8px)',
-  },
+  initial: { opacity: 0, filter: 'blur(6px)' },
   animate: {
     opacity: 1,
     filter: 'blur(0px)',
-    transition: { duration: 0.7, ease: 'easeOut' },
+    transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }
   },
   exit: {
     opacity: 0,
-    filter: 'blur(12px)',
-    clipPath: [
-      'inset(0 0 0 0)',
-      'inset(15% 0 70% 0)',
-      'inset(35% 0 45% 0)',
-      'inset(5% 0 80% 0)',
-      'inset(0 0 100% 0)',
-    ],
-    transition: {
-      duration: 0.8,
-      ease: 'easeInOut',
-      times: [0, 0.2, 0.4, 0.6, 1],
-    },
+    // Solo opacidad – sin blur, sin clipPath – para GPU puro y evitar repaints
+    transition: { duration: 0.25, ease: 'easeIn' }
   },
 };
 

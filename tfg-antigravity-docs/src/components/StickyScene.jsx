@@ -26,10 +26,15 @@ export default function StickyScene({ children, graphic: Graphic, steps }) {
                 <Step data={i} key={i}>
                   <motion.div
                     className={styles.step}
-                    initial={{ opacity: 0.25, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.6 }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0.2 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: false, amount: 0.5 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 80,
+                      damping: 18,
+                      mass: 0.8,
+                    }}
                   >
                     {s}
                   </motion.div>

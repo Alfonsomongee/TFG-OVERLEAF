@@ -11,14 +11,15 @@ export default function ChartCard({
   const inView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
-    <BrowserOnly fallback={<div>Cargando figura periodística...</div>}>
+    <BrowserOnly fallback={<div className={styles.skeleton}>Cargando figura...</div>}>
       {() => (
         <motion.figure
           ref={ref}
           className={clsx(styles.card, fullBleed && styles.fullBleed, 'chart-card')}
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 32 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          style={{ willChange: 'opacity, transform' }}
         >
           <header className={styles.header}>
             {fig && <span className={styles.fig}>FIG. {fig}</span>}
@@ -27,20 +28,27 @@ export default function ChartCard({
           </header>
 
           <div className={styles.canvas}>
-            {/* Reveal mask — cortina que desciende dejando ver el chart */}
             <motion.div
               className={styles.mask}
-              initial={{ scaleY: 1, transformOrigin: 'top' }}
-              animate={inView ? { scaleY: 0 } : {}}
-              transition={{ duration: 1.1, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
+              initial={{ clipPath: 'inset(0 0 0% 0)' }}
+              animate={inView ? { clipPath: 'inset(0 0 100% 0)' } : {}}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'var(--bg-1, hsl(220 40% 7%))',
+                pointerEvents: 'none',
+                zIndex: 2,
+                willChange: 'clip-path',
+              }}
             />
             {children}
           </div>
 
-          {(caption || source) && (
+          {(source || caption) && (
             <footer className={styles.footer}>
-              {caption && <figcaption className={styles.caption}>{caption}</figcaption>}
-              {source && <cite className={styles.source}>Fuente: {source}</cite>}
+              {source && <span className={styles.source}>Fuente: {source}</span>}
+              {caption && <p className={styles.caption}>{caption}</p>}
             </footer>
           )}
         </motion.figure>
