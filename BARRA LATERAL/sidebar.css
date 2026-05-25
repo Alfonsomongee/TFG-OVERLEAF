@@ -1,0 +1,319 @@
+/**
+ * sidebar.css
+ * Estilos de la barra lateral LATERAL BAR
+ * Integración: importa en tu componente React: import './sidebar.css'
+ */
+
+:root {
+  --bg-almost-black: #050403;
+  --bg-dark: #0a0a0a;
+  --amber-electric: #FFB800;
+  --scanline-opacity: 0.02;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* ===== BASE ===== */
+
+.lateral-bar {
+  position: relative;
+  width: 300px;
+  height: 100vh;
+  background: var(--bg-dark);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.lateral-bar.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, var(--scanline-opacity)),
+      rgba(255, 255, 255, var(--scanline-opacity)) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== HEADER ===== */
+
+.sidebar-header {
+  padding: 24px 20px 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.sidebar-title {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ===== NAV CONTAINER ===== */
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  position: relative;
+  z-index: 2;
+}
+
+/* Scrollbar: fino, oculto por defecto, visible en hover */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-nav:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== NAV LISTS ===== */
+
+.nav-list {
+  list-style: none;
+  padding: 16px 0;
+  margin: 0;
+}
+
+/* ===== STANDALONE NAV ITEMS (Introducción, Contexto, Conclusiones, etc.) ===== */
+
+.nav-item {
+  padding: 0 12px;
+  margin: 0;
+}
+
+.nav-item-link {
+  display: block;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #b0b5be;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.18s ease;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item-link:hover {
+  color: #d1d5db;
+  border-left-color: rgba(255, 184, 0, 0.3);
+}
+
+.nav-item-link.active {
+  border-left-color: var(--amber-electric);
+  background: rgba(255, 184, 0, 0.05);
+  color: #fef3c7;
+  font-weight: 500;
+}
+
+/* ===== CATEGORY SPACER ===== */
+
+.category-spacer {
+  height: 12px;
+  margin: 8px 0;
+}
+
+/* ===== CATEGORIES (ACCORDION) ===== */
+
+.category {
+  margin-bottom: 0;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px;
+  margin: 0 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border-radius: 2px;
+  user-select: none;
+  background: none;
+  border: none;
+  width: calc(100% - 24px);
+  text-align: left;
+}
+
+.category-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.category-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.category-label {
+  flex: 1;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0;
+  transition: color 0.18s ease;
+  line-height: 1.2;
+}
+
+.category-header:hover .category-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.category-toggle {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.category.open .category-toggle {
+  transform: rotate(90deg);
+}
+
+/* ===== CATEGORY ITEMS (EXPANDIBLE) ===== */
+
+.category-items {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category.open .category-items {
+  max-height: 1000px;
+}
+
+.category-item {
+  padding: 0 12px;
+  margin: 0;
+  position: relative;
+}
+
+.category-item::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.category-item-link {
+  display: block;
+  padding: 10px 12px 10px 28px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.18s ease;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.category-item-link:hover {
+  color: #d1d5db;
+  border-left-color: rgba(255, 184, 0, 0.3);
+}
+
+.category-item-link.active {
+  border-left-color: var(--amber-electric);
+  background: rgba(255, 184, 0, 0.05);
+  color: #fef3c7;
+  font-weight: 500;
+}
+
+/* ===== EXPERIMENTAL CATEGORY (ALERTA ROJA) ===== */
+
+.category.experimental .category-items .category-item-link {
+  background: rgba(127, 29, 29, 0.05);
+  border-left: 2px solid rgba(127, 29, 29, 0.3);
+}
+
+.category.experimental .category-item::before {
+  background: rgba(127, 29, 29, 0.15);
+}
+
+.category.experimental .category-item-link:hover {
+  border-left-color: rgba(220, 38, 38, 0.5);
+  background: rgba(127, 29, 29, 0.08);
+}
+
+.category.experimental .category-item-link.active {
+  border-left-color: var(--amber-electric);
+  background: rgba(255, 184, 0, 0.05);
+  color: #fef3c7;
+}
+
+/* ===== ICONS ===== */
+
+svg.icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.5;
+  stroke: currentColor;
+  fill: none;
+  flex-shrink: 0;
+}

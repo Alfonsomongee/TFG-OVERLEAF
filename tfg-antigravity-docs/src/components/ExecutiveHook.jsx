@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -213,7 +213,7 @@ export default function ExecutiveHook() {
             inset: 0,
             zIndex: 99999,
             backgroundColor: '#000',
-            overflow: 'hidden',
+            overflow: 'hidden', backfaceVisibility: 'hidden', transform: 'translateZ(0)', willChange: 'opacity',
             opacity: finalFadeOutOpacity
           }}
         >
@@ -233,7 +233,7 @@ export default function ExecutiveHook() {
                 zIndex: 100000,
                 backgroundImage: `url(${bgLit})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center', transform: 'scale(1.15)',
+                backgroundPosition: 'center', transform: 'scale(1.15) translateZ(0)', backfaceVisibility: 'hidden', willChange: 'transform, opacity'
               }}
             >
               <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)' }} />
@@ -263,8 +263,8 @@ export default function ExecutiveHook() {
               {showMap && (
                 <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: mapOpacity }}>
                   <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.15)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity, transform: "scale(1.15)" }} />
-                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'scale(1.15)', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity, transform: "scale(1.15)" }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgLit})`, opacity: litOpacity, transform: "scale(1.15) translateZ(0)", backfaceVisibility: 'hidden', willChange: 'transform, opacity' }} />
+                    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundImage: `url(${bgDark})`, opacity: darkOpacity, transform: "scale(1.15) translateZ(0)", backfaceVisibility: 'hidden', willChange: 'transform, opacity' }} />
                   </div>
 
                   {flicker1Visible && <div style={{ position: 'absolute', inset: 0, backgroundColor: '#ffffff', pointerEvents: 'none', animation: 'flicker1Effect 0.08s ease-out' }} />}
@@ -416,6 +416,7 @@ export default function ExecutiveHook() {
     </>
   );
 }
+
 
 
 

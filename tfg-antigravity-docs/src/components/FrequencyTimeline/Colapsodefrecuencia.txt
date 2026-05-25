@@ -1,0 +1,87 @@
+Modelado dinámico de frecuencia y lecciones del colapso ibérico (28 de abril de 2025)
+Resumen ejecutivo:
+La transición energética ha reducido drásticamente la inercia de las redes eléctricas. El apagón total de la Península Ibérica en 2025 evidenció de forma trágica cómo la combinación de baja inercia, pérdida masiva de generación renovable y la actuación de las protecciones automáticas puede desencadenar un cero eléctrico en menos de 30 segundos. Este capítulo presenta el modelo matemático de la ecuación del swing, los umbrales normativos que definen la estabilidad del sistema, y una reconstrucción cronológica detallada del incidente que sirve como validación del simulador SCADA.
+
+1. La nueva realidad de las redes de baja inercia
+En sistemas clásicos dominados por centrales térmicas y nucleares, la inercia rotacional (H = 4–8 s) actuaba como un colchón que frenaba cualquier caída de frecuencia. Hoy, con penetraciones superiores al 50 % de generación solar fotovoltaica y eólica de Tipo 3 y 4, esa inercia se desploma a valores de 2-3 segundos, y en las horas centrales del día puede quedar por debajo del umbral crítico de 2 segundos. La consecuencia directa es que cualquier desequilibrio ΔP entre generación y demanda provoca variaciones de frecuencia mucho más rápidas y peligrosas.
+
+2. La ecuación del swing y sus parámetros clave
+El comportamiento dinámico de la frecuencia tras una perturbación se modela con la ecuación diferencial linealizada:
+
+text
+2H · dΔf/dt + D · Δf = ΔP
+Donde:
+
+H – Constante de inercia equivalente (segundos). Representa la energía cinética almacenada capaz de sostener la carga nominal durante ese tiempo.
+
+D – Coeficiente de amortiguamiento (p.u. MW/Hz). Engloba la respuesta natural de la carga dependiente de la frecuencia y la regulación primaria de los generadores.
+
+ΔP – Variación neta de potencia activa (p.u.). Negativa en pérdidas de generación, positiva en deslastres de carga.
+
+Rangos realistas para simulación:
+
+H: 1–8 s (1–3 s para escenarios de alta renovable; 4–8 s para redes con mucha generación síncrona).
+
+D: 0,5–3,0 p.u. (valores bajos en redes con muchas cargas electrónicas; más altos cuando se incluye la regulación primaria rápida).
+
+ΔP: hasta el 50 % de la demanda base, para modelar desde contingencias simples (N-1) hasta cascadas catastróficas.
+
+3. ROCOF y los umbrales de supervivencia electromecánica
+El ROCOF (Rate of Change of Frequency) es la derivada temporal de la frecuencia y se convierte en el indicador más crítico en redes débiles.
+
+Los umbrales de la interfaz SCADA recomendados por ENTSO-E y los análisis del incidente son:
+
+Rango de ROCOF (Hz/s)	Color	Significado operativo
+< 0,5	Verde	Régimen normal, controlable con reservas primarias.
+0,5 – 1,0	Ámbar	Alerta de contingencia múltiple; activa automáticamente la Respuesta Rápida de Frecuencia (FFR) de baterías y renovables.
+> 1,0	Rojo	Límite de integridad mecánica de los generadores síncronos (ciclos combinados, nucleares). Riesgo de fatiga torsional y extinción de llama en turbinas de gas.
+Superar 1,0 Hz/s durante más de 500 milisegundos implica el disparo en cascada de las máquinas síncronas, como ocurrió el 28 de abril de 2025.
+
+4. El esquema de deslastre de cargas por subfrecuencia (UFLS)
+Es la última barrera de defensa automática. En España, según los Procedimientos de Operación 11.1 y 11.2:
+
+Frecuencia (Hz)	Acción
+49,5 – 49,3	Desconexión de grandes grupos de bombeo hidroeléctrico.
+49,0	Primer escalón de UFLS: 15 % de la carga nacional.
+48,7	Segundo escalón: 15 % adicional (acumulado 30 %).
+48,4	Tercer escalón: 10 % adicional (acumulado 40 %).
+48,0	Cuarto escalón: 10 % adicional (acumulado 50 %). Límite de colapso; más allá no hay retorno.
+Paradoja letal del 28A: Al desconectar grandes cargas inductivas, la red de transporte se volvió hipercapacitiva, elevando la tensión por encima de 1,14 p.u. y provocando más disparos de renovables, lo que aceleró el colapso que el UFLS debía evitar.
+
+5. Cronología del colapso ibérico (12:32:57 – 12:33:24 CEST)
+La siguiente tabla resume los 27 segundos que llevaron al cero eléctrico:
+
+Tiempo (s)	Frecuencia (Hz)	ROCOF (Hz/s)	Evento
+0,0	49,98	-0,20	G-1: disparo en Granada (pérdida 355 MW activa + 165 MVar reactiva).
+5,0	49,90	-0,45	Caída sostenida por pérdidas subyacentes de solar distribuida (~435 MW no vistos por SCADA).
+19,34	49,80	-0,48	G-2: disparos en Badajoz (730 MW).
+20,88	49,78	-0,13	G-3: cascada en Sevilla, Huelva, Cáceres (550 MW).
+23,06	49,50	-0,60	Inicio del UFLS (desconexión de bombeos).
+23,88	48,00	-1,50	Apertura de líneas AC con Francia; la Península queda aislada.
+24,38	46,80	-1,80	UFLS etapas 1–4 completas: 50 % de la carga deslastrada.
+26,88	< 47,00	< -2,50	Colapso total: disparo del enlace HVDC, parada nuclear, cero eléctrico.
+En total se perdieron aproximadamente 15 GW de generación (60 % de la demanda) en menos de 5 segundos. La inercia efectiva cayó hasta hacer el sistema incontrolable incluso con la actuación del UFLS.
+
+6. Diseño de la interfaz SCADA
+La representación visual debe minimizar la carga cognitiva del operador en situaciones de estrés:
+
+Gráfico de frecuencia: Rango fijo 45–51 Hz, líneas punteadas de referencia en 49,8 Hz (inicio contingencia), 49,0 Hz (activación UFLS) y 48,0 Hz (colapso inminente).
+
+Gráfico de ROCOF: Rango 0–2,5 Hz/s, con barras de colores semafóricos según los umbrales normativos.
+
+Mapa de red: Subestaciones críticas que cambian de verde a rojo al dispararse; interconexiones que se vuelven grises al abrirse.
+
+Contadores de pérdida en tiempo real para generación y carga deslastrada.
+
+Línea de tiempo interactiva con marcadores en los eventos principales y atajos de teclado (1–4) para navegar entre las fases del incidente.
+
+7. Lecciones y recomendaciones para el simulador
+Incorporar el acoplamiento tensión-frecuencia: cuando se deslastra más del 15 % de carga en redes débiles, la sobretensión capacitiva puede realimentar la cascada de disparos renovables.
+
+Añadir un retardo realista de 150–200 ms en la apertura de los relés UFLS, lo que en caídas de –1,8 Hz/s implica un sobrepaso de hasta 0,35 Hz antes del equilibrio.
+
+Limitar el coeficiente D a 1,0 p.u. cuando H < 3 s, ya que las cargas modernas electrónicas no proporcionan amortiguamiento natural.
+
+La Respuesta Rápida de Frecuencia (FFR), tanto derivativa como proporcional, es la única herramienta que puede contener el ROCOF inicial antes de que se alcancen los umbrales de integridad mecánica.
+
+*Este capítulo es parte del simulador interactivo “Swing Equation Lab”. Los datos exactos del 28 de abril de 2025 proceden de los informes oficiales de REE, ENTSO-E y los análisis forenses de la Universidad Pontificia Comillas y NREL.*
