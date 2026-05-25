@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
 
@@ -94,7 +94,7 @@ const getGraphicData = (id, lang) => {
       es: { title: 'Dashboard de Interconexiones', desc: 'Análisis del estrangulamiento estructural de los intercambios internacionales.' },
       en: { title: 'Interconnection Dashboard', desc: 'Analysis of the structural bottleneck in international exchanges.' },
       pt: { title: 'Dashboard de Interconexões', desc: 'Análise do estrangulamento estrutural das trocas internacionais.' },
-      fr: { title: 'Tableau de Bord des Interconnexions', desc: 'Analyse du goulot d''étranglement structurel des échanges internationaux.' },
+      fr: { title: 'Tableau de Bord des Interconnexions', desc: 'Analyse du goulot d\'étranglement structurel des échanges internationaux.' },
       it: { title: 'Dashboard delle Interconnessioni', desc: 'Analisi del collo di bottiglia strutturale negli scambi internazionali.' },
       de: { title: 'Verbindungs-Dashboard', desc: 'Analyse des strukturellen Engpasses im internationalen Austausch.' }
     },
@@ -102,8 +102,8 @@ const getGraphicData = (id, lang) => {
       es: { title: 'Simulador Ecuación del Swing', desc: 'Simulador interactivo de la inercia (H), desequilibrio (ΔP) y Respuesta Rápida de Frecuencia (FFR) tras el incidente.' },
       en: { title: 'Swing Equation Simulator', desc: 'Interactive simulator of inertia (H), power mismatch (ΔP) and Fast Frequency Response (FFR).' },
       pt: { title: 'Simulador Equação do Swing', desc: 'Simulador interativo da inércia (H), desequilíbrio (ΔP) e Resposta Rápida de Frequência (FFR).' },
-      fr: { title: 'Simulateur Équation du Swing', desc: 'Simulateur interactif de l''inertie (H), déséquilibre (ΔP) et Réponse Rapide de Fréquence (FFR).' },
-      it: { title: 'Simulatore Equazione dello Swing', desc: 'Simulatore interattivo dell''inerzia (H), squilibrio (ΔP) e Risposta Rapida di Frequenza (FFR).' },
+      fr: { title: 'Simulateur Équation du Swing', desc: 'Simulateur interactif de l\'inertie (H), déséquilibre (ΔP) et Réponse Rapide de Fréquence (FFR).' },
+      it: { title: 'Simulatore Equazione dello Swing', desc: 'Simulatore interattivo dell\'inerzia (H), squilibrio (ΔP) e Risposta Rapida di Frequenza (FFR).' },
       de: { title: 'Swing-Gleichung-Simulator', desc: 'Interaktiver Simulator für Trägheit (H), Ungleichgewicht (ΔP) und Schnelle Frequenzantwort (FFR).' }
     }
       es: { title: 'Dashboard de Interconexiones', desc: 'Análisis del estrangulamiento estructural de los intercambios internacionales.' },
