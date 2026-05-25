@@ -45,7 +45,7 @@ const BulletChart = () => {
 
   return (
     <div className={styles.chartContainer}>
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={380}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
           <XAxis dataKey="name" tick={{ fill: '#808080', fontSize: 11, fontFamily: 'monospace' }} angle={-45} textAnchor="end" height={100} axisLine={false} tickLine={false} />
