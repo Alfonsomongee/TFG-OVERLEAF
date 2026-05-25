@@ -296,7 +296,7 @@ export default function ExecutiveHook() {
                   color: '#FFB800',
                   textTransform: 'uppercase',
                   letterSpacing: '0.03em',
-                  lineHeight: 0.88,
+                  lineHeight: 1.05, userSelect: 'none',
                   margin: 0,
                   textAlign: 'center',
                   textShadow: '2px 2px 0px #CC2200, 4px 4px 0px #AA1800, 6px 6px 0px #881000, 8px 8px 0px #660800, 10px 10px 0px rgba(0,0,0,0.6)',
@@ -416,6 +416,7 @@ export default function ExecutiveHook() {
     </>
   );
 }
+
 
 
 

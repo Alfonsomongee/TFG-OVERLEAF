@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
 
@@ -90,7 +90,22 @@ const getGraphicData = (id, lang) => {
       it: { title: 'Diagramma di Piano di Fase (GFM vs GFL)', desc: 'Confronto nello spazio degli stati δ vs Δω della convergenza degli inverter Grid-Forming vs Grid-Following.' },
       de: { title: 'Phasenebenendiagramm (GFM vs GFL)', desc: 'Zustandsraumvergleich δ vs Δω der Konvergenz von netzbildenden vs. netzfolgenden Wechselrichtern.' }
     },
-    interconnection: {
+
+      es: { title: 'Dashboard de Interconexiones', desc: 'Análisis del estrangulamiento estructural de los intercambios internacionales.' },
+      en: { title: 'Interconnection Dashboard', desc: 'Analysis of the structural bottleneck in international exchanges.' },
+      pt: { title: 'Dashboard de Interconexões', desc: 'Análise do estrangulamento estrutural das trocas internacionais.' },
+      fr: { title: 'Tableau de Bord des Interconnexions', desc: 'Analyse du goulot d''étranglement structurel des échanges internationaux.' },
+      it: { title: 'Dashboard delle Interconnessioni', desc: 'Analisi del collo di bottiglia strutturale negli scambi internazionali.' },
+      de: { title: 'Verbindungs-Dashboard', desc: 'Analyse des strukturellen Engpasses im internationalen Austausch.' }
+    },
+    swing: {
+      es: { title: 'Simulador Ecuación del Swing', desc: 'Simulador interactivo de la inercia (H), desequilibrio (ΔP) y Respuesta Rápida de Frecuencia (FFR) tras el incidente.' },
+      en: { title: 'Swing Equation Simulator', desc: 'Interactive simulator of inertia (H), power mismatch (ΔP) and Fast Frequency Response (FFR).' },
+      pt: { title: 'Simulador Equação do Swing', desc: 'Simulador interativo da inércia (H), desequilíbrio (ΔP) e Resposta Rápida de Frequência (FFR).' },
+      fr: { title: 'Simulateur Équation du Swing', desc: 'Simulateur interactif de l''inertie (H), déséquilibre (ΔP) et Réponse Rapide de Fréquence (FFR).' },
+      it: { title: 'Simulatore Equazione dello Swing', desc: 'Simulatore interattivo dell''inerzia (H), squilibrio (ΔP) e Risposta Rapida di Frequenza (FFR).' },
+      de: { title: 'Swing-Gleichung-Simulator', desc: 'Interaktiver Simulator für Trägheit (H), Ungleichgewicht (ΔP) und Schnelle Frequenzantwort (FFR).' }
+    }
       es: { title: 'Dashboard de Interconexiones', desc: 'Análisis del estrangulamiento estructural de los intercambios internacionales.' },
       en: { title: 'Interconnection Dashboard', desc: 'Analysis of the structural bottleneck in international exchanges.' },
       pt: { title: 'Dashboard de Interconexões', desc: 'Análise do estrangulamento estrutural das trocas internacionais.' },
@@ -105,6 +120,7 @@ const getGraphicData = (id, lang) => {
 import SynchrophasorPlot from './SynchrophasorPlot';
 import PhasePlanePlot from './PhasePlanePlot';
 import InterconnectionDashboard from './InterconnectionDashboard';
+import SwingEquationSimulator from './SwingEquationSimulator/SwingEquationSimulator';
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -116,7 +132,8 @@ const graphicsData = [
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot },
-  { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard }
+  { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard },
+  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {
@@ -191,3 +208,4 @@ export default function InteractiveGraphicsGallery({ lang: propLang }) {
     </div>
   );
 }
+

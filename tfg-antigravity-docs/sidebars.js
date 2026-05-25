@@ -63,20 +63,7 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 5: SIMULACIÓN E IMPACTO
-    {
-      type: 'category',
-      label: 'EXPERIMENTACIÓN INTERACTIVA',
-      collapsed: false,
-      className: 'sidebar-category-interactive sidebar-icon-gamepad',
-      items: [
-        {
-          type: 'doc',
-          id: 'swing-equation-simulator',
-          label: 'Simulador: Ecuación del Swing',
-        },
-      ],
-    },
+
 
     // BLOQUE 6: PROSPECTIVA
     {
@@ -206,3 +193,5 @@ const sidebars = {
 };
 
 module.exports = sidebars;
+
+
