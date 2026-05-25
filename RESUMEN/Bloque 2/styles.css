@@ -1,0 +1,230 @@
+:root {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b0b0b0;
+  --color-text-tertiary: #808080;
+  --color-background-primary: #1a1a1a;
+  --color-background-secondary: #2d2d2d;
+  --color-border-tertiary: #404040;
+  --border-radius-md: 8px;
+  --transition-base: 180ms ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.generation-mix {
+  padding: 24px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.generation-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 959px) {
+  .generation-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.generation-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-item.solar .legend-color {
+  background: #EF9F27;
+}
+
+.legend-item.nuclear .legend-color {
+  background: #378ADD;
+}
+
+.legend-item.wind .legend-color {
+  background: #5DCAA5;
+}
+
+.legend-item.hydro .legend-color {
+  background: #888780;
+}
+
+.legend-item.ccgt .legend-color {
+  background: #D85A30;
+}
+
+#generation-chart {
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.generation-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 80px;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  padding-bottom: 8px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+
+.table-col-tech {
+  text-align: left;
+}
+
+.table-col-bar {
+  text-align: left;
+}
+
+.table-col-value {
+  text-align: right;
+}
+
+.table-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 80px;
+  gap: 12px;
+  align-items: center;
+}
+
+.table-row-tech {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.table-row-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-row-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #888780;
+  flex: 1;
+  min-width: 20px;
+}
+
+.table-row-bar.solar {
+  background: #EF9F27;
+}
+
+.table-row-bar.nuclear {
+  background: #378ADD;
+}
+
+.table-row-bar.wind {
+  background: #5DCAA5;
+}
+
+.table-row-bar.hydro {
+  background: #888780;
+}
+
+.table-row-bar.ccgt {
+  background: #D85A30;
+}
+
+.table-row-percentage {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: right;
+  min-width: 60px;
+}
+
+.table-row-value {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-align: right;
+}
+
+.alert-box {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(226, 75, 74, 0.1);
+  border: 0.5px solid #E24B4A;
+  border-left: 3px solid #E24B4A;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 24px;
+}
+
+.alert-icon {
+  font-size: 18px;
+  color: #E24B4A;
+  flex-shrink: 0;
+}
+
+.alert-text {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.alert-text strong {
+  color: var(--color-text-primary);
+}
+
+.generation-footer {
+  padding-top: 12px;
+  border-top: 0.5px solid var(--color-border-tertiary);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.generation-footer p {
+  margin: 0;
+}

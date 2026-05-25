@@ -1,0 +1,62 @@
+<div class="generation-mix">
+  <div class="generation-container">
+    <div class="generation-left">
+      <div class="chart-legend">
+        <div class="legend-item solar">
+          <div class="legend-color"></div>
+          <span>Solar fotovoltaica</span>
+        </div>
+        <div class="legend-item nuclear">
+          <div class="legend-color"></div>
+          <span>Nuclear</span>
+        </div>
+        <div class="legend-item wind">
+          <div class="legend-color"></div>
+          <span>Eólica</span>
+        </div>
+        <div class="legend-item hydro">
+          <div class="legend-color"></div>
+          <span>Hidráulica</span>
+        </div>
+        <div class="legend-item ccgt">
+          <div class="legend-color"></div>
+          <span>CCGT (gas)</span>
+        </div>
+      </div>
+      <canvas id="generation-chart" width="300" height="300"></canvas>
+    </div>
+
+    <div class="generation-right">
+      <div class="table-header">
+        <span class="table-col-tech">Tecnología</span>
+        <span class="table-col-bar">Generación</span>
+        <span class="table-col-value">MW</span>
+      </div>
+      <div class="table-rows" id="table-rows"></div>
+    </div>
+  </div>
+
+  <div class="alert-box">
+    <div class="alert-icon">⚠</div>
+    <div class="alert-text">
+      <strong>Solo el 18% era generación síncrona</strong> (nuclear + CCGT + hidráulica convencional). 
+      El 82% restante operaba con electrónica de potencia sin control dinámico de tensión.
+    </div>
+  </div>
+
+  <footer class="generation-footer">
+    <p>Fuente: REE SCADA Dashboard · Comité 28-A / MITECO · REE Informe Incidente 18/06/2025</p>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script type="module">
+  import GENERATION_DATA from './data.js';
+  import { initGenerationChart, initTableRows } from './script.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initGenerationChart('generation-chart', GENERATION_DATA);
+    const tableRows = document.getElementById('table-rows');
+    initTableRows(tableRows, GENERATION_DATA);
+  });
+</script>

@@ -1,0 +1,247 @@
+:root {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b0b0b0;
+  --color-text-tertiary: #808080;
+  --color-background-primary: #1a1a1a;
+  --color-background-secondary: #2d2d2d;
+  --color-border-tertiary: #404040;
+  --border-radius-md: 8px;
+  --transition-base: 180ms ease;
+  --transition-fast: 120ms ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.timeline-container {
+  padding: 24px;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.timeline-bar-wrapper {
+  margin-bottom: 32px;
+}
+
+.timeline-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.timeline-bar {
+  position: relative;
+  height: 4px;
+  background: #888780;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+
+.timeline-event-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #888780;
+  border: 2px solid var(--color-background-primary);
+  cursor: pointer;
+  transition: width var(--transition-fast), height var(--transition-fast), 
+              background-color var(--transition-fast);
+}
+
+.timeline-event-marker:hover {
+  width: 14px;
+  height: 14px;
+}
+
+.timeline-event-marker.active {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.timeline-event-marker.e1 {
+  background: #EF9F27;
+}
+
+.timeline-event-marker.e2 {
+  background: #E24B4A;
+}
+
+.timeline-event-marker.e3 {
+  background: #E24B4A;
+}
+
+.timeline-event-marker.e4 {
+  background: #378ADD;
+}
+
+.timeline-event-marker.e5 {
+  background: #9F3EFF;
+}
+
+.timeline-event-marker.e6 {
+  background: #E24B4A;
+}
+
+.timeline-timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 24px;
+}
+
+.timeline-detail-panel {
+  padding: 16px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-left: 3px solid;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 16px;
+  transition: all var(--transition-base);
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeline-detail-panel.e1 {
+  border-left-color: #EF9F27;
+}
+
+.timeline-detail-panel.e2 {
+  border-left-color: #E24B4A;
+}
+
+.timeline-detail-panel.e3 {
+  border-left-color: #E24B4A;
+}
+
+.timeline-detail-panel.e4 {
+  border-left-color: #378ADD;
+}
+
+.timeline-detail-panel.e5 {
+  border-left-color: #9F3EFF;
+}
+
+.timeline-detail-panel.e6 {
+  border-left-color: #E24B4A;
+}
+
+.timeline-detail-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.timeline-detail-time {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+.timeline-detail-text {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.timeline-power-box {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.timeline-power-label {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+.timeline-power-value {
+  font-size: 22px;
+  font-weight: 500;
+  color: #E24B4A;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.timeline-nav-button {
+  padding: 8px 16px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+  font-family: monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.timeline-nav-button:hover {
+  background: var(--color-background-primary);
+  border-color: #606060;
+  color: var(--color-text-primary);
+}
+
+.timeline-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.timeline-footer {
+  padding-top: 12px;
+  border-top: 0.5px solid var(--color-border-tertiary);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.timeline-footer p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .timeline-bar {
+    height: 3px;
+  }
+
+  .timeline-event-marker {
+    width: 10px;
+    height: 10px;
+  }
+
+  .timeline-event-marker.active {
+    width: 14px;
+    height: 14px;
+  }
+
+  .timeline-detail-panel {
+    min-height: 120px;
+  }
+
+  .timeline-detail-title {
+    font-size: 11px;
+  }
+
+  .timeline-power-value {
+    font-size: 18px;
+  }
+}

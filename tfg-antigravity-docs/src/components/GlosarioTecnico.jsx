@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useLocation } from '@docusaurus/router';
 import styles from './GlosarioTecnico.module.css';
 
 import { GLOSSARY_TERMS as esTerms } from '../data/glossary';
@@ -8,6 +9,42 @@ import { GLOSSARY_TERMS as ptTerms } from '../data/glossary_pt';
 import { GLOSSARY_TERMS as frTerms } from '../data/glossary_fr';
 import { GLOSSARY_TERMS as itTerms } from '../data/glossary_it';
 import { GLOSSARY_TERMS as deTerms } from '../data/glossary_de';
+
+function TermItem({ term }) {
+  const [activo, setActivo] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === `#${term.id}`) {
+      setActivo(true);
+      const quitar = () => setActivo(false);
+      // Esperar un poco antes de añadir los listeners para evitar que el click actual lo borre
+      const timer = setTimeout(() => {
+        window.addEventListener('scroll', quitar, { once: true, passive: true });
+        window.addEventListener('click', quitar, { once: true });
+      }, 500);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('scroll', quitar);
+        window.removeEventListener('click', quitar);
+      };
+    } else {
+      setActivo(false);
+    }
+  }, [location.hash, term.id]);
+
+  return (
+    <div 
+      id={term.id} 
+      className={`${styles.termItem} ${activo ? styles.termItemActive : ''}`}
+    >
+      <h3 className={styles.termTitle}>
+        <a href={`#${term.id}`}>{term.term}</a>
+      </h3>
+      <p className={styles.termDefinition}>{term.definition}</p>
+    </div>
+  );
+}
 
 export default function GlosarioTecnico({ lang: propLang }) {
   const { i18n } = useDocusaurusContext();
@@ -182,12 +219,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
                 <h2 className={styles.letterHeader}>{letter}</h2>
                 <div className={styles.termsList}>
                   {groupedTerms[letter].map((term) => (
-                    <div key={term.id} id={term.id} className={styles.termItem}>
-                      <h3 className={styles.termTitle}>
-                        <a href={`#${term.id}`}>{term.term}</a>
-                      </h3>
-                      <p className={styles.termDefinition}>{term.definition}</p>
-                    </div>
+                    <TermItem key={term.id} term={term} />
                   ))}
                 </div>
               </div>
