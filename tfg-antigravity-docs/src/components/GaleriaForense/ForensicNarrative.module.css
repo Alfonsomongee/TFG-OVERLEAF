@@ -1,0 +1,149 @@
+/* MINIMALIST FORENSIC NARRATIVE CSS */
+
+:root {
+  --text-0: #f8f9fa;
+  --text-1: #e9ecef;
+  --text-2: #ced4da;
+  --text-3: #adb5bd;
+}
+
+.narrativeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-1);
+  margin-bottom: 4rem;
+}
+
+/* Minimalist section - no borders, no backgrounds */
+.narrativeSection {
+  position: relative;
+  /* Removed background, borders, and shadows to be as minimal as possible */
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.sectionIcon {
+  font-size: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-0);
+  letter-spacing: -0.5px;
+}
+
+/* Tables styling */
+.tableBlock {
+  margin-bottom: 3rem;
+}
+
+.tableHeader {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tableTitle {
+  font-size: 1.1rem;
+  color: hsla(var(--active-h), var(--active-s), var(--active-l), 1);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tableSource {
+  font-size: 0.8rem;
+  color: var(--text-3);
+  margin: 0;
+  font-family: 'Consolas', monospace;
+}
+
+.tableGrid {
+  display: grid;
+  gap: 2rem;
+  /* If multiple tables, put them side by side */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  /* Minimalist: no background, no border on the wrapper */
+  margin-bottom: 1rem;
+}
+
+.forensicTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Consolas', monospace;
+  font-size: 0.85rem;
+}
+
+.forensicTable th {
+  color: hsla(var(--active-h), var(--active-s), var(--active-l), 1);
+  padding: 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid hsla(var(--active-h), var(--active-s), var(--active-l), 0.5);
+  white-space: nowrap;
+}
+
+.forensicTable td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  color: var(--text-2);
+}
+
+.forensicTable tbody tr:hover {
+  background: hsla(var(--active-h), var(--active-s), var(--active-l), 0.1);
+}
+
+/* Ensure the first column stands out slightly */
+.forensicTable td:first-child,
+.forensicTable th:first-child {
+  font-weight: bold;
+  color: var(--text-0);
+}
+
+/* Coloring specific cells if they have flags (from the JSON data) */
+.cell-critical {
+  color: hsl(0 75% 58%) !important;
+  font-weight: bold;
+}
+.cell-warning {
+  color: hsl(38 100% 56%) !important;
+  font-weight: bold;
+}
+.cell-safe {
+  color: hsl(140 60% 50%) !important;
+  font-weight: bold;
+}
+
+.note {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-3);
+  font-family: 'Consolas', monospace;
+}

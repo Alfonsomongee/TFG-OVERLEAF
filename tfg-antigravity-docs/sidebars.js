@@ -189,13 +189,23 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'galeria-graficas',
-          label: 'Galería de Gráficas',
+          id: 'galeria-imagenes',
+          label: 'Galería de Imágenes',
         },
         {
           type: 'doc',
-          id: 'galeria-imagenes',
-          label: 'Galería de Imágenes',
+          id: 'galeria-de-tablas',
+          label: 'Galería de Tablas',
+        },
+        {
+          type: 'doc',
+          id: 'graficas-esios',
+          label: 'Gráficas ESIOS',
+        },
+        {
+          type: 'doc',
+          id: 'graficas-entsoe',
+          label: 'Gráficas ENTSO-E',
         },
       ],
     },

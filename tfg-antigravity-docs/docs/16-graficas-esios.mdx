@@ -1,0 +1,213 @@
+---
+id: graficas-esios
+title: Análisis Forense ESIOS
+sidebar_label: Gráficas ESIOS
+sidebar_position: 16
+hide_title: true
+---
+
+import DemandaChart from '@site/src/components/EsiosCharts/DemandaChart';
+import ProgramacionChart from '@site/src/components/EsiosCharts/ProgramacionChart';
+import PrecioEnergiaChart from '@site/src/components/EsiosCharts/PrecioEnergiaChart';
+import PreciosChart from '@site/src/components/EsiosCharts/PreciosChart';
+import PotenciaChart from '@site/src/components/EsiosCharts/PotenciaChart';
+import SubastasChart from '@site/src/components/EsiosCharts/SubastasChart';
+import GenericEsiosChart from '@site/src/components/EsiosCharts/GenericEsiosChart';
+import ResizeFix from '@site/src/components/EsiosCharts/ResizeFix';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Admonition from '@theme/Admonition';
+import GlitchTitle from '@site/src/components/GlitchTitle';
+
+<ResizeFix />
+
+<GlitchTitle>ESIOS - Evidencia Forense</GlitchTitle>
+
+Registro oficial de Red Eléctrica de España (REE). Análisis de los indicadores operativos y de mercado durante el colapso sistémico del 28 de abril de 2025.
+
+<Tabs defaultValue="esios-01" className="forensic-tabs">
+  <TabItem value="esios-01" label="01">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Evolución de la demanda eléctrica en España — 28 y 29 de abril de 2025
+(Demanda Real vs. Demanda Programada vs. Demanda Prevista · resolución 5 minutos)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Indicadores 1293, 1775, 460 · Curvas de área superpuestas</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <DemandaChart />
+      </div>
+      <div className="forensic-description">
+        <p>Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado.</p>
+        <p>La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península, un tiempo que refleja la extrema dificultad de re-energizar una red sin la inercia síncrona necesaria para sostener la frecuencia durante el arranque.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido, no una degradación progresiva medible en este indicador), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-02" label="02">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Desglose de la energía programada en los mercados de producción — España, 28 de abril de 2025 (MWh)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Mercado de Producción · Barras horizontales por segmento</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <ProgramacionChart />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica muestra el desglose de la energía total programada para el 28 de abril en los distintos segmentos del mercado de producción español: mercado diario SPOT (18.592,3 MWh), restricciones técnicas Fase I (4.383,6 MWh), mercado intradiario (2.420,3 MWh), restricciones en tiempo real (305,2 MWh), intradiario continuo (66,7 MWh), reserva de reemplazo RR (900 MWh), regulación terciaria mFRR (639,8 MWh) y regulación secundaria aFRR (222,3 MWh). El volumen total programado asciende a 27.811,76 MWh. Estas cifras representan el contrato operativo completo del sistema para esa jornada: qué energía generaría cada tecnología para atender a cada tipo de consumidor en cada hora.</p>
+        <p>El colapso de las 12:33 CEST anuló físicamente toda esta programación de forma instantánea. La energía no suministrada estimada para el conjunto del evento se sitúa entre 150.000 y 180.000 MWh según el Valor de la Energía No Suministrada (VoLL), varias veces superior al volumen diario aquí programado, lo que refleja la magnitud de la destrucción de valor económico en pocas horas. La anulación completa de todos los segmentos del mercado — sin excepción — prueba que no hubo ninguna parte del sistema que operara con normalidad tras el colapso.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>La anulación simultánea de todos los segmentos de mercado — SPOT, intradiario, restricciones, reservas — confirma el carácter total del cero de tensión: no fue una interrupción parcial ni un problema circunscrito a una zona geográfica. Ningún comercializador, distribuidor ni consumidor cualificado podía recibir energía porque la infraestructura de transporte que materializa esos contratos había dejado de existir físicamente. Esta gráfica es la prueba documental más directa del blackout sistémico desde la perspectiva de los mercados.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-03" label="03">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Comparativa de precios eléctricos — Mercado SPOT mayorista vs. PVPC 2.0TD (28–29 de abril de 2025, €/MWh)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / OMIE · Indicadores 600 y 1001 · Curvas de línea con doble eje</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <PreciosChart />
+      </div>
+      <div className="forensic-description">
+        <p>Durante la mañana del 28 de abril, el precio SPOT cayó a valores negativos — mínimo de –3,00 €/MWh en la hora 12:00–13:00 CEST — como consecuencia del excedente de generación solar fotovoltaica que desplazó por orden de mérito a los ciclos combinados de gas, principales proveedores de inercia y potencia de cortocircuito. Simultáneamente, el precio PVPC se mantenía por encima de 130 €/MWh en la misma franja horaria, debido a que incorpora los costes fijos de peajes, cargos y, sobre todo, los costes de las restricciones técnicas y los servicios de ajuste necesarios para mantener el sistema estable. La brecha entre ambas curvas — precio mayorista negativo frente a tarifa minorista elevada — es la señal económica más clara del desequilibrio estructural que precedió al colapso.</p>
+        <p>El apagón no alteró directamente los precios horarios ya fijados el día anterior, pero sus consecuencias sí se reflejan en los días siguientes: durante la noche del 28 y el día 29, el precio SPOT se recuperó hasta 35 €/MWh por el mayor uso de generación de gas en la Operación Reforzada de REE, mientras que el PVPC superó los 200 €/MWh en las horas punta, absorbiendo el sobrecoste de estabilización que los mercados mayoristas no habían internalizado.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>El precio negativo del SPOT en la hora del colapso no es una consecuencia del apagón — se fijó 24 horas antes — sino una señal de alarma que el sistema no supo leer. Un precio mayorista negativo indica que el mercado estaba expulsando la generación síncrona (gas) precisamente cuando más se necesitaba su inercia y capacidad de absorción de reactiva. La divergencia estructural entre SPOT y PVPC evidencia que el coste real de la estabilidad de la red recae sobre los consumidores a través de las tarifas reguladas, no sobre el mercado mayorista. El apagón fue, en parte, el coste de un diseño de mercado que no internaliza los servicios esenciales de fiabilidad.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-04" label="04">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Componentes del precio final de la electricidad — España, 28 de abril de 2025, hora 00:00 CEST (€/MWh)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Barras apiladas por componente de precio</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <PrecioEnergiaChart />
+      </div>
+      <div className="forensic-description">
+        <p>Este gráfico desglosa el precio final de la electricidad en España (51,52 €/MWh) para la primera hora del 28 de abril. Los componentes principales son: mercado diario (24,63 €/MWh), restricciones técnicas Fase I (27,93 €/MWh), mercado intradiario (–0,17 €/MWh) y procesos del operador del sistema (–0,88 €/MWh). Los conceptos de pagos por capacidad, interrumpibilidad y mecanismo de ajuste son cero en esta hora. El precio se desglosa también por tipo de suministro: comercializadores de referencia (52,34 €/MWh) y contratación libre (51,46 €/MWh), con una energía total horaria de 21.873 MWh.</p>
+        <p>El dato más revelador no es el precio final, sino la proporción de sus componentes: las restricciones técnicas (27,93 €/MWh) superan al precio del mercado diario (24,63 €/MWh) en esa primera hora. En otras palabras, el coste de mantener el sistema físicamente estable ya era mayor que el coste de la energía en sí misma en la madrugada del día del apagón, y esto antes de que llegara la crisis. Durante y después del colapso, este desequilibrio se agravó exponencialmente.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>Esta gráfica demuestra que el coste de la estabilidad del sistema — restricciones técnicas, servicios de ajuste, reservas — estaba oculto en los componentes regulados del precio final mucho antes del colapso. El apagón no lo creó: lo hizo visible de forma extrema. En el contexto forense, sirve para cuantificar que el sistema ya operaba con costes de equilibrio anómalos antes de las 12:33 CEST, y para entender por qué los consumidores asumieron facturas extraordinarias en los días posteriores a través de la Operación Reforzada.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-05" label="05">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Evolución del porcentaje de generación libre de CO₂, previsiones renovables y precios de desvíos — 28–29 de abril de 2025</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Indicadores 151, 541, 1395 · Curvas de línea con doble eje (MW y €/MWh)</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <GenericEsiosChart dataUrl="/data/esios/precios-desvios-tiempo-real.json" title="Precios de Desvíos Tiempo Real (28-29 Abril)" unit="€/MWh" />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica de doble eje superpone, con resolución de 5 minutos, tres capas de información: el porcentaje de generación libre de CO₂ (eje izquierdo), las previsiones de producción eólica y solar (MW, eje izquierdo) y los precios de pago por desvíos y de restricciones técnicas (€/MWh, eje derecho). Durante la mañana del 28 de abril, la generación limpia superaba el 90 % del mix (máximo de 91,2 % a las 11:30 CEST), impulsada por una previsión solar de hasta 19.800 MW a las 12:00. Los precios de restricciones técnicas se mantenían en torno a 145–150 €/MWh y los precios de desvíos oscilaban entre 50 y 276 €/MWh: valores elevados pero no excepcionales para un sistema con alta penetración renovable.</p>
+        <p>El colapso de las 12:33 CEST provoca el desplome instantáneo del porcentaje de generación limpia de 91 % a 0 %, que se mantiene durante horas. La recuperación es lenta: el índice supera el 50 % hacia las 18:00 CEST del 28 de abril y recupera valores normales (>70 %) durante el día 29, a medida que los inversores solares y los aerogeneradores van resincronizándose con la red restaurada. Las previsiones de renovables siguen siendo altas (8.000–10.000 MW), pero la generación real no se recupera plenamente hasta bien entrada la jornada del 29, evidenciando las dificultades de los inversores para reconectarse tras un cero de tensión.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>El sistema colapsó en su punto de máxima «limpieza» ambiental, con el 91 % de generación libre de emisiones. Esta paradoja es la refutación más directa de la narrativa que atribuyó el apagón a un exceso de renovables: el problema no fue la cantidad de energía renovable, sino la ausencia de la inercia y la potencia reactiva inductiva que solo proporcionan las máquinas rotatorias síncronas, desplazadas del mercado por orden de mérito económico. La gráfica también documenta el alto coste de los precios de desvíos y restricciones en los minutos previos al colapso: el termómetro del estrés operativo antes de la caída definitiva.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-06" label="06">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Comparativa de potencia disponible por tecnología — Madrugada del 28 y 29 de abril de 2025 (MW)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Barras horizontales agrupadas por tecnología</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <PotenciaChart />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica compara, para las 00:00 de cada jornada, la potencia instalada total, la disponible operativamente y la indisponible (por mantenimiento programado o avería). En la madrugada del 28 de abril, la potencia disponible total era de 39.077,5 MW frente a una potencia instalada de 51.709,5 MW — con 19.238,2 MW indisponibles. Por tecnología destacan los ciclos combinados de gas (16.660,7 MW disponibles), la hidráulica de embalse (13.518,7 MW), la nuclear (5.820,1 MW) y el bombeo (2.153,9 MW). En la madrugada del 29, la disponibilidad total desciende ligeramente a 37.502,1 MW, con una reducción notable en ciclos combinados (14.984,7 MW disponibles) que refleja el desgaste operativo durante la crisis.</p>
+        <p>Sin embargo, la potencia disponible en la madrugada contrasta radicalmente con la generación real durante el colapso. A mediodía del 28, los ciclos combinados generaban únicamente 2.775 MW de los 16.660 MW disponibles, la nuclear aportaba 3.369 MW de los 5.820 MW disponibles y la hidráulica operaba muy por debajo de su capacidad. La brecha entre potencia disponible y potencia efectivamente despachada es la huella del mecanismo de orden de mérito económico que desconectó la generación síncrona antes del evento.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>Esta gráfica refuta con datos la hipótesis más extendida en el debate público: el sistema tenía potencia más que suficiente para cubrir la demanda. Con 39 GW disponibles frente a una demanda de 25 GW, no existía ningún déficit de recursos físicos. El colapso no fue un fallo de generación, sino un fallo de red de transporte precipitado por la decisión de mercado de no despachar la generación síncrona disponible. Las elevadas indisponibilidades (casi 20 GW) no son fallos técnicos, sino centrales deliberadamente apagadas por razones económicas, lo que convirtió el sistema en estructuralmente vulnerable a perturbaciones dinámicas de tensión.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-07" label="07">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Previsión de producción eólica peninsular y generación solar prevista — 27–29 de abril de 2025 (MW)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Indicadores 541 y 1395 · Curvas de área superpuestas</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <GenericEsiosChart dataUrl="/data/esios/otros-indicadores.json" title="Previsiones Renovables (28-29 Abril)" unit="MW" includeKeys={["Previsión de la producción eólica peninsular", "Generación prevista Solar"]} />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica muestra la energía renovable que los modelos meteorológicos del operador calcularon la noche anterior para el 28 de abril. La previsión solar alcanzaba un máximo de 19.800 MW en torno a las 12:00–13:00 CEST, coincidiendo exactamente con la hora del colapso. La previsión eólica se situaba entre 8.000 y 10.000 MW a lo largo de la jornada. Ambas previsiones reflejan condiciones meteorológicas favorables — día de alta irradiación y viento moderado — que el sistema contabilizaba como recurso primario seguro para abastecer la demanda prevista de unos 25.000 MW.</p>
+        <p>Después del colapso, la generación real de solar cayó a 0 MW y la eólica a menos de 152 MW — el 5 % de lo previsto para ese instante. Sin embargo, las previsiones meteorológicas seguían siendo altas: el sol y el viento no desaparecieron. El recurso existía; lo que desapareció fue la capacidad de los inversores de inyectarlo a una red que había perdido la referencia de tensión y frecuencia. La recuperación de la generación renovable durante el 29 de abril fue gradual y condicionada a la resincronización progresiva de cada inversor con la red restaurada.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>Esta gráfica es la refutación más directa de la narrativa de la «inestabilidad renovable». El recurso meteorológico era abundante y perfectamente previsto: 19.800 MW de solar disponibles a las 12:00. Los inversores fotovoltaicos y los aerogeneradores no fallaron por falta de viento o sol — se desconectaron automáticamente porque sus protecciones detectaron sobretensiones en las redes colectoras de 220 kV y activaron los disparos de seguridad. El apagón no fue causado por las renovables; las renovables fueron una de sus víctimas inmediatas.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-08" label="08">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Porcentaje de generación eléctrica libre de CO₂ en el mix peninsular — 27–29 de abril de 2025</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Indicador 151 · Curva de área (escala 0–100 %)</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <GenericEsiosChart dataUrl="/data/esios/otros-indicadores.json" title="Generación libre de CO2" unit="%" includeKeys={["Porcentaje de generación libre de CO2"]} />
+      </div>
+      <div className="forensic-description">
+        <p>Este indicador compuesto mide en tiempo real la fracción de la generación eléctrica peninsular procedente de fuentes libres de emisiones directas: eólica, solar, hidráulica, nuclear y otras renovables. Durante la mañana del 28 de abril, el índice superó el 90 %, llegando a alcanzar el 91,2 % a las 11:30 CEST — el nivel más alto registrado en un día laborable hasta esa fecha. Este máximo refleja la confluencia del pico solar de mediodía, la generación eólica sostenida y la operación a plena carga de la flota nuclear. El sistema ibérico se encontraba en su punto de máxima descarbonización operativa en el momento del colapso.</p>
+        <p>La caída es instantánea y total: de 91 % a 0 % en los segundos del cero de tensión, reflejando la desconexión masiva y simultánea de solar (vía disparo por sobretensión de inversores), eólica (disparos de protección similares) y nuclear (desconexión automática por pérdida de red). La recuperación gradual durante el 29 de abril, que pasa del 0 % al 70 % a lo largo del día, documenta el ritmo de la restauración: primero la nuclear y la hidráulica síncrona (capaces de arrancar en isla), luego el ciclo combinado de gas, y finalmente la reintegración progresiva de los inversores renovables.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>El índice de generación limpia actúa como cronómetro de la restauración. Su caída instantánea certifica el colapso total; su recuperación gradual documenta el proceso de re-energización tecnología por tecnología. Leído junto con la gráfica de generación por unidad individual (ENTSO-09), permite identificar qué tecnologías sostuvieron el sistema en los segundos críticos del blackout — la generación síncrona remanente, no los inversores — y cuál fue el orden de reintegración durante la Operación Reforzada.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-09" label="09">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Saldos netos de intercambio programados (P48) — España con Francia, Portugal, Marruecos y Andorra, 28–29 de abril de 2025 (MW/h)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / Red Eléctrica · Indicadores 10209 y 10210 · Curvas de área por frontera</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <GenericEsiosChart dataUrl="/data/esios/saldos-horarios-por-frontera.json" title="Saldos Horarios por Frontera (28-29 Abril)" unit="MW" />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica muestra la evolución horaria del saldo neto de intercambios de electricidad programados (P48) entre España y sus fronteras. Un valor negativo indica importación neta hacia España; positivo, exportación neta. En la madrugada del 28 de abril, España importaba de Francia (–2.590 MW) y exportaba a Portugal (entre +1.000 y +2.500 MW), con un saldo total ligeramente negativo. La situación cambia a partir de las 09:00–10:00 CEST: España pasa a importar simultáneamente de Francia (–1.757 MW a las 11:00) y de Portugal (–2.228 MW a las 11:00), con un saldo total de importación de –4.755 MW a las 11:00 CEST — justo noventa minutos antes del colapso. Esta dependencia extrema de importaciones externas en las horas previas al blackout es una señal de estrés operativo que el sistema de alertas europeo no registró como anomalía.</p>
+        <p>El colapso anuló todos los saldos programados (valores cero desde las 13:00 del 28 hasta las 06:00 del 29 de abril): la red de transporte dejó de existir como entidad operativa. La recuperación de intercambios durante el 29 fue intermitente y a baja escala — +833,8 MW desde Francia a las 13:00, +80,3 MW a las 14:00 — reflejando la resincronización progresiva y cautelosa del sistema ibérico con el continente europeo.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>El máximo de importación de –4.755 MW a las 11:00 CEST (solo 90 minutos antes del colapso) demuestra que el sistema ibérico ya era deficitario en generación propia y dependía de aportaciones externas récord para mantenerse estable. Cuando la cascada de sobretensiones interrumpió los flujos transfronterizos, España perdió simultáneamente esa inyección de emergencia y la coherencia interna de su red. Los datos comerciales P48 mostraban aparente normalidad operativa mientras la red ya estaba en espiral de inestabilidad — evidenciando que las herramientas de monitorización basadas en programación estática no capturan la dinámica real de sistemas de baja inercia.</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+  <TabItem value="esios-10" label="10">
+    <div className="forensic-chart-container">
+      <h3 style={{ borderBottom: '2px solid var(--ifm-color-primary)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>Subastas explícitas de capacidad de interconexión — España–Francia y España–Portugal, abril 2025 (MW y €/MWh)</h3>
+      <div style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginBottom: '1.5rem', fontFamily: 'monospace' }}>FUENTE: ESIOS / JAO (Joint Allocation Office) · Barras horizontales agrupadas por frontera y sentido</div>
+      <div style={{ marginBottom: '2rem' }}>
+        <SubastasChart />
+      </div>
+      <div className="forensic-description">
+        <p>Esta gráfica muestra la capacidad asignada en las subastas mensuales y anuales de interconexión transfronteriza para España–Francia y España–Portugal, en los sentidos importador y exportador, incluyendo el número de participantes y los precios de clearing de cada subasta. Las subastas explícitas son el mecanismo por el cual los agentes del mercado reservan capacidad de transporte en las interconexiones internacionales con antelación, garantizándose acceso físico a los flujos transfronterizos independientemente de las condiciones del mercado spot.</p>
+        <p>El colapso del 28 de abril anuló físicamente toda la capacidad contratada. Los agentes que habían adquirido derechos de transmisión en estas subastas — pagando los precios de clearing correspondientes — no pudieron materializar sus derechos porque la infraestructura que los soporta había dejado de funcionar. Esto genera incumplimientos contractuales, mecanismos de compensación obligatorios y reclamaciones regulatorias que se extienden durante meses.</p>
+      </div>
+      <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+        <Admonition type="caution" title="Relevancia Forense">
+        <p>Esta gráfica cuantifica el volumen de comercio transfronterizo europeo bloqueado por el apagón y vincula el evento técnico con sus consecuencias jurídico-comerciales en el mercado europeo de electricidad. El impacto no se limitó al sistema eléctrico español: afectó a agentes de mercado de Francia, Portugal y otros países que habían contratado capacidad en estas subastas. Es la prueba documental del alcance transnacional del daño económico del 28-A.</p>
+        <p>================================================================
+BLOQUE II — ENTSO-E (Transparency Platform)
+================================================================</p>
+        </Admonition>
+      </div>
+    </div>
+  </TabItem>
+</Tabs>

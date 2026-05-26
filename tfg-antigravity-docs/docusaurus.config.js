@@ -96,34 +96,6 @@ const config = {
         languages: ['es', 'en', 'pt', 'fr', 'it', 'de'],
       },
     ],
-    [
-      '@docusaurus/plugin-pwa',
-      {
-        debug: false,
-        offlineModeActivationStrategies: [
-          'appInstalled',
-          'standalone',
-          'queryString',
-        ],
-        pwaHead: [
-          {
-            tagName: 'link',
-            rel: 'icon',
-            href: '/img/pwa-icon-192x192.png',
-          },
-          {
-            tagName: 'link',
-            rel: 'manifest',
-            href: '/manifest.json', // your PWA manifest
-          },
-          {
-            tagName: 'meta',
-            name: 'theme-color',
-            content: '#e03e3e',
-          },
-        ],
-      },
-    ],
   ],
 
   clientModules: [

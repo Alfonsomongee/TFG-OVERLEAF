@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './VerticalTimeline.module.css';
 import { timelineEvents } from '../data/timelineData';
 
-export default function VerticalTimeline({ lang = 'es' }) {
+export default function VerticalTimeline({ lang = 'es', activeEventId = null, onEventClick = null }) {
   const getLocalizedEvent = (event, l) => {
     const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[l] || es);
     
@@ -69,11 +69,17 @@ export default function VerticalTimeline({ lang = 'es' }) {
         if (event.type === 'success') typeColor = '#27ae60';
         
         const loc = getLocalizedEvent(event, lang);
+        const isActive = activeEventId === event.id;
 
         return (
-          <div key={event.id} className={`${styles.timelineBlock} ${alignmentClass}`}>
+          <div 
+            key={event.id} 
+            className={`${styles.timelineBlock} ${alignmentClass} ${isActive ? styles.activeEvent : ''}`}
+            onClick={() => onEventClick && onEventClick(event.id)}
+            style={{ cursor: onEventClick ? 'pointer' : 'default' }}
+          >
             <div 
-              className={styles.timelineDot} 
+              className={`${styles.timelineDot} ${isActive ? styles.activeDot : ''}`}
               style={{ backgroundColor: typeColor, boxShadow: `0 0 0 4px rgba(255,255,255,0.2), 0 0 0 8px ${typeColor}33` }}
             ></div>
             
