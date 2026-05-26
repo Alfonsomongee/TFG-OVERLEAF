@@ -3,13 +3,7 @@ import React from 'react';
 import { getCategoryById, getChartsByCategory } from '@site/src/data/forensicCharts';
 import styles from './ForensicGallery2.module.css';
 
-function StarsDisplay({ count }) {
-  return (
-    <span className={styles.gridCardStars}>
-      {'★'.repeat(count)}{'☆'.repeat(5 - count)}
-    </span>
-  );
-}
+
 
 export default function CategoryGrid({ categoryId, onSelectChart, locale }) {
   const cat = getCategoryById(categoryId);
@@ -48,7 +42,7 @@ export default function CategoryGrid({ categoryId, onSelectChart, locale }) {
               >
                 {chart.sourceBadge}
               </span>
-              <StarsDisplay count={chart.stars} />
+
             </div>
           </div>
         ))}

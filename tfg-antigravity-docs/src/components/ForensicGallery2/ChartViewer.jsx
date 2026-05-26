@@ -82,13 +82,7 @@ function ChartLoadingFallback({ color }) {
   );
 }
 
-function StarsDisplay({ count }) {
-  return (
-    <span className={styles.stars}>
-      {'★'.repeat(count)}{'☆'.repeat(5 - count)}
-    </span>
-  );
-}
+
 
 const UI_LABELS = {
   es: {
@@ -180,7 +174,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
             {chart.sourceBadge}
           </span>
           <span className={styles.techCode}>{chart.techCode}</span>
-          <StarsDisplay count={chart.stars} />
+
         </div>
       </div>
 

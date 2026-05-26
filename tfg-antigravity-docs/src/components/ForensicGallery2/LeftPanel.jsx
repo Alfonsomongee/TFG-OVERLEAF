@@ -4,13 +4,7 @@ import { CATEGORIES, getChartsByCategory } from '@site/src/data/forensicCharts';
 import MiniTimeline from './MiniTimeline';
 import styles from './ForensicGallery2.module.css';
 
-function StarsDisplay({ count }) {
-  return (
-    <span className={styles.chartListItemStars}>
-      {'★'.repeat(count)}{'☆'.repeat(5 - count)}
-    </span>
-  );
-}
+
 
 export default function LeftPanel({ activeChartId, activeCategoryId, onSelectChart, onSelectCategory }) {
   const [openCategories, setOpenCategories] = useState({ [activeCategoryId]: true });
@@ -84,7 +78,7 @@ export default function LeftPanel({ activeChartId, activeCategoryId, onSelectCha
                       >
                         <span className={styles.chartListItemNumber}>{globalNum}</span>
                         {chart.title}
-                        <StarsDisplay count={chart.stars} />
+
                       </div>
                     );
                   })}
