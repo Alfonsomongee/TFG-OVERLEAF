@@ -1081,10 +1081,204 @@ html[data-theme="dark"] .navbar {
   max-width: 100vw !important;
   position: relative;
   left: 50%;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(255,170,0,0.4) 0%, rgba(255,170,0,0.1) 100%);
+  opacity: 0.3;
+}
+
+/* Internal Chapter Items (Tighter spacing) */
+.menu__list-item .menu__list-item {
+  margin: 2px 0 2px 14px;
+  padding: 0;
+  border-left: 1px solid rgba(255,255,255,0.03);
+}
+
+.menu__list-item .menu__list-item .menu__link {
+  font-size: 12px;
+  padding: 6px 12px;
+  color: #808080;
+  border-left: 2px solid transparent;
+}
+
+/* PART 4 - Experimentación Interactiva (Special Treatment) */
+/* Targets the category using a pseudo-selector or specific nth-child if possible.
+   Since we cannot target text easily, we just add a global rule for the interactive category if Docusaurus adds a class.
+   We removed classes in sidebars.js earlier!
+   I will restore a specific class ONLY for the interactive category in sidebars.js to apply this. */
+.sidebar-category-interactive > .menu__list-item-collapsible {
+  background: rgba(255, 50, 0, 0.02);
+  border-left: 2px solid rgba(255, 50, 0, 0.3);
+}
+.sidebar-category-interactive > .menu__list-item-collapsible .menu__link {
+  color: rgba(255, 100, 50, 0.6);
+}
+
+/* PART 5 - Accordion & Iconography */
+.menu__caret {
+  opacity: 0.4;
+  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.menu__list-item-collapsible.menu__list-item--collapsed .menu__caret {
+  transform: rotate(-90deg);
+}
+
+/* Hide annoying Docusaurus default borders */
+.theme-doc-sidebar-menu, .theme-doc-sidebar-container {
+  border-right: none !important;
+}
+
+/* PART 6 - Cinematic Scrollbar */
+.theme-doc-sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,170,0,0.15) transparent;
+}
+.theme-doc-sidebar-container::-webkit-scrollbar {
+  width: 4px;
+}
+.theme-doc-sidebar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.theme-doc-sidebar-container::-webkit-scrollbar-thumb {
+  background: rgba(255,170,0,0.15);
+  border-radius: 0px;
+}
+.theme-doc-sidebar-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,170,0,0.3);
+}
+
+/* PART 8 - Mobile Override */
+@media (max-width: 996px) {
+  .theme-doc-sidebar-container {
+    background: #050505 !important;
+  }
+  .menu__link {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+  .menu__list-item-collapsible {
+    margin: 16px 0;
+  }
+}
+
+
+/* FORENSIC TOC (RIGHT SIDEBAR) */
+.table-of-contents {
+  border-left: 1px solid rgba(0,0,0,0.1);
+  padding-left: 1rem;
+  font-family: var(--telemetry-font, monospace);
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+html[data-theme="dark"] .table-of-contents {
+  border-left: 1px solid rgba(255,255,255,0.05);
+}
+.table-of-contents__link {
+  color: var(--text-2);
+  transition: all 0.2s ease;
+  padding: 4px 0;
+}
+.table-of-contents__link:hover, .table-of-contents__link--active {
+  color: var(--forensic-amber-primary, #FFB800) !important;
+  text-decoration: none;
+}
+.table-of-contents__link--active {
+  font-weight: 600;
+}
+
+/* GLOBAL SUBTLE TEXTURE */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] body::before {
+  opacity: 0.02;
+}
+
+/* NAVBAR FORENSIC OVERRIDE */
+.navbar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,170,0,0.15) !important;
+}
+html[data-theme="dark"] .navbar {
+  background: linear-gradient(to right, rgba(8,8,8,0.98), rgba(12,12,12,0.98)) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+/* SIDEBAR ICONS INJECTION (Lucide SVG mapped to Docusaurus categories) */
+
+.menu__list-item-collapsible .menu__link {
+  display: flex;
+  align-items: center;
+}
+
+.menu__list-item-collapsible[class*="sidebar-icon-"] > .menu__link::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+
+.menu__list-item-collapsible:hover > .menu__link::before {
+  opacity: 0.9;
+}
+
+.sidebar-icon-zap > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'%3E%3C/polygon%3E%3C/svg%3E");
+}
+
+.sidebar-icon-bar-chart > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='20' x2='18' y2='10'%3E%3C/line%3E%3Cline x1='12' y1='20' x2='12' y2='4'%3E%3C/line%3E%3Cline x1='6' y1='20' x2='6' y2='14'%3E%3C/line%3E%3C/svg%3E");
+}
+
+.sidebar-icon-gamepad > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23cc2222' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'%3E%3C/circle%3E%3Ccircle cx='9' cy='9' r='1'%3E%3C/circle%3E%3Cpath d='M15 9h2M15 12h2'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.sidebar-icon-compass > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpolygon points='12 2 15 22 12 18 9 22'%3E%3C/polygon%3E%3C/svg%3E");
+}
+
+.sidebar-icon-tool > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 0-8.94-8.94l-2.83 2.83a1 1 0 0 0 1.41 1.41L8.05 3.05a4 4 0 0 1 5.66 5.66l-2.83 2.83a1 1 0 0 0 0 1.41z'%3E%3C/path%3E%3Cpath d='M2.3 9.7a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 0-8.94-8.94l-2.83 2.83a1 1 0 0 0 1.41 1.41L4.05 3.05a4 4 0 0 1 5.66 5.66l-2.83 2.83a1 1 0 0 0 0 1.41z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.sidebar-icon-globe > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpath d='M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.sidebar-icon-book > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'%3E%3C/path%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.sidebar-icon-trending > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18'%3E%3C/polyline%3E%3Cpolyline points='17 6 23 6 23 12'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.sidebar-icon-flag > .menu__link::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='%23a0a0a0' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z'%3E%3C/path%3E%3Cline x1='4' y1='22' x2='4' y2='15'%3E%3C/line%3E%3C/svg%3E");
+}
+/* FULL WIDTH TABLE UTILITY */
+.table-full-width {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  position: relative;
+  left: 50%;
   right: 50%;
   margin-left: -50vw !important;
   margin-right: -50vw !important;
   padding: 0 5vw;
 }
-. f o r e n s i c - g a l l e r y - w r a p p e r   . c o n t a i n e r ,   . f o r e n s i c - g a l l e r y - w r a p p e r   m a i n [ c l a s s * = ' d o c M a i n C o n t a i n e r ' ]   >   . c o n t a i n e r ,   . f o r e n s i c - g a l l e r y - w r a p p e r   a r t i c l e ,   . f o r e n s i c - g a l l e r y - w r a p p e r   . t h e m e - d o c - m a r k d o w n   {   m a x - w i d t h :   1 0 0 %   ! i m p o r t a n t ;   w i d t h :   1 0 0 %   ! i m p o r t a n t ;   p a d d i n g :   0   1 r e m ;   }  
- 
+.forensic-gallery-wrapper .container, .forensic-gallery-wrapper main[class*='docMainContainer'] > .container, .forensic-gallery-wrapper article, .forensic-gallery-wrapper .theme-doc-markdown { max-width: 100% !important; width: 100% !important; padding: 0 1rem; }

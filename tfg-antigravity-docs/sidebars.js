@@ -55,11 +55,6 @@ const sidebars = {
           id: 'analisis-informes',
           label: 'Análisis de los Informes Oficiales',
         },
-        {
-          type: 'doc',
-          id: 'analisis-tecnico-frecuencia',
-          label: 'Colapso de Frecuencia',
-        },
       ],
     },
 
@@ -201,6 +196,11 @@ const sidebars = {
           type: 'doc',
           id: 'galeria-de-tablas',
           label: 'Galería de Tablas',
+        },
+        {
+          type: 'doc',
+          id: 'galeria-graficas',
+          label: 'Galería de Gráficas',
         },
         {
           type: 'doc',
