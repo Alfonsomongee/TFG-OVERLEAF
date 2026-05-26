@@ -1,0 +1,590 @@
+/* ForensicGallery2.module.css */
+
+/* ── Variables por categoría ───────────────────────────────────────────── */
+.gallery {
+  --cat1: #C0392B;
+  --cat1-light: rgba(192, 57, 43, 0.12);
+  --cat2: #E67E22;
+  --cat2-light: rgba(230, 126, 34, 0.12);
+  --cat3: #D4AC0D;
+  --cat3-light: rgba(212, 172, 13, 0.12);
+  --cat4: #27AE60;
+  --cat4-light: rgba(39, 174, 96, 0.12);
+  --cat5: #2471A3;
+  --cat5-light: rgba(36, 113, 163, 0.12);
+  --panel-width: 270px;
+  --panel-bg: var(--ifm-background-surface-color);
+  --border: var(--ifm-color-emphasis-200);
+  --radius: 10px;
+  display: flex;
+  gap: 0;
+  min-height: 80vh;
+  position: relative;
+}
+
+/* ── Panel Izquierdo ────────────────────────────────────────────────────── */
+.leftPanel {
+  width: var(--panel-width);
+  min-width: var(--panel-width);
+  max-width: var(--panel-width);
+  background: var(--panel-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ifm-color-emphasis-300) transparent;
+}
+
+.leftPanel::-webkit-scrollbar { width: 4px; }
+.leftPanel::-webkit-scrollbar-track { background: transparent; }
+.leftPanel::-webkit-scrollbar-thumb { background: var(--ifm-color-emphasis-300); border-radius: 2px; }
+
+/* ── Timeline ───────────────────────────────────────────────────────────── */
+.timelineSection {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.timelineTitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-500);
+  margin-bottom: 0.6rem;
+}
+
+.timelineBar {
+  position: relative;
+  height: 32px;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 4px;
+  overflow: visible;
+}
+
+.timelineTrack {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: var(--ifm-color-emphasis-300);
+  transform: translateY(-50%);
+}
+
+.timelineMarker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.markerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: transform 0.15s ease;
+}
+
+.markerDot.critical { background: #C0392B; }
+.markerDot.warning  { background: #E67E22; }
+.markerDot.recovery { background: #27AE60; }
+
+.timelineMarker:hover .markerDot { transform: scale(1.4); }
+
+.markerTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ifm-background-color);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+
+.markerTooltip strong {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--ifm-color-primary);
+}
+
+/* ── Categorías en el panel ─────────────────────────────────────────────── */
+.categoriesList {
+  flex: 1;
+  padding: 0.5rem 0;
+}
+
+.categoryItem {
+  border-bottom: 1px solid var(--border);
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.categoryHeader:hover { background: var(--ifm-color-emphasis-100); }
+
+.categoryColorBar {
+  width: 3px;
+  height: 22px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.categoryIcon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.categoryName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex: 1;
+  line-height: 1.2;
+}
+
+.categoryChevron {
+  font-size: 0.6rem;
+  color: var(--ifm-color-emphasis-400);
+  transition: transform 0.2s ease;
+}
+
+.categoryChevron.open { transform: rotate(90deg); }
+
+.chartsList {
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.chartListItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem 0.45rem 2rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: var(--ifm-color-emphasis-700);
+  transition: background 0.12s ease, color 0.12s ease;
+  border-left: 2px solid transparent;
+  line-height: 1.3;
+}
+
+.chartListItem:hover {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-primary);
+}
+
+.chartListItem.active {
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+  background: var(--ifm-color-emphasis-100);
+}
+
+.chartListItemNumber {
+  font-size: 0.6rem;
+  color: var(--ifm-color-emphasis-400);
+  min-width: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chartListItemStars {
+  font-size: 0.55rem;
+  letter-spacing: -1px;
+  opacity: 0.6;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Área de visualización derecha ─────────────────────────────────────── */
+.chartArea {
+  flex: 1;
+  min-width: 0;
+  padding: 1.5rem 2rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header de gráfica ──────────────────────────────────────────────────── */
+.chartHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.chartHeaderTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.chartCategoryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.chartTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.25;
+  flex: 1;
+  margin: 0;
+  color: var(--ifm-heading-color);
+}
+
+.chartSubtitle {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  font-style: italic;
+}
+
+.chartHeaderMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sourceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.sourceBadge.esios {
+  background: rgba(52, 152, 219, 0.12);
+  color: #2980B9;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.sourceBadge.entsoe {
+  background: rgba(155, 89, 182, 0.12);
+  color: #8E44AD;
+  border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.techCode {
+  font-size: 0.65rem;
+  color: var(--ifm-color-emphasis-500);
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.stars {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: #D4AC0D;
+}
+
+/* ── Contenedor gráfica ─────────────────────────────────────────────────── */
+.chartContainer {
+  margin-bottom: 2rem;
+}
+
+/* ── Textos descriptivos ────────────────────────────────────────────────── */
+.descSection {
+  margin-bottom: 1.5rem;
+}
+
+.descTitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-500);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.descText {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ifm-font-color-base);
+}
+
+.descText p { margin-bottom: 0.75rem; }
+.descText p:last-child { margin-bottom: 0; }
+
+.relSection {
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--ifm-color-warning);
+}
+
+[data-theme='dark'] .relSection {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.relTitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-warning-dark);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.relText {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Navegación inferior ────────────────────────────────────────────────── */
+.navButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.navBtn:hover {
+  background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+}
+
+.navBtn.next {
+  margin-left: auto;
+}
+
+.navBtnSub {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--ifm-color-emphasis-500);
+  display: block;
+}
+
+.nextCatBtn {
+  background: var(--ifm-color-emphasis-100);
+  border-style: dashed;
+  font-size: 0.78rem;
+}
+
+/* ── Vista cuadrícula de categoría ─────────────────────────────────────── */
+.categoryGridView {
+  flex: 1;
+}
+
+.categoryGridTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.categoryQuestion {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-600);
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+
+.gridCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.gridCard {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gridCard:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.gridCardNum {
+  font-size: 0.65rem;
+  color: var(--ifm-color-emphasis-400);
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.gridCardTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.gridCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.gridCardStars {
+  font-size: 0.65rem;
+  letter-spacing: 0.5px;
+  color: #D4AC0D;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+.mobileMenuBar {
+  display: none;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bg);
+}
+
+.mobileSelect {
+  width: 100%;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  cursor: pointer;
+}
+
+.mobileDescToggle {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--ifm-font-color-base);
+  width: 100%;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  transition: background 0.15s ease;
+}
+
+.mobileDescToggle:hover { background: var(--ifm-color-emphasis-100); }
+
+@media (max-width: 768px) {
+  .gallery {
+    flex-direction: column;
+  }
+
+  .leftPanel {
+    display: none;
+  }
+
+  .mobileMenuBar {
+    display: block;
+  }
+
+  .chartArea {
+    padding: 1rem 1rem 2rem 1rem;
+  }
+
+  .chartTitle {
+    font-size: 1.1rem;
+  }
+
+  .navButtons {
+    flex-wrap: wrap;
+  }
+
+  .gridCards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .gridCards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Loading skeleton ───────────────────────────────────────────────────── */
+.chartLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  border-radius: var(--radius);
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-500);
+  font-size: 0.85rem;
+  gap: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--ifm-color-emphasis-300);
+  border-top-color: var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}

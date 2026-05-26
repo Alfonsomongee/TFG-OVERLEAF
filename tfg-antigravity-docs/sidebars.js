@@ -199,16 +199,12 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'graficas-esios',
-          label: 'Gráficas ESIOS',
-        },
-        {
-          type: 'doc',
-          id: 'graficas-entsoe',
-          label: 'Gráficas ENTSO-E',
+          id: 'galeria-forense',
+          label: 'Galería Forense',
         },
       ],
     },
+
 
 
     // BLOQUE 13: AUTOR
