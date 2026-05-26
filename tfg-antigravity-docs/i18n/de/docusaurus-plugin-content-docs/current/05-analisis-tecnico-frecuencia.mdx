@@ -1,0 +1,159 @@
+---
+hide_title: true
+title: "Technische Analyse: Frequenzeinbruch"
+sidebar_position: 5
+---
+
+import FrequencyTimeline from '@site/src/components/FrequencyTimeline/FrequencyTimeline';
+import TelemetryFallback from '@site/src/components/FrequencyTimeline/TelemetryFallback';
+import UFLSVisualizer from '@site/src/components/UFLSVisualizer/UFLSVisualizer';
+import GenerationMixWidget from '@site/src/components/GenerationMixWidget/GenerationMixWidget';
+import GlossaryLink from '@site/src/components/GlossaryLink';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+# Technische Analyse: Der Frequenzeinbruch in 27 Sekunden
+
+## Der durch Überspannung getriebene Stromausfall
+
+Im Gegensatz zu traditionellen Frequenzeinbrüchen war das Ereignis vom 28. April ein **durch Überspannung getriebener Zusammenbruch** — eine seltene, aber verheerende Kategorie von Kaskadenausfällen.
+
+### Kontext: Die Swing-Gleichung
+
+Die Frequenz eines elektrischen Systems wird durch das Wirkleistungsgleichgewicht bestimmt:
+
+$$\frac{d\omega}{dt} = \frac{\omega_0}{2H} (P_m - P_e)$$
+
+Wobei:
+- $H$ = <GlossaryLink term="Systemträgheit (H)" /> (Sekunden)
+- $\omega_0$ = Nennfrequenz (50 Hz)
+- $P_m$ = Zugeführte mechanische Leistung
+- $P_e$ = Entnommene elektrische Leistung der Last
+
+Die **ROCOF** (Rate of Change of Frequency - Änderungsrate der Frequenz) ist:
+
+$$\text{ROCOF} = \frac{\Delta P}{2H \times S_{base}}$$
+
+Am 28. April, mit $H = 2.45$ Sekunden (kritisch niedrig aufgrund von 78% Durchdringung erneuerbarer Energien) und $\Delta P = 2,200$ MW, lag die anfängliche ROCOF bei fast 0.014 Hz/s, aber die wahre Dynamik war multidimensional.
+
+<br />
+
+:::note FORENSISCHE REKONSTRUKTION (12:32:30 — 12:33:30 MESZ)
+Die folgende Zeitleiste rekonstruiert die kritischen 27 Sekunden basierend auf PMU-Aufzeichnungen (Phasor Measurement Unit) von Umspannwerken entlang der Südachse. Sie zeigt den durch Überspannung getriebenen Kaskadenausfall vor dem synchronen Zusammenbruch.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <FrequencyTimeline />}
+</BrowserOnly>
+
+<br />
+
+:::danger DEFIZIT DER SYSTEMTRÄGHEIT
+Die Netztopologie zum Zeitpunkt des Vorfalls zeigte ein kritisches Missverhältnis zwischen wechselrichterbasierten Ressourcen (IBR) und synchroner rotierender Masse. Dies ist die Wurzel dafür, warum die ROCOF die thermischen Sicherheitsgrenzen überschritt.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <GenerationMixWidget />}
+</BrowserOnly>
+
+<hr style={{ margin: "3rem 0", borderColor: "var(--forensic-border)" }} />
+
+## Die drei Phasen des Zusammenbruchs
+
+### Phase 1: Erzwungene Schwingungen (12:03 — 12:32 MESZ)
+
+Fast eine halbe Stunde lang beobachteten die Betreiber im Kontrollzentrum von Red Eléctrica anomale Schwingungen in der Südzone:
+
+- **Lokale Schwingung bei 0.63 Hz**: Verursacht durch Instabilität der PLL-Steuerungen (Phase-Locked Loop) von netzgeführten Wechselrichtern in einem <GlossaryLink term="Schwachen Netz / Weak Grid" />
+- **Inter-Area-Schwingung bei 0.21 Hz**: Die iberische Halbinsel pendelte gegen das kontinentaleuropäische Netz
+
+Diese oszillierenden Modi signalisierten eine strukturelle Verwundbarkeit: Das südliche Netz arbeitete ohne ausreichende lokale synchrone Erzeugung, um Dämpfung und Kurzschlussunterstützung zu bieten.
+
+### Phase 2: Schneller Frequenzeinbruch (12:32:57 — 12:33:18 MESZ)
+
+Der plötzliche Verlust von 2.200 MW erneuerbarer Erzeugung in Granada, Badajoz und Sevilla löste einen Frequenzabfall mit ROCOF = 0.90 Hz/s aus.
+
+**Kritisches Paradoxon:** In einem starken Netzsystem verursacht der Verlust der Erzeugung **Unterfrequenz und Spannungsabfall**. Am 28. April führte dies jedoch zu **Überspannung**.
+
+Warum? Die Solaranlagen, die vom Netz gingen, hatten zuvor aktiv <GlossaryLink term="Blindleistung (Q)" /> absorbiert, um die Region zu dämpfen. Als sie verschwanden, verschwand auch die Blindleistungssenke. Gleichzeitig führte der Verlust von 2.200 MW Wirkleistung dazu, dass Energie rückwärts durch die weitreichenden Übertragungsleitungen floss, die als massive Kondensatoren wirkten (Ferranti-Effekt) und unkompensierte Blindleistung einspeisten.
+
+### Phase 3: Der Kaskadenausfall (12:33:18 — 12:33:24 MESZ)
+
+Beim Erreichen von 49.0 Hz aktivierten sich automatisch die <GlossaryLink term="UFLS (Unterfrequenz-Lastabwurf)" />-Relais, was etwa 3.100 MW Last trennte.
+
+<br />
+
+:::warning KASKADE VON UFLS-SCHUTZEINRICHTUNGEN
+Das iberische Unterfrequenz-Lastabwurfsystem ist darauf ausgelegt, das Netz durch eine gestufte Trennung der Nachfrage zu retten. Paradoxerweise verursachte die perfekte Ausführung von Stufe 1 die Überspannung, die den Stromausfall auslöste.
+:::
+
+<BrowserOnly fallback={<TelemetryFallback />}>
+  {() => <UFLSVisualizer />}
+</BrowserOnly>
+
+**Der fatale Schlag:** Die Reduzierung der Nachfrage verringerte die Ströme in den Leitungen. Niedrigere Ströme bedeuteten geringere induktive Spannungsabfälle ($I^2X$), wodurch die parasitäre Kapazität der Leitungen vollständig dominieren konnte. Die Spannung schoss auf über 435 kV.
+
+Die Überspannungsschutzvorrichtungen in den Solarwechselrichtern lösten kaskadenartig aus und trennten innerhalb von Sekunden weitere tausende Megawatt. Distanzschutzrelais von älteren Systemen, unfähig die verzerrten Fehlersignaturen von wechselrichterbasierten Ressourcen (IBR) zu interpretieren, deuteten das Chaos fälschlicherweise als massiven und internen Kurzschluss.
+
+Um 12:33:21 öffneten die Distanzrelais die AC-Verbindungsleitungen nach Frankreich. Drei Sekunden später schaltete sich die HGÜ-Verbindung ab. Das iberische Synchronsystem brach zusammen.
+
+## Warum es unvermeidlich war
+
+Unter diesen extremen Bedingungen (H = 2.21–2.71 s, 78% erneuerbare Energien, schwaches Netz im Süden) **gab es keine Möglichkeit, den Zusammenbruch aufzuhalten, sobald er begonnen hatte**.
+
+### 1. Unzureichende Trägheit
+
+Die 3.300 MW Kernenergieerzeugung konnten keine ausreichende Primärfrequenzregelung gegen ein Defizit von 2.200 MW leisten, wenn $H < 3$ Sekunden war.
+
+Verfügbare theoretische Primärfrequenzregelung:
+
+$$\Delta f_{recovered} = -\frac{\Delta P}{f_0} \times \frac{K_p}{1 + sT_{ag}}$$
+
+Mit $K_p \approx 10$ und $T_{ag} = 30$ ms (Aktionszeit des Reglers) war die Reaktion zu langsam. Die ROCOF überschritt die Schutzschwellenwerte, bevor die Rotationsenergie stabilisierend wirken konnte.
+
+### 2. ROCOF-gesteuerte Schutzvorrichtungen
+
+Sobald die ROCOF 1.0 Hz/s überschritt, führten die verbleibenden Synchronmaschinen automatisch Selbstschutzauslösungen durch, um Wellenschäden durch Polschlupf zu vermeiden.
+
+Das war der **Point of No Return**. Durch den Verlust der nuklearen Erzeugung verlor das System seinen einzigen stabilisierenden Anker. Ohne Trägheit, ohne Blindleistung, ohne Kurzschlussunterstützung kollabierte das Netz in einer Kaskade.
+
+### 3. Architekturfehler: Ältere Schutzvorrichtungen vs. IBR
+
+Die tiefe Ursache war eine **architektonische Diskrepanz zwischen dem 40 Jahre alten Distanzschutz und einem zu 78% auf Leistungselektronik basierenden Netz**.
+
+Distanzrelais berechnen die scheinbare Impedanz:
+
+$$Z = \frac{V}{I}$$
+
+Unter Fehlerbedingungen messen sie $Z$, um zu bestimmen, ob das Ereignis innerhalb oder außerhalb ihrer Schutzzone liegt.
+
+**Das Problem:** Das begrenzte <GlossaryLink term="SCR (Kurzschlussverhältnis)" /> von IBR bedeutet, dass der Fehlerstrom sehr gering ist. Die Distanzrelais empfangen **verzerrte Fehlersignale geringer Größe**, die sie nicht korrekt interpretieren können.
+
+Das Expertenpanel von ENTSO-E kam zu dem Schluss, dass **die Relais das elektrische Chaos fälschlicherweise als massiven internen Kurzschluss interpretierten** und die Verbindungsleitungen nach Frankreich öffneten — genau die Aktion, die den totalen Zusammenbruch sicherte.
+
+## Regulatorischer und Marktkontext
+
+Das Ereignis deckte ein tiefgreifendes regulatorisches Versagen auf: **Die Marktrahmenbedingungen waren nicht für ein Netz mit einer Durchdringung von 78% erneuerbaren Energien ausgelegt**.
+
+Obwohl viele große Solaranlagen über zertifizierte Fähigkeiten zur dynamischen Spannungsunterstützung und Einspeisung von <GlossaryLink term="Blindleistung (Q)" /> verfügten, boten die bestehenden Marktmechanismen keine Anreize (und verboten diese sogar gesetzlich), diese Dienste in Echtzeit bereitzustellen. Der Netzbetreiber konnte Blindleistung nicht lokal im Süden "abrufen", weil ihm ein Markt dafür fehlte.
+
+**Das Ergebnis:** Als die südliche Region dringend eine lokale Blindleistungssenke brauchte, stand keine zur Verfügung.
+
+## Wiederherstellung: Der Schwarzstart-Betrieb in 7 Zonen
+
+Nach dem totalen Zusammenbruch um 12:33:24 führte Red Eléctrica ihren nationalen Verteidigungs- und Wiederherstellungsplan aus. Der Wiederaufbau eines 31-GW-Systems von "Null" an erforderte 16 Stunden heikler Arbeit:
+
+1. **12:44** — Wiederunterspannungsetzung der ersten AC-Leitung nach Frankreich (11 Minuten nach dem Zusammenbruch)
+2. **13:04** — Wiederverbindung mit Marokko
+3. **13:30** — Beginn der Schwarzstartsequenzen spanischer Wasserkraftwerke
+4. **16:11** — Erster portugiesischer Schwarzstart
+5. **22:33** — Wiederherstellung von 50% der öffentlichen Nachfrage
+6. **04:00 (29. April)** — System vollständig wiederhergestellt (16 Stunden später)
+
+## Technische Lektionen
+
+Dieses Ereignis ist ein Wendepunkt für globale Energiesysteme:
+
+1. **Geringe Trägheit ist existenziell**: Mit $H < 3$ Sekunden können Zusammenbrüche in < 30 Sekunden eintreten, schneller als menschliches Eingreifen möglich ist.
+2. **Ältere Schutzvorrichtungen können IBR-basierte Netze nicht bewältigen**: Eine grundlegende architektonische Erneuerung ist erforderlich.
+3. **Überspannung ist genauso gefährlich wie Unterfrequenz**: Schutzschemata müssen gegen beides absichern.
+4. **Der Markt muss Stabilität über den Preis stellen**: Netzdienste dürfen nicht optional sein.
