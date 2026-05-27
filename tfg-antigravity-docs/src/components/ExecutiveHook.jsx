@@ -50,68 +50,134 @@ export default function ExecutiveHook() {
 
   const getStrings = (l) => {
     switch (l) {
-      case 'en': return { statPower: 'Power Lost', statSeverity: 'ENTSO-E Severity', statDate: 'April 28 2025', statAffected: 'Affected', heroTitle1: 'Anatomy of a', heroTitleHighlight: 'Systemic Collapse', heroSubtitle: 'Forensic analysis of the 2025 Iberian Peninsula blackout', startAnalysis: 'Start Analysis ⚡' };
-      default: return { statPower: 'Potencia Perdida', statSeverity: 'Severidad ENTSO-E', statDate: '28 Abril 2025', statAffected: 'Afectados', heroTitle1: 'Anatomía de un', heroTitleHighlight: 'Colapso Sistémico', heroSubtitle: 'Análisis forense del apagón de la Península Ibérica de 2025', startAnalysis: 'Comenzar Análisis ⚡' };
+      case 'en': return {
+        splashTitle: 'ANATOMY OF A\nSYSTEMIC COLLAPSE',
+        splashSubtitle: 'FORENSIC ANALYSIS OF THE IBERIAN BLACKOUT',
+        splashClick: 'CLICK TO ENTER',
+        statPower: 'Power Lost', statSeverity: 'ENTSO-E Severity', statDate: 'April 28 2025', statAffected: 'Affected',
+        heroTitle1: 'Anatomy of a', heroTitleHighlight: 'Systemic Collapse',
+        heroSubtitle: 'Forensic analysis of the 2025 Iberian Peninsula blackout',
+        startAnalysis: 'Start Analysis ⚡',
+        cards: [
+          { title: 'FORENSIC ANALYSIS', description: '27-second cascade dissection: oscillations, Tap‑Lag, overvoltages and the voltage zero.' },
+          { title: 'CONFLICTING REPORTS', description: 'Three institutional narratives: Administration, Generators (ICAI) and ENTSO‑E.' },
+          { title: 'REAL CHARTS', description: 'ENTSO‑E, ESIOS and PMU records. Original data from the collapse.' },
+          { title: 'ECONOMIC IMPACT', description: 'Direct cost (VOLL), multi-million lawsuits and effect on electro-intensive consumers.' },
+          { title: 'RESILIENCE & FUTURE', description: 'Electromechanical inertia, Short‑Circuit Ratio (SCR) and the Grid‑Forming mandate.' },
+          { title: 'AI IN THE THESIS', description: 'Use of LLMs for chronological reconciliation and physical validation of hypotheses.' },
+        ],
+      };
+      case 'pt': return {
+        splashTitle: 'ANATOMIA DE UM\nCOLAPSO SISTÉMICO',
+        splashSubtitle: 'ANÁLISE FORENSE DO APAGÃO IBÉRICO',
+        splashClick: 'CLIQUE PARA ENTRAR',
+        statPower: 'Potência Perdida', statSeverity: 'Severidade ENTSO-E', statDate: '28 Abril 2025', statAffected: 'Afetados',
+        heroTitle1: 'Anatomia de um', heroTitleHighlight: 'Colapso Sistémico',
+        heroSubtitle: 'Análise forense do apagão da Península Ibérica de 2025',
+        startAnalysis: 'Iniciar Análise ⚡',
+        cards: [
+          { title: 'ANÁLISE FORENSE', description: 'Dissecção da cascata de 27 segundos: oscilações, Tap‑Lag, sobretensões e o zero de tensão.' },
+          { title: 'RELATÓRIOS EM CONFLITO', description: 'As três narrativas institucionais: Administração, Geradores (ICAI) e ENTSO‑E.' },
+          { title: 'GRÁFICOS REAIS', description: 'Registos da ENTSO‑E, ESIOS e PMU. Dados originais do colapso.' },
+          { title: 'IMPACTO ECONÓMICO', description: 'Custo direto (VOLL), litígios milionários e efeito nos consumidores electrointensivos.' },
+          { title: 'RESILIÊNCIA E FUTURO', description: 'Inércia eletromecânica, Short‑Circuit Ratio (SCR) e o mandato Grid‑Forming.' },
+          { title: 'IA NA TESE', description: 'Uso de LLMs para reconciliação cronológica e validação física de hipóteses.' },
+        ],
+      };
+      case 'fr': return {
+        splashTitle: 'ANATOMIE D\'UN\nEFFONDREMENT SYSTÉMIQUE',
+        splashSubtitle: 'ANALYSE FORENSIQUE DU BLACK-OUT IBÉRIQUE',
+        splashClick: 'CLIQUEZ POUR ENTRER',
+        statPower: 'Puissance Perdue', statSeverity: 'Sévérité ENTSO-E', statDate: '28 avril 2025', statAffected: 'Personnes Touchées',
+        heroTitle1: "Anatomie d'un", heroTitleHighlight: 'Effondrement Systémique',
+        heroSubtitle: "Analyse forensique du black-out de la péninsule ibérique en 2025",
+        startAnalysis: "Commencer l'analyse ⚡",
+        cards: [
+          { title: 'ANALYSE FORENSIQUE', description: 'Dissection de la cascade de 27 secondes : oscillations, Tap‑Lag, surtensions et le zéro de tension.' },
+          { title: 'RAPPORTS EN CONFLIT', description: 'Les trois narratives institutionnelles : Administration, Générateurs (ICAI) et ENTSO‑E.' },
+          { title: 'GRAPHIQUES RÉELS', description: 'Enregistrements ENTSO‑E, ESIOS et PMU. Données originales de l\'effondrement.' },
+          { title: 'IMPACT ÉCONOMIQUE', description: 'Coût direct (VOLL), litiges multimillionnaires et effet sur les consommateurs électro-intensifs.' },
+          { title: 'RÉSILIENCE ET FUTUR', description: 'Inertie électromécanique, Short‑Circuit Ratio (SCR) et le mandat Grid‑Forming.' },
+          { title: 'IA DANS LA THÈSE', description: 'Utilisation des LLMs pour la réconciliation chronologique et la validation physique des hypothèses.' },
+        ],
+      };
+      case 'it': return {
+        splashTitle: 'ANATOMIA DI UN\nCOLLASSO SISTEMICO',
+        splashSubtitle: 'ANALISI FORENSE DEL BLACKOUT IBERICO',
+        splashClick: 'CLICCA PER ENTRARE',
+        statPower: 'Potenza Persa', statSeverity: 'Gravità ENTSO-E', statDate: '28 aprile 2025', statAffected: 'Persone Coinvolte',
+        heroTitle1: 'Anatomia di un', heroTitleHighlight: 'Collasso Sistemico',
+        heroSubtitle: 'Analisi forense del blackout della penisola iberica del 2025',
+        startAnalysis: "Inizia l'analisi ⚡",
+        cards: [
+          { title: 'ANALISI FORENSE', description: 'Dissezione della cascata di 27 secondi: oscillazioni, Tap‑Lag, sovratensioni e il punto zero di tensione.' },
+          { title: 'RAPPORTI IN CONFLITTO', description: 'Le tre narrative istituzionali: Amministrazione, Generatori (ICAI) e ENTSO‑E.' },
+          { title: 'GRAFICI REALI', description: 'Registrazioni ENTSO‑E, ESIOS e PMU. Dati originali del collasso.' },
+          { title: 'IMPATTO ECONOMICO', description: 'Costo diretto (VOLL), cause legali milionarie ed effetto sui consumatori elettrointensivi.' },
+          { title: 'RESILIENZA E FUTURO', description: 'Inerzia elettromeccanica, Short‑Circuit Ratio (SCR) e il mandato Grid‑Forming.' },
+          { title: 'IA NELLA TESI', description: 'Uso degli LLM per la riconciliazione cronologica e la validazione fisica delle ipotesi.' },
+        ],
+      };
+      case 'de': return {
+        splashTitle: 'ANATOMIE EINES\nSYSTEMKOLLAPSES',
+        splashSubtitle: 'FORENSISCHE ANALYSE DES IBERISCHEN BLACKOUTS',
+        splashClick: 'KLICKEN SIE ZUM BETRETEN',
+        statPower: 'Leistungsverlust', statSeverity: 'ENTSO-E Schweregrad', statDate: '28. April 2025', statAffected: 'Betroffene',
+        heroTitle1: 'Anatomie eines', heroTitleHighlight: 'Systemkollapses',
+        heroSubtitle: 'Forensische Analyse des Stromausfalls auf der Iberischen Halbinsel 2025',
+        startAnalysis: 'Analyse starten ⚡',
+        cards: [
+          { title: 'FORENSISCHE ANALYSE', description: '27-Sekunden-Kaskade: Schwingungen, Tap‑Lag, Überspannungen und der Spannungsnullpunkt.' },
+          { title: 'WIDERSPRÜCHLICHE BERICHTE', description: 'Drei institutionelle Narrative: Verwaltung, Erzeuger (ICAI) und ENTSO‑E.' },
+          { title: 'ECHTE DIAGRAMME', description: 'ENTSO‑E, ESIOS und PMU-Aufzeichnungen. Originaldaten des Zusammenbruchs.' },
+          { title: 'WIRTSCHAFTLICHE AUSWIRKUNG', description: 'Direkte Kosten (VOLL), millionenschwere Rechtsstreitigkeiten und Auswirkungen auf stromintensive Verbraucher.' },
+          { title: 'RESILIENZ & ZUKUNFT', description: 'Elektromechanische Trägheit, Kurzschlussleistungsverhältnis (SCR) und das Grid‑Forming-Mandat.' },
+          { title: 'KI IN DER ARBEIT', description: 'Einsatz von LLMs zur chronologischen Abstimmung und physikalischen Validierung von Hypothesen.' },
+        ],
+      };
+      default: return {
+        splashTitle: 'ANATOMÍA DE UN\nCOLAPSO SISTÉMICO',
+        splashSubtitle: 'ANÁLISIS FORENSE DEL APAGÓN IBÉRICO',
+        splashClick: 'CLICK PARA ENTRAR',
+        statPower: 'Potencia Perdida', statSeverity: 'Severidad ENTSO-E', statDate: '28 Abril 2025', statAffected: 'Afectados',
+        heroTitle1: 'Anatomía de un', heroTitleHighlight: 'Colapso Sistémico',
+        heroSubtitle: 'Análisis forense del apagón de la Península Ibérica de 2025',
+        startAnalysis: 'Comenzar Análisis ⚡',
+        cards: [
+          { title: 'ANÁLISIS FORENSE', description: 'Disección de la cascada de 27 segundos: oscilaciones, Tap‑Lag, sobretensiones y el cero de tensión.' },
+          { title: 'INFORMES EN CONFLICTO', description: 'Las tres narrativas institucionales: Administración, Generadores (ICAI) y ENTSO‑E.' },
+          { title: 'GRÁFICAS REALES', description: 'Registros de ENTSO‑E, ESIOS y PMU. Datos originales del colapso.' },
+          { title: 'IMPACTO ECONÓMICO', description: 'Coste directo (VOLL), litigios multimillonarios y efecto en consumidores electrointensivos.' },
+          { title: 'RESILIENCIA Y FUTURO', description: 'Inercia electromecánica, Short‑Circuit Ratio (SCR) y el mandato Grid‑Forming.' },
+          { title: 'IA EN EL TFG', description: 'Uso de LLMs para reconciliación cronológica y validación física de hipótesis.' },
+        ],
+      };
     }
   };
   const strings = getStrings(lang);
 
-  const cards = [
-    {
-      id: 1,
-      title: 'ANÁLISIS FORENSE',
-      description: 'Disección de la cascada de 27 segundos: oscilaciones, Tap‑Lag, sobretensiones y el cero de tensión.',
-      icon: '🔬',
-      path: '/analisis-incidente',
-      color: '#b91c1c',
-      rgb: '185, 28, 28',
-    },
-    {
-      id: 2,
-      title: 'INFORMES EN CONFLICTO',
-      description: 'Las tres narrativas institucionales: Administración, Generadores (ICAI) y ENTSO‑E.',
-      icon: '⚖️',
-      path: '/analisis-informes',
-      color: '#f59e0b',
-      rgb: '245, 158, 11',
-    },
-    {
-      id: 3,
-      title: 'GRÁFICAS REALES',
-      description: 'Registros de ENTSO‑E, ESIOS y PMU. Datos originales del colapso.',
-      icon: '📊',
-      path: '/galeria-forense',
-      color: '#3b82f6',
-      rgb: '59, 130, 246',
-    },
-    {
-      id: 4,
-      title: 'IMPACTO ECONÓMICO',
-      description: 'Coste directo (VOLL), litigios multimillonarios y efecto en consumidores electrointensivos.',
-      icon: '💥',
-      path: '/07b-consecuencias-financieras',
-      color: '#b91c1c',
-      rgb: '185, 28, 28',
-    },
-    {
-      id: 5,
-      title: 'RESILIENCIA Y FUTURO',
-      description: 'Inercia electromecánica, Short‑Circuit Ratio (SCR) y el mandato Grid‑Forming.',
-      icon: '🔧',
-      path: '/resiliencia-futuro',
-      color: '#10b981',
-      rgb: '16, 185, 129',
-    },
-    {
-      id: 6,
-      title: 'IA EN EL TFG',
-      description: 'Uso de LLMs para reconciliación cronológica y validación física de hipótesis.',
-      icon: '🧠',
-      path: '/uso-ia',
-      color: '#8b5cf6',
-      rgb: '139, 92, 246',
-    },
+  const paths = [
+    '/analisis-incidente', '/analisis-informes', '/galeria-forense',
+    '/07b-consecuencias-financieras', '/resiliencia-futuro', '/uso-ia'
   ];
+  const icons = ['🔬', '⚖️', '📊', '💥', '🔧', '🧠'];
+  const colors = [
+    { color: '#b91c1c', rgb: '185, 28, 28' },
+    { color: '#f59e0b', rgb: '245, 158, 11' },
+    { color: '#3b82f6', rgb: '59, 130, 246' },
+    { color: '#b91c1c', rgb: '185, 28, 28' },
+    { color: '#10b981', rgb: '16, 185, 129' },
+    { color: '#8b5cf6', rgb: '139, 92, 246' },
+  ];
+  const cards = strings.cards.map((c, i) => ({
+    id: i + 1,
+    title: c.title,
+    description: c.description,
+    icon: icons[i],
+    path: paths[i],
+    color: colors[i].color,
+    rgb: colors[i].rgb,
+  }));
 
   let titleOpacity = Math.min(1, Math.max(0, (elapsed - 500) / 1000));
   let subtitleOpacity = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
@@ -132,16 +198,18 @@ export default function ExecutiveHook() {
           className={styles.splashOverlay}
         >
           <h1 className={styles.splashMainTitle} style={{ opacity: titleOpacity }}>
-            ANATOMÍA DE UN<br/>COLAPSO SISTÉMICO
+            {strings.splashTitle.split('\n').map((line, i) => (
+              <React.Fragment key={i}>{line}{i === 0 && <br/>}</React.Fragment>
+            ))}
           </h1>
           <h2 className={styles.splashSubtitle} style={{ opacity: subtitleOpacity }}>
-            ANÁLISIS FORENSE DEL APAGÓN IBÉRICO
+            {strings.splashSubtitle}
           </h2>
           <p className={styles.splashAuthor} style={{ opacity: authorOpacity }}>
             ALFONSO MONGE
           </p>
           <div style={{ opacity: clickOpacity }}>
-            <p className={styles.splashClick}>CLICK PARA ENTRAR</p>
+            <p className={styles.splashClick}>{strings.splashClick}</p>
           </div>
         </div>
       )}
