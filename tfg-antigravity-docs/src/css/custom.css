@@ -1386,30 +1386,9 @@ html[data-theme="dark"] .navbar__item {
   display: none !important;
 }
 
-/* Navbar customizations */
+/* Navbar — smooth hide/show animation for Docusaurus hideOnScroll */
 .navbar {
-  background-color: transparent !important;
-  position: fixed !important;
-  top: 0;
-  width: 100%;
-  box-shadow: none !important;
-  border-bottom: none !important;
-  transition: transform 0.3s ease, background-color 0.3s ease !important;
-}
-
-/* Hide navbar on scroll down — restored on scroll up */
-.navbar--hidden {
-  transform: translateY(-100%) !important;
-}
-
-/* Push chapter content below the fixed navbar (not on intro page) */
-body:not(.intro-page) main[class*='docMainContainer'] .container {
-  padding-top: calc(var(--ifm-navbar-height, 60px) + 1.5rem) !important;
-}
-
-/* Also offset the sidebar so it starts below the navbar */
-.theme-doc-sidebar-container {
-  top: var(--ifm-navbar-height, 60px) !important;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Remove any extra padding on the intro page container */

@@ -100,7 +100,6 @@ const config = {
 
   clientModules: [
     require.resolve('./src/js/zen-mode.js'),
-    require.resolve('./src/js/navbar-scroll.js'),
   ],
 
   themeConfig:
@@ -109,6 +108,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/social-card.jpg',
       navbar: {
+        hideOnScroll: true,
         title: '',
         logo: {
           alt: '',
