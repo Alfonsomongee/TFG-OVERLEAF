@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useLocation } from '@docusaurus/router';
 import Head from '@docusaurus/Head';
+import CinePlayer from './CineMode/CinePlayer';
 
 export default function ExecutiveHook() {
   const [showSplash, setShowSplash] = useState(true);
   const [elapsed, setElapsed] = useState(0);
   const [isIntroPage, setIsIntroPage] = useState(true);
+  const [showCine, setShowCine] = useState(false);
 
   const { i18n } = useDocusaurusContext();
   const location = useLocation();
@@ -25,11 +28,15 @@ export default function ExecutiveHook() {
         btn.style.display = isIntro ? 'none' : 'flex';
       }
 
-      // Add/remove intro-page class for CSS styling
+      // Add/remove intro-page class and lock scroll
       if (isIntro) {
         document.body.classList.add('intro-page');
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
       } else {
         document.body.classList.remove('intro-page');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
       }
     }
   }, [location.pathname, lang]);
@@ -310,7 +317,7 @@ export default function ExecutiveHook() {
           </svg>
         </Link>
 
-        <Link to="/contexto" className={styles.chapterIconWrapper} title="Primer Capítulo">
+        <Link to="/introduccion" className={styles.chapterIconWrapper} title="Primer Capítulo">
           <div className={styles.chapterNeonCircle}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -401,16 +408,48 @@ export default function ExecutiveHook() {
               </svg>
               GitHub
             </a>
+            <button
+              className={styles.cineBtn}
+              onClick={() => setShowCine(true)}
+              title="Modo Cine — recorre el TFG con animaciones"
+            >
+              <svg
+                viewBox="0 0 24 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.cineScreen}
+              >
+                {/* Barra superior de la pantalla */}
+                <line x1="2" y1="2" x2="22" y2="2" strokeWidth="2.5"/>
+                {/* Cuerdas de cuelgue */}
+                <line x1="6" y1="2" x2="6" y2="4"/>
+                <line x1="18" y1="2" x2="18" y2="4"/>
+                {/* Marco de la pantalla */}
+                <rect x="3" y="4" width="18" height="12" rx="1"/>
+                {/* Superficie iluminada */}
+                <rect x="5" y="6" width="14" height="8" rx="0.5" fill="currentColor" fillOpacity="0.12" className={styles.screenSurface}/>
+                {/* Triángulo play */}
+                <path d="M10 8.5 L16 10 L10 11.5 Z" fill="currentColor" fillOpacity="0.5"/>
+                {/* Pie */}
+                <line x1="12" y1="16" x2="12" y2="19"/>
+                <line x1="9" y1="19" x2="15" y2="19"/>
+              </svg>
+              Modo Cine
+            </button>
           </div>
 
-          <div className={styles.techStack}>
-            <span className={styles.techBadge}>Docusaurus v2</span>
-            <span className={styles.techBadge}>React.js</span>
-            <span className={styles.techBadge}>KaTeX</span>
-            <span className={styles.techBadge}>Python Analytics</span>
-          </div>
         </div>
       </div>
+
+      {showCine && typeof document !== 'undefined' && createPortal(
+        <div className={styles.cineOverlay}>
+          <CinePlayer onClose={() => setShowCine(false)} />
+        </div>,
+        document.body
+      )}
     </>
   );
 }

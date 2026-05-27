@@ -460,6 +460,64 @@
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
+/* ── Botón Modo Cine ── */
+.cineBtn {
+  background: rgba(10, 20, 35, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 40px;
+  color: #fbbf24;
+  padding: 0.6rem 1.5rem;
+  font-family: 'Alfa Slab One', serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.25s ease;
+}
+
+.cineBtn:hover {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: #fbbf24;
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.3), 0 0 40px rgba(251, 191, 36, 0.1);
+  transform: scale(1.02);
+}
+
+.cineScreen {
+  width: 22px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.cineBtn:hover .cineScreen {
+  filter: drop-shadow(0 0 5px #fbbf24) drop-shadow(0 0 12px rgba(251, 191, 36, 0.5));
+  transform: scale(1.12);
+}
+
+.screenSurface {
+  transition: fill-opacity 0.3s ease;
+}
+
+.cineBtn:hover .screenSurface {
+  fill-opacity: 0.55;
+}
+
+/* Overlay fullscreen para CinePlayer */
+.cineOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #0b0f19;
+}
+
 /* Responsive */
 @media (max-width: 1000px) {
   .cardsGrid {
