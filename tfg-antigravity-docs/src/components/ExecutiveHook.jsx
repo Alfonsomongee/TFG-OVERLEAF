@@ -17,7 +17,17 @@ export default function ExecutiveHook() {
       if (sessionStorage.getItem('splash_seen_2')) {
         setShowSplash(false);
       }
+      // Ocultar botón zen-mode en la portada
+      const btn = document.getElementById('zen-mode-toggle');
+      if (btn) btn.style.display = 'none';
     }
+    return () => {
+      // Restaurar el botón al salir de la portada
+      if (typeof window !== 'undefined') {
+        const btn = document.getElementById('zen-mode-toggle');
+        if (btn) btn.style.display = 'flex';
+      }
+    };
   }, []);
 
   useEffect(() => {
