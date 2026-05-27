@@ -1000,24 +1000,6 @@ body::before {
   z-index: 9999;
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-html[data-theme="dark"] body::before {
-  opacity: 0.02;
-}
-
-/* NAVBAR FORENSIC OVERRIDE */
-.navbar {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border-bottom: 1px solid rgba(255,170,0,0.15) !important;
-}
-html[data-theme="dark"] .navbar {
-  background: linear-gradient(to right, rgba(8,8,8,0.98), rgba(12,12,12,0.98)) !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-
-/* SIDEBAR ICONS INJECTION (Lucide SVG mapped to Docusaurus categories) */
-
-.menu__list-item-collapsible .menu__link {
   display: flex;
   align-items: center;
 }
@@ -1200,14 +1182,27 @@ html[data-theme="dark"] body::before {
   opacity: 0.02;
 }
 
-/* NAVBAR FORENSIC OVERRIDE */
+/* NAVBAR FORENSIC OVERRIDE — transparent, blends into hero */
 .navbar {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border-bottom: 1px solid rgba(255,170,0,0.15) !important;
+  box-shadow: none !important;
+  border-bottom: none !important;
 }
 html[data-theme="dark"] .navbar {
-  background: linear-gradient(to right, rgba(8,8,8,0.98), rgba(12,12,12,0.98)) !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Navbar links Tarantino style */
+html[data-theme="dark"] .navbar__link,
+html[data-theme="dark"] .navbar__title,
+html[data-theme="dark"] .navbar__item {
+  font-family: 'Alfa Slab One', serif !important;
+  color: #e8f0ff !important;
+  text-shadow: 1px 1px 0px #003080, 2px 2px 0px rgba(0,30,80,0.5) !important;
+  letter-spacing: 0.03em !important;
+  font-weight: 400 !important;
 }
 
 /* SIDEBAR ICONS INJECTION (Lucide SVG mapped to Docusaurus categories) */
