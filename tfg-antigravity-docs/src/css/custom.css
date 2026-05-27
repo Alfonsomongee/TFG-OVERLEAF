@@ -1402,15 +1402,20 @@ html[data-theme="dark"] .navbar__item {
   transform: translateY(-100%) !important;
 }
 
-/* Push chapter content below the fixed navbar */
-.theme-doc-sidebar-container ~ main .container,
-main[class*='docMainContainer'] .container {
+/* Push chapter content below the fixed navbar (not on intro page) */
+body:not(.intro-page) main[class*='docMainContainer'] .container {
   padding-top: calc(var(--ifm-navbar-height, 60px) + 1.5rem) !important;
 }
 
 /* Also offset the sidebar so it starts below the navbar */
 .theme-doc-sidebar-container {
   top: var(--ifm-navbar-height, 60px) !important;
+}
+
+/* Remove any extra padding on the intro page container */
+body.intro-page main .container,
+body.intro-page .container {
+  padding-top: 0 !important;
 }
 
 /* ============================================================
