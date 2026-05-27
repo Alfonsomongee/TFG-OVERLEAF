@@ -185,6 +185,63 @@ export default function ExecutiveHook() {
   const flicker1Visible = elapsed >= 750 && elapsed <= 830;
   const flicker2Visible = elapsed >= 1700 && elapsed <= 1760;
 
+  const cards = [
+    {
+      id: 1,
+      title: 'ANÁLISIS FORENSE',
+      description: 'Disección de la cascada de 27 segundos: oscilaciones, Tap‑Lag, sobretensiones y el cero de tensión.',
+      icon: '🔬',
+      path: '/analisis-incidente',
+      color: '#b91c1c',
+      rgb: '185, 28, 28',
+    },
+    {
+      id: 2,
+      title: 'INFORMES EN CONFLICTO',
+      description: 'Las tres narrativas institucionales: Administración, Generadores (ICAI) y ENTSO‑E.',
+      icon: '⚖️',
+      path: '/analisis-informes',
+      color: '#f59e0b',
+      rgb: '245, 158, 11',
+    },
+    {
+      id: 3,
+      title: 'GRÁFICAS REALES',
+      description: 'Registros de ENTSO‑E, ESIOS y PMU. Datos originales del colapso.',
+      icon: '📊',
+      path: '/galeria-graficas',
+      color: '#3b82f6',
+      rgb: '59, 130, 246',
+    },
+    {
+      id: 4,
+      title: 'IMPACTO ECONÓMICO',
+      description: 'Coste directo (VOLL), litigios multimillonarios y efecto en consumidores electrointensivos.',
+      icon: '💥',
+      path: '/consecuencias-financieras',
+      color: '#b91c1c',
+      rgb: '185, 28, 28',
+    },
+    {
+      id: 5,
+      title: 'RESILIENCIA Y FUTURO',
+      description: 'Inercia electromecánica, Short‑Circuit Ratio (SCR) y el mandato Grid‑Forming.',
+      icon: '🔧',
+      path: '/resiliencia-futuro',
+      color: '#10b981',
+      rgb: '16, 185, 129',
+    },
+    {
+      id: 6,
+      title: 'IA EN EL TFG',
+      description: 'Uso de LLMs para reconciliación cronológica y validación física de hipótesis.',
+      icon: '🧠',
+      path: '/uso-ia',
+      color: '#8b5cf6',
+      rgb: '139, 92, 246',
+    },
+  ];
+
   return (
     <>
       <Head>
@@ -347,70 +404,96 @@ export default function ExecutiveHook() {
 
       {/* Main Content (Always rendered behind splash) */}
       <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
-        {/* Top Banner / Event Scale */}
-        <div className={styles.statsBanner}>
-          <div className={styles.statItem}>
-            <span className={styles.statValue}>25,2 GW</span>
-            <span className={styles.statLabel}>{strings.statPower}</span>
+        {/* Cabecera con estadísticas y perfil */}
+        <div className={styles.topHeader}>
+          <div className={styles.statsBanner}>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>25,2 GW</span>
+              <span className={styles.statLabel}>{strings.statPower}</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>Scale 3</span>
+              <span className={styles.statLabel}>{strings.statSeverity}</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>12:33 CEST</span>
+              <span className={styles.statLabel}>{strings.statDate}</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>60M</span>
+              <span className={styles.statLabel}>{strings.statAffected}</span>
+            </div>
           </div>
-        <div className={styles.statItem}>
-          <span className={styles.statValue}>Scale 3</span>
-          <span className={styles.statLabel}>{strings.statSeverity}</span>
-        </div>
-        <div className={styles.statItem}>
-          <span className={styles.statValue}>12:33 CEST</span>
-          <span className={styles.statLabel}>{strings.statDate}</span>
-        </div>
-        <div className={styles.statItem}>
-          <span className={styles.statValue}>60M</span>
-          <span className={styles.statLabel}>{strings.statAffected}</span>
-        </div>
-      </div>
-
-      <div className={styles.heroContent}>
-        <h1 className={styles.title}>
-          {strings.heroTitle1} <span className={styles.highlight}>{strings.heroTitleHighlight}</span>
-        </h1>
-        <p className={styles.subtitle}>
-          {strings.heroSubtitle}
-        </p>
-
-        {/* 90-second Executive Summary */}
-        <div className={styles.execSummary}>
-          <div className={styles.summaryBox}>
-            <h3>{strings.box1Title}</h3>
-            <p>{strings.box1Text}</p>
-          </div>
-          <div className={styles.summaryBox}>
-            <h3>{strings.box2Title}</h3>
-            <p>{strings.box2Text}</p>
-          </div>
-          <div className={styles.summaryBox}>
-            <h3>{strings.box3Title}</h3>
-            <p>{strings.box3Text}</p>
-          </div>
-        </div>
-
-        {/* CTAs & Badges */}
-        <div className={styles.actions}>
-          <Link className={`button button--primary button--lg ${styles.primaryBtn}`} to="/contexto">
-            {strings.startAnalysis}
+          <Link to="/sobre-el-autor" className={styles.profileIcon} title="Sobre el autor">
+            <span className={styles.profileEmoji}>👤</span>
           </Link>
-          <a className={`button button--outline button--lg ${styles.secondaryBtn}`} href="https://github.com/Alfonsomongee/TFG-OVERLEAF" target="_blank" rel="noopener noreferrer">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.btnIcon}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            GitHub
-          </a>
-          
         </div>
 
-        {/* Tech Stack Badges */}
-        <div className={styles.techStack}>
-          <span className={styles.techBadge}>Docusaurus v2</span>
-          <span className={styles.techBadge}>React.js</span>
-          <span className={styles.techBadge}>KaTeX</span>
-          <span className={styles.techBadge}>Python Data Analytics</span>
-          <span className={styles.techBadge}>Newton-Raphson Solver</span>
-        </div>
+        {/* Contenido principal centrado */}
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>
+            {strings.heroTitle1}{' '}
+            <span className={styles.highlight}>{strings.heroTitleHighlight}</span>
+          </h1>
+          <p className={styles.subtitle}>{strings.heroSubtitle}</p>
+
+          {/* Grid de 6 tarjetas */}
+          <div className={styles.cardsGrid}>
+            {cards.map((card) => (
+              <Link key={card.id} to={card.path} className={styles.cardLink}>
+                <div
+                  className={styles.card}
+                  style={{
+                    '--card-accent': card.color,
+                    '--card-accent-rgb': card.rgb,
+                  }}
+                >
+                  <div className={styles.cardIcon}>{card.icon}</div>
+                  <h3 className={styles.cardTitle}>{card.title}</h3>
+                  <p className={styles.cardDescription}>{card.description}</p>
+                  <div className={styles.cardFooter}>
+                    <span className={styles.cardArrow}>→</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Botones de acción */}
+          <div className={styles.actions}>
+            <Link className={`button button--primary button--lg ${styles.primaryBtn}`} to="/contexto">
+              {strings.startAnalysis}
+            </Link>
+            <a
+              className={`button button--outline button--lg ${styles.secondaryBtn}`}
+              href="https://github.com/Alfonsomongee/TFG-OVERLEAF"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={styles.btnIcon}
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+              GitHub
+            </a>
+          </div>
+
+          <div className={styles.techStack}>
+            <span className={styles.techBadge}>Docusaurus v2</span>
+            <span className={styles.techBadge}>React.js</span>
+            <span className={styles.techBadge}>KaTeX</span>
+            <span className={styles.techBadge}>Python Data Analytics</span>
+            <span className={styles.techBadge}>Newton-Raphson Solver</span>
+          </div>
         </div>
       </div>
     </>
