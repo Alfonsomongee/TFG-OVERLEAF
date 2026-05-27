@@ -26,11 +26,10 @@ export default function Slide71({ slideProgress }) {
         <h1 className={styles.title}>FÍSICA DE LA FRAGILIDAD SISTÉMICA</h1>
         <h2 className={styles.subtitle}>INERCIA, ROCoF Y POTENCIA DE CORTOCIRCUITO</h2>
 
-        {/* ECUACIÓN DE OSCILACIÓN */}
         <div style={{ opacity: swingOpacity, width: '100%' }}>
           <h3 className={styles.sectionTitle}>ECUACIÓN DE OSCILACIÓN (SWING EQUATION)</h3>
           <div className={styles.equation}>
-            \frac{2H}{f_0} \cdot \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
+            (2H / f₀) · (df/dt) = P_m - P_e - D · Δf
           </div>
           <div className={styles.equationNote}>
             H = CONSTANTE DE INERCIA (S) · ROCoF = df/dt · LOS INVERSORES GRID-FOLLOWING NO APORTAN INERCIA ELECTROMECÁNICA
@@ -40,7 +39,6 @@ export default function Slide71({ slideProgress }) {
           </div>
         </div>
 
-        {/* SCR Y DEGRADACIÓN */}
         {stage >= 2 && (
           <div style={{ opacity: scrOpacity, width: '100%' }}>
             <h3 className={styles.sectionTitle}>SHORT CIRCUIT RATIO (SCR)</h3>
@@ -50,7 +48,7 @@ export default function Slide71({ slideProgress }) {
             <table className={styles.cleanTable}>
               <thead><tr><th>CATEGORÍA</th><th>UMBRAL SCR</th><th>IMPLICACIÓN OPERATIVA</th></tr></thead>
               <tbody>
-                <tr><td>RED FUERTE</td><td>SCR &gt; 3</td><td>INVERSORES GFL OPERAN CON ESTABILIDAD</td></tr>
+                <tr><td className={styles.label}>RED FUERTE</td><td>SCR &gt; 3</td><td>INVERSORES GFL OPERAN CON ESTABILIDAD</td></tr>
                 <tr><td className={styles.warning}>RED DÉBIL</td><td>2 ≤ SCR ≤ 3</td><td>DEGRADACIÓN DEL MARGEN DE ESTABILIDAD DEL PLL</td></tr>
                 <tr><td className={styles.critical}>RED MUY DÉBIL</td><td>SCR &lt; 2</td><td>PLL PROPENSOS A PÉRDIDA DE SINCRONISMO</td></tr>
               </tbody>
@@ -59,7 +57,6 @@ export default function Slide71({ slideProgress }) {
           </div>
         )}
 
-        {/* PARADOJA P-Q */}
         {stage >= 3 && (
           <div style={{ opacity: paradoxOpacity, width: '100%' }}>
             <h3 className={styles.sectionTitle}>PARADOJA GEOMÉTRICA DE LOS INVERSORES</h3>
