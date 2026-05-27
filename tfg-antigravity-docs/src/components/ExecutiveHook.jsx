@@ -39,6 +39,17 @@ export default function ExecutiveHook() {
         document.documentElement.style.overflow = '';
       }
     }
+
+    // Cleanup: when component unmounts (navigating away from intro), always restore
+    return () => {
+      if (typeof window !== 'undefined') {
+        document.body.classList.remove('intro-page');
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        const btn = document.getElementById('zen-mode-toggle');
+        if (btn) btn.style.display = 'flex';
+      }
+    };
   }, [location.pathname, lang]);
 
   useEffect(() => {
