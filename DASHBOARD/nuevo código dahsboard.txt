@@ -1,0 +1,914 @@
+nuevo código dahsboard
+
+He analizado en profundidad tus tres archivos de gráficas actuales (`visualizaciones_forenses.py`, `phase2_voltage_analyzer.py`, `phase2_timeline.py`) y los he comparado con la **estética forense de alto nivel** que definiste en `forensicCharts.js` y las variables CSS.  
+
+El diagnóstico es claro: **tu código actual es técnicamente sólido y ya usa una paleta oscura profesional, pero le falta la capa de "narrativa visual" y la jerarquía de información que hace que la web se sienta inmersiva.** No se trata solo de colores, sino de cómo se estructuran los títulos, las anotaciones, los badges, las descripciones y la sensación de "terminal de crisis".
+
+A continuación, te doy mi **análisis detallado** y luego **el plan de transformación** para que tus gráficas de Streamlit se vean exactamente como el resto del TFG.
+
+---
+
+## 🧠 Análisis de la estética actual vs. la deseada
+
+| Aspecto | Estado actual en tus archivos | Estado deseado (según forensicCharts.js + CSS) |
+|---------|-------------------------------|------------------------------------------------|
+| **Fondo general** | `C_FONDO = "rgba(0,0,0,0)"` (transparente, pero el layout de Streamlit da un fondo gris oscuro) | Fondo `#0a0c10` (--bg-0) uniforme en todo el dashboard, con tarjetas ligeramente más claras. |
+| **Tipografía** | Usas `"JetBrains Mono, monospace"` para todo (títulos, ejes, etiquetas). | Jerarquía: títulos con `Outfit` (bold), descripciones con `Inter`, datos y ejes con `JetBrains Mono`. |
+| **Badges de fuente** | No hay badges (ESIOS, ENTSO-E, techCode). | Se necesitan en cada gráfica: pequeño badge con fondo `#1e2433`, texto gris, esquina superior derecha. |
+| **Anotaciones narrativas** | Solo tienes títulos cortos y anotaciones de eventos (`add_annotation`). | Debe haber un párrafo `desc` (explicación) y un párrafo `rel` (relevancia forense) debajo de cada gráfica, dentro de un expander o como texto fijo. |
+| **Gradientes de contexto** | Usas `add_vrect` con colores sólidos semitransparentes. | Deberías usar `--grad-tension` (de fondo amarillo-naranja suave) para la zona de alerta, y `--grad-collapse` (rojo-negro) para la zona de colapso. |
+| **Colores de alerta** | Tienes `C_AMBAR` (#f59e0b) y `C_28A` (#ef4444), pero no usas magenta (`--accent-magenta`) para fallos críticos. | Añadir magenta para eventos de "pérdida de sincronismo" o "disparo de protecciones". |
+| **Eventos de timeline** | El timeline está bien estructurado, pero las anotaciones son simples. | Se necesita que los eventos tengan colores de severidad coherentes (amarillo→naranja→rojo→negro) y que al hacer clic en ellos (en el futuro) se relacionen con gráficas. |
+| **Títulos** | Títulos como "Sismógrafo de Frecuencia — 28 de abril de 2025" | Deberían ser más narrativos y con emoji: `🌊 Sismógrafo de Frecuencia — El ECG del colapso` y un subtítulo con resolución/fuente. |
+| **Fuente de datos** | No se muestra explícitamente en la gráfica. | Añadir `sourceBadge` y `techCode` en cada gráfica (p.ej., `ESIOS · Indicador 1503`). |
+| **Estrellas de relevancia** | No existen. | Opcional: añadir rating de 3 a 5 estrellas para indicar importancia forense (podría ser un tooltip o un emoji). |
+
+---
+
+## 🛠️ Plan de transformación (paso a paso)
+
+### 1. Fondo global y contenedores de Streamlit
+
+En tu `app.py`, inyecta este CSS al inicio (lo tienes parcialmente, pero amplía):
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+html, body, .stApp {
+    background-color: #0a0c10;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+.stMetric label, .stMetric .stMetricValue, .stPlotlyChart .xtick, .stPlotlyChart .ytick {
+    font-family: 'JetBrains Mono', monospace !important;
+}
+/* Tarjetas de métricas */
+div[data-testid="stMetric"] {
+    background: #11141c;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+/* Badge de fuente */
+.source-badge {
+    background: #1e2433;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #8b9bb4;
+    display: inline-block;
+}
+```
+
+### 2. Transformar las funciones de gráficas
+
+Te voy a mostrar la **transformación completa** de `fig_sismografo_frecuencia` como ejemplo. Luego puedes aplicar el mismo patrón a las demás.
+
+#### Antes (fragmento):
+
+```python
+fig.update_layout(
+    **_LAYOUT_BASE,
+    title=dict(text="🌊 Sismógrafo de Frecuencia — 28 de abril de 2025", font=dict(size=13)),
+    ...
+)
+```
+
+#### Después (con fuente jerárquica, badge, gradiente y descripción externa):
+
+```python
+def fig_sismografo_frecuencia(df_freq, frecuencia_hoy=None):
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # ... (mismo código de bandas y trazados)
+
+    # En lugar de título simple, usamos un título en dos líneas (con HTML en anotación)
+    # Pero Plotly no soporta HTML en título fácilmente. Mejor añadimos un badge aparte.
+    # Añadimos un badge de fuente (como anotación en la esquina superior derecha)
+    fig.add_annotation(
+        x=1, y=1, xref="paper", yref="paper",
+        text="<span class='source-badge'>ENTSO-E · PMU data · RoCoF</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="bottom",
+        bgcolor="rgba(30,36,51,0.9)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1
+    )
+
+    # Título principal (usando layout.title con font de Outfit)
+    fig.update_layout(
+        title=dict(
+            text="🌊 Sismógrafo de Frecuencia — El ECG del colapso ibérico",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        # subtítulo con fuente y resolución (en anotación)
+        annotations=[
+            dict(
+                x=0.05, y=0.98, xref="paper", yref="paper",
+                text="Evolución segundo a segundo de la frecuencia del sistema | Resolución: eventos PMU",
+                showarrow=False, font=dict(family="Inter", size=11, color="#94a3b8"),
+                xanchor="left", yanchor="top"
+            )
+        ],
+        **_LAYOUT_BASE,
+        height=450
+    )
+    # Gradiente de contexto: añadir zona de tensión previa al colapso (12:00-12:33)
+    fig.add_vrect(
+        x0="2025-04-28 12:00:00", x1=T_COLAPSO_STR,
+        fillcolor="rgba(245,158,11,0.08)", layer="below", line_width=0,
+        annotation_text="Tensión creciente", annotation_position="top left"
+    )
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1="2025-04-28 13:10:00",
+        fillcolor="rgba(239,68,68,0.12)", layer="below", line_width=0,
+        annotation_text="COLAPSO", annotation_position="top left"
+    )
+    return fig
+```
+
+### 3. Descripción narrativa debajo de cada gráfica (en `app.py`)
+
+En lugar de solo `st.plotly_chart(fig)`, añade:
+
+```python
+with st.expander("📖 Análisis forense — Por qué esta gráfica importa", expanded=False):
+    st.markdown("""
+    **Interpretación:** Durante la mañana del 28 de abril, la frecuencia se mantuvo nominal hasta que...  
+    **Relevancia forense:** La caída a 48.8 Hz en 12:33:27 activó el primer escalón de UFLS, pero ya era tarde.  
+    **Fuente:** ENTSO-E PMU data | **Código técnico:** TR 12.1.G  
+    """)
+```
+
+### 4. Timeline mejorado con colores de severidad
+
+Tu `phase2_timeline.py` ya tiene colores, pero puedes añadir un gradiente de fondo que cambie según la severidad. Por ejemplo, antes de `12:33` un fondo suave amarillo, después rojo.
+
+Añade:
+
+```python
+fig.add_vrect(
+    x0="11:55", x1="12:33:27",
+    fillcolor="rgba(245,158,11,0.04)", layer="below", line_width=0
+)
+fig.add_vrect(
+    x0="12:33:27", x1="12:40",
+    fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0
+)
+```
+
+### 5. Sincronización visual con el resto de la web
+
+Asegúrate de que los `st.plotly_chart` tengan `use_container_width=True` y que el CSS inyectado haga que las gráficas ocupen todo el ancho. Además, ajusta la altura para que sean más imponentes (p.ej., `height=480` en lugar de 420).
+
+---
+
+## ✅ Resumen de acciones que debes realizar (o pedir a tu IA)
+
+1. **Inyectar el CSS ampliado** en `app.py` (incluyendo fuentes y badges).
+2. **Modificar cada función de gráfica** para:
+   - Usar título con `Outfit` y subtítulo con `Inter`.
+   - Añadir un badge de fuente (puede ser una anotación HTML o un `st.markdown` aparte).
+   - Añadir `add_vrect` con gradientes de contexto (tensión y colapso).
+   - Ajustar la altura y márgenes.
+3. **Envolver cada `st.plotly_chart` en un bloque con `st.expander`** que contenga la descripción narrativa y la relevancia forense (similar a los campos `desc` y `rel` de `forensicCharts.js`).
+4. **Ajustar `phase2_timeline.py`** para incluir fondos de severidad.
+5. **Probar y ajustar** el contraste de los textos sobre los fondos oscuros.
+
+---
+
+## 🚀 ¿Necesitas que te dé el código completo transformado de los tres archivos?
+
+Si quieres, puedo reescribir `visualizaciones_forenses.py`, `phase2_voltage_analyzer.py` y `phase2_timeline.py` ya con todas estas mejoras aplicadas, listos para copiar y pegar. Solo dímelo y en unos minutos te los entrego.
+
+He analizado en detalle tu `app.py` y el resto de módulos. Tu dashboard ya tiene una **estructura y funcionalidad muy sólidas**. La organización en pestañas, la comparativa lado a lado (Hoy vs 28‑A), las métricas de riesgo, el asistente IA, la auditoría y las nuevas gráficas de voltaje y timeline están muy bien integradas.
+
+Sin embargo, para que la **estética global** se nivele con la calidad forense de tus gráficas y con la identidad visual de la web (CSS `:root` y `forensicCharts.js`), hay varios puntos donde el dashboard actual **se queda corto** o rompe la coherencia. Te doy mi diagnóstico y las acciones concretas para llevarlo al siguiente nivel.
+
+---
+
+## 🧩 Estado actual del dashboard (resumen visual)
+
+| Componente | Aciertos | Áreas de mejora |
+|------------|----------|-----------------|
+| **Barra lateral** | Controles útiles, índice de riesgo, estado de alertas. | El color de fondo (`#080c14`) es más oscuro que el resto (`#0b0f19`), rompe uniformidad. Los botones y toggles usan estilos por defecto de Streamlit (cuadrados, bordes duros). |
+| **Pestañas** | Limpias, con iconos y fuente Outfit. | El borde inferior de la pestaña activa es azul en lugar del cian/rojo temático. Las pestañas están centradas, no ancladas a la izquierda (como en la web). |
+| **Comparativa Hoy vs 28‑A** | Doble columna muy clara, gráficos de tarta, métricas con delta. | Los deltas de las métricas usan `delta_color="inverse"` solo en algunos casos (ej. precio SPOT), pero deberían ser consistentes. Los gráficos de tarta son demasiado pequeños (height=300) y no tienen leyenda, fuente ni badge de fuente. |
+| **Gráficas forenses** (frecuencia, demanda, precios) | Paleta oscura, bandas de alerta, eventos anotados. | Carecen de título narrativo con fuente Outfit, subtítulo técnico, badge de fuente (ESIOS/ENTSO‑E) y descripción expandible (campo `desc`/`rel`). Tampoco tienen gradientes de contexto (`--grad-tension`, `--grad-collapse`). |
+| **Voltaje 28‑A y Timeline** | Funcionales, slider maestro sincronizado. | El timeline tiene anotaciones que se solapan ligeramente. El gráfico de voltaje no usa el mismo estilo de ejes y título que las demás gráficas. |
+| **Asistente IA** | Chat funcional, preguntas rápidas, estado de Ollama. | Los mensajes del chat usan un fondo de color sólido (no glassmorphism) y la fuente no es consistente con el resto (Outfit para texto, JetBrains para datos). No hay un indicador de "escribiendo..." mientras se genera la respuesta (solo spinner genérico). |
+| **Auditoría** | Tabla con column_config, exportación CSV/JSON. | La tabla ocupa mucho ancho y las columnas de generación a veces muestran 0 cuando son nulas (deberían ser "N/D" o un guión). Las métricas de resumen (registros, fechas) están con fuente por defecto. |
+
+---
+
+## 🎯 Acciones concretas para unificar la estética (basadas en forensicCharts.js)
+
+### 1. **Fondo y tarjetas consistentes**
+   - Cambia el fondo del sidebar a `--bg-0` (`#0a0c10`).
+   - Usa `--bg-1` para las tarjetas de métricas y `--bg-2` para los contenedores de chat.
+   - Aplica `border-radius: 12px` y `backdrop-filter: blur(8px)` en las tarjetas del asistente.
+
+### 2. **Jerarquía tipográfica global**
+   - Asegura que **todos los títulos de gráficas** usen `font-family: 'Outfit', sans-serif; font-weight: 600;`.
+   - Los subtítulos (fuente, resolución) usan `Inter` 0.85rem, color `--text-2`.
+   - Los valores numéricos (ejes, tooltips, métricas) usan `JetBrains Mono`.
+   - Inyecta el CSS completo que ya usas en la web (incluyendo las variables `:root`).
+
+### 3. **Badges de fuente y códigos técnicos**
+   - Añade en **cada gráfica principal** un badge en la esquina superior derecha (por ejemplo, sobre el título o dentro del `layout.annotations`).  
+     Ejemplo:  
+     `ENTSO‑E · TR 12.1.G · Resolución 15 min`
+   - En `visualizaciones_forenses.py`, modifica cada figura para incluir:
+     ```python
+     fig.add_annotation(
+         x=0.98, y=0.98, xref="paper", yref="paper",
+         text="<span class='source-badge'>ESIOS · Indicador 1294 · 5 min</span>",
+         showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+         bgcolor="#1e2433", bordercolor="rgba(255,255,255,0.1)", borderwidth=1
+     )
+     ```
+
+### 4. **Gradientes de contexto (tensión / colapso)**
+   - En `fig_sismografo_frecuencia`, `fig_demanda_real_vs_prev`, etc., añade `add_vrect` con:
+     - De 12:00 a 12:33: `fillcolor="rgba(245,158,11,0.06)"` (ámbar tenue)
+     - De 12:33 a 13:10: `fillcolor="rgba(239,68,68,0.10)"` (rojo colapso)
+   - En el timeline, usa el mismo patrón con un gradiente lineal (si Plotly lo permite, o simplemente un `add_vrect` por intervalo).
+
+### 5. **Descripciones narrativas expandibles**
+   - Debajo de cada gráfica (no dentro de la figura), añade:
+     ```python
+     with st.expander("📖 Por qué esta gráfica importa (análisis forense)", expanded=False):
+         st.markdown("**Interpretación:** ...")
+         st.markdown("**Relevancia forense:** ...")
+         st.caption("Fuente: ENTSO-E | Código técnico: TR 12.1.G")
+     ```
+   - El texto puede venir de un diccionario (como en `forensicCharts.js`) o ser escrito directamente.
+
+### 6. **Mejoras en el chat del asistente**
+   - Aplica glassmorphism a los mensajes:
+     ```css
+     .chat-user, .chat-asistente {
+         background: rgba(17,24,39,0.7);
+         backdrop-filter: blur(4px);
+         border: 1px solid rgba(255,255,255,0.05);
+         border-left: 3px solid #06b6d4;
+     }
+     ```
+   - Añade un indicador de escritura (por ejemplo, tres puntos animados) mientras se genera la respuesta, en lugar del spinner estático.
+   - Muestra el modelo usado y el tiempo de respuesta al final de cada interacción.
+
+### 7. **Tabla de auditoría más limpia**
+   - Reemplaza los `0.0` por `"N/D"` cuando los valores sean `None` o estén ausentes.
+   - Usa `column_config` para alinear números a la derecha y dar formato condicional (por ejemplo, colorear celdas de frecuencia < 49.5 en rojo).
+   - Añade un badge con el total de registros y la última actualización.
+
+### 8. **Consistencia en los nombres de las pestañas**
+   - La pestaña `"📊 HOY vs 28-A"` es muy larga. Podrías acortarla a `"📊 Comparativa"` o `"⚖️ Hoy vs 28A"`.
+   - Asegura que los emojis sean los mismos que en la web (por ejemplo, `🔬` para forense, `〰️` para frecuencia).
+
+### 9. **Ajustes menores**
+   - El slider de sincronización (`master_slider`) debería estar solo en las pestañas donde tiene sentido (voltaje y timeline), no visible en todas. Puedes moverlo dentro de esas pestañas.
+   - El botón "Generar resumen automático" en el sidebar es útil, pero su feedback (spinner + rerun) provoca que el slider se reinicie. Mejor muestra el resumen en un expander sin rerun (actualiza solo el estado).
+   - La función `_fig_mix_quesito` está bien, pero las etiquetas se cortan en móvil. Usa `textposition="inside"` para tamaños pequeños.
+
+---
+
+## 🚀 Conclusión
+
+Tu dashboard ya es **funcional, potente y profesional**. Con estos ajustes estéticos (unos 2-3 horas de trabajo) lo convertirás en una **herramienta forense inmersiva**, visualmente coherente con el resto del TFG y con una experiencia de usuario de alto nivel.
+
+Si quieres, puedo **reescribir los fragmentos clave** de `app.py`, `visualizaciones_forenses.py` y `phase2_timeline.py` aplicando todas estas mejoras, listos para copiar y pegar. Dime si lo prefieres así.
+
+Aquí tienes los tres archivos reescritos por completo, aplicando todas las mejoras estéticas que hemos acordado: paleta unificada, badges de fuente, gradientes de contexto, títulos narrativos, tipografía jerárquica y layout optimizado.
+
+Nota: Los archivos mantienen las mismas firmas de función (por compatibilidad con app.py) pero ahora incluyen badges de fuente, gradientes de tensión/colapso, títulos profesionales y subtítulos técnicos. Las descripciones narrativas largas se dejan para que las añadas en app.py mediante st.expander (así es más limpio), pero las gráficas ya lucen por sí solas al nivel de forensicCharts.js.
+
+📁 1. visualizaciones_forenses.py (completo)
+python
+"""
+visualizaciones_forenses.py — Gráficas forenses unificadas con estética premium
+Paleta: #0a0c10 fondo, #111827 tarjetas, #ef4444 rojo 28A, #06b6d4 cyan hoy
+Badges, gradientes, tipografía Outfit/Inter/JetBrains.
+"""
+
+from typing import Optional
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# =============================================================================
+# PALETA DE COLORES (Forensic / Cyberpunk Editorial)
+# =============================================================================
+C_HOY       = "#06b6d4"      # Cyan neón — datos de hoy
+C_28A       = "#ef4444"      # Rojo alarma — 28-A
+C_PROG      = "#64748b"      # Gris slate — previsiones
+C_VERDE     = "#10b981"      # Verde esmeralda
+C_AMBAR     = "#f59e0b"      # Ámbar
+C_MAGENTA   = "#d946ef"      # Magenta (fallo sistémico)
+C_FONDO     = "rgba(0,0,0,0)"
+C_GRID      = "rgba(255,255,255,0.04)"
+
+# Timestamp del colapso
+T_COLAPSO_DT = pd.Timestamp("2025-04-28 12:33:00")
+T_COLAPSO_STR = "2025-04-28 12:33:00"
+
+_LAYOUT_BASE = dict(
+    paper_bgcolor=C_FONDO,
+    plot_bgcolor=C_FONDO,
+    font=dict(color="#cbd5e1", size=11, family="JetBrains Mono, monospace"),
+    legend=dict(bgcolor="rgba(17,24,39,0.8)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1),
+    margin=dict(l=15, r=15, t=70, b=30),
+    hovermode="x unified",
+    hoverlabel=dict(bgcolor="#111827", font_size=10, font_family="JetBrains Mono"),
+)
+
+
+def _add_source_badge(fig: go.Figure, texto: str, x: float = 0.98, y: float = 0.98):
+    """Añade un badge de fuente en la esquina superior derecha."""
+    fig.add_annotation(
+        x=x, y=y, xref="paper", yref="paper",
+        text=f"<span style='background:#1e2433; padding:2px 8px; border-radius:4px; font-family:JetBrains Mono; font-size:0.7rem; color:#8b9bb4;'>{texto}</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)", borderwidth=0
+    )
+    return fig
+
+
+def _add_gradient_context(fig: go.Figure):
+    """Añade zonas de gradiente: tensión (ámbar) y colapso (rojo)."""
+    fig.add_vrect(
+        x0="2025-04-28 12:00:00", x1=T_COLAPSO_STR,
+        fillcolor="rgba(245,158,11,0.06)", layer="below", line_width=0,
+        annotation_text="Tensión creciente", annotation_position="top left",
+        annotation_font=dict(color="#f59e0b", size=9)
+    )
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1="2025-04-28 13:10:00",
+        fillcolor="rgba(239,68,68,0.10)", layer="below", line_width=0,
+        annotation_text="COLAPSO", annotation_position="top left",
+        annotation_font=dict(color="#ef4444", size=9)
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 1. SISMÓGRAFO DE FRECUENCIA
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_sismografo_frecuencia(
+    df_freq: pd.DataFrame,
+    frecuencia_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Sismógrafo de frecuencia con bandas, eventos y gradientes."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Bandas de alerta
+    bandas = [
+        (49.8, 50.3, "rgba(16,185,129,0.04)", None),
+        (49.5, 49.8, "rgba(245,158,11,0.06)", "Banda primaria"),
+        (49.0, 49.5, "rgba(239,68,68,0.10)", "UFLS 1er escalón"),
+        (47.5, 49.0, "rgba(185,28,28,0.15)", "Zona crítica"),
+    ]
+    for y0, y1, color, label in bandas:
+        fig.add_hrect(y0=y0, y1=y1, fillcolor=color, layer="below", line_width=0)
+
+    # Curva de frecuencia
+    if not df_freq.empty and "hora_dt" in df_freq.columns:
+        fig.add_trace(go.Scatter(
+            x=df_freq["hora_dt"],
+            y=df_freq["freq"],
+            name="Frecuencia 28-A",
+            line=dict(color=C_28A, width=1.8),
+            fill="tonexty",
+            fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="<b>%{x|%H:%M:%S}</b><br>%{y:.3f} Hz<extra></extra>",
+        ), secondary_y=False)
+
+    # Gradiente de contexto
+    fig = _add_gradient_context(fig)
+
+    # Línea vertical del colapso
+    fig.add_vline(x=T_COLAPSO_STR, line=dict(color=C_28A, width=1.5, dash="dash"))
+    fig.add_annotation(
+        x=T_COLAPSO_STR, y=1, yref="paper",
+        text="⚡ COLAPSO 12:33",
+        showarrow=False,
+        font=dict(color=C_28A, size=10, family="JetBrains Mono"),
+        xanchor="right", yanchor="bottom"
+    )
+
+    # Umbrales horizontales
+    for f_val, color, texto in [
+        (50.0, C_VERDE, "50 Hz nominal"),
+        (49.5, C_AMBAR, "49.5 Hz — UFLS 1º"),
+        (49.0, C_28A, "49.0 Hz — UFLS 2º"),
+    ]:
+        fig.add_hline(
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=8),
+            secondary_y=False,
+        )
+
+    # Línea de frecuencia actual
+    if frecuencia_hoy is not None:
+        fig.add_hline(
+            y=frecuencia_hoy,
+            line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"▶ HOY: {frecuencia_hoy:.3f} Hz",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top left",
+            secondary_y=False,
+        )
+
+    # Badge de fuente
+    fig = _add_source_badge(fig, "ENTSO-E · PMU data · RoCoF · 1 Hz")
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="🌊 Sismógrafo de Frecuencia — El ECG del colapso ibérico",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        height=460,
+        yaxis=dict(title="Frecuencia (Hz)", range=[47.5, 50.5], gridcolor=C_GRID, tickformat=".2f"),
+        yaxis2=dict(title="RoCoF (Hz/s)", gridcolor="rgba(0,0,0,0)", zerolinecolor=C_GRID),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 2. PRECIPICIO DE DEMANDA
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_demanda_real_vs_prev(
+    df_demanda: pd.DataFrame,
+    demanda_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Demanda real vs programada con zona de colapso y badge."""
+    fig = go.Figure()
+
+    # Gradiente de contexto
+    fig = _add_gradient_context(fig)
+
+    # Zona de colapso (extendida visualmente)
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0
+    )
+
+    # Demanda prevista
+    if not df_demanda.empty and "demanda_prev_mw" in df_demanda.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda["hora_dt"], y=df_demanda["demanda_prev_mw"],
+            name="Prevista", line=dict(color=C_PROG, dash="dot", width=1.5),
+            hovertemplate="%{y:,.0f} MW (prevista)<extra></extra>",
+        ))
+
+    # Demanda real 28-A
+    if not df_demanda.empty and "demanda_real_mw" in df_demanda.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda["hora_dt"], y=df_demanda["demanda_real_mw"],
+            name="Real 28-A", line=dict(color=C_28A, width=2.5),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="<b>%{x|%H:%M}</b> → %{y:,.0f} MW<extra></extra>",
+        ))
+
+    if demanda_hoy is not None:
+        fig.add_hline(
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"▶ HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top right",
+        )
+
+    fig = _add_source_badge(fig, "ESIOS · Indicador 1294 / 1775 · 5 min")
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="⚡ El Precipicio — Demanda real vs. programada",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        height=380,
+        yaxis=dict(title="Demanda (MW)", gridcolor=C_GRID, tickformat=","),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 3. TORMENTA DE PRECIOS
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_tormenta_de_precios(
+    df_desbalance: pd.DataFrame,
+    df_precios: pd.DataFrame,
+    precio_spot_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Precio desbalance (barras) y SPOT (línea) con gradiente de colapso."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Gradiente colapso
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1=(T_COLAPSO_DT + pd.Timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0,
+    )
+
+    # Barras de desbalance
+    if not df_desbalance.empty and "precio_max_eur" in df_desbalance.columns:
+        colores = [C_28A if p > 1000 else C_AMBAR if p > 200 else C_VERDE for p in df_desbalance["precio_max_eur"]]
+        fig.add_trace(go.Bar(
+            x=df_desbalance["hora_dt"], y=df_desbalance["precio_max_eur"],
+            name="Desbalance ENTSO-E", marker_color=colores, opacity=0.85,
+            hovertemplate="<b>%{x|%H:%M}</b><br>%{y:,.0f} €/MWh<extra></extra>",
+        ), secondary_y=False)
+
+    # Precio SPOT
+    if not df_precios.empty and "spot_eur" in df_precios.columns:
+        fig.add_trace(go.Scatter(
+            x=df_precios["hora_dt"], y=df_precios["spot_eur"],
+            name="SPOT OMIE", line=dict(color=C_AMBAR, width=2.5),
+            hovertemplate="<b>%{x|%H:%M}</b><br>SPOT: %{y:.2f} €/MWh<extra></extra>",
+        ), secondary_y=True)
+
+    fig.add_hline(y=80, line=dict(color=C_PROG, dash="dot", width=0.8),
+                  annotation_text="80 €/MWh (normal)", annotation_font=dict(color=C_PROG, size=8),
+                  secondary_y=False)
+
+    if precio_spot_hoy is not None:
+        fig.add_hline(
+            y=precio_spot_hoy, line=dict(color=C_HOY, width=1.5, dash="longdash"),
+            annotation_text=f"▶ HOY SPOT: {precio_spot_hoy:.1f} €/MWh",
+            annotation_font=dict(color=C_HOY, size=8),
+            secondary_y=True,
+        )
+
+    fig = _add_source_badge(fig, "ENTSO-E (A85) + ESIOS (600) · 15-60 min")
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="💸 Tormenta de Precios — Desbalance vs. SPOT",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        height=380,
+        barmode="overlay",
+        yaxis=dict(title="Desbalance (€/MWh)", gridcolor=C_GRID),
+        yaxis2=dict(title="SPOT (€/MWh)", gridcolor="rgba(0,0,0,0)"),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 4. COMPARATIVA SUPERPUESTA HOY vs 28-A
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_comparativa_superpuesta(
+    df_demanda_28a: pd.DataFrame,
+    df_freq_28a: pd.DataFrame,
+    historial_freq_hoy: list,
+    demanda_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Comparativa directa hoy vs 28A con gradientes y badges."""
+    fig = make_subplots(
+        rows=2, cols=1,
+        shared_xaxes=False,
+        subplot_titles=("Demanda (MW)", "Frecuencia (Hz)"),
+        row_heights=[0.55, 0.45],
+        vertical_spacing=0.12,
+    )
+
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
+    for row in [1, 2]:
+        fig.add_vrect(
+            x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+            fillcolor="rgba(239,68,68,0.06)", layer="below", line_width=0,
+            row=row, col=1,
+        )
+
+    # Demanda 28-A
+    if not df_demanda_28a.empty and "demanda_real_mw" in df_demanda_28a.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda_28a["hora_dt"], y=df_demanda_28a["demanda_real_mw"],
+            name="Demanda 28-A", line=dict(color=C_28A, width=2),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="%{x|%H:%M} → %{y:,.0f} MW<extra>28-A</extra>",
+        ), row=1, col=1)
+
+    if demanda_hoy is not None:
+        fig.add_hline(
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=9),
+            row=1, col=1,
+        )
+
+    # Frecuencia 28-A
+    if not df_freq_28a.empty and "hora_dt" in df_freq_28a.columns:
+        fig.add_trace(go.Scatter(
+            x=df_freq_28a["hora_dt"], y=df_freq_28a["freq"],
+            name="Frecuencia 28-A", line=dict(color=C_28A, width=1.8),
+            hovertemplate="%{x|%H:%M:%S} → %{y:.3f} Hz<extra>28-A</extra>",
+        ), row=2, col=1)
+
+    if historial_freq_hoy:
+        df_hoy = pd.DataFrame(historial_freq_hoy)
+        if "freq" in df_hoy.columns and "time" in df_hoy.columns:
+            fig.add_trace(go.Scatter(
+                x=df_hoy["time"], y=df_hoy["freq"],
+                name="Frecuencia HOY", line=dict(color=C_HOY, width=2),
+                hovertemplate="%{x} → %{y:.4f} Hz<extra>HOY</extra>",
+            ), row=2, col=1)
+
+    for f_val, color, texto in [(50.0, C_VERDE, "50 Hz"), (49.5, C_AMBAR, "UFLS 49.5")]:
+        fig.add_hline(
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=7),
+            row=2, col=1,
+        )
+
+    # Badge global
+    fig.add_annotation(
+        x=0.98, y=0.98, xref="paper", yref="paper",
+        text="<span style='background:#1e2433; padding:2px 8px; border-radius:4px;'>ESIOS + ENTSO-E · Datos reales</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)"
+    )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="📊 HOY vs 28-A — Telemetría superpuesta",
+            font=dict(family="Outfit, sans-serif", size=16),
+            x=0.05, xanchor="left"
+        ),
+        height=540,
+    )
+    fig.update_yaxes(gridcolor=C_GRID)
+    fig.update_xaxes(gridcolor=C_GRID, tickformat="%H:%M")
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 5. FUNCIONES AUXILIARES DE ESTADÍSTICAS (sin cambios)
+# ══════════════════════════════════════════════════════════════════════════════
+
+def stats_frecuencia_28a(df_freq: pd.DataFrame) -> dict:
+    if df_freq.empty:
+        return {}
+    return {
+        "freq_min":       df_freq["freq"].min(),
+        "freq_max":       df_freq["freq"].max(),
+        "t_nadir_s":      int(df_freq.loc[df_freq["freq"].idxmin(), "t_s"]) if "t_s" in df_freq.columns else 0,
+        "rocof_max":      df_freq["rocof"].abs().max() if "rocof" in df_freq.columns else None,
+        "n_eventos":      df_freq["evento"].notna().sum() if "evento" in df_freq.columns else 0,
+        "hora_nadir":     df_freq.loc[df_freq["freq"].idxmin(), "hora_dt"].strftime("%H:%M:%S") if "hora_dt" in df_freq.columns else "",
+        "hora_colapso":   "12:33:00",
+    }
+
+def stats_precios_28a(df_desbalance: pd.DataFrame, df_precios: pd.DataFrame) -> dict:
+    resultado = {}
+    if not df_desbalance.empty and "precio_max_eur" in df_desbalance.columns:
+        resultado["desbalance_max"]  = df_desbalance["precio_max_eur"].max()
+        idx = df_desbalance["precio_max_eur"].idxmax()
+        resultado["hora_desbal_max"] = df_desbalance.loc[idx, "hora_dt"].strftime("%H:%M") if "hora_dt" in df_desbalance.columns else ""
+    if not df_precios.empty and "spot_eur" in df_precios.columns:
+        resultado["spot_min"]   = df_precios["spot_eur"].min()
+        resultado["spot_max"]   = df_precios["spot_eur"].max()
+        resultado["horas_neg"]  = (df_precios["spot_eur"] < 0).sum()
+    return resultado
+📁 2. phase2_voltage_analyzer.py (reescrito)
+python
+import json
+import pandas as pd
+import plotly.graph_objects as go
+from typing import Optional
+
+def generar_grafica_voltajes(
+    json_path: str = "data_28a_voltage_profiles.json",
+    slider_time: Optional[str] = None
+) -> go.Figure:
+    """
+    Gráfica de perfiles de tensión (28-A) con badge, gradientes y estilo unificado.
+    """
+    try:
+        with open(json_path, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        fig = go.Figure()
+        fig.add_annotation(text="Archivo JSON no encontrado", x=0.5, y=0.5, showarrow=False)
+        fig.update_layout(template="plotly_dark")
+        return fig
+
+    # Detectar formato
+    if isinstance(data, dict) and "timestamps" in data:
+        timestamps = data["timestamps"]
+        voltages = data["voltages"]
+    elif isinstance(data, list) and len(data) > 0 and "timestamp" in data[0]:
+        timestamps = [d["timestamp"] for d in data]
+        nudos = list(data[0]["voltages"].keys())
+        voltages = {nudo: [] for nudo in nudos}
+        for d in data:
+            for nudo in nudos:
+                voltages[nudo].append(d["voltages"][nudo])
+    else:
+        fig = go.Figure()
+        fig.add_annotation(text="Formato de JSON no reconocido", x=0.5, y=0.5, showarrow=False)
+        fig.update_layout(template="plotly_dark")
+        return fig
+
+    timestamps_serie = pd.to_datetime(timestamps)
+
+    fig = go.Figure()
+    for nudo, valores in voltages.items():
+        fig.add_trace(go.Scatter(
+            x=timestamps_serie,
+            y=valores,
+            mode="lines",
+            name=nudo,
+            line=dict(width=2.5)
+        ))
+
+    # Bandas de tensión
+    fig.add_hrect(y0=0.95, y1=1.05, fillcolor="rgba(16,185,129,0.08)", line_width=0, annotation_text="Nominal ±5%")
+    fig.add_hrect(y0=1.05, y1=1.10, fillcolor="rgba(245,158,11,0.12)", line_width=0, annotation_text="Alerta")
+    fig.add_hrect(y0=1.10, y1=1.20, fillcolor="rgba(239,68,68,0.20)", line_width=0, annotation_text="Crítico")
+    fig.add_vline(x=pd.Timestamp("2025-04-28 12:32:57"), line_dash="dash", line_color="#ef4444",
+                  annotation_text="Disparo Granada", annotation_position="top right")
+
+    # Gradiente de contexto (tensión pre-colapso)
+    fig.add_vrect(
+        x0="2025-04-28 12:00:00", x1="2025-04-28 12:33:00",
+        fillcolor="rgba(245,158,11,0.06)", layer="below", line_width=0,
+        annotation_text="Tensión creciente", annotation_position="top left"
+    )
+    fig.add_vrect(
+        x0="2025-04-28 12:33:00", x1="2025-04-28 13:10:00",
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0,
+        annotation_text="COLAPSO", annotation_position="top left"
+    )
+
+    if slider_time:
+        try:
+            slider_ts = pd.Timestamp(slider_time)
+            fig.add_vline(x=slider_ts, line_dash="dot", line_color="#06b6d4", line_width=1.5,
+                          annotation_text="Cursor", annotation_position="bottom")
+        except:
+            pass
+
+    # Badge de fuente
+    fig.add_annotation(
+        x=0.98, y=0.98, xref="paper", yref="paper",
+        text="<span style='background:#1e2433; padding:2px 8px; border-radius:4px;'>Datos sintéticos de alta fidelidad · Basado en informe ENTSO‑E</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)"
+    )
+
+    _LAYOUT_BASE = dict(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#cbd5e1", size=11, family="JetBrains Mono, monospace"),
+        legend=dict(bgcolor="rgba(17,24,39,0.8)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1),
+        margin=dict(l=15, r=15, t=70, b=30),
+        hovermode="x unified",
+        hoverlabel=dict(bgcolor="#111827", font_size=10, font_family="JetBrains Mono"),
+    )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="⚡ Perfiles de tensión — Causa raíz del colapso Q‑V",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        xaxis_title="Hora (CEST)",
+        yaxis_title="Tensión (p.u.)",
+        height=480,
+        xaxis=dict(gridcolor="rgba(255,255,255,0.04)", tickformat="%H:%M"),
+        yaxis=dict(gridcolor="rgba(255,255,255,0.04)", range=[0.85, 1.25])
+    )
+    return fig
+📁 3. phase2_timeline.py (reescrito)
+python
+import plotly.graph_objects as go
+import pandas as pd
+from typing import Optional
+
+def generar_timeline(slider_time: Optional[str] = None) -> go.Figure:
+    """
+    Timeline de eventos críticos del 28-A con gradientes y badge.
+    """
+    eventos = [
+        ("12:03", "Primera oscilación forzada", "#f59e0b"),
+        ("12:19", "Segunda oscilación", "#f59e0b"),
+        ("12:32:57", "Disparo transformer Granada (-355 MW)", "#f97316"),
+        ("12:33:16", "Desconexiones masivas inversores", "#ef4444"),
+        ("12:33:20", "Apertura Marruecos", "#ef4444"),
+        ("12:33:21", "Pérdida sincronismo Francia", "#d946ef"),
+        ("12:33:27", "COLAPSO TOTAL", "#dc2626"),
+    ]
+
+    # Alturas alternadas para evitar solapamiento
+    alturas = [-45, -85, -125, -45, -85, -125, -45]
+
+    fig = go.Figure()
+
+    for i, (hora, desc, color) in enumerate(eventos):
+        fig.add_annotation(
+            x=hora,
+            y=1,
+            text=desc,
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor=color,
+            ax=0,
+            ay=alturas[i % len(alturas)],
+            font=dict(color="white", size=11, family="Inter"),
+            bgcolor="rgba(0,0,0,0.75)",
+            bordercolor=color,
+            borderwidth=1.5
+        )
+
+    # Línea base horizontal
+    fig.add_hline(y=1, line_dash="dot", line_color="gray", annotation_text="Línea de eventos")
+
+    # Gradientes de severidad
+    fig.add_vrect(
+        x0="11:55", x1="12:32:57",
+        fillcolor="rgba(245,158,11,0.04)", layer="below", line_width=0,
+        annotation_text="Tensión creciente", annotation_position="top left"
+    )
+    fig.add_vrect(
+        x0="12:32:57", x1="12:33:27",
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0,
+        annotation_text="Colapso en cascada", annotation_position="top left"
+    )
+    fig.add_vrect(
+        x0="12:33:27", x1="12:40",
+        fillcolor="rgba(220,38,38,0.15)", layer="below", line_width=0,
+        annotation_text="BLACKOUT", annotation_position="top left"
+    )
+
+    # Línea vertical del slider
+    if slider_time:
+        try:
+            slider_ts = pd.Timestamp(slider_time)
+            fig.add_vline(x=slider_ts.strftime("%H:%M:%S"), line_dash="dot", line_color="#06b6d4",
+                          annotation_text="Cursor", annotation_position="bottom")
+        except:
+            pass
+
+    # Badge
+    fig.add_annotation(
+        x=0.98, y=0.98, xref="paper", yref="paper",
+        text="<span style='background:#1e2433; padding:2px 8px; border-radius:4px;'>Eventos PMU · REE + ENTSO‑E</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)"
+    )
+
+    _LAYOUT_BASE = dict(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#cbd5e1", size=11, family="JetBrains Mono, monospace"),
+        margin=dict(l=15, r=15, t=70, b=30),
+        hoverlabel=dict(bgcolor="#111827", font_size=10, font_family="JetBrains Mono"),
+    )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(
+            text="📅 Línea de tiempo del colapso — Eventos críticos",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
+        ),
+        xaxis_title="Hora (CEST)",
+        yaxis_title="",
+        xaxis=dict(range=["11:55", "12:40"], tickformat="%H:%M:%S", gridcolor="rgba(255,255,255,0.04)"),
+        yaxis=dict(gridcolor="rgba(255,255,255,0.04)", zeroline=False, showticklabels=False),
+        height=420,
+        showlegend=False
+    )
+    return fig
+✅ Instrucciones de uso
+Reemplaza los tres archivos en tu proyecto por estos códigos.
+
+Asegúrate de tener el archivo data_28a_voltage_profiles.json en la ruta correcta (o cambia el json_path por defecto).
+
+Verifica que en app.py el slider maestro (slider_full_str) se sigue pasando a las funciones (ya está hecho).
+
+Opcional: Si quieres añadir descripciones expandibles (los campos desc y rel de forensicCharts.js), puedes hacerlo en app.py dentro de cada pestaña, usando st.expander. Por ejemplo:
+
+python
+with tab_forense:
+    render_tab_forense(st.session_state.ultimo_snapshot)
+    # añadir descripciones adicionales aquí
+Con estos cambios, el dashboard adquirirá una apariencia profesional, forense y totalmente coherente con la identidad visual de tu TFG.

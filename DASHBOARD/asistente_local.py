@@ -315,8 +315,55 @@ class AsistenteLocal:
             if len(self._historial) > 20:
                 self._historial = self._historial[-20:]
 
+    def generar_resumen_automatico(self, snapshot: dict) -> str:
+        """Genera un resumen ejecutivo del último snapshot usando el LLM."""
+        if not snapshot:
+            return "No hay datos disponibles. Sincroniza primero."
+
+        def fmt(v):
+            if v is None:
+                return "N/D"
+            if isinstance(v, (int, float)):
+                return f"{v:.1f}" if abs(v) < 1000 else f"{v:,.0f}"
+            return str(v)
+
+        prompt = f"""
+Eres un analista de sistemas eléctricos. Resume en un párrafo (máx. 180 palabras) la situación actual del sistema eléctrico español usando estos datos. Compara con el 28-A (colapso) y evalúa el riesgo.
+
+DATOS ACTUALES:
+- Demanda: {fmt(snapshot.get('demanda'))} MW
+- Solar: {fmt(snapshot.get('solar'))} MW | Eólica: {fmt(snapshot.get('eolica'))} MW
+- Nuclear: {fmt(snapshot.get('nuclear'))} MW | CCGT: {fmt(snapshot.get('ccgt'))} MW | Hidráulica: {fmt(snapshot.get('hidraulica'))} MW
+- Precio SPOT: {fmt(snapshot.get('precio_spot'))} €/MWh
+- Intercambio Francia: {fmt(snapshot.get('flujo_francia'))} MW | Portugal: {fmt(snapshot.get('flujo_portugal'))} MW
+- Frecuencia: {fmt(snapshot.get('frecuencia'))} Hz
+- Inercia: {fmt(snapshot.get('inercia'))} s
+- Penetración renovable: {fmt(snapshot.get('penetracion'))} %
+- RoCoF: {fmt(snapshot.get('rocof'))} Hz/s
+
+VALORES 28-A (colapso):
+- Inercia: 1.18 s | Penetración: 84.5% | Frecuencia: 49.85 Hz | RoCoF: 0.48 Hz/s | Demanda: 25184 MW
+
+INSTRUCCIONES:
+- Escribe un resumen técnico pero legible para un ingeniero.
+- Destaca diferencias significativas con el 28-A.
+- Concluye con un nivel de riesgo (bajo/medio/alto/crítico) y una recomendación breve.
+- Máximo 180 palabras.
+"""
+        
+        # Llamar a Ollama usando la lógica existente pero bloqueando y sin stream
+        respuesta_completa = ""
+        for chunk in self.preguntar(prompt, snapshot=None, stream=False):
+            respuesta_completa += chunk
+        
+        # Guardar en el historial la pregunta y la respuesta
+        if respuesta_completa:
+            self._historial.append({"role": "user", "content": "Genera un resumen de la situación actual."})
+            self._historial.append({"role": "assistant", "content": respuesta_completa})
+            
+        return respuesta_completa
+
     def limpiar_historial(self):
-        """Limpia el historial de conversación."""
         self._historial.clear()
 
     # ─────────────────────────────────────────────────────────────────────────

@@ -1,263 +1,152 @@
 """
-visualizaciones_forenses.py — Gráficas de alto impacto para el TFG (diseño Bloomberg Terminal)
-
-Cuatro visualizaciones construidas sobre los datos reales del 28-A:
-
-  fig_sismografo_frecuencia()   → La caída de 50 Hz a 48.8 Hz — estilo glow cinematográfico
-  fig_demanda_real_vs_prev()    → El precipicio de demanda: real vs programada vs prevista
-  fig_tormenta_de_precios()     → Los 15.000 €/MWh del desbalance vs SPOT (eje log)
-  fig_comparativa_superpuesta() → Hoy vs 28-A en subplots apilados (MW arriba, Hz abajo)
+visualizaciones_forenses.py — Gráficas forenses unificadas con estética premium
+Paleta: #0a0c10 fondo, #111827 tarjetas, #ef4444 rojo 28A, #06b6d4 cyan hoy
+Badges, gradientes, tipografía Outfit/Inter/JetBrains.
 """
 
-from datetime import datetime, timedelta
 from typing import Optional
-
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# ─── Paleta forense (física, profunda, no Tailwind plano) ─────────────────────
-C_HOY    = "#06b6d4"   # cyan           — datos de hoy
-C_28A    = "#ff5a36"   # rojo anaranjado — datos del 28-A (físico, profundo)
-C_PROG   = "#475569"   # gris pizarra   — programado/previsto
-C_VERDE  = "#10b981"   # esmeralda      — zona segura
-C_AMBAR  = "#f59e0b"   # ámbar          — zona de alerta
-C_FONDO  = "rgba(0,0,0,0)"
-C_GRID_H = "rgba(255,255,255,0.08)"   # horizontales más visibles (se siguen con el ojo)
-C_GRID_V = "rgba(0,0,0,0)"           # verticales invisibles (señales temporales)
+# =============================================================================
+# PALETA DE COLORES (Forensic / Cyberpunk Editorial)
+# =============================================================================
+C_HOY       = "#06b6d4"      # Cyan neón — datos de hoy
+C_28A       = "#ef4444"      # Rojo alarma — 28-A
+C_PROG      = "#64748b"      # Gris slate — previsiones
+C_VERDE     = "#10b981"      # Verde esmeralda
+C_AMBAR     = "#f59e0b"      # Ámbar
+C_MAGENTA   = "#d946ef"      # Magenta (fallo sistémico)
+C_FONDO     = "rgba(0,0,0,0)"
+C_GRID      = "rgba(255,255,255,0.04)"
 
-# Hora del colapso — pd.Timestamp para aritmética con pd.Timedelta
+# Timestamp del colapso
 T_COLAPSO_DT = pd.Timestamp("2025-04-28 12:33:00")
+T_COLAPSO_STR = "2025-04-28 12:33:00"
 
 _LAYOUT_BASE = dict(
     paper_bgcolor=C_FONDO,
-    plot_bgcolor="rgba(11,15,25,0.6)",   # fondo oscuro sutil, no totalmente transparente
-    font=dict(color="#e2e8f0", size=13, family="Inter, sans-serif"),
-    legend=dict(
-        bgcolor="rgba(17,24,39,0.85)",
-        bordercolor="rgba(255,255,255,0.08)",
-        borderwidth=1,
-        font=dict(size=12),
-    ),
-    margin=dict(l=10, r=10, t=80, b=10),
+    plot_bgcolor=C_FONDO,
+    font=dict(color="#cbd5e1", size=11, family="JetBrains Mono, monospace"),
+    legend=dict(bgcolor="rgba(17,24,39,0.8)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1),
+    margin=dict(l=15, r=15, t=70, b=30),
     hovermode="x unified",
-    hoverlabel=dict(
-        bgcolor="rgba(11,15,25,0.95)",
-        bordercolor="rgba(6,182,212,0.4)",
-        font=dict(family="JetBrains Mono, monospace", size=12),
-    ),
+    hoverlabel=dict(bgcolor="#111827", font_size=10, font_family="JetBrains Mono"),
 )
 
 
+def _add_source_badge(fig: go.Figure, texto: str, x: float = 0.98, y: float = 0.98):
+    """Añade un badge de fuente en la esquina superior derecha."""
+    fig.add_annotation(
+        x=x, y=y, xref="paper", yref="paper",
+        text=f"<span style='background:#1e2433; padding:2px 8px; border-radius:4px; font-family:JetBrains Mono; font-size:0.7rem; color:#8b9bb4;'>{texto}</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)", borderwidth=0
+    )
+    return fig
+
+
+def _add_gradient_context(fig: go.Figure):
+    """Añade zonas de gradiente: tensión (ámbar) y colapso (rojo)."""
+    fig.add_vrect(
+        x0="2025-04-28 12:00:00", x1=T_COLAPSO_STR,
+        fillcolor="rgba(245,158,11,0.06)", layer="below", line_width=0,
+        annotation_text="Tensión creciente", annotation_position="top left",
+        annotation_font=dict(color="#f59e0b", size=9)
+    )
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1="2025-04-28 13:10:00",
+        fillcolor="rgba(239,68,68,0.10)", layer="below", line_width=0,
+        annotation_text="COLAPSO", annotation_position="top left",
+        annotation_font=dict(color="#ef4444", size=9)
+    )
+    return fig
+
+
 # ══════════════════════════════════════════════════════════════════════════════
-# 1. SISMÓGRAFO DE FRECUENCIA — Bloomberg Terminal style
+# 1. SISMÓGRAFO DE FRECUENCIA
 # ══════════════════════════════════════════════════════════════════════════════
 
 def fig_sismografo_frecuencia(
     df_freq: pd.DataFrame,
     frecuencia_hoy: Optional[float] = None,
 ) -> go.Figure:
-    """Sismógrafo de frecuencia del 28-A — línea brillante con glow, sin fill sólido."""
-    fig = make_subplots(
-        rows=2, cols=1,
-        row_heights=[0.82, 0.18],
-        vertical_spacing=0.04,
-        shared_xaxes=True,
-        specs=[[{"secondary_y": True}], [{}]],
-    )
+    """Sismógrafo de frecuencia con bandas, eventos y gradientes."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # ── Bandas de alerta (fondo discreto) ────────────────────────────────────
+    # Bandas de alerta
     bandas = [
-        (49.8,  50.3, "rgba(16,185,129,0.04)",  None),
-        (49.5,  49.8, "rgba(245,158,11,0.07)",  "Banda primaria P.O.1.6"),
-        (49.0,  49.5, "rgba(255,90,54,0.09)",   "UFLS escalón 1 · 49.5 Hz"),
-        (48.5,  49.0, "rgba(220,38,38,0.12)",   "UFLS escalón 2 · 49.0 Hz"),
-        (47.5,  48.5, "rgba(100,0,0,0.20)",     "Zona desconexión"),
+        (49.8, 50.3, "rgba(16,185,129,0.04)", None),
+        (49.5, 49.8, "rgba(245,158,11,0.06)", "Banda primaria"),
+        (49.0, 49.5, "rgba(239,68,68,0.10)", "UFLS 1er escalón"),
+        (47.5, 49.0, "rgba(185,28,28,0.15)", "Zona crítica"),
     ]
     for y0, y1, color, label in bandas:
-        kwargs = {}
-        if label:
-            kwargs = {
-                "annotation_text": label,
-                "annotation_position": "right",
-                "annotation_font": dict(color="rgba(148,163,184,0.7)", size=10),
-            }
-        fig.add_hrect(y0=y0, y1=y1, fillcolor=color, layer="below", line_width=0,
-                      row=1, col=1, **kwargs)
+        fig.add_hrect(y0=y0, y1=y1, fillcolor=color, layer="below", line_width=0)
 
-    if not df_freq.empty and "hora_dt" in df_freq.columns and "freq" in df_freq.columns:
-        # ── GLOW: trazo ancho semitransparente detrás ─────────────────────────
+    # Curva de frecuencia
+    if not df_freq.empty and "hora_dt" in df_freq.columns:
         fig.add_trace(go.Scatter(
             x=df_freq["hora_dt"],
             y=df_freq["freq"],
-            mode="lines",
-            line=dict(color="rgba(255,90,54,0.15)", width=10),
-            hoverinfo="skip",
-            showlegend=False,
-        ), row=1, col=1, secondary_y=False)
+            name="Frecuencia 28-A",
+            line=dict(color=C_28A, width=1.8),
+            fill="tonexty",
+            fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="<b>%{x|%H:%M:%S}</b><br>%{y:.3f} Hz<extra></extra>",
+        ), secondary_y=False)
 
-        # ── LÍNEA PRINCIPAL brillante — sin fill ─────────────────────────────
-        fig.add_trace(go.Scatter(
-            x=df_freq["hora_dt"],
-            y=df_freq["freq"],
-            name="Frecuencia (Hz)",
-            mode="lines",
-            line=dict(color=C_28A, width=2.2),
-            hovertemplate=(
-                "<b>%{x|%H:%M:%S}</b><br>"
-                "Frecuencia: <b>%{y:.3f} Hz</b><extra></extra>"
-            ),
-        ), row=1, col=1, secondary_y=False)
+    # Gradiente de contexto
+    fig = _add_gradient_context(fig)
 
-        # ── RoCoF en eje secundario ───────────────────────────────────────────
-        if "rocof" in df_freq.columns:
-            rocof_nz = df_freq[df_freq["rocof"].abs() > 0.01]
-            if not rocof_nz.empty:
-                fig.add_trace(go.Scatter(
-                    x=rocof_nz["hora_dt"],
-                    y=rocof_nz["rocof"],
-                    name="RoCoF (Hz/s)",
-                    mode="markers",
-                    marker=dict(color=C_AMBAR, size=5, symbol="diamond",
-                                opacity=0.7),
-                    hovertemplate="RoCoF: <b>%{y:+.3f} Hz/s</b><extra></extra>",
-                ), row=1, col=1, secondary_y=True)
-
-        # ── ANOTACIONES: solo 3 eventos críticos de nivel 1 ──────────────────
-        # Los eventos secundarios van al panel de timeline inferior (row=2)
-        eventos_criticos = {
-            "collapse":         ("#ff5a36", "COLAPSO"),
-            "load_shedding":    ("#f59e0b", "UFLS"),
-            "protection":       ("#a78bfa", "PROT."),
-        }
-        if "evento_tipo" in df_freq.columns and "evento" in df_freq.columns:
-            for _, row_ev in df_freq[df_freq["evento"].notna() & (df_freq["evento"] != "")].iterrows():
-                tipo = str(row_ev.get("evento_tipo", ""))
-                if tipo in eventos_criticos:
-                    color_ev, prefijo = eventos_criticos[tipo]
-                    freq_y = row_ev["freq"] if pd.notna(row_ev["freq"]) else 49.5
-                    fig.add_annotation(
-                        x=row_ev["hora_dt"], y=freq_y,
-                        text=f"▲ {prefijo}",
-                        showarrow=True,
-                        arrowhead=2, arrowcolor=color_ev, arrowwidth=1.5, arrowsize=0.8,
-                        font=dict(color=color_ev, size=11, family="JetBrains Mono, monospace"),
-                        bgcolor="rgba(11,15,25,0.90)",
-                        bordercolor=color_ev, borderwidth=1, borderpad=4,
-                        ax=0, ay=-40,
-                        row=1, col=1,
-                    )
-
-        # ── Timeline de eventos en banda inferior (row=2) ─────────────────────
-        colores_tl = {
-            "oscillation":   C_AMBAR,
-            "operator_action": "#3b82f6",
-            "collapse":      C_28A,
-            "recovery":      C_VERDE,
-            "protection":    "#a78bfa",
-            "load_shedding": "#fb923c",
-        }
-        if "evento_tipo" in df_freq.columns:
-            for _, row_ev in df_freq[df_freq["evento"].notna() & (df_freq["evento"] != "")].iterrows():
-                tipo = str(row_ev.get("evento_tipo", ""))
-                color_tl = colores_tl.get(tipo, "#64748b")
-                label_corto = str(row_ev["evento"])[:30] + ("…" if len(str(row_ev["evento"])) > 30 else "")
-                fig.add_trace(go.Scatter(
-                    x=[row_ev["hora_dt"], row_ev["hora_dt"]],
-                    y=[0, 1],
-                    mode="lines+text",
-                    line=dict(color=color_tl, width=1, dash="dot"),
-                    text=["", label_corto],
-                    textposition="top center",
-                    textfont=dict(color=color_tl, size=8, family="JetBrains Mono"),
-                    hovertemplate=f"<b>{label_corto}</b><extra></extra>",
-                    showlegend=False,
-                ), row=2, col=1)
-
-    # ── COLAPSO: línea vertical + anotación nivel 1 ───────────────────────────
-    fig.add_vline(
-        x=T_COLAPSO_DT,
-        line=dict(color=C_28A, width=1.5, dash="dash"),
-        row=1, col=1,
-    )
+    # Línea vertical del colapso
+    fig.add_vline(x=T_COLAPSO_STR, line=dict(color=C_28A, width=1.5, dash="dash"))
     fig.add_annotation(
-        x=T_COLAPSO_DT, y=0.99, yref="y domain",
+        x=T_COLAPSO_STR, y=1, yref="paper",
         text="⚡ COLAPSO 12:33",
         showarrow=False,
-        font=dict(color="#ffffff", size=12, family="JetBrains Mono, monospace"),
-        bgcolor=C_28A,
-        borderpad=4,
-        xanchor="left", yanchor="top",
-        row=1, col=1,
+        font=dict(color=C_28A, size=10, family="JetBrains Mono"),
+        xanchor="right", yanchor="bottom"
     )
 
-    # ── Umbrales horizontales — solo línea fina, anotación en hover ──────────
+    # Umbrales horizontales
     for f_val, color, texto in [
-        (50.0,  C_VERDE,  "50.00 Hz"),
-        (49.5,  C_AMBAR,  "49.50 Hz UFLS"),
-        (49.0,  "#ef4444", "49.00 Hz UFLS-2"),
-        (48.8,  "#dc2626", "48.80 Hz NADIR"),
+        (50.0, C_VERDE, "50 Hz nominal"),
+        (49.5, C_AMBAR, "49.5 Hz — UFLS 1º"),
+        (49.0, C_28A, "49.0 Hz — UFLS 2º"),
     ]:
         fig.add_hline(
-            y=f_val,
-            line=dict(color=color, dash="dot", width=1),
-            annotation_text=texto,
-            annotation_font=dict(color=color, size=10, family="JetBrains Mono"),
-            annotation_position="left",
-            row=1, col=1, secondary_y=False,
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=8),
+            secondary_y=False,
         )
 
-    # ── Frecuencia HOY ────────────────────────────────────────────────────────
+    # Línea de frecuencia actual
     if frecuencia_hoy is not None:
         fig.add_hline(
             y=frecuencia_hoy,
             line=dict(color=C_HOY, width=2, dash="longdash"),
-            annotation_text=f"HOY · {frecuencia_hoy:.3f} Hz",
-            annotation_font=dict(color=C_HOY, size=11, family="JetBrains Mono"),
-            annotation_position="right",
-            row=1, col=1, secondary_y=False,
+            annotation_text=f"▶ HOY: {frecuencia_hoy:.3f} Hz",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top left",
+            secondary_y=False,
         )
 
-    # ── Layout ────────────────────────────────────────────────────────────────
+    # Badge de fuente
+    fig = _add_source_badge(fig, "ENTSO-E · PMU data · RoCoF · 1 Hz")
+
     fig.update_layout(
         **_LAYOUT_BASE,
         title=dict(
-            text="〰️ Sismógrafo de Frecuencia — 28 abril 2025 · PMU / ENTSO-E",
-            font=dict(size=15, color="#e2e8f0", family="Inter, sans-serif"),
-            x=0.01,
+            text="🌊 Sismógrafo de Frecuencia — El ECG del colapso ibérico",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
         ),
-        height=560,
-        yaxis=dict(
-            title="Frecuencia (Hz)",
-            range=[47.8, 50.5],
-            showgrid=True, gridcolor=C_GRID_H, gridwidth=1,
-            tickformat=".2f",
-            tickfont=dict(family="JetBrains Mono", size=11),
-        ),
-        yaxis2=dict(
-            title="RoCoF Hz/s",
-            range=[-3.5, 3.5],
-            showgrid=False,
-            zeroline=True, zerolinecolor="rgba(255,255,255,0.08)",
-            tickfont=dict(family="JetBrains Mono", size=10),
-            overlaying="y",
-        ),
-        xaxis=dict(
-            showgrid=False,
-            tickformat="%H:%M",
-            tickfont=dict(family="JetBrains Mono", size=11),
-        ),
-        yaxis3=dict(
-            range=[0, 1], showticklabels=False, showgrid=False,
-            zeroline=False,
-        ),
-        xaxis2=dict(
-            title="Hora (CEST)",
-            showgrid=False,
-            tickformat="%H:%M",
-            tickfont=dict(family="JetBrains Mono", size=10),
-        ),
+        height=460,
+        yaxis=dict(title="Frecuencia (Hz)", range=[47.5, 50.5], gridcolor=C_GRID, tickformat=".2f"),
+        yaxis2=dict(title="RoCoF (Hz/s)", gridcolor="rgba(0,0,0,0)", zerolinecolor=C_GRID),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
     )
     return fig
 
@@ -270,112 +159,62 @@ def fig_demanda_real_vs_prev(
     df_demanda: pd.DataFrame,
     demanda_hoy: Optional[float] = None,
 ) -> go.Figure:
-    """Demanda real vs programada vs prevista — con glow en la caída."""
+    """Demanda real vs programada con zona de colapso y badge."""
     fig = go.Figure()
 
-    # ── Zonas temporales: COLAPSO y BLACK START ───────────────────────────────
+    # Gradiente de contexto
+    fig = _add_gradient_context(fig)
+
+    # Zona de colapso (extendida visualmente)
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
     fig.add_vrect(
-        x0=T_COLAPSO_DT,
-        x1=(T_COLAPSO_DT + pd.Timedelta(minutes=37)),
-        fillcolor="rgba(255,90,54,0.08)",
-        layer="below", line_width=0,
-    )
-    fig.add_annotation(
-        x=T_COLAPSO_DT, y=0.98, yref="paper",
-        text="⚡ COLAPSO",
-        showarrow=False,
-        font=dict(color="#ffffff", size=11, family="JetBrains Mono"),
-        bgcolor=C_28A, borderpad=4,
-        xanchor="left", yanchor="top",
-    )
-    fig.add_vrect(
-        x0=(T_COLAPSO_DT + pd.Timedelta(minutes=37)),
-        x1=(T_COLAPSO_DT + pd.Timedelta(hours=2)),
-        fillcolor="rgba(245,158,11,0.05)",
-        layer="below", line_width=0,
-    )
-    fig.add_annotation(
-        x=(T_COLAPSO_DT + pd.Timedelta(minutes=37)), y=0.98, yref="paper",
-        text="▶ BLACK START",
-        showarrow=False,
-        font=dict(color="#ffffff", size=11, family="JetBrains Mono"),
-        bgcolor=C_AMBAR, borderpad=4,
-        xanchor="left", yanchor="top",
+        x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0
     )
 
-    # ── Curvas de demanda ─────────────────────────────────────────────────────
-    if "demanda_prev_mw" in df_demanda.columns:
+    # Demanda prevista
+    if not df_demanda.empty and "demanda_prev_mw" in df_demanda.columns:
         fig.add_trace(go.Scatter(
             x=df_demanda["hora_dt"], y=df_demanda["demanda_prev_mw"],
-            name="Prevista (REE)",
-            mode="lines",
-            line=dict(color=C_PROG, dash="dot", width=1.5),
+            name="Prevista", line=dict(color=C_PROG, dash="dot", width=1.5),
             hovertemplate="%{y:,.0f} MW (prevista)<extra></extra>",
         ))
 
-    if "demanda_prog_mw" in df_demanda.columns:
-        fig.add_trace(go.Scatter(
-            x=df_demanda["hora_dt"], y=df_demanda["demanda_prog_mw"],
-            name="Programada (PDBF)",
-            mode="lines",
-            line=dict(color="#64748b", dash="dash", width=1.5),
-            hovertemplate="%{y:,.0f} MW (programada)<extra></extra>",
-        ))
-
-    if "demanda_real_mw" in df_demanda.columns:
-        # Glow detrás
+    # Demanda real 28-A
+    if not df_demanda.empty and "demanda_real_mw" in df_demanda.columns:
         fig.add_trace(go.Scatter(
             x=df_demanda["hora_dt"], y=df_demanda["demanda_real_mw"],
-            mode="lines",
-            line=dict(color="rgba(255,90,54,0.12)", width=9),
-            hoverinfo="skip", showlegend=False,
-        ))
-        # Línea principal
-        fig.add_trace(go.Scatter(
-            x=df_demanda["hora_dt"], y=df_demanda["demanda_real_mw"],
-            name="Real (28-A)",
-            mode="lines",
-            line=dict(color=C_28A, width=2.2),
-            fill="tozeroy",
-            fillcolor="rgba(255,90,54,0.04)",
-            hovertemplate="<b>%{x|%H:%M}</b> → <b>%{y:,.0f} MW</b><extra>Real 28-A</extra>",
+            name="Real 28-A", line=dict(color=C_28A, width=2.5),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="<b>%{x|%H:%M}</b> → %{y:,.0f} MW<extra></extra>",
         ))
 
     if demanda_hoy is not None:
         fig.add_hline(
-            y=demanda_hoy,
-            line=dict(color=C_HOY, width=2, dash="longdash"),
-            annotation_text=f"HOY · {demanda_hoy:,.0f} MW",
-            annotation_font=dict(color=C_HOY, size=11, family="JetBrains Mono"),
-            annotation_position="right",
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"▶ HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top right",
         )
+
+    fig = _add_source_badge(fig, "ESIOS · Indicador 1294 / 1775 · 5 min")
 
     fig.update_layout(
         **_LAYOUT_BASE,
         title=dict(
-            text="⚡ El Precipicio — Demanda Real vs Programada vs Prevista",
-            font=dict(size=14, color="#e2e8f0", family="Inter, sans-serif"),
-            x=0.01,
+            text="⚡ El Precipicio — Demanda real vs. programada",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
         ),
-        height=440,
-        yaxis=dict(
-            title="Demanda (MW)",
-            showgrid=True, gridcolor=C_GRID_H, gridwidth=1,
-            tickformat=",",
-            tickfont=dict(family="JetBrains Mono", size=11),
-        ),
-        xaxis=dict(
-            title="Hora (CEST)",
-            showgrid=False,
-            tickformat="%H:%M",
-            tickfont=dict(family="JetBrains Mono", size=11),
-        ),
+        height=380,
+        yaxis=dict(title="Demanda (MW)", gridcolor=C_GRID, tickformat=","),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
     )
     return fig
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 3. TORMENTA DE PRECIOS — eje logarítmico para mostrar 80 vs 15.000 €/MWh
+# 3. TORMENTA DE PRECIOS
 # ══════════════════════════════════════════════════════════════════════════════
 
 def fig_tormenta_de_precios(
@@ -383,121 +222,64 @@ def fig_tormenta_de_precios(
     df_precios: pd.DataFrame,
     precio_spot_hoy: Optional[float] = None,
 ) -> go.Figure:
-    """Precio desbalance (log) vs SPOT — escala logarítmica para ver pico extremo."""
+    """Precio desbalance (barras) y SPOT (línea) con gradiente de colapso."""
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Zona del colapso
+    # Gradiente colapso
     fig.add_vrect(
-        x0=T_COLAPSO_DT,
-        x1=(T_COLAPSO_DT + pd.Timedelta(hours=1)),
-        fillcolor="rgba(255,90,54,0.07)",
-        layer="below", line_width=0,
-    )
-    fig.add_annotation(
-        x=T_COLAPSO_DT, y=0.98, yref="paper",
-        text="⚡ COLAPSO",
-        showarrow=False,
-        font=dict(color="#ffffff", size=10, family="JetBrains Mono"),
-        bgcolor=C_28A, borderpad=3,
-        xanchor="left", yanchor="top",
+        x0=T_COLAPSO_STR, x1=(T_COLAPSO_DT + pd.Timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0,
     )
 
-    # ── Precio de desbalance (barras, eje log) ────────────────────────────────
+    # Barras de desbalance
     if not df_desbalance.empty and "precio_max_eur" in df_desbalance.columns:
-        vals = df_desbalance["precio_max_eur"]
-        colores_barra = [
-            "#dc2626" if p > 1000 else
-            "#f59e0b" if p > 200  else
-            "#10b981"
-            for p in vals
-        ]
+        colores = [C_28A if p > 1000 else C_AMBAR if p > 200 else C_VERDE for p in df_desbalance["precio_max_eur"]]
         fig.add_trace(go.Bar(
-            x=df_desbalance["hora_dt"],
-            y=vals,
-            name="Precio desbalance",
-            marker_color=colores_barra,
-            opacity=0.85,
-            hovertemplate=(
-                "<b>%{x|%H:%M}</b><br>"
-                "Desbalance: <b>%{y:,.0f} €/MWh</b><extra></extra>"
-            ),
+            x=df_desbalance["hora_dt"], y=df_desbalance["precio_max_eur"],
+            name="Desbalance ENTSO-E", marker_color=colores, opacity=0.85,
+            hovertemplate="<b>%{x|%H:%M}</b><br>%{y:,.0f} €/MWh<extra></extra>",
         ), secondary_y=False)
 
-        # Anotación pico máximo
-        if not vals.empty:
-            idx_max = vals.idxmax()
-            pico = df_desbalance.loc[idx_max]
-            fig.add_annotation(
-                x=pico["hora_dt"],
-                y=pico["precio_max_eur"],
-                text=f"💀 {pico['precio_max_eur']:,.0f} €/MWh",
-                showarrow=True, arrowhead=2, arrowcolor=C_28A,
-                font=dict(color="#ffffff", size=11, family="JetBrains Mono"),
-                bgcolor=C_28A, borderpad=4,
-            )
-
-    # ── Precio SPOT (línea, eje derecho) ──────────────────────────────────────
+    # Precio SPOT
     if not df_precios.empty and "spot_eur" in df_precios.columns:
         fig.add_trace(go.Scatter(
-            x=df_precios["hora_dt"],
-            y=df_precios["spot_eur"],
-            name="Precio SPOT (OMIE)",
-            mode="lines",
-            line=dict(color=C_AMBAR, width=2),
-            hovertemplate=(
-                "<b>%{x|%H:%M}</b><br>"
-                "SPOT: <b>%{y:.2f} €/MWh</b><extra></extra>"
-            ),
+            x=df_precios["hora_dt"], y=df_precios["spot_eur"],
+            name="SPOT OMIE", line=dict(color=C_AMBAR, width=2.5),
+            hovertemplate="<b>%{x|%H:%M}</b><br>SPOT: %{y:.2f} €/MWh<extra></extra>",
         ), secondary_y=True)
 
-    fig.add_hline(
-        y=80, line=dict(color="#475569", dash="dot", width=1),
-        annotation_text="80 €/MWh (referencia)",
-        annotation_font=dict(color="#475569", size=10),
-        secondary_y=False,
-    )
+    fig.add_hline(y=80, line=dict(color=C_PROG, dash="dot", width=0.8),
+                  annotation_text="80 €/MWh (normal)", annotation_font=dict(color=C_PROG, size=8),
+                  secondary_y=False)
 
     if precio_spot_hoy is not None:
         fig.add_hline(
-            y=precio_spot_hoy,
-            line=dict(color=C_HOY, width=1.5, dash="longdash"),
-            annotation_text=f"HOY SPOT · {precio_spot_hoy:.1f} €/MWh",
-            annotation_font=dict(color=C_HOY, size=10, family="JetBrains Mono"),
+            y=precio_spot_hoy, line=dict(color=C_HOY, width=1.5, dash="longdash"),
+            annotation_text=f"▶ HOY SPOT: {precio_spot_hoy:.1f} €/MWh",
+            annotation_font=dict(color=C_HOY, size=8),
             secondary_y=True,
         )
+
+    fig = _add_source_badge(fig, "ENTSO-E (A85) + ESIOS (600) · 15-60 min")
 
     fig.update_layout(
         **_LAYOUT_BASE,
         title=dict(
-            text="💸 Tormenta de Precios — Desbalance (hasta 15.000 €/MWh) vs SPOT",
-            font=dict(size=14, color="#e2e8f0", family="Inter, sans-serif"),
-            x=0.01,
+            text="💸 Tormenta de Precios — Desbalance vs. SPOT",
+            font=dict(family="Outfit, sans-serif", size=16, color="#f8fafc"),
+            x=0.05, xanchor="left"
         ),
-        height=440,
+        height=380,
         barmode="overlay",
-        yaxis=dict(
-            title="Desbalance (€/MWh) · escala log",
-            type="log",                                # ← ESCALA LOGARÍTMICA
-            showgrid=True, gridcolor=C_GRID_H,
-            tickfont=dict(family="JetBrains Mono", size=10),
-        ),
-        yaxis2=dict(
-            title="SPOT OMIE (€/MWh)",
-            showgrid=False,
-            tickfont=dict(family="JetBrains Mono", size=10),
-        ),
-        xaxis=dict(
-            title="Hora (CEST)",
-            showgrid=False,
-            tickformat="%H:%M",
-            tickfont=dict(family="JetBrains Mono", size=11),
-        ),
+        yaxis=dict(title="Desbalance (€/MWh)", gridcolor=C_GRID),
+        yaxis2=dict(title="SPOT (€/MWh)", gridcolor="rgba(0,0,0,0)"),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
     )
     return fig
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 4. COMPARATIVA SUPERPUESTA — subplots apilados (MW arriba, Hz abajo)
+# 4. COMPARATIVA SUPERPUESTA HOY vs 28-A
 # ══════════════════════════════════════════════════════════════════════════════
 
 def fig_comparativa_superpuesta(
@@ -506,178 +288,111 @@ def fig_comparativa_superpuesta(
     historial_freq_hoy: list,
     demanda_hoy: Optional[float] = None,
 ) -> go.Figure:
-    """Comparativa HOY vs 28-A — MW en subplot superior, Hz en subplot inferior."""
+    """Comparativa directa hoy vs 28A con gradientes y badges."""
     fig = make_subplots(
         rows=2, cols=1,
         shared_xaxes=False,
-        subplot_titles=[
-            "<b>Demanda (MW)</b> · 28-A real vs HOY",
-            "<b>Frecuencia (Hz)</b> · 28-A vs HOY en tiempo real",
-        ],
-        row_heights=[0.52, 0.48],
-        vertical_spacing=0.10,
+        subplot_titles=("Demanda (MW)", "Frecuencia (Hz)"),
+        row_heights=[0.55, 0.45],
+        vertical_spacing=0.12,
     )
 
-    # ── Zonas colapso en AMBOS subplots ──────────────────────────────────────
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
     for row in [1, 2]:
         fig.add_vrect(
-            x0=T_COLAPSO_DT,
-            x1=(T_COLAPSO_DT + pd.Timedelta(minutes=37)),
-            fillcolor="rgba(255,90,54,0.07)", layer="below", line_width=0,
-            row=row, col=1,
-        )
-        fig.add_vline(
-            x=T_COLAPSO_DT,
-            line=dict(color=C_28A, width=1, dash="dash"),
+            x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+            fillcolor="rgba(239,68,68,0.06)", layer="below", line_width=0,
             row=row, col=1,
         )
 
-    fig.add_annotation(
-        x=T_COLAPSO_DT, y=0.99, yref="y domain",
-        text="⚡ 12:33", showarrow=False,
-        font=dict(color="#ffffff", size=10, family="JetBrains Mono"),
-        bgcolor=C_28A, borderpad=3,
-        xanchor="left", yanchor="top",
-        row=1, col=1,
-    )
-
-    # ── SUBPLOT 1: DEMANDA ────────────────────────────────────────────────────
+    # Demanda 28-A
     if not df_demanda_28a.empty and "demanda_real_mw" in df_demanda_28a.columns:
-        # Glow
         fig.add_trace(go.Scatter(
             x=df_demanda_28a["hora_dt"], y=df_demanda_28a["demanda_real_mw"],
-            mode="lines", line=dict(color="rgba(255,90,54,0.12)", width=9),
-            hoverinfo="skip", showlegend=False,
-        ), row=1, col=1)
-        # Línea
-        fig.add_trace(go.Scatter(
-            x=df_demanda_28a["hora_dt"], y=df_demanda_28a["demanda_real_mw"],
-            name="Demanda 28-A",
-            mode="lines", line=dict(color=C_28A, width=2.2),
-            fill="tozeroy", fillcolor="rgba(255,90,54,0.04)",
+            name="Demanda 28-A", line=dict(color=C_28A, width=2),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
             hovertemplate="%{x|%H:%M} → %{y:,.0f} MW<extra>28-A</extra>",
         ), row=1, col=1)
 
     if demanda_hoy is not None:
         fig.add_hline(
-            y=demanda_hoy,
-            line=dict(color=C_HOY, width=2, dash="dash"),
-            annotation_text=f"HOY · {demanda_hoy:,.0f} MW",
-            annotation_font=dict(color=C_HOY, size=10, family="JetBrains Mono"),
-            annotation_position="right",
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=9),
             row=1, col=1,
         )
 
-    # ── SUBPLOT 2: FRECUENCIA ─────────────────────────────────────────────────
+    # Frecuencia 28-A
     if not df_freq_28a.empty and "hora_dt" in df_freq_28a.columns:
-        # Glow 28-A
         fig.add_trace(go.Scatter(
             x=df_freq_28a["hora_dt"], y=df_freq_28a["freq"],
-            mode="lines", line=dict(color="rgba(255,90,54,0.12)", width=9),
-            hoverinfo="skip", showlegend=False,
-        ), row=2, col=1)
-        # Línea 28-A
-        fig.add_trace(go.Scatter(
-            x=df_freq_28a["hora_dt"], y=df_freq_28a["freq"],
-            name="Frecuencia 28-A",
-            mode="lines", line=dict(color=C_28A, width=2.2),
+            name="Frecuencia 28-A", line=dict(color=C_28A, width=1.8),
             hovertemplate="%{x|%H:%M:%S} → %{y:.3f} Hz<extra>28-A</extra>",
         ), row=2, col=1)
 
-    if not historial_freq_hoy:
-        # Dummy data si no hay historial
-        historial_freq_hoy = [
-            {"time": (datetime.now() - timedelta(seconds=i*5)).strftime("%H:%M:%S"), "freq": 50.0}
-            for i in range(10)
-        ]
+    if historial_freq_hoy:
+        df_hoy = pd.DataFrame(historial_freq_hoy)
+        if "freq" in df_hoy.columns and "time" in df_hoy.columns:
+            fig.add_trace(go.Scatter(
+                x=df_hoy["time"], y=df_hoy["freq"],
+                name="Frecuencia HOY", line=dict(color=C_HOY, width=2),
+                hovertemplate="%{x} → %{y:.4f} Hz<extra>HOY</extra>",
+            ), row=2, col=1)
 
-    df_hoy = pd.DataFrame(historial_freq_hoy)
-    if "freq" in df_hoy.columns and "time" in df_hoy.columns:
-        # Para superponer "HOY" sobre "28-A", necesitamos alinear los ejes X.
-        # Asignamos el último punto de HOY exactamente a T_COLAPSO_DT.
-        import pandas as pd
-        hoy_dt = pd.to_datetime(datetime.now().strftime("%Y-%m-%d ") + df_hoy["time"])
-        offset = T_COLAPSO_DT - hoy_dt.iloc[-1]
-        df_hoy["time_aligned"] = hoy_dt + offset
-
-        fig.add_trace(go.Scatter(
-            x=df_hoy["time_aligned"], y=df_hoy["freq"],
-            name="Frecuencia HOY",
-            mode="lines", line=dict(color=C_HOY, width=2.2),
-            hovertemplate="HOY → %{y:.4f} Hz<extra>HOY</extra>",
-        ), row=2, col=1)
-
-    for f_val, color, texto in [
-        (50.0, C_VERDE,  "50 Hz"),
-        (49.5, C_AMBAR,  "UFLS 49.5"),
-        (49.0, "#ef4444","UFLS 49.0"),
-        (48.8, "#dc2626","NADIR 28-A"),
-    ]:
+    for f_val, color, texto in [(50.0, C_VERDE, "50 Hz"), (49.5, C_AMBAR, "UFLS 49.5")]:
         fig.add_hline(
-            y=f_val,
-            line=dict(color=color, dash="dot", width=1),
-            annotation_text=texto,
-            annotation_font=dict(color=color, size=9, family="JetBrains Mono"),
-            annotation_position="left",
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=7),
             row=2, col=1,
         )
 
-    # ── Layout general ────────────────────────────────────────────────────────
+    # Badge global
+    fig.add_annotation(
+        x=0.98, y=0.98, xref="paper", yref="paper",
+        text="<span style='background:#1e2433; padding:2px 8px; border-radius:4px;'>ESIOS + ENTSO-E · Datos reales</span>",
+        showarrow=False, font=dict(size=9), xanchor="right", yanchor="top",
+        bgcolor="rgba(0,0,0,0)"
+    )
+
     fig.update_layout(
         **_LAYOUT_BASE,
         title=dict(
-            text="📊 HOY vs 28-A — Comparativa en tiempo real",
-            font=dict(size=15, color="#e2e8f0", family="Inter, sans-serif"),
-            x=0.01,
+            text="📊 HOY vs 28-A — Telemetría superpuesta",
+            font=dict(family="Outfit, sans-serif", size=16),
+            x=0.05, xanchor="left"
         ),
-        height=700,
+        height=540,
     )
-    fig.update_yaxes(
-        showgrid=True, gridcolor=C_GRID_H, gridwidth=1,
-        tickfont=dict(family="JetBrains Mono", size=11),
-    )
-    fig.update_xaxes(
-        showgrid=False,
-        tickformat="%H:%M",
-        tickfont=dict(family="JetBrains Mono", size=11),
-    )
-    # Rango Y del subplot de frecuencia
-    fig.update_yaxes(range=[47.8, 50.5], row=2, col=1,
-                     tickformat=".2f")
+    fig.update_yaxes(gridcolor=C_GRID)
+    fig.update_xaxes(gridcolor=C_GRID, tickformat="%H:%M")
     return fig
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# 5. ESTADÍSTICAS
+# 5. FUNCIONES AUXILIARES DE ESTADÍSTICAS (sin cambios)
 # ══════════════════════════════════════════════════════════════════════════════
 
 def stats_frecuencia_28a(df_freq: pd.DataFrame) -> dict:
     if df_freq.empty:
         return {}
-    resultado = {
-        "freq_min": df_freq["freq"].min(),
-        "freq_max": df_freq["freq"].max(),
-        "hora_colapso": "12:33:00",
+    return {
+        "freq_min":       df_freq["freq"].min(),
+        "freq_max":       df_freq["freq"].max(),
+        "t_nadir_s":      int(df_freq.loc[df_freq["freq"].idxmin(), "t_s"]) if "t_s" in df_freq.columns else 0,
+        "rocof_max":      df_freq["rocof"].abs().max() if "rocof" in df_freq.columns else None,
+        "n_eventos":      df_freq["evento"].notna().sum() if "evento" in df_freq.columns else 0,
+        "hora_nadir":     df_freq.loc[df_freq["freq"].idxmin(), "hora_dt"].strftime("%H:%M:%S") if "hora_dt" in df_freq.columns else "",
+        "hora_colapso":   "12:33:00",
     }
-    if "t_s" in df_freq.columns:
-        resultado["t_nadir_s"] = int(df_freq.loc[df_freq["freq"].idxmin(), "t_s"])
-    if "rocof" in df_freq.columns:
-        resultado["rocof_max"] = df_freq["rocof"].abs().max()
-    if "evento" in df_freq.columns:
-        resultado["n_eventos"] = df_freq["evento"].notna().sum()
-    if "hora_dt" in df_freq.columns:
-        resultado["hora_nadir"] = df_freq.loc[df_freq["freq"].idxmin(), "hora_dt"].strftime("%H:%M:%S")
-    return resultado
-
 
 def stats_precios_28a(df_desbalance: pd.DataFrame, df_precios: pd.DataFrame) -> dict:
     resultado = {}
     if not df_desbalance.empty and "precio_max_eur" in df_desbalance.columns:
-        resultado["desbalance_max"] = df_desbalance["precio_max_eur"].max()
+        resultado["desbalance_max"]  = df_desbalance["precio_max_eur"].max()
         idx = df_desbalance["precio_max_eur"].idxmax()
-        resultado["hora_desbal_max"] = df_desbalance.loc[idx, "hora_dt"].strftime("%H:%M")
+        resultado["hora_desbal_max"] = df_desbalance.loc[idx, "hora_dt"].strftime("%H:%M") if "hora_dt" in df_desbalance.columns else ""
     if not df_precios.empty and "spot_eur" in df_precios.columns:
-        resultado["spot_min"]  = df_precios["spot_eur"].min()
-        resultado["spot_max"]  = df_precios["spot_eur"].max()
-        resultado["horas_neg"] = int((df_precios["spot_eur"] < 0).sum())
+        resultado["spot_min"]   = df_precios["spot_eur"].min()
+        resultado["spot_max"]   = df_precios["spot_eur"].max()
+        resultado["horas_neg"]  = (df_precios["spot_eur"] < 0).sum()
     return resultado

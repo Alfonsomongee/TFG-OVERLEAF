@@ -82,10 +82,8 @@ const config = {
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Contenido',
+            type: 'html',
+            position: 'right',
           },
           {
             type: 'localeDropdown',

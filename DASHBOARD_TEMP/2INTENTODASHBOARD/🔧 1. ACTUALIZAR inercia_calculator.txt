@@ -1,0 +1,207 @@
+📄 1. phase2_voltage_analyzer.py (completo y definitivo)
+python
+import json
+import pandas as pd
+import plotly.graph_objects as go
+from typing import Optional
+
+def generar_grafica_voltajes(
+    json_path: str = "data_28a_voltage_profiles.json",
+    slider_time: Optional[str] = None
+) -> go.Figure:
+    """
+    Genera la gráfica de perfiles de tensión (28-A).
+    slider_time: timestamp (str) para añadir línea vertical sincronizada.
+    """
+    with open(json_path, "r") as f:
+        data = json.load(f)
+
+    timestamps = pd.to_datetime(data["timestamps"])
+    voltages = data["voltages"]
+
+    fig = go.Figure()
+
+    for nudo, valores in voltages.items():
+        fig.add_trace(go.Scatter(
+            x=timestamps,
+            y=valores,
+            mode="lines",
+            name=nudo,
+            line=dict(width=2)
+        ))
+
+    # Bandas de tensión
+    fig.add_hrect(y0=0.95, y1=1.05, fillcolor="rgba(0,255,0,0.1)", line_width=0, annotation_text="Nominal ±5%")
+    fig.add_hrect(y0=1.05, y1=1.10, fillcolor="rgba(255,165,0,0.2)", line_width=0, annotation_text="Alerta")
+    fig.add_hrect(y0=1.10, y1=1.20, fillcolor="rgba(255,0,0,0.3)", line_width=0, annotation_text="Crítico")
+
+    # Línea del disparo
+    fig.add_vline(x=pd.Timestamp("2025-04-28 12:32:57"), line_dash="dash", line_color="red",
+                  annotation_text="Disparo Granada", annotation_position="top right")
+
+    # Línea vertical del slider (si existe)
+    if slider_time:
+        try:
+            slider_ts = pd.Timestamp(slider_time)
+            fig.add_vline(x=slider_ts, line_dash="dot", line_color="#06b6d4", line_width=1.5,
+                          annotation_text="Cursor", annotation_position="bottom")
+        except:
+            pass
+
+    fig.update_layout(
+        title="Perfiles de tensión por nudo crítico (28-A)",
+        xaxis_title="Hora",
+        yaxis_title="Tensión (p.u.)",
+        template="plotly_dark",
+        hovermode="x unified"
+    )
+    return fig
+📅 2. phase2_timeline.py (con alternancia de alturas)
+python
+import plotly.graph_objects as go
+import pandas as pd
+from typing import Optional
+
+def generar_timeline(slider_time: Optional[str] = None) -> go.Figure:
+    """
+    Genera timeline de eventos del 28-A.
+    slider_time: timestamp para línea vertical sincronizada.
+    """
+    eventos = [
+        ("12:03", "Primera oscilación forzada", "yellow"),
+        ("12:19", "Segunda oscilación", "yellow"),
+        ("12:32:57", "Disparo transformer Granada (-355 MW)", "orange"),
+        ("12:33:16", "Desconexiones masivas inversores", "red"),
+        ("12:33:20", "Apertura Marruecos", "red"),
+        ("12:33:21", "Pérdida sincronismo Francia", "red"),
+        ("12:33:27", "COLAPSO TOTAL", "black"),
+    ]
+
+    # Alturas alternadas para evitar solapamiento
+    alturas = [-40, -80, -120, -40, -80, -120, -40]
+
+    fig = go.Figure()
+
+    for i, (hora, desc, color) in enumerate(eventos):
+        fig.add_annotation(
+            x=hora,
+            y=1,
+            text=desc,
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor=color,
+            ax=0,
+            ay=alturas[i % len(alturas)],
+            font=dict(color="white", size=11),
+            bgcolor="rgba(0,0,0,0.6)",
+            bordercolor=color,
+            borderwidth=1
+        )
+
+    # Línea base horizontal
+    fig.add_hline(y=1, line_dash="dot", line_color="gray", annotation_text="Línea de eventos")
+
+    # Línea vertical del slider
+    if slider_time:
+        try:
+            slider_ts = pd.Timestamp(slider_time)
+            fig.add_vline(x=slider_ts.strftime("%H:%M:%S"), line_dash="dot", line_color="#06b6d4",
+                          annotation_text="Cursor", annotation_position="bottom")
+        except:
+            pass
+
+    fig.update_layout(
+        title="Eventos críticos del 28-A",
+        xaxis_title="Hora",
+        yaxis_title="",
+        xaxis=dict(range=["11:55", "12:40"], tickformat="%H:%M:%S"),
+        template="plotly_dark",
+        height=300,
+        showlegend=False
+    )
+    return fig
+⚙️ 3. Modificaciones en analyzer.py (manejo de voltaje)
+Localiza la función que calcula el Risk Score y añade o modifica el bloque donde se obtiene voltage_pu. También incluye la función calcular_voltaje_stress que ya te di, pero con la corrección de tolerar None.
+
+Añade esto al principio o donde corresponda:
+
+python
+def calcular_voltaje_stress(voltage_pu: Optional[float]) -> float:
+    """
+    Si voltage_pu es None o no existe, asume 1.0 (tensión nominal) -> estrés 0.
+    """
+    if voltage_pu is None:
+        return 0.0
+    # Solo consideramos sobretensión (peligro para el 28-A)
+    if voltage_pu <= 1.05:
+        return 0.0
+    stress = (voltage_pu - 1.05) / 0.10 * 100
+    return min(100, max(0, stress))
+Luego, en la parte donde calculas el riesgo, asegúrate de obtener voltage_pu del snapshot así:
+
+python
+voltage_pu = snapshot.get("tension_kv", None)
+if voltage_pu is not None:
+    voltage_pu = voltage_pu / 400.0  # convertir a p.u. (base 400 kV)
+# Si no existe, se quedará como None y la función lo tratará como 1.0
+Finalmente, llama a calcular_risk_score con ese valor.
+
+🖥️ 4. Modificaciones en app.py (slider maestro y sincronización)
+En app.py, antes de crear las pestañas (tabs), añade el slider y guárdalo en st.session_state:
+
+python
+# Slider maestro de sincronización (solo para las gráficas forenses)
+st.markdown("### 🕹️ Sincronización de gráficas")
+col_slider, _ = st.columns([3, 1])
+with col_slider:
+    slider_time = st.slider(
+        "Mover línea de tiempo (cursor)",
+        min_value=pd.Timestamp("2025-04-28 12:00:00"),
+        max_value=pd.Timestamp("2025-04-28 12:40:00"),
+        value=pd.Timestamp("2025-04-28 12:33:00"),
+        format="HH:mm:ss",
+        key="master_slider"
+    )
+Luego, dentro de las pestañas correspondientes, pasa el valor del slider a las funciones de gráfica:
+
+python
+from phase2_voltage_analyzer import generar_grafica_voltajes
+from phase2_timeline import generar_timeline
+
+with tab2:  # pestaña de voltaje
+    fig_volt = generar_grafica_voltajes(slider_time=slider_time.strftime("%Y-%m-%d %H:%M:%S"))
+    st.plotly_chart(fig_volt, use_container_width=True)
+
+with tab3:  # pestaña de timeline
+    fig_timeline = generar_timeline(slider_time=slider_time.strftime("%Y-%m-%d %H:%M:%S"))
+    st.plotly_chart(fig_timeline, use_container_width=True)
+Si también quieres sincronizar la gráfica de frecuencia (la que ya tenías), modifica su función para que acepte slider_time y añada una línea vertical similar.
+
+📁 5. Archivo .streamlit/config.toml (definitivo)
+toml
+[server]
+enableCORS = false
+enableXsrfProtection = false
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#3b82f6"
+backgroundColor = "#0b0f19"
+secondaryBackgroundColor = "#111827"
+textColor = "#f8fafc"
+font = "monospace"
+✅ Resumen de lo que debes hacer ahora
+Reemplaza phase2_voltage_analyzer.py y phase2_timeline.py con los códigos de arriba.
+
+Actualiza analyzer.py añadiendo las funciones y la lógica de tolerancia a None.
+
+Modifica app.py añadiendo el slider y pasando el parámetro a las gráficas.
+
+Verifica que el JSON data_28a_voltage_profiles.json esté en la ruta correcta (o cambia la ruta en el código).
+
+Reinicia Streamlit (Ctrl+C y streamlit run app.py).

@@ -216,30 +216,47 @@ def tiempo_hasta_nadir(
 
 # ─── Índice de riesgo combinado ──────────────────────────────────────────────
 
+def calcular_voltaje_stress(voltage_pu: Optional[float]) -> float:
+    """
+    Si voltage_pu es None o no existe, asume 1.0 (tensión nominal) -> estrés 0.
+    """
+    if voltage_pu is None:
+        return 0.0
+    # Solo consideramos sobretensión (peligro para el 28-A)
+    if voltage_pu <= 1.05:
+        return 0.0
+    stress = (voltage_pu - 1.05) / 0.10 * 100
+    return min(100, max(0, stress))
+
 def indice_riesgo_sistema(snapshot: Dict) -> Tuple[float, str, str]:
     """
     Calcula un índice de riesgo compuesto (0-100) para el sistema.
 
     Combina ponderadamente:
-      - Inercia (40%): normalizada contra valor 28-A
-      - Penetración renovable (25%)
+      - Voltaje (40%): stress por sobretensión Q-V
+      - Inercia (25%): normalizada contra valor 28-A
       - Frecuencia (20%)
       - RoCoF (15%)
-
-    Returns:
-        (indice_0_100, nivel_texto, descripcion)
     """
     score = 0.0
     n_metricas = 0
 
-    # Inercia (40%) — 0 = máximo riesgo, 100 = mínimo riesgo
+    # Voltaje (40%)
+    voltage_pu = snapshot.get("tension_kv")
+    if voltage_pu is not None:
+        voltage_pu = voltage_pu / 400.0  # convertir a p.u. (base 400 kV)
+    score_voltaje = calcular_voltaje_stress(voltage_pu)
+    score += score_voltaje * 0.40
+    n_metricas += 1
+
+    # Inercia (25%) — 0 = máximo riesgo, 100 = mínimo riesgo
     inercia = snapshot.get("inercia")
     if inercia is not None:
         inercia_max_normal = 4.0   # s — valor típico en sistema convencional
         inercia_min_critico = INERCIA_28A_S
         inercia_norm = min(1.0, max(0.0, (inercia - inercia_min_critico) /
                                          (inercia_max_normal - inercia_min_critico)))
-        score += (1.0 - inercia_norm) * 40  # mayor inercia → menor riesgo
+        score += (1.0 - inercia_norm) * 25  # mayor inercia → menor riesgo
         n_metricas += 1
 
     # Penetración (25%)
@@ -269,9 +286,9 @@ def indice_riesgo_sistema(snapshot: Dict) -> Tuple[float, str, str]:
 
     # Normalizar si no tenemos todas las métricas
     if n_metricas < 4:
-        pesos_total = {"inercia": 40, "penetracion": 25, "frecuencia": 20, "rocof": 15}
+        pesos_total = {"voltaje": 40, "inercia": 25, "frecuencia": 20, "rocof": 15}
         peso_efectivo = sum(v for k, v in pesos_total.items()
-                            if snapshot.get(k) is not None)
+                            if snapshot.get(k) is not None or k == "voltaje") # Asumimos voltaje
         if peso_efectivo > 0:
             score = score * 100 / peso_efectivo
 
