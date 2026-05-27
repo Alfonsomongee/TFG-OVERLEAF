@@ -1,6 +1,6 @@
 // MiniTimeline.jsx
 import React, { useState } from 'react';
-import { TIMELINE_MARKERS } from '@site/src/data/forensicCharts';
+import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import styles from './ForensicGallery2.module.css';
 
 // Converts "HH:MM" to a 0-1 percentage of the 24-hour day
@@ -11,6 +11,7 @@ function timeToPercent(timeStr) {
 }
 
 export default function MiniTimeline({ highlightedCharts, onHover }) {
+  const { TIMELINE_MARKERS } = useForensicData();
   const [activeMarker, setActiveMarker] = useState(null);
 
   return (

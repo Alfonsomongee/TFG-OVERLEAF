@@ -1,11 +1,12 @@
 // CategoryGrid.jsx
 import React from 'react';
-import { getCategoryById, getChartsByCategory } from '@site/src/data/forensicCharts';
+import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import styles from './ForensicGallery2.module.css';
 
 
 
 export default function CategoryGrid({ categoryId, onSelectChart, locale }) {
+  const { getCategoryById, getChartsByCategory } = useForensicData();
   const cat = getCategoryById(categoryId);
   const charts = getChartsByCategory(categoryId);
   if (!cat) return null;

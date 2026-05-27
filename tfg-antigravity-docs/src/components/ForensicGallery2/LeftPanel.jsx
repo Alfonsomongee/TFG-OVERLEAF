@@ -1,12 +1,13 @@
 // LeftPanel.jsx
 import React, { useState, useEffect } from 'react';
-import { CATEGORIES, getChartsByCategory } from '@site/src/data/forensicCharts';
+import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import MiniTimeline from './MiniTimeline';
 import styles from './ForensicGallery2.module.css';
 
 
 
 export default function LeftPanel({ activeChartId, activeCategoryId, onSelectChart, onSelectCategory }) {
+  const { CATEGORIES, getChartsByCategory } = useForensicData();
   const [openCategories, setOpenCategories] = useState({ [activeCategoryId]: true });
   const [highlightedCharts, setHighlightedCharts] = useState([]);
 

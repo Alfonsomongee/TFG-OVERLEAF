@@ -1,7 +1,7 @@
 // index.jsx — ForensicGallery2 main component
 import React, { useState, useCallback } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { CHARTS, CATEGORIES, getChartsByCategory, getCategoryById } from '@site/src/data/forensicCharts';
+import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import LeftPanel from './LeftPanel';
 import ChartViewer from './ChartViewer';
 import CategoryGrid from './CategoryGrid';
@@ -20,6 +20,8 @@ export default function ForensicGallery2() {
   const { i18n } = useDocusaurusContext();
   const locale = i18n?.currentLocale || 'es';
   const lm = MOBILE_UI[locale] || MOBILE_UI.es;
+
+  const { CHARTS, CATEGORIES, getChartsByCategory, getCategoryById } = useForensicData();
 
   // Default: first chart of cat1
   const defaultChart = getChartsByCategory('cat1')[0];

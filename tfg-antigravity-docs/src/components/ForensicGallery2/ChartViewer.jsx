@@ -1,6 +1,6 @@
 // ChartViewer.jsx
 import React, { useState } from 'react';
-import { CHARTS, CATEGORIES, getCategoryById, getAdjacentCharts } from '@site/src/data/forensicCharts';
+import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import styles from './ForensicGallery2.module.css';
 
 // Lazy-loaded chart components
@@ -136,6 +136,7 @@ const UI_LABELS = {
 };
 
 export default function ChartViewer({ chartId, locale, onSelectChart }) {
+  const { CHARTS, getCategoryById, getAdjacentCharts } = useForensicData();
   const chart = CHARTS.find(c => c.id === chartId);
   const l = UI_LABELS[locale] || UI_LABELS.es;
   const [mobileDescOpen, setMobileDescOpen] = useState(false);

@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Scrollama, Step } from 'react-scrollama';
 import { LineChart, Line, ReferenceLine, YAxis, XAxis, ResponsiveContainer } from 'recharts';
 import styles from './FrequencyChart.module.css';
-import { timelineData } from '../data/forensicData';
+import { useForensicDataTablas } from '../data/forensicDataI18n';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 // Filtramos el 0.0 Hz porque distorsiona el gráfico que queremos mostrar (caída hasta 46 Hz)
-const validTimelineData = timelineData.filter(d => d.frecuencia > 0);
 
 const getSteps = (lang) => {
   const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
@@ -19,7 +18,6 @@ const getSteps = (lang) => {
     { stepIndex: 5, title: t('12:33:23 — Colapso y paradoja UFLS', '12:33:23 — Collapse & UFLS Paradox', '12:33:23 — Colapso e Paradoxo UFLS', '12:33:23 — Effondrement et Paradoxe UFLS', '12:33:23 — Collasso e Paradosso UFLS', '12:33:23 — Kollaps & UFLS-Paradoxon'), text: t('El UFLS deslastra 10 GW de bombeo y demanda industrial. Paradójicamente, esto agrava la sobretensión al eliminar consumo inductivo. Segundos después, la central nuclear sufre SCRAM. Es el cero absoluto.', 'The UFLS sheds 10 GW of pumping and industrial demand. Paradoxically, this aggravates the overvoltage by removing inductive consumption. Seconds later, the nuclear plant suffers SCRAM. Absolute zero.', 'O UFLS corta 10 GW de bombeamento e demanda industrial. A usina nuclear sofre SCRAM. É o zero absoluto.', 'L\'UFLS décharge 10 GW de pompage et de demande industrielle. La centrale nucléaire subit un SCRAM.', 'L\'UFLS scarica 10 GW di pompaggio e domanda industriale. La centrale nucleare subisce uno SCRAM.', 'Das UFLS wirft 10 GW Pump- und Industrienachfrage ab. Das Kernkraftwerk erleidet einen SCRAM. Absoluter Nullpunkt.'), visibleUntilT: 26 }
   ];
 };
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export default function FrequencyChartScrolly({ isGallery = false, lang }) {
   const { i18n } = useDocusaurusContext();
@@ -48,6 +46,8 @@ function FrequencyChartScrollyContent({ isGallery, lang }) {
   
   const STEPS = getSteps(lang);
   const currentStep = STEPS[currentStepIndex] || STEPS[0];
+  const { timelineData } = useForensicDataTablas();
+  const validTimelineData = (timelineData || []).filter(d => d.frecuencia > 0);
   const visibleData = validTimelineData.filter(d => d.tiempoS <= currentStep.visibleUntilT);
 
   const getStrings = (l) => {
