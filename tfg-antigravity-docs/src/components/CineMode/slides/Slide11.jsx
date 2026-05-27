@@ -54,7 +54,7 @@ export default function Slide11({ slideProgress }) {
 
         {/* Triángulo y vértices */}
         <div className={styles.triangleWrapper} style={{ opacity: triangleOpacity }}>
-          <svg viewBox="0 0 900 480" className={styles.triangleSvg}>
+          <svg viewBox="-150 0 1200 500" className={styles.triangleSvg}>
             <polygon points="450,60 820,430 80,430" fill="none" stroke="#3b82f6" strokeWidth="2.5" />
             <g style={{ opacity: verticesOpacity }}>
               <circle cx="450" cy="60" r="7" fill="#3b82f6" />
