@@ -24,6 +24,13 @@ export default function ExecutiveHook() {
       if (btn) {
         btn.style.display = isIntro ? 'none' : 'flex';
       }
+
+      // Add/remove intro-page class for CSS styling
+      if (isIntro) {
+        document.body.classList.add('intro-page');
+      } else {
+        document.body.classList.remove('intro-page');
+      }
     }
   }, [location.pathname, lang]);
 
@@ -40,6 +47,47 @@ export default function ExecutiveHook() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const path = location.pathname.toLowerCase();
+      const isIntro = path === '/' || path === '' || (path.startsWith(`/${lang}`) && path.split('/').filter(Boolean).length <= 1);
+
+      // Hide sidebar, toc, and footer only on intro page
+      const sidebar = document.querySelector('.theme-doc-sidebar-container');
+      const tocDesktop = document.querySelector('.theme-doc-toc-desktop');
+      const tocMobile = document.querySelector('.theme-doc-toc-mobile');
+      const footer = document.querySelector('footer');
+      const main = document.querySelector('main');
+
+      if (isIntro) {
+        if (sidebar) sidebar.style.display = 'none';
+        if (tocDesktop) tocDesktop.style.display = 'none';
+        if (tocMobile) tocMobile.style.display = 'none';
+        if (footer) footer.style.display = 'none';
+        if (main) {
+          main.style.width = '100vw';
+          main.style.marginLeft = 'calc(-50vw + 50%)';
+          main.style.marginRight = '0';
+          main.style.padding = '0';
+          main.style.maxWidth = '100vw';
+        }
+      } else {
+        // Restore sidebar, toc, and footer on chapter pages
+        if (sidebar) sidebar.style.display = '';
+        if (tocDesktop) tocDesktop.style.display = '';
+        if (tocMobile) tocMobile.style.display = '';
+        if (footer) footer.style.display = '';
+        if (main) {
+          main.style.width = '';
+          main.style.marginLeft = '';
+          main.style.marginRight = '';
+          main.style.padding = '';
+          main.style.maxWidth = '';
+        }
+      }
+    }
+  }, [location.pathname, lang]);
 
   useEffect(() => {
     if (!showSplash) return;
