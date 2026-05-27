@@ -1,0 +1,35 @@
+====================================================================
+CONTEXTO PARA CLAUDE: ESTADO DEL PROYECTO TFG DOCUSAURUS (INCIDENTE 28-A)
+====================================================================
+
+¡Hola Claude! Te paso el contexto actual de mi proyecto para que sepas exactamente en qué punto estamos y me ayudes a seguir construyendo.
+
+1. NATURALEZA DEL PROYECTO
+Estoy desarrollando mi TFG sobre el "Análisis Forense del Apagón Ibérico del 28 de Abril de 2025 (28-A)" utilizando Docusaurus como plataforma interactiva. El objetivo es ir más allá del típico PDF académico y ofrecer una experiencia interactiva (Modo Cine, animaciones al hacer scroll, gráficas dinámicas, etc.).
+
+2. LO QUE YA HEMOS IMPLEMENTADO (ESTADO ACTUAL)
+Con mi asistente local de código ya hemos integrado exitosamente tus componentes. En concreto, tenemos:
+
+- **ENTSO-E Dashboard Interactivo**: 
+  Un panel que muestra los datos de la plataforma ENTSO-E. Como aún espero la API Key oficial, hemos implementado una capa de "mock data" para entorno de desarrollo.
+  *Se ha integrado también un Botón Modal global (desde `Root.js`) que permite abrir este dashboard desde cualquier punto del TFG sin perder el hilo de lectura.*
+
+- **Galería Forense de Datos (GalleryForensic)**:
+  Ejecutamos el script `process-28a-data.js` sobre mis archivos brutos (`TABLAS.txt` y los JSON de ENTSO-E que pesaban megas). El script generó con éxito archivos reducidos (`28A_demand.json`, `28A_inertia.json`, etc.) y el `gallery-index.json`. 
+  *Hemos copiado el componente `GalleryForensic.jsx`, sus CSS, y los JSONs en `src/components/GalleryForensic` y `src/data/processed`. Está registrado en `MDXComponents.js` y publicado en la ruta `docs/04-galeria-datos.mdx`.*
+
+- **Sincronización Scroll (Sticky Timeline)**:
+  Implementamos un componente sticky en el Capítulo 3 que avanza y resalta hitos cronológicos a medida que el usuario baja por la página (usando IntersectionObserver).
+
+3. STACK TECNOLÓGICO Y RUTAS CLAVE
+- Framework: Docusaurus (React, MDX)
+- Gráficas: Recharts
+- Estilos: CSS Modules nativos (sin Tailwind)
+- Rutas de componentes: `/tfg-antigravity-docs/src/components/...`
+- Rutas de datos: `/tfg-antigravity-docs/src/data/...`
+- Componentes inyectados globalmente en: `src/theme/MDXComponents.js` (incluyendo `GalleryForensic`, `ENTSOEDashboard`, etc.)
+
+4. MI OBJETIVO AHORA MISMO
+A partir de aquí, quiero seguir puliendo el TFG. 
+
+[AQUÍ ESCRIBE TU PETICIÓN PARA CLAUDE, POR EJEMPLO: "Quiero añadir más gráficas a la galería", "Quiero crear la estructura del capítulo 5", "Quiero mejorar la estética del modo cine", etc.]

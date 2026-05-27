@@ -1,0 +1,61 @@
+=============================================================================
+CATÁLOGO DE DATOS FORENSES DEL 28 DE ABRIL DE 2025 (PARA COMPARATIVA EN DASHBOARD)
+=============================================================================
+
+Este documento lista todos los archivos JSON históricos del colapso (28 de abril) que están disponibles en tu proyecto. 
+Puedes proporcionarle esta lista a la IA para que sepa exactamente qué archivos puede cargar en el Dashboard de Streamlit para dibujar las gráficas comparativas ("Tiempo Real vs 28A").
+
+-----------------------------------------------------------------------------
+1. DATOS DE ESIOS (Red Eléctrica de España)
+-----------------------------------------------------------------------------
+- demanda_28_29_abril.json / export_evolucion-demanda_...json
+  Muestra: La curva de demanda peninsular en tiempo real frente a la programada.
+  Uso comparativo: Permite dibujar la caída abrupta de miles de MW a las 15:42 del 28A frente a la curva suave del día de hoy.
+
+- export_generacion-medida_...json (Mix de Generación)
+  Muestra: Producción por tecnología (solar, eólica, nuclear, ciclos combinados) cada 10 minutos.
+  Uso comparativo: Fundamental para ver el "Mix Energético" actual vs el exceso de generación renovable que desestabilizó la red el 28A.
+
+- 28A_inertia_compressed.json
+  Muestra: Datos calculados sobre la inercia del sistema y la respuesta dinámica.
+  Uso comparativo: Para comparar la inercia (solidez) del sistema de hoy frente a la bajísima inercia del 28A.
+
+- export_Saldos-horarios-por-frontera_...json
+  Muestra: El flujo físico de energía con Francia, Portugal y Marruecos.
+  Uso comparativo: Muestra cómo la interconexión con Francia intentó "salvar" el sistema el 28A (gran pico de exportación/importación) vs la situación normal de hoy.
+
+- precios_28_29_abril.json / precio-final-energia.json
+  Muestra: Precios SPOT del mercado mayorista y precios de los desvíos.
+  Uso comparativo: Ver los precios cero o negativos del 28A frente al precio estable de hoy.
+
+-----------------------------------------------------------------------------
+2. DATOS DE ENTSO-E (Transparencia Europea)
+-----------------------------------------------------------------------------
+- frequency_28A.json
+  Muestra: La evolución milisegundo a milisegundo de la frecuencia del sistema durante el colapso (caída a 48.8 Hz).
+  Uso comparativo: Mostrar un sismógrafo de frecuencia plano (hoy, ~50.00 Hz) vs el abismo de frecuencia del 28A.
+
+- imbalance_prices_28A.json
+  Muestra: El precio de desbalance (el castigo económico por desviar la red).
+  Uso comparativo: El 28A alcanzó los 15.000 €/MWh. Compararlo con los precios normales de desbalance de hoy es visualmente impactante.
+
+- total_load_day_ahead_actual_28A.json
+  Muestra: El desvío masivo entre lo que ENTSO-E predijo que se consumiría y lo que realmente se consumió (colapso).
+  Uso comparativo: Gráfico de barras de error de predicción.
+
+- cross_border_physical_flows_28A.json
+  Muestra: Alta resolución de los flujos físicos en la frontera de los Pirineos.
+  Uso comparativo: Para el mapa topológico (flechas de flujo hacia/desde Francia).
+
+- water_reservoirs_hydro_2025.json / installed_capacity_2025.json
+  Muestra: Estado de los embalses y capacidad instalada de respaldo.
+  Uso comparativo: Mostrar cuánta capacidad hidroeléctrica había disponible para salvar el sistema el 28A frente a hoy.
+
+- swing_equation_scenarios.json / ufls_scheme_iberia.json
+  Muestra: Parámetros del deslastre automático de cargas (cortes de luz automáticos) que saltaron el 28A.
+  Uso comparativo: Si hoy la frecuencia bajara, ¿cuántos megavatios se cortarían en el primer escalón? Comparar con el 28A.
+
+-----------------------------------------------------------------------------
+INSTRUCCIÓN PARA LA IA DESARROLLADORA:
+-----------------------------------------------------------------------------
+"Por favor, utiliza estos archivos JSON históricos para renderizar las líneas base (base-lines) en rojo o gris punteado en todas las gráficas de Plotly/Streamlit. Encima de estas líneas del 28 de Abril, dibuja en colores vivos o verde los datos obtenidos de la API en Tiempo Real, de forma que la comparativa temporal sea directa en la misma gráfica."

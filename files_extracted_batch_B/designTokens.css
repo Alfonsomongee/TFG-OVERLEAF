@@ -1,0 +1,157 @@
+/* ============================================================
+   DESIGN TOKENS — TFG OVERLEAF FORENSIC THEME
+   VERSIÓN 2.0 — Sistema unificado (reemplaza el sistema dual ámbar+cian)
+   ============================================================
+   
+   PROBLEMA ORIGINAL: dos sistemas de color paralelos no reconciliados.
+   - designTokens.css: fondos ámbar-cálidos (#050403) + amber palette
+   - custom.css: fondos azul-eléctricos (hsl 220) + cyan palette
+   El usuario percibía subliminalmente "dos sitios" conviviendo.
+   
+   SOLUCIÓN: un único sistema con fondos neutro-fríos (220°) y dos
+   acentos semánticos: cian (datos) y ámbar (alerta). Los tokens
+   de nivel raw se traducen a tokens semánticos que los componentes
+   deben usar. Ningún componente debe referenciar colores hex directamente.
+   ============================================================ */
+
+:root {
+
+  /* ── 1. COLORES RAW (paleta primitiva) ──────────────────────────────── */
+  /* Solo referenciar estos en los tokens semánticos. Los componentes usan semánticos. */
+
+  /* Fondos — neutro frío (un solo sistema negro) */
+  --raw-bg-void:    hsl(220 65% 2%);   /* negro puro del apagón */
+  --raw-bg-deep:    hsl(220 55% 4%);
+  --raw-bg-base:    hsl(220 40% 7%);
+  --raw-bg-raised:  hsl(220 30% 11%);
+  --raw-bg-hover:   hsl(220 22% 16%);
+
+  /* Cian eléctrico — datos, telemetría, CECOEL */
+  --raw-cyan-200:   hsl(190 100% 85%);
+  --raw-cyan-400:   hsl(190 100% 70%);
+  --raw-cyan-500:   hsl(190 100% 60%); /* acento principal */
+  --raw-cyan-600:   hsl(190 100% 50%);
+  --raw-cyan-700:   hsl(190 100% 38%);
+  --raw-cyan-900:   hsl(190 100% 22%);
+
+  /* Ámbar dorado — alarmas, umbrales, datos críticos */
+  --raw-amber-300:  hsl(44 100% 72%);
+  --raw-amber-400:  hsl(40 100% 62%);
+  --raw-amber-500:  hsl(38 100% 56%);  /* alerta */
+  --raw-amber-600:  hsl(32 100% 48%);
+  --raw-amber-700:  hsl(25 100% 40%);
+
+  /* Rojo — colapso, danger, disparo de protección */
+  --raw-red-400:    hsl(0 85% 68%);
+  --raw-red-500:    hsl(0 75% 56%);
+  --raw-red-700:    hsl(0 80% 38%);
+  --raw-red-900:    hsl(0 70% 22%);
+
+  /* Magenta — glitch, anomalía, dato fuera de rango */
+  --raw-magenta-500: hsl(322 100% 62%);
+
+  /* Verde — reposición, sistema restaurado */
+  --raw-green-500:  hsl(150 60% 45%);
+
+  /* Texto */
+  --raw-text-0:     hsl(220 20% 98%);
+  --raw-text-1:     hsl(220 15% 88%);
+  --raw-text-2:     hsl(220 12% 68%);
+  --raw-text-3:     hsl(220 10% 48%);
+
+
+  /* ── 2. TOKENS SEMÁNTICOS (lo que usan los componentes) ─────────────── */
+
+  /* Backgrounds */
+  --bg-void:        var(--raw-bg-void);
+  --bg-0:           var(--raw-bg-deep);
+  --bg-1:           var(--raw-bg-base);
+  --bg-2:           var(--raw-bg-raised);
+  --bg-3:           var(--raw-bg-hover);
+
+  /* Acentos */
+  --color-data:     var(--raw-cyan-500);   /* telemetría, gráficos, enlaces */
+  --color-alert:    var(--raw-amber-500);  /* alertas, KPI críticos, UFLS */
+  --color-danger:   var(--raw-red-500);    /* colapso, error, disparo */
+  --color-glitch:   var(--raw-magenta-500);/* ForensicReveal, GlitchTitle */
+  --color-safe:     var(--raw-green-500);  /* reposición, éxito */
+
+  /* Texto semántico */
+  --text-0:         var(--raw-text-0);     /* titulares */
+  --text-1:         var(--raw-text-1);     /* body */
+  --text-2:         var(--raw-text-2);     /* captions, secundario */
+  --text-3:         var(--raw-text-3);     /* meta, fuentes */
+
+  /* Bordes semánticos (3 niveles: subtle → data → alert) */
+  --border-subtle:  1px solid color-mix(in srgb, var(--color-data) 12%, transparent);
+  --border-data:    1px solid color-mix(in srgb, var(--color-data) 30%, transparent);
+  --border-alert:   1px solid color-mix(in srgb, var(--color-alert) 40%, transparent);
+  --border-accent:  2px solid var(--color-data);
+
+  /* Gradientes narrativos */
+  --grad-calm:     linear-gradient(180deg, hsl(220 55% 4%), hsl(220 45% 8%));
+  --grad-tension:  linear-gradient(180deg, hsl(220 45% 6%), hsl(38 40% 12%));
+  --grad-collapse: linear-gradient(180deg, hsl(0 60% 10%), hsl(220 55% 3%));
+
+  /* Radios de borde — sistema de 3 niveles */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-pill: 999px;
+
+  /* Sombras */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg:  0 16px 48px rgba(0, 0, 0, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+  /* ── 3. TIPOGRAFÍA DE TELEMETRÍA ─────────────────────────────────────── */
+  /* NOTA: usar var(--font-mono) de custom.css en lugar de duplicar aquí. */
+  /* Estos aliases mantienen compatibilidad con componentes que ya los usan: */
+  --telemetry-font:    var(--font-mono, 'JetBrains Mono', monospace);
+  --telemetry-xs:      var(--fs-caption, 0.75rem);
+  --telemetry-sm:      var(--fs-meta, 0.85rem);
+  --telemetry-md:      var(--fs-body, 1rem);
+  --telemetry-lg:      var(--fs-lead, 1.15rem);
+  --telemetry-display: clamp(1.4rem, 1.2rem + 1vw, 1.8rem);
+
+  /* ── 4. ALIASES DE COMPATIBILIDAD ────────────────────────────────────── */
+  /* Para componentes que aún referencian los tokens del sistema original.  */
+  /* Migrar progresivamente los componentes a los tokens semánticos.        */
+  --accent-electric:          var(--color-data);
+  --accent-amber:             var(--color-alert);
+  --accent-magenta:           var(--color-glitch);
+
+  /* Aliases del sistema ámbar original (forensic) → tokens unificados */
+  --forensic-amber-primary:   var(--raw-amber-500);
+  --forensic-amber-warning:   var(--raw-amber-700);
+  --forensic-amber-critical:  var(--raw-red-700);
+  --forensic-amber-muted:     color-mix(in srgb, var(--raw-amber-500) 40%, transparent);
+  --forensic-amber-bg-subtle: color-mix(in srgb, var(--raw-amber-500) 5%, transparent);
+
+  /* Fondos ámbar cálidos originales → reemplazados por el sistema frío unificado */
+  --forensic-bg-primary:      var(--bg-0);   /* ← era #050403 */
+  --forensic-bg-secondary:    var(--bg-1);   /* ← era #0b0806 */
+  --forensic-bg-surface:      color-mix(in srgb, var(--bg-1) 50%, transparent);
+
+  --forensic-border:          var(--border-subtle);
+  --forensic-border-strong:   var(--border-alert);
+
+  --forensic-text-primary:    var(--text-1);
+  --forensic-text-secondary:  var(--text-2);
+  --forensic-text-dim:        var(--text-3);
+
+  /* Colores de generación síncrona (GenerationMixWidget) */
+  --forensic-sync-1: hsl(214 100% 58%);
+  --forensic-sync-2: hsl(214 100% 40%);
+  --forensic-sync-3: hsl(214 100% 24%);
+
+  /* Warn scale */
+  --warn-300:   var(--raw-amber-300);
+  --warn-500:   var(--raw-amber-500);
+  --warn-700:   var(--raw-amber-700);
+  --danger-300: var(--raw-red-400);
+  --danger-500: var(--raw-red-500);
+  --danger-700: var(--raw-red-700);
+  --danger-900: var(--raw-red-900);
+}

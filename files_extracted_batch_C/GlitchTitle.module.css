@@ -1,0 +1,81 @@
+/**
+ * GlitchTitle — VERSIÓN DESTILADA
+ *
+ * Cambios respecto al original:
+ *
+ * 1. Eliminada la capa ::after (magenta)
+ *    → El original animaba DOS pseudo-elementos simultáneamente (::before cyan
+ *      + ::after magenta) durante 1500ms. El conflicto cromático cian/magenta
+ *      simultáneo generaba "visual noise" sin añadir información.
+ *    → Una sola capa cyan es más elegante y mantiene la identidad forense.
+ *
+ * 2. Duración reducida de 1500ms a 800ms
+ *    → El glitch de 1.5s resulta lento para un elemento de heading. A 800ms
+ *      el efecto es snappy y no retiene la atención más de lo necesario.
+ *
+ * 3. Easing más preciso: cubic-bezier(0.25, 0.46, 0.45, 0.94) (easeOutQuart)
+ *    → El original usaba ease-out genérico. easeOutQuart tiene una
+ *      desaceleración más pronunciada al final — más "técnica", menos genérica.
+ *
+ * 4. Keyframes simplificados: 4 en lugar de 8
+ *    → Menos puntos = el browser interpola menos cuadros = menos CPU en entrada.
+ */
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  color: var(--text-0, hsl(220 20% 98%));
+}
+
+/* Solo el pseudo-elemento ::before (cyan) — eliminado ::after */
+.glitch::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  color: var(--accent-electric, hsl(190 100% 60%));
+  mix-blend-mode: screen;
+  /* Clave para que el glitch no desborde el contenedor */
+  overflow: hidden;
+}
+
+/* El glitch solo corre cuando el componente es visible (clase .run añadida por JS) */
+.glitch.run::before {
+  animation: glitch-cyan 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 1 forwards;
+}
+
+@keyframes glitch-cyan {
+  0% {
+    opacity: 0;
+    transform: translate(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  25% {
+    opacity: 0.85;
+    transform: translate(-1.5px, 0.5px);
+    clip-path: inset(8% 0 58% 0);
+  }
+  55% {
+    opacity: 0.6;
+    transform: translate(1.5px, -0.5px);
+    clip-path: inset(42% 0 28% 0);
+  }
+  85% {
+    opacity: 0.2;
+    transform: translate(0);
+    clip-path: inset(72% 0 5% 0);
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+/* Respeto a prefers-reduced-motion — nunca animar si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  .glitch::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

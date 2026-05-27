@@ -1,0 +1,53 @@
+.pageWrapper {
+  position: relative;
+  background: var(--bg-0, #050a14);
+  min-height: 100vh;
+  /* will-change se aplica inline desde el motion.div */
+}
+
+/**
+ * scanlinesOverlay — VERSIÓN OPTIMIZADA
+ *
+ * Cambios respecto al original:
+ * 1. Eliminado mix-blend-mode: overlay
+ *    → Era el mayor coste de rendimiento silencioso: un elemento position:absolute
+ *      inset:0 con blend-mode fuerza un "stacking context" con compositing separado
+ *      que el browser repinta en CADA frame de scroll. El informe detectó
+ *      "2 animaciones no compuestas" — este era el culpable principal.
+ *
+ * 2. Opacidad reducida de 0.12 a 0.04
+ *    → El efecto sigue siendo perceptible pero no compite con el texto.
+ *
+ * 3. Patrón de líneas menos denso (3px gap en lugar de 2px)
+ *    → Reduce la "vibración" visual en pantallas de alta densidad.
+ *
+ * 4. Añadido background-image SVG noise (filtro feTurbulence)
+ *    → Aporta textura "pantalla analógica" que el mix-blend-mode intentaba
+ *      lograr, pero de forma 100% compositable en GPU (no hay blend).
+ *    → El SVG está inline como data URI — cero peticiones HTTP adicionales.
+ */
+.scanlinesOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0.04;
+
+  /* Líneas de scan horizontales — menos densas que el original */
+  background-image:
+    /* Noise SVG inline — textura granular compositable */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E"),
+    /* Líneas horizontales de scan */
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 3px,
+      rgba(0, 229, 255, 0.06) 3px,
+      rgba(0, 229, 255, 0.06) 4px
+    );
+
+  background-size: 200px 200px, 100% 4px;
+
+  /* SIN mix-blend-mode: overlay — eliminado para performance */
+  /* El efecto ahora es puramente aditivo (no hay compositing separado) */
+}

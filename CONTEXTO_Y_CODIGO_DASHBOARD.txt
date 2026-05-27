@@ -1,0 +1,2037 @@
+﻿=============================================================================
+CONTEXTO DEL PROYECTO (DASHBOARD FORENSE DEL SISTEMA ELÉCTRICO)
+=============================================================================
+Objetivo: 
+Crear un dashboard interactivo integrado en un Trabajo de Fin de Grado (TFG) sobre el colapso (apagón) del 28 de abril de 2025 en la Península Ibérica.
+
+Funcionalidad principal:
+1. Comparativa en tiempo real: Extraer telemedidas reales de la red eléctrica española actual (vía ESIOS y ENTSO-E) y compararlas visual y numéricamente con el estado crítico registrado el 28 de abril de 2025.
+2. Identificar anomalías: Dejar claro al usuario las diferencias entre un 'estado sano/actual' y un 'estado de colapso' mediante indicadores de inercia, RoCoF, flujos de interconexión, demanda y penetración renovable.
+3. Agente de IA Local: Incluye un asistente integrado usando Ollama (phi3:mini) y Langchain (RAG). El agente debe ser capaz de analizar la situación actual y responder preguntas al usuario basándose en los documentos indexados del TFG (qué pasó el 28A, por qué colapsó la red, etc.).
+
+Tecnología actual:
+- Interfaz gráfica: Python (Streamlit)
+- Conexiones API: requests (ESIOS, ENTSO-E)
+- Base de datos IA: ChromaDB con embeddings de HuggingFace.
+
+Problema actual:
+- El dashboard a veces se muestra en blanco al embeberlo en un iFrame.
+- Se necesita pulir el diseño y la utilidad para que la comparativa "Hoy vs 28A" sea obvia y muy útil para cualquier usuario que visite la web.
+
+A continuación se adjunta el código fuente completo del dashboard actual para su refactorización o mejora:
+
+
+
+=============================================================================
+ARCHIVO: app.py
+=============================================================================
+
+"""
+app.py â€” Dashboard de MonitorizaciÃ³n del Sistema ElÃ©ctrico EspaÃ±ol
+
+ComparaciÃ³n en tiempo real con el colapso del 28 de abril de 2025.
+
+EjecuciÃ³n:
+    streamlit run app.py
+
+MÃ³dulos propios requeridos:
+    extractor.py, inercia.py, rocof.py, alertas.py, asistente_local.py
+"""
+
+import json
+import logging
+import os
+from datetime import datetime
+from typing import List, Optional
+
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+from streamlit_autorefresh import st_autorefresh
+
+from alertas import Alerta, comparar_con_28a, evaluar_snapshot, nivel_global
+from asistente_local import AsistenteLocal
+from extractor import GridDataExtractor
+from inercia import comparar_con_28a as inercia_vs_28a
+from inercia import estimar_inercia_sistema
+from rocof import RoCoFCalculator
+
+# ============================================================
+#  Logging
+# ============================================================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[
+        logging.FileHandler("dashboard.log", encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
+)
+logger = logging.getLogger("app")
+
+# ============================================================
+#  ConfiguraciÃ³n de la pÃ¡gina
+# ============================================================
+st.set_page_config(
+    page_title="Monitor ElÃ©ctrico EspaÃ±a",
+    page_icon="âš¡",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# CSS personalizado para afinar la presentaciÃ³n
+st.markdown("""
+<style>
+    .metric-card   { border-radius: 8px; padding: 4px 0; }
+    .alerta-roja   { background: rgba(231,76,60,0.12); border-left: 4px solid #e74c3c;
+                     padding: 8px 12px; border-radius: 4px; margin: 4px 0; }
+    .alerta-ambar  { background: rgba(243,156,18,0.12); border-left: 4px solid #f39c12;
+                     padding: 8px 12px; border-radius: 4px; margin: 4px 0; }
+    .badge-verde   { color: #27ae60; font-weight: 700; }
+    .badge-rojo    { color: #e74c3c; font-weight: 700; }
+    .badge-ambar   { color: #f39c12; font-weight: 700; }
+    .subtitulo     { font-size: 0.85rem; color: #7f8c8d; margin-top: -10px; }
+</style>
+""", unsafe_allow_html=True)
+
+st.title("âš¡ Monitor de Estabilidad del Sistema ElÃ©ctrico EspaÃ±ol")
+st.markdown("ComparaciÃ³n en tiempo real con el colapso del **28 de abril de 2025**")
+
+# ============================================================
+#  InicializaciÃ³n del estado de sesiÃ³n
+# ============================================================
+def _init_session():
+    defaults = {
+        "tabla_historica": pd.DataFrame(columns=[
+            "Hora", "Demanda (MW)", "Solar (MW)", "EÃ³lica (MW)", "Nuclear (MW)",
+            "CCGT (MW)", "HidrÃ¡ulica (MW)", "SPOT (â‚¬/MWh)", "Desbalance (â‚¬/MWh)",
+            "Flujo FR (MW)", "Flujo PT (MW)", "Frecuencia (Hz)",
+            "RoCoF (Hz/s)", "Inercia (s)", "PenetraciÃ³n (%)",
+        ]),
+        "historial_frecuencia": [],
+        "historial_chat": [],
+        "alertas_activas": [],
+        "ultimo_snapshot": {},
+        "asistente": None,
+        "rocof_calc": RoCoFCalculator(ventana_segundos=30),
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
+    if "extractor" not in st.session_state:
+        try:
+            st.session_state.extractor = GridDataExtractor()
+        except ValueError as e:
+            st.error(f"âš ï¸ {e}")
+            st.info("Crea el archivo `.env` con `ESIOS_API_KEY` y `ENTSOE_API_KEY`.")
+            st.stop()
+
+_init_session()
+
+# ============================================================
+#  Helpers
+# ============================================================
+
+def cargar_datos_28a() -> pd.DataFrame:
+    """Carga el perfil de demanda del 28-A desde el JSON estÃ¡tico."""
+    try:
+        with open("datos_28A.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        df = pd.DataFrame(data)
+        if "time" not in df.columns or "demand" not in df.columns:
+            st.warning("datos_28A.json no tiene las columnas esperadas ('time', 'demand')")
+            return pd.DataFrame()
+        return df
+    except FileNotFoundError:
+        return pd.DataFrame()
+    except Exception as e:
+        st.error(f"Error cargando datos_28A.json: {e}")
+        return pd.DataFrame()
+
+
+def calcular_penetracion(solar, eolica, demanda) -> Optional[float]:
+    if solar is None or eolica is None or not demanda:
+        return None
+    return round(((solar + eolica) / demanda) * 100, 1)
+
+
+def sincronizar_datos() -> bool:
+    """Realiza la extracciÃ³n y actualiza el estado de sesiÃ³n. Devuelve True si OK."""
+    try:
+        raw = st.session_state.extractor.get_aggregated_snapshot()
+    except Exception as e:
+        st.error(f"Error al obtener datos: {e}")
+        logger.exception("Error en get_aggregated_snapshot")
+        return False
+
+    # â”€â”€ CÃ¡lculos derivados â”€â”€
+    inercia = estimar_inercia_sistema(
+        raw.get("nuclear"),
+        raw.get("ccgt"),
+        raw.get("hidraulica"),
+        raw.get("demanda"),
+    )
+    penetracion = calcular_penetracion(raw.get("solar"), raw.get("eolica"), raw.get("demanda"))
+
+    # â”€â”€ RoCoF â”€â”€
+    if raw.get("frecuencia"):
+        st.session_state.rocof_calc.agregar_medida(raw["frecuencia"])
+    rocof = st.session_state.rocof_calc.calcular_rocof()
+
+    # â”€â”€ Snapshot enriquecido â”€â”€
+    snapshot = {**raw, "inercia": inercia, "penetracion": penetracion, "rocof": rocof or 0.0}
+    st.session_state.ultimo_snapshot = snapshot
+
+    # â”€â”€ Alertas â”€â”€
+    st.session_state.alertas_activas = evaluar_snapshot(snapshot)
+
+    # â”€â”€ HistÃ³rico de frecuencia â”€â”€
+    if raw.get("frecuencia"):
+        st.session_state.historial_frecuencia.append({
+            "time": raw["timestamp"][-8:],   # solo HH:MM:SS
+            "freq": raw["frecuencia"],
+        })
+        st.session_state.historial_frecuencia = st.session_state.historial_frecuencia[-30:]
+
+    # â”€â”€ Tabla de auditorÃ­a â”€â”€
+    nueva_fila = pd.DataFrame([{
+        "Hora":               raw.get("timestamp"),
+        "Demanda (MW)":       raw.get("demanda"),
+        "Solar (MW)":         raw.get("solar"),
+        "EÃ³lica (MW)":        raw.get("eolica"),
+        "Nuclear (MW)":       raw.get("nuclear"),
+        "CCGT (MW)":          raw.get("ccgt"),
+        "HidrÃ¡ulica (MW)":    raw.get("hidraulica"),
+        "SPOT (â‚¬/MWh)":       raw.get("precio_spot"),
+        "Desbalance (â‚¬/MWh)": raw.get("precio_desbalance"),
+        "Flujo FR (MW)":      raw.get("flujo_francia"),
+        "Flujo PT (MW)":      raw.get("flujo_portugal"),
+        "Frecuencia (Hz)":    raw.get("frecuencia"),
+        "RoCoF (Hz/s)":       rocof,
+        "Inercia (s)":        inercia,
+        "PenetraciÃ³n (%)":    penetracion,
+    }])
+    st.session_state.tabla_historica = (
+        pd.concat([nueva_fila, st.session_state.tabla_historica])
+        .head(5)
+        .reset_index(drop=True)
+    )
+    return True
+
+
+def icono_inercia(v) -> str:
+    if v is None:
+        return "âšª"
+    if v > 2.5:
+        return "ðŸŸ¢"
+    if v >= 1.5:
+        return "ðŸŸ¡"
+    return "ðŸ”´"
+
+
+def icono_penetracion(v) -> str:
+    if v is None:
+        return "âšª"
+    if v < 65:
+        return "ðŸŸ¢"
+    if v < 75:
+        return "ðŸŸ¡"
+    return "ðŸ”´"
+
+
+def icono_frecuencia(v) -> str:
+    if v is None:
+        return "âšª"
+    if v >= 49.80:
+        return "ðŸŸ¢"
+    if v >= 49.50:
+        return "ðŸŸ¡"
+    return "ðŸ”´"
+
+# ============================================================
+#  Sidebar
+# ============================================================
+with st.sidebar:
+    st.header("âš™ï¸ Controles")
+
+    # SincronizaciÃ³n manual
+    if st.button("ðŸ”„ Sincronizar telemedidas", type="primary", use_container_width=True):
+        with st.spinner("Consultando APIs..."):
+            ok = sincronizar_datos()
+        if ok:
+            st.success("âœ… Datos actualizados")
+            st.rerun()
+
+    st.divider()
+
+    # Auto-refresh
+    st.subheader("â± Auto-actualizaciÃ³n")
+    auto_on = st.toggle("Activar auto-refresh", value=False)
+    if auto_on:
+        intervalo_min = st.select_slider(
+            "Intervalo (min)", options=[5, 10, 15, 30], value=10
+        )
+        count = st_autorefresh(
+            interval = intervalo_min * 60 * 1000,
+            key      = "autorefresh_ticker",
+        )
+        # Solo sincronizar si es una actualizaciÃ³n automÃ¡tica (count > 0)
+        if count > 0:
+            sincronizar_datos()
+        st.caption(f"ActualizaciÃ³n automÃ¡tica cada {intervalo_min} min")
+
+    st.divider()
+
+    # Estado global del sistema
+    alertas: List[Alerta] = st.session_state.alertas_activas
+    icono_global, desc_global = nivel_global(alertas)
+    st.subheader("ðŸš¦ Estado del sistema")
+    st.markdown(f"### {icono_global}")
+    st.caption(desc_global)
+
+    if alertas:
+        with st.expander(f"Ver alertas activas ({len(alertas)})"):
+            for a in alertas:
+                css_clase = "alerta-roja" if a.nivel == "rojo" else "alerta-ambar"
+                st.markdown(
+                    f'<div class="{css_clase}"><b>{a.icono} {a.nombre_display}</b><br>'
+                    f'{a.mensaje_largo}</div>',
+                    unsafe_allow_html=True,
+                )
+
+    st.divider()
+
+    # Asistente IA
+    st.subheader("ðŸ¤– Asistente IA")
+    activar_ia = st.toggle("Activar asistente local", value=False)
+    if activar_ia and st.session_state.asistente is None:
+        with st.spinner("Cargando modelo (puede tardar ~30 s la primera vez)..."):
+            try:
+                st.session_state.asistente = AsistenteLocal()
+                st.success("Asistente listo")
+            except Exception as e:
+                st.error(f"No se pudo cargar el asistente: {e}")
+    elif not activar_ia:
+        st.session_state.asistente = None
+
+    st.divider()
+    st.caption(f"ðŸ•’ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+# ============================================================
+#  PestaÃ±as principales
+# ============================================================
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "ðŸ“Š Estado actual",
+    "ðŸ“ˆ GrÃ¡fica 28-A",
+    "ã€°ï¸ Frecuencia",
+    "ðŸ’¬ Asistente",
+    "ðŸ“‹ AuditorÃ­a",
+])
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# TAB 1 â€” Estado actual
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+with tab1:
+    if st.session_state.tabla_historica.empty:
+        st.info("Pulsa **Sincronizar telemedidas** en el panel lateral para obtener datos.")
+    else:
+        ult = st.session_state.tabla_historica.iloc[0]
+
+        # â”€â”€ Fila 1: mÃ©tricas de estabilidad â”€â”€
+        st.subheader("Indicadores de estabilidad")
+        c1, c2, c3, c4 = st.columns(4)
+
+        inercia_val = ult.get("Inercia (s)")
+        with c1:
+            st.metric(
+                label = "âš™ï¸ Inercia equivalente",
+                value = f"{inercia_val:.2f} s" if inercia_val else "N/D",
+                help  = "H = Î£(PÂ·H) / S_base. 28-A en colapso: ~1.18 s",
+            )
+            st.markdown(
+                f'<p class="subtitulo">{icono_inercia(inercia_val)} '
+                f'{"Segura" if (inercia_val or 0) > 2.5 else ("Moderada" if (inercia_val or 0) >= 1.5 else "âš ï¸ CrÃ­tica")}</p>',
+                unsafe_allow_html=True,
+            )
+            if inercia_val:
+                cmp = inercia_vs_28a(inercia_val)
+                st.caption(cmp["descripcion"])
+
+        pen_val = ult.get("PenetraciÃ³n (%)")
+        with c2:
+            st.metric(
+                label = "ðŸŒž PenetraciÃ³n renovable",
+                value = f"{pen_val:.1f} %" if pen_val else "N/D",
+                help  = "% (solar + eÃ³lica) / demanda. 28-A en colapso: ~84.5 %",
+            )
+            st.markdown(
+                f'<p class="subtitulo">{icono_penetracion(pen_val)} '
+                f'{"Normal" if (pen_val or 0) < 65 else ("Alta" if (pen_val or 0) < 75 else "âš ï¸ Extrema")}</p>',
+                unsafe_allow_html=True,
+            )
+
+        frec_val = ult.get("Frecuencia (Hz)")
+        with c3:
+            st.metric(
+                label = "ã€°ï¸ Frecuencia",
+                value = f"{frec_val:.3f} Hz" if frec_val else "N/D",
+                delta = f"{(frec_val - 50.0):+.3f} Hz" if frec_val else None,
+                help  = "Frecuencia nominal: 50.000 Hz Â±0.2 Hz. 28-A: 49.85 Hz antes del colapso.",
+            )
+            st.markdown(
+                f'<p class="subtitulo">{icono_frecuencia(frec_val)} '
+                f'{"Normal" if (frec_val or 50) >= 49.80 else ("PrecauciÃ³n" if (frec_val or 50) >= 49.50 else "âš ï¸ CrÃ­tica")}</p>',
+                unsafe_allow_html=True,
+            )
+
+        rocof_val = ult.get("RoCoF (Hz/s)")
+        icono_r, desc_r, _ = st.session_state.rocof_calc.nivel_alerta()
+        with c4:
+            st.metric(
+                label = "ðŸ“‰ RoCoF",
+                value = f"{rocof_val:+.4f} Hz/s" if rocof_val is not None else "N/D",
+                help  = "Rate of Change of Frequency. Umbral UFLS: Â±0.5 Hz/s. 28-A pico: ~0.48 Hz/s",
+            )
+            st.markdown(
+                f'<p class="subtitulo">{icono_r} {desc_r.split("(")[0].strip()}</p>',
+                unsafe_allow_html=True,
+            )
+
+        st.divider()
+
+        # â”€â”€ Fila 2: mÃ©tricas de operaciÃ³n â”€â”€
+        st.subheader("Indicadores de operaciÃ³n")
+        c5, c6, c7, c8 = st.columns(4)
+
+        with c5:
+            d = ult.get("Demanda (MW)")
+            st.metric("ðŸ­ Demanda", f"{d:,.0f} MW" if d else "N/D")
+        with c6:
+            p = ult.get("SPOT (â‚¬/MWh)")
+            color_precio = "ðŸ”´" if (p or 0) < 0 else ("ðŸŸ¡" if (p or 0) < 10 else "ðŸŸ¢")
+            st.metric("ðŸ’° Precio SPOT", f"{p:.2f} â‚¬/MWh" if p is not None else "N/D")
+            st.caption(f"{color_precio} {'Negativo â€” exceso renovable' if (p or 0) < 0 else 'Positivo'}")
+        with c7:
+            fr = ult.get("Flujo FR (MW)")
+            st.metric("ðŸ‡«ðŸ‡· Flujo Francia", f"{fr:+,.0f} MW" if fr is not None else "N/D",
+                      help="+= importaciÃ³n desde Francia")
+        with c8:
+            pt = ult.get("Flujo PT (MW)")
+            st.metric("ðŸ‡µðŸ‡¹ Flujo Portugal", f"{pt:+,.0f} MW" if pt is not None else "N/D",
+                      help="+= importaciÃ³n desde Portugal")
+
+        st.divider()
+
+        # â”€â”€ GrÃ¡fico de generaciÃ³n por tecnologÃ­a â”€â”€
+        st.subheader("Mix de generaciÃ³n actual (MW)")
+        techs = {
+            "â˜€ï¸ Solar":   ult.get("Solar (MW)"),
+            "ðŸ’¨ EÃ³lica":  ult.get("EÃ³lica (MW)"),
+            "âš›ï¸ Nuclear": ult.get("Nuclear (MW)"),
+            "ðŸ”¥ CCGT":    ult.get("CCGT (MW)"),
+            "ðŸ’§ Hidro":   ult.get("HidrÃ¡ulica (MW)"),
+        }
+        colores = ["#f1c40f", "#3498db", "#9b59b6", "#e67e22", "#1abc9c"]
+        techs_validos = {k: v for k, v in techs.items() if v is not None}
+        if techs_validos:
+            fig_mix = go.Figure(data=[go.Bar(
+                x     = list(techs_validos.keys()),
+                y     = list(techs_validos.values()),
+                marker_color = colores[:len(techs_validos)],
+                text  = [f"{v:,.0f}" for v in techs_validos.values()],
+                textposition = "outside",
+            )])
+            fig_mix.update_layout(
+                height         = 380,
+                margin         = dict(l=20, r=20, t=20, b=20),
+                yaxis_title    = "MW",
+                showlegend     = False,
+                plot_bgcolor   = "rgba(0,0,0,0)",
+                paper_bgcolor  = "rgba(0,0,0,0)",
+            )
+            st.plotly_chart(fig_mix, use_container_width=True)
+
+        # â”€â”€ Comparativa con el 28-A (tabla resumen) â”€â”€
+        if st.session_state.ultimo_snapshot:
+            cmp = comparar_con_28a(st.session_state.ultimo_snapshot)
+            if cmp:
+                st.subheader("Comparativa con el 28-A (valores en el colapso)")
+                filas = []
+                labels = {
+                    "inercia": ("âš™ï¸ Inercia", "s"),
+                    "penetracion": ("ðŸŒž PenetraciÃ³n", "%"),
+                    "frecuencia": ("ã€°ï¸ Frecuencia", "Hz"),
+                    "rocof": ("ðŸ“‰ RoCoF", "Hz/s"),
+                    "demanda": ("ðŸ­ Demanda", "MW"),
+                    "precio_spot": ("ðŸ’° SPOT", "â‚¬/MWh"),
+                }
+                for var, (label, unit) in labels.items():
+                    if var not in cmp:
+                        continue
+                    r = cmp[var]
+                    estado = "âš ï¸ Peor" if r["peor_que_28a"] else "âœ… Mejor"
+                    filas.append({
+                        "Variable":    label,
+                        "Actual":      f"{r['actual']} {unit}",
+                        "28-A colapso":f"{r['28a']} {unit}",
+                        "Diferencia":  f"{r['diferencia']:+.3f} {unit}",
+                        "Estado":      estado,
+                    })
+                st.dataframe(pd.DataFrame(filas), use_container_width=True, hide_index=True)
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# TAB 2 â€” GrÃ¡fica del 28-A con fases anotadas
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+with tab2:
+    df_28a = cargar_datos_28a()
+
+    if df_28a.empty:
+        st.warning("No se encontrÃ³ `datos_28A.json`. Coloca el archivo en el directorio raÃ­z.")
+    else:
+        demanda_actual = None
+        if not st.session_state.tabla_historica.empty:
+            demanda_actual = st.session_state.tabla_historica.iloc[0].get("Demanda (MW)")
+
+        # Separar fases del 28-A
+        df_normal       = df_28a[df_28a["demand"] > 5_000]
+        df_colapso_pts  = df_28a[df_28a["demand"] == 0]
+        df_recuperacion = df_28a[(df_28a["demand"] > 0) & (df_28a["demand"] <= 5_000)]
+
+        fig_28a = go.Figure()
+
+        # Fase 1: OperaciÃ³n normal
+        fig_28a.add_trace(go.Scatter(
+            x    = df_normal["time"],
+            y    = df_normal["demand"],
+            name = "28-A â€” OperaciÃ³n normal",
+            mode = "lines",
+            line = dict(color="#e74c3c", width=2.5, dash="dash"),
+        ))
+
+        # Fase 3: Black start (recuperaciÃ³n)
+        if not df_recuperacion.empty:
+            fig_28a.add_trace(go.Scatter(
+                x    = df_recuperacion["time"],
+                y    = df_recuperacion["demand"],
+                name = "28-A â€” Black start (recuperaciÃ³n)",
+                mode = "lines",
+                line = dict(color="#e67e22", width=2, dash="dot"),
+            ))
+
+        # Zona de colapso (Ã¡rea sombreada)
+        fig_28a.add_vrect(
+            x0             = "12:33",
+            x1             = "13:10",
+            fillcolor      = "rgba(231,76,60,0.15)",
+            layer          = "below",
+            line_width     = 0,
+            annotation_text= "âš¡ COLAPSO TOTAL",
+            annotation_position = "top left",
+            annotation_font = dict(color="#e74c3c", size=13),
+        )
+
+        # LÃ­nea de demanda actual
+        if demanda_actual:
+            fig_28a.add_hline(
+                y                  = demanda_actual,
+                line               = dict(color="#2ecc71", width=3),
+                annotation_text    = f"Ahora: {demanda_actual:,.0f} MW",
+                annotation_position= "bottom right",
+                annotation_font    = dict(color="#2ecc71", size=12),
+            )
+            # AnotaciÃ³n de diferencia respecto al 28-A a la misma hora
+            hora_actual = datetime.now().strftime("%H:%M")
+            fila_28a = df_28a[df_28a["time"] == hora_actual]
+            if not fila_28a.empty:
+                dem_28a_ahora = fila_28a.iloc[0]["demand"]
+                if dem_28a_ahora > 0:
+                    delta = demanda_actual - dem_28a_ahora
+                    fig_28a.add_annotation(
+                        text   = f"Î” ({hora_actual}h): {delta:+,.0f} MW vs 28-A",
+                        xref   = "paper", yref = "paper",
+                        x      = 0.99, y = 0.10,
+                        showarrow = False,
+                        font      = dict(size=13, color="#3498db"),
+                        bgcolor   = "rgba(52,152,219,0.1)",
+                        bordercolor = "#3498db",
+                    )
+
+        fig_28a.update_layout(
+            title       = "Demanda elÃ©ctrica: 28 de abril de 2025 vs. valor actual",
+            xaxis_title = "Hora del dÃ­a",
+            yaxis_title = "Demanda (MW)",
+            height      = 540,
+            hovermode   = "x unified",
+            legend      = dict(orientation="h", yanchor="bottom", y=1.02),
+            plot_bgcolor  = "rgba(0,0,0,0)",
+            paper_bgcolor = "rgba(0,0,0,0)",
+        )
+        st.plotly_chart(fig_28a, use_container_width=True)
+
+        st.caption(
+            "**Rojo discontinuo**: demanda real del 28-A (datos ESIOS cada 5 min). "
+            "**Naranja punteado**: recuperaciÃ³n progresiva (black start). "
+            "**Zona sombreada**: colapso total (~35 min). "
+            "**Verde**: demanda actual del sistema."
+        )
+
+        # EstadÃ­sticas del 28-A
+        st.subheader("ðŸ“Š EstadÃ­sticas del 28 de abril de 2025")
+        col_a, col_b, col_c, col_d = st.columns(4)
+        demanda_max_28a = df_28a["demand"].max()
+        hora_max        = df_28a.loc[df_28a["demand"].idxmax(), "time"]
+        dem_recuperada  = df_28a[df_28a["time"] == "23:55"]["demand"].values
+        col_a.metric("Demanda pico (antes colapso)", f"{demanda_max_28a:,.0f} MW", f"a las {hora_max}")
+        col_b.metric("DuraciÃ³n del colapso completo", "~35 minutos", "12:33 â€“ 13:08")
+        col_c.metric("Demanda a las 23:55", f"{dem_recuperada[0]:,.0f} MW" if len(dem_recuperada) else "N/D", "~60 % del pico")
+        col_d.metric("EnergÃ­a no suministrada (est.)", "~3.500 MWh", "EstimaciÃ³n basada en perfil")
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# TAB 3 â€” HistÃ³rico de frecuencia en tiempo real
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+with tab3:
+    st.subheader("HistÃ³rico de frecuencia del sistema (Ãºltimas 30 mediciones)")
+
+    hist_freq = st.session_state.historial_frecuencia
+    if len(hist_freq) < 2:
+        st.info("Se necesitan al menos 2 sincronizaciones para mostrar la grÃ¡fica de frecuencia.")
+    else:
+        df_freq = pd.DataFrame(hist_freq)
+
+        fig_freq = go.Figure()
+
+        # Banda de frecuencia normal (Â±0.2 Hz)
+        fig_freq.add_hrect(
+            y0=49.80, y1=50.20,
+            fillcolor="rgba(39,174,96,0.08)", line_width=0,
+            annotation_text="Banda normal Â±0.2 Hz",
+            annotation_position="top right",
+            annotation_font=dict(color="#27ae60", size=10),
+        )
+
+        # LÃ­nea de frecuencia
+        fig_freq.add_trace(go.Scatter(
+            x    = df_freq["time"],
+            y    = df_freq["freq"],
+            mode = "lines+markers",
+            name = "Frecuencia (Hz)",
+            line = dict(color="#3498db", width=2.5),
+            marker = dict(size=5),
+            fill      = "tonexty",
+            fillcolor = "rgba(52,152,219,0.07)",
+        ))
+
+        # Umbrales
+        fig_freq.add_hline(y=50.00, line_dash="dash", line_color="rgba(127,127,127,0.5)",
+                           annotation_text="50.000 Hz", annotation_position="left")
+        fig_freq.add_hline(y=49.80, line_dash="dot",  line_color="#f39c12",
+                           annotation_text="Umbral Ã¡mbar (49.80 Hz)", annotation_position="right")
+        fig_freq.add_hline(y=49.50, line_dash="dot",  line_color="#e74c3c",
+                           annotation_text="Umbral rojo / UFLS (49.50 Hz)", annotation_position="right")
+
+        fig_freq.update_layout(
+            xaxis_title   = "Hora de la mediciÃ³n",
+            yaxis_title   = "Frecuencia (Hz)",
+            height        = 380,
+            yaxis         = dict(range=[49.3, 50.7]),
+            plot_bgcolor  = "rgba(0,0,0,0)",
+            paper_bgcolor = "rgba(0,0,0,0)",
+            showlegend    = False,
+        )
+        st.plotly_chart(fig_freq, use_container_width=True)
+
+    # Panel de RoCoF
+    st.subheader("RoCoF â€” Rate of Change of Frequency")
+    icono_r, desc_r, val_r = st.session_state.rocof_calc.nivel_alerta()
+    col_r1, col_r2, col_r3 = st.columns([1, 2, 2])
+    with col_r1:
+        st.markdown(f"<h1 style='text-align:center;margin:0'>{icono_r}</h1>", unsafe_allow_html=True)
+    with col_r2:
+        st.metric("RoCoF actual", f"{val_r:+.4f} Hz/s" if val_r is not None else "N/D")
+    with col_r3:
+        st.info(desc_r)
+    st.caption(
+        "El RoCoF se calcula por regresiÃ³n lineal sobre la ventana de los Ãºltimos 30 s. "
+        "Un |RoCoF| > 0.5 Hz/s puede activar el Under Frequency Load Shedding (UFLS), "
+        "mecanismo automÃ¡tico de deslastre de cargas. En el 28-A se registraron valores ~0.48 Hz/s."
+    )
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# TAB 4 â€” Asistente IA
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+with tab4:
+    if st.session_state.asistente is None:
+        st.warning(
+            "Activa el asistente en el panel lateral. "
+            "Requiere **Ollama** en ejecuciÃ³n y el modelo descargado (`ollama pull phi3:mini`)."
+        )
+        st.code("ollama serve\nollama pull phi3:mini", language="bash")
+    else:
+        st.markdown(
+            "Pregunta sobre el estado actual del sistema, compÃ¡ralo con el 28-A, "
+            "o solicita explicaciones tÃ©cnicas de conceptos del TFG."
+        )
+
+        datos_ia = st.session_state.ultimo_snapshot
+
+        # Mostrar historial de chat
+        for msg in st.session_state.historial_chat:
+            with st.chat_message(msg["role"]):
+                st.write(msg["content"])
+
+        # Input del usuario
+        pregunta = st.chat_input("Escribe tu pregunta aquÃ­...")
+        if pregunta:
+            st.session_state.historial_chat.append({"role": "user", "content": pregunta})
+            with st.chat_message("user"):
+                st.write(pregunta)
+
+            with st.chat_message("assistant"):
+                with st.spinner("Consultando la base de conocimiento del TFG..."):
+                    respuesta = st.session_state.asistente.preguntar(
+                        pregunta,
+                        datos_ia,
+                        st.session_state.historial_chat,
+                    )
+                st.write(respuesta)
+
+            st.session_state.historial_chat.append({"role": "assistant", "content": respuesta})
+
+        # BotÃ³n para limpiar historial
+        if st.session_state.historial_chat:
+            if st.button("ðŸ—‘ Limpiar conversaciÃ³n"):
+                st.session_state.historial_chat = []
+                st.rerun()
+
+
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# TAB 5 â€” AuditorÃ­a y exportaciÃ³n
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+with tab5:
+    st.subheader("Ãšltimas 5 extracciones")
+
+    if st.session_state.tabla_historica.empty:
+        st.info("AÃºn no hay datos. Sincroniza para ver el historial.")
+    else:
+        # Tabla con formato
+        fmt_dict = {
+            "Demanda (MW)":        "{:.0f}",
+            "Solar (MW)":          "{:.0f}",
+            "EÃ³lica (MW)":         "{:.0f}",
+            "Nuclear (MW)":        "{:.0f}",
+            "CCGT (MW)":           "{:.0f}",
+            "HidrÃ¡ulica (MW)":     "{:.0f}",
+            "SPOT (â‚¬/MWh)":        "{:.2f}",
+            "Desbalance (â‚¬/MWh)":  "{:.2f}",
+            "Flujo FR (MW)":       "{:.0f}",
+            "Flujo PT (MW)":       "{:.0f}",
+            "Frecuencia (Hz)":     "{:.3f}",
+            "RoCoF (Hz/s)":        "{:.4f}",
+            "Inercia (s)":         "{:.2f}",
+            "PenetraciÃ³n (%)":     "{:.1f}",
+        }
+        st.dataframe(
+            st.session_state.tabla_historica.style.format(fmt_dict, na_rep="N/D"),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        # ExportaciÃ³n
+        st.subheader("ðŸ“¥ Exportar datos")
+        col_exp1, col_exp2, col_exp3 = st.columns(3)
+
+        with col_exp1:
+            csv = st.session_state.tabla_historica.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label     = "ðŸ“„ Descargar CSV (tabla actual)",
+                data      = csv,
+                file_name = f"snapshot_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
+                mime      = "text/csv",
+            )
+
+        with col_exp2:
+            if os.path.exists("cache_datos.json"):
+                with open("cache_datos.json", "rb") as f:
+                    st.download_button(
+                        label     = "ðŸ“¦ Descargar JSON (cachÃ© completo)",
+                        data      = f,
+                        file_name = f"cache_completo_{datetime.now().strftime('%Y%m%d')}.json",
+                        mime      = "application/json",
+                    )
+
+        with col_exp3:
+            if os.path.exists("dashboard.log"):
+                with open("dashboard.log", "rb") as f:
+                    st.download_button(
+                        label     = "ðŸ“ Descargar log",
+                        data      = f,
+                        file_name = "dashboard.log",
+                        mime      = "text/plain",
+                    )
+
+    # CachÃ© completo expandible
+    if os.path.exists("cache_datos.json"):
+        with st.expander("ðŸ” Inspeccionar cachÃ© completo"):
+            try:
+                with open("cache_datos.json", "r", encoding="utf-8") as f:
+                    st.json(json.load(f))
+            except Exception as e:
+                st.error(f"Error al leer la cachÃ©: {e}")
+
+
+
+=============================================================================
+ARCHIVO: extractor.py
+=============================================================================
+
+"""
+extractor.py â€” ExtracciÃ³n de datos en tiempo real desde APIs oficiales.
+
+Fuentes:
+    - ESIOS (REE):   demanda, generaciÃ³n por tecnologÃ­a, precios, flujos
+    - ENTSO-E:       precio de desbalance (imbalance price, doc. A85)
+    - Swissgrid:     frecuencia del sistema sÃ­ncrono continental (fallback: 50.00 Hz)
+
+CaracterÃ­sticas:
+    - Reintentos con backoff exponencial en cada peticiÃ³n
+    - CachÃ© local en JSON (Ãºltimas MAX_CACHE_SIZE extracciones)
+    - Validaciones de rango sobre los valores devueltos
+    - Todos los errores se loggean; nunca se propagan al llamador
+"""
+
+import json
+import logging
+import os
+import time
+import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
+logger = logging.getLogger(__name__)
+
+
+class GridDataExtractor:
+    """
+    Orquestador de todas las peticiones a APIs de operadores elÃ©ctricos.
+    """
+
+    # ------------------------------------------------------------------ #
+    #  Constantes de configuraciÃ³n
+    # ------------------------------------------------------------------ #
+
+    # Indicadores ESIOS (IDs oficiales â€” https://api.esios.ree.es/indicators)
+    ESIOS_IDS: Dict[str, int] = {
+        "demanda":      1293,   # Demanda real peninsular (MW)
+        "solar":        1295,   # GeneraciÃ³n solar fotovoltaica (MW)
+        "eolica":        551,   # GeneraciÃ³n eÃ³lica (MW)
+        "nuclear":       549,   # GeneraciÃ³n nuclear (MW)
+        "ccgt":         2041,   # Ciclo combinado gas (MW)
+        "hidraulica":    546,   # HidrÃ¡ulica (MW)
+        "precio_spot":   600,   # Precio SPOT mercado diario (â‚¬/MWh)
+        "francia_imp":   556,   # ImportaciÃ³n desde Francia (MW)
+        "francia_exp":   560,   # ExportaciÃ³n a Francia (MW)
+        "portugal_imp":  557,   # ImportaciÃ³n desde Portugal (MW)
+        "portugal_exp":  561,   # ExportaciÃ³n a Portugal (MW)
+    }
+
+    # ENTSO-E â€” Ã¡rea de control de EspaÃ±a
+    ENTSOE_DOMAIN_SPAIN = "10YES-REE------0"
+    ENTSOE_DOC_IMBALANCE = "A85"
+    ENTSOE_BASE_URL      = "https://transparency.entsoe.eu/api"
+
+    # Swissgrid â€” frecuencia del sistema continental
+    # NOTA: la URL pÃºblica de Swissgrid puede cambiar. Si falla, se usa 50.00 Hz como
+    # fallback y se loggea el aviso. Para producciÃ³n real, considerar la API de ENTSO-E
+    # (endpoint /api?documentType=A11) o Elia (https://griddata.elia.be).
+    SWISSGRID_FREQ_URL = "https://www.swissgrid.ch/de/home/operation/grid-data/current-data.html"
+
+    ESIOS_BASE = "https://api.esios.ree.es/indicators"
+
+    CACHE_FILE     = "cache_datos.json"
+    MAX_CACHE_SIZE = 50
+
+    # ------------------------------------------------------------------ #
+    #  InicializaciÃ³n
+    # ------------------------------------------------------------------ #
+
+    def __init__(self, esios_token: str = None, entsoe_token: str = None):
+        self.esios_token  = esios_token  or os.getenv("ESIOS_API_KEY",  "")
+        self.entsoe_token = entsoe_token or os.getenv("ENTSOE_API_KEY", "")
+
+        if not self.esios_token or not self.entsoe_token:
+            raise ValueError(
+                "Faltan tokens de API. Define ESIOS_API_KEY y ENTSOE_API_KEY en el archivo .env"
+            )
+
+        self.esios_headers = {
+            "Accept":       "application/json; application/vnd.esios-api-v1+json",
+            "Content-Type": "application/json",
+            "x-api-key":    self.esios_token,
+        }
+        self.cache: List[Dict] = self._cargar_cache()
+
+    # ------------------------------------------------------------------ #
+    #  CachÃ© local
+    # ------------------------------------------------------------------ #
+
+    def _cargar_cache(self) -> List[Dict]:
+        if os.path.exists(self.CACHE_FILE):
+            try:
+                with open(self.CACHE_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.warning("No se pudo cargar la cachÃ©: %s", e)
+        return []
+
+    def _guardar_cache(self) -> None:
+        try:
+            with open(self.CACHE_FILE, "w", encoding="utf-8") as f:
+                json.dump(self.cache[-self.MAX_CACHE_SIZE:], f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            logger.warning("No se pudo guardar la cachÃ©: %s", e)
+
+    def _agregar_a_cache(self, snapshot: Dict[str, Any]) -> None:
+        self.cache.append(snapshot)
+        if len(self.cache) > self.MAX_CACHE_SIZE:
+            self.cache.pop(0)
+        self._guardar_cache()
+
+    # ------------------------------------------------------------------ #
+    #  Utilidades de tiempo
+    # ------------------------------------------------------------------ #
+
+    def _ventana_esios(self, minutos: int = 45) -> Tuple[str, str]:
+        """Ventana temporal para ESIOS en formato ISO 8601 UTC."""
+        now   = datetime.now(timezone.utc)
+        start = now - timedelta(minutes=minutos)
+        fmt   = "%Y-%m-%dT%H:%M:%S.000Z"
+        return start.strftime(fmt), now.strftime(fmt)
+
+    def _ventana_entsoe(self, horas: int = 4) -> Tuple[str, str]:
+        """Ventana temporal para ENTSO-E en formato YYYYMMDDhh00."""
+        now   = datetime.now(timezone.utc)
+        start = now - timedelta(hours=horas)
+        fmt   = "%Y%m%d%H00"
+        return start.strftime(fmt), now.strftime(fmt)
+
+    # ------------------------------------------------------------------ #
+    #  PeticiÃ³n HTTP con reintentos
+    # ------------------------------------------------------------------ #
+
+    def _get(self, url: str, headers: dict = None, params: dict = None,
+             max_retries: int = 3, timeout: int = 10) -> Optional[requests.Response]:
+        """GET con reintentos y backoff exponencial."""
+        for intento in range(max_retries):
+            try:
+                resp = requests.get(url, headers=headers, params=params, timeout=timeout)
+                resp.raise_for_status()
+                return resp
+            except requests.exceptions.HTTPError as e:
+                logger.error("HTTP %s en %s: %s", e.response.status_code, url, e)
+                return None   # No reintentar en errores 4xx
+            except requests.exceptions.RequestException as e:
+                if intento == max_retries - 1:
+                    logger.error("Fallo definitivo en %s: %s", url, e)
+                    return None
+                espera = 2 ** intento
+                logger.debug("Reintento %d/%d para %s en %ds", intento + 1, max_retries, url, espera)
+                time.sleep(espera)
+        return None
+
+    # ------------------------------------------------------------------ #
+    #  ESIOS
+    # ------------------------------------------------------------------ #
+
+    def fetch_esios_indicador(self, indicator_id: int) -> Optional[float]:
+        """Devuelve el Ãºltimo valor de un indicador ESIOS."""
+        start, end = self._ventana_esios(minutos=45)
+        time_trunc = "hour" if indicator_id == 600 else "five_minutes"
+
+        resp = self._get(
+            url    = f"{self.ESIOS_BASE}/{indicator_id}",
+            headers = self.esios_headers,
+            params  = {"start_date": start, "end_date": end, "time_trunc": time_trunc},
+        )
+        if not resp:
+            return None
+
+        try:
+            valores = resp.json().get("indicator", {}).get("values", [])
+            if not valores:
+                return None
+            ultimo = valores[-1].get("value")
+            return float(ultimo) if ultimo is not None else None
+        except Exception as e:
+            logger.error("Error parseando indicador %d: %s", indicator_id, e)
+            return None
+
+    # ------------------------------------------------------------------ #
+    #  ENTSO-E (precio de desbalance)
+    # ------------------------------------------------------------------ #
+
+    def fetch_entsoe_imbalance_price(self) -> Optional[float]:
+        """
+        Obtiene el precio de desbalance (doc. A85) para EspaÃ±a.
+
+        El namespace del XML de ENTSO-E varÃ­a por versiÃ³n de documento, por lo que
+        se extrae dinÃ¡micamente del tag raÃ­z en lugar de usarlo literal.
+        xml.etree.ElementTree NO soporta XPath 2.0 (local-name()), por eso
+        se usa root.iter() con el namespace extraÃ­do.
+        """
+        start, end = self._ventana_entsoe(horas=4)
+        resp = self._get(
+            url    = self.ENTSOE_BASE_URL,
+            params = {
+                "securityToken":     self.entsoe_token,
+                "documentType":      self.ENTSOE_DOC_IMBALANCE,
+                "controlArea_Domain": self.ENTSOE_DOMAIN_SPAIN,
+                "periodStart":       start,
+                "periodEnd":         end,
+            },
+            timeout=15,
+        )
+        if not resp:
+            return None
+
+        try:
+            root = ET.fromstring(resp.text)
+
+            # Extraer namespace dinÃ¡micamente del tag raÃ­z
+            # Formato esperado: '{urn:iec62325.351:tc57wg16:451-6:balancingdocument:3:0}BalancingMarketDocument'
+            ns = ""
+            if "}" in root.tag:
+                ns = root.tag.split("}")[0] + "}"
+
+            for point in root.iter(f"{ns}Point"):
+                amount = point.find(f"{ns}imbalance_Price.amount")
+                if amount is not None and amount.text:
+                    return float(amount.text)
+
+            logger.debug("No se encontrÃ³ imbalance_Price.amount en la respuesta de ENTSO-E")
+            return None
+
+        except ET.ParseError as e:
+            logger.error("Error parseando XML de ENTSO-E: %s", e)
+            return None
+        except ValueError as e:
+            logger.error("Error convirtiendo imbalance price a float: %s", e)
+            return None
+
+    # ------------------------------------------------------------------ #
+    #  Frecuencia del sistema (Swissgrid con fallback)
+    # ------------------------------------------------------------------ #
+
+    def fetch_system_frequency(self) -> Optional[float]:
+        """
+        Intenta obtener la frecuencia del sistema sÃ­ncrono continental.
+
+        Fuente primaria: Swissgrid (API pÃºblica, disponibilidad no garantizada).
+        Fallback: 50.00 Hz nominal (se loggea el aviso).
+
+        NOTA: Para integraciÃ³n en producciÃ³n real, se recomienda implementar
+        un polling de la API de ENTSO-E (documentType=A11, Control Area frequency)
+        o scraping de la API de Elia (Belgium), que es mÃ¡s estable.
+        """
+        resp = self._get(self.SWISSGRID_FREQ_URL, timeout=5)
+        if resp:
+            try:
+                data = resp.json()
+                freq = None
+                if isinstance(data, list) and data:
+                    freq = data[0].get("frequency")
+                elif isinstance(data, dict):
+                    freq = data.get("frequency")
+
+                if freq is not None:
+                    freq_float = float(freq)
+                    if 48.0 < freq_float < 52.0:
+                        return round(freq_float, 3)
+            except Exception as e:
+                logger.debug("No se pudo parsear respuesta de Swissgrid: %s", e)
+
+        logger.info("Frecuencia no disponible desde Swissgrid â€” usando fallback 50.00 Hz")
+        return 50.00   # Frecuencia nominal continental
+
+    # ------------------------------------------------------------------ #
+    #  MÃ©todo principal: snapshot agregado
+    # ------------------------------------------------------------------ #
+
+    def get_aggregated_snapshot(self) -> Dict[str, Any]:
+        """
+        Orquesta todas las consultas y devuelve un diccionario completo con el
+        estado actual del sistema elÃ©ctrico.
+
+        Realiza validaciones de rango y gestiona valores ausentes con None.
+        Persiste el resultado en la cachÃ© local.
+        """
+        logger.info("Iniciando sincronizaciÃ³n de telemedidas...")
+
+        # ---- ESIOS ----
+        demanda    = self.fetch_esios_indicador(self.ESIOS_IDS["demanda"])
+        solar      = self.fetch_esios_indicador(self.ESIOS_IDS["solar"])
+        eolica     = self.fetch_esios_indicador(self.ESIOS_IDS["eolica"])
+        nuclear    = self.fetch_esios_indicador(self.ESIOS_IDS["nuclear"])
+        ccgt       = self.fetch_esios_indicador(self.ESIOS_IDS["ccgt"])
+        hidraulica = self.fetch_esios_indicador(self.ESIOS_IDS["hidraulica"])
+        precio_spot= self.fetch_esios_indicador(self.ESIOS_IDS["precio_spot"])
+
+        # Flujos de interconexiÃ³n (positivo = importaciÃ³n neta)
+        fr_imp = self.fetch_esios_indicador(self.ESIOS_IDS["francia_imp"])
+        fr_exp = self.fetch_esios_indicador(self.ESIOS_IDS["francia_exp"])
+        flujo_francia = (fr_imp - fr_exp) if (fr_imp is not None and fr_exp is not None) else None
+
+        pt_imp = self.fetch_esios_indicador(self.ESIOS_IDS["portugal_imp"])
+        pt_exp = self.fetch_esios_indicador(self.ESIOS_IDS["portugal_exp"])
+        flujo_portugal = (pt_imp - pt_exp) if (pt_imp is not None and pt_exp is not None) else None
+
+        # ---- ENTSO-E ----
+        precio_desbalance = self.fetch_entsoe_imbalance_price()
+
+        # ---- Frecuencia ----
+        frecuencia = self.fetch_system_frequency()
+
+        # ---- ConstrucciÃ³n del snapshot ----
+        snapshot: Dict[str, Any] = {
+            "timestamp":        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "demanda":          demanda,
+            "solar":            solar,
+            "eolica":           eolica,
+            "nuclear":          nuclear,
+            "ccgt":             ccgt,
+            "hidraulica":       hidraulica,
+            "precio_spot":      precio_spot,
+            "precio_desbalance":precio_desbalance,
+            "flujo_francia":    flujo_francia,
+            "flujo_portugal":   flujo_portugal,
+            "frecuencia":       frecuencia,
+        }
+
+        # ---- Validaciones de rango (informativas) ----
+        if demanda is not None and not (5_000 < demanda < 55_000):
+            logger.warning("Demanda fuera de rango esperado: %.0f MW", demanda)
+        if frecuencia is not None and not (49.0 < frecuencia < 51.0):
+            logger.warning("Frecuencia fuera de rango normal: %.3f Hz", frecuencia)
+        if precio_spot is not None and not (-200 < precio_spot < 500):
+            logger.warning("Precio SPOT inusual: %.2f â‚¬/MWh", precio_spot)
+
+        # ---- CachÃ© ----
+        self._agregar_a_cache(snapshot)
+        logger.info("Snapshot capturado correctamente: demanda=%.0f MW, f=%.3f Hz",
+                    demanda or 0, frecuencia or 0)
+
+        return snapshot
+
+    def get_last_cached(self) -> List[Dict]:
+        """Devuelve las Ãºltimas extracciones almacenadas en cachÃ©."""
+        return self.cache[-self.MAX_CACHE_SIZE:]
+
+
+
+=============================================================================
+ARCHIVO: asistente_local.py
+=============================================================================
+
+"""
+asistente_local.py â€” Asistente IA local con RAG (RecuperaciÃ³n Aumentada).
+
+Arquitectura:
+    1. IndexaciÃ³n: los archivos MDX del TFG y los JSON histÃ³ricos se fragmentan
+       y almacenan en ChromaDB con embeddings de sentence-transformers.
+    2. RecuperaciÃ³n: ante cada pregunta, se recuperan los fragmentos mÃ¡s relevantes
+       por similitud semÃ¡ntica (coseno).
+    3. GeneraciÃ³n: el prompt (fragmentos + datos actuales + pregunta) se envÃ­a a
+       Ollama (modelo local phi3:mini o llama3.1:8b).
+
+El asistente responde EXCLUSIVAMENTE sobre el sistema elÃ©ctrico y el TFG.
+Si la pregunta es ajena a este Ã¡mbito, lo indica explÃ­citamente.
+"""
+
+import glob
+import json
+import logging
+import os
+from typing import Any, Dict, List, Optional
+
+import requests
+
+# â”€â”€ LangChain (imports actualizados para v0.2+) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+logger = logging.getLogger(__name__)
+
+# ------------------------------------------------------------------ #
+#  Constantes de configuraciÃ³n
+# ------------------------------------------------------------------ #
+RUTA_DOCS        = "./docs"            # Carpeta con los MDX del TFG
+RUTA_JSON        = "./"               # Carpeta con JSON histÃ³ricos (raÃ­z)
+CHROMA_PERSIST   = "./chroma_tfg_db"  # Directorio de persistencia de ChromaDB
+MODELO_OLLAMA    = os.getenv("MODELO_IA", "phi3:mini")
+OLLAMA_URL       = "http://localhost:11434/api/generate"
+CHUNK_SIZE       = 1_200              # TamaÃ±o de fragmento (caracteres)
+CHUNK_OVERLAP    = 200                # Solapamiento entre fragmentos
+CONTEXT_MAX_CHARS = 4_000            # LÃ­mite de contexto inyectado en el prompt
+
+
+class AsistenteLocal:
+    """
+    Asistente que combina:
+    - Conocimiento del TFG (indexado en ChromaDB)
+    - Datos en tiempo real del dashboard
+    - Modelo LLM local vÃ­a Ollama
+    """
+
+    def __init__(self, force_reindex: bool = False):
+        self.embeddings: Optional[HuggingFaceEmbeddings] = None
+        self.vectorstore: Optional[Chroma] = None
+        self._inicializar_vectorstore(force_reindex)
+
+    # ------------------------------------------------------------------ #
+    #  InicializaciÃ³n del vectorstore
+    # ------------------------------------------------------------------ #
+
+    def _inicializar_vectorstore(self, force_reindex: bool) -> None:
+        """Carga la base de conocimiento existente o la crea si no existe."""
+        base_existe = (
+            os.path.exists(CHROMA_PERSIST) and
+            bool(os.listdir(CHROMA_PERSIST))
+        )
+
+        if base_existe and not force_reindex:
+            logger.info("Cargando base de conocimiento existente desde %s", CHROMA_PERSIST)
+            self.embeddings = self._crear_embeddings()
+            self.vectorstore = Chroma(
+                persist_directory  = CHROMA_PERSIST,
+                embedding_function = self.embeddings,
+            )
+        else:
+            logger.info("Indexando TFG desde cero (force_reindex=%s)...", force_reindex)
+            self._indexar_tfg()
+
+    def _crear_embeddings(self) -> HuggingFaceEmbeddings:
+        return HuggingFaceEmbeddings(
+            model_name     = "sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs   = {"device": "cpu"},
+            encode_kwargs  = {"normalize_embeddings": True},
+        )
+
+    def _indexar_tfg(self) -> None:
+        """Indexa todos los MDX del TFG y los JSON histÃ³ricos en ChromaDB."""
+        documentos: List[Document] = []
+
+        # 1. Archivos MDX
+        if os.path.isdir(RUTA_DOCS):
+            loader = DirectoryLoader(
+                RUTA_DOCS,
+                glob       = "**/*.mdx",
+                loader_cls = TextLoader,
+                loader_kwargs = {"encoding": "utf-8"},
+            )
+            docs_mdx = loader.load()
+            documentos.extend(docs_mdx)
+            logger.info("  MDX cargados: %d", len(docs_mdx))
+        else:
+            logger.warning("Carpeta de docs no encontrada: %s", RUTA_DOCS)
+
+        # 2. JSON histÃ³ricos (excluyendo cachÃ© del extractor)
+        for json_path in glob.glob(os.path.join(RUTA_JSON, "*.json")):
+            if "cache_datos.json" in json_path:
+                continue
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                texto = json.dumps(data, indent=2, ensure_ascii=False)
+                documentos.append(Document(
+                    page_content=texto,
+                    metadata={"source": json_path},
+                ))
+            except Exception as e:
+                logger.warning("Error al cargar %s: %s", json_path, e)
+        logger.info("  Total documentos antes de fragmentar: %d", len(documentos))
+
+        # 3. FragmentaciÃ³n
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size    = CHUNK_SIZE,
+            chunk_overlap = CHUNK_OVERLAP,
+        )
+        fragmentos = splitter.split_documents(documentos)
+        logger.info("  Fragmentos generados: %d", len(fragmentos))
+
+        # 4. Embeddings y vectorstore
+        self.embeddings  = self._crear_embeddings()
+        self.vectorstore = Chroma.from_documents(
+            documents        = fragmentos,
+            embedding        = self.embeddings,
+            persist_directory = CHROMA_PERSIST,
+        )
+        self.vectorstore.persist()
+        logger.info("IndexaciÃ³n completada. Base en: %s", CHROMA_PERSIST)
+
+    # ------------------------------------------------------------------ #
+    #  RAG: recuperaciÃ³n de contexto
+    # ------------------------------------------------------------------ #
+
+    def _recuperar_contexto(self, pregunta: str, k: int = 5) -> str:
+        """
+        Recupera los k fragmentos mÃ¡s similares a la pregunta.
+        Limita el contexto a CONTEXT_MAX_CHARS para no saturar el prompt.
+        """
+        if not self.vectorstore:
+            return ""
+        try:
+            docs = self.vectorstore.similarity_search(pregunta, k=k)
+        except Exception as e:
+            logger.error("Error en similarity_search: %s", e)
+            return ""
+
+        if not docs:
+            return ""
+
+        contexto = "\n\n---\n\n".join(d.page_content for d in docs)
+        if len(contexto) > CONTEXT_MAX_CHARS:
+            contexto = contexto[:CONTEXT_MAX_CHARS] + "\n[...contexto truncado...]"
+        return contexto
+
+    # ------------------------------------------------------------------ #
+    #  ConstrucciÃ³n del prompt
+    # ------------------------------------------------------------------ #
+
+    def _construir_prompt(
+        self,
+        pregunta: str,
+        datos: Dict[str, Any],
+        historial: List[Dict[str, str]] = None,
+    ) -> str:
+        """
+        Ensambla el prompt completo con:
+          - Rol del sistema
+          - Datos en tiempo real del dashboard
+          - Contexto recuperado del TFG
+          - Historial reciente de la conversaciÃ³n (Ãºltimos 3 turnos)
+          - Pregunta del usuario
+        """
+        contexto_tfg = self._recuperar_contexto(pregunta)
+
+        def fmt(val, decimales=2, sufijo=""):
+            if val is None:
+                return "N/D"
+            return f"{float(val):.{decimales}f}{sufijo}"
+
+        bloque_datos = f"""
+- Inercia estimada:              {fmt(datos.get('inercia'))} s
+- PenetraciÃ³n renovable (sol+eol):{fmt(datos.get('penetracion'), 1)} %
+- Demanda actual:                {fmt(datos.get('demanda'), 0)} MW
+- Precio SPOT:                   {fmt(datos.get('precio_spot'))} â‚¬/MWh
+- GeneraciÃ³n solar:              {fmt(datos.get('solar'), 0)} MW
+- GeneraciÃ³n eÃ³lica:             {fmt(datos.get('eolica'), 0)} MW
+- GeneraciÃ³n nuclear:            {fmt(datos.get('nuclear'), 0)} MW
+- Ciclo combinado:               {fmt(datos.get('ccgt'), 0)} MW
+- Flujo neto Francia:            {fmt(datos.get('flujo_francia'), 0)} MW  (+= importaciÃ³n)
+- Flujo neto Portugal:           {fmt(datos.get('flujo_portugal'), 0)} MW
+- Frecuencia del sistema:        {fmt(datos.get('frecuencia'), 3)} Hz
+- RoCoF actual:                  {fmt(datos.get('rocof'), 4)} Hz/s
+"""
+
+        bloque_historial = ""
+        if historial:
+            ultimos = historial[-6:]   # Ãºltimos 3 turnos (user + assistant Ã— 3)
+            bloque_historial = "\n=== CONVERSACIÃ“N PREVIA ===\n"
+            for turno in ultimos:
+                rol = "Usuario" if turno["role"] == "user" else "Asistente"
+                bloque_historial += f"{rol}: {turno['content']}\n"
+
+        prompt = f"""Eres un asistente experto en ingenierÃ­a elÃ©ctrica y sistemas de potencia. \
+Tu conocimiento se basa exclusivamente en el Trabajo de Fin de Grado sobre el apagÃ³n del \
+28 de abril de 2025 en la PenÃ­nsula IbÃ©rica y en los datos del sistema elÃ©ctrico en tiempo real.
+
+=== DATOS DEL SISTEMA EN TIEMPO REAL ===
+{bloque_datos}
+=== CONTEXTO DEL TFG (fragmentos relevantes) ===
+{contexto_tfg if contexto_tfg else "(sin fragmentos recuperados para esta pregunta)"}
+{bloque_historial}
+=== INSTRUCCIONES ===
+1. Responde SIEMPRE comparando la situaciÃ³n actual con el 28-A cuando sea pertinente.
+2. Si la pregunta no estÃ¡ relacionada con el sistema elÃ©ctrico o el TFG, responde:
+   "Lo siento, solo puedo responder preguntas sobre el sistema elÃ©ctrico y el apagÃ³n del 28-A."
+3. Si no encuentras la informaciÃ³n en el contexto, admÃ­telo honestamente.
+4. SÃ© conciso (mÃ¡ximo 3 pÃ¡rrafos) pero tÃ©cnicamente preciso.
+5. Usa lenguaje tÃ©cnico pero accesible; evita jerga innecesaria.
+6. Responde siempre en espaÃ±ol.
+
+=== PREGUNTA ===
+{pregunta.strip()}
+
+=== RESPUESTA ===
+"""
+        return prompt
+
+    # ------------------------------------------------------------------ #
+    #  Llamada al modelo local (Ollama)
+    # ------------------------------------------------------------------ #
+
+    def _llamar_ollama(self, prompt: str) -> str:
+        """EnvÃ­a el prompt a Ollama y retorna la respuesta en texto."""
+        payload = {
+            "model":  MODELO_OLLAMA,
+            "prompt": prompt,
+            "stream": False,
+            "options": {
+                "temperature": 0.2,
+                "top_p":       0.9,
+                "num_predict": 800,
+            },
+        }
+        try:
+            resp = requests.post(OLLAMA_URL, json=payload, timeout=90)
+            if resp.status_code == 200:
+                return resp.json().get("response", "Respuesta vacÃ­a del modelo.").strip()
+            return (
+                f"Error en Ollama (HTTP {resp.status_code}). "
+                "Verifica que el servidor estÃ© activo con `ollama serve`."
+            )
+        except requests.exceptions.ConnectionError:
+            return (
+                "No se pudo conectar con Ollama. "
+                "Ejecuta `ollama serve` en otra terminal y descarga el modelo con "
+                f"`ollama pull {MODELO_OLLAMA}`."
+            )
+        except Exception as e:
+            logger.exception("Error inesperado llamando a Ollama")
+            return f"Error inesperado: {e}"
+
+    # ------------------------------------------------------------------ #
+    #  API pÃºblica
+    # ------------------------------------------------------------------ #
+
+    def preguntar(
+        self,
+        pregunta: str,
+        datos_dashboard: Dict[str, Any],
+        historial: List[Dict[str, str]] = None,
+    ) -> str:
+        """
+        Responde a una pregunta usando RAG + modelo local.
+
+        Args:
+            pregunta:         Texto de la pregunta del usuario.
+            datos_dashboard:  MÃ©tricas actuales del sistema elÃ©ctrico.
+            historial:        Lista de {'role': 'user'|'assistant', 'content': str}
+                              para mantener contexto conversacional.
+
+        Returns:
+            Respuesta del asistente como string.
+        """
+        if not pregunta or not pregunta.strip():
+            return "Por favor, escribe una pregunta."
+
+        prompt    = self._construir_prompt(pregunta, datos_dashboard, historial or [])
+        respuesta = self._llamar_ollama(prompt)
+        return respuesta
+
+
+# ------------------------------------------------------------------ #
+#  Prueba en modo standalone
+# ------------------------------------------------------------------ #
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    print("Inicializando asistente (puede tardar la primera vez)...")
+    asistente = AsistenteLocal()
+    print("Asistente listo. Escribe 'salir' para terminar.\n")
+
+    datos_prueba = {
+        "inercia": 2.8, "penetracion": 65.0, "demanda": 28_500,
+        "precio_spot": 45.5, "solar": 12_000, "eolica": 8_000,
+        "nuclear": 3_400, "ccgt": 5_000,
+        "flujo_francia": 1_500, "flujo_portugal": -500,
+        "frecuencia": 50.02, "rocof": 0.02,
+    }
+    historial_prueba: List[Dict] = []
+
+    while True:
+        q = input("ðŸ‘‰ Pregunta: ").strip()
+        if q.lower() in ("salir", "exit", "quit"):
+            break
+        respuesta = asistente.preguntar(q, datos_prueba, historial_prueba)
+        print(f"\nðŸ¤– {respuesta}\n")
+        historial_prueba.append({"role": "user",      "content": q})
+        historial_prueba.append({"role": "assistant",  "content": respuesta})
+
+
+
+=============================================================================
+ARCHIVO: alertas.py
+=============================================================================
+
+"""
+alertas.py â€” Motor de diagnÃ³stico y alertas del sistema elÃ©ctrico.
+
+Compara las mÃ©tricas actuales con:
+  1. Umbrales operativos (verde / Ã¡mbar / rojo)
+  2. Valores registrados en el 28 de abril de 2025 en el momento del colapso
+
+Umbrales basados en:
+  - RdE (Red ElÃ©ctrica de EspaÃ±a): Procedimientos de OperaciÃ³n P.O. 7.4
+  - ENTSO-E: System Defence Plans
+  - AnÃ¡lisis forense del incidente del 28-A (datos ESIOS / ENTSO-E)
+"""
+
+import logging
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
+
+# ------------------------------------------------------------------ #
+#  Valores de referencia del 28-A (instante t â‰ˆ 12:33 UTC)
+# ------------------------------------------------------------------ #
+VALORES_28A_COLAPSO: Dict[str, float] = {
+    "inercia":      1.18,   # segundos â€” estimado a partir de generaciÃ³n sÃ­ncrona en lÃ­nea
+    "penetracion":  84.5,   # % solar + eÃ³lica sobre demanda
+    "frecuencia":   49.85,  # Hz â€” valor registrado justo antes del colapso
+    "rocof":        0.48,   # Hz/s â€” valor pico antes de la activaciÃ³n del UFLS
+    "demanda":      25_184, # MW â€” Ãºltimo valor registrado antes del colapso en ESIOS
+    "precio_spot":  -2.5,   # â‚¬/MWh â€” precio negativo (exceso de renovables)
+}
+
+
+# ------------------------------------------------------------------ #
+#  DefiniciÃ³n de umbrales por variable
+# ------------------------------------------------------------------ #
+@dataclass
+class ConfigUmbral:
+    """ConfiguraciÃ³n de umbrales para una variable."""
+    nombre_display: str
+    unidad: str
+    ambar: float
+    rojo: float
+    comparacion: str   # '>' o '<'
+    descripcion_rojo: str
+    descripcion_ambar: str
+
+
+UMBRALES: Dict[str, ConfigUmbral] = {
+    "inercia": ConfigUmbral(
+        nombre_display="Inercia equivalente",
+        unidad="s",
+        ambar=2.5,
+        rojo=1.5,
+        comparacion="<",
+        descripcion_rojo="Inercia crÃ­tica â€” el sistema no puede amortiguar perturbaciones (28-A: 1.18 s)",
+        descripcion_ambar="Inercia reducida â€” penetraciÃ³n renovable elevada",
+    ),
+    "penetracion": ConfigUmbral(
+        nombre_display="PenetraciÃ³n renovable",
+        unidad="%",
+        ambar=65.0,
+        rojo=75.0,
+        comparacion=">",
+        descripcion_rojo="PenetraciÃ³n extrema â€” riesgo de inestabilidad de tensiÃ³n (28-A: 84.5 %)",
+        descripcion_ambar="PenetraciÃ³n alta â€” reducciÃ³n de inercia sÃ­ncrona",
+    ),
+    "frecuencia": ConfigUmbral(
+        nombre_display="Frecuencia del sistema",
+        unidad="Hz",
+        ambar=49.80,
+        rojo=49.50,
+        comparacion="<",
+        descripcion_rojo="Frecuencia crÃ­tica â€” UFLS (deslastre automÃ¡tico) puede activarse",
+        descripcion_ambar="Frecuencia reducida â€” regulaciÃ³n secundaria en acciÃ³n",
+    ),
+    "rocof": ConfigUmbral(
+        nombre_display="RoCoF (|Hz/s|)",
+        unidad="Hz/s",
+        ambar=0.10,
+        rojo=0.30,
+        comparacion=">",
+        descripcion_rojo="RoCoF elevado â€” riesgo de desconexiÃ³n de inversores (28-A: 0.48 Hz/s)",
+        descripcion_ambar="RoCoF moderado â€” monitorizaciÃ³n activa recomendada",
+    ),
+}
+
+
+# ------------------------------------------------------------------ #
+#  Dataclass de alerta
+# ------------------------------------------------------------------ #
+@dataclass
+class Alerta:
+    timestamp: str
+    variable: str
+    nombre_display: str
+    valor_actual: float
+    valor_28a: Optional[float]
+    umbral_rojo: float
+    nivel: str            # 'rojo' | 'ambar' | 'verde'
+    icono: str
+    mensaje_corto: str
+    mensaje_largo: str
+    diferencia_28a: Optional[float] = field(default=None)
+
+    def __post_init__(self):
+        if self.valor_actual is not None and self.valor_28a is not None:
+            self.diferencia_28a = round(self.valor_actual - self.valor_28a, 3)
+
+    @property
+    def es_critica(self) -> bool:
+        return self.nivel == "rojo"
+
+    def to_dict(self) -> dict:
+        return {
+            "timestamp": self.timestamp,
+            "variable": self.variable,
+            "valor_actual": self.valor_actual,
+            "valor_28A": self.valor_28a,
+            "diferencia_28A": self.diferencia_28a,
+            "nivel": self.nivel,
+            "mensaje": self.mensaje_corto,
+        }
+
+
+# ------------------------------------------------------------------ #
+#  FunciÃ³n principal de evaluaciÃ³n
+# ------------------------------------------------------------------ #
+def evaluar_snapshot(snapshot: dict) -> List[Alerta]:
+    """
+    EvalÃºa un snapshot de datos y devuelve la lista de alertas activas.
+
+    Args:
+        snapshot: Diccionario con las mÃ©tricas actuales del sistema.
+                  Claves esperadas: inercia, penetracion, frecuencia, rocof.
+
+    Returns:
+        Lista de objetos Alerta (puede ser vacÃ­a si todo estÃ¡ en verde).
+    """
+    alertas: List[Alerta] = []
+    ts = snapshot.get("timestamp", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    for var, cfg in UMBRALES.items():
+        valor = snapshot.get(var)
+        if valor is None:
+            continue
+
+        try:
+            valor = float(valor)
+        except (TypeError, ValueError):
+            continue
+
+        nivel, icono = _clasificar_nivel(valor, cfg)
+
+        if nivel == "verde":
+            continue  # Sin alerta en verde
+
+        valor_28a = VALORES_28A_COLAPSO.get(var)
+
+        if nivel == "rojo":
+            mensaje_corto = f"{cfg.nombre_display} CRÃTICA: {valor:.2f} {cfg.unidad}"
+            mensaje_largo = cfg.descripcion_rojo
+        else:
+            mensaje_corto = f"{cfg.nombre_display} en zona de precauciÃ³n: {valor:.2f} {cfg.unidad}"
+            mensaje_largo = cfg.descripcion_ambar
+
+        alertas.append(Alerta(
+            timestamp=ts,
+            variable=var,
+            nombre_display=cfg.nombre_display,
+            valor_actual=valor,
+            valor_28a=valor_28a,
+            umbral_rojo=cfg.rojo,
+            nivel=nivel,
+            icono=icono,
+            mensaje_corto=mensaje_corto,
+            mensaje_largo=mensaje_largo,
+        ))
+
+    return alertas
+
+
+def _clasificar_nivel(valor: float, cfg: ConfigUmbral) -> Tuple[str, str]:
+    """Clasifica un valor en verde/Ã¡mbar/rojo segÃºn su umbral y direcciÃ³n."""
+    mayor = cfg.comparacion == ">"
+
+    if mayor:
+        if valor >= cfg.rojo:
+            return "rojo", "ðŸ”´"
+        elif valor >= cfg.ambar:
+            return "ambar", "ðŸŸ¡"
+    else:
+        if valor <= cfg.rojo:
+            return "rojo", "ðŸ”´"
+        elif valor <= cfg.ambar:
+            return "ambar", "ðŸŸ¡"
+
+    return "verde", "ðŸŸ¢"
+
+
+# ------------------------------------------------------------------ #
+#  Utilidades de resumen
+# ------------------------------------------------------------------ #
+def nivel_global(alertas: List[Alerta]) -> Tuple[str, str]:
+    """
+    Devuelve el nivel global del sistema (el peor de las alertas activas).
+
+    Returns:
+        (icono, descripciÃ³n)
+    """
+    if not alertas:
+        return ("ðŸŸ¢", "Sistema en condiciones normales")
+
+    niveles = [a.nivel for a in alertas]
+    if "rojo" in niveles:
+        n_rojo = sum(1 for n in niveles if n == "rojo")
+        return ("ðŸ”´", f"ALERTA CRÃTICA â€” {n_rojo} variable(s) en nivel rojo")
+    else:
+        n_ambar = sum(1 for n in niveles if n == "ambar")
+        return ("ðŸŸ¡", f"PrecauciÃ³n â€” {n_ambar} variable(s) en zona Ã¡mbar")
+
+
+def comparar_con_28a(snapshot: dict) -> Dict[str, dict]:
+    """
+    Compara cada variable del snapshot con su valor en el 28-A.
+
+    Returns:
+        Diccionario {variable: {actual, 28a, diferencia, porcentaje, peor_o_mejor}}
+    """
+    resultado = {}
+    for var, val_28a in VALORES_28A_COLAPSO.items():
+        val_actual = snapshot.get(var)
+        if val_actual is None:
+            continue
+        try:
+            val_actual = float(val_actual)
+        except (TypeError, ValueError):
+            continue
+
+        diferencia = val_actual - val_28a
+        porcentaje = (diferencia / abs(val_28a)) * 100 if val_28a != 0 else None
+        cfg = UMBRALES.get(var)
+        if cfg:
+            # "mejor" significa: si comparacion='<' (como frecuencia/inercia), mejor = mayor; si '>', mejor = menor
+            peor = (cfg.comparacion == "<" and diferencia < 0) or \
+                   (cfg.comparacion == ">" and diferencia > 0)
+        else:
+            peor = None
+
+        resultado[var] = {
+            "actual": round(val_actual, 3),
+            "28a": round(val_28a, 3),
+            "diferencia": round(diferencia, 3),
+            "porcentaje": round(porcentaje, 1) if porcentaje is not None else None,
+            "peor_que_28a": peor,
+        }
+    return resultado
+
+
+
+=============================================================================
+ARCHIVO: inercia.py
+=============================================================================
+
+"""
+inercia.py â€” EstimaciÃ³n de la constante de inercia equivalente del sistema (H).
+
+FÃ³rmula:
+    H_sys = Î£(P_i Â· H_i) / S_base   [segundos]
+
+    Donde:
+        P_i     = Potencia activa del generador i (MW)
+        H_i     = Constante de inercia tÃ­pica del tipo de generador i (s)
+        S_base  = Potencia base del sistema (aproximada por la demanda total)
+
+Constantes H_i (fuentes: Anderson & Fouad; Kundur; REE Procedimientos de OperaciÃ³n):
+    Nuclear:        H = 5.0 s   (turbinas de vapor, gran masa rotante)
+    Ciclo combinado:H = 4.0 s   (turbina de gas + vapor, combinados)
+    HidrÃ¡ulica:     H = 3.0 s   (turbinas Pelton/Francis/Kaplan, masa menor)
+
+NOTA ACADÃ‰MICA:
+    - Solar fotovoltaica y eÃ³lica estÃ¡ndar (tipo 3 y 4 DFIG/full-converter)
+      contribuyen H â‰ˆ 0 s salvo que implementen inercia sintÃ©tica (Virtual Synchronous
+      Generator). Durante el 28-A, la altÃ­sima penetraciÃ³n solar (~70 %) implicÃ³
+      H_sys estimado entre 1.0 y 1.5 s, muy por debajo del umbral de seguridad (~3 s).
+    - Este mÃ³dulo proporciona un ESTIMADOR educativo. La inercia real del sistema
+      depende de topologÃ­a de red, reactancias y configuraciÃ³n de turbinas.
+"""
+
+import logging
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+# Constantes de inercia tÃ­picas (segundos)
+H_NUCLEAR:    float = 5.0
+H_CCGT:       float = 4.0
+H_HIDRAULICA: float = 3.0
+
+# Rango fÃ­sicamente razonable para el sistema peninsular espaÃ±ol
+INERCIA_MIN_RAZONABLE: float = 0.5
+INERCIA_MAX_RAZONABLE: float = 9.0
+
+# Valor de referencia del 28-A en el momento del colapso
+INERCIA_28A_COLAPSO: float = 1.18
+
+
+def estimar_inercia_sistema(
+    nuclear_mw:     Optional[float],
+    ccgt_mw:        Optional[float],
+    hidraulica_mw:  Optional[float],
+    demanda_total_mw: Optional[float] = None,
+) -> float:
+    """
+    Estima la constante de inercia equivalente del sistema (H) en segundos.
+
+    Args:
+        nuclear_mw:       Potencia nuclear conectada (MW). None se trata como 0.
+        ccgt_mw:          Potencia de ciclo combinado conectada (MW).
+        hidraulica_mw:    Potencia hidrÃ¡ulica conectada (MW).
+        demanda_total_mw: Demanda total del sistema (MW).
+                          Si se proporciona, la inercia se normaliza por la base
+                          del sistema (cÃ¡lculo acadÃ©micamente correcto).
+                          Si es None, se devuelve la media ponderada de las
+                          constantes sÃ­ncronas (valor relativo, suficiente para
+                          comparaciones pero no absoluto).
+
+    Returns:
+        Inercia estimada en segundos, redondeada a 2 decimales.
+        Devuelve 0.0 si no hay potencia sÃ­ncrona disponible.
+    """
+    # ConversiÃ³n robusta a float
+    p_nuc  = _a_float(nuclear_mw)
+    p_ccgt = _a_float(ccgt_mw)
+    p_hid  = _a_float(hidraulica_mw)
+
+    suma_hxp  = p_nuc * H_NUCLEAR + p_ccgt * H_CCGT + p_hid * H_HIDRAULICA
+    suma_p_sinc = p_nuc + p_ccgt + p_hid
+
+    if suma_p_sinc <= 0:
+        logger.warning("No hay potencia sÃ­ncrona disponible â€” inercia = 0.0 s")
+        return 0.0
+
+    # Denominador: demanda total (correcto) o suma sÃ­ncrona (fallback)
+    if demanda_total_mw is not None:
+        s_base = _a_float(demanda_total_mw)
+        if s_base > 0:
+            inercia = suma_hxp / s_base
+        else:
+            logger.warning("Demanda total invÃ¡lida, usando suma sÃ­ncrona como base")
+            inercia = suma_hxp / suma_p_sinc
+    else:
+        # Modo fallback: media ponderada (documentar en memoria del TFG)
+        inercia = suma_hxp / suma_p_sinc
+
+    inercia = round(inercia, 2)
+
+    # ValidaciÃ³n de rango
+    if not (INERCIA_MIN_RAZONABLE <= inercia <= INERCIA_MAX_RAZONABLE):
+        logger.warning("Inercia estimada anÃ³mala: %.2f s (rango esperado: %.1fâ€“%.1f s)",
+                       inercia, INERCIA_MIN_RAZONABLE, INERCIA_MAX_RAZONABLE)
+
+    return inercia
+
+
+def comparar_con_28a(inercia_actual: float) -> dict:
+    """
+    Compara la inercia actual con el valor del 28-A en el momento del colapso.
+
+    Returns:
+        dict con 'diferencia', 'porcentaje', 'es_inferior_a_28a', 'descripcion'
+    """
+    diferencia = inercia_actual - INERCIA_28A_COLAPSO
+    porcentaje = (diferencia / INERCIA_28A_COLAPSO) * 100
+
+    if diferencia > 0:
+        desc = f"Sistema {abs(porcentaje):.0f} % mÃ¡s inercioso que en el 28-A"
+    elif diferencia < 0:
+        desc = f"âš ï¸ Sistema {abs(porcentaje):.0f} % MENOS inercioso que en el 28-A"
+    else:
+        desc = "Inercia idÃ©ntica al 28-A en el momento del colapso"
+
+    return {
+        "diferencia": round(diferencia, 3),
+        "porcentaje": round(porcentaje, 1),
+        "es_inferior_a_28a": diferencia < 0,
+        "descripcion": desc,
+    }
+
+
+def _a_float(valor) -> float:
+    """Convierte un valor a float, devolviendo 0.0 si no es posible."""
+    if valor is None:
+        return 0.0
+    try:
+        return max(0.0, float(valor))   # Nunca negativo
+    except (ValueError, TypeError):
+        return 0.0
+
+
+
+=============================================================================
+ARCHIVO: rocof.py
+=============================================================================
+
+"""
+rocof.py â€” Rate of Change of Frequency (Hz/s)
+
+MÃ©trica clave durante el incidente del 28-A:
+  - Umbral Ã¡mbar:  |RoCoF| > 0.10 Hz/s  â†’ vigilancia
+  - Umbral naranja:|RoCoF| > 0.30 Hz/s  â†’ elevado
+  - Umbral rojo:   |RoCoF| > 0.50 Hz/s  â†’ UFLS puede activarse (Load Shedding)
+
+El 28 de abril de 2025 se registraron valores prÃ³ximos a 2 Hz/s en el instante
+del colapso, muy por encima del umbral de activaciÃ³n de UFLS (0.5 Hz/s).
+
+Referencia: ENTSO-E, "High Penetration of Power Electronic Interfaced Power Sources",
+RATE OF CHANGE OF FREQUENCY (ROCOF) WITHSTAND CAPABILITY, 2017.
+"""
+
+import logging
+from collections import deque
+from datetime import datetime
+from typing import Optional, Tuple
+
+import numpy as np
+
+logger = logging.getLogger(__name__)
+
+
+class RoCoFCalculator:
+    """
+    Mantiene un buffer circular de medidas de frecuencia y calcula
+    el RoCoF mediante regresiÃ³n lineal por mÃ­nimos cuadrados.
+
+    La regresiÃ³n es mÃ¡s robusta que la diferencia finita simple:
+    filtra ruido de mediciÃ³n y da una estimaciÃ³n de tendencia real.
+    """
+
+    def __init__(self, ventana_segundos: int = 30):
+        """
+        Args:
+            ventana_segundos: Ancho de la ventana deslizante en segundos.
+                              30 s es el estÃ¡ndar ENTSO-E para RoCoF.
+        """
+        self.ventana = ventana_segundos
+        self.buffer: deque = deque()
+
+    # ------------------------------------------------------------------ #
+    #  API pÃºblica
+    # ------------------------------------------------------------------ #
+
+    def agregar_medida(self, frecuencia_hz: float, timestamp: datetime = None) -> None:
+        """
+        AÃ±ade una medida de frecuencia al buffer con su marca temporal.
+        Descarta automÃ¡ticamente medidas fuera de la ventana.
+
+        Args:
+            frecuencia_hz: Frecuencia medida en Hz.
+            timestamp:     Momento de la medida (si None, se usa datetime.now()).
+        """
+        ts = timestamp or datetime.now()
+
+        # ValidaciÃ³n bÃ¡sica de rango
+        if not (45.0 < frecuencia_hz < 55.0):
+            logger.warning("Frecuencia fuera de rango fÃ­sico posible: %.3f Hz â€” ignorada", frecuencia_hz)
+            return
+
+        self.buffer.append((ts, frecuencia_hz))
+
+        # Purgar medidas antiguas fuera de la ventana
+        while self.buffer and (ts - self.buffer[0][0]).total_seconds() > self.ventana:
+            self.buffer.popleft()
+
+    def calcular_rocof(self) -> Optional[float]:
+        """
+        Calcula el RoCoF en Hz/s por regresiÃ³n lineal sobre el buffer actual.
+
+        Returns:
+            Float con el RoCoF en Hz/s (positivo = f subiendo, negativo = f cayendo).
+            None si no hay suficientes puntos (mÃ­nimo 3) para la regresiÃ³n.
+        """
+        if len(self.buffer) < 3:
+            return None
+
+        t0 = self.buffer[0][0]
+        t_vals = np.array([(ts - t0).total_seconds() for ts, _ in self.buffer])
+        f_vals = np.array([f for _, f in self.buffer])
+
+        # Necesitamos al menos dos t distintos para ajustar una recta
+        if t_vals[-1] - t_vals[0] < 1.0:
+            return None
+
+        coef = np.polyfit(t_vals, f_vals, 1)   # coef[0] = pendiente Hz/s
+        return round(float(coef[0]), 4)
+
+    def nivel_alerta(self) -> Tuple[str, str, Optional[float]]:
+        """
+        EvalÃºa el RoCoF actual y devuelve nivel semafÃ³rico.
+
+        Returns:
+            (icono, descripciÃ³n, valor_rocof)
+        """
+        rocof = self.calcular_rocof()
+        if rocof is None:
+            return ("âšª", "Sin datos suficientes", None)
+
+        abs_r = abs(rocof)
+        if abs_r < 0.10:
+            return ("ðŸŸ¢", f"Normal ({rocof:+.3f} Hz/s)", rocof)
+        elif abs_r < 0.30:
+            return ("ðŸŸ¡", f"Moderado ({rocof:+.3f} Hz/s)", rocof)
+        elif abs_r < 0.50:
+            return ("ðŸŸ ", f"Elevado â€” vigilancia ({rocof:+.3f} Hz/s)", rocof)
+        else:
+            return ("ðŸ”´", f"CRÃTICO â€” posible UFLS ({rocof:+.3f} Hz/s)", rocof)
+
+    def ultimas_medidas(self, n: int = 30) -> list:
+        """Devuelve las Ãºltimas n medidas como lista de dicts {time, freq}."""
+        items = list(self.buffer)[-n:]
+        return [
+            {"time": ts.strftime("%H:%M:%S"), "freq": round(f, 4)}
+            for ts, f in items
+        ]
+
+    def limpiar(self) -> None:
+        """VacÃ­a el buffer (Ãºtil para tests o reinicios de sesiÃ³n)."""
+        self.buffer.clear()
+
+
+
+=============================================================================
+ARCHIVO: requirements.txt
+=============================================================================
+
+# ============================================================
+# requirements.txt â€” Dashboard Sistema ElÃ©ctrico EspaÃ±ol
+# InstalaciÃ³n: pip install -r requirements.txt
+# ============================================================
+
+# â”€â”€ Core â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+streamlit>=1.32.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# â”€â”€ Datos y visualizaciÃ³n â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+pandas>=2.0.0
+numpy>=1.24.0
+plotly>=5.18.0
+
+# â”€â”€ Streamlit â€” componente de auto-refresh â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+streamlit-autorefresh>=0.0.1
+
+# â”€â”€ IA / RAG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-huggingface>=0.0.3
+chromadb>=0.5.0
+sentence-transformers>=2.7.0
+

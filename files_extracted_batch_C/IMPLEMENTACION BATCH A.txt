@@ -1,0 +1,362 @@
+IMPLEMENTACION BATCH A
+Antigravity, vamos a aplicar únicamente el Batch A (estabilidad y rendimiento). No toques todavía Batch B ni Batch C. Sigue los pasos en orden. Después de cada paso, confirma que lo has hecho. Al final, haremos commit y push para que Vercel despliegue automáticamente y veamos el "Building" en el dashboard.
+
+📌 PASO A1 – Root.js (Lenis memory leak)
+Prompt para Antigravity:
+
+Reemplaza el archivo src/theme/Root.js con el siguiente contenido (el mismo que mostraste con la bandera mounted y el cleanup completo):
+
+js
+import React, { useEffect } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useLocation } from '@docusaurus/router';
+
+function SmoothScrollRoot({ children }) {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      if (window.lenis) {
+        window.lenis.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    }
+  }, [pathname, hash]);
+
+  useEffect(() => {
+    let lenisInstance = null;
+    let rafId = null;
+    let mounted = true;
+
+    const initLenis = async () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      try {
+        const Lenis = (await import('lenis')).default;
+        await import('lenis/dist/lenis.css');
+        if (!mounted) return;
+        lenisInstance = new Lenis({ lerp: 0.08, smoothWheel: true, syncTouch: false });
+        window.lenis = lenisInstance;
+        function raf(t) {
+          if (!lenisInstance) return;
+          lenisInstance.raf(t);
+          rafId = requestAnimationFrame(raf);
+        }
+        rafId = requestAnimationFrame(raf);
+      } catch (e) {
+        console.warn('[Lenis] Failed to load:', e);
+      }
+    };
+
+    initLenis();
+
+    const applyLenisPrevent = () => {
+      document.querySelectorAll('.theme-doc-sidebar-menu, aside, .menu').forEach(el => {
+        if (!el.hasAttribute('data-lenis-prevent')) {
+          el.setAttribute('data-lenis-prevent', 'true');
+        }
+      });
+    };
+    applyLenisPrevent();
+    const observer = new MutationObserver(applyLenisPrevent);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      mounted = false;
+      cancelAnimationFrame(rafId);
+      lenisInstance?.destroy();
+      delete window.lenis;
+      observer.disconnect();
+    };
+  }, []);
+
+  return <>{children}</>;
+}
+
+export default function Root({ children }) {
+  return (
+    <BrowserOnly fallback={<>{children}</>}>
+      {() => {
+        const CustomCursor = require('@site/src/components/CustomCursor').default;
+        return (
+          <SmoothScrollRoot>
+            <CustomCursor />
+            {children}
+          </SmoothScrollRoot>
+        );
+      }}
+    </BrowserOnly>
+  );
+}
+Guarda el archivo. Confirma cuando esté listo.
+
+📌 PASO A2 – ForensicReveal (timers recursivos)
+Prompt para Antigravity:
+
+Reemplaza el archivo src/components/ForensicReveal/index.js con el siguiente código (versión con Set de timers y mounted guard):
+
+js
+import React, { useRef, useState, useEffect } from 'react';
+import { useInView, motion } from 'framer-motion';
+import styles from './styles.module.css';
+
+const CHARSET = '█▓▒░0123456789X';
+const getRandomChar = () => CHARSET[Math.floor(Math.random() * CHARSET.length)];
+
+export default function ForensicReveal({ children, className }) {
+  const text = React.Children.toArray(children).join('');
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.4 });
+  const [displayText, setDisplayText] = useState('');
+  const [started, setStarted] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
+
+  useEffect(() => {
+    if (!isInView || started || !text) return;
+    setStarted(true);
+
+    const finalChars = text.split('');
+    const revealed = new Array(finalChars.length).fill(false);
+    let revealIndex = 0;
+    let mounted = true;
+    const pendingTimers = new Set();
+
+    const safeTimeout = (fn, delay) => {
+      const id = setTimeout(() => {
+        pendingTimers.delete(id);
+        fn();
+      }, delay);
+      pendingTimers.add(id);
+      return id;
+    };
+
+    const scrambleInterval = setInterval(() => {
+      if (!mounted) return;
+      setDisplayText(
+        finalChars
+          .map((char, i) => {
+            if (revealed[i]) return char;
+            return char === ' ' ? ' ' : getRandomChar();
+          })
+          .join('')
+      );
+    }, 50);
+
+    const revealNext = () => {
+      if (!mounted) return;
+      if (revealIndex < finalChars.length) {
+        revealed[revealIndex] = true;
+        revealIndex++;
+        if (revealIndex < finalChars.length) {
+          revealed[revealIndex] = true;
+          revealIndex++;
+        }
+        safeTimeout(revealNext, 30);
+      } else {
+        clearInterval(scrambleInterval);
+        if (mounted) {
+          setDisplayText(text);
+          setIsFinished(true);
+        }
+      }
+    };
+
+    safeTimeout(revealNext, 200);
+
+    return () => {
+      mounted = false;
+      clearInterval(scrambleInterval);
+      pendingTimers.forEach(clearTimeout);
+      pendingTimers.clear();
+    };
+  }, [isInView, started, text]);
+
+  if (!started && !isFinished) {
+    return (
+      <span ref={ref} className={`${styles.forensicText} ${styles.redacted} ${className || ''}`}>
+        {text.replace(/[^\s]/g, '█')}
+      </span>
+    );
+  }
+
+  return (
+    <motion.span
+      ref={ref}
+      className={`${styles.forensicText} ${isFinished ? styles.finished : styles.scrambling} ${className || ''}`}
+      animate={isFinished ? { opacity: 1 } : {}}
+    >
+      {displayText}
+    </motion.span>
+  );
+}
+Guarda y confirma.
+
+📌 PASO A3 – Layout (CustomCursor condicional)
+Prompt para Antigravity:
+
+Reemplaza src/theme/Layout/index.js con esta versión que solo monta el cursor en dispositivos con puntero fino (desktop) y evita el flash inicial:
+
+js
+import React, { useState, useEffect } from 'react';
+import OriginalLayout from '@theme-original/Layout';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+function CursorComponent() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    setIsDesktop(window.matchMedia('(pointer: fine)').matches);
+  }, []);
+  if (!isDesktop) return null;
+  const AnimatedCursor = require('react-animated-cursor');
+  const Cursor = AnimatedCursor.default || AnimatedCursor;
+  return (
+    <div className="custom-cursor-wrapper">
+      <Cursor
+        innerSize={5}
+        outerSize={30}
+        color="0, 229, 255"
+        outerAlpha={0.1}
+        innerScale={0.5}
+        outerScale={2.0}
+        trailingSpeed={6}
+        outerStyle={{
+          border: '1px solid rgba(0,229,255,0.4)',
+          mixBlendMode: 'screen',
+        }}
+        clickables={['a', 'button', '.chart-card', ':is(input,textarea,select)', '.menu__link']}
+      />
+    </div>
+  );
+}
+
+export default function Layout(props) {
+  return (
+    <>
+      <BrowserOnly>
+        {() => <CursorComponent />}
+      </BrowserOnly>
+      <OriginalLayout {...props} />
+    </>
+  );
+}
+Guarda y confirma.
+
+📌 PASO A4 – vercel.json (seguridad y caché)
+Prompt para Antigravity:
+
+Crea (o sobrescribe) el archivo vercel.json en la raíz del proyecto con el siguiente contenido:
+
+json
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net; font-src 'self' fonts.gstatic.com data:; img-src 'self' data: blob: tile.openstreetmap.org *.openstreetmap.org; connect-src 'self'; frame-src 'self'; worker-src 'self' blob:"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/img/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
+    },
+    {
+      "source": "/figuras/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }]
+    }
+  ]
+}
+Confirma.
+
+📌 PASO A5 – docusaurus.config.js (unificar Google Fonts)
+Prompt para Antigravity:
+
+Modifica docusaurus.config.js:
+
+Reemplaza el array stylesheets: por el siguiente:
+
+js
+stylesheets: [
+  {
+    href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css',
+    type: 'text/css',
+    integrity: 'sha384-SfHjyzed8eCsTSa4t2GoMc4WnsCLa6cQpFqPRCaizz0FlQUOyafw/AyIUCQU/KuM',
+    crossorigin: 'anonymous',
+  },
+  {
+    href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Alfa+Slab+One&family=Playfair+Display:wght@700;800;900&display=swap',
+    type: 'text/css',
+    rel: 'stylesheet',
+  },
+],
+Añade justo debajo (dentro del mismo objeto config) el bloque headTags::
+
+js
+headTags: [
+  { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+  { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
+],
+Elimina cualquier <link rel="preload"> de europe-night-dark.jpg si existiera en headTags (no debe estar).
+
+Guarda y confirma.
+
+📌 PASO A6 – Eliminar @import de ExecutiveHook.module.css
+Prompt para Antigravity:
+
+Abre src/components/ExecutiveHook.module.css y elimina la primera línea que dice:
+
+css
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Playfair+Display:wght@700;800;900&display=swap');
+Esa línea ya no es necesaria porque las fuentes se cargan desde docusaurus.config.js. Guarda el archivo.
+
+📌 PASO A7 – Script de auditoría de dependencias (opcional pero útil)
+Prompt para Antigravity:
+
+Crea la carpeta scripts/ si no existe, y dentro crea el archivo scripts/audit-deps.mjs con el siguiente contenido:
+
+js
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
+const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+
+const suspectPackages = ['gsap', 'echarts', 'plotly.js', 'reactflow', 'maplibre-gl'];
+
+console.log('🔍 Analizando uso de dependencias sospechosas...\n');
+
+suspectPackages.forEach(pkgName => {
+  if (!deps[pkgName]) return;
+  try {
+    const result = execSync(`grep -r --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" "from ['"]${pkgName}['"]" src/`, { encoding: 'utf8' });
+    if (result.trim()) {
+      console.log(`✅ ${pkgName} → EN USO (encontrado)`);
+    } else {
+      console.log(`❌ ${pkgName} → SIN USO (puedes eliminarlo con npm uninstall ${pkgName})`);
+    }
+  } catch (e) {
+    console.log(`⚠️ ${pkgName} → No se encontró referencia directa (probablemente sin uso)`);
+  }
+});
+Luego ejecútalo con node scripts/audit-deps.mjs y dime qué paquetes puedes eliminar.
+
+✅ FIN DEL BATCH A – Commit y push
+Prompt final para Antigravity:
+
+Una vez completados todos los pasos del Batch A, haz commit y push para que Vercel despliegue automáticamente (y veamos el estado "Building" en el dashboard):
+
+bash
+git add .
+git commit -m "fix(perf): Batch A - memory leaks, cursor a11y, fonts, security headers"
+git push
+Confírmame cuando el push esté hecho y empezaré a vigilar el despliegue en Vercel.

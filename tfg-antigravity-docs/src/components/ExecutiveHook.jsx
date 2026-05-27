@@ -235,6 +235,25 @@ export default function ExecutiveHook() {
           </svg>
         </Link>
 
+        <Link to="/contexto" className={styles.chapterIconWrapper} title="Primer Capítulo">
+          <div className={styles.chapterNeonCircle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <svg className={styles.rotatingText} viewBox="0 0 100 100">
+            <defs>
+              <path id="textCircle2" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+            </defs>
+            <text>
+              <textPath href="#textCircle2" textLength="251" lengthAdjust="spacing">
+                CAPÍTULO 1 • INTRODUCCIÓN • 
+              </textPath>
+            </text>
+          </svg>
+        </Link>
+
         {/* Contenido principal centrado */}
         <div className={styles.heroContent}>
           <h1 className={styles.title}>

@@ -1,0 +1,154 @@
+# INFORME UNIFICADO DE REVISIÓN DEL TEXTO DEL TFG
+## (Fusión de las dos auditorías – gramática, técnica, narrativa)
+
+**Para:** Antigravity (equipo de corrección)
+**Objetivo:** Proporcionar una lista completa, priorizada y accionable de correcciones sobre el texto del TFG "Análisis del Apagón Ibérico del 28 de Abril de 2025".
+
+---
+
+## 1. CORRECCIONES GRAMATICALES Y ORTOTIPOGRÁFICAS (prioridad alta)
+
+| # | Error | Localización | Corrección |
+|---|-------|--------------|-------------|
+| 1 | "caída a 0 Hz" | Cronología / evento t8 | → *«Pérdida total de 15 GW de generación y colapso a cero de tensión. El sistema ibérico queda deenergizado.»* |
+| 2 | "últimas décadas" vs "más de 20 años" | Introducción y Resumen | Unificar en todos los capítulos: *«en más de veinte años»* o *«desde el apagón italiano de septiembre de 2003»*. |
+| 3 | Confusión en la leyenda de la ecuación de swing | Cap. Análisis Técnico | Corregir: *«$P_e$ la potencia eléctrica generada (potencia de salida del alternador al sistema)»*. |
+| 4 | Código `&lt;` visible en tabla SCR | Cap. Análisis Técnico | Asegurar que se renderiza como `<`. Verificar MDX. |
+| 5 | "Almaraz" como sujeto sancionador | Cap. Consecuencias Institucionales | → *«REE y la empresa titular de la central de Almaraz»*. |
+| 6 | "cinco horas después" (eran 5h27') | Cap. Impacto Comunicativo | → *«más de cinco horas después»*. |
+| 7 | Inconsistencia cursivas: mezcla `*` y `_` | Todo el documento | Elegir un único estilo (recomendado: `*texto*` para extranjerismos y términos técnicos en primera mención). Aplicar sistemáticamente. |
+| 8 | Acrónimo WEST sin definir | Cap. Reposición | Definir la primera vez que aparece: *«WEST (Western European Summer Time, UTC+1, horario de Portugal)»* o eliminarlo si no es necesario. |
+| 9 | Uso intercambiable «Redeia» y «REE» | Todo el documento | Distinguir: **REE** para operaciones del sistema; **Redeia** para contexto corporativo/accionarial. Añadir nota al pie en primera mención de Redeia. |
+| 10 | "estrangulamiento regulatorio" (cargado) | Cap. Conclusiones | → *«inadecuación estructural del marco regulatorio-técnico vigente»*. |
+| 11 | Espaciado de porcentajes (82% vs 82 %) | Todo el documento | Unificar con **espacio duro** entre cifra y símbolo: `%` → *«82 %»*. |
+| 12 | Plural de siglas (CCGTs, PLLs) | Todo el documento | Eliminar la 's' inglesa: *«CCGT»*, *«PLL»* (invariables en español). |
+| 13 | Comillas inglesas `" "` en lugar de angulares `« »` | Todo el documento | Sustituir por angulares: *«espejismo»* en lugar de "espejismo". |
+| 14 | "Península Ibérica" (mayúsculas) | Varios capítulos | → *«península ibérica»* (minúsculas en genérico geográfico). |
+
+---
+
+## 2. INCONGRUENCIAS TÉCNICAS Y DE MERCADO (prioridad muy alta)
+
+| # | Descripción | Localización | Resolución |
+|---|-------------|--------------|-------------|
+| **C1** | **Contradicción carga/demanda: 31 GW interrumpidos vs 25,2 GW de demanda basal** | Cap. 7B, Cap. 9 vs Cap. 2 | Decidir escenario. Si el apagón ocurre en valle de demanda, fijar **carga interrumpida = 25,2 GW**. Purgar todas las menciones a 31 GW en caps. 7B, 8.5, 9. |
+| **C2** | **Paradoja UFLS: nadir 47,79 Hz pero umbral 47,5 Hz no alcanzado** | Cap. 9 | Ajustar el texto: explicar que solo actuaron los escalones superiores (49,0 Hz, 48,5 Hz). Eliminar referencia a 47,5 Hz o cambiar a «por debajo de 48,0 Hz». |
+| **C3** | **Potencia reactiva medida en MW (error conceptual grave)** | Cap. 9 (interconexión Francia) | Cambiar: *«flujos transitorios de hasta 4.609 MW de potencia activa»* (no reactiva). O, si es reactiva, usar MVAr. |
+| **C4** | **Cronología HVDC: «minutos antes» vs 12:08 (25 minutos)** | Cap. 8.5 | → *«aproximadamente 25 minutos antes del colapso (12:08 CEST)»* o *«en las horas previas»*. |
+| **C5** | **Timestamp del blackout: 12:33:24 / 27 / 29.741** | Timeline, Resumen, Cap.3 | Unificar en **12:33:29.741 CEST** (el más preciso). Ajustar duración de la cascada si es necesario. |
+| **C6** | **Personas afectadas: 60M vs 55M** | Introducción, Timeline, Resumen | Adoptar cifra única justificada: *«aproximadamente 57 millones de personas»* (INE España + Portugal). |
+| **C7** | **Duración reposición: 18h, 18,5h, 19h** | Cap. Reacción, Resumen, Timeline | Unificar en *«aproximadamente 18,5 horas»*. Eliminar «menos de 18 horas». |
+| **C8** | **Factor de crecimiento BESS: 589% mal expresado** | Cap. 8.5 | → *«ha crecido un 589%, pasando de 28 MW a aproximadamente 193 MW»*. O si es 200 MW, ajustar factor. |
+| **C9** | **MRSCR definido tarde y sin referencia cruzada** | Cap. Técnico avanzado | Añadir nota en tabla SCR del Cap. Contexto: *«El SCR es de nudo único; para sistemas de alta densidad IBR véase MRSCR en Cap. X»*. |
+| **C10** | **Cálculo de ENS (150-180 GWh) parece bajo** | Cap. 7B | Revisar metodología o añadir nota justificativa (recuperación no lineal, demanda nocturna más baja). |
+| **C11** | **Atribución de oscilación 0,6 Hz: «mala gestión» vs «lazo de control»** | Cap. 8.5 vs Cap. 3 | Aclarar: *«Esta atribución informal coincide parcialmente con la posición de REE, aunque el informe técnico habla de 'oscilación forzada en el lazo de control'»*. |
+
+---
+
+## 3. REPETICIONES Y REDUNDANCIAS (prioridad media)
+
+| # | Concepto | Apariciones | Acción |
+|---|----------|-------------|--------|
+| R1 | 82% de penetración no síncrona | Introducción, Contexto, Análisis, Resumen | Definir una sola vez en Contexto y referenciar en los demás capítulos. |
+| R2 | «El 28-A no fue colapso de frecuencia, sino de tensión» | Introducción, Análisis, Conclusiones, Resumen | Dejar una sola mención completa (en Conclusiones o en el primer párrafo del Análisis). |
+| R3 | Marco de 3/4 narrativas institucionales | Introducción, Cap. Análisis informes, Conclusiones | En Conclusiones, eliminar la recapitulación del marco; empezar directamente con convergencias/divergencias. |
+| R4 | Explicación del Tap-Lag | Cap. Análisis, pies de figura, glosario | Dejar la explicación completa solo en el Cap. Análisis. En pies de figura: *«Véase §3.2»*. |
+| R5 | Deficiencias del P.O. 7.4 (banda muerta, asimetría) | Cap. Análisis informes, Cap. Respuesta normativa, Conclusiones | Solo desarrollar en Cap. Respuesta normativa. En otros capítulos, referencia cruzada. |
+
+---
+
+## 4. MEJORAS DE CONTENIDO Y ESTRUCTURA (por capítulo)
+
+### Cap. Introducción
+- [ ] Añadir una frase que ancle la dimensión técnica: *«El análisis narrativo se fundamenta en una reconstrucción electromagnética del transitorio, construida sobre los registros PMU y WAMS»*.
+- [ ] Unificar cifra de personas afectadas (57 M) y años sin precedente (20 años).
+
+### Cap. Contexto Técnico
+- [ ] Añadir párrafo de transición entre la ecuación de swing y el SCR para explicar por qué la inercia no fue el problema principal.
+- [ ] Nota a la tabla SCR sobre MRSCR.
+
+### Cap. Análisis del Incidente
+- [ ] Añadir diagrama de flujo temporal del Tap-Lag (secuencia: sobretensión 400 kV → OLTC atascado → 220 kV a 1,1 p.u. → protección 59 ANSI → bucle).
+- [ ] Corregir timestamp único del blackout (12:33:29.741).
+
+### Cap. Reacción y Reposición
+- [ ] Mover los subapartados sobre P.O. 7.4, VOLTAIRE y NC RfG al capítulo de Análisis Técnico (o a un capítulo propio de «Marco Regulatorio»).
+- [ ] Unificar duración de reposición (18,5 h) y eliminar WEST si no se define.
+
+### Cap. Impacto Comunicativo
+- [ ] Añadir verificación simétrica de un medio pro-renovables (ej. El País) para equilibrar el análisis.
+- [ ] Numerar la tabla de verificación de afirmaciones mediáticas y referenciarla en el texto.
+- [ ] Corregir «cinco horas» → «más de cinco horas».
+
+### Cap. Resumen de Cifras
+- [ ] Revisar y unificar todas las cifras maestras según la tabla de correcciones (C1 a C10).
+- [ ] Añadir referencias cruzadas a los capítulos donde se desarrollan los números (ej. *«Análisis detallado en §3.2»*).
+- [ ] Corregir la confusión MW vs MVAr en la interconexión con Francia.
+
+### Cap. Conclusiones
+- [ ] Eliminar los dos primeros párrafos de recapitulación del marco narrativo (ya están en introducción y análisis).
+- [ ] Suavizar «estrangulamiento regulatorio» → «inadecuación estructural».
+- [ ] **Añadir una sección «Líneas de investigación abiertas»** con 4-5 items:
+    1. Validación experimental de valores MRSCR críticos mediante PMU.
+    2. Diseño de mercados de servicios ERS con remuneración basada en inercia virtual GFM.
+    3. Criterios de selección entre SynCon y BESS-GFM para potencia de cortocircuito en nudos débiles.
+    4. Modelización del Tap-Lag en simuladores de transitorio (PSCAD/EMTP).
+    5. Impacto del autoconsumo distribuido en la observabilidad de la red durante transitorios de tensión.
+
+### Cap. Consecuencias Financieras (7B)
+- [ ] **Urgente: eliminar el tono sensacionalista.** Sustituir:
+    - «OPEX tóxico» → «costes sistémicos ineficientes por sobre-restricciones técnicas»
+    - «agujero negro financiero» → «un deterioro insostenible del excedente del consumidor»
+    - «guillotina operativa» → «una interrupción no rampa de la cinemática industrial»
+    - «electroshock» → «un cambio estructural en la configuración del parque»
+- [ ] Distinguir claramente entre Mercado Diario (OMIE, precios bajos) y Mercados de Servicios de Ajuste (REE, costes de restricciones técnicas).
+- [ ] Corregir cifra de ENS (150-180 GWh) o añadir justificación metodológica.
+
+### Cap. Uso de Inteligencia Artificial
+- [ ] Añadir párrafo que explique *por qué* la arquitectura Transformer es incapaz de modelar sistemas físicos (no integra EDOs, no resuelve flujo de cargas). Esto demuestra conocimiento profundo.
+
+---
+
+## 5. TABLA DE CIFRAS MAESTRAS (para unificar en todo el documento)
+
+| Magnitud | Valor unificado | Fuente / Nota |
+|----------|----------------|----------------|
+| Personas afectadas | **57 millones** | INE España (47 M) + INE Portugal (10 M) aprox. |
+| Demanda instantánea al colapso | **25,2 GW** | Cap. 2 (valle primaveral) |
+| Generación perdida en cascada | **15 GW** | Cap. 3, Timeline |
+| Carga total interrumpida | **25,2 GW** | Coherente con demanda del momento |
+| Inercia global del sistema (H) | **2,3 s** | Cap. 5, consenso |
+| Inercia zonal sur (H) | **1,3 s** | Cap. 5, ICAI/NREL |
+| Timestamp del cero de tensión | **12:33:29.741 CEST** | Cap. 3 (disparo último grupo) |
+| Duración de la reposición | **18,5 horas** | Desde 12:33 hasta 07:00 del 29-A |
+| Penetración renovable no síncrona | **82 %** | Cap. 2, 12:30 CEST |
+| Reducción del margen Q-V en Carmona | **57 %** | Cap. 5, informe ICAI |
+| Déficit neto de reactiva en zona sur | **0,6 GVAr** | Cap. 5 |
+
+---
+
+## 6. PRIORIDADES PARA ANTIGRAVITY
+
+### 🔴 Urgente (antes de la defensa)
+1. Unificar cifras maestras (tabla anterior) en todo el documento.
+2. Corregir error conceptual: potencia reactiva en MW → MVAr (y distinguir activa/reactiva).
+3. Ajustar la paradoja UFLS (eliminar umbral 47,5 Hz no alcanzado).
+4. Corregir el error de carga/demanda (31 GW vs 25,2 GW) – decidir escenario y purgar.
+5. Añadir sección «Líneas de investigación abiertas» en Conclusiones.
+
+### 🟡 Importante (mejora sustancial)
+6. Eliminar repeticiones (82%, Tap-Lag, marco narrativo, P.O. 7.4).
+7. Revisar el tono sensacionalista del capítulo financiero.
+8. Unificar timestamps y duración de reposición.
+9. Añadir diagrama de flujo temporal del Tap-Lag.
+10. Distinguir REE vs Redeia con nota al pie.
+
+### 🟢 Opcional pero recomendable
+11. Unificar estilo de cursivas y comillas.
+12. Añadir verificación simétrica de medio pro-renovables en cap. comunicativo.
+13. Añadir párrafo sobre limitaciones de los LLM (arquitectura Transformer).
+14. Revisar cálculo de ENS o justificarlo.
+
+---
+
+**Fin del informe unificado.**

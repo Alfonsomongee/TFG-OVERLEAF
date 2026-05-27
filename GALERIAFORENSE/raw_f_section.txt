@@ -1,0 +1,149 @@
+F) ACTUAL GENERATION OUTPUT PER GENERATION UNIT (TR 16.1.A)
+
+Mientras las previsiones indicaban una generación solar superior a 12 GW y eólica de 3,5 GW a mediodía, los registros de las unidades muestran una práctica totalidad de la fotovoltaica en cero y la eólica reducida a un 5% de lo esperado. Esta caída no se debió a falta de recurso primario, sino a la desconexión masiva por sobretensión en redes colectoras de 220 kV, invisible para el operador. Por el contrario, la generación hidroeléctrica y nuclear se mantuvieron estables, demostrando su papel crítico como ‘andamiaje electromagnético’ durante la cascada y la posterior reposición.” 
+
+Relevancia: Alta (granularidad). Mientras que TR 16.1.B&C muestra agregados por tecnología, este desglose por unidad individual permite identificar si centrales específicas sufrieron problemas (desconexiones no programadas, reducciones de potencia, etc.) en las horas previas al colapso. Anomalías en generadores específicos pueden ser causa o consecuencia del apagón.
+
+Todos los generadores solares aparecen con potencia cero (0.00 MW). Esto es consistente con un instante posterior al colapso (Fase 3 o Fase 4) o con un momento de baja irradiación, pero dado el contexto del apagón (mediodía del 28 de abril), es más probable que refleje la desconexión masiva por sobretensión durante la cascada o el cero eléctrico posterior.
+
+La generación eólica muestra valores reducidos (entre 4.4 MW y 75.2 MW), también muy por debajo de lo esperable (dado que la previsión era alta). Esto sugiere que muchas plantas eólicas también se desconectaron por sobretensión o por pérdida de sincronismo.
+
+La generación hidroeléctrica y de bombeo presenta valores significativos (por ejemplo, Aldea I con ~100 MW por unidad, Muela con ~150 MW por unidad), indicando que estos activos permanecieron conectados y fueron clave para la reposición Bottom-Up (Fase 4). Algunas unidades de bombeo están a cero (modo motor o paradas).
+
+La generación nuclear muestra una situación mixta: Almaraz 1 y Cofrentes a cero (posiblemente disparadas), mientras que Almaraz 2, Ascó 1, Ascó 2 y Vandellós están operando (643 MW a 1044 MW). Esto refleja que no todas las nucleares colapsaron; algunas resistieron el transitorio o fueron reconectadas durante la reposición.
+
+Los ciclos combinados de gas presentan una mezcla de unidades a cero y otras con potencias entre 80 MW y 220 MW. Muchas de las que están a cero podrían haber sido las que estaban apagadas por orden de mérito antes del colapso (las que aportaban inercia pero fueron desplazadas por renovables). Las que están operativas corresponden probablemente a las que se utilizaron durante la «Operación Reforzada» para proveer firmeza.
+
+Los valores N/A y n/e se han excluido; las unidades con esos códigos no se incluyen en el JSON para mantener la limpieza de los datos. Si consideras que deben aparecer igualmente con power_mw: null, dímelo y los añado.
+
+AQUI LOS JSON:
+
+📁 JSON 1: generation_by_fuel_type.json – Barras / Tarta / Área
+Propósito: Mostrar la generación total por tecnología durante el colapso. Ideal para un gráfico de barras apiladas o un diagrama de tarta que revele el mix real.
+
+json
+{
+  "description": "Suma de potencia activa (MW) por tipo de combustible, calculada a partir de las unidades con datos válidos (excluyendo N/A y n/e).",
+  "data": [
+    { "fuel_type": "Nuclear", "total_mw": 3368.8 },
+    { "fuel_type": "Fossil Gas", "total_mw": 2774.8 },
+    { "fuel_type": "Hydro Pumped Storage", "total_mw": 1416.4 },
+    { "fuel_type": "Hydro Water Reservoir", "total_mw": 1012.0 },
+    { "fuel_type": "Wind Onshore", "total_mw": 152.4 },
+    { "fuel_type": "Solar", "total_mw": 0.0 },
+    { "fuel_type": "Fossil Hard coal", "total_mw": 0.0 }
+  ]
+}
+Interpretación forense: La solar está a cero (desconexión masiva por sobretensión), la eólica muy reducida, mientras que nuclear, hidráulica y gas mantienen la red. El sistema sobrevive gracias a las máquinas síncronas.
+
+📁 JSON 2: active_units_top20.json – Ranking / Barras horizontales
+Propósito: Identificar las unidades individuales que más generaban en el momento del colapso. Muestra qué centrales concretas fueron la columna vertebral.
+
+json
+{
+  "description": "Unidades de generación con potencia > 0 MW, ordenadas de mayor a menor.",
+  "data": [
+    { "name": "VANDELLOS", "eic": "18WVAN2-12345-BA", "fuel_type": "Nuclear", "power_mw": 1044.4 },
+    { "name": "ASCO 2", "eic": "18WASC2-12345-B3", "fuel_type": "Nuclear", "power_mw": 1004.0 },
+    { "name": "ASCO 1", "eic": "18WASC1-12345-BD", "fuel_type": "Nuclear", "power_mw": 681.2 },
+    { "name": "ALMARAZ 2", "eic": "18WALZ2-12345-BJ", "fuel_type": "Nuclear", "power_mw": 643.2 },
+    { "name": "SRI4", "eic": "18WSRI4-123456-V", "fuel_type": "Fossil Gas", "power_mw": 218.8 },
+    { "name": "ALDEA IIG2", "eic": "18WAL22-12345-AE", "fuel_type": "Hydro Water Reservoir", "power_mw": 196.0 },
+    { "name": "PALOS1", "eic": "18WPALOS1-123-CB", "fuel_type": "Fossil Gas", "power_mw": 178.8 },
+    { "name": "PBCN2", "eic": "18WPBCN2-1234-P7", "fuel_type": "Fossil Gas", "power_mw": 177.2 },
+    { "name": "ARCOS1", "eic": "18WARCOS1-123-CR", "fuel_type": "Fossil Gas", "power_mw": 176.0 },
+    { "name": "CARTAGENA3", "eic": "18WCTGN3-1234-C7", "fuel_type": "Fossil Gas", "power_mw": 164.4 },
+    { "name": "SAGU1", "eic": "18WSAGU1-1234-CC", "fuel_type": "Fossil Gas", "power_mw": 164.8 },
+    { "name": "SAGU2", "eic": "18WSAGU2-1234-C3", "fuel_type": "Fossil Gas", "power_mw": 163.2 },
+    { "name": "CAMPGIB1", "eic": "18WCAMGI10-12-CK", "fuel_type": "Fossil Gas", "power_mw": 153.2 },
+    { "name": "PdV2", "eic": "18WPVENT2-1234-P", "fuel_type": "Fossil Gas", "power_mw": 151.0 },
+    { "name": "MUELA 1G", "eic": "18WMUE1-12345-FP", "fuel_type": "Hydro Pumped Storage", "power_mw": 152.8 },
+    { "name": "MUELA 2G", "eic": "18WMUE2-12345-FF", "fuel_type": "Hydro Pumped Storage", "power_mw": 149.2 },
+    { "name": "MUELA 3G", "eic": "18WMUE3-12345-F5", "fuel_type": "Hydro Pumped Storage", "power_mw": 148.8 },
+    { "name": "CAMPGIB2", "eic": "18WCAMGI20-12-CC", "fuel_type": "Fossil Gas", "power_mw": 146.4 },
+    { "name": "SBO3", "eic": "18WSBO3-12345-CE", "fuel_type": "Fossil Gas", "power_mw": 140.0 },
+    { "name": "VLLRINO 6B", "eic": "18WVRN6B-12345-Z", "fuel_type": "Hydro Pumped Storage", "power_mw": 138.4 }
+  ]
+}
+Interpretación forense: Las nucleares (Vandellós, Ascó, Almaraz) son las que más aportan, seguidas de algunos ciclos combinados y bombeo hidráulico. La ausencia de plantas solares en el ranking confirma el colapso de la generación fotovoltaica.
+
+📁 JSON 3: technology_status_summary.json – Tarjetas / Indicadores / Barras 100% apiladas
+Propósito: Resumir cuántas unidades de cada tecnología estaban activas, cuántas paradas, y la potencia media. Útil para gráficos de estado (verde/rojo) o mapas de calor.
+
+json
+{
+  "description": "Resumen por tecnología: número total de unidades, unidades con generación positiva (activas), unidades a cero (inactivas) y potencia media entre las activas.",
+  "data": [
+    { "fuel_type": "Nuclear", "total_units": 7, "active_units": 4, "zero_units": 3, "avg_active_power_mw": 842.2 },
+    { "fuel_type": "Fossil Gas", "total_units": 51, "active_units": 19, "zero_units": 32, "avg_active_power_mw": 146.0 },
+    { "fuel_type": "Hydro Pumped Storage", "total_units": 26, "active_units": 9, "zero_units": 17, "avg_active_power_mw": 157.4 },
+    { "fuel_type": "Hydro Water Reservoir", "total_units": 28, "active_units": 14, "zero_units": 14, "avg_active_power_mw": 72.3 },
+    { "fuel_type": "Wind Onshore", "total_units": 8, "active_units": 6, "zero_units": 2, "avg_active_power_mw": 25.4 },
+    { "fuel_type": "Solar", "total_units": 27, "active_units": 0, "zero_units": 27, "avg_active_power_mw": 0.0 },
+    { "fuel_type": "Fossil Hard coal", "total_units": 3, "active_units": 0, "zero_units": 3, "avg_active_power_mw": 0.0 }
+  ]
+}
+Interpretación forense: El 100% de las unidades solares (27) estaban a cero. Más del 60% de los ciclos combinados también parados (32 de 51). Sin embargo, las nucleares mantuvieron el 57% de sus unidades activas (4 de 7), y las hidráulicas de bombeo/reservorio también contribuyeron significativamente.
+
+📁 JSON 4: sync_vs_ibr.json – Gráfico de anillo o donut (síncrono vs inversor)
+Propósito: Clasificar cada tecnología como síncrona (aportan inercia y cortocircuito) o IBR (inversores, sin inercia). Visualizar el desequilibrio estructural.
+
+json
+{
+  "description": "Clasificación de la generación real en síncrona (máquinas rotativas) vs IBR (inversores, grid-following).",
+  "categories": [
+    { "type": "Synchronous (rotating machines)", "technologies": ["Nuclear", "Fossil Gas", "Fossil Hard coal", "Hydro Water Reservoir", "Hydro Pumped Storage"], "total_mw": 8572.0 },
+    { "type": "Inverter-Based Resources (IBR)", "technologies": ["Solar", "Wind Onshore"], "total_mw": 152.4 }
+  ]
+}
+Interpretación forense: La generación síncrona real fue de 8.572 MW, mientras que la IBR apenas 152 MW (cuando debería haber sido >15.000 MW según previsiones). El colapso no fue por falta de generación total, sino por la desconexión masiva de los IBR que dejó al sistema sin capacidad de absorción de reactiva.
+
+📁 JSON 5: generation_by_fuel_type_with_expected.json – Barras comparativas (real vs esperado)
+Propósito: Comparar lo que realmente hubo con lo que debería haber habido según previsiones (valores estimados a partir de datos típicos del 28 de abril).
+
+json
+{
+  "description": "Comparativa entre generación real (de los datos) y generación esperada (basada en previsiones de ENTSO-E para el 28 de abril a las 12:30).",
+  "data": [
+    { "fuel_type": "Solar", "real_mw": 0.0, "expected_mw": 12400 },
+    { "fuel_type": "Wind Onshore", "real_mw": 152.4, "expected_mw": 3800 },
+    { "fuel_type": "Nuclear", "real_mw": 3368.8, "expected_mw": 3500 },
+    { "fuel_type": "Fossil Gas", "real_mw": 2774.8, "expected_mw": 4800 },
+    { "fuel_type": "Hydro Water Reservoir", "real_mw": 1012.0, "expected_mw": 2200 },
+    { "fuel_type": "Hydro Pumped Storage", "real_mw": 1416.4, "expected_mw": 1500 },
+    { "fuel_type": "Fossil Hard coal", "real_mw": 0.0, "expected_mw": 600 }
+  ]
+}
+Interpretación forense: El déficit combinado de solar y eólica supera los 15.000 MW. Esa es la energía que se perdió por la cascada de sobretensiones. La nuclear y la hidráulica se comportaron cerca de lo esperado, demostrando su fiabilidad durante el transitorio.
+
+🧰 Cómo usar estos JSONs en tu TFG (React + Recharts)
+Ejemplo para generation_by_fuel_type.json (gráfico de barras horizontal apiladas):
+
+jsx
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const data = [ /* el JSON 1 */ ];
+
+function MixChart() {
+  return (
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart layout="vertical" data={data}>
+        <XAxis type="number" />
+        <YAxis type="category" dataKey="fuel_type" />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="total_mw" fill="#10b981" name="Potencia real (MW)" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+Para el JSON 5 (comparativa), puedes usar barras agrupadas o barras apiladas con una barra de déficit:
+
+jsx
+<BarChart data={comparativa}>
+  <Bar dataKey="real_mw" fill="#3b82f6" name="Real" />
+  <Bar dataKey="expected_mw" fill="#94a3b8" name="Previsto" />
+</BarChart>
+
+
+

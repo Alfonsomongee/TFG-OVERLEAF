@@ -1,0 +1,24 @@
+ResumenEjecutivo
+
+
+Batch A (6 archivos): Cero cambio visual, máxima estabilidad.
+
+Root.js — la bandera mounted + cancelAnimationFrame antes de lenis.destroy() cierra definitivamente la race condition async
+ForensicReveal — el Set<timerId> registra todos los setTimeout recursivos para cancelarlos en cleanup
+Layout — el cursor ahora tiene dos niveles de guarda: el useState(false) inicial evita el flash, el matchMedia('pointer:fine') evita montar en touch
+vercel.json — cabeceras CSP + X-Frame + nosniff + cache inmutable para /assets/
+docusaurus.config.PATCH — una sola petición a Google Fonts en lugar de dos
+audit-deps.mjs — te dirá en 30 segundos si gsap/echarts/plotly pueden eliminarse
+
+Batch B (5 archivos): Animaciones más elegantes y eficientes.
+
+Exit de página reducido de 0.8s con blur+clipPath a 0.25s con solo opacity (GPU puro)
+Scanlines con SVG noise inline — elimina el mix-blend-mode: overlay que era el culpable del layer extra de compositing
+StickyScene mantiene once: false pero usa spring + solo opacity
+GlitchTitle de 1.5s con dos capas conflictivas a 0.8s con una sola capa precisa
+
+Batch C (3 archivos): El más impactante visualmente.
+
+designTokens.css unifica los dos sistemas de negro en uno solo, con aliases de compatibilidad para no romper componentes existentes
+custom.PATCH.css corrige el ratio de contraste 1.37 → 5.2:1 en light mode
+GlossaryLink elimina el ⊙ flotante y la negrita — el cambio más visible en los capítulos densos

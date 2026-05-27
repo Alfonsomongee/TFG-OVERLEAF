@@ -1,0 +1,38 @@
+ERROR DASHBOARD 
+
+error:TypeError: This app has encountered an error. The original error message is redacted to prevent data leaks. Full error details have been recorded in the logs (if you're on Streamlit Cloud, click on 'Manage app' in the lower right of your app).
+Traceback:
+File "C:\Users\aphmo\Proyectos\TFG OVERLEAF\DASHBOARD\app.py", line 544, in <module>
+    render_tab_forense(st.session_state.ultimo_snapshot)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\aphmo\Proyectos\TFG OVERLEAF\DASHBOARD\tab_forense_28a.py", line 176, in render_tab_forense
+    fig_demanda_real_vs_prev(df_demanda, demanda_hoy=demanda_hoy),
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "C:\Users\aphmo\Proyectos\TFG OVERLEAF\DASHBOARD\visualizaciones_forenses.py", line 198, in fig_demanda_real_vs_prev
+    x1=(T_COLAPSO_DT + timedelta(minutes=37)),
+        ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~ 
+
+
+SOLUCION:
+
+Agente, necesito que corrijas el error TypeError en visualizaciones_forenses.py línea 198.
+
+Contexto:
+Tengo definido T_COLAPSO_DT = pd.Timestamp("2025-04-28 12:33:00") y uso T_COLAPSO_DT + timedelta(minutes=37). El error indica que la suma no es válida.
+
+Instrucciones concretas:
+
+Abre el archivo visualizaciones_forenses.py.
+
+En la sección de imports, asegúrate de tener import pandas as pd.
+
+Reemplaza cualquier from datetime import timedelta por from datetime import datetime (solo si se usa datetime en otro lado). Si no se usa datetime para nada más, elimina la importación de datetime.
+
+Cambia todas las ocurrencias de timedelta(minutes=37) por pd.Timedelta(minutes=37).
+
+También revisa la línea donde se define T_COLAPSO_DT y confirma que no sea una cadena. Debe ser pd.Timestamp("2025-04-28 12:33:00").
+
+Si en alguna otra parte usas timedelta con seconds, hours, etc., cámbialos también a pd.Timedelta.
+
+Entrega el código corregido de visualizaciones_forenses.py completo, con los cambios aplicados.
+

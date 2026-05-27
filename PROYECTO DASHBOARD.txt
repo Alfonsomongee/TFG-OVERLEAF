@@ -1,0 +1,435 @@
+PROYECTO DASHBOARD
+
+# PROYECTO: DASHBOARD FORENSE 28-A - ANÁLISIS DE VIABILIDAD Y ESTADO
+
+## CONTEXTO GENERAL
+
+Estamos desarrollando un dashboard forense interactivo en Python + Streamlit 
+para analizar el apagón ibérico del 28 de abril de 2025, comparándolo con 
+el estado actual en tiempo real del sistema eléctrico español.
+
+Tecnología:
+- Frontend: Streamlit + Plotly
+- Backend: Python 3.9+
+- APIs: ESIOS (REE) + ENTSO-E
+- IA: Ollama mistral:7b + ChromaDB
+- Storage: SQLite + ChromaDB
+
+---
+
+## PHASE 1: MVP (COMPLETADA - 4,200 LOC)
+
+### MÓDULOS DESARROLLADOS
+
+#### 1. fetcher_esios.py (550 líneas)
+✓ Cliente ESIOS con exponential backoff retry
+✓ 11 indicadores implementados (frecuencia, demanda, generación mix, precios)
+✓ Caché SQLite con ventana 7 días
+✓ Timeout: 10s, max_retries: 5
+✓ Normalización automática de timestamps
+
+**Indicadores indexados:**
+- 1503: Frecuencia (1 min)
+- 1294: Demanda real (15 min)
+- 1295: Solar (15 min), 551: Eólica, 549: Nuclear, 2041: CCGT, 546: Hidráulica
+- 600: Precios SPOT (1 hora)
+- 330: FCR requerida, 556/560: Francia (import/export), 557/561: Portugal
+
+#### 2. fetcher_entsoe.py (450 líneas)
+✓ Cliente ENTSO-E con retry strategy
+✓ Flujos transfronterizos (15 min latencia)
+✓ Cross-border physical flows implementado
+✓ Carga actual por país (15 min)
+✓ Parsing XML robusto
+
+**Endpoint core:**
+- /api/v1/balancingData/crossBorderPhysicalFlow/show
+- Areas mapeadas: ES, FR, PT, MA, IT, DE, PL
+
+#### 3. inercia_calculator.py (320 líneas)
+✓ Swing equation: H = (ΔP · f₀) / (2 · RoCoF · S_base)
+✓ Cálculos de inercia con confianza bayesiana
+✓ Rolling window analysis (ventana móvil 60 min)
+✓ Datos históricos 28-A pregenerados
+
+**Parámetros:**
+- SYSTEM_POWER_BASE = 20,000 MW
+- SYSTEM_FREQUENCY_NOMINAL = 50 Hz
+- H_nominal: 8s, H_critical: <4s
+
+#### 4. rocof_detector.py (350 líneas)
+✓ RoCoF detection: dF/dt
+✓ Tres métodos: simple, Savitzky-Golay (DEFAULT), Butterworth
+✓ Event detection automático
+✓ Clasificación por umbral
+
+**Métodos:**
+- Simple: Diferencia finita (rápido, ruidoso)
+- Savitzky-Golay: Polinomio local (ÓPTIMO)
+- Butterworth: Low-pass filter (suavizado)
+
+**Umbrales:**
+- |RoCoF| < 0.2: NOMINAL
+- 0.2-0.5: ALERT_LOW
+- 0.5-1.0: ALERT_HIGH
+- >1.0: UFLS_TRIGGER
+
+#### 5. analyzer.py (550 líneas)
+✓ Risk Score polinómico: 50% FSM + 35% RoCoF + 15% Damping
+✓ Análisis causal condicional (5 heurísticas IF-THEN)
+✓ Comparativa vs 28-A histórico
+✓ Generación de narrativa automática
+✓ Proyecciones probabilísticas
+
+**Fórmula Risk:**
+Risk = w₁·(1-fsm/2.0)·100 + w₂·(|rocof|/1.0)·100 + w₃·(1-damp)·100
+
+**Análisis causal:**
+- Si H < 4s AND solar > 50% → Riesgo inestabilidad
+- Si |RoCoF| > 0.6 AND H > 5 → Pérdida generación
+- Si freq < 49.5 AND RoCoF < -0.3 → Trayectoria colapso
+
+#### 6. rag_engine.py (650 líneas)
+✓ ChromaDB: BD vectorial de documentos TFG
+✓ Ollama: LLM local mistral:7b
+✓ RAG pipeline: Recuperación semántica + generación
+✓ Cache en memoria (top 30 preguntas)
+✓ Fallback cuando no hay matches (similitud < 0.65)
+
+**Configuración Ollama:**
+- Model: mistral:7b
+- Temperature: 0.1 (determinístico)
+- Timeout: 30s
+- System prompt: Imperativo (SOLO basado en TFG)
+
+#### 7. visualizaciones.py (550 líneas)
+✓ 4 gráficas Plotly dark mode:
+  1. Frecuencia (28-A vs HOY, líneas + gradientes)
+  2. Demanda (comparativa)
+  3. Mix generación (donuts lado a lado)
+  4. Inercia & RoCoF (ejes duales)
+
+✓ Tema forense: #0B0E14 (bg), #151A22 (panel)
+✓ Colores WCAG AA compatible
+✓ Interactividad: hover, zoom, pan nativo Plotly
+
+#### 8. app.py (400 líneas)
+✓ Orquestador Streamlit
+✓ Render: Header + Métricas (4 tarjetas) + Gráfica + Análisis + Chat RAG
+✓ Caching de clientes (@st.cache_resource)
+✓ Error handling + fallbacks
+✓ Flujo: Fetch → Calc → Analyze → Visualize
+
+**Layout:**
+┌─ Header (título + timestamp) ─────────┐
+│ ⚡ DASHBOARD 28-A │ 12:45:32          │
+├──────────────────────────────────────┤
+│ 📊 MÉTRICAS: Risk │ Inercia │ RoCoF  │
+├──────────────────────────────────────┤
+│ 📈 GRÁFICA PRINCIPAL: Frecuencia     │
+├──────────────────────────────────────┤
+│ 📋 ANÁLISIS AUTOMÁTICO               │
+├──────────────────────────────────────┤
+│ 🤖 CHAT RAG (PHASE 3 opcional)      │
+└──────────────────────────────────────┘
+
+### CONFIGURACIÓN
+✓ .streamlit/config.toml (tema + parámetros)
+✓ requirements.txt (30 dependencias)
+✓ README_RESUMEN_EJECUTIVO.md (6K palabras)
+
+### ESTADO PHASE 1
+✅ COMPLETADO Y TESTEABLE
+✅ 4,182 líneas de código Python
+✅ 1,200+ líneas de documentación
+✅ Todos los módulos tienen __main__ con pruebas
+
+---
+
+## PHASE 2: ANÁLISIS FORENSE PROFUNDO (PLANIFICADO)
+
+### OBJETIVO
+Transformar dashboard de "monitorización en vivo" a "herramienta forense investigativa".
+
+Pregunta central: "¿QUÉ PASÓ en el 28-A? ¿POR QUÉ colapsó?"
+
+### 4 GRÁFICAS NUEVAS A IMPLEMENTAR
+
+#### Gráfica 5: Perfiles de Voltaje por Nudo Crítico
+**Ubicación:** Subestaciones Granada (400/220kV), Badajoz, Segovia
+
+**Datos necesarios:**
+```json
+{
+  "28a": {
+    "Granada_400kV": [50.5, 50.6, 50.8, 51.1, 51.3, "DISPARO"],
+    "Badajoz_220kV": [49.9, 50.1, 50.3, ...],
+    "Segovia_132kV": [...]
+  },
+  "today": {
+    "Granada_400kV": [49.95, 50.0, 50.05, ...],
+    ...
+  }
+}
+```
+
+**Características técnicas:**
+- Eje Y: Tensión p.u. (por unidad)
+- Bandas: Verde (nominal ±5%), amarillo (±8%), rojo (±12%)
+- Anotación: "Disparo transformer Granada 12:32:57 → -355 MW"
+- Líneas múltiples (una por nudo)
+
+**Impacto:** Mostrar que la SOBRETENSIÓN fue el precipitador, NO la frecuencia baja
+
+#### Gráfica 6: Estabilidad Angular del Rotor (Rotor Angle δ)
+**Física:** Ángulo del rotor de generadores vs referencia. 
+El "efecto látigo" (whip effect) causó pérdida de sincronismo en Francia.
+
+**Datos necesarios:**
+```json
+{
+  "28a": {
+    "generator_1": [-2.5, -3.1, -4.2, ..., -15.8],
+    "generator_2": [-1.8, -2.4, -3.5, ..., -14.2],
+    "center_of_inertia": [-2.1, -2.7, -3.8, ..., -15.0]
+  }
+}
+```
+
+**Análisis modal incluido:**
+δ(t) = A_NS·sin(ω_NS·t + φ_NS) + A_EO·sin(ω_EO·t + φ_EO)
+Modos:
+
+Modo Norte-Sur (oscillation inter-area): ~0.6-0.8 Hz
+Modo Este-Oeste: ~0.3-0.5 Hz
+Damping factor: 0.1-0.3 (crítico si < 0.05)
+
+
+**Técnica:** FFT para descomponer modos dominantes
+
+#### Gráfica 7: Flujos de Energía (Sankey Animado o SVG D3.js)
+**Concepto:** Flujo de potencia entre regiones a lo largo del tiempo.
+Visualizar cómo se "apagan" la cascada.
+
+**Estructura:**
+Francia ──→ España ──→ Portugal
+│
+├──→ Marruecos
+└──→ Italia
+
+**Datos necesarios:**
+```json
+{
+  "12:00:00": {
+    "Francia->España": 2500,
+    "España->Portugal": 1200,
+    "España->Marruecos": 3100
+  },
+  "12:33:20": {
+    "Francia->España": 0,
+    "España->Portugal": 0,
+    "España->Marruecos": 0
+  }
+}
+```
+
+**Animación:** Botón PLAY que secuencia timeline y ancha/color cambio dinámico
+
+#### Gráfica 8: Precios SPOT + Desbalance (Eje Dual)
+**Datos:**
+```json
+{
+  "timestamp": ["12:00", "12:15", "12:32", "12:33"],
+  "price_spot": [45.2, 46.1, 52.3, 180.5],
+  "imbalance_price": [0.5, 1.2, 5.3, 450.0]
+}
+```
+
+**Interpretación:** Mercado anticipó inestabilidad (precios subieron 4x)
+
+### TIMELINE INTERACTIVO HORIZONTAL
+
+**Eventos 28-A a mapear:**
+12:03 🟡 - Primera oscilación forzada
+12:19 🟡 - Segunda oscilación
+12:32:57 🟣 - Disparo transformer Granada (-355 MW)
+12:33:16 🔴 - Desconexiones masivas inversores
+12:33:20 🔵 - Apertura Marruecos
+12:33:21 🔵 - Pérdida sincronismo Francia
+12:33:27 ⚫ - COLAPSO TOTAL
+
+**Características:**
+- Nodos clickeables (expandir descripción)
+- Conector SVG Bézier dinámico a gráfica principal
+- Hover: tooltip con detalles
+- Sincronización con otras gráficas (crosshair compartido)
+
+### TABLA COMPARATIVA GRANULAR
+
+**Estructura:**
+Métrica        │ 28-A    │ HOY     │ Delta   │ % Cambio │ Estado
+─────────────────────────────────────────────────────────────
+Freq. mín      │ 48.80 Hz│ 49.95 Hz│ +1.15   │ +2.4%    │ ✅ MEJOR
+Inercia        │ 1.2 s   │ 7.5 s   │ +6.3    │ +525%    │ ✅ MEJOR
+RoCoF peak     │ -0.95   │ -0.02   │ +0.93   │ -98%     │ ✅ MEJOR
+Voltaje máx    │ 51.2 pu │ 50.05   │ -1.15   │ -2.3%    │ ✅ MEJOR
+
+### NUEVOS MÓDULOS PHASE 2
+
+```python
+phase2/
+├── voltage_analyzer.py (400 LOC)
+├── rotor_stability.py (600 LOC)
+├── power_flow.py (500 LOC)
+├── price_analysis.py (300 LOC)
+├── timeline.py (450 LOC)
+└── comparative.py (200 LOC)
+─────────────────
+  TOTAL: ~2,450 LOC | 9-10 horas
+```
+
+### SINCRONIZACIÓN ENTRE GRÁFICAS (KEY FEATURE)
+
+**Requirement:** Cursor en una gráfica → todas se actualizan con línea vertical en mismo timestamp
+
+Implementación:
+- Plotly shapes (vlines) en todas las figuras
+- Callback Streamlit para sync state
+- O JavaScript puro en cliente
+
+### DATOS REQUERIDOS PHASE 2
+
+Archivos JSON a crear/obtener:
+data/28a_detailed/
+├── voltage_profiles.json      (3-5 nudos × timestamps)
+├── rotor_angles.json          (2-3 generadores × timestamps)
+├── power_flows.json           (Francia, Portugal, Marruecos × timestamps)
+├── prices_imbalance.json      (SPOT + desbalance × timestamps)
+└── timeline_events.json       (7 eventos clave con metadata)
+
+---
+
+## PREGUNTAS PARA AGENTE IA
+
+Basándote en lo anterior, por favor analiza y responde:
+
+### 1. ANÁLISIS DE VIABILIDAD
+   ¿Todas las gráficas (5-8) son técnicamente viables con Plotly?
+   ¿Hay alternativas mejores (Vega, D3.js, Three.js)?
+
+### 2. DATOS DISPONIBLES
+   ¿Qué datos necesarios SÍ están disponibles?
+   ¿Cuáles necesitan ser simulados/sintetizados?
+   ¿Qué fuentes oficiales existen (REE, ENTSO-E, papers académicos)?
+
+### 3. OPTIMIZACIONES
+   ¿El Risk Score (50/35/15) es la mejor formulación?
+   ¿Hay métricas críticas que falten?
+   ¿Los umbrales de inercia/RoCoF son correctos para España?
+
+### 4. ARQUITECTURA
+   ¿La sincronización de gráficas es mejor vía Streamlit callback o JavaScript?
+   ¿Sankey o SVG D3.js para flujos de potencia?
+   ¿ChromaDB es suficiente o necesita vector DB más robusto?
+
+### 5. RENDIMIENTO
+   ¿4 gráficas Plotly nuevas + timeline SVG → problemas de lag?
+   ¿Necesita optimización de cálculos (Numba, Cython)?
+   ¿Cache agresivo recomendado?
+
+### 6. PRIORIZACIÓN
+   Si solo tenemos 5 horas → ¿cuáles 2 gráficas son CRÍTICAS?
+   ¿Timeline vs Gráfica 5 (voltaje)? ¿Cuál primero?
+
+### 7. DATOS HISTÓRICOS
+   ¿Recomendación para obtener datos exactos del 28-A?
+   ¿REE publicó dataset oficial? ¿ENTSO-E?
+   ¿Simulación con parámetros teóricos es aceptable?
+
+### 8. MEJORAS SUGERIDAS
+   ¿Qué NO mencionamos que SÍ sería valioso?
+   ¿Predicción forward (próximas 6h)?
+   ¿Detección de patrones similares a 28-A?
+
+---
+
+## FORMATO DE RESPUESTA ESPERADA
+
+Por favor, estructura tu respuesta como:
+ANÁLISIS DASHBOARD 28-A PHASE 1+2
+✅ LO VIABLEINMEDIATO
+
+Punto 1
+Punto 2
+
+⚠️ PROBLEMAS IDENTIFICADOS
+
+Problema 1: [causa] → [solución]
+Problema 2
+
+💡 OPTIMIZACIONES SUGERIDAS
+
+Sugerencia 1
+Sugerencia 2
+
+🎯 PRIORIZACIÓN RECOMENDADA (si tiempo limitado)
+
+Gráfica X (por qué)
+Timeline (por qué)
+
+📊 DATOS: DISPONIBLES vs NECESARIOS
+Disponibles ahora:
+
+Data 1
+
+Necesarios (simulación):
+
+Data 2
+
+🔧 PRÓXIMOS PASOS INMEDIATOS
+
+Paso 1
+Paso 2
+
+
+---
+
+## NOTAS FINALES
+
+- Proyecto actual: 4,182 LOC, PHASE 1 completa
+- Objetivo PHASE 2: +2,450 LOC, ~9-10 horas
+- Constraint: Usar SOLO tecnologías locales (Ollama, Plotly, Streamlit)
+- Meta: Herramienta forense investigativa, no juguete visual
+
+📝 CÓMO USARLO
+Option 1: Copiar exacto a Ollama CLI
+bashollama run mistral:7b << 'EOF'
+[PEGA TODO EL PROMPT ANTERIOR]
+EOF
+Option 2: Crear archivo y pasarlo
+bashcat prompt_phase1_2.md | ollama run mistral:7b
+Option 3: Enviar a tu agente IA local
+Copiar en tu interfaz (chat, API, etc.)
+
+🎯 QUÉ HARÁ EL AGENTE
+Cuando ejecutes el prompt, Ollama (mistral:7b) va a:
+
+✅ Leer toda la arquitectura PHASE 1
+✅ Entender los requisitos PHASE 2
+✅ Analizar viabilidad técnica
+✅ Identificar qué falta
+✅ Sugerir mejoras y optimizaciones
+✅ Priorizar si hay restricciones de tiempo
+
+
+💬 DESPUÉS (mi adaptación)
+Una vez que Ollama devuelva su análisis, yo:
+
+✅ Ajustaré el código según sus sugerencias
+✅ Optimizaré fórmulas si identifica mejoras
+✅ Modificaré priorización si es necesario
+✅ Crearé datos simulados de ALTA FIDELIDAD
+✅ Codificaré los módulos PHASE 2 ajustados
+
+
+¿Te queda claro? ¿Quieres que lo lancemos a tu Ollama ahora? 🚀

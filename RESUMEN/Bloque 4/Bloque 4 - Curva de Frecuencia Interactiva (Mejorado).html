@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloque 4: Curva de Frecuencia Interactiva — Apagón Ibérico 28-A</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #b0b0b0;
+      --color-text-tertiary: #808080;
+      --color-background-primary: #1a1a1a;
+      --color-background-secondary: #2d2d2d;
+      --color-border-tertiary: #404040;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--color-background-primary); color: var(--color-text-primary); font-family: monospace; font-size: 11px; }
+    body { padding: 24px; min-height: 100vh; }
+
+    .frequency-container { max-width: 1000px; margin: 0 auto; }
+    .frequency-header { margin-bottom: 20px; }
+    .frequency-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+    .frequency-subtitle { font-size: 10px; color: var(--color-text-tertiary); margin-top: 4px; }
+    
+    .frequency-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding: 12px; background: var(--color-background-secondary); border-radius: 4px; }
+    .legend-chip { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+    .legend-chip-line { width: 16px; height: 2px; border-radius: 1px; }
+    .legend-chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .frequency-canvas-wrapper {
+      position: relative;
+      margin-bottom: 24px;
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: 4px;
+      padding: 12px;
+      background: var(--color-background-secondary);
+      height: 380px;
+    }
+
+    #frequency-chart { width: 100% !important; height: 100% !important; }
+
+    .frequency-tooltip {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(26, 26, 26, 0.95);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: 4px;
+      padding: 12px;
+      font-size: 10px;
+      color: var(--color-text-secondary);
+      z-index: 15;
+      line-height: 1.6;
+    }
+
+    .frequency-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .frequency-slider-wrapper { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; }
+    .frequency-slider { 
+      width: 100%; 
+      height: 3px; 
+      border-radius: 2px; 
+      background: linear-gradient(to right, #404040 0%, #404040 100%);
+      outline: none; 
+      -webkit-appearance: none; 
+      appearance: none; 
+      cursor: pointer;
+    }
+    .frequency-slider::-webkit-slider-thumb { 
+      -webkit-appearance: none; 
+      width: 16px; 
+      height: 16px; 
+      border-radius: 50%; 
+      background: #378ADD; 
+      cursor: pointer; 
+      border: none;
+      box-shadow: 0 2px 6px rgba(55, 138, 221, 0.4);
+    }
+    .frequency-slider::-moz-range-thumb { 
+      width: 16px; 
+      height: 16px; 
+      border-radius: 50%; 
+      background: #378ADD; 
+      cursor: pointer; 
+      border: none;
+      box-shadow: 0 2px 6px rgba(55, 138, 221, 0.4);
+    }
+    .frequency-slider::-moz-range-track { background: transparent; border: none; }
+    .frequency-slider::-moz-range-progress { background: transparent; }
+
+    .frequency-replay-button {
+      padding: 8px 14px;
+      background: var(--color-background-secondary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: 4px;
+      color: var(--color-text-secondary);
+      font-family: monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 180ms ease;
+      white-space: nowrap;
+    }
+
+    .frequency-replay-button:hover {
+      background: var(--color-background-primary);
+      border-color: #606060;
+      color: var(--color-text-primary);
+    }
+
+    .frequency-footer { padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 10px; color: var(--color-text-tertiary); text-align: center; margin-bottom: 20px; }
+
+    .event-card {
+      position: relative;
+      background: var(--color-background-secondary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-left: 3px solid;
+      border-radius: 4px;
+      padding: 12px;
+      max-width: 400px;
+      margin: 0 auto;
+      display: none;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .event-card.active {
+      display: block;
+    }
+
+    .collapse-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #E24B4A 0%, #C23A39 100%);
+      border: 2px solid #FF6B6B;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 480px;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 12px 32px rgba(226, 75, 74, 0.4);
+      animation: collapsePopup 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-align: center;
+    }
+
+    .collapse-card.active {
+      display: block;
+    }
+
+    .collapse-card-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .collapse-card-subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    @keyframes collapsePopup {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .event-card-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 6px;
+    }
+
+    .event-card-desc {
+      font-size: 10px;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="frequency-container">
+    <div class="frequency-header">
+      <div class="frequency-title">Evolución de la frecuencia eléctrica</div>
+      <div class="frequency-subtitle">Sistema ibérico peninsular · 28 de abril de 2025 · 12:32:55 a 12:33:30 CEST</div>
+    </div>
+
+    <div class="frequency-legend">
+      <div class="legend-chip"><span class="legend-chip-line" style="background: #ffffff;"></span><span>Frecuencia medida</span></div>
+      <div class="legend-chip"><span class="legend-chip-line" style="background: #EF9F27;"></span><span>Umbrales UFLS</span></div>
+      <div class="legend-chip"><span class="legend-chip-dot" style="background: #378ADD;"></span><span>Eventos críticos</span></div>
+      <div class="legend-chip"><span class="legend-chip-line" style="background: rgba(226, 75, 74, 0.3); height: 4px;"></span><span>Zona colapso</span></div>
+    </div>
+
+    <div class="frequency-canvas-wrapper">
+      <canvas id="frequency-chart"></canvas>
+    </div>
+
+    <div class="frequency-tooltip"></div>
+
+    <div class="collapse-card">
+      <div class="collapse-card-title">⚡ COLAPSO DEL SISTEMA</div>
+      <div class="collapse-card-subtitle">Frecuencia crítica alcanzada (47,5 Hz)</div>
+    </div>
+
+    <div class="frequency-controls">
+      <div class="frequency-slider-wrapper">
+        <label style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-secondary);">Avanzar en el tiempo (PMU replay)</label>
+        <input type="range" class="frequency-slider" min="-2" max="33" step="0.1" value="0">
+      </div>
+      <button class="frequency-replay-button" data-speed="1">▶ 1x</button>
+      <button class="frequency-replay-button" data-speed="2">▶ 2x</button>
+      <button class="frequency-replay-button" data-speed="5">▶ 5x</button>
+    </div>
+
+    <footer class="frequency-footer">
+      <p>Fuente: ENTSO-E Final Report (2026) · REE Informe Incidente · NREL/Lara et al. · Curva interpolada a partir de PMU públicos</p>
+    </footer>
+
+    <div class="event-card"></div>
+  </div>
+
+  <script>
+    const FREQUENCY_DATA = {
+      frequencies: [
+        { t: -2, f: 50.00 }, { t: 0, f: 50.02 }, { t: 2, f: 49.95 }, { t: 5, f: 49.87 },
+        { t: 10, f: 49.75 }, { t: 15, f: 49.62 }, { t: 19.34, f: 49.45 }, { t: 20, f: 49.20 },
+        { t: 20.56, f: 48.95 }, { t: 22, f: 48.70 }, { t: 23.53, f: 48.46 }, { t: 25, f: 48.15 },
+        { t: 25.88, f: 47.79 }, { t: 27, f: 47.50 }, { t: 33, f: 47.50 }
+      ],
+      events: [
+        { t: 0.0, f: 50.02, label: 'G-1 · Granada', desc: 'Disparo transformador 400/220 kV (−355 MW)', color: '#EF9F27' },
+        { t: 19.34, f: 49.45, label: 'G-2 · Badajoz', desc: 'Desconexión CSP + FV (−727 MW)', color: '#E24B4A' },
+        { t: 20.56, f: 48.95, label: 'G-3 · SW', desc: 'Cascada 5 provincias (−1.150 MW)', color: '#E24B4A' },
+        { t: 23.53, f: 48.46, label: 'Trip FR', desc: 'Aislamiento de Iberia', color: '#378ADD' },
+        { t: 25.88, f: 47.79, label: 'Nadir', desc: 'Mínimo de frecuencia (47,79 Hz)', color: '#9F3EFF' }
+      ],
+      thresholds: [
+        { value: 49.5, label: 'UFLS-1', color: '#EF9F27' },
+        { value: 49.0, label: 'UFLS-2', color: '#EF9F27' },
+        { value: 48.5, label: 'UFLS-3', color: '#E24B4A' },
+        { value: 48.0, label: 'UFLS-4', color: '#E24B4A' },
+        { value: 47.5, label: 'Collapse', color: '#E24B4A' }
+      ]
+    };
+
+    let chart = null;
+    let isReplaying = false;
+    let currentT = 0;
+
+    function interpolateFrequency(t) {
+      const freqs = FREQUENCY_DATA.frequencies;
+      const idx = freqs.findIndex(d => d.t >= t);
+      
+      if (idx === 0) return freqs[0].f;
+      if (idx === -1) return freqs[freqs.length - 1].f;
+      
+      const p0 = freqs[idx - 1];
+      const p1 = freqs[idx];
+      const alpha = (t - p0.t) / (p1.t - p0.t);
+      return p0.f + (p1.f - p0.f) * alpha;
+    }
+
+    function getProgressColor(progress) {
+      const r = Math.round(255 + (226 - 255) * progress);
+      const g = Math.round(255 + (75 - 255) * progress);
+      const b = Math.round(255 + (74 - 255) * progress);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function formatCESTTime(t) {
+      const seconds = (t + 2) * 1000;
+      const baseDate = new Date('2025-04-28T10:32:57Z');
+      const date = new Date(baseDate.getTime() - 2000 + seconds);
+      return date.toISOString().substring(11, 19);
+    }
+
+    const progressiveLinePlugin = {
+      id: 'progressiveLine',
+      afterDatasetsDraw(chart) {
+        if (!chart.data.datasets || currentT < -2) return;
+
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        const ctx = chart.ctx;
+
+        // Generar puntos interpolados desde inicio hasta currentT
+        const points = [];
+        for (let t = -2; t <= Math.min(currentT, 33); t += 0.1) {
+          const f = interpolateFrequency(t);
+          points.push({ t, f });
+        }
+
+        if (points.length < 2) return;
+
+        const progress = Math.max(0, Math.min(1, (currentT + 2) / 35));
+        const color = getProgressColor(progress);
+
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+
+        for (let i = 0; i < points.length; i++) {
+          const x = xScale.getPixelForValue(points[i].t);
+          const y = yScale.getPixelForValue(points[i].f);
+          
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+    };
+
+    const crosshairPlugin = {
+      id: 'crosshair',
+      afterDatasetsDraw(chart) {
+        if (currentT < -2 || currentT > 33) return;
+
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        const f = interpolateFrequency(currentT);
+        const xPos = xScale.getPixelForValue(currentT);
+        const yPos = yScale.getPixelForValue(f);
+        const ctx = chart.ctx;
+
+        // Línea horizontal blanca recta (sobre la que se desplaza el punto)
+        ctx.save();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(xScale.left, yPos);
+        ctx.lineTo(xScale.right, yPos);
+        ctx.stroke();
+
+        // Línea vertical punteada
+        ctx.strokeStyle = 'rgba(176, 176, 176, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(xPos, yScale.top);
+        ctx.lineTo(xPos, yScale.bottom);
+        ctx.stroke();
+
+        // Punto sobre la línea interpolada
+        ctx.fillStyle = '#EF9F27';
+        ctx.beginPath();
+        ctx.arc(xPos, yPos, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    };
+
+    const collapseZonePlugin = {
+      id: 'collapseZone',
+      afterDatasetsDraw(chart) {
+        const yScale = chart.scales.y;
+        const collapsePixelY = yScale.getPixelForValue(47.5);
+        const ctx = chart.ctx;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(226, 75, 74, 0.15)';
+        ctx.fillRect(yScale.left, collapsePixelY, yScale.width, yScale.bottom - collapsePixelY);
+        ctx.restore();
+      }
+    };
+
+    function createChart() {
+      Chart.register(progressiveLinePlugin, crosshairPlugin, collapseZonePlugin);
+
+      const canvasCtx = document.getElementById('frequency-chart').getContext('2d');
+
+      const thresholdDatasets = FREQUENCY_DATA.thresholds.map(t => ({
+        label: t.label,
+        type: 'line',
+        data: [{ x: -2, y: t.value }, { x: 33, y: t.value }],
+        borderColor: t.color,
+        borderWidth: 1,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        fill: false,
+        tension: 0,
+        spanGaps: true
+      }));
+
+      const eventDataset = {
+        label: 'Eventos',
+        type: 'scatter',
+        data: FREQUENCY_DATA.events.map(e => ({ x: e.t, y: e.f, event: e })),
+        pointRadius: 7,
+        pointStyle: 'circle',
+        pointBackgroundColor: FREQUENCY_DATA.events.map(e => e.color),
+        pointBorderColor: '#1a1a1a',
+        pointBorderWidth: 2,
+        showLine: false
+      };
+
+      chart = new Chart(canvasCtx, {
+        type: 'line',
+        data: {
+          datasets: [
+            {
+              label: 'Frecuencia (fondo)',
+              type: 'line',
+              data: FREQUENCY_DATA.frequencies.map(d => ({ x: d.t, y: d.f })),
+              borderColor: 'rgba(128, 128, 128, 0.2)',
+              borderWidth: 1,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.3,
+              spanGaps: false
+            },
+            ...thresholdDatasets,
+            eventDataset
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 0 },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              min: -2,
+              max: 33,
+              ticks: { color: '#808080', font: { family: 'monospace', size: 10 } },
+              grid: { color: '#404040', drawBorder: false },
+              title: { display: true, text: 'Tiempo (s)', color: '#b0b0b0', font: { family: 'monospace' } }
+            },
+            y: {
+              min: 46.5,
+              max: 50.5,
+              ticks: { 
+                color: '#808080', 
+                font: { family: 'monospace', size: 10 }, 
+                callback: v => v.toFixed(2) + ' Hz' 
+              },
+              grid: { color: '#404040', drawBorder: false },
+              title: { display: true, text: 'Frecuencia (Hz)', color: '#b0b0b0', font: { family: 'monospace' } }
+            }
+          }
+        }
+      });
+    }
+
+    createChart();
+
+    function updateChart(t) {
+      currentT = t;
+      if (chart) chart.draw();
+      updateTooltip(t);
+      updateEventCard(t);
+      updateCollapseCard(t);
+    }
+
+    function updateCollapseCard(t) {
+      const collapseCard = document.querySelector('.collapse-card');
+      const f = interpolateFrequency(t);
+
+      if (f <= 47.5 && t >= 25.88) {
+        collapseCard.classList.add('active');
+      } else {
+        collapseCard.classList.remove('active');
+      }
+    }
+
+    function updateEventCard(t) {
+      const eventCard = document.querySelector('.event-card');
+      const tolerance = 0.8;
+      const nearestEvent = FREQUENCY_DATA.events.find(e => Math.abs(e.t - t) <= tolerance);
+
+      if (nearestEvent) {
+        eventCard.classList.add('active');
+        eventCard.style.borderLeftColor = nearestEvent.color;
+        eventCard.innerHTML = `
+          <div class="event-card-title" style="color: ${nearestEvent.color};">⚡ ${nearestEvent.label}</div>
+          <div class="event-card-desc">${nearestEvent.desc}</div>
+        `;
+      } else {
+        eventCard.classList.remove('active');
+      }
+    }
+
+    function updateTooltip(t) {
+      const tooltip = document.querySelector('.frequency-tooltip');
+      const f = interpolateFrequency(t);
+      const timeStr = formatCESTTime(t);
+
+      // Calcular ROCOF (derivada numérica)
+      const dt = 0.5;
+      const f1 = interpolateFrequency(t - dt);
+      const f2 = interpolateFrequency(t + dt);
+      const rocof = (f2 - f1) / (2 * dt);
+
+      let rocofColor = '#1D9E75';
+      const absRocof = Math.abs(rocof);
+      if (absRocof > 0.25) rocofColor = '#E24B4A';
+      else if (absRocof > 0.05) rocofColor = '#EF9F27';
+
+      tooltip.innerHTML = `
+        <div>t = ${t.toFixed(1)} s · ${timeStr} CEST</div>
+        <div>F = ${f.toFixed(2)} Hz · ROCOF ≈ <span style="color: ${rocofColor};">${rocof.toFixed(2)} Hz/s</span></div>
+      `;
+    }
+
+    const slider = document.querySelector('.frequency-slider');
+    slider.addEventListener('input', (e) => {
+      isReplaying = false;
+      updateChart(parseFloat(e.target.value));
+    });
+
+    document.getElementById('frequency-chart').addEventListener('mousemove', (e) => {
+      if (isReplaying) return;
+      const canvas = document.getElementById('frequency-chart');
+      const rect = canvas.getBoundingClientRect();
+      const xScale = chart.scales.x;
+      const xPixel = e.clientX - rect.left;
+      const t = xScale.getValueForPixel(xPixel);
+      
+      if (t >= -2 && t <= 33) {
+        slider.value = t.toFixed(1);
+        updateChart(t);
+      }
+    });
+
+    updateChart(0);
+
+    function startReplay(speedMultiplier) {
+      isReplaying = true;
+      const startTime = performance.now();
+      const duration = 60000 / speedMultiplier;
+
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const t = -2 + progress * 35;
+        
+        slider.value = t.toFixed(1);
+        updateChart(t);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          isReplaying = false;
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    document.querySelectorAll('.frequency-replay-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const speed = parseInt(btn.dataset.speed) || 1;
+        startReplay(speed);
+      });
+    });
+  </script>
+</body>
+</html>

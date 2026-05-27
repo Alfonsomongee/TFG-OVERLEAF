@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería Forense Completa 28-A — Análisis Interactivo</title>
+  <style>
+    :root {
+      --bg-dark: hsl(220, 40%, 7%);
+      --bg-card: hsl(220, 30%, 12%);
+      --border: hsl(220, 20%, 20%);
+      --cyan: hsl(190, 100%, 60%);
+      --amber: hsl(38, 100%, 56%);
+      --red: hsl(0, 75%, 56%);
+      --green: hsl(120, 100%, 60%);
+      --magenta: hsl(260, 80%, 65%);
+      --blue: hsl(210, 100%, 60%);
+      --orange: hsl(30, 100%, 60%);
+      --text-primary: hsl(220, 30%, 85%);
+      --text-muted: hsl(220, 15%, 55%);
+      --text-label: hsl(220, 20%, 50%);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: var(--bg-card);
+      border-bottom: 2px solid var(--cyan);
+      padding: 48px 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-family: 'Courier New', monospace;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0 12px 0;
+      color: var(--cyan);
+      text-shadow: 0 0 20px rgba(190, 255, 230, 0.4);
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin: 0;
+      max-width: 1000px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .nav-tabs {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+
+    .nav-tab {
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-muted);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 200ms ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab:hover {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+    }
+
+    .nav-tab.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+      background: hsla(190, 100%, 60%, 0.05);
+    }
+
+    .content {
+      flex: 1;
+      padding: 48px 40px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .section-title {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin: 0 0 28px 0;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .chart-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(220, 40%, 7%, 0.05) 0%, transparent 50%, rgba(220, 30%, 12%, 0.05) 100%);
+      pointer-events: none;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      z-index: 1;
+    }
+
+    .chart-title {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin: 0 0 6px 0;
+    }
+
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 0 16px 0;
+    }
+
+    .chart-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: hsla(220, 20%, 12%);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .stat {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+    }
+
+    .stat-label {
+      color: var(--text-label);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 3px;
+    }
+
+    .stat-value {
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: linear-gradient(180deg, rgba(220, 30%, 12%, 0.3) 0%, transparent 100%);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tooltip {
+      position: fixed;
+      background: hsla(220, 40%, 8%, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+      pointer-events: none;
+      z-index: 10000;
+      backdrop-filter: blur(8px);
+      display: none;
+      white-space: pre;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .tooltip.active {
+      display: block;
+    }
+
+    .footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 28px 40px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--text-label);
+    }
+
+    @media (max-width: 1024px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-tabs {
+        flex-wrap: wrap;
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-family: 'Courier New', monospace;
+    }
+
+    .error {
+      background: hsla(0, 75%, 56%, 0.1);
+      border: 1px solid var(--red);
+      border-radius: 4px;
+      padding: 12px;
+      color: var(--red);
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <h1>⚡ Galería Forense Completa</h1>
+      <p>Análisis Interactivo del Apagón Ibérico 28-A — Datos REE en Tiempo Real</p>
+      <p style="margin-top: 8px; font-size: 12px;">Pasa el ratón sobre las gráficas para ver valores exactos, máximos, mínimos, promedios</p>
+    </div>
+
+    <div class="nav-tabs" id="navTabs"></div>
+
+    <div class="content" id="content"></div>
+
+    <div class="footer">
+      <div>Galería Forense Interactiva — Análisis TFG 28-A</div>
+      <div style="margin-top: 8px;">Datos: REE (Red Eléctrica de España) | Alfonso Monge Díaz-Ángel | 2025-26</div>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════════════════════
+    // INTERACTIVE CHART ENGINE
+    // ════════════════════════════════════════════════════════════════════════════════
+
+    class InteractiveChart {
+      constructor(canvasId, data, config) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        this.data = data || [];
+        this.config = config || {};
+        this.padding = { top: 50, right: 40, bottom: 50, left: 70 };
+
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.ctx.scale(dpr, dpr);
+        this.displayWidth = rect.width;
+        this.displayHeight = rect.height;
+
+        this.canvas.parentElement.addEventListener('mousemove', e => this.onMouseMove(e));
+        this.canvas.parentElement.addEventListener('mouseleave', () => this.hideTooltip());
+
+        this.draw();
+      }
+
+      draw() {
+        if (this.data.length === 0) return;
+
+        const w = this.displayWidth;
+        const h = this.displayHeight;
+        const { top, right, bottom, left } = this.padding;
+        const gw = w - left - right;
+        const gh = h - top - bottom;
+
+        this.ctx.fillStyle = 'transparent';
+        this.ctx.fillRect(0, 0, w, h);
+
+        // Grid
+        this.ctx.strokeStyle = 'hsl(220, 20%, 20%)';
+        this.ctx.lineWidth = 0.5;
+        this.ctx.globalAlpha = 0.15;
+        for (let i = 0; i <= 5; i++) {
+          const y = top + (gh / 5) * i;
+          this.ctx.beginPath();
+          this.ctx.moveTo(left, y);
+          this.ctx.lineTo(w - right, y);
+          this.ctx.stroke();
+        }
+        this.ctx.globalAlpha = 1;
+
+        if (this.config.type === 'bar') {
+          this.drawBars(left, top, gw, gh);
+        } else if (this.config.type === 'area') {
+          this.drawArea(left, top, gw, gh);
+        } else {
+          this.drawLine(left, top, gw, gh);
+        }
+
+        this.drawAxes(left, top, gw, gh, w, h);
+      }
+
+      drawLine(left, top, gw, gh) {
+        const values = this.data.map(d => d.value || 0);
+        const minVal = Math.min(...values);
+        const maxVal = Math.max(...values);
+        const range = Math.max(maxVal - minVal, 1);
+
+        this.ctx.strokeStyle = this.config.color || '#C0FFFF';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.globalAlpha = 0.9;
+        this.ctx.beginPath();
+
+        this.data.forEach((point, idx) => {
+          const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+          const y = top + gh - ((point.value - minVal) / range) * gh;
+          if (idx === 0) this.ctx.moveTo(x, y);
+          else this.ctx.lineTo(x, y);
+        });
+        this.ctx.stroke();
+        this.ctx.globalAlpha = 1;
+
+        // Points
+        this.ctx.fillStyle = this.config.color || '#C0FFFF';
+        this.points = this.data.map((point, idx) => {
+          const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+          const y = top + gh - ((point.value - minVal) / range) * gh;
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, 3, 0, Math.PI * 2);
+          this.ctx.fill();
+          return { x, y, data: point, value: point.value };
+        });
+      }
+
+      drawArea(left, top, gw, gh) {
+        const values = this.data.map(d => d.value || 0);
+        const minVal = Math.min(...values);
+        const maxVal = Math.max(...values);
+        const range = Math.max(maxVal - minVal, 1);
+
+        // Fill area
+        this.ctx.fillStyle = this.config.color || '#C0FFFF';
+        this.ctx.globalAlpha = 0.2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(left, top + gh);
+
+        this.data.forEach((point, idx) => {
+          const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+          const y = top + gh - ((point.value - minVal) / range) * gh;
+          this.ctx.lineTo(x, y);
+        });
+
+        this.ctx.lineTo(left + gw, top + gh);
+        this.ctx.fill();
+        this.ctx.globalAlpha = 1;
+
+        // Line
+        this.ctx.strokeStyle = this.config.color || '#C0FFFF';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+
+        this.data.forEach((point, idx) => {
+          const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+          const y = top + gh - ((point.value - minVal) / range) * gh;
+          if (idx === 0) this.ctx.moveTo(x, y);
+          else this.ctx.lineTo(x, y);
+        });
+        this.ctx.stroke();
+
+        // Points
+        this.ctx.fillStyle = this.config.color || '#C0FFFF';
+        this.points = this.data.map((point, idx) => {
+          const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+          const y = top + gh - ((point.value - minVal) / range) * gh;
+          this.ctx.beginPath();
+          this.ctx.arc(x, y, 3, 0, Math.PI * 2);
+          this.ctx.fill();
+          return { x, y, data: point, value: point.value };
+        });
+      }
+
+      drawBars(left, top, gw, gh) {
+        const values = this.data.map(d => d.value || 0);
+        const maxVal = Math.max(...values);
+        const barWidth = gw / this.data.length * 0.7;
+        const barGap = gw / this.data.length * 0.15;
+
+        this.ctx.fillStyle = this.config.color || '#FFD700';
+        this.points = this.data.map((point, idx) => {
+          const barH = (point.value / maxVal) * gh;
+          const x = left + (gw / this.data.length) * idx + barGap;
+          const y = top + gh - barH;
+
+          this.ctx.globalAlpha = 0.85;
+          this.ctx.fillRect(x, y, barWidth, barH);
+          this.ctx.globalAlpha = 1;
+
+          return {
+            x: x + barWidth / 2,
+            y: y,
+            width: barWidth,
+            height: barH,
+            data: point,
+            value: point.value,
+          };
+        });
+      }
+
+      drawAxes(left, top, gw, gh, w, h) {
+        this.ctx.fillStyle = 'hsl(220, 15%, 55%)';
+        this.ctx.font = '11px Courier New';
+        this.ctx.textAlign = 'center';
+
+        const step = Math.ceil(this.data.length / 8);
+        this.data.forEach((point, idx) => {
+          if (idx % step === 0 || idx === this.data.length - 1) {
+            const x = left + (gw / Math.max(this.data.length - 1, 1)) * idx;
+            const label = point.label || point.time || '';
+            this.ctx.fillText(label.substring(0, 10), x, h - 15);
+          }
+        });
+
+        this.ctx.textAlign = 'right';
+        const values = this.data.map(d => d.value || 0);
+        const maxVal = Math.max(...values);
+
+        for (let i = 0; i <= 5; i++) {
+          const y = top + (gh / 5) * i;
+          const val = (maxVal * (5 - i) / 5).toLocaleString('es-ES', { maximumFractionDigits: 0 });
+          this.ctx.fillText(val, left - 10, y + 4);
+        }
+      }
+
+      onMouseMove(e) {
+        if (!this.points || this.points.length === 0) return;
+
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const dpr = window.devicePixelRatio || 1;
+        const scaledX = x * dpr / dpr;
+        const scaledY = y * dpr / dpr;
+
+        let closest = null;
+        let minDist = 40;
+
+        this.points.forEach(point => {
+          const dist = Math.hypot(point.x - scaledX, point.y - scaledY);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = point;
+          }
+        });
+
+        if (closest) {
+          this.showTooltip(e, closest);
+        } else {
+          this.hideTooltip();
+        }
+      }
+
+      showTooltip(e, point) {
+        const tooltip = document.getElementById('tooltip');
+        const data = point.data;
+        
+        let text = `${data.label || data.time || ''}\n`;
+        text += `Valor: ${data.value.toLocaleString('es-ES', { maximumFractionDigits: 2 })} ${this.config.unit || ''}`;
+
+        tooltip.textContent = text;
+        tooltip.classList.add('active');
+
+        let left = e.clientX + 15;
+        let top = e.clientY + 15;
+
+        if (left + 200 > window.innerWidth) left = e.clientX - 215;
+        if (top + 80 > window.innerHeight) top = e.clientY - 95;
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+
+      hideTooltip() {
+        document.getElementById('tooltip').classList.remove('active');
+      }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════════════
+    // DATA LOADER & CHART REGISTRY
+    // ════════════════════════════════════════════════════════════════════════════════
+
+    const charts = [
+      {
+        category: 'Demanda',
+        name: 'Evolución de Demanda',
+        file: 'data/evolucion-demanda.json',
+        path: 'series["Demanda en consumo"]',
+        color: '#C0FFFF',
+        unit: 'MWh',
+        type: 'line',
+        format: d => ({ label: new Date(d.datetime).toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }), value: d.value }),
+      },
+      {
+        category: 'Generación',
+        name: 'Generación y Consumo',
+        file: 'data/generacion-y-consumo.json',
+        path: 'series["Demanda real"]',
+        color: '#C0FFFF',
+        unit: 'MW',
+        type: 'area',
+        format: d => ({ label: new Date(d.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), value: d.value }),
+      },
+      {
+        category: 'Generación',
+        name: 'Generación Medida',
+        file: 'data/generacion-medida.json',
+        path: 'series',
+        color: '#44FF44',
+        unit: 'MW',
+        type: 'line',
+      },
+      {
+        category: 'Precios',
+        name: 'Mercados y Precios',
+        file: 'data/mercados-y-precios.json',
+        path: 'data',
+        color: '#FFD700',
+        unit: '€/MWh',
+        type: 'bar',
+        format: d => ({ label: new Date(d.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), value: d.value }),
+      },
+      {
+        category: 'Precios',
+        name: 'Desvíos Precio Real-Time',
+        file: 'data/precios-desvios-tiempo-real.json',
+        path: 'data',
+        color: '#FF4444',
+        unit: '€/MWh',
+        type: 'line',
+        format: d => ({ label: new Date(d.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), value: d.value }),
+      },
+      {
+        category: 'Balance',
+        name: 'Balance Eléctrico',
+        file: 'data/balance-electrico.json',
+        path: 'series',
+        color: '#44FFFF',
+        unit: 'MW',
+        type: 'line',
+      },
+      {
+        category: 'Capacidad',
+        name: 'Potencia Instalada',
+        file: 'data/potencia.json',
+        path: 'snapshot',
+        color: '#FF8844',
+        unit: 'MW',
+        type: 'bar',
+        format: d => ({ label: d.tecnologia.substring(0, 15), value: d.mw }),
+      },
+      {
+        category: 'Renovables',
+        name: '% Energía Renovable',
+        file: 'data/porcentaje-renovable.json',
+        path: 'series',
+        color: '#44FF44',
+        unit: '%',
+        type: 'area',
+      },
+      {
+        category: 'Regional',
+        name: 'Inertia 28-A',
+        file: 'data/28A_inertia.json',
+        path: 'data',
+        color: '#FF44FF',
+        unit: 'MW',
+        type: 'bar',
+      },
+    ];
+
+    async function init() {
+      const navTabs = document.getElementById('navTabs');
+      const content = document.getElementById('content');
+
+      const categories = [...new Set(charts.map(c => c.category))];
+      let chartIndex = 0;
+
+      for (const cat of categories) {
+        const btn = document.createElement('button');
+        btn.className = 'nav-tab' + (chartIndex === 0 ? ' active' : '');
+        btn.textContent = cat;
+        btn.onclick = () => selectTab(cat);
+        navTabs.appendChild(btn);
+
+        const tabDiv = document.createElement('div');
+        tabDiv.className = 'tab-content' + (chartIndex === 0 ? ' active' : '');
+        tabDiv.id = 'tab-' + cat;
+
+        const title = document.createElement('h2');
+        title.className = 'section-title';
+        title.textContent = cat;
+        tabDiv.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'chart-grid';
+        grid.id = 'grid-' + cat;
+        tabDiv.appendChild(grid);
+
+        content.appendChild(tabDiv);
+        chartIndex++;
+      }
+
+      // Load charts
+      for (const chart of charts) {
+        try {
+          const res = await fetch(chart.file);
+          const json = await res.json();
+
+          let data = json;
+          const pathParts = chart.path.split('[').join('.').split(']').join('').split('"').filter(p => p && p !== '.');
+          for (const part of pathParts) {
+            data = data[part];
+            if (!data) break;
+          }
+
+          if (!Array.isArray(data)) data = [];
+          if (data.length === 0) continue;
+
+          let formatted = data;
+          if (chart.format) {
+            formatted = data.map(chart.format);
+          } else {
+            formatted = data.map(d => ({
+              label: d.datetime ? new Date(d.datetime).toLocaleString('es-ES') : d.area || d.name || '',
+              value: d.value || 0,
+            }));
+          }
+
+          const values = formatted.map(d => d.value || 0).filter(v => typeof v === 'number');
+          if (values.length === 0) continue;
+
+          const max = Math.max(...values);
+          const min = Math.min(...values);
+          const avg = values.reduce((a, b) => a + b, 0) / values.length;
+
+          const chartId = 'chart-' + Math.random().toString(36).substr(2, 9);
+          const item = document.createElement('div');
+          item.className = 'chart-item';
+          item.innerHTML = `
+            <div class="chart-wrapper">
+              <h3 class="chart-title">${chart.name}</h3>
+              <p class="chart-subtitle">${chart.unit} · ${formatted.length} datos</p>
+              <div class="chart-stats">
+                <div class="stat"><div class="stat-label">Máx</div><div class="stat-value">${max.toLocaleString('es-ES', { maximumFractionDigits: 2 })} ${chart.unit}</div></div>
+                <div class="stat"><div class="stat-label">Mín</div><div class="stat-value">${min.toLocaleString('es-ES', { maximumFractionDigits: 2 })} ${chart.unit}</div></div>
+                <div class="stat"><div class="stat-label">Prom</div><div class="stat-value">${avg.toLocaleString('es-ES', { maximumFractionDigits: 2 })} ${chart.unit}</div></div>
+                <div class="stat"><div class="stat-label">Rango</div><div class="stat-value">${(max - min).toLocaleString('es-ES', { maximumFractionDigits: 2 })} ${chart.unit}</div></div>
+              </div>
+              <div class="canvas-wrapper"><canvas id="${chartId}" width="650" height="380"></canvas></div>
+            </div>
+          `;
+
+          document.getElementById('grid-' + chart.category).appendChild(item);
+          new InteractiveChart(chartId, formatted, { color: chart.color, unit: chart.unit, type: chart.type });
+        } catch (err) {
+          console.error(`Error loading ${chart.name}:`, err);
+        }
+      }
+    }
+
+    function selectTab(cat) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+      event.target.classList.add('active');
+      document.getElementById('tab-' + cat).classList.add('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+INFORME DE REVISIÓN DEL TEXTO DEL TFG
+"Análisis del Apagón Ibérico del 28 de Abril de 2025"
+Triple auditoría: gramática · ingeniería eléctrica · comunicación técnica
+
+1. ERRORES GRAMATICALES Y ORTOTIPOGRÁFICOS
+
+Error 1 · Cap. Cronología / Timeline data (evento t8)
+
+"Pérdida total de 15 GW de generación y caída a 0 Hz."
+
+Corrección: La frecuencia no «cae a 0 Hz» en un blackout. Los generadores pierden el sincronismo y se desconectan; la red queda deenergizada, sin señal de frecuencia medible. Decir «0 Hz» implica una medición que físicamente no puede realizarse sobre una red muerta.
+→ Sustituir por: «Pérdida total de 15 GW de generación y colapso a cero de tensión. El sistema ibérico queda deenergizado.»
+
+Error 2 · Cap. Introducción (primer párrafo)
+
+"el episodio no tiene precedentes en el sistema europeo continental de las últimas décadas"
+
+Y en el Cap. Resumen de Cifras:
+
+"en más de 20 años"
+
+Observación: La segunda formulación es más precisa y auditable (permite citar el apagón italiano de 2003 como referente). La primera («últimas décadas», en plural) implicaría >20 años, lo que es compatible. Sin embargo, el estilo académico exige la cifra concreta. Unificar en todos los capítulos con «en más de veinte años» o «desde el apagón italiano de septiembre de 2003».
+
+Error 3 · Cap. Análisis Técnico (Swing Equation)
+
+"donde HH
+H es la constante de inercia equivalente del sistema (en segundos), f0f_0
+f0​ la frecuencia nominal (50 Hz), df/dtdf/dt
+df/dt la RoCoF, PmP_m
+Pm​ la potencia mecánica total aportada a los rotores síncronos acoplados, PeP_e
+Pe​ la potencia eléctrica neta demandada y DD
+D el coeficiente de amortiguamiento de las cargas dependientes de la frecuencia."
+
+**Observación:** La leyenda de la ecuación de swing describe PeP_e
+Pe​ como «potencia eléctrica neta demandada», pero en la formulación estándar del IEC/IEEE, PeP_e
+Pe​ es la **potencia eléctrica generada** (o potencia de salida del generador), no la demandada. El desequilibrio es Pm−PeP_m - P_e
+Pm​−Pe​, donde PeP_e
+Pe​ es lo que genera el alternador, no lo que consume la carga. La confusión es sutil pero incorrecta ante un tribunal de ingeniería eléctrica.
+→ Corrección: *«PeP_e
+Pe​ la potencia eléctrica generada (potencia de salida del alternador al sistema)»*.
+
+Error 4 · Cap. Análisis Técnico (SCR table)
+| Red muy débil | SCR &lt; 2 |
+Observación: El &lt; es un artefacto HTML sin procesar que aparece en la exportación del MDX al texto. En el texto visible final debería renderizarse como <. Verificar que el MDX renderiza correctamente la tabla y que no aparece &lt; en ningún párrafo visible.
+
+Error 5 · Cap. Consecuencias Institucionales
+
+"REE y Almaraz se enfrentan a cargos 'muy graves' (hasta 60 M€)."
+
+Observación: «Almaraz» es el nombre de la central nuclear, no de una entidad jurídica. Los cargos recaerían sobre la empresa explotadora (el consorcio titulado por Iberdrola, Endesa y Naturgy). Escribir «Almaraz» como sujeto de un expediente sancionador es impreciso y puede resultar oscuro para lectores fuera del sector.
+→ Corrección: «REE y la empresa titular de la central de Almaraz» o, si el expediente específico lo permite, nombrar la UTE o empresa explotadora concreta.
+
+Error 6 · Cap. Impacto Comunicativo
+
+"cinco horas después"
+
+En el mismo capítulo se describe el cero de tensión a las 12:33 y la primera comparecencia oficial a las 18:00. De 12:33 a 18:00 son 5 horas y 27 minutos, que puede redondearse como «más de cinco horas» pero no «cinco horas».
+→ Corrección: «más de cinco horas después».
+
+Error 7 · Uso inconsistente de cursivas (Markdown)
+A lo largo del texto se alternan dos estilos de marcado para cursiva:
+
+*meshing*, *IBR*, *Blackout Studies* (asteriscos)
+_Grid-Forming_, _setpoints_, _blackout_
+
+En Markdown ambas son equivalentes, pero en el texto exportado crean una apariencia visual inconsistente. Elegir un único estilo y aplicarlo sistemáticamente. Recomendación: reservar cursiva para extranjerismos, términos técnicos en su primera mención, y títulos de informes. No usar para énfasis (para eso es la negrita).
+
+Error 8 · Cap. Reposición: término «WEST»
+
+"12:45 CEST (WEST: 11:45)"
+
+WEST (Western European Summer Time) no está definido en el texto y no aparece en el glosario. Portugal usa WEST (UTC+1) en verano, mientras que España usa CEST (UTC+2). La distinción es operativamente relevante para coordinar los timestamps entre REE y REN, pero el acrónimo debe definirse la primera vez que aparece o eliminarse si la diferencia horaria ya está implícita.
+
+Error 9 · Uso incoherente de «Redeia» vs. «REE»
+El texto alterna libremente «REE», «Redeia» y «Red Eléctrica» como si fueran sinónimos. Técnicamente no lo son: Redeia es la sociedad holding (cotizada en bolsa), mientras que REE (Red Eléctrica de España, S.A.U.) es la filial que ostenta la función de Operador del Sistema (OS). Para un TFG de ingeniería eléctrica, esta distinción es relevante cuando se habla de responsabilidades operativas (siempre REE como OS) frente a responsabilidades corporativas o regulatorias (Redeia como ente cotizado). Propuesta: usar REE cuando el contexto es operativo y Redeia cuando el contexto es corporativo/accionarial, con una nota al pie que explique la distinción la primera vez que aparezca Redeia.
+
+Error 10 · Cap. Conclusión: expresión polémica
+
+"el primer exponente documentado de un colapso provocado por un estrangulamiento regulatorio"
+
+«Estrangulamiento regulatorio» es una expresión cargada que implica mala fe o negligencia institucional deliberada. Para un TFG con aspiraciones de rigor académico y objetividad forense, esta formulación es excesiva.
+→ Corrección propuesta: «el primer exponente documentado de un colapso precipitado por la inadecuación estructural del marco regulatorio-técnico vigente a la física de los sistemas de alta penetración renovable».
+
+2. INCONGRUENCIAS TÉCNICAS Y DE MERCADO
+
+Incongruencia 1 · Personas afectadas: 60 M vs. 55 M ⚠️ CRÍTICA
+UbicaciónCifraCap. Introducción«cerca de 60 millones de personas»Timeline, evento t8«dejando a 60 millones sin suministro»Cap. Resumen de Cifras«aproximadamente 55 millones de personas»
+Análisis: España peninsular ≈ 47 M hab.; Portugal continental ≈ 10 M hab. → total ≈ 57 M. Ni 55 M ni 60 M son exactas; ambas son redondeos. Pero la inconsistencia entre capítulos es un fallo de revisión grave.
+→ Resolución: Adoptar una cifra única justificada. Propuesta: «aproximadamente 57 millones de personas» (suma de poblaciones censales a 2024), o indicar la fuente de la cifra (INE + INE Portugal) y redondear coherentemente. Actualizar en todos los capítulos.
+
+Incongruencia 2 · GW perdidos vs. GW de demanda interrumpida ⚠️ CRÍTICA
+UbicaciónCifraConceptoIntroducción«más de 15 GW de generación»Generación que disparóResumen de Cifras«~31 GW de potencia»Demanda interrumpidaTimeline t8«Pérdida total de 15 GW de generación»Generación disparadaImpacto económico«desconectó súbitamente 31 GW de carga»Carga interrumpidaTimeline t10«los 25 GW de demanda perdidos»Demanda recuperada
+Análisis: Estos tres valores refieren conceptos distintos y son potencialmente compatibles, pero el texto los yuxtapone sin distinción:
+
+15 GW: generación que disparó en la cascada (activos que se desconectaron).
+31 GW: demanda total interrumpida (lo que dejó de consumirse = carga total del sistema ibérico).
+25 GW: demanda peninsular española que se recuperó en la reposición (excluye Portugal, que se recuperó por su cuenta).
+
+El problema es que el Resumen de Cifras afirma "interrumpió el suministro de ~31 GW de potencia" cuando la demanda peninsular española era ~25-26 GW y la portuguesa ~5-6 GW, lo cual sí suma ~31 GW. Pero esto es la demanda total del sistema ibérico en ese momento, no los GW «perdidos» como generación.
+→ Resolución: Distinguir explícitamente en cada mención: (a) «la cascada eliminó más de 15 GW de capacidad generadora en 27 segundos» y (b) «el colapso interrumpió el suministro a una demanda total de ~31 GW (sistema ibérico integrado: ~26 GW España + ~5 GW Portugal)».
+
+Incongruencia 3 · Duración de la reposición: 18 h vs. 18,5 h vs. 19 h
+UbicaciónCifraCap. Reacción y Reposición («casi 19 horas»)~19 hCap. Resumen de Cifras«menos de 18 horas»Cronología detallada07:00 CEST (29 abr) – 12:33 (28 abr) = 18h 27minTimeline t10 (07:30 CEST)12:33 → 07:30 = 18h 57min
+Análisis: La cifra más precisa del propio texto (07:00 CEST) implica 18h 27min. «Menos de 18 horas» en el Resumen de Cifras es factualmente incorrecto con los datos del propio texto. Las expresiones «casi 19 horas» y «~18,5 horas» son aproximaciones aceptables.
+→ Resolución: Sustituir «menos de 18 horas» por «aproximadamente 18,5 horas» en el Resumen de Cifras. Unificar en todos los capítulos.
+
+Incongruencia 4 · Transición HVDC INELFE: «minutos antes» vs. 12:08
+Cap. Consecuencias Institucionales:
+
+«apenas unos minutos antes del apagón, REE modificó el modo de operación del enlace HVDC INELFE»
+
+El pie de figura de la Galería de Imágenes:
+
+«Transición PMODE3 → PMODE1 a las 12:08 CEST»
+
+El colapso ocurrió a las 12:33. De 12:08 a 12:33 son 25 minutos. «Unos minutos antes» es una licencia narrativa incompatible con la precisión forense del resto del documento.
+→ Resolución: Sustituir por «aproximadamente 25 minutos antes del colapso (12:08 CEST)». O reformular: «en las horas previas al colapso».
+
+Incongruencia 5 · Flujos reactivos en la interconexión AC Francia: comparación de magnitudes heterogéneas
+Cap. Resumen de Cifras:
+
+«los inversores solicitaron flujos transitorios de hasta 4.609 MW de potencia reactiva por la interconexión AC, superando su capacidad nominal de 2.700 MW»
+
+Análisis técnico: La «capacidad nominal de 2.700 MW» es una capacidad de potencia activa (MW). Compararla directamente con «4.609 MW de potencia reactiva» mezcla magnitudes que, aunque comparten la unidad watt, no son directamente comparables en el contexto de los límites de una línea AC (que dependen de la corriente total, no de la potencia activa o reactiva por separado). Un flujo reactivo de 4.609 MVAr puede ser físicamente posible aunque la capacidad activa sea 2.700 MW, si la corriente total no supera el límite térmico de la línea. La afirmación tal como está redactada induce a confusión técnica.
+→ Resolución: Reformular como: «flujos transitorios de hasta 4.609 MVAr (potencia reactiva), que superaron los límites de operación segura de la interconexión AC, cuya capacidad nominal de potencia activa es de 2.700 MW (límite térmico equivalente ~3.000 MVA en potencia aparente)». O simplificar: «superaron la capacidad dinámica de la interconexión» con nota técnica al pie.
+
+Incongruencia 6 · Momento preciso del blackout: 12:33:24 vs. 12:33:27 vs. 12:33:29.741
+UbicaciónTimestampTimeline data (t8)12:33:24 CESTCap. Resumen de Cifras«entre las 12:32:57 y las 12:33:27 CEST»Cap. Análisis del Incidente (texto MDX)«12:33:29.741 CEST» con el disparo del último grupo
+Análisis: Tres timestamps distintos para el momento del blackout. El más preciso y justificado es el del análisis (12:33:29.741 CEST, con milisegundos, citando el disparo del último grupo generador). El Resumen de Cifras usa 12:33:27 como fin del intervalo de 27 segundos, que correspondería al inicio de la cascada a 12:32:57 + 30 s. El timeline usa 12:33:24.
+→ Resolución: Adoptar 12:33:29.741 CEST como el timestamp definitivo del cero de tensión (es el más documentado y preciso). El intervalo de «27 segundos» del Resumen debería ajustarse a «32 segundos» si se toma como origen 12:32:57 y fin 12:33:29. O mantener los 27 s pero ajustar el timestamp de fin a 12:33:24. La discrepancia debe resolverse antes de la defensa.
+
+Incongruencia 7 · BESS: cálculo del factor de crecimiento
+Cap. Consecuencias:
+
+«la capacidad BESS instalada se ha multiplicado por 589%, pasando de unos simbólicos 28 MW a casi 200 MW operativos»
+
+Análisis matemático:
+
+Si «multiplicado por 589%» significa ×5,89: 28 × 5,89 = 165 MW ≠ 200 MW
+Si es un incremento del 589%: 28 + 28×5,89 = 28 + 165 = 193 MW ≈ 200 MW ✓
+Si fuera realmente 200 MW desde 28: factor = (200-28)/28 = 614% de incremento, o ×7,14
+
+La ambigüedad del «multiplicado por 589%» (en español correcto debería decirse «incrementado en un 589%» si es una variación, o «multiplicado por 6,89» si es un factor) genera confusión.
+→ Resolución: «ha crecido un 589%, pasando de 28 MW a aproximadamente 193 MW». O si la cifra es 200 MW: «se ha multiplicado por siete, pasando de 28 MW a casi 200 MW». Unificar cifra final.
+
+Incongruencia 8 · Definición de MRSCR: ubicación tardía y sin referencia cruzada
+La métrica MRSCR (Multiple Renewable Energy Stations Short-Circuit Ratio) se introduce y desarrolla en el capítulo de Análisis Técnico Avanzado, pero la métrica SCR (que MRSCR substituye) aparece sin referencia al MRSCR en el capítulo de Contexto Técnico, donde se presenta la tabla de umbrales SCR. Un lector que lea el capítulo de Contexto sin haber llegado al capítulo posterior desconoce que el SCR es ya considerado insuficiente.
+→ Resolución: Añadir una nota a la tabla de umbrales SCR: «Nota: el SCR es una métrica de nudo único. Para sistemas de alta densidad IBR, la métrica relevante es el MRSCR (véase Cap. X)».
+
+Incongruencia 9 · ENS (Energía No Suministrada) — cifra potencialmente baja
+Cap. Impacto económico:
+
+«la Energía No Suministrada (ENS) agregada para el sistema ibérico se sitúa de forma conservadora en el espectro de los 150.000 a 180.000 Megavatios-hora (MWh)»
+
+Estimación de contraste: Demanda ibérica ≈ 31 GW. Duración hasta recuperación del 99,95% ≈ 18,5 horas. Incluso con recuperación progresiva (asumiendo una recuperación lineal a partir de la hora 1), la integral mínima sería ~31 GW × 18,5 h × 0,5 (factor de recuperación progresiva media) ≈ 286 GWh = 286.000 MWh. La cifra de 150-180 GWh parece aproximadamente un 40% baja respecto a esta estimación conservadora.
+Esto puede explicarse si la recuperación fue muy rápida en las primeras horas (lo cual contradice la narrativa de 19 horas) o si la demanda al momento del blackout era inferior a 31 GW para la mayoría del período nocturno. El texto debe añadir la metodología de cálculo o una nota que justifique la aparente subestimación.
+→ Resolución: Revisar el cálculo o añadir una nota metodológica explícita que justifique el rango 150-180 GWh.
+
+Incongruencia 10 · «mala gestión de una planta fotovoltaica de gran potencia en Badajoz»
+Cap. Consecuencias, sobre los audios del Senado:
+
+«los operadores atribuían las severas oscilaciones e inestabilidades de tensión de las 12:00 a 'la mala gestión de una planta fotovoltaica de gran potencia en Badajoz'»
+
+Pero el Cap. Análisis del Incidente señala con precisión que:
+
+«REE la clasifica como una oscilación forzada originada en el lazo de control de una planta fotovoltaica en Badajoz»
+
+Esta segunda formulación (lazo de control) es técnicamente más precisa. La primera (mala gestión) procede de una fuente oral (audio de sala de control) y tiene un carácter subjetivo. El texto no aclara suficientemente la distinción entre la atribución informal de los operadores y el diagnóstico técnico formal del informe REE.
+→ Resolución: Añadir un párrafo de contraste: «Esta atribución informal de los operadores coincide parcialmente con la posición oficial de REE en su informe, aunque la formulación técnica sustituye 'mala gestión' por 'oscilación forzada originada en el lazo de control', un matiz que desplaza la responsabilidad de lo humano a lo sistémico.»
+
+3. REPETICIONES Y REDUNDANCIAS
+
+Repetición 1 · La cifra del 82% de penetración no síncrona
+Aparece sin variación sustancial en:
+
+Cap. Introducción: «82% de la generación estaba operada por electrónica de potencia»
+Cap. Análisis del Incidente: «el 82% de la generación instantánea era GFL»
+Cap. Contexto Técnico: «el 82% del parque generador operaba con factor de potencia fijo»
+Cap. Resumen de Cifras: «82% de la generación estaba operada por electrónica de potencia»
+
+Propuesta: Definir el 82% con precisión en el primer capítulo donde aparezca (Contexto Técnico), con su fuente (P.O. 7.4, referencia al momento 12:30 CEST del 28-A), y en los demás capítulos reemplazar por una referencia cruzada: «con la estructura generadora descrita en el §2.3». Esto elimina tres repeticiones sin perder información.
+
+Repetición 2 · «El 28-A no fue un colapso de frecuencia, sino de tensión»
+Esta afirmación, central y correcta, aparece de forma idéntica o muy similar en:
+
+Introducción (implícita en el objeto de estudio)
+Cap. Conclusiones (explícita, como primera afirmación del capítulo)
+Cap. Análisis Técnico (como apunte sobre la Swing Equation)
+Cap. Resumen de Cifras (en la explicación del mecanismo)
+
+Propuesta: La afirmación debe aparecer completa una sola vez (en Conclusiones o en el primer párrafo del capítulo de Análisis), y en los demás capítulos sustituirla por una referencia cruzada en nota al pie.
+
+Repetición 3 · El marco de tres/cuatro narrativas institucionales
+La estructura de análisis basada en REE/Gobierno + ICAI/generadores + ENTSO-E (y en el capítulo de conclusiones, añadiendo NREL/académico) se presenta:
+
+En la Introducción (como «tres visiones»)
+En el capítulo de Análisis de Informes (tabla ForensicTable completa, 4 agentes)
+En el capítulo de Conclusiones (síntesis comparativa de las mismas cuatro narrativas)
+
+La tabla comparativa es el lugar natural. La introducción puede referirse a ella brevemente, pero las conclusiones no deberían re-presentar el marco — deberían concluir a partir de él. Actualmente hay un exceso de recapitulación.
+→ Propuesta: En Conclusiones, suprimir los dos párrafos de descripción del marco narrativo (ya conocido del lector que ha leído el TFG en orden) y comenzar directamente con las convergencias y divergencias entre narrativas.
+
+Repetición 4 · Explicación del Tap-Lag
+El fenómeno Tap-Lag se describe:
+
+En el Cap. Análisis del Incidente (explicación completa, con figura)
+En el pie de la figura del oscilograma del disparo raíz (Galería de Imágenes)
+En la tabla de la Galería (caption de la figura de frecuencia y tensión en Carmona)
+
+Los pies de figura no deben re-explicar el fenómeno: deben referenciarlo.
+→ Propuesta: En los captions de la Galería, sustituir la re-explicación por: «Efecto Tap-Lag visible entre el primario y el secundario (véase §3.2 para explicación detallada).»
+
+Repetición 5 · Las dos deficiencias del P.O. 7.4 (asimetría + banda muerta)
+Descritas en detalle en:
+
+Cap. Análisis Técnico / Respuesta normativa (con figura de la banda muerta)
+Cap. Análisis de Informes (como causa contributiva en la tabla ForensicTable)
+Cap. Conclusiones (como tercera convergencia entre agentes)
+
+Propuesta: Solo el Cap. de Respuesta normativa debe desarrollarlas con el detalle actual. En los demás capítulos, referencia cruzada + una frase de síntesis.
+
+4. MEJORAS SUGERIDAS POR CAPÍTULO
+
+Cap. Introducción
+El objeto del TFG se presenta como «análisis crítico y comparativo de las narrativas técnicas, regulatorias y operativas». Este framing es sofisticado pero sitúa al trabajo en un territorio ambiguo: ¿es un análisis de ingeniería o un análisis de discurso? Para un tribunal de ingeniería eléctrica, conviene añadir una frase que ancle la dimensión técnica: «El análisis narrativo se fundamenta en una reconstrucción electromagnética del transitorio, construida sobre los registros PMU y WAMS, y es compatible con la evidencia oscilográfica publicada por los cuatro agentes».
+
+Cap. Contexto Técnico (Swing Equation + SCR)
+El salto entre la ecuación de swing y la introducción del SCR no tiene puente narrativo. Son dos métricas de estabilidad distintas (inercia → frecuencia; SCR → tensión) y el texto las yuxtapone sin explicar por qué una no fue el problema principal el 28-A y la otra sí.
+Añadir un párrafo de transición:
+
+«La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía H = 2,3 s — por encima del umbral ENTSO-E — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.»
+
+
+Cap. Análisis del Incidente (Tap-Lag)
+La analogía del termostato propuesta en la auditoría anterior es adecuada, pero el texto técnico actual ya contiene suficiente densidad. Lo que falta es un diagrama de flujo temporal del Tap-Lag que muestre la secuencia:
+Sobretensión en 400 kV  →  OLTC en posición "arriba" (de la bajada previa)
+→  No puede bajar a tiempo (retardo mecánico 3-8 s, transitorio < 400 ms)
+→  Tensión en 220 kV alcanza 244 kV (>1.1 p.u.)  →  Protección 59 ANSI actúa
+→  Disparo IBR  →  Pérdida de 165 MVAr de absorción inductiva
+→  Nuevo escalón de sobretensión  →  Bucle de retroalimentación positiva
+Este diagrama puede añadirse como figura MDX con <pre> o como componente visual. Actualmente la figura del desacoplamiento Tap-Lag existe pero no muestra la secuencia temporal del bucle.
+
+Cap. Reacción y Reposición
+La cronología de la reposición es uno de los contenidos más originales y detallados del TFG. Sin embargo, el capítulo mezcla dos cosas que deberían estar separadas: (a) la descripción operativa de los hechos (qué se hizo y cuándo) y (b) el análisis normativo de por qué ocurrió el blackout (P.O. 7.4). La segunda parte debería estar en el capítulo de Análisis Técnico, no en Reacción y Reposición.
+Propuesta estructural: Mover los tres subapartados sobre P.O. 7.4, VOLTAIRE y NC RfG al capítulo de Análisis Técnico Avanzado o a un capítulo propio de «Marco Regulatorio». El capítulo de Reacción y Reposición debería cerrarse con la restauración completa del suministro, no con la reforma normativa.
+
+Cap. Impacto Comunicativo
+Es el capítulo más original del TFG y el que mejor diferencia el trabajo de una simple crónica técnica. La verificación línea a línea de las afirmaciones de ABC, El Mundo y La Razón contra los informes periciales es metodológicamente impecable. Dos mejoras específicas:
+
+Añadir la verificación simétrica de un medio que defendió a las renovables (ej. El País o elDiario.es) para mostrar que el análisis no es ideológicamente sesgado hacia la crítica de los medios de derecha. Actualmente solo se analizan tres medios críticos con el gobierno.
+La tabla de verificación de afirmaciones mediáticas debería numerarse (Tabla X) y referenciarse en el cuerpo del texto.
+
+
+Cap. Resumen de Cifras
+Este capítulo actúa como dashboard numérico del TFG y es visualmente potente. El problema es que no tiene referencias cruzadas a las secciones donde se desarrollan los números. Cada sección del Resumen debería cerrar con: «Análisis detallado en §X.Y».
+
+Cap. Conclusiones
+La frase final es retóricamente sólida:
+
+«el 28 de abril de 2025 es, en este sentido, menos un accidente ibérico que un precedente europeo»
+
+Sin embargo, las conclusiones carecen de una propuesta concreta de investigación futura (trabajo futuro), que es un elemento estándar esperado en cualquier TFG de ingeniería. Añadir un párrafo final titulado «Líneas de investigación abiertas» con 3-4 items:
+
+Validación experimental de los valores MRSCR críticos en sistemas reales mediante PMU
+Diseño de mercados de servicios ERS con remuneration basada en inercia virtual GFM
+Criterios de selección entre SynCon y BESS-GFM para la provisión de potencia de cortocircuito en nudos débiles
+Modelización del Tap-Lag en simuladores de transitorio (PSCAD/EMTP) para calibración de protecciones ANSI 59
+
+
+5. DIAGNÓSTICO FINAL
+
+Puntuación global: 8,1 / 10
+El TFG es un trabajo de calidad claramente superior a la media. La amplitud de fuentes (cuatro informes institucionales de primera mano, datos WAMS, referencias ENTSO-E), la profundidad del análisis forense y la originalidad del capítulo de impacto comunicativo son aspectos de nivel académico avanzado. La implementación interactiva añade valor pedagógico real.
+
+Puntos fuertes
+1. Rigor forense en el análisis causal. La distinción entre el colapso de frecuencia (descartado) y el colapso Q-V (confirmado) está sostenida con consistencia a lo largo de todo el trabajo y es una contribución analítica genuina para un trabajo de grado.
+2. Metodología comparativa de narrativas institucionales. El framework de cuatro agentes con posiciones explícitas, métricas de inercia declaradas y propuestas regulatorias propias es una herramienta de análisis sofisticada. La tabla ForensicTable con el eje de medida (global vs. zonal) y el eje de atribución es el mejor elemento de síntesis del documento.
+3. Precisión temporal del análisis de la cascada. Los timestamps al nivel de milisegundos (12:33:29.741 CEST), la descripción secuenciada de los 18 disparos en cascada y la identificación del Tap-Lag como mecanismo amplificador son análisis de nivel experto que demuestran dominio técnico real.
+
+Puntos débiles críticos (por orden de urgencia)
+DÉBIL 1 · Inconsistencia de cifras fundamentales — Urgencia: muy alta antes de la defensa
+Las discrepancias en personas afectadas (55M vs. 60M), GW perdidos (15 vs. 31) y duración de la reposición (18h vs. 19h vs. «menos de 18h») son el tipo de error que un tribunal detecta en los primeros cinco minutos y que erosiona la credibilidad del resto del análisis. Son correcciones de media hora pero de máxima prioridad.
+DÉBIL 2 · Ausencia de sección de «Trabajo futuro» — Urgencia: media
+Toda memoria de TFG en ingeniería incluye una sección de conclusiones + líneas de investigación. Su ausencia da la impresión de que el trabajo «termina» en lugar de «abre caminos». Es una sección de media página que fortalece significativamente la evaluación académica.
+DÉBIL 3 · Repetición estructural de la narrativa institucional — Urgencia: media
+La misma arquitectura de tres/cuatro narrativas se despliega completa en la Introducción, el capítulo de Análisis y las Conclusiones. En las Conclusiones debería concluirse, no recapitularse. Esto hace que el capítulo más importante del TFG comience con material conocido en lugar de con hallazgos nuevos.
+
+Recomendación prioritaria
+Antes de la defensa, en este orden:
+
+Unificar las cifras de personas afectadas, GW perdidos, duración de reposición y momento del blackout en una tabla interna de «cifras maestras» con fuente para cada una. Propagarla a todos los capítulos.
+Añadir la sección «Líneas de investigación abiertas» en Conclusiones (4 items, media página).
+Revisar el capítulo de Conclusiones eliminando los dos primeros párrafos de recapitulación del marco narrativo y comenzando directamente con los tres consensos técnicos robustos.
+
+
+Fin del informe · 10 errores gramaticales · 10 incongruencias técnicas · 5 repeticiones · mejoras por capítulo · diagnóstico 8.1/10

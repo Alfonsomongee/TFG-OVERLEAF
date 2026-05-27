@@ -1,0 +1,88 @@
+{
+  "categories": [
+    {
+      "id": "frequency-stability",
+      "name": "Estabilidad de Frecuencia",
+      "icon": "⚡",
+      "color": "hsl(190 100% 60%)",
+      "description": "Análisis de frecuencia, RoCoF e inercia del sistema",
+      "tables": [
+        {
+          "id": "inertia-distribution",
+          "name": "Distribución de Inercia (12:00 CEST)",
+          "source": "Informe ICAI Tabla 4-1",
+          "rows": 6,
+          "data_ref": "processed/28A_inertia.json"
+        }
+      ]
+    },
+    {
+      "id": "voltage-violations",
+      "name": "Violaciones de Tensión",
+      "icon": "⚠️",
+      "color": "hsl(38 100% 56%)",
+      "description": "Sobretensiones, protecciones activadas y criterios ICS",
+      "tables": [
+        {
+          "id": "voltage-control-manoeuvres",
+          "name": "Maniobras de Control de Voltaje (09:00-12:32)",
+          "source": "Informe ENTSO-E Tabla 2-2",
+          "rows": 0,
+          "data_ref": "processed/28A_voltage_manoeuvres.json"
+        },
+        {
+          "id": "ics-violations",
+          "name": "Criterios ICS Violados",
+          "source": "Informe ENTSO-E Tabla 7-1",
+          "violations_count": 4,
+          "data_ref": "processed/28A_ics_violations.json"
+        }
+      ]
+    },
+    {
+      "id": "network-topology",
+      "name": "Estructura de Red",
+      "icon": "🔗",
+      "color": "hsl(270 80% 55%)",
+      "description": "Maniobras topológicas, apertura de líneas y reconfiguración",
+      "tables": [
+        {
+          "id": "topology-manoeuvres",
+          "name": "Maniobras Topológicas (09:00-12:16)",
+          "source": "Informe ENTSO-E",
+          "rows": 0,
+          "data_ref": "processed/28A_topology_manoeuvres.json"
+        }
+      ]
+    },
+    {
+      "id": "demand-load",
+      "name": "Demanda y Carga",
+      "icon": "📊",
+      "color": "hsl(40 95% 50%)",
+      "description": "Demanda real, programada y prevista. Blackout y recuperación",
+      "tables": [
+        {
+          "id": "demand-timeseries",
+          "name": "Series Demanda Real (27-29 abril, 5min)",
+          "source": "ESIOS REE",
+          "resolution": "5 minutes",
+          "points": 24,
+          "data_ref": "processed/28A_demand.json",
+          "key_moments": [
+            {
+              "time": "2025-04-28T12:35:00+02:00",
+              "event": "Blackout total",
+              "demand_before": "N/A"
+            },
+            {
+              "time": "2025-04-28T13:05:00+02:00",
+              "event": "Inicio recuperación",
+              "demand_value": "~37 MW"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

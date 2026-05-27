@@ -1,0 +1,514 @@
+portada
+
+// src/components/ExecutiveHook.jsx
+import React from 'react';
+import Link from '@docusaurus/Link';
+import styles from './ExecutiveHook.module.css';
+
+// Ajusta la ruta de los strings según tu proyecto
+import { strings } from '../data/strings';
+
+export default function ExecutiveHook({ showSplash }) {
+  const cards = [
+    {
+      id: 1,
+      title: 'ANÁLISIS FORENSE',
+      description: 'Disección de la cascada de 27 segundos: oscilaciones, Tap‑Lag, sobretensiones y el cero de tensión.',
+      icon: '🔬',
+      path: '/analisis-incidente',
+      color: '#b91c1c',
+      rgb: '185, 28, 28',
+    },
+    {
+      id: 2,
+      title: 'INFORMES EN CONFLICTO',
+      description: 'Las tres narrativas institucionales: Administración, Generadores (ICAI) y ENTSO‑E.',
+      icon: '⚖️',
+      path: '/analisis-informes',
+      color: '#f59e0b',
+      rgb: '245, 158, 11',
+    },
+    {
+      id: 3,
+      title: 'GRÁFICAS REALES',
+      description: 'Registros de ENTSO‑E, ESIOS y PMU. Datos originales del colapso.',
+      icon: '📊',
+      path: '/galeria-graficas',
+      color: '#3b82f6',
+      rgb: '59, 130, 246',
+    },
+    {
+      id: 4,
+      title: 'IMPACTO ECONÓMICO',
+      description: 'Coste directo (VOLL), litigios multimillonarios y efecto en consumidores electrointensivos.',
+      icon: '💥',
+      path: '/consecuencias-financieras',
+      color: '#b91c1c',
+      rgb: '185, 28, 28',
+    },
+    {
+      id: 5,
+      title: 'RESILIENCIA Y FUTURO',
+      description: 'Inercia electromecánica, Short‑Circuit Ratio (SCR) y el mandato Grid‑Forming.',
+      icon: '🔧',
+      path: '/resiliencia-futuro',
+      color: '#10b981',
+      rgb: '16, 185, 129',
+    },
+    {
+      id: 6,
+      title: 'IA EN EL TFG',
+      description: 'Uso de LLMs para reconciliación cronológica y validación física de hipótesis.',
+      icon: '🧠',
+      path: '/uso-ia',
+      color: '#8b5cf6',
+      rgb: '139, 92, 246',
+    },
+  ];
+
+  return (
+    <div
+      id="executive-hook"
+      className={styles.heroContainer}
+      style={{ visibility: showSplash ? 'hidden' : 'visible' }}
+    >
+      {/* Cabecera con estadísticas y perfil */}
+      <div className={styles.topHeader}>
+        <div className={styles.statsBanner}>
+          <div className={styles.statItem}>
+            <span className={styles.statValue}>25,2 GW</span>
+            <span className={styles.statLabel}>{strings.statPower}</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statValue}>Scale 3</span>
+            <span className={styles.statLabel}>{strings.statSeverity}</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statValue}>12:33 CEST</span>
+            <span className={styles.statLabel}>{strings.statDate}</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statValue}>60M</span>
+            <span className={styles.statLabel}>{strings.statAffected}</span>
+          </div>
+        </div>
+        <Link to="/sobre-el-autor" className={styles.profileIcon} title="Sobre el autor">
+          <span className={styles.profileEmoji}>👤</span>
+        </Link>
+      </div>
+
+      {/* Contenido principal centrado */}
+      <div className={styles.heroContent}>
+        <h1 className={styles.title}>
+          {strings.heroTitle1}{' '}
+          <span className={styles.highlight}>{strings.heroTitleHighlight}</span>
+        </h1>
+        <p className={styles.subtitle}>{strings.heroSubtitle}</p>
+
+        {/* Grid de 6 tarjetas */}
+        <div className={styles.cardsGrid}>
+          {cards.map((card) => (
+            <Link key={card.id} to={card.path} className={styles.cardLink}>
+              <div
+                className={styles.card}
+                style={{
+                  '--card-accent': card.color,
+                  '--card-accent-rgb': card.rgb,
+                }}
+              >
+                <div className={styles.cardIcon}>{card.icon}</div>
+                <h3 className={styles.cardTitle}>{card.title}</h3>
+                <p className={styles.cardDescription}>{card.description}</p>
+                <div className={styles.cardFooter}>
+                  <span className={styles.cardArrow}>→</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Botones de acción */}
+        <div className={styles.actions}>
+          <Link
+            className={`button button--primary button--lg ${styles.primaryBtn}`}
+            to="/contexto"
+          >
+            {strings.startAnalysis}
+          </Link>
+          <a
+            className={`button button--outline button--lg ${styles.secondaryBtn}`}
+            href="https://github.com/Alfonsomongee/TFG-OVERLEAF"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={styles.btnIcon}
+            >
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+            </svg>
+            GitHub
+          </a>
+        </div>
+
+        <div className={styles.techStack}>
+          <span className={styles.techBadge}>Docusaurus v2</span>
+          <span className={styles.techBadge}>React.js</span>
+          <span className={styles.techBadge}>KaTeX</span>
+          <span className={styles.techBadge}>Python Data Analytics</span>
+          <span className={styles.techBadge}>Newton-Raphson Solver</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ExecutiveHook.module.css */
+
+.heroContainer {
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Cabecera superior con flex */
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Estadísticas banner */
+.statsBanner {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  backdrop-filter: blur(12px);
+  background: rgba(10, 15, 30, 0.4);
+  border-radius: 80px;
+  padding: 0.8rem 2rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  margin: 0;
+  width: fit-content;
+}
+
+.statItem {
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.statValue {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #f59e0b;
+  display: block;
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #9aabca;
+}
+
+/* Icono de perfil (esquina derecha) */
+.profileIcon {
+  background: rgba(10, 20, 35, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profileIcon:hover {
+  transform: scale(1.05);
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.profileEmoji {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+}
+
+/* Contenido principal */
+.heroContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff, #a0b3d9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #f59e0b, #b91c1c);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #7c8db0;
+  font-family: 'Fira Code', monospace;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Grid de tarjetas (2x3) */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.cardLink {
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+
+.cardLink:hover {
+  transform: translateY(-6px);
+}
+
+/* Tarjeta con efecto de iluminación y estela */
+.card {
+  position: relative;
+  background: rgba(10, 20, 35, 0.6);
+  backdrop-filter: blur(16px);
+  border-radius: 2rem;
+  padding: 1.8rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px 8px rgba(var(--card-accent-rgb), 0.4),
+              0 15px 30px -10px rgba(0, 0, 0, 0.5);
+  border-color: rgba(var(--card-accent-rgb), 0.6);
+}
+
+/* Estela de color rotatoria */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0%,
+    var(--card-accent) 20%,
+    transparent 40%,
+    var(--card-accent) 70%,
+    transparent 100%
+  );
+  border-radius: calc(2rem + 3px);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 0.7;
+  animation: spinGlow 2s linear infinite;
+}
+
+@keyframes spinGlow {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Contenido por encima del pseudoelemento */
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cardIcon {
+  font-size: 3.2rem;
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  background: linear-gradient(135deg, #fff, #ccd6f6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin: 0 0 0.8rem;
+  text-transform: uppercase;
+}
+
+.cardDescription {
+  font-size: 0.85rem;
+  color: #a0b0d0;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cardArrow {
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--card-accent, #3b82f6);
+  transition: transform 0.2s ease;
+}
+
+.card:hover .cardArrow {
+  transform: translateX(6px);
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.primaryBtn {
+  background: linear-gradient(135deg, #b91c1c, #7f1a1a);
+  border: none;
+  border-radius: 40px;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.primaryBtn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px -5px rgba(185, 28, 28, 0.4);
+}
+
+.secondaryBtn {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  border-radius: 40px;
+  color: #3b82f6;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  transform: scale(1.02);
+}
+
+.btnIcon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Tech badges */
+.techStack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.techBadge {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border-radius: 40px;
+  padding: 0.4rem 1rem;
+  font-size: 0.7rem;
+  font-family: 'Fira Code', monospace;
+  color: #7c8db0;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+  .statsBanner {
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+  }
+  .statValue {
+    font-size: 1.2rem;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+}

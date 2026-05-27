@@ -1,0 +1,220 @@
+IMPLEMENTACION BATCH C
+
+Antigravity, ahora vamos a aplicar el **Batch C** (sistema visual unificado y accesibilidad).  
+Este batch corrige el contraste en modo claro (ratio 1.37 → >4.5:1), unifica los dos sistemas de color (ámbar vs cian) en un solo sistema de tokens semánticos, y refina el aspecto de los GlossaryLinks eliminando el exceso de ruido visual (⊙ y negrita).
+
+**IMPORTANTE:** Asumo que los Batch A y Batch B ya están aplicados y funcionando. Si no es así, detente y termínalos primero.
+
+Sigue los pasos en orden. Después de cada paso confirma. Al final, haremos commit y push.
+
+---
+
+## 📌 PASO C1 – Reemplazar designTokens.css (sistema unificado)
+
+Reemplaza el archivo `src/css/designTokens.css` con el siguiente contenido (es la versión unificada que mantiene aliases de compatibilidad para no romper componentes existentes):
+
+```css
+/* ============================================================
+   DESIGN TOKENS — TFG OVERLEAF FORENSIC THEME
+   VERSIÓN 2.0 — Sistema unificado (reemplaza el sistema dual ámbar+cian)
+   ============================================================ */
+
+:root {
+
+  /* ── 1. COLORES RAW (paleta primitiva) ──────────────────────────────── */
+  --raw-bg-void:    hsl(220 65% 2%);
+  --raw-bg-deep:    hsl(220 55% 4%);
+  --raw-bg-base:    hsl(220 40% 7%);
+  --raw-bg-raised:  hsl(220 30% 11%);
+  --raw-bg-hover:   hsl(220 22% 16%);
+
+  --raw-cyan-200:   hsl(190 100% 85%);
+  --raw-cyan-400:   hsl(190 100% 70%);
+  --raw-cyan-500:   hsl(190 100% 60%);
+  --raw-cyan-600:   hsl(190 100% 50%);
+  --raw-cyan-700:   hsl(190 100% 38%);
+  --raw-cyan-900:   hsl(190 100% 22%);
+
+  --raw-amber-300:  hsl(44 100% 72%);
+  --raw-amber-400:  hsl(40 100% 62%);
+  --raw-amber-500:  hsl(38 100% 56%);
+  --raw-amber-600:  hsl(32 100% 48%);
+  --raw-amber-700:  hsl(25 100% 40%);
+
+  --raw-red-400:    hsl(0 85% 68%);
+  --raw-red-500:    hsl(0 75% 56%);
+  --raw-red-700:    hsl(0 80% 38%);
+  --raw-red-900:    hsl(0 70% 22%);
+
+  --raw-magenta-500: hsl(322 100% 62%);
+  --raw-green-500:  hsl(150 60% 45%);
+
+  --raw-text-0:     hsl(220 20% 98%);
+  --raw-text-1:     hsl(220 15% 88%);
+  --raw-text-2:     hsl(220 12% 68%);
+  --raw-text-3:     hsl(220 10% 48%);
+
+  /* ── 2. TOKENS SEMÁNTICOS (lo que usan los componentes) ─────────────── */
+  --bg-void:        var(--raw-bg-void);
+  --bg-0:           var(--raw-bg-deep);
+  --bg-1:           var(--raw-bg-base);
+  --bg-2:           var(--raw-bg-raised);
+  --bg-3:           var(--raw-bg-hover);
+
+  --color-data:     var(--raw-cyan-500);
+  --color-alert:    var(--raw-amber-500);
+  --color-danger:   var(--raw-red-500);
+  --color-glitch:   var(--raw-magenta-500);
+  --color-safe:     var(--raw-green-500);
+
+  --text-0:         var(--raw-text-0);
+  --text-1:         var(--raw-text-1);
+  --text-2:         var(--raw-text-2);
+  --text-3:         var(--raw-text-3);
+
+  --border-subtle:  1px solid color-mix(in srgb, var(--color-data) 12%, transparent);
+  --border-data:    1px solid color-mix(in srgb, var(--color-data) 30%, transparent);
+  --border-alert:   1px solid color-mix(in srgb, var(--color-alert) 40%, transparent);
+  --border-accent:  2px solid var(--color-data);
+
+  --grad-calm:     linear-gradient(180deg, hsl(220 55% 4%), hsl(220 45% 8%));
+  --grad-tension:  linear-gradient(180deg, hsl(220 45% 6%), hsl(38 40% 12%));
+  --grad-collapse: linear-gradient(180deg, hsl(0 60% 10%), hsl(220 55% 3%));
+
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-pill: 999px;
+
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md:  0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg:  0 16px 48px rgba(0, 0, 0, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+
+  /* ── 3. ALIASES DE COMPATIBILIDAD ────────────────────────────────── */
+  --accent-electric:          var(--color-data);
+  --accent-amber:             var(--color-alert);
+  --accent-magenta:           var(--color-glitch);
+  --forensic-amber-primary:   var(--raw-amber-500);
+  --forensic-amber-warning:   var(--raw-amber-700);
+  --forensic-amber-critical:  var(--raw-red-700);
+  --forensic-amber-muted:     color-mix(in srgb, var(--raw-amber-500) 40%, transparent);
+  --forensic-amber-bg-subtle: color-mix(in srgb, var(--raw-amber-500) 5%, transparent);
+  --forensic-bg-primary:      var(--bg-0);
+  --forensic-bg-secondary:    var(--bg-1);
+  --forensic-bg-surface:      color-mix(in srgb, var(--bg-1) 50%, transparent);
+  --forensic-border:          var(--border-subtle);
+  --forensic-border-strong:   var(--border-alert);
+  --forensic-text-primary:    var(--text-1);
+  --forensic-text-secondary:  var(--text-2);
+  --forensic-text-dim:        var(--text-3);
+  --forensic-sync-1: hsl(214 100% 58%);
+  --forensic-sync-2: hsl(214 100% 40%);
+  --forensic-sync-3: hsl(214 100% 24%);
+  --warn-300:   var(--raw-amber-300);
+  --warn-500:   var(--raw-amber-500);
+  --warn-700:   var(--raw-amber-700);
+  --danger-300: var(--raw-red-400);
+  --danger-500: var(--raw-red-500);
+  --danger-700: var(--raw-red-700);
+  --danger-900: var(--raw-red-900);
+}
+Confirma cuando lo hayas reemplazado.
+
+📌 PASO C2 – Aplicar parches a custom.css
+El archivo src/css/custom.css debe modificarse con varios bloques. No lo reemplaces por completo, solo aplica los siguientes cambios:
+
+Bloque 1: Modo Light (contraste)
+Reemplaza el bloque html[data-theme='light'] completo por este:
+
+css
+html[data-theme='light'] {
+  --ifm-color-primary:          hsl(190 100% 28%);
+  --ifm-color-primary-dark:     hsl(190 100% 24%);
+  --ifm-color-primary-darker:   hsl(190 100% 20%);
+  --ifm-color-primary-darkest:  hsl(190 100% 16%);
+  --ifm-color-primary-light:    hsl(190 100% 35%);
+  --ifm-color-primary-lighter:  hsl(190 100% 42%);
+  --ifm-color-primary-lightest: hsl(190 100% 52%);
+  --ifm-background-color:       hsl(220 20% 97%);
+  --ifm-background-surface-color: hsl(220 15% 93%);
+  --ifm-font-color-base:        hsl(220 30% 15%);
+}
+Bloque 2: Legibilidad (max-width en párrafos)
+Añade al final del archivo (o dentro de la sección de tipografía) estas reglas:
+
+css
+.markdown > p,
+article > p,
+.theme-doc-markdown p {
+  max-width: 72ch;
+}
+
+.markdown > table,
+.markdown > figure,
+.markdown .chart-card,
+.markdown [class*="ForensicTable"] {
+  max-width: 100%;
+}
+Bloque 3: Variables para gráficos (grid stroke)
+Añade dentro de :root (al principio del archivo) esta línea:
+
+css
+--chart-grid-stroke: color-mix(in srgb, white 8%, transparent);
+--chart-axis-color:  var(--text-2);
+--chart-tooltip-bg:  var(--bg-1);
+--chart-tooltip-border: var(--border-data);
+Bloque 4: H1 en documentos académicos
+Añade al final del archivo:
+
+css
+.theme-doc-markdown h1,
+article[class*="docPage"] h1 {
+  font-size: var(--fs-h2);
+  margin-bottom: 0.4em;
+  letter-spacing: var(--tr-tight, -0.03em);
+}
+Confirma cuando hayas aplicado estos cuatro bloques a custom.css.
+
+📌 PASO C3 – Reemplazar GlossaryLink.module.css
+Reemplaza el archivo src/components/GlossaryLink.module.css con el siguiente contenido (versión refinada, sin ⊙, sin negrita, con cursor: help):
+
+css
+.glossaryLink {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 25%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  cursor: help;
+  font-weight: inherit;
+  transition: text-decoration-color 0.15s ease-out, text-shadow 0.15s ease-out;
+}
+
+.glossaryLink:hover {
+  text-decoration-style: solid;
+  text-decoration-color: var(--color-data, hsl(190 100% 60%));
+  text-shadow: 0 0 8px color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 30%, transparent);
+  color: inherit;
+  background-color: transparent;
+}
+
+.glossaryLink:visited {
+  text-decoration-color: color-mix(in srgb, var(--color-data, hsl(190 100% 60%)) 18%, transparent);
+}
+
+.glossaryLink:focus-visible {
+  outline: 2px solid var(--color-data, hsl(190 100% 60%));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+Confirma.
+
+✅ FIN DEL BATCH C – Commit y push
+Una vez aplicados los tres pasos, ejecuta:
+
+bash
+git add .
+git commit -m "refactor(design): Batch C - unified token system, light mode contrast fix, glossary refinement"
+git push

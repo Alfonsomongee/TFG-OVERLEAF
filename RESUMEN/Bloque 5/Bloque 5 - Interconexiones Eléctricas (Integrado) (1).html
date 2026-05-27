@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloque 5: Interconexiones Eléctricas — Apagón Ibérico 28-A</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #b0b0b0;
+      --color-text-tertiary: #808080;
+      --color-background-primary: #1a1a1a;
+      --color-background-secondary: #2d2d2d;
+      --color-border-tertiary: #404040;
+      --color-green: #1D9E75;
+      --color-amber: #EF9F27;
+      --color-red: #E24B4A;
+      --color-blue: #378ADD;
+      --border-radius-md: 8px;
+      --transition-base: 180ms ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: var(--color-background-primary); color: var(--color-text-primary); font-family: monospace; font-size: 11px; }
+    body { padding: 24px; min-height: 100vh; }
+
+    .interconnections-container { max-width: 1000px; margin: 0 auto; }
+
+    .section-header { margin-bottom: 20px; }
+    .section-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+    .section-subtitle { font-size: 10px; color: var(--color-text-tertiary); margin-top: 4px; }
+
+    .chart-section { margin-bottom: 40px; }
+
+    .chart-legend {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--color-background-secondary);
+      border-radius: var(--border-radius-md);
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--color-text-secondary);
+    }
+
+    .chart-legend-color { width: 12px; height: 12px; border-radius: 2px; }
+
+    .chart-wrapper {
+      height: 200px;
+      padding: 12px;
+      background: var(--color-background-secondary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      margin-bottom: 24px;
+    }
+
+    #interconnections-chart { width: 100% !important; height: 100% !important; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .utilization-card {
+      padding: 16px;
+      background: var(--color-background-secondary);
+      border: 0.5px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-title { font-size: 12px; font-weight: 500; }
+    .card-progress-bar { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
+    .card-progress-fill { height: 100%; border-radius: 4px; transition: width var(--transition-base); }
+    .card-percentage { font-size: 20px; font-weight: 600; font-family: monospace; }
+    .card-observation { font-size: 10px; color: var(--color-text-secondary); line-height: 1.5; }
+
+    .key-data-box {
+      padding: 16px;
+      background: rgba(55, 138, 221, 0.08);
+      border-left: 3px solid var(--color-blue);
+      border-radius: var(--border-radius-md);
+      margin-bottom: 24px;
+    }
+
+    .key-data-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-blue);
+      margin-bottom: 8px;
+    }
+
+    .key-data-content { font-size: 11px; color: var(--color-text-secondary); line-height: 1.6; }
+
+    .interconnections-footer { padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 10px; color: var(--color-text-tertiary); text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="interconnections-container">
+    <div class="section-header">
+      <div class="section-title">Estado de interconexiones</div>
+      <div class="section-subtitle">Península Ibérica · 28 de abril de 2025 · 12:30 CEST</div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-legend">
+        <div class="chart-legend-item">
+          <div class="chart-legend-color" style="background: #378ADD;"></div>
+          <span>Flujo real (exportación, MW)</span>
+        </div>
+        <div class="chart-legend-item">
+          <div class="chart-legend-color" style="background: rgba(100, 100, 100, 0.25);"></div>
+          <span>Capacidad máxima (MW)</span>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="interconnections-chart"></canvas>
+      </div>
+    </div>
+
+    <div id="utilization-cards-container" class="cards-grid"></div>
+
+    <div class="key-data-box">
+      <div class="key-data-title">Dato clave de la cascada</div>
+      <div class="key-data-content">Durante la cascada (12:33:19 CEST), la importación desde Francia alcanzó un pico de 4.609 MW por AC, superando la capacidad nominal de 2.700 MW, antes de que las protecciones ANSI 78 (out-of-step) abrieran la interconexión a los 48,46 Hz.</div>
+    </div>
+
+    <footer class="interconnections-footer">
+      <p>Fuente: ENTSO-E Factual Report (oct. 2025) · REE Informe Incidente 18/06/2025 · ENTSO-E Final Report (mar. 2026)</p>
+    </footer>
+  </div>
+
+  <script>
+    const INTERCONNECTIONS_DATA = {
+      interconnections: [
+        {
+          id: 'france-ac',
+          name: 'Francia AC',
+          flowReal: 870,
+          capacityMax: 2700,
+          observation: '32% utiliz. · ratio interconexión 3-5% del mix'
+        },
+        {
+          id: 'hvdc-inelfe',
+          name: 'HVDC INELFE',
+          flowReal: 1000,
+          capacityMax: 2000,
+          observation: '50% utiliz. · modo PMODE1 "potencia constante"'
+        },
+        {
+          id: 'portugal',
+          name: 'Portugal (exp)',
+          flowReal: 2600,
+          capacityMax: 3900,
+          observation: '67% utiliz. · mayor flujo de las interconexiones'
+        },
+        {
+          id: 'morocco',
+          name: 'Marruecos',
+          flowReal: 800,
+          capacityMax: 900,
+          observation: '89% utiliz. · primera en desconectarse (~49 Hz)'
+        }
+      ]
+    };
+
+    function initChart() {
+      const canvas = document.getElementById('interconnections-chart');
+      const ctx = canvas.getContext('2d');
+      
+      const flowReal = INTERCONNECTIONS_DATA.interconnections.map(i => i.flowReal);
+      const capacityMax = INTERCONNECTIONS_DATA.interconnections.map(i => i.capacityMax);
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Francia AC', 'HVDC INELFE', 'Portugal', 'Marruecos'],
+          datasets: [
+            {
+              label: 'Flujo real (exportación, MW)',
+              data: flowReal,
+              backgroundColor: '#378ADD',
+              borderRadius: 3,
+              borderSkipped: false
+            },
+            {
+              label: 'Capacidad máxima (MW)',
+              data: capacityMax,
+              backgroundColor: 'rgba(100, 100, 100, 0.25)',
+              borderRadius: 3,
+              borderSkipped: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: true,
+              backgroundColor: '#1a1a1a',
+              titleColor: '#ffffff',
+              bodyColor: '#b0b0b0',
+              borderColor: '#404040',
+              borderWidth: 0.5,
+              padding: 8,
+              displayColors: true,
+              callbacks: {
+                label: function(context) {
+                  const value = context.parsed.y;
+                  return context.dataset.label + ': ' + value.toLocaleString('es-ES') + ' MW';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#808080', font: { family: 'monospace', size: 10 } },
+              grid: { color: '#404040', drawBorder: false }
+            },
+            y: {
+              ticks: {
+                color: '#808080',
+                font: { family: 'monospace', size: 10 },
+                callback: function(value) {
+                  return value.toLocaleString('es-ES') + ' MW';
+                }
+              },
+              grid: { color: '#404040', drawBorder: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderCards() {
+      const container = document.getElementById('utilization-cards-container');
+      
+      INTERCONNECTIONS_DATA.interconnections.forEach(interconnection => {
+        const utilization = (interconnection.flowReal / interconnection.capacityMax) * 100;
+        let barColor = '#1D9E75';
+        
+        if (utilization > 75) barColor = '#E24B4A';
+        else if (utilization > 50) barColor = '#EF9F27';
+
+        const card = document.createElement('div');
+        card.className = 'utilization-card';
+        card.innerHTML = `
+          <div class="card-title">${interconnection.name}</div>
+          <div class="card-progress-bar">
+            <div class="card-progress-fill" style="width: ${utilization}%; background: ${barColor};"></div>
+          </div>
+          <div class="card-percentage">${utilization.toFixed(0)}%</div>
+          <div class="card-observation">${interconnection.observation}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initChart();
+      renderCards();
+    });
+  </script>
+</body>
+</html>

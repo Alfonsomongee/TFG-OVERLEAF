@@ -1,0 +1,637 @@
+ESTETICADASHBOARD
+
+[server]
+enableCORS = false
+enableXsrfProtection = false
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false
+serverAddress = "localhost"
+
+[client]
+showErrorDetails = false
+toolbarMode = "minimal"
+
+[theme]
+base = "dark"
+primaryColor = "#06b6d4"
+backgroundColor = "#0b0f19"
+secondaryBackgroundColor = "#111827"
+textColor = "#f8fafc"
+font = "sans serif"
+
+visualizaciones_forenses.py
+
+"""
+visualizaciones_forenses.py — Gráficas forenses con estética SCADA
+Paleta: #0b0f19 fondo, #111827 tarjetas, #ef4444 rojo 28A, #06b6d4 cyan hoy
+"""
+
+from typing import Optional
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+# =============================================================================
+# PALETA DE COLORES (Terminal / SCADA)
+# =============================================================================
+C_HOY       = "#06b6d4"      # Cyan neón — datos de hoy
+C_28A       = "#ef4444"      # Rojo alarma — 28-A
+C_PROG      = "#64748b"      # Gris slate — previsiones
+C_VERDE     = "#10b981"      # Verde esmeralda
+C_AMBAR     = "#f59e0b"      # Ámbar
+C_FONDO     = "rgba(0,0,0,0)"
+C_GRID      = "rgba(255,255,255,0.03)"
+
+# Timestamp del colapso (usando pd.Timedelta para evitar errores)
+T_COLAPSO_DT = pd.Timestamp("2025-04-28 12:33:00")
+T_COLAPSO_STR = "2025-04-28 12:33:00"
+
+_LAYOUT_BASE = dict(
+    paper_bgcolor=C_FONDO,
+    plot_bgcolor=C_FONDO,
+    font=dict(color="#cbd5e1", size=11, family="JetBrains Mono, monospace"),
+    legend=dict(bgcolor="rgba(17,24,39,0.8)", bordercolor="rgba(255,255,255,0.1)", borderwidth=1),
+    margin=dict(l=15, r=15, t=50, b=20),
+    hovermode="x unified",
+    hoverlabel=dict(bgcolor="#111827", font_size=10, font_family="monospace"),
+)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 1. SISMÓGRAFO DE FRECUENCIA
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_sismografo_frecuencia(
+    df_freq: pd.DataFrame,
+    frecuencia_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Sismógrafo de frecuencia con bandas de alerta y eventos."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Bandas de alerta
+    bandas = [
+        (49.8, 50.3, "rgba(16,185,129,0.04)", None),
+        (49.5, 49.8, "rgba(245,158,11,0.06)", "Banda primaria"),
+        (49.0, 49.5, "rgba(239,68,68,0.10)", "UFLS 1er escalón"),
+        (47.5, 49.0, "rgba(185,28,28,0.15)", "Zona crítica"),
+    ]
+    for y0, y1, color, label in bandas:
+        fig.add_hrect(y0=y0, y1=y1, fillcolor=color, layer="below", line_width=0)
+
+    # Curva de frecuencia
+    fig.add_trace(go.Scatter(
+        x=df_freq["hora_dt"],
+        y=df_freq["freq"],
+        name="Frecuencia 28-A",
+        line=dict(color=C_28A, width=1.8),
+        fill="tonexty",
+        fillcolor="rgba(239,68,68,0.03)",
+        hovertemplate="<b>%{x|%H:%M:%S}</b><br>%{y:.3f} Hz<extra></extra>",
+    ), secondary_y=False)
+
+    # Línea vertical del colapso
+    fig.add_vline(x=T_COLAPSO_STR, line=dict(color=C_28A, width=1.5, dash="dash"))
+    fig.add_annotation(
+        x=T_COLAPSO_STR, y=1, yref="paper",
+        text="⚡ COLAPSO 12:33",
+        showarrow=False,
+        font=dict(color=C_28A, size=10, family="monospace"),
+        xanchor="right", yanchor="bottom"
+    )
+
+    # Umbrales horizontales
+    umbrales = [
+        (50.0, C_VERDE, "50 Hz nominal"),
+        (49.5, C_AMBAR, "49.5 Hz — UFLS 1º"),
+        (49.0, C_28A, "49.0 Hz — UFLS 2º"),
+    ]
+    for f_val, color, texto in umbrales:
+        fig.add_hline(
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=8),
+            secondary_y=False,
+        )
+
+    # Línea de frecuencia actual (HOY)
+    if frecuencia_hoy is not None:
+        fig.add_hline(
+            y=frecuencia_hoy,
+            line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"▶ HOY: {frecuencia_hoy:.3f} Hz",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top left",
+            secondary_y=False,
+        )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(text="🌊 Sismógrafo de Frecuencia — 28 de abril de 2025", font=dict(size=13)),
+        height=420,
+        yaxis=dict(title="Frecuencia (Hz)", range=[47.5, 50.5], gridcolor=C_GRID, tickformat=".2f"),
+        yaxis2=dict(title="RoCoF (Hz/s)", gridcolor="rgba(0,0,0,0)", zerolinecolor=C_GRID),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 2. PRECIPICIO DE DEMANDA
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_demanda_real_vs_prev(
+    df_demanda: pd.DataFrame,
+    demanda_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Demanda real vs programada con zona de colapso."""
+    fig = go.Figure()
+
+    # Zona de colapso (37 minutos después de 12:33)
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.08)", layer="below", line_width=0
+    )
+    fig.add_annotation(
+        x=T_COLAPSO_STR, y=1, yref="paper",
+        text="COLAPSO", showarrow=False,
+        font=dict(color=C_28A, size=10, family="monospace"),
+        xanchor="left", yanchor="bottom"
+    )
+
+    # Demanda prevista
+    if "demanda_prev_mw" in df_demanda.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda["hora_dt"], y=df_demanda["demanda_prev_mw"],
+            name="Prevista", line=dict(color=C_PROG, dash="dot", width=1.5),
+            hovertemplate="%{y:,.0f} MW (prevista)<extra></extra>",
+        ))
+
+    # Demanda real 28-A
+    if "demanda_real_mw" in df_demanda.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda["hora_dt"], y=df_demanda["demanda_real_mw"],
+            name="Real 28-A", line=dict(color=C_28A, width=2.5),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="<b>%{x|%H:%M}</b> → %{y:,.0f} MW<extra></extra>",
+        ))
+
+    if demanda_hoy is not None:
+        fig.add_hline(
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"▶ HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=10),
+            annotation_position="top right",
+        )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(text="⚡ El Precipicio — Demanda del Sistema", font=dict(size=13)),
+        height=360,
+        yaxis=dict(title="Demanda (MW)", gridcolor=C_GRID, tickformat=","),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 3. TORMENTA DE PRECIOS
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_tormenta_de_precios(
+    df_desbalance: pd.DataFrame,
+    df_precios: pd.DataFrame,
+    precio_spot_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Precio desbalance (barras) y SPOT (línea)."""
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Zona colapso
+    fig.add_vrect(
+        x0=T_COLAPSO_STR, x1=(T_COLAPSO_DT + pd.Timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+        fillcolor="rgba(239,68,68,0.06)", layer="below", line_width=0,
+    )
+
+    # Barras de desbalance
+    if not df_desbalance.empty:
+        colores = [C_28A if p > 1000 else C_AMBAR if p > 200 else C_VERDE for p in df_desbalance["precio_max_eur"]]
+        fig.add_trace(go.Bar(
+            x=df_desbalance["hora_dt"], y=df_desbalance["precio_max_eur"],
+            name="Desbalance ENTSO-E", marker_color=colores, opacity=0.8,
+            hovertemplate="<b>%{x|%H:%M}</b><br>%{y:,.0f} €/MWh<extra></extra>",
+        ), secondary_y=False)
+
+    # Precio SPOT
+    if not df_precios.empty and "spot_eur" in df_precios.columns:
+        fig.add_trace(go.Scatter(
+            x=df_precios["hora_dt"], y=df_precios["spot_eur"],
+            name="SPOT OMIE", line=dict(color=C_AMBAR, width=2),
+            hovertemplate="<b>%{x|%H:%M}</b><br>SPOT: %{y:.2f} €/MWh<extra></extra>",
+        ), secondary_y=True)
+
+    fig.add_hline(y=80, line=dict(color=C_PROG, dash="dot", width=0.8),
+                  annotation_text="80 €/MWh (normal)", annotation_font=dict(color=C_PROG, size=8),
+                  secondary_y=False)
+
+    if precio_spot_hoy is not None:
+        fig.add_hline(
+            y=precio_spot_hoy, line=dict(color=C_HOY, width=1.5, dash="longdash"),
+            annotation_text=f"▶ HOY SPOT: {precio_spot_hoy:.1f} €/MWh",
+            annotation_font=dict(color=C_HOY, size=8),
+            secondary_y=True,
+        )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(text="💸 Tormenta de Precios — Desbalance vs SPOT", font=dict(size=13)),
+        height=360,
+        barmode="overlay",
+        yaxis=dict(title="Desbalance (€/MWh)", gridcolor=C_GRID),
+        yaxis2=dict(title="SPOT (€/MWh)", gridcolor="rgba(0,0,0,0)"),
+        xaxis=dict(title="Hora (CEST)", gridcolor=C_GRID, tickformat="%H:%M"),
+    )
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 4. COMPARATIVA SUPERPUESTA HOY vs 28-A
+# ══════════════════════════════════════════════════════════════════════════════
+
+def fig_comparativa_superpuesta(
+    df_demanda_28a: pd.DataFrame,
+    df_freq_28a: pd.DataFrame,
+    historial_freq_hoy: list,
+    demanda_hoy: Optional[float] = None,
+) -> go.Figure:
+    """Comparativa directa: hoy (cyan) vs 28-A (rojo)."""
+    fig = make_subplots(
+        rows=2, cols=1,
+        shared_xaxes=False,
+        subplot_titles=("Demanda (MW)", "Frecuencia (Hz)"),
+        row_heights=[0.55, 0.45],
+        vertical_spacing=0.12,
+    )
+
+    # Zona colapso
+    colapso_end = T_COLAPSO_DT + pd.Timedelta(minutes=37)
+    for row in [1, 2]:
+        fig.add_vrect(
+            x0=T_COLAPSO_STR, x1=colapso_end.strftime("%Y-%m-%d %H:%M:%S"),
+            fillcolor="rgba(239,68,68,0.05)", layer="below", line_width=0,
+            row=row, col=1,
+        )
+
+    # Demanda 28-A
+    if not df_demanda_28a.empty and "demanda_real_mw" in df_demanda_28a.columns:
+        fig.add_trace(go.Scatter(
+            x=df_demanda_28a["hora_dt"], y=df_demanda_28a["demanda_real_mw"],
+            name="Demanda 28-A", line=dict(color=C_28A, width=2),
+            fill="tozeroy", fillcolor="rgba(239,68,68,0.03)",
+            hovertemplate="%{x|%H:%M} → %{y:,.0f} MW<extra>28-A</extra>",
+        ), row=1, col=1)
+
+    if demanda_hoy is not None:
+        fig.add_hline(
+            y=demanda_hoy, line=dict(color=C_HOY, width=2, dash="longdash"),
+            annotation_text=f"HOY: {demanda_hoy:,.0f} MW",
+            annotation_font=dict(color=C_HOY, size=9),
+            row=1, col=1,
+        )
+
+    # Frecuencia 28-A
+    if not df_freq_28a.empty:
+        fig.add_trace(go.Scatter(
+            x=df_freq_28a["hora_dt"], y=df_freq_28a["freq"],
+            name="Frecuencia 28-A", line=dict(color=C_28A, width=1.8),
+            hovertemplate="%{x|%H:%M:%S} → %{y:.3f} Hz<extra>28-A</extra>",
+        ), row=2, col=1)
+
+    if historial_freq_hoy:
+        df_hoy = pd.DataFrame(historial_freq_hoy)
+        if "freq" in df_hoy.columns:
+            fig.add_trace(go.Scatter(
+                x=df_hoy["time"], y=df_hoy["freq"],
+                name="Frecuencia HOY", line=dict(color=C_HOY, width=2),
+                hovertemplate="%{x} → %{y:.4f} Hz<extra>HOY</extra>",
+            ), row=2, col=1)
+
+    # Umbrales de frecuencia
+    for f_val, color, texto in [(50.0, C_VERDE, "50 Hz"), (49.5, C_AMBAR, "UFLS 49.5")]:
+        fig.add_hline(
+            y=f_val, line=dict(color=color, dash="dot", width=0.8),
+            annotation_text=texto, annotation_font=dict(color=color, size=7),
+            row=2, col=1,
+        )
+
+    fig.update_layout(
+        **_LAYOUT_BASE,
+        title=dict(text="📊 HOY vs 28-A — Telemetría superpuesta", font=dict(size=13)),
+        height=520,
+    )
+    fig.update_yaxes(gridcolor=C_GRID)
+    fig.update_xaxes(gridcolor=C_GRID, tickformat="%H:%M")
+    return fig
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 5. FUNCIONES DE ESTADÍSTICAS (auxiliares)
+# ══════════════════════════════════════════════════════════════════════════════
+
+def stats_frecuencia_28a(df_freq: pd.DataFrame) -> dict:
+    if df_freq.empty:
+        return {}
+    return {
+        "freq_min":       df_freq["freq"].min(),
+        "freq_max":       df_freq["freq"].max(),
+        "t_nadir_s":      int(df_freq.loc[df_freq["freq"].idxmin(), "t_s"]),
+        "rocof_max":      df_freq["rocof"].abs().max() if "rocof" in df_freq.columns else None,
+        "n_eventos":      df_freq["evento"].notna().sum() if "evento" in df_freq.columns else 0,
+        "hora_nadir":     df_freq.loc[df_freq["freq"].idxmin(), "hora_dt"].strftime("%H:%M:%S"),
+        "hora_colapso":   "12:33:00",
+    }
+
+def stats_precios_28a(df_desbalance: pd.DataFrame, df_precios: pd.DataFrame) -> dict:
+    resultado = {}
+    if not df_desbalance.empty:
+        resultado["desbalance_max"]  = df_desbalance["precio_max_eur"].max()
+        idx = df_desbalance["precio_max_eur"].idxmax()
+        resultado["hora_desbal_max"] = df_desbalance.loc[idx, "hora_dt"].strftime("%H:%M")
+    if not df_precios.empty and "spot_eur" in df_precios.columns:
+        resultado["spot_min"]   = df_precios["spot_eur"].min()
+        resultado["spot_max"]   = df_precios["spot_eur"].max()
+        resultado["horas_neg"]  = (df_precios["spot_eur"] < 0).sum()
+    return resultado
+
+
+
+tab_forense_28a.py
+
+"""
+tab_forense_28a.py — Pestaña de Análisis Forense del 28-A con diseño SCADA
+Incluye semáforo global, tarjetas "Hoy vs 28-A" y CSS de alto contraste.
+"""
+
+import streamlit as st
+import pandas as pd
+from cargador_28a import (
+    cargar_demanda_28a,
+    cargar_desbalance_28a,
+    cargar_frecuencia_28a,
+    cargar_precios_28a,
+    verificar_archivos,
+)
+from visualizaciones_forenses import (
+    fig_comparativa_superpuesta,
+    fig_demanda_real_vs_prev,
+    fig_sismografo_frecuencia,
+    fig_tormenta_de_precios,
+    stats_frecuencia_28a,
+    stats_precios_28a,
+)
+
+
+# =============================================================================
+# CSS PERSONALIZADO (estilo SCADA Forense)
+# =============================================================================
+_CSS_FORENSE = """
+<style>
+    /* Fuentes globales */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    html, body, .stApp {
+        font-family: 'Inter', sans-serif;
+        background-color: #0b0f19;
+    }
+    
+    /* Semáforo global simulado con st.empty() - lo gestionamos en Python */
+    .status-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        z-index: 9999;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* Tarjetas de métricas personalizadas */
+    .metric-card {
+        background: #111827;
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin: 8px 0;
+        transition: all 0.2s;
+    }
+    .metric-card:hover {
+        border-top: 2px solid #06b6d4;
+        background: #1e293b;
+    }
+    .metric-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #94a3b8;
+        margin-bottom: 8px;
+    }
+    .metric-value-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1rem;
+    }
+    .metric-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+    .metric-delta {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        border-radius: 20px;
+        background: rgba(0,0,0,0.4);
+    }
+    .metric-delta.positive { color: #10b981; }
+    .metric-delta.negative { color: #ef4444; }
+    .metric-sub {
+        font-size: 0.7rem;
+        color: #64748b;
+        margin-top: 6px;
+    }
+    
+    /* Separadores */
+    hr {
+        border-color: rgba(255,255,255,0.08);
+        margin: 1rem 0;
+    }
+    
+    /* Ajustes para plotly */
+    .js-plotly-plot .plotly .modebar {
+        background: rgba(17,24,39,0.7) !important;
+    }
+</style>
+"""
+
+
+def _generar_tarjeta_dual(titulo: str, valor_hoy, valor_28a, unidad: str, delta_texto: str = None):
+    """Genera una tarjeta HTML que compara HOY vs 28-A."""
+    delta_clase = "positive" if "mejor" in str(delta_texto).lower() else "negative" if "peor" in str(delta_texto).lower() else ""
+    html = f"""
+    <div class="metric-card">
+        <div class="metric-label">{titulo}</div>
+        <div class="metric-value-container">
+            <div>
+                <span class="metric-value" style="color:#06b6d4">{valor_hoy}</span>
+                <span style="font-size:0.8rem; color:#64748b;"> {unidad}</span>
+            </div>
+            <div style="text-align:right;">
+                <span class="metric-value" style="color:#ef4444; font-size:1.2rem">{valor_28a}</span>
+                <span style="font-size:0.8rem; color:#64748b;"> {unidad}</span>
+            </div>
+        </div>
+        <div class="metric-sub">
+            28-A: {valor_28a} {unidad} 
+            <span class="metric-delta {delta_clase}">{delta_texto or ''}</span>
+        </div>
+    </div>
+    """
+    return html
+
+
+def _inyectar_css_forense():
+    st.markdown(_CSS_FORENSE, unsafe_allow_html=True)
+
+
+def _banner_estado_archivos():
+    estado = verificar_archivos()
+    todos_ok = all(v["ok"] for v in estado.values())
+    if todos_ok:
+        st.success("✅ Protocolo de datos: todos los JSON del 28-A localizados.")
+        return
+    with st.expander("⚠️ Fallo en la integridad de los datos forenses"):
+        for nombre, info in estado.items():
+            if info["ok"]:
+                st.markdown(f"✅ `{nombre}` → `{info['ruta']}`")
+            else:
+                st.markdown(f"❌ `{nombre}` — no encontrado")
+
+
+def render_tab_forense(snap: dict):
+    """Renderiza la pestaña forense con diseño SCADA y semáforo global."""
+    _inyectar_css_forense()
+
+    # ── Semáforo global (simulado) ──────────────────────────────────────────
+    # Puedes calcular un índice de riesgo real con los datos actuales
+    riesgo = 0
+    if snap:
+        inercia = snap.get("inercia", 2.0)
+        if inercia < 1.5:
+            riesgo = 2  # rojo
+        elif inercia < 2.5:
+            riesgo = 1  # ámbar
+    color_barra = "#10b981" if riesgo == 0 else "#f59e0b" if riesgo == 1 else "#ef4444"
+    st.markdown(
+        f'<div class="status-bar" style="background-color:{color_barra};"></div>',
+        unsafe_allow_html=True
+    )
+    st.markdown("<br>", unsafe_allow_html=True)  # espacio para la barra
+
+    # ── Encabezado ─────────────────────────────────────────────────────────
+    st.markdown("### 🔬 ANÁLISIS FORENSE — 28 DE ABRIL DE 2025")
+    st.markdown(
+        "<p style='color:#94a3b8; font-size:0.85rem;'>Sincronización de registros PMU (ENTSO-E) y telemedidas (REE). "
+        "Las curvas <span style='color:#ef4444;'>rojas</span> indican el colapso histórico; las curvas "
+        "<span style='color:#06b6d4;'>cyan</span> reflejan el estado actual de la red.</p>",
+        unsafe_allow_html=True
+    )
+    _banner_estado_archivos()
+    st.markdown("<hr>", unsafe_allow_html=True)
+
+    # ── Carga de datos ─────────────────────────────────────────────────────
+    try:
+        df_freq = cargar_frecuencia_28a()
+        df_demanda = cargar_demanda_28a()
+        df_precios = cargar_precios_28a()
+        df_desbal = cargar_desbalance_28a()
+    except FileNotFoundError as e:
+        st.error(f"**Error crítico:** {e}")
+        return
+
+    stats_f = stats_frecuencia_28a(df_freq)
+    stats_p = stats_precios_28a(df_desbal, df_precios)
+
+    # ── Grid de tarjetas duales (orden causal) ─────────────────────────────
+    st.markdown("#### 📡 Telemetría crítica — HOY vs 28-A")
+    col1, col2, col3, col4 = st.columns(4)
+
+    # Valores actuales desde snap
+    hoy_inercia = snap.get("inercia", 0.0) if snap else 0.0
+    hoy_penetracion = snap.get("penetracion", 0.0) if snap else 0.0
+    hoy_frecuencia = snap.get("frecuencia", 50.0) if snap else 50.0
+    hoy_rocof = snap.get("rocof", 0.0) if snap else 0.0
+
+    # Valores 28A
+    ref_inercia = 1.18
+    ref_penetracion = 84.5
+    ref_frecuencia = 49.85
+    ref_rocof = 0.48
+
+    with col1:
+        delta_pen = hoy_penetracion - ref_penetracion
+        texto_delta = f"{delta_pen:+.1f}%" if delta_pen != 0 else "igual"
+        estado = "mejor" if delta_pen < 0 else "peor"
+        st.markdown(_generar_tarjeta_dual("Penetración renovable", f"{hoy_penetracion:.1f}", ref_penetracion, "%", f"{texto_delta} ({estado})"), unsafe_allow_html=True)
+
+    with col2:
+        delta_iner = hoy_inercia - ref_inercia
+        texto_delta = f"{delta_iner:+.2f}s"
+        estado = "mejor" if delta_iner > 0 else "peor"
+        st.markdown(_generar_tarjeta_dual("Inercia equivalente", f"{hoy_inercia:.2f}", ref_inercia, "s", f"{texto_delta} ({estado})"), unsafe_allow_html=True)
+
+    with col3:
+        delta_freq = hoy_frecuencia - ref_frecuencia
+        texto_delta = f"{delta_freq:+.3f}Hz"
+        estado = "mejor" if delta_freq > 0 else "peor"
+        st.markdown(_generar_tarjeta_dual("Frecuencia", f"{hoy_frecuencia:.3f}", ref_frecuencia, "Hz", f"{texto_delta} ({estado})"), unsafe_allow_html=True)
+
+    with col4:
+        delta_rocof = hoy_rocof - ref_rocof
+        texto_delta = f"{delta_rocof:+.2f}Hz/s"
+        estado = "mejor" if delta_rocof < 0 else "peor"
+        st.markdown(_generar_tarjeta_dual("RoCoF", f"{hoy_rocof:.2f}", ref_rocof, "Hz/s", f"{texto_delta} ({estado})"), unsafe_allow_html=True)
+
+    st.markdown("<hr>", unsafe_allow_html=True)
+
+    # ── Gráfica principal: Sismógrafo ──────────────────────────────────────
+    st.markdown("#### 🌊 Sismógrafo de Frecuencia (ECG de la red)")
+    frecuencia_hoy = snap.get("frecuencia") if snap else None
+    st.plotly_chart(fig_sismografo_frecuencia(df_freq, frecuencia_hoy), use_container_width=True)
+
+    # ── Gráficas secundarias: dos columnas ─────────────────────────────────
+    col_left, col_right = st.columns(2)
+    with col_left:
+        demanda_hoy = snap.get("demanda") if snap else None
+        st.plotly_chart(fig_demanda_real_vs_prev(df_demanda, demanda_hoy), use_container_width=True)
+    with col_right:
+        precio_spot_hoy = snap.get("precio_spot") if snap else None
+        st.plotly_chart(fig_tormenta_de_precios(df_desbal, df_precios, precio_spot_hoy), use_container_width=True)
+
+    # ── Comparativa superpuesta (opcional, para cerrar) ────────────────────
+    st.markdown("#### 📊 Telemetría superpuesta — HOY vs 28-A")
+    historial_freq = st.session_state.get("historial_frecuencia", [])
+    st.plotly_chart(fig_comparativa_superpuesta(df_demanda, df_freq, historial_freq, demanda_hoy), use_container_width=True)
+
+    # ── Nota metodológica ──────────────────────────────────────────────────
+    with st.expander("📚 Fuentes y metodología"):
+        st.markdown("""
+        | Dataset | Fuente | Resolución |
+        |---|---|---|
+        | Frecuencia | ENTSO-E PMU | Eventos (segundos) |
+        | Demanda | ESIOS REE | 5 min |
+        | Precio SPOT | ESIOS/OMIE | 1h |
+        | Precio desbalance | ENTSO-E TR 17.1.G&H | 15 min |
+        """)

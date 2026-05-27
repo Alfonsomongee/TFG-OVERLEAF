@@ -1,0 +1,49 @@
+icar picos de actividad en ciertos periodos.
+
+
+N) Installed Capacity per Production Type
+
+
+La capacidad instalada del sistema eléctrico peninsular (≈122 GW) muestra un equilibrio aparente entre fuentes renovables basadas en inversores (IBR) – fundamentalmente solar (29 GW) y eólica (31 GW) – y generación síncrona convencional (gas, nuclear, hidráulica, carbón, etc.), que suman aproximadamente 61 GW. A primera vista, el parque síncrono parece suficiente para garantizar la estabilidad dinámica.
+
+Sin embargo, el apagón del 28 de abril de 2025 demostró que la capacidad instalada es un pésimo indicador de resiliencia. Ese día, por orden de mérito económico, la práctica totalidad de los ciclos combinados de gas (∼30 GW de capacidad) estaban apagados, y la generación nuclear operaba al mínimo (solo 3,4 GW de los 7 GW instalados). La generación real estaba dominada por IBR (82% del mix instantáneo), con la solar fotovoltaica aportando más de 18 GW.
+
+Cuando la cascada de sobretensiones desconectó masivamente los inversores solares y eólicos, el sistema perdió instantáneamente su principal fuente de energía activa y, más críticamente, su capacidad de absorción de potencia reactiva inductiva. La generación síncrona remanente – hidroeléctrica (∼3,5 GW) y nuclear (∼3,4 GW) – no pudo compensar el déficit de reactiva (estimado en >0,7 GVAr sólo en la zona sur).
+
+La lección estructural es clara: la capacidad instalada síncrona no sirve si está desconectada por razones de mercado. El colapso no fue un problema de recursos energéticos totales, sino de disponibilidad operativa de máquinas rotatorias en el momento crítico. La gráfica de capacidad instalada debe leerse junto con la de generación real (que aquel día mostraba solar a cero y eólica reducida al 5% de lo esperado) para comprender la verdadera vulnerabilidad del sistema.
+
+json
+{
+  "description": "Installed Capacity per Production Type (TR 14.1.A) - Península Ibérica, datos agregados (probablemente 2025, antes del apagón).",
+  "source": "ENTSO-E Transparency Platform",
+  "units": "MW",
+  "total_grand_capacity_mw": 121872.90,
+  "data": [
+    { "fuel_type": "Wind Onshore", "capacity_mw": 30931.90, "category": "IBR (Inverter-Based)" },
+    { "fuel_type": "Solar", "capacity_mw": 29047.00, "category": "IBR (Inverter-Based)" },
+    { "fuel_type": "Fossil Gas", "capacity_mw": 29943.30, "category": "Synchronous" },
+    { "fuel_type": "Hydro Water Reservoir", "capacity_mw": 15764.60, "category": "Synchronous" },
+    { "fuel_type": "Nuclear", "capacity_mw": 7117.20, "category": "Synchronous" },
+    { "fuel_type": "Hydro Pumped Storage", "capacity_mw": 3417.50, "category": "Synchronous" },
+    { "fuel_type": "Fossil Hard coal", "capacity_mw": 1819.70, "category": "Synchronous" },
+    { "fuel_type": "Hydro Run-of-river and pondage", "capacity_mw": 1154.20, "category": "Synchronous" },
+    { "fuel_type": "Fossil Oil", "capacity_mw": 672.20, "category": "Synchronous" },
+    { "fuel_type": "Biomass", "capacity_mw": 709.10, "category": "Synchronous (con inversor en algunos casos)" },
+    { "fuel_type": "Waste", "capacity_mw": 545.90, "category": "Synchronous" },
+    { "fuel_type": "Other renewable", "capacity_mw": 620.70, "category": "IBR (Inverter-Based)" },
+    { "fuel_type": "Other", "capacity_mw": 129.60, "category": "Synchronous" },
+    { "fuel_type": "Fossil Coal-derived gas", "capacity_mw": 0.00, "category": "Synchronous" },
+    { "fuel_type": "Fossil Brown coal/Lignite", "capacity_mw": 0.00, "category": "Synchronous" },
+    { "fuel_type": "Energy storage", "capacity_mw": "N/A", "category": "Storage" }
+  ]
+}
+Nota: He excluido Energy storage por tener valor N/A. Los valores cero se mantienen por coherencia con la fuente.
+
+📊 Visualización propuesta: Gráfico de tarta (o donut) con agrupación IBR vs Síncrona
+Opción 1: Tarta simple por tecnologías
+jsx
+import React from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+// Datos agregados (excluyendo ceros)
+c

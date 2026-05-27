@@ -1,0 +1,209 @@
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: hsl(220 40% 6%);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  color: hsl(220 12% 82%);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: hsl(220 12% 82%);
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: hsl(220 12% 48%);
+  margin: 0;
+}
+
+.alertBox {
+  background: hsl(0 75% 58% / 0.08);
+  border: 1px solid hsl(0 75% 58% / 0.3);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 12px;
+  line-height: 1.6;
+  color: hsl(38 100% 56%);
+}
+
+.gridContainer {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 180px repeat(3, 1fr);
+  gap: 0;
+  background: hsl(220 40% 6%);
+  border: 1px solid hsl(220 20% 18%);
+}
+
+.headerCell {
+  background: hsl(220 30% 10%);
+  border-bottom: 2px solid hsl(220 20% 18%);
+  border-right: 1px solid hsl(220 20% 18%);
+  padding: 1rem;
+  font-size: 11px;
+  font-weight: 700;
+  color: hsl(220 12% 82%);
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerCell:last-child {
+  border-right: none;
+}
+
+.cellLabel {
+  background: hsl(220 40% 6%);
+  border-right: 1px solid hsl(220 20% 18%);
+  border-bottom: 1px solid hsl(220 20% 18%);
+  padding: 1rem;
+  font-size: 12px;
+  font-weight: 600;
+  color: hsl(220 12% 82%);
+  text-align: left;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  cursor: help;
+}
+
+.cellLabel:hover {
+  background: hsl(220 20% 18% / 0.3);
+  color: hsl(190 100% 60%);
+}
+
+.cellViolated {
+  background: hsl(0 75% 58% / 0.15);
+  border-right: 1px solid hsl(0 75% 58% / 0.5);
+  border-bottom: 1px solid hsl(220 20% 18%);
+  padding: 1rem;
+  font-size: 20px;
+  font-weight: 700;
+  color: hsl(0 75% 58%);
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.cellViolated:hover {
+  background: hsl(0 75% 58% / 0.25);
+  box-shadow: 0 0 8px hsl(0 75% 58% / 0.4);
+}
+
+.cellOk {
+  background: transparent;
+  border-right: 1px solid hsl(220 20% 18% / 0.5);
+  border-bottom: 1px solid hsl(220 20% 18%);
+  padding: 1rem;
+  font-size: 14px;
+  color: hsl(220 12% 48%);
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: border-color 200ms ease-out;
+}
+
+.cellOk:hover {
+  border-color: hsl(220 20% 25%);
+}
+
+.legend {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: hsl(220 30% 10%);
+  border: 1px solid hsl(220 20% 18%);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.counters {
+  background: hsl(220 30% 10%);
+  border: 1px solid hsl(0 75% 58% / 0.3);
+  border-radius: 4px;
+  padding: 1rem;
+  font-size: 12px;
+  line-height: 1.8;
+  color: hsl(220 12% 82%);
+}
+
+.counters div {
+  margin-bottom: 0.5rem;
+}
+
+.counters div:last-child {
+  margin-bottom: 0;
+}
+
+.counters strong {
+  color: hsl(190 100% 60%);
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 120px repeat(3, 80px);
+  }
+  .cellLabel {
+    font-size: 10px;
+    padding: 0.75rem;
+  }
+  .cellViolated,
+  .cellOk {
+    padding: 0.75rem;
+    min-height: 40px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+  .grid {
+    grid-template-columns: 100px repeat(3, 60px);
+  }
+  .title {
+    font-size: 16px;
+  }
+  .cellLabel {
+    font-size: 9px;
+    padding: 0.5rem;
+  }
+  .cellViolated,
+  .cellOk {
+    padding: 0.5rem;
+    min-height: 35px;
+    font-size: 14px;
+  }
+}
