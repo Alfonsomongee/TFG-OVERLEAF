@@ -6,6 +6,7 @@ import StatusIndicator from '../StatusIndicator';
 
 export default function Slide11({ slideProgress }) {
   const [stage, setStage] = useState(0);
+
   useEffect(() => {
     if (slideProgress >= 0.1) setStage(1);
     if (slideProgress >= 0.25) setStage(2);
@@ -14,6 +15,9 @@ export default function Slide11({ slideProgress }) {
     if (slideProgress >= 0.85) setStage(5);
   }, [slideProgress]);
 
+  // Opacidades y transformaciones suaves
+  const titleOpacity = Math.min(1, Math.max(0, (slideProgress - 0.05) / 0.2));
+  const titleUp = Math.min(1, Math.max(0, (slideProgress - 0.25) / 0.15));
   const triangleOpacity = Math.min(1, Math.max(0, (slideProgress - 0.25) / 0.2));
   const verticesOpacity = Math.min(1, Math.max(0, (slideProgress - 0.45) / 0.15));
   const centerOpacity = Math.min(1, Math.max(0, (slideProgress - 0.6) / 0.1));
@@ -22,19 +26,34 @@ export default function Slide11({ slideProgress }) {
 
   return (
     <div className={styles.container}>
+      {/* Cabecera fija con efecto glass */}
       <div className={styles.header}>
         <StatusIndicator status="ANÁLISIS POST-EVENTO" color="#b91c1c" />
         <DigitalClock fixedTime="13:34:22" />
       </div>
+
       <div className={styles.content}>
-        <h1 className={styles.title} style={{ opacity: stage >= 1 ? 1 : 0, transform: `translateY(${stage >= 1 ? 0 : 15}px)` }}>
+        {/* Título principal – aparece y luego sube */}
+        <h1
+          className={styles.title}
+          style={{
+            opacity: titleOpacity,
+            transform: `translateY(${titleUp === 1 ? 0 : 20 * (1 - titleUp)}px)`,
+          }}
+        >
           TRES NARRATIVAS EN CONFLICTO
         </h1>
-        <h2 className={styles.subtitle} style={{ opacity: stage >= 2 ? 1 : 0 }}>
+
+        {/* Subtítulo con desvanecimiento */}
+        <h2
+          className={styles.subtitle}
+          style={{ opacity: stage >= 2 ? 1 : 0 }}
+        >
           28 DE ABRIL DE 2025 – COLAPSO DE TENSIÓN DEL SISTEMA IBÉRICO
         </h2>
 
-        <div className={styles.triangleContainer} style={{ opacity: triangleOpacity }}>
+        {/* Triángulo y vértices */}
+        <div className={styles.triangleWrapper} style={{ opacity: triangleOpacity }}>
           <svg viewBox="0 0 900 480" className={styles.triangleSvg}>
             <polygon points="450,60 820,430 80,430" fill="none" stroke="#3b82f6" strokeWidth="2.5" />
             <g style={{ opacity: verticesOpacity }}>
@@ -56,8 +75,12 @@ export default function Slide11({ slideProgress }) {
           </svg>
         </div>
 
+        {/* Tabla comparativa con animación ascendente */}
         {stage >= 4 && (
-          <div className={styles.comparisonTable} style={{ opacity: tableOpacity }}>
+          <div
+            className={styles.comparisonTable}
+            style={{ opacity: tableOpacity, transform: `translateY(${1 - tableOpacity * 20}px)` }}
+          >
             <h3>COMPARATIVA DE NARRATIVAS</h3>
             <table className={styles.cleanTable}>
               <thead>
@@ -72,14 +95,31 @@ export default function Slide11({ slideProgress }) {
           </div>
         )}
 
+        {/* Métricas finales con entrada escalonada */}
         {stage >= 5 && (
-          <div className={styles.metrics} style={{ opacity: metricsOpacity }}>
-            <div className={styles.metricCard}><span className={styles.metricValue}>15,2</span><span className={styles.metricUnit}>GW</span><span className={styles.metricLabel}>GENERACIÓN DESTRUIDA</span></div>
-            <div className={styles.metricCard}><span className={styles.metricValue}>60</span><span className={styles.metricUnit}>M</span><span className={styles.metricLabel}>PERSONAS AFECTADAS</span></div>
-            <div className={styles.metricCard}><span className={styles.metricValue}>7,9</span><span className={styles.metricUnit}>%</span><span className={styles.metricLabel}>INTERCONEXIÓN IBÉRICA</span></div>
+          <div
+            className={styles.metrics}
+            style={{ opacity: metricsOpacity, transform: `translateY(${1 - metricsOpacity * 20}px)` }}
+          >
+            <div className={styles.metricCard}>
+              <span className={styles.metricValue}>15,2</span>
+              <span className={styles.metricUnit}>GW</span>
+              <span className={styles.metricLabel}>GENERACIÓN DESTRUIDA</span>
+            </div>
+            <div className={styles.metricCard}>
+              <span className={styles.metricValue}>60</span>
+              <span className={styles.metricUnit}>M</span>
+              <span className={styles.metricLabel}>PERSONAS AFECTADAS</span>
+            </div>
+            <div className={styles.metricCard}>
+              <span className={styles.metricValue}>7,9</span>
+              <span className={styles.metricUnit}>%</span>
+              <span className={styles.metricLabel}>INTERCONEXIÓN IBÉRICA</span>
+            </div>
           </div>
         )}
       </div>
+
       <div className={styles.footer}>FUENTE: REE / ICAI / ENTSO-E – TRIANGULACIÓN FORENSE</div>
     </div>
   );
