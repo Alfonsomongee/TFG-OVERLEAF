@@ -1,12 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
 
 export default function ExecutiveHook() {
+  const [showSplash, setShowSplash] = useState(true);
+  const [elapsed, setElapsed] = useState(0);
+
   const { i18n } = useDocusaurusContext();
   const lang = i18n.currentLocale;
+
+  // Evitar que el splash se repita si ya se ha visto en la sesión
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (sessionStorage.getItem('splash_seen_2')) {
+        setShowSplash(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showSplash) return;
+    
+    // Disable scroll while splash is active
+    document.body.style.overflow = 'hidden';
+    const start = Date.now();
+    let animationFrame;
+
+    const animate = () => {
+      const ms = Date.now() - start;
+      setElapsed(ms);
+      if (ms < 10000) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      document.body.style.overflow = '';
+    };
+  }, [showSplash]);
+
+  const handleEnter = () => {
+    setShowSplash(false);
+    sessionStorage.setItem('splash_seen_2', '1');
+  };
 
   const getStrings = (l) => {
     switch (l) {
@@ -73,6 +113,11 @@ export default function ExecutiveHook() {
     },
   ];
 
+  let titleOpacity = Math.min(1, Math.max(0, (elapsed - 500) / 1000));
+  let subtitleOpacity = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
+  let authorOpacity = Math.min(1, Math.max(0, (elapsed - 2500) / 1000));
+  let clickOpacity = Math.min(1, Math.max(0, (elapsed - 3500) / 1000));
+
   return (
     <>
       <Head>
@@ -81,7 +126,27 @@ export default function ExecutiveHook() {
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Alfa+Slab+One&display=swap" rel="stylesheet" />
       </Head>
 
-      <div id="executive-hook" className={styles.heroContainer}>
+      {showSplash && (
+        <div 
+          onClick={handleEnter}
+          className={styles.splashOverlay}
+        >
+          <h1 className={styles.splashMainTitle} style={{ opacity: titleOpacity }}>
+            ANATOMÍA DE UN<br/>COLAPSO SISTÉMICO
+          </h1>
+          <h2 className={styles.splashSubtitle} style={{ opacity: subtitleOpacity }}>
+            ANÁLISIS FORENSE DEL APAGÓN IBÉRICO
+          </h2>
+          <p className={styles.splashAuthor} style={{ opacity: authorOpacity }}>
+            ALFONSO MONGE
+          </p>
+          <div style={{ opacity: clickOpacity }}>
+            <p className={styles.splashClick}>CLICK PARA ENTRAR</p>
+          </div>
+        </div>
+      )}
+
+      <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
         
         <Link to="/sobre-el-autor" className={styles.profileIconWrapper} title="Sobre el autor">
           <div className={styles.profileNeonCircle}>
