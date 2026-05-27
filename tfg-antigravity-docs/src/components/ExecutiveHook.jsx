@@ -2,27 +2,38 @@ import React, { useState, useEffect } from 'react';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useLocation } from '@docusaurus/router';
 import Head from '@docusaurus/Head';
 
 export default function ExecutiveHook() {
   const [showSplash, setShowSplash] = useState(true);
   const [elapsed, setElapsed] = useState(0);
+  const [isIntroPage, setIsIntroPage] = useState(true);
 
   const { i18n } = useDocusaurusContext();
+  const location = useLocation();
   const lang = i18n.currentLocale;
 
-  // Evitar que el splash se repita si ya se ha visto en la sesión
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    const isIntro = path === '/' || path === '' || (path.startsWith(`/${lang}`) && path.split('/').filter(Boolean).length <= 1);
+    setIsIntroPage(isIntro);
+
+    if (typeof window !== 'undefined') {
+      const btn = document.getElementById('zen-mode-toggle');
+      if (btn) {
+        btn.style.display = isIntro ? 'none' : 'flex';
+      }
+    }
+  }, [location.pathname, lang]);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (sessionStorage.getItem('splash_seen_2')) {
         setShowSplash(false);
       }
-      // Ocultar botón zen-mode en la portada
-      const btn = document.getElementById('zen-mode-toggle');
-      if (btn) btn.style.display = 'none';
     }
     return () => {
-      // Restaurar el botón al salir de la portada
       if (typeof window !== 'undefined') {
         const btn = document.getElementById('zen-mode-toggle');
         if (btn) btn.style.display = 'flex';
@@ -32,8 +43,7 @@ export default function ExecutiveHook() {
 
   useEffect(() => {
     if (!showSplash) return;
-    
-    // Disable scroll while splash is active
+
     document.body.style.overflow = 'hidden';
     const start = Date.now();
     let animationFrame;
@@ -203,7 +213,7 @@ export default function ExecutiveHook() {
       </Head>
 
       {showSplash && (
-        <div 
+        <div
           onClick={handleEnter}
           className={styles.splashOverlay}
         >
@@ -225,7 +235,7 @@ export default function ExecutiveHook() {
       )}
 
       <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
-        
+
         <Link to="/sobre-el-autor" className={styles.profileIconWrapper} title="Sobre el autor">
           <div className={styles.profileNeonCircle}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
@@ -239,7 +249,7 @@ export default function ExecutiveHook() {
             </defs>
             <text>
               <textPath href="#textCircle" textLength="251" lengthAdjust="spacing">
-                SOBRE EL AUTOR • SOBRE EL AUTOR • 
+                SOBRE EL AUTOR • SOBRE EL AUTOR •
               </textPath>
             </text>
           </svg>
@@ -258,13 +268,12 @@ export default function ExecutiveHook() {
             </defs>
             <text>
               <textPath href="#textCircle2" textLength="251" lengthAdjust="spacing">
-                CAPÍTULO 1 • INTRODUCCIÓN • 
+                CAPÍTULO 1 • INTRODUCCIÓN •
               </textPath>
             </text>
           </svg>
         </Link>
 
-        {/* Contenido principal centrado */}
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
             {strings.heroTitle1}{' '}
@@ -272,7 +281,6 @@ export default function ExecutiveHook() {
           </h1>
           <p className={styles.subtitle}>{strings.heroSubtitle}</p>
 
-          {/* Top Banner / Event Scale */}
           <div className={styles.statsBanner}>
             <div className={styles.statItem}>
               <span className={styles.statValue}>25,2 GW</span>
@@ -292,7 +300,6 @@ export default function ExecutiveHook() {
             </div>
           </div>
 
-          {/* Grid de 6 tarjetas */}
           <div className={styles.cardsGrid}>
             {cards.map((card) => (
               <Link key={card.id} to={card.path} className={styles.cardLink}>
@@ -314,7 +321,6 @@ export default function ExecutiveHook() {
             ))}
           </div>
 
-          {/* Botones de acción */}
           <div className={styles.actions}>
             <Link className={`button button--primary ${styles.primaryBtn}`} to="/contexto">
               {strings.startAnalysis}
