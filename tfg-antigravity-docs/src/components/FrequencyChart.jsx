@@ -65,7 +65,7 @@ function FrequencyChartScrollyContent({ isGallery, lang }) {
   if (isGallery) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '1rem' }}>
-        <div style={{ height: '400px', background: 'var(--ifm-background-surface-color)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)' }}>
+        <div style={{ height: '650px', background: 'var(--ifm-background-surface-color)', borderRadius: '12px', padding: '1rem', border: '1px solid var(--ifm-color-emphasis-200)' }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={visibleData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
               <XAxis dataKey="tiempoS" domain={[0, 26]} type="number" stroke="var(--ifm-color-emphasis-600)" label={{ value: strings.xaxis, position: 'insideBottom', offset: -10 }} />

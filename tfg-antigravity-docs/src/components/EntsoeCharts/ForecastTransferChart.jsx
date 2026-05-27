@@ -32,37 +32,43 @@ export default function ForecastTransferChart() {
 
   return (
     <div style={{ width: '100%' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1rem' }}>
-        <div>
-          <strong>Día: </strong>
-          <select 
-            value={activeDay} 
-            onChange={e => setActiveDay(e.target.value)}
-            style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--ifm-color-emphasis-300)', backgroundColor: 'var(--ifm-background-surface-color)', color: 'var(--ifm-font-color-base)' }}
-          >
-            <option value="dataset_1">28 de Abril</option>
-            <option value="dataset_2">29 de Abril</option>
-          </select>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '4px', background: 'var(--ifm-color-emphasis-100)', padding: '4px', borderRadius: '8px' }}>
+          {[
+            { id: 'dataset_1', label: '28 de Abril' },
+            { id: 'dataset_2', label: '29 de Abril' }
+          ].map(opt => (
+            <button 
+              key={opt.id}
+              onClick={() => setActiveDay(opt.id)}
+              style={{ padding: '8px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: activeDay === opt.id ? 'var(--ifm-color-primary)' : 'transparent', color: activeDay === opt.id ? '#fff' : 'var(--ifm-color-emphasis-700)', fontWeight: activeDay === opt.id ? 'bold' : 'normal', transition: 'all 0.2s', fontSize: '0.85rem' }}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
-        <div>
-          <strong>Frontera: </strong>
-          <select 
-            value={activeBorder} 
-            onChange={e => setActiveBorder(e.target.value)}
-            style={{ padding: '4px', borderRadius: '4px', border: '1px solid var(--ifm-color-emphasis-300)', backgroundColor: 'var(--ifm-background-surface-color)', color: 'var(--ifm-font-color-base)' }}
-          >
-            <option value="FR">España - Francia</option>
-            <option value="PT">España - Portugal</option>
-          </select>
+        <div style={{ display: 'flex', gap: '4px', background: 'var(--ifm-color-emphasis-100)', padding: '4px', borderRadius: '8px' }}>
+          {[
+            { id: 'FR', label: 'España - Francia' },
+            { id: 'PT', label: 'España - Portugal' }
+          ].map(opt => (
+            <button 
+              key={opt.id}
+              onClick={() => setActiveBorder(opt.id)}
+              style={{ padding: '8px 16px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: activeBorder === opt.id ? 'var(--ifm-color-primary)' : 'transparent', color: activeBorder === opt.id ? '#fff' : 'var(--ifm-color-emphasis-700)', fontWeight: activeBorder === opt.id ? 'bold' : 'normal', transition: 'all 0.2s', fontSize: '0.85rem' }}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <div style={{ height: '400px', width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis dataKey="hour" tick={{fill: 'var(--ifm-font-color-base)'}} />
-            <YAxis tick={{fill: 'var(--ifm-font-color-base)'}} label={{ value: 'Capacidad (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={{fill: 'var(--ifm-font-color-base)'}} label={{ value: 'Capacidad (MW)', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={{ backgroundColor: 'var(--ifm-background-surface-color)', borderColor: 'var(--ifm-color-emphasis-300)', color: 'var(--ifm-font-color-base)' }}
             />

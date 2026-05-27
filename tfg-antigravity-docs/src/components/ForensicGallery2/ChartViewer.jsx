@@ -152,106 +152,105 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
   const rel  = chart[`rel_${locale}`]  || chart.rel  || '';
 
   return (
-    <div className={styles.chartArea}>
-      {/* ── HEADER ── */}
-      <div className={styles.chartHeader}>
-        <div className={styles.chartHeaderTop}>
-          <div
-            className={styles.chartCategoryBadge}
-            style={{ background: cat.colorLight, color: cat.color }}
-          >
-            {cat.icon} {cat.name}
+    <>
+      {/* ── ZONA SUPERIOR DERECHA (Gráfica) ── */}
+      <div className={styles.chartArea}>
+        {/* ── HEADER ── */}
+        <div className={styles.chartHeader}>
+          <div className={styles.chartHeaderTop}>
+            <h2 className={styles.chartTitle}>{chart.fullTitle}</h2>
           </div>
-          <h2 className={styles.chartTitle}>{chart.fullTitle}</h2>
+          {chart.subtitle && (
+            <div className={styles.chartSubtitle}>{chart.subtitle}</div>
+          )}
+          <div className={styles.chartHeaderMeta}>
+            <span
+              className={`${styles.sourceBadge} ${chart.sourceBadge === 'ESIOS' ? styles.esios : styles.entsoe}`}
+            >
+              {chart.sourceBadge}
+            </span>
+            <span className={styles.techCode}>{chart.techCode}</span>
+          </div>
         </div>
-        {chart.subtitle && (
-          <div className={styles.chartSubtitle}>{chart.subtitle}</div>
-        )}
-        <div className={styles.chartHeaderMeta}>
-          <span
-            className={`${styles.sourceBadge} ${chart.sourceBadge === 'ESIOS' ? styles.esios : styles.entsoe}`}
-          >
-            {chart.sourceBadge}
-          </span>
-          <span className={styles.techCode}>{chart.techCode}</span>
 
+        {/* ── CHART ── */}
+        <div className={styles.chartContainer}>
+          {ChartComponent ? (
+            <ChartComponent />
+          ) : (
+            <div className={styles.chartLoading}>
+              Componente no disponible
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── CHART ── */}
-      <div className={styles.chartContainer}>
-        {ChartComponent ? (
-          <ChartComponent />
-        ) : (
-          <div className={styles.chartLoading}>
-            Componente no disponible
+      {/* ── ZONA INFERIOR (Ancho completo) ── */}
+      <div className={styles.bottomArea}>
+        {/* ── DESCRIPCIÓN ── (siempre visible en desktop, togglable en móvil) */}
+        <div className={styles.descSection}>
+          <button
+            className={styles.mobileDescToggle}
+            onClick={() => setMobileDescOpen(p => !p)}
+            style={{ display: 'none' }}
+            data-mobile-toggle="desc"
+          >
+            {mobileDescOpen ? '▲' : '▼'} {l.whatShows}
+          </button>
+          <div data-mobile-collapsible="desc">
+            <div className={styles.descTitle}>{l.whatShows}</div>
+            <div className={styles.descText}>
+              {desc.split('\n\n').map((para, i) => (
+                <p key={i} className={i === 0 ? styles.firstParagraph : ''}>{para}</p>
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* ── DESCRIPCIÓN ── (siempre visible en desktop, togglable en móvil) */}
-      <div className={styles.descSection}>
-        <button
-          className={styles.mobileDescToggle}
-          onClick={() => setMobileDescOpen(p => !p)}
-          style={{ display: 'none' }}
-          data-mobile-toggle="desc"
-        >
-          {mobileDescOpen ? '▲' : '▼'} {l.whatShows}
-        </button>
-        <div data-mobile-collapsible="desc">
-          <div className={styles.descTitle}>{l.whatShows}</div>
-          <div className={styles.descText}>
-            {desc.split('\n\n').map((para, i) => (
+        {/* ── RELEVANCIA FORENSE ── */}
+        <div className={styles.relSection} style={{ borderLeftColor: cat.color }}>
+          <div className={styles.relTitle} style={{ color: cat.color }}>
+            {l.relevance}
+          </div>
+          <div className={styles.relText}>
+            {rel.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
         </div>
-      </div>
 
-      {/* ── RELEVANCIA FORENSE ── */}
-      <div className={styles.relSection} style={{ borderLeftColor: cat.color }}>
-        <div className={styles.relTitle} style={{ color: cat.color }}>
-          {l.relevance}
+        {/* ── NAVEGACIÓN ── */}
+        <div className={styles.navButtons}>
+          {prev ? (
+            <button
+              className={styles.navBtn}
+              onClick={() => onSelectChart(prev.id)}
+            >
+              ← {l.prev}
+              <span className={styles.navBtnSub}>{prev.title}</span>
+            </button>
+          ) : <span />}
+
+          {next ? (
+            <button
+              className={`${styles.navBtn} ${styles.next}`}
+              onClick={() => onSelectChart(next.id)}
+            >
+              {l.next} →
+              <span className={styles.navBtnSub}>{next.title}</span>
+            </button>
+          ) : nextCategoryFirst ? (
+            <button
+              className={`${styles.navBtn} ${styles.next} ${styles.nextCatBtn}`}
+              style={{ borderColor: getCategoryById(nextCategoryFirst.categoryId)?.color }}
+              onClick={() => onSelectChart(nextCategoryFirst.id)}
+            >
+              {l.continueWith} {getCategoryById(nextCategoryFirst.categoryId)?.name} →
+              <span className={styles.navBtnSub}>{nextCategoryFirst.title}</span>
+            </button>
+          ) : null}
         </div>
-        <div className={styles.relText}>
-          {rel.split('\n\n').map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
       </div>
-
-      {/* ── NAVEGACIÓN ── */}
-      <div className={styles.navButtons}>
-        {prev ? (
-          <button
-            className={styles.navBtn}
-            onClick={() => onSelectChart(prev.id)}
-          >
-            ← {l.prev}
-            <span className={styles.navBtnSub}>{prev.title}</span>
-          </button>
-        ) : <span />}
-
-        {next ? (
-          <button
-            className={`${styles.navBtn} ${styles.next}`}
-            onClick={() => onSelectChart(next.id)}
-          >
-            {l.next} →
-            <span className={styles.navBtnSub}>{next.title}</span>
-          </button>
-        ) : nextCategoryFirst ? (
-          <button
-            className={`${styles.navBtn} ${styles.next} ${styles.nextCatBtn}`}
-            style={{ borderColor: getCategoryById(nextCategoryFirst.categoryId)?.color }}
-            onClick={() => onSelectChart(nextCategoryFirst.id)}
-          >
-            {l.continueWith} {getCategoryById(nextCategoryFirst.categoryId)?.name} →
-            <span className={styles.navBtnSub}>{nextCategoryFirst.title}</span>
-          </button>
-        ) : null}
-      </div>
-    </div>
+    </>
   );
 }

@@ -58,19 +58,19 @@ export default function DemandaChart() {
       <ResponsiveContainer width="100%" height="90%">
         <AreaChart
           data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          margin={{ top: 10, right: 30, left: 20, bottom: 30 }}
         >
           <defs>
             <linearGradient id="colorDemandaReal" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ff4a4a" stopOpacity={0.5}/>
-              <stop offset="95%" stopColor="#ff4a4a" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#ffaa00" stopOpacity={0.5}/>
+              <stop offset="95%" stopColor="#ffaa00" stopOpacity={0}/>
             </linearGradient>
             <linearGradient id="colorDemandaProg" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#4a90e2" stopOpacity={0.2}/>
               <stop offset="95%" stopColor="#4a90e2" stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
           
           <XAxis 
             dataKey="datetime" 
@@ -83,12 +83,13 @@ export default function DemandaChart() {
             minTickGap={50}
           />
           <YAxis 
+            width={90}
             stroke="rgba(255, 255, 255, 0.5)" 
             tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }}
             unit=" MW"
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '10px' }} />
+          <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '20px' }} />
 
           {/* Marcador de Blackout */}
           {blackoutStart && (
@@ -122,13 +123,13 @@ export default function DemandaChart() {
           <Area 
             type="monotone" 
             dataKey="Demanda real" 
-            stroke="#ff4a4a" 
+            stroke="#ffaa00" 
             fillOpacity={1} 
             fill="url(#colorDemandaReal)" 
             strokeWidth={3}
             name="Demanda Real"
             isAnimationActive={true}
-            activeDot={{ r: 6, fill: '#ff4a4a', stroke: '#fff', strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: '#ffaa00', stroke: '#fff', strokeWidth: 2 }}
           />
         </AreaChart>
       </ResponsiveContainer>

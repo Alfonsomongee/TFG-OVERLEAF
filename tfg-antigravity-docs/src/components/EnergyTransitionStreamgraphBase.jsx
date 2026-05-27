@@ -117,7 +117,7 @@ export default function EnergyTransitionStreamgraph({ lang = 'es' }) {
       </div>
       
       <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height={500}>
+        <ResponsiveContainer width="100%" height={680}>
           <ComposedChart
             data={data}
             margin={{ top: 20, right: 20, bottom: 20, left: 20 }}

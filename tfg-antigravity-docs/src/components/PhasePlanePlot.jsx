@@ -109,7 +109,7 @@ export default function PhasePlanePlot({ lang }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Contenedor con altura estricta para evitar que el gráfico empuje el texto al redibujarse */}
-      <div style={{ height: '450px', width: '100%', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ height: '650px', width: '100%', position: 'relative', overflow: 'hidden' }}>
         <BrowserOnly fallback={<div>Cargando gráfico interactivo...</div>}>
           {() => {
             const Plot = require('react-plotly.js').default;

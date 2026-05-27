@@ -62,7 +62,7 @@ export default function PotenciaChart() {
     <div className={styles.chartContainer} style={{ height: '700px' }}>
       <h3 className={styles.chartTitle}>Comparativa de Potencia por Tecnología (28 vs 29 Abril)</h3>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 150, bottom: 0 }}>
+        <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" horizontal={true} vertical={true} />
           <XAxis type="number" stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit=" MW" />
           <YAxis 
@@ -70,7 +70,7 @@ export default function PotenciaChart() {
             dataKey="category" 
             stroke="rgba(255, 255, 255, 0.5)" 
             tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 10, fontFamily: 'Inter' }} 
-            width={140}
+            width={280}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '10px' }} />

@@ -53,26 +53,23 @@ export default function ActualGenerationChart() {
 
   return (
     <div style={{ width: '100%' }}>
-      {/* Selector */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-        <div>
-          <strong>Vista (TR 16.1.A):&nbsp;</strong>
-          <select
-            value={view}
-            onChange={e => setView(e.target.value)}
-            style={{
-              padding: '6px 10px', borderRadius: '6px',
-              border: '1px solid var(--ifm-color-emphasis-300)',
-              backgroundColor: 'var(--ifm-background-surface-color)',
-              color: 'var(--ifm-font-color-base)', width: '320px'
-            }}
-          >
-            <option value="fuel">1. Mix de Generación Real (Por Tipo)</option>
-            <option value="top20">2. Top 20 Unidades Activas</option>
-            <option value="status">3. Estado de Unidades (Activas vs Caídas)</option>
-            <option value="sync">4. Inercia Síncrona vs Inversores (IBR)</option>
-            <option value="expected">5. Comparativa Real vs Previsto</option>
-          </select>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', width: '100%' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', background: 'var(--ifm-color-emphasis-100)', padding: '4px', borderRadius: '8px', maxWidth: '800px', justifyContent: 'center' }}>
+          {[
+            { id: 'fuel', label: '1. Mix Real' },
+            { id: 'top20', label: '2. Top 20' },
+            { id: 'status', label: '3. Estado' },
+            { id: 'sync', label: '4. Inercia' },
+            { id: 'expected', label: '5. Real vs Previsto' }
+          ].map(opt => (
+            <button 
+              key={opt.id}
+              onClick={() => setView(opt.id)}
+              style={{ padding: '8px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: view === opt.id ? 'var(--ifm-color-primary)' : 'transparent', color: view === opt.id ? '#fff' : 'var(--ifm-color-emphasis-700)', fontWeight: view === opt.id ? 'bold' : 'normal', transition: 'all 0.2s', fontSize: '0.85rem' }}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 

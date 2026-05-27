@@ -171,13 +171,13 @@ export default function SynchrophasorPlot({ lang }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', minHeight: '650px' }}>
-      <div style={{ flex: 1, minHeight: '550px', backgroundColor: '#0a0f1c', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', minHeight: '750px' }}>
+      <div style={{ flex: 1, minHeight: '650px', backgroundColor: '#0a0f1c', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)' }}>
         <ReactEChartsCore
           ref={chartRef}
           echarts={echarts}
           option={baseOption}
-          style={{ height: '100%', width: '100%', minHeight: '550px' }}
+          style={{ height: '100%', width: '100%', minHeight: '650px' }}
           theme="dark"
           notMerge={false}
           lazyUpdate={true}

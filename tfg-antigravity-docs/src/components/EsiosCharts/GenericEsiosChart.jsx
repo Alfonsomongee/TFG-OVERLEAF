@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 import styles from './EsiosCharts.module.css';
 
-const PALETTE = ['#ff4a4a', '#4a90e2', '#00ffcc', '#e2a04a', '#a04ae2', '#4ae2a0', '#e24a90'];
+const PALETTE = ['#ffaa00', '#ff4a4a', '#4a90e2', '#00ffcc', '#e2a04a', '#a04ae2', '#e24a90'];
 
 const CustomTooltip = ({ active, payload, label, unit }) => {
   if (active && payload && payload.length) {
@@ -80,32 +80,32 @@ export default function GenericEsiosChart({ dataUrl, title, unit = '', includeKe
       <h3 className={styles.chartTitle}>{title}</h3>
       <ResponsiveContainer width="100%" height="90%">
         {isBarChart ? (
-          <BarChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" vertical={false} />
+          <BarChart data={data} margin={{ top: 10, right: 30, left: 20, bottom: 30 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
             <XAxis 
               dataKey="datetime" 
               tickFormatter={(tick) => new Date(tick).toLocaleDateString('es-ES')}
               stroke="rgba(255, 255, 255, 0.5)"
               tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }}
             />
-            <YAxis stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit={` ${unit}`} />
+            <YAxis width={90} stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit={` ${unit}`} />
             <Tooltip content={<CustomTooltip unit={unit} />} />
-            {keys.length <= 6 && <Legend wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '10px' }} />}
+            {keys.length <= 6 && <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '20px' }} />}
             {keys.map((k, idx) => (
               <Bar key={k} dataKey={k} name={k} fill={PALETTE[idx % PALETTE.length]} radius={[2, 2, 0, 0]} stackId="a" />
             ))}
           </BarChart>
         ) : (
-          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 10, right: 30, left: 20, bottom: 30 }}>
             <defs>
               {keys.map((k, idx) => (
                 <linearGradient key={`grad-${idx}`} id={`color-${idx}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={PALETTE[idx % PALETTE.length]} stopOpacity={0.3}/>
+                  <stop offset="5%" stopColor={PALETTE[idx % PALETTE.length]} stopOpacity={0.5}/>
                   <stop offset="95%" stopColor={PALETTE[idx % PALETTE.length]} stopOpacity={0}/>
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
             <XAxis 
               dataKey="datetime" 
               tickFormatter={(tick) => {
@@ -116,9 +116,9 @@ export default function GenericEsiosChart({ dataUrl, title, unit = '', includeKe
               tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }}
               minTickGap={40}
             />
-            <YAxis stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit={` ${unit}`} domain={['auto', 'auto']} />
+            <YAxis width={90} stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit={` ${unit}`} domain={['auto', 'auto']} />
             <Tooltip content={<CustomTooltip unit={unit} />} />
-            {keys.length <= 6 && <Legend wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '10px' }} />}
+            {keys.length <= 6 && <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontFamily: 'Inter', fontSize: '14px', paddingTop: '20px' }} />}
             {keys.map((k, idx) => (
               <Area 
                 key={k} 

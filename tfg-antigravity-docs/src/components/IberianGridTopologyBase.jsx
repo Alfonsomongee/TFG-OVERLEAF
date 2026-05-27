@@ -128,12 +128,13 @@ function TopologyMapContent({ lang = 'es' }) {
     setHoverNode(node || null);
   }, []);
 
-  if (!ForceGraph2D) return <div style={{height: 500}}>{strings.loading}</div>;
+  if (!ForceGraph2D) return <div style={{height: 680}}>{strings.loading}</div>;
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '500px', backgroundColor: '#0d1117', borderRadius: '12px', overflow: 'hidden', border: '1px solid #30363d' }}>
+    <div style={{ position: 'relative', width: '100%', height: '680px', backgroundColor: '#0d1117', borderRadius: '12px', overflow: 'hidden', border: '1px solid #30363d' }}>
       <ForceGraph2D
         ref={fgRef}
+        height={680}
         graphData={GRID_DATA}
         nodeColor={node => highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.1)'}
         nodeRelSize={6}

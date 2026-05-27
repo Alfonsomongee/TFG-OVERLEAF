@@ -121,7 +121,7 @@ export default function FinancialWaterfallChart({ lang = 'es' }) {
       </div>
       
       <div className={styles.chartWrapper}>
-        <ResponsiveContainer width="100%" height={450}>
+        <ResponsiveContainer width="100%" height={650}>
           <ComposedChart
             data={data}
             margin={{ top: 40, right: 30, left: 20, bottom: 40 }}
