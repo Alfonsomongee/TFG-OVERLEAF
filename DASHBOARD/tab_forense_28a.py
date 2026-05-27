@@ -1,5 +1,5 @@
 """
-tab_forense_28a.py — Pestaña de Análisis Forense del 28-A
+tab_forense_28a.py — Pestaña de Análisis Forense del 28-A (diseño SCADA)
 
 Integra en app.py con:
 
@@ -29,228 +29,289 @@ from visualizaciones_forenses import (
     stats_precios_28a,
 )
 
+# ─── CSS Forense SCADA ────────────────────────────────────────────────────────
+_CSS_FORENSE = """
+<style>
+/* ── Barra de estado SCADA ── */
+.status-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.5s ease;
+}
+
+/* ── Tarjetas duales HOY vs 28-A ── */
+.metric-card {
+    background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.8));
+    border: 1px solid rgba(100,116,139,0.3);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    border-radius: 12px 0 0 12px;
+}
+.metric-card.verde::before  { background: #10b981; }
+.metric-card.ambar::before  { background: #f59e0b; }
+.metric-card.rojo::before   { background: #ef4444; }
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+.metric-sub {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 0.4rem;
+}
+.metric-delta {
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+.metric-delta.mejor { color: #10b981; background: rgba(16,185,129,0.1); }
+.metric-delta.peor  { color: #ef4444; background: rgba(239,68,68,0.1); }
+.metric-delta.igual { color: #94a3b8; }
+
+/* ── Indicadores de fuente ── */
+.badge-source {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(100,116,139,0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(100,116,139,0.3);
+    margin-left: 0.3rem;
+}
+</style>
+"""
+
+
+def _generar_tarjeta_dual(
+    label: str,
+    valor_hoy: str,
+    valor_28a: float,
+    unidad: str,
+    delta_texto: str = None,
+    delta_clase: str = "igual",
+) -> str:
+    """Genera HTML de tarjeta dual HOY vs 28-A."""
+    color_hoy = "#06b6d4"   # cyan — datos actuales
+    color_28a = "#ef4444"   # rojo — datos del 28-A
+
+    html = f"""
+    <div class="metric-card {delta_clase}">
+        <div class="metric-label">{label}</div>
+        <div class="metric-row">
+            <div style="text-align:left;">
+                <span style="font-size:0.65rem; color:#94a3b8;">HOY</span><br>
+                <span class="metric-value" style="color:{color_hoy}; font-size:1.2rem">{valor_hoy}</span>
+                <span style="font-size:0.8rem; color:#64748b;"> {unidad}</span>
+            </div>
+            <div style="text-align:right;">
+                <span style="font-size:0.65rem; color:#94a3b8;">28-A</span><br>
+                <span class="metric-value" style="color:{color_28a}; font-size:1.2rem">{valor_28a}</span>
+                <span style="font-size:0.8rem; color:#64748b;"> {unidad}</span>
+            </div>
+        </div>
+        <div class="metric-sub">
+            Δ vs colapso:&nbsp;
+            <span class="metric-delta {delta_clase}">{delta_texto or ''}</span>
+        </div>
+    </div>
+    """
+    return html
+
+
+def _inyectar_css_forense():
+    st.markdown(_CSS_FORENSE, unsafe_allow_html=True)
+
 
 def _banner_estado_archivos():
-    """Muestra qué archivos se han cargado y cuáles faltan."""
     estado = verificar_archivos()
     todos_ok = all(v["ok"] for v in estado.values())
-
     if todos_ok:
-        st.success("✅ Todos los archivos JSON del 28-A localizados — datos reales")
+        st.success("✅ Protocolo de datos: todos los JSON del 28-A localizados.")
         return
-
-    with st.expander("⚠️ Estado de archivos forenses"):
+    with st.expander("⚠️ Fallo en la integridad de los datos forenses"):
         for nombre, info in estado.items():
             if info["ok"]:
                 st.markdown(f"✅ `{nombre}` → `{info['ruta']}`")
             else:
-                st.markdown(
-                    f"❌ `{nombre}` — no encontrado\n\n"
-                    f"Edita `_BASES` en `cargador_28a.py` para apuntar a la carpeta correcta."
-                )
+                st.markdown(f"❌ `{nombre}` — no encontrado")
 
 
 def render_tab_forense(snap: dict):
-    """
-    Renderiza la pestaña completa de Análisis Forense del 28-A.
+    """Renderiza la pestaña forense con diseño SCADA y semáforo global."""
+    _inyectar_css_forense()
 
-    Args:
-        snap: st.session_state.ultimo_snapshot — datos actuales del sistema
-    """
-    st.markdown("### 🔬 Análisis Forense — 28 de abril de 2025")
+    # ── Semáforo global ──────────────────────────────────────────────────────
+    riesgo = 0
+    if snap:
+        inercia = snap.get("inercia") or 2.0
+        if inercia < 1.5:
+            riesgo = 2   # rojo
+        elif inercia < 2.5:
+            riesgo = 1   # ámbar
+    color_barra = "#10b981" if riesgo == 0 else "#f59e0b" if riesgo == 1 else "#ef4444"
     st.markdown(
-        "Datos reales de REE/ESIOS y ENTSO-E del día del colapso eléctrico peninsular. "
-        "La línea **azul** representa el estado actual del sistema para comparación directa."
+        f'<div class="status-bar" style="background-color:{color_barra};"></div>',
+        unsafe_allow_html=True
     )
 
+    # ── Encabezado ───────────────────────────────────────────────────────────
+    st.markdown("### 🔬 ANÁLISIS FORENSE — 28 DE ABRIL DE 2025")
+    st.markdown(
+        "<p style='color:#94a3b8; font-size:0.85rem;'>Sincronización de registros PMU (ENTSO-E) y telemedidas (REE). "
+        "Las curvas <span style='color:#ef4444;'>rojas</span> indican el colapso histórico; las curvas "
+        "<span style='color:#06b6d4;'>cyan</span> reflejan el estado actual de la red.</p>",
+        unsafe_allow_html=True
+    )
     _banner_estado_archivos()
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    # ── Carga de datos (cacheados) ────────────────────────────────────────────
+    # ── Carga de datos ───────────────────────────────────────────────────────
     try:
-        df_freq     = cargar_frecuencia_28a()
-        df_demanda  = cargar_demanda_28a()
-        df_precios  = cargar_precios_28a()
-        df_desbal   = cargar_desbalance_28a()
+        df_freq    = cargar_frecuencia_28a()
+        df_demanda = cargar_demanda_28a()
+        df_precios = cargar_precios_28a()
+        df_desbal  = cargar_desbalance_28a()
     except FileNotFoundError as e:
-        st.error(
-            f"**Error cargando datos:** {e}\n\n"
-            "Comprueba que la carpeta `tfg-antigravity-docs/static/data/` "
-            "está en una ruta relativa correcta desde la carpeta del dashboard.\n\n"
-            "Edita la lista `_BASES` en `cargador_28a.py` si es necesario."
-        )
+        st.error(f"**Error crítico:** {e}")
         return
 
-    # ── Métricas de estadísticas (encabezado impactante) ─────────────────────
     stats_f = stats_frecuencia_28a(df_freq)
     stats_p = stats_precios_28a(df_desbal, df_precios)
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+    # ── Tarjetas duales HOY vs 28-A ──────────────────────────────────────────
+    st.markdown("#### ⚡ Telemetría crítica — HOY vs 28-A")
+    col1, col2, col3, col4 = st.columns(4)
+
+    hoy_inercia     = snap.get("inercia")     or 0.0 if snap else 0.0
+    hoy_penetracion = snap.get("penetracion") or 0.0 if snap else 0.0
+    hoy_frecuencia  = snap.get("frecuencia")  or 50.0 if snap else 50.0
+    hoy_rocof       = snap.get("rocof")       or 0.0 if snap else 0.0
+
+    ref_inercia     = 1.18
+    ref_penetracion = 84.5
+    ref_frecuencia  = 49.85
+    ref_rocof       = 0.48
 
     with col1:
-        st.metric(
-            "Frecuencia mínima",
-            f"{stats_f.get('freq_min', '–'):.3f} Hz",
-            delta=f"Nadir: {stats_f.get('hora_nadir', '–')}",
-            delta_color="off",
-            help="Frecuencia mínima registrada por PMUs durante el colapso (ENTSO-E)",
+        delta = hoy_penetracion - ref_penetracion
+        clase = "mejor" if delta < 0 else "peor"
+        st.markdown(
+            _generar_tarjeta_dual(
+                "Penetración renovable",
+                f"{hoy_penetracion:.1f}", ref_penetracion, "%",
+                f"{delta:+.1f}% ({clase})", clase
+            ),
+            unsafe_allow_html=True
         )
+
     with col2:
-        st.metric(
-            "RoCoF máximo",
-            f"{stats_f.get('rocof_max', 0):.2f} Hz/s" if stats_f.get("rocof_max") else "~2.0 Hz/s",
-            delta="Umbral NC RfG: 1.0 Hz/s",
-            delta_color="off",
+        delta = hoy_inercia - ref_inercia
+        clase = "mejor" if delta > 0 else "peor"
+        st.markdown(
+            _generar_tarjeta_dual(
+                "Inercia equivalente",
+                f"{hoy_inercia:.2f}", ref_inercia, "s",
+                f"{delta:+.2f}s ({clase})", clase
+            ),
+            unsafe_allow_html=True
         )
+
     with col3:
-        st.metric(
-            "Precio desbalance pico",
-            f"{stats_p.get('desbalance_max', 0):,.0f} €/MWh",
-            delta=f"a las {stats_p.get('hora_desbal_max', '–')}",
-            delta_color="off",
-            help="Precio de desvíos contrarios ENTSO-E durante el caos del mercado",
+        delta = hoy_frecuencia - ref_frecuencia
+        clase = "mejor" if delta > 0 else "peor"
+        st.markdown(
+            _generar_tarjeta_dual(
+                "Frecuencia",
+                f"{hoy_frecuencia:.3f}", ref_frecuencia, "Hz",
+                f"{delta:+.3f} Hz ({clase})", clase
+            ),
+            unsafe_allow_html=True
         )
+
     with col4:
-        st.metric(
-            "Precio SPOT mínimo",
-            f"{stats_p.get('spot_min', 0):.2f} €/MWh",
-            delta=f"{stats_p.get('horas_neg', 0)} horas negativas",
-            delta_color="off",
-            help="El precio negativo refleja el exceso de generación solar antes del colapso",
-        )
-    with col5:
-        st.metric(
-            "Eventos PMU registrados",
-            f"{stats_f.get('n_eventos', 0)}",
-            delta="REE + ENTSO-E",
-            delta_color="off",
-            help="Número de eventos documentados con marca temporal precisa",
+        delta = hoy_rocof - ref_rocof
+        clase = "mejor" if delta < 0 else "peor"
+        st.markdown(
+            _generar_tarjeta_dual(
+                "RoCoF",
+                f"{hoy_rocof:.2f}", ref_rocof, "Hz/s",
+                f"{delta:+.2f} Hz/s ({clase})", clase
+            ),
+            unsafe_allow_html=True
         )
 
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════════════════════════════════════
-    # GRÁFICA 1: SISMÓGRAFO DE FRECUENCIA (la más impactante)
-    # ══════════════════════════════════════════════════════════════════════════
-
-    st.markdown("#### 🌊 Sismógrafo de Frecuencia")
-    st.caption(
-        "Evolución segundo a segundo de la frecuencia de red el 28-A. "
-        "Cada punto anotado corresponde a un evento documentado por PMUs de ENTSO-E o el "
-        "cuaderno de maniobras de REE. La línea azul muestra la frecuencia actual del sistema."
-    )
-
+    # ── Sismógrafo de frecuencia ─────────────────────────────────────────────
+    st.markdown("#### 〰️ Sismógrafo de Frecuencia (ECG de la red)")
     frecuencia_hoy = snap.get("frecuencia") if snap else None
     st.plotly_chart(
-        fig_sismografo_frecuencia(df_freq, frecuencia_hoy=frecuencia_hoy),
-        use_container_width=True,
+        fig_sismografo_frecuencia(df_freq, frecuencia_hoy),
+        use_container_width=True
     )
 
-    # Tabla de eventos expandible
-    if "evento" in df_freq.columns:
-        eventos_df = df_freq[df_freq["evento"].notna() & (df_freq["evento"] != "")][
-            ["hora_dt", "t_s", "freq", "rocof", "evento", "evento_tipo", "confianza"]
-        ].copy()
-        if not eventos_df.empty:
-            eventos_df["hora_dt"] = eventos_df["hora_dt"].dt.strftime("%H:%M:%S")
-            eventos_df.columns = ["Hora (CEST)", "t (s)", "Frec. (Hz)",
-                                   "RoCoF (Hz/s)", "Evento", "Tipo", "Confianza"]
-            with st.expander(f"📋 Ver los {len(eventos_df)} eventos documentados"):
-                st.dataframe(eventos_df, use_container_width=True, hide_index=True)
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    st.markdown("---")
-
-    # ══════════════════════════════════════════════════════════════════════════
-    # GRÁFICA 2: PRECIPICIO DE DEMANDA
-    # ══════════════════════════════════════════════════════════════════════════
-
-    st.markdown("#### ⚡ El Precipicio — Demanda Real vs Programada vs Prevista")
-    st.caption(
-        "El sistema estaba perfectamente planificado. La curva de demanda programada y la prevista "
-        "discurren con normalidad. La demanda real las sigue hasta las 12:33h, momento en el que "
-        "colapsa verticalmente. La brecha gris→rojo es el fallo total del sistema."
-    )
-
-    demanda_hoy = snap.get("demanda") if snap else None
-    st.plotly_chart(
-        fig_demanda_real_vs_prev(df_demanda, demanda_hoy=demanda_hoy),
-        use_container_width=True,
-    )
-
-    st.markdown("---")
-
-    # ══════════════════════════════════════════════════════════════════════════
-    # GRÁFICA 3: TORMENTA DE PRECIOS
-    # ══════════════════════════════════════════════════════════════════════════
-
-    st.markdown("#### 💸 La Tormenta de Precios — Desbalance vs SPOT")
-    st.caption(
-        "Antes del colapso: precios SPOT negativos por exceso de solar (el mercado paga "
-        "por consumir). Durante el colapso: el precio de desbalance ENTSO-E se dispara hasta "
-        f"**{stats_p.get('desbalance_max', 0):,.0f} €/MWh** — "
-        "más de 150 veces el precio normal."
-    )
-
-    precio_spot_hoy = snap.get("precio_spot") if snap else None
-    col_a, col_b = st.columns([3, 1])
-    with col_a:
+    # ── Gráficas secundarias en dos columnas ─────────────────────────────────
+    col_left, col_right = st.columns(2)
+    with col_left:
+        demanda_hoy = snap.get("demanda") if snap else None
+        st.plotly_chart(
+            fig_demanda_real_vs_prev(df_demanda, demanda_hoy),
+            use_container_width=True
+        )
+    with col_right:
+        precio_spot_hoy = snap.get("precio_spot") if snap else None
         st.plotly_chart(
             fig_tormenta_de_precios(df_desbal, df_precios, precio_spot_hoy),
-            use_container_width=True,
+            use_container_width=True
         )
-    with col_b:
-        st.markdown("**Contexto**")
-        st.markdown(
-            "🟢 **< 80 €/MWh** — Normal\n\n"
-            "🟡 **80–200 €/MWh** — Elevado\n\n"
-            "🔴 **200–1.000 €/MWh** — Crisis\n\n"
-            f"💀 **{stats_p.get('desbalance_max', 15000):,.0f} €/MWh** — 28-A"
-        )
-        if stats_p.get("horas_neg", 0) > 0:
-            st.info(
-                f"⚡ {stats_p['horas_neg']} horas con "
-                "precio SPOT **negativo** antes del colapso\n\n"
-                "El mercado _pagaba_ por consumir electricidad."
-            )
 
-    st.markdown("---")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════════════════════════════════════
-    # GRÁFICA 4: COMPARATIVA SUPERPUESTA HOY vs 28-A
-    # ══════════════════════════════════════════════════════════════════════════
-
-    st.markdown("#### 📊 Comparativa Directa — HOY vs 28-A")
-    st.caption(
-        "Las curvas rojas son el 28-A. Las azules son el estado actual del sistema. "
-        "Cuanto más se acerquen los azules a los rojos, mayor el riesgo."
-    )
-
+    # ── Comparativa superpuesta HOY vs 28-A ──────────────────────────────────
+    st.markdown("#### 📊 Telemetría superpuesta — HOY vs 28-A")
     historial_freq = st.session_state.get("historial_frecuencia", [])
     st.plotly_chart(
-        fig_comparativa_superpuesta(
-            df_demanda_28a=df_demanda,
-            df_freq_28a=df_freq,
-            historial_freq_hoy=historial_freq,
-            demanda_hoy=demanda_hoy,
-        ),
-        use_container_width=True,
+        fig_comparativa_superpuesta(df_demanda, df_freq, historial_freq, demanda_hoy),
+        use_container_width=True
     )
 
-    # ── Nota metodológica ─────────────────────────────────────────────────────
+    # ── Fuentes y metodología ────────────────────────────────────────────────
     with st.expander("📚 Fuentes y metodología"):
         st.markdown("""
         | Dataset | Fuente | Resolución |
-        |---------|--------|------------|
-        | Frecuencia | ENTSO-E PMU data | Por evento (segundos) |
-        | Demanda | ESIOS REE | 5 minutos |
-        | Precio SPOT | ESIOS / OMIE | 1 hora |
-        | Precio desbalance | ENTSO-E TR 17.1.G&H | 15 minutos |
-        
-        **Nota:** `t=0` en frequency_28A.json corresponde al colapso de las 12:33 CEST (10:33 UTC).
-        Valores negativos de `t` son minutos/segundos previos al colapso.
-        
-        **Referencias normativas:**
-        - RoCoF: NC RfG Artículo 14(3), ENTSO-E 2017
-        - UFLS: P.O. 1.6 REE "Control de frecuencia e inercia"
-        - Precios desbalance: ENTSO-E Transparency Regulation 17.1.G&H
+        |---|---|---|
+        | Frecuencia | ENTSO-E PMU | Eventos (segundos) |
+        | Demanda | ESIOS REE | 5 min |
+        | Precio SPOT | ESIOS/OMIE | 1h |
+        | Precio desbalance | ENTSO-E TR 17.1.G&H | 15 min |
         """)
