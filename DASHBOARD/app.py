@@ -191,6 +191,22 @@ st.markdown("""
     background: linear-gradient(180deg, rgba(11,15,25,0.98), rgba(17,24,39,0.98)) !important;
     border-right: 1px solid rgba(255,255,255,0.07) !important;
 }
+
+section[data-testid="stSidebar"] {
+  z-index: 1000 !important;
+}
+button[kind="header"] {
+  z-index: 1001 !important;
+}
+@media (max-width: 768px) {
+  .stPlotlyChart {
+    width: 100% !important;
+    overflow-x: auto !important;
+  }
+  .stMetric {
+    min-width: 120px;
+  }
+}
 </style>
 """, unsafe_allow_html=True)
 

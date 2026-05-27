@@ -44,6 +44,21 @@ function BlackoutMapContent({ lang = 'es' }) {
   const [time, setTime] = useState(0);
   const [clickedObject, setClickedObject] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+      setViewState(prev => ({
+        ...prev,
+        zoom: isMobile ? 4.2 : 5,
+        longitude: isMobile ? -3.0 : -4.5,
+      }));
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const STATIONS = getStations(lang);
   const ARCS = getArcs(lang);
@@ -156,9 +171,10 @@ function BlackoutMapContent({ lang = 'es' }) {
   ];
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#050505' }}>
+    <div style={{ position: 'relative', width: '100%', maxWidth: '100vw', height: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#050505' }} className="blackout-map-container">
       <DeckGL
-        initialViewState={INITIAL_VIEW_STATE}
+        viewState={viewState}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         controller={true}
         layers={layers}
         getTooltip={({object}) => object && (object.name || object.flow)}
