@@ -108,10 +108,11 @@ const config = {
       // Replace with your project's social card
       image: 'img/social-card.jpg',
       navbar: {
-        title: 'TFG - Apagón Ibérico',
+        title: '',
         logo: {
-          alt: 'ETSI Logo',
-          src: 'img/logo.png',
+          alt: '',
+          src: 'img/logo_transparent.png',
+          style: { display: 'none' },
         },
         items: [
           {
@@ -119,6 +120,12 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Contenido',
+          },
+          {
+            to: '/contexto',
+            label: 'Primer Capítulo',
+            position: 'right',
+            className: 'navbar__primer-capitulo',
           },
           {
             type: 'html',
