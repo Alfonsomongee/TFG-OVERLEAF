@@ -404,8 +404,20 @@ export default function ExecutiveHook() {
 
       {/* Main Content (Always rendered behind splash) */}
       <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
-        {/* Cabecera con estadísticas y perfil */}
-        <div className={styles.topHeader}>
+        
+        <Link to="/sobre-el-autor" className={styles.profileIcon} title="Sobre el autor">
+          <span className={styles.profileEmoji}>👤</span>
+        </Link>
+
+        {/* Contenido principal centrado */}
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>
+            {strings.heroTitle1}{' '}
+            <span className={styles.highlight}>{strings.heroTitleHighlight}</span>
+          </h1>
+          <p className={styles.subtitle}>{strings.heroSubtitle}</p>
+
+          {/* Top Banner / Event Scale (Movido debajo del título) */}
           <div className={styles.statsBanner}>
             <div className={styles.statItem}>
               <span className={styles.statValue}>25,2 GW</span>
@@ -424,18 +436,6 @@ export default function ExecutiveHook() {
               <span className={styles.statLabel}>{strings.statAffected}</span>
             </div>
           </div>
-          <Link to="/sobre-el-autor" className={styles.profileIcon} title="Sobre el autor">
-            <span className={styles.profileEmoji}>👤</span>
-          </Link>
-        </div>
-
-        {/* Contenido principal centrado */}
-        <div className={styles.heroContent}>
-          <h1 className={styles.title}>
-            {strings.heroTitle1}{' '}
-            <span className={styles.highlight}>{strings.heroTitleHighlight}</span>
-          </h1>
-          <p className={styles.subtitle}>{strings.heroSubtitle}</p>
 
           {/* Grid de 6 tarjetas */}
           <div className={styles.cardsGrid}>
@@ -461,18 +461,18 @@ export default function ExecutiveHook() {
 
           {/* Botones de acción */}
           <div className={styles.actions}>
-            <Link className={`button button--primary button--lg ${styles.primaryBtn}`} to="/contexto">
+            <Link className={`button button--primary ${styles.primaryBtn}`} to="/contexto">
               {strings.startAnalysis}
             </Link>
             <a
-              className={`button button--outline button--lg ${styles.secondaryBtn}`}
+              className={`button button--outline ${styles.secondaryBtn}`}
               href="https://github.com/Alfonsomongee/TFG-OVERLEAF"
               target="_blank"
               rel="noopener noreferrer"
             >
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -491,8 +491,7 @@ export default function ExecutiveHook() {
             <span className={styles.techBadge}>Docusaurus v2</span>
             <span className={styles.techBadge}>React.js</span>
             <span className={styles.techBadge}>KaTeX</span>
-            <span className={styles.techBadge}>Python Data Analytics</span>
-            <span className={styles.techBadge}>Newton-Raphson Solver</span>
+            <span className={styles.techBadge}>Python Analytics</span>
           </div>
         </div>
       </div>

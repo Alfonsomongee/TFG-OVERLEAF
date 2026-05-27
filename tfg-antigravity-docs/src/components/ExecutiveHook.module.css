@@ -5,67 +5,23 @@
   background: radial-gradient(circle at 20% 30%, #0a0f1e, #03060c);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem 2rem 1rem;
+  justify-content: center;
+  padding: 1rem;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Cabecera superior con flex */
-.topHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 10;
-}
-
-/* Estadísticas banner */
-.statsBanner {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  backdrop-filter: blur(12px);
-  background: rgba(10, 15, 30, 0.4);
-  border-radius: 80px;
-  padding: 0.8rem 2rem;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  margin: 0;
-  width: fit-content;
-}
-
-.statItem {
-  text-align: center;
-  padding: 0 1rem;
-}
-
-.statValue {
-  font-family: 'Fira Code', monospace;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #f59e0b;
-  display: block;
-  line-height: 1.2;
-}
-
-.statLabel {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #9aabca;
-}
-
 /* Icono de perfil (esquina derecha) */
 .profileIcon {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
   background: rgba(10, 20, 35, 0.6);
   backdrop-filter: blur(12px);
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,6 +30,7 @@
   text-decoration: none;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 50;
 }
 
 .profileIcon:hover {
@@ -84,27 +41,26 @@
 }
 
 .profileEmoji {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
 }
 
 /* Contenido principal */
 .heroContent {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 2.5rem;
+  gap: 1.2rem;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 0;
+  padding: 0;
 }
 
 .title {
-  font-size: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, #ffffff, #a0b3d9);
@@ -112,6 +68,7 @@
   -webkit-background-clip: text;
   color: transparent;
   margin: 0;
+  line-height: 1.1;
 }
 
 .highlight {
@@ -122,20 +79,57 @@
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #7c8db0;
   font-family: 'Fira Code', monospace;
   max-width: 700px;
-  margin: 0 auto;
+  margin: 0;
+}
+
+/* Estadísticas banner */
+.statsBanner {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 1.5rem;
+  backdrop-filter: blur(12px);
+  background: rgba(10, 15, 30, 0.4);
+  border-radius: 80px;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  margin: 0;
+  width: fit-content;
+}
+
+.statItem {
+  text-align: center;
+  padding: 0 0.5rem;
+  white-space: nowrap;
+}
+
+.statValue {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f59e0b;
+  display: block;
+  line-height: 1.1;
+}
+
+.statLabel {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9aabca;
 }
 
 /* Grid de tarjetas (2x3) */
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1rem;
   width: 100%;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .cardLink {
@@ -144,7 +138,7 @@
 }
 
 .cardLink:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 /* Tarjeta con efecto de iluminación y estela */
@@ -152,10 +146,10 @@
   position: relative;
   background: rgba(10, 20, 35, 0.6);
   backdrop-filter: blur(16px);
-  border-radius: 2rem;
-  padding: 1.8rem 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1.2rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.4);
   transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   text-align: center;
   height: 100%;
@@ -166,9 +160,9 @@
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 0 25px 8px rgba(var(--card-accent-rgb), 0.4),
-              0 15px 30px -10px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px 6px rgba(var(--card-accent-rgb), 0.3),
+              0 10px 20px -10px rgba(0, 0, 0, 0.5);
   border-color: rgba(var(--card-accent-rgb), 0.6);
 }
 
@@ -188,7 +182,7 @@
     var(--card-accent) 70%,
     transparent 100%
   );
-  border-radius: calc(2rem + 3px);
+  border-radius: calc(1.5rem + 3px);
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   z-index: 0;
@@ -213,27 +207,27 @@
 }
 
 .cardIcon {
-  font-size: 3.2rem;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .cardTitle {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.2px;
   background: linear-gradient(135deg, #fff, #ccd6f6);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  margin: 0 0 0.8rem;
+  margin: 0 0 0.5rem;
   text-transform: uppercase;
 }
 
 .cardDescription {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #a0b0d0;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+  line-height: 1.3;
+  margin-bottom: 0.8rem;
   flex: 1;
 }
 
@@ -243,30 +237,30 @@
 }
 
 .cardArrow {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 300;
   color: var(--card-accent, #3b82f6);
   transition: transform 0.2s ease;
 }
 
 .card:hover .cardArrow {
-  transform: translateX(6px);
+  transform: translateX(4px);
 }
 
 /* Botones */
 .actions {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .primaryBtn {
   background: linear-gradient(135deg, #b91c1c, #7f1a1a);
   border: none;
   border-radius: 40px;
-  padding: 0.8rem 2rem;
+  padding: 0.6rem 1.5rem;
   font-weight: 600;
   transition: all 0.2s ease;
 }
@@ -281,7 +275,7 @@
   border: 1px solid #3b82f6;
   border-radius: 40px;
   color: #3b82f6;
-  padding: 0.8rem 2rem;
+  padding: 0.6rem 1.5rem;
   font-weight: 600;
   transition: all 0.2s ease;
 }
@@ -292,7 +286,7 @@
 }
 
 .btnIcon {
-  margin-right: 8px;
+  margin-right: 6px;
   vertical-align: middle;
 }
 
@@ -301,8 +295,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.8rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .techBadge {
