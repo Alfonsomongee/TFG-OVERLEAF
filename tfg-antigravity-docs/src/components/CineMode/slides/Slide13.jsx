@@ -25,53 +25,48 @@ export default function Slide13({ slideProgress }) {
       </div>
       <div className={styles.content}>
         <h1 className={styles.title}>METODOLOGÍA FORENSE: TRIANGULACIÓN CRUZADA</h1>
-        <h2 className={styles.subtitle}>170 GB de registros técnicos · 26 PMU independientes</h2>
+        <h2 className={styles.subtitle}>170 GB DE REGISTROS TÉCNICOS · 26 PMU INDEPENDIENTES</h2>
 
-        {stage >= 1 && (
-          <div className={styles.flow} style={{ opacity: phase1 }}>
-            <div className={styles.phase}>
-              <div className={styles.phaseIcon}>💾</div>
-              <div className={styles.phaseTitle}>FASE 01 – DATOS BRUTOS</div>
-              <div className={styles.phaseDetail}>SCADA + oscilogramas digitales</div>
-              <div className={styles.phaseMetric}>170 GB</div>
-            </div>
+        <div className={styles.flowContainer}>
+          <div className={styles.phaseBlock} style={{ opacity: phase1, transform: `translateY(${phase1 === 1 ? 0 : 20}px)` }}>
+            <div className={styles.phaseIcon}>💾</div>
+            <div className={styles.phaseTitle}>FASE 01 – DATOS BRUTOS</div>
+            <div className={styles.phaseDetail}>SCADA + OSCILOGRAMAS DIGITALES</div>
+            <div className={styles.phaseMetric}>170 GB</div>
           </div>
-        )}
 
-        {stage >= 2 && (
-          <div className={styles.flow} style={{ opacity: phase2 }}>
-            <div className={styles.phase}>
-              <div className={styles.phaseIcon}>⚖️</div>
-              <div className={styles.phaseTitle}>FASE 02 – CONTRATE DE NARRATIVAS</div>
-              <div className={styles.phaseDetail}>P.O. 7.4 vs Tap-Lag vs oscilaciones inter-área</div>
-            </div>
-          </div>
-        )}
+          <div className={styles.arrow} style={{ opacity: phase2 }}>▼</div>
 
-        {stage >= 3 && (
-          <div className={styles.flow} style={{ opacity: phase3 }}>
-            <div className={styles.phase}>
-              <div className={styles.phaseIcon}>📡</div>
-              <div className={styles.phaseTitle}>FASE 03 – VALIDACIÓN CRUZADA</div>
-              <div className={styles.phaseDetail}>PMU del NREL – +26 unidades de medición fasorial</div>
-              <div className={styles.phaseMetric}>Precisión 1° de ángulo · sincronización GPS</div>
-            </div>
-            <div className={styles.timeline}>
-              <div className={styles.timelineLine}></div>
-              <div className={styles.timelinePoint} style={{ left: '20%' }}><span>SCADA</span><small>20 ms (50 Hz)</small></div>
-              <div className={styles.timelinePoint} style={{ left: '50%' }}><span>Oscilogramas</span><small>1 kHz</small></div>
-              <div className={styles.timelinePoint} style={{ left: '80%' }}><span>PMU</span><small>50 Hz sincro</small></div>
-            </div>
+          <div className={styles.phaseBlock} style={{ opacity: phase2, transform: `translateY(${phase2 === 1 ? 0 : 20}px)` }}>
+            <div className={styles.phaseIcon}>⚖️</div>
+            <div className={styles.phaseTitle}>FASE 02 – CONTRATE DE NARRATIVAS</div>
+            <div className={styles.phaseDetail}>P.O. 7.4 VS TAP-LAG VS OSCILACIONES INTER-ÁREA</div>
           </div>
-        )}
+
+          <div className={styles.arrow} style={{ opacity: phase3 }}>▼</div>
+
+          <div className={styles.phaseBlock} style={{ opacity: phase3, transform: `translateY(${phase3 === 1 ? 0 : 20}px)` }}>
+            <div className={styles.phaseIcon}>📡</div>
+            <div className={styles.phaseTitle}>FASE 03 – VALIDACIÓN CRUZADA</div>
+            <div className={styles.phaseDetail}>PMU DEL NREL – +26 UNIDADES DE MEDICIÓN FASORIAL</div>
+            <div className={styles.phaseMetric}>PRECISIÓN 1° DE ÁNGULO · SINCRONIZACIÓN GPS</div>
+          </div>
+        </div>
+
+        <div className={styles.timeline} style={{ opacity: stage >= 3 ? 1 : 0 }}>
+          <div className={styles.timelineLine}></div>
+          <div className={styles.timelinePoint} style={{ left: '15%' }}><span>SCADA</span><small>20 MS (50 HZ)</small></div>
+          <div className={styles.timelinePoint} style={{ left: '50%' }}><span>OSCILOGRAMAS</span><small>1 KHZ</small></div>
+          <div className={styles.timelinePoint} style={{ left: '85%' }}><span>PMU</span><small>50 HZ SINCRONIZADOS</small></div>
+        </div>
 
         {stage >= 4 && (
           <div className={styles.warningBox}>
-            ⚠️ <strong>Limitación LLM:</strong> No aplicable a fenómenos de dinámica rápida (Tap-Lag, UFLS). Análisis causal exclusivo del autor.
+            ⚠️ <strong>LIMITACIÓN LLM:</strong> NO APLICABLE A FENÓMENOS DE DINÁMICA RÁPIDA (TAP-LAG, UFLS). ANÁLISIS CAUSAL EXCLUSIVO DEL AUTOR.
           </div>
         )}
       </div>
-      <div className={styles.footer}>Fuentes: REE · ICAI · ENTSO-E · NREL · Elaboración propia</div>
+      <div className={styles.footer}>FUENTES: REE · ICAI · ENTSO-E · NREL · ELABORACIÓN PROPIA</div>
     </div>
   );
 }
