@@ -405,8 +405,23 @@ export default function ExecutiveHook() {
       {/* Main Content (Always rendered behind splash) */}
       <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
         
-        <Link to="/sobre-el-autor" className={styles.profileIcon} title="Sobre el autor">
-          <span className={styles.profileEmoji}>👤</span>
+        <Link to="/sobre-el-autor" className={styles.profileIconWrapper} title="Sobre el autor">
+          <div className={styles.profileNeonCircle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <svg className={styles.rotatingText} viewBox="0 0 100 100">
+            <defs>
+              <path id="textCircle" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
+            </defs>
+            <text>
+              <textPath href="#textCircle" textLength="251" lengthAdjust="spacing">
+                SOBRE EL AUTOR • SOBRE EL AUTOR • 
+              </textPath>
+            </text>
+          </svg>
         </Link>
 
         {/* Contenido principal centrado */}
