@@ -100,6 +100,7 @@ const config = {
 
   clientModules: [
     require.resolve('./src/js/zen-mode.js'),
+    require.resolve('./src/js/navbar-scroll.js'),
   ],
 
   themeConfig:
