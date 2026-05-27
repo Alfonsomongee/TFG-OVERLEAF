@@ -5,7 +5,6 @@ import ChartCard from '@site/src/components/ChartCard';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import ForensicReveal from '@site/src/components/ForensicReveal';
 import GlossaryLink from '@site/src/components/GlossaryLink';
-import ENTSOEDashboard from '@site/src/components/ENTSOEDashboard/ENTSOEDashboard';
 import ForensicNarrative from '@site/src/components/GaleriaForense/ForensicNarrative';
 
 export default {
@@ -16,6 +15,5 @@ export default {
   GlitchTitle,
   ForensicReveal,
   GlossaryLink,
-  ENTSOEDashboard,
   ForensicNarrative,
 };
