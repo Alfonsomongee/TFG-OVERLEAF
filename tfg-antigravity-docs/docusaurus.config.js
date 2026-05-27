@@ -118,7 +118,7 @@ const config = {
           {
             type: 'html',
             position: 'right',
-            value: '<button id="zen-mode-toggle" class="button button--secondary button--sm clean-btn" title="Activar/Desactivar Pantalla Completa" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: auto; height: 36px; padding: 0 12px; margin-right: 0.5rem; font-weight: 600;"><svg class="zen-mode-icon-default" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><svg class="zen-mode-icon-active" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg><span class="zen-mode-text"><span class="zen-mode-text-default">Pantalla Completa</span><span class="zen-mode-text-active">Volver a modo menú</span></span></button>',
+            value: '<button id="zen-mode-toggle" class="btn-tarantino" title="Activar/Desactivar Modo Cine"><div class="cinema-screen-icon"></div><span class="zen-mode-text"><span class="zen-mode-text-default">MODO CINE</span><span class="zen-mode-text-active">CORTAR (SALIR)</span></span></button>',
           },
           {
             type: 'localeDropdown',
