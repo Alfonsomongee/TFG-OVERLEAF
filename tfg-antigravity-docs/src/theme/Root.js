@@ -1,9 +1,9 @@
+// src/theme/Root.js
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 
 export default function Root({ children }) {
-  const [mounted, setMounted] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true); // true = sidebar visible
   const [tocVisible, setTocVisible] = useState(false);
 
   useEffect(() => {
@@ -11,14 +11,15 @@ export default function Root({ children }) {
     const isZen = saved === 'true';
     setSidebarOpen(!isZen);
     document.documentElement.classList.toggle('zen-mode', isZen);
-    setMounted(true);
   }, []);
 
   const toggleSidebar = () => {
-    const next = !sidebarOpen;
-    setSidebarOpen(next);
-    document.documentElement.classList.toggle('zen-mode', !next);
-    localStorage.setItem('zen-mode', String(!next));
+    const nextOpen = !sidebarOpen;
+    setSidebarOpen(nextOpen);
+    const isZen = !nextOpen;
+    document.documentElement.classList.toggle('zen-mode', isZen);
+    localStorage.setItem('zen-mode', String(isZen));
+    // No tocamos el TOC; cada botón es independiente
   };
 
   const toggleToc = () => {
@@ -27,31 +28,44 @@ export default function Root({ children }) {
     document.documentElement.classList.toggle('toc-visible', next);
   };
 
-  if (!mounted) return <>{children}</>;
-
   return (
     <>
       {children}
 
+      {/* FAB Modo Cine (ya sin emoji, tipografía Space Grotesk vía CSS) */}
       <Link to="/cine" className="cine-fab" aria-label="Abrir Modo Cine">
         Modo Cine
       </Link>
 
+      {/* ☰ solo si el sidebar está cerrado */}
       {!sidebarOpen && (
-        <button className="global-sidebar-btn" onClick={toggleSidebar} aria-label="Mostrar barra lateral">
+        <button
+          className="global-sidebar-btn"
+          onClick={toggleSidebar}
+          aria-label="Abrir barra lateral"
+          title="Abrir barra lateral"
+        >
           ☰
         </button>
       )}
 
+      {/* ‹ solo si el sidebar está abierto, pegado al borde derecho del panel */}
       {sidebarOpen && (
-        <button className="global-sidebar-close-btn" onClick={toggleSidebar} aria-label="Cerrar barra lateral">
+        <button
+          className="global-sidebar-close-btn"
+          onClick={toggleSidebar}
+          aria-label="Cerrar barra lateral"
+          title="Cerrar barra lateral"
+        >
           ‹
         </button>
       )}
 
+      {/* Mostrar / Ocultar índice */}
       <button
         className={`global-toc-btn${tocVisible ? ' active' : ''}`}
         onClick={toggleToc}
+        aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
       >
         {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
       </button>

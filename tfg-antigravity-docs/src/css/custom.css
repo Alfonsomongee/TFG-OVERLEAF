@@ -47,7 +47,7 @@
   --ifm-background-color: var(--bg-0);
   --ifm-background-surface-color: var(--bg-1);
   --ifm-font-color-base: var(--text-1);
-  
+
   --ifm-color-success: #10b981;
   --ifm-color-warning: var(--accent-amber);
   --ifm-color-danger: var(--danger-500);
@@ -478,7 +478,7 @@ html[data-theme='dark'] .incident-box h4 {
 @media (max-width: 768px) {
   h1 { font-size: 2.2rem; }
   h2 { font-size: 1.8rem; }
-  
+
   .incident-box {
     padding: 1rem 1.25rem;
   }
@@ -673,7 +673,7 @@ html.zen-mode .zen-mode-icon-active {
 @media (max-width: 768px) {
   h1 { font-size: 2.2rem; }
   h2 { font-size: 1.8rem; }
-  
+
   .incident-box {
     padding: 1rem 1.25rem;
   }
@@ -1729,10 +1729,9 @@ html[data-theme='dark'] .footer {
   border-top-color: rgba(255, 255, 255, 0.05);
 }
 
-/* ============================================================
+/* ══════════════════════════════════════════════════════════════
    CINE FAB — Floating Action Button → /cine
-   ============================================================ */
-
+   ══════════════════════════════════════════════════════════════ */
 .cine-fab {
   position: fixed;
   bottom: 1.5rem;
@@ -1740,9 +1739,10 @@ html[data-theme='dark'] .footer {
   z-index: 900;
   display: flex;
   align-items: center;
-  padding: 0;
-  background: transparent;
-  border: none;
+  gap: 0;                       /* sin icono, no necesita gap */
+  padding: 0.5rem 1.2rem;
+  background: transparent;      /* sin caja */
+  border: none;                 /* sin borde */
   border-radius: 0;
   color: var(--text-0, rgba(220, 215, 200, 0.7));
   font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -1768,117 +1768,83 @@ html[data-theme='dark'] .footer {
 
 .cine-fab:active { transform: translateY(0); }
 
-/* Hidden on the /cine page itself */
 body.cine-mode-active .cine-fab {
   display: none !important;
 }
 
-/* Hidden on the intro page (selector síncrono — se aplica antes de hidratación) */
-html[data-intro-page='true'] .cine-fab,
-html[data-intro-page='true'] .global-sidebar-btn,
-html[data-intro-page='true'] .global-sidebar-close-btn,
-html[data-intro-page='true'] .global-toc-btn,
-body.intro-page .cine-fab,
-body.intro-page .global-sidebar-btn,
-body.intro-page .global-sidebar-close-btn,
-body.intro-page .global-toc-btn {
-  display: none !important;
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL SIDEBAR & TOC FLOATING BUTTONS
+   ══════════════════════════════════════════════════════════════ */
+
+/* ☰ – abrir sidebar (visible solo con sidebar cerrado) */
+.global-sidebar-btn {
+  position: fixed;
+  top: 4.5rem;          /* debajo del navbar */
+  left: 1rem;
+  z-index: 800;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255, 200, 80, 0.85);
+  width: 40px;
+  height: 40px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s;
+  line-height: 1;
 }
 
-/* ============================================================
-   GLOBAL SIDEBAR & TOC FLOATING BUTTONS
-   ============================================================ */
+.global-sidebar-btn:hover {
+  color: rgba(255, 220, 140, 1);
+}
 
-/* Botón ‹ cerrar sidebar — en el borde derecho de la barra lateral */
+/* ‹ – cerrar sidebar (pegado al borde derecho del panel del sidebar) */
 .global-sidebar-close-btn {
-  position: fixed !important;
-  top: 50vh !important;
-  left: var(--ifm-doc-sidebar-width, 300px) !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 2147483647 !important;
+  position: fixed;
+  top: 50vh;
+  left: var(--doc-sidebar-width, 300px);
+  transform: translate(-50%, -50%);
+  z-index: 9999;        /* por encima de todo para que sea clickeable */
   cursor: pointer;
-  border: 1px solid rgba(200, 195, 185, 0.4) !important;
-  background: rgba(20, 18, 14, 0.9) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  width: 24px !important;
-  height: 56px !important;
-  font-size: 1.2rem !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  border-radius: 0 6px 6px 0 !important;
-  transition: color 0.2s, background 0.2s, border-color 0.2s;
-  line-height: 1 !important;
-  backdrop-filter: blur(4px) !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  border: 1px solid rgba(200, 195, 185, 0.15);
+  background: rgba(20, 18, 14, 0.7);
+  color: rgba(200, 195, 185, 0.6);
+  width: 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 6px 6px 0;
+  transition: all 0.2s;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 .global-sidebar-close-btn:hover {
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(40, 35, 25, 0.9);
-  border-color: rgba(255, 170, 0, 0.3);
+  color: rgba(255, 200, 80, 0.9);
+  border-color: rgba(255, 200, 80, 0.3);
 }
 
-html[data-theme='light'] .global-sidebar-close-btn {
-  background: rgba(235, 230, 220, 0.85);
-  border-color: rgba(0, 0, 0, 0.1);
-  color: rgba(80, 75, 65, 0.6);
-}
-
-html[data-theme='light'] .global-sidebar-close-btn:hover {
-  color: rgba(30, 25, 15, 0.9);
-  background: rgba(220, 215, 205, 0.98);
-}
-
+/* Mostrar / Ocultar índice (arriba derecha) */
 .global-toc-btn {
-  position: fixed !important;
-  top: 5rem !important;
-  right: 1.5rem !important;
-  z-index: 2147483647 !important;
+  position: fixed;
+  top: 4.5rem;
+  right: 1rem;
+  z-index: 800;
   cursor: pointer;
-  border: 1px solid rgba(168, 208, 255, 0.4) !important;
-  background: rgba(14, 18, 28, 0.95) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  border-radius: 8px !important;
-  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 170, 0, 0.28);
+  background: rgba(14, 12, 8, 0.88);
+  color: rgba(255, 200, 80, 0.92);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
   transition: background 0.2s, border-color 0.2s, color 0.2s;
-  line-height: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-.global-sidebar-btn {
-  position: fixed !important;
-  top: 5rem !important;
-  left: 1.5rem !important;
-  z-index: 2147483647 !important;
-  cursor: pointer;
-  border: 1px solid rgba(255, 200, 80, 0.3) !important;
-  background: rgba(20, 18, 14, 0.9) !important;
-  color: rgba(255, 200, 80, 1) !important;
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 8px !important;
-  font-size: 1.5rem !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  transition: color 0.2s;
-  line-height: 1 !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-.global-toc-btn {
+  line-height: 1;
   height: 40px;
   padding: 0 14px;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-family: 'Space Grotesk', system-ui, sans-serif;  /* tipografía de títulos */
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -1886,47 +1852,55 @@ html[data-theme='light'] .global-sidebar-close-btn:hover {
   white-space: nowrap;
 }
 
-.global-sidebar-btn:hover {
+.global-toc-btn:hover {
+  background: rgba(30, 26, 14, 0.96);
+  border-color: rgba(255, 170, 0, 0.55);
   color: rgba(255, 220, 140, 1);
 }
 
-.global-toc-btn:hover {
-  background: rgba(20, 30, 50, 0.96);
-  border-color: rgba(168, 208, 255, 0.55);
-  color: rgba(220, 235, 255, 1);
-}
-
 .global-toc-btn.active {
-  background: rgba(168, 208, 255, 0.1);
-  border-color: rgba(168, 208, 255, 0.5);
-  color: rgba(200, 225, 255, 1);
+  background: rgba(255, 170, 0, 0.12);
+  border-color: rgba(255, 170, 0, 0.5);
+  color: rgba(255, 200, 80, 1);
 }
 
-/* TOC siempre oculto — solo visible cuando el botón lo activa */
-.theme-doc-toc-desktop {
-  display: none !important;
-}
+/* ⚠️ REGLA CRÍTICA: mostrar el TOC solo cuando toc-visible esté activo */
 html.toc-visible .theme-doc-toc-desktop {
   display: block !important;
 }
 
+/* Aseguramos que el TOC esté oculto por defecto (ya lo tienes en zen-mode, pero esta es la base) */
+.theme-doc-toc-desktop {
+  display: none;
+}
+
+html:not(.toc-visible) .theme-doc-toc-desktop {
+  display: none !important;
+}
+
+/* Modo claro */
 html[data-theme='light'] .global-sidebar-btn {
   color: hsl(38 80% 30%);
 }
-
 html[data-theme='light'] .global-sidebar-btn:hover {
   color: hsl(38 80% 18%);
 }
-
 html[data-theme='light'] .global-toc-btn {
-  background: rgba(240, 245, 255, 0.9);
-  border-color: rgba(80, 140, 220, 0.3);
-  color: hsl(215 60% 38%);
+  background: rgba(239, 235, 225, 0.9);
+  border-color: rgba(180, 130, 0, 0.3);
+  color: hsl(38 80% 30%);
 }
-
 html[data-theme='light'] .global-toc-btn:hover {
-  background: rgba(225, 235, 255, 0.98);
-  border-color: rgba(80, 140, 220, 0.6);
-  color: hsl(215 60% 25%);
+  background: rgba(229, 224, 210, 0.98);
+  border-color: rgba(180, 130, 0, 0.6);
+  color: hsl(38 80% 22%);
 }
-
+html[data-theme='light'] .global-sidebar-close-btn {
+  background: rgba(245, 242, 235, 0.9);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.5);
+}
+html[data-theme='light'] .global-sidebar-close-btn:hover {
+  color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.3);
+}
