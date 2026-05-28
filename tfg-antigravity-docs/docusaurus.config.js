@@ -126,6 +126,11 @@ const config = {
             position: 'right',
           },
           {
+            to: '/sobre-el-autor',
+            label: 'Sobre el Autor',
+            position: 'right',
+          },
+          {
             href: 'pathname:///tfg_antigravity(1).pdf',
             label: 'Descargar PDF',
             position: 'right',
@@ -225,6 +230,11 @@ const config = {
   headTags: [
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
     { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
+    {
+      tagName: 'script',
+      attributes: { type: 'text/javascript' },
+      innerHTML: `(function(){var p=window.location.pathname;if(p==='/'||p===''||p==='/index.html'){document.documentElement.setAttribute('data-intro-page','true');}document.addEventListener('DOMContentLoaded',function(){if(p==='/'||p===''||p==='/index.html'){document.body.classList.add('intro-page');}});})();`,
+    },
   ],
 };
 

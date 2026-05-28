@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import styles from './ExecutiveHook.module.css';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useLocation } from '@docusaurus/router';
 import Head from '@docusaurus/Head';
-import CinePlayer from './CineMode/CinePlayer';
 
 export default function ExecutiveHook() {
   const [showSplash, setShowSplash] = useState(true);
   const [elapsed, setElapsed] = useState(0);
   const [isIntroPage, setIsIntroPage] = useState(true);
-  const [showCine, setShowCine] = useState(false);
 
   const { i18n } = useDocusaurusContext();
   const location = useLocation();
@@ -249,29 +246,6 @@ export default function ExecutiveHook() {
   };
   const strings = getStrings(lang);
 
-  const paths = [
-    '/analisis-incidente', '/analisis-informes', '/galeria-forense',
-    '/07b-consecuencias-financieras', '/resiliencia-futuro', '/uso-ia'
-  ];
-  const icons = ['🔬', '⚖️', '📊', '💥', '🔧', '🧠'];
-  const colors = [
-    { color: '#b91c1c', rgb: '185, 28, 28' },
-    { color: '#f59e0b', rgb: '245, 158, 11' },
-    { color: '#3b82f6', rgb: '59, 130, 246' },
-    { color: '#b91c1c', rgb: '185, 28, 28' },
-    { color: '#10b981', rgb: '16, 185, 129' },
-    { color: '#8b5cf6', rgb: '139, 92, 246' },
-  ];
-  const cards = strings.cards.map((c, i) => ({
-    id: i + 1,
-    title: c.title,
-    description: c.description,
-    icon: icons[i],
-    path: paths[i],
-    color: colors[i].color,
-    rgb: colors[i].rgb,
-  }));
-
   let titleOpacity = Math.min(1, Math.max(0, (elapsed - 500) / 1000));
   let subtitleOpacity = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
   let authorOpacity = Math.min(1, Math.max(0, (elapsed - 2500) / 1000));
@@ -309,44 +283,6 @@ export default function ExecutiveHook() {
 
       <div id="executive-hook" className={styles.heroContainer} style={{ visibility: showSplash ? 'hidden' : 'visible' }}>
 
-        <Link to="/sobre-el-autor" className={styles.profileIconWrapper} title="Sobre el autor">
-          <div className={styles.profileNeonCircle}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <svg className={styles.rotatingText} viewBox="0 0 100 100">
-            <defs>
-              <path id="textCircle" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
-            </defs>
-            <text>
-              <textPath href="#textCircle" textLength="251" lengthAdjust="spacing">
-                SOBRE EL AUTOR • SOBRE EL AUTOR •
-              </textPath>
-            </text>
-          </svg>
-        </Link>
-
-        <Link to="/introduccion" className={styles.chapterIconWrapper} title="Primer Capítulo">
-          <div className={styles.chapterNeonCircle}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.neonPerson}>
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-          </div>
-          <svg className={styles.rotatingText} viewBox="0 0 100 100">
-            <defs>
-              <path id="textCircle2" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
-            </defs>
-            <text>
-              <textPath href="#textCircle2" textLength="251" lengthAdjust="spacing">
-                CAPÍTULO 1 • INTRODUCCIÓN •
-              </textPath>
-            </text>
-          </svg>
-        </Link>
-
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
             {strings.heroTitle1}{' '}
@@ -373,94 +309,15 @@ export default function ExecutiveHook() {
             </div>
           </div>
 
-          <div className={styles.cardsGrid}>
-            {cards.map((card) => (
-              <Link key={card.id} to={card.path} className={styles.cardLink}>
-                <div
-                  className={styles.card}
-                  style={{
-                    '--card-accent': card.color,
-                    '--card-accent-rgb': card.rgb,
-                  }}
-                >
-                  <div className={styles.cardIcon}>{card.icon}</div>
-                  <h3 className={styles.cardTitle}>{card.title}</h3>
-                  <p className={styles.cardDescription}>{card.description}</p>
-                  <div className={styles.cardFooter}>
-                    <span className={styles.cardArrow}>→</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
           <div className={styles.actions}>
-            <Link className={`button button--primary ${styles.primaryBtn}`} to="/contexto">
+            <Link className={`button button--primary ${styles.primaryBtn}`} to="/introduccion">
               {strings.startAnalysis}
             </Link>
-            <a
-              className={`button button--outline ${styles.secondaryBtn}`}
-              href="https://github.com/Alfonsomongee/TFG-OVERLEAF"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={styles.btnIcon}
-              >
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-              </svg>
-              GitHub
-            </a>
-            <button
-              className={styles.cineBtn}
-              onClick={() => setShowCine(true)}
-              title="Modo Cine — recorre el TFG con animaciones"
-            >
-              <svg
-                viewBox="0 0 24 20"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={styles.cineScreen}
-              >
-                {/* Barra superior de la pantalla */}
-                <line x1="2" y1="2" x2="22" y2="2" strokeWidth="2.5"/>
-                {/* Cuerdas de cuelgue */}
-                <line x1="6" y1="2" x2="6" y2="4"/>
-                <line x1="18" y1="2" x2="18" y2="4"/>
-                {/* Marco de la pantalla */}
-                <rect x="3" y="4" width="18" height="12" rx="1"/>
-                {/* Superficie iluminada */}
-                <rect x="5" y="6" width="14" height="8" rx="0.5" fill="currentColor" fillOpacity="0.12" className={styles.screenSurface}/>
-                {/* Triángulo play */}
-                <path d="M10 8.5 L16 10 L10 11.5 Z" fill="currentColor" fillOpacity="0.5"/>
-                {/* Pie */}
-                <line x1="12" y1="16" x2="12" y2="19"/>
-                <line x1="9" y1="19" x2="15" y2="19"/>
-              </svg>
-              Modo Cine
-            </button>
           </div>
 
         </div>
       </div>
 
-      {showCine && typeof document !== 'undefined' && createPortal(
-        <div className={styles.cineOverlay}>
-          <CinePlayer onClose={() => setShowCine(false)} />
-        </div>,
-        document.body
-      )}
     </>
   );
 }

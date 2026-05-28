@@ -234,11 +234,14 @@
 }
 
 .subtitle {
-  font-size: 0.95rem;
-  color: #7c8db0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a8d0ff;
   font-family: 'Fira Code', monospace;
   max-width: 700px;
   margin: 0;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 20px rgba(168, 208, 255, 0.25);
 }
 
 /* Estadísticas banner */
@@ -259,19 +262,18 @@
 
 .statValue {
   font-family: 'Alfa Slab One', serif;
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 400;
-  color: #e8f0ff;
-  text-shadow: 1px 1px 0px #003080, 2px 2px 0px rgba(0,0,0,0.5);
+  color: #6a7a95;
   display: block;
   line-height: 1.1;
 }
 
 .statLabel {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #9aabca;
+  color: #4a5568;
 }
 
 /* Grid de tarjetas (2x3) */
@@ -295,12 +297,12 @@
 /* Tarjeta con efecto de iluminación y estela */
 .card {
   position: relative;
-  background: rgba(10, 20, 35, 0.6);
-  backdrop-filter: blur(16px);
+  background: transparent;
+  backdrop-filter: none;
   border-radius: 1.5rem;
   padding: 0.8rem 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 25px -12px rgba(0, 0, 0, 0.4);
+  border: 1px solid transparent;
+  box-shadow: none;
   transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   text-align: center;
   height: 100%;
@@ -312,9 +314,11 @@
 
 .card:hover {
   transform: translateY(-4px);
+  background: rgba(10, 20, 35, 0.6);
+  backdrop-filter: blur(16px);
+  border-color: rgba(var(--card-accent-rgb), 0.6);
   box-shadow: 0 0 20px 6px rgba(var(--card-accent-rgb), 0.3),
               0 10px 20px -10px rgba(0, 0, 0, 0.5);
-  border-color: rgba(var(--card-accent-rgb), 0.6);
 }
 
 /* Estela de color rotatoria */
@@ -403,41 +407,73 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 0;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
 }
 
+/* Botón principal — protagonista único de la portada */
 .primaryBtn {
-  background: linear-gradient(135deg, #b91c1c, #7f1a1a);
-  border: none;
-  border-radius: 40px;
-  padding: 0.6rem 1.5rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  background: rgba(168, 208, 255, 0.08) !important;
+  border: 1.5px solid rgba(168, 208, 255, 0.6) !important;
+  border-radius: 50px !important;
+  color: #e8f0ff !important;
+  font-family: 'Alfa Slab One', serif !important;
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding: 1rem 3rem !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 0 30px rgba(168, 208, 255, 0.15), inset 0 0 20px rgba(168, 208, 255, 0.05) !important;
 }
 
 .primaryBtn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 10px 20px -5px rgba(185, 28, 28, 0.4);
+  background: rgba(168, 208, 255, 0.18) !important;
+  border-color: #a8d0ff !important;
+  box-shadow: 0 0 40px rgba(168, 208, 255, 0.4), 0 0 80px rgba(168, 208, 255, 0.15), inset 0 0 20px rgba(168, 208, 255, 0.1) !important;
+  color: #ffffff !important;
+  transform: scale(1.04) translateY(-2px) !important;
+  text-decoration: none !important;
 }
 
+/* Mantener .secondaryBtn por compatibilidad (no se usa en portada) */
 .secondaryBtn {
-  background: transparent;
-  border: 1px solid #3b82f6;
-  border-radius: 40px;
-  color: #3b82f6;
-  padding: 0.6rem 1.5rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  background: rgba(10, 20, 40, 0.55) !important;
+  border: 1px solid rgba(168, 208, 255, 0.5) !important;
+  border-radius: 40px !important;
+  color: #e8f0ff !important;
+  font-family: 'Alfa Slab One', serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 0.6rem 1.6rem !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .secondaryBtn:hover {
-  background: rgba(59, 130, 246, 0.1);
-  transform: scale(1.02);
+  background: rgba(168, 208, 255, 0.1) !important;
+  border-color: #a8d0ff !important;
+  box-shadow: 0 0 20px rgba(168, 208, 255, 0.3), 0 0 40px rgba(168, 208, 255, 0.1) !important;
+  color: #a8d0ff !important;
+  transform: scale(1.02) !important;
+  text-decoration: none !important;
 }
 
 .btnIcon {
-  margin-right: 6px;
+  margin-right: 0;
   vertical-align: middle;
+  stroke: currentColor;
 }
 
 /* Tech badges */
@@ -462,14 +498,14 @@
 
 /* ── Botón Modo Cine ── */
 .cineBtn {
-  background: rgba(10, 20, 35, 0.6);
+  background: rgba(10, 20, 40, 0.55);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(251, 191, 36, 0.4);
+  border: 1px solid rgba(168, 208, 255, 0.5);
   border-radius: 40px;
-  color: #fbbf24;
-  padding: 0.6rem 1.5rem;
+  color: #e8f0ff;
+  padding: 0.6rem 1.6rem;
   font-family: 'Alfa Slab One', serif;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -481,9 +517,10 @@
 }
 
 .cineBtn:hover {
-  background: rgba(251, 191, 36, 0.08);
-  border-color: #fbbf24;
-  box-shadow: 0 0 18px rgba(251, 191, 36, 0.3), 0 0 40px rgba(251, 191, 36, 0.1);
+  background: rgba(168, 208, 255, 0.1);
+  border-color: #a8d0ff;
+  box-shadow: 0 0 20px rgba(168, 208, 255, 0.3), 0 0 40px rgba(168, 208, 255, 0.1);
+  color: #a8d0ff;
   transform: scale(1.02);
 }
 
@@ -495,7 +532,7 @@
 }
 
 .cineBtn:hover .cineScreen {
-  filter: drop-shadow(0 0 5px #fbbf24) drop-shadow(0 0 12px rgba(251, 191, 36, 0.5));
+  filter: drop-shadow(0 0 5px #a8d0ff) drop-shadow(0 0 12px rgba(168, 208, 255, 0.5));
   transform: scale(1.12);
 }
 

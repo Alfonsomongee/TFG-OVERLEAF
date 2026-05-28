@@ -1386,18 +1386,69 @@ html[data-theme="dark"] .navbar__item {
   display: none !important;
 }
 
+/* ── Hide docusaurus-lunr-search "Loading..." box from navbar ── */
+.navbar .search-bar,
+.navbar [class*="searchBox"],
+.navbar [class*="search-bar"] {
+  display: none !important;
+}
+
 /* Navbar — smooth hide/show animation for Docusaurus hideOnScroll */
 .navbar {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Intro page: navbar fully transparent so it doesn't show as a cream/colored bar */
-body.intro-page .navbar {
+/* Intro page: navbar fully transparent so it doesn't show as a cream/colored bar.
+   Two selectors: data-intro-page (set synchronously by head script, eliminates flash)
+   and body.intro-page (set by React useEffect, keeps it transparent after hydration) */
+html[data-intro-page='true'] .navbar,
+body.intro-page .navbar,
+html[data-theme='light'] body.intro-page .navbar,
+html[data-theme='dark'] body.intro-page .navbar,
+html[data-theme='light'][data-intro-page='true'] .navbar {
   background: transparent !important;
+  background-color: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
-  border-bottom: none !important;
+  border: none !important;
+}
+
+/* Safety net: no child of .navbar should carry a background in intro */
+html[data-theme='light'] body.intro-page .navbar > *,
+html[data-theme='light'][data-intro-page='true'] .navbar > * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Hide dark/light mode toggle on intro page */
+body.intro-page [class*='colorModeToggle'],
+body.intro-page button[title*="Switch"],
+body.intro-page button[title*="Cambiar"],
+body.intro-page button[aria-label*="dark"],
+body.intro-page button[aria-label*="light"],
+body.intro-page button[aria-label*="oscuro"],
+body.intro-page button[aria-label*="claro"] {
+  display: none !important;
+}
+
+/* Hide navbar brand text and logo everywhere (clean minimal nav) */
+.navbar__title,
+.navbar__logo {
+  display: none !important;
+}
+
+/* Hide the thin gray border/shadow Docusaurus adds around the page wrapper */
+body.intro-page #__docusaurus {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Eliminate any residual hairline on intro */
+body.intro-page .main-wrapper,
+body.intro-page [class*='mainWrapper'] {
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Remove any extra padding on the intro page container */

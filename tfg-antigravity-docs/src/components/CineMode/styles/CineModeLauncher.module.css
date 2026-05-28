@@ -1,48 +1,53 @@
-.launcherContainer {
-  float: right;
-  margin-top: -40px; /* Sube a la altura del título/breadcrumbs */
-  margin-bottom: 10px;
-  margin-left: 20px;
-  position: relative;
-  z-index: 10;
-}
-
-.launcherButton {
+/* Fixed floating button — bottom-right of the viewport */
+.floatingBtn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  border: none;
+  background: rgba(6, 20, 40, 0.75);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: 50px;
   cursor: pointer;
-  color: #06b6d4; /* Color cyan integrado con la estética */
-  font-family: inherit; /* Hereda la tipografía bonita de Docusaurus */
+  color: rgba(168, 220, 255, 0.75);
+  font-family: inherit;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 4px 0;
-  transition: all 0.2s ease;
+  padding: 8px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+  opacity: 0.7;
 }
 
-.launcherButton:hover {
-  color: #00e5c6;
-  opacity: 0.8;
-  transform: translateY(-1px);
+.floatingBtn:hover {
+  opacity: 1;
+  color: #a8d0ff;
+  border-color: rgba(6, 182, 212, 0.7);
+  box-shadow: 0 4px 24px rgba(6, 182, 212, 0.25), 0 2px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
 }
 
 .icon {
-  font-size: 18px;
+  font-size: 14px;
   filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.4));
 }
 
 .text {
-  border-bottom: 1px dashed rgba(6, 182, 212, 0.4);
+  border-bottom: 1px dashed rgba(6, 182, 212, 0.3);
+  transition: border-bottom-color 0.2s ease;
 }
 
-.launcherButton:hover .text {
-  border-bottom: 1px solid #00e5c6;
+.floatingBtn:hover .text {
+  border-bottom-color: #a8d0ff;
 }
 
+/* Fullscreen overlay */
 .overlay {
   position: fixed;
   top: 0;
