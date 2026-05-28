@@ -11,10 +11,10 @@
   --accent-magenta: hsl(322 100% 62%);   /* glitch / dato anómalo */
 
   /* ── Backgrounds (dark, base) ─────────────────────────── */
-  --bg-0: hsl(220 60% 3%);     /* fondo deep — el "apagón" */
-  --bg-1: hsl(220 40% 6%);     /* cards base */
-  --bg-2: hsl(220 32% 10%);    /* surfaces elevadas */
-  --bg-3: hsl(220 25% 14%);    /* hover state */
+  --bg-0: #0a1128;              /* azul oscuro forense */
+  --bg-1: #0f1830;              /* cards base */
+  --bg-2: #162040;              /* surfaces elevadas */
+  --bg-3: #1e2a50;              /* hover state */
 
   /* ── Texto (jerarquía 4 niveles) ──────────────────────── */
   --text-0: hsl(220 20% 98%);  /* primario — titulares */
@@ -88,22 +88,38 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
+/* ── DARK THEME — variables explícitas (no depender solo de :root) ── */
+html[data-theme='dark'] {
+  --bg-0: #0a1128;
+  --bg-1: #0f1830;
+  --bg-2: #162040;
+  --bg-3: #1e2a50;
+  --text-0: #ffffff;
+  --text-1: #e8e8e8;
+  --text-2: #b0b8cc;
+  --text-3: #7888aa;
+
+  --ifm-background-color: #0a1128;
+  --ifm-background-surface-color: #0f1830;
+  --ifm-font-color-base: #ffffff;
+  --ifm-navbar-background-color: rgba(10, 17, 40, 0.88);
+}
+
+/* ── LIGHT THEME — variables explícitas ──────────────────────────── */
 html[data-theme='light'] {
-  /* ── Custom design tokens ──────────────────────────────── */
-  --bg-0: #f5f2eb;
-  --bg-1: #efebe1;
-  --bg-2: #e8e3d5;
-  --bg-3: #ddd8c8;
-  --text-0: #111827;
-  --text-1: #1b1b1b;
+  --bg-0: #fcfcfc;
+  --bg-1: #f5f2eb;
+  --bg-2: #ece8df;
+  --bg-3: #e0dbd0;
+  --text-0: #1a1a1a;
+  --text-1: #1a1a1a;
   --text-2: #374151;
   --text-3: #4b5563;
 
-  /* ── IFM overrides — beat Docusaurus own light-theme CSS ── */
-  --ifm-background-color: #f5f2eb;
-  --ifm-background-surface-color: #efebe1;
-  --ifm-font-color-base: #1b1b1b;
-  --ifm-navbar-background-color: rgba(239, 235, 225, 0.92);
+  --ifm-background-color: #fcfcfc;
+  --ifm-background-surface-color: #f5f2eb;
+  --ifm-font-color-base: #1a1a1a;
+  --ifm-navbar-background-color: #fcfcfc;
   --ifm-color-primary: hsl(190 80% 38%);
   --ifm-color-primary-dark: hsl(190 80% 32%);
   --ifm-color-primary-darker: hsl(190 80% 28%);
@@ -112,10 +128,8 @@ html[data-theme='light'] {
   --ifm-color-primary-lighter: hsl(190 80% 55%);
   --ifm-color-primary-lightest: hsl(190 80% 65%);
   --ifm-menu-color: #374151;
-  --ifm-menu-color-active: #111827;
+  --ifm-menu-color-active: #1a1a1a;
   --accent-electric: hsl(190 80% 38%);
-
-  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* Glassmorphism Navbar */
@@ -831,9 +845,9 @@ html.zen-mode .zen-mode-icon-active {
 
 /* PART 1 - Overall Atmosphere */
 .theme-doc-sidebar-container {
-  background: linear-gradient(to bottom, rgba(8,8,8,0.96), rgba(5,4,3,0.98)) !important;
+  background: linear-gradient(to bottom, #0a1128, #0d1535) !important;
   border-right: 1px solid rgba(255,170,0,0.05) !important;
-  box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
+  box-shadow: inset -10px 0 20px rgba(0,0,0,0.3);
   position: relative;
 }
 
@@ -1245,16 +1259,29 @@ html[data-theme="dark"] body::before {
   opacity: 0.02;
 }
 
-/* NAVBAR FORENSIC OVERRIDE — transparent, blends into hero */
+/* NAVBAR FORENSIC OVERRIDE */
 .navbar {
   box-shadow: none !important;
   border-bottom: none !important;
 }
+
+/* Dark mode: navbar transparente — el hero de fondo se ve a través */
 html[data-theme="dark"] .navbar {
   background: transparent !important;
+  background-color: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+
+/* Light mode: navbar usa la variable de tema — NUNCA hardcoded */
+html[data-theme="light"] .navbar {
+  background: var(--ifm-navbar-background-color) !important;
+  background-color: var(--ifm-navbar-background-color) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Navbar links Tarantino style */
@@ -1661,16 +1688,45 @@ html[data-theme='light'] .theme-doc-markdown p > em:only-child {
   border-left-color: rgba(0, 0, 0, 0.1);
 }
 
-/* ── Light mode — belt-and-suspenders for body background ── */
+/* ── NUCLEAR BACKGROUND FIX — ambos temas, sin excepciones ──────────
+   Garantiza que html/body/wrapper siempre reflejen el tema activo.
+   Aplicación global: cualquier contenedor raíz recibe el color correcto.  */
+
+html[data-theme='light'],
 html[data-theme='light'] body,
 html[data-theme='light'] #__docusaurus,
-html[data-theme='light'] .main-wrapper {
-  background-color: var(--ifm-background-color);
+html[data-theme='light'] .main-wrapper,
+html[data-theme='light'] [class*='mainWrapper'],
+html[data-theme='light'] [class*='docPage'],
+html[data-theme='light'] main {
+  background-color: #fcfcfc !important;
+  color: #1a1a1a;
 }
 
+html[data-theme='dark'],
+html[data-theme='dark'] body,
+html[data-theme='dark'] #__docusaurus,
+html[data-theme='dark'] .main-wrapper,
+html[data-theme='dark'] [class*='mainWrapper'] {
+  background-color: #0a1128 !important;
+  color: #ffffff;
+}
+
+/* Transición suave al cambiar tema */
+html, body {
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* ── Light mode — sidebar, footer ────────────────────── */
 html[data-theme='light'] .footer {
-  background-color: var(--bg-1);
+  background-color: var(--bg-1) !important;
   border-top-color: rgba(0, 0, 0, 0.07);
+  color: var(--text-2);
+}
+
+html[data-theme='dark'] .footer {
+  background-color: var(--bg-1);
+  border-top-color: rgba(255, 255, 255, 0.05);
 }
 
 /* ============================================================
