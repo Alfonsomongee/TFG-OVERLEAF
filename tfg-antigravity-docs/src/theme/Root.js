@@ -1,4 +1,6 @@
 // src/theme/Root.js
+// Global wrapper — FAB flotante "Modo Cine" + controles de barra lateral e índice
+
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 
@@ -18,22 +20,25 @@ export default function Root({ children }) {
     }
   }, []);
 
-  const openSidebar = () => {
-    setZenMode(false);
-    document.documentElement.classList.remove('zen-mode');
-    localStorage.setItem('zen-mode', 'false');
-  };
-
-  const closeSidebar = () => {
-    setZenMode(true);
-    document.documentElement.classList.add('zen-mode');
-    localStorage.setItem('zen-mode', 'true');
+  const toggleSidebar = () => {
+    const next = !zenMode;
+    setZenMode(next);
+    if (next) {
+      document.documentElement.classList.add('zen-mode');
+    } else {
+      document.documentElement.classList.remove('zen-mode');
+    }
+    localStorage.setItem('zen-mode', String(next));
   };
 
   const toggleToc = () => {
     const next = !tocVisible;
     setTocVisible(next);
-    document.documentElement.classList.toggle('toc-visible', next);
+    if (next) {
+      document.documentElement.classList.add('toc-visible');
+    } else {
+      document.documentElement.classList.remove('toc-visible');
+    }
   };
 
   return (
@@ -45,21 +50,17 @@ export default function Root({ children }) {
         Modo Cine
       </Link>
 
-      {/* ☰ — solo cuando sidebar cerrada */}
-      {zenMode && (
-        <button className="global-sidebar-btn" onClick={openSidebar} aria-label="Mostrar barra lateral">
-          ☰
-        </button>
-      )}
+      {/* ☰ — siempre visible, togglea la barra lateral */}
+      <button
+        className="global-sidebar-btn"
+        onClick={toggleSidebar}
+        aria-label={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
+        title={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
+      >
+        ☰
+      </button>
 
-      {/* ‹ — solo cuando sidebar abierta, en el borde del panel */}
-      {!zenMode && (
-        <button className="global-sidebar-close-btn" onClick={closeSidebar} aria-label="Cerrar barra lateral">
-          ‹
-        </button>
-      )}
-
-      {/* Mostrar/Ocultar índice */}
+      {/* Mostrar/Ocultar índice — siempre visible */}
       <button
         className={`global-toc-btn${tocVisible ? ' active' : ''}`}
         onClick={toggleToc}
