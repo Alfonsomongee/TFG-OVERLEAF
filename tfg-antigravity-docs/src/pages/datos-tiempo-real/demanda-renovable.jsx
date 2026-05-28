@@ -2,6 +2,7 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import GlitchTitle from '@site/src/components/GlitchTitle';
 import DemandaRenovableTrend from '../../components/DemandaRenovableTrend';
 
 export default function DemandaRenovablePage() {
@@ -12,13 +13,13 @@ export default function DemandaRenovablePage() {
     >
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
-          <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>📡 Datos en Tiempo Real</Link>
+          <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>
           <span style={styles.sep}>/</span>
           <span>Demanda y Renovable</span>
         </div>
         <div style={styles.header}>
           <div style={styles.label}>ESIOS · TIEMPO REAL · REFRESCO 5 MIN</div>
-          <h1 style={styles.title}>📈 Demanda y Generación Renovable</h1>
+          <GlitchTitle as="h1" className="glitch-page-title">Demanda y Renovable</GlitchTitle>
           <p style={styles.desc}>
             Comparativa de demanda total y generación por tecnología entre el estado actual del sistema
             y el perfil en el instante del colapso del <strong>28 de abril de 2025</strong>.
@@ -38,6 +39,5 @@ const styles = {
   sep: { opacity: 0.4 },
   header: { marginBottom: '2rem' },
   label: { fontFamily: "'JetBrains Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,170,0,0.55)', marginBottom: '0.5rem' },
-  title: { fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', fontWeight: 800, margin: '0 0 0.75rem', letterSpacing: '-0.02em' },
-  desc: { fontSize: '0.95rem', color: 'rgba(180,175,165,0.8)', maxWidth: '700px', lineHeight: 1.7, margin: 0 },
+  desc: { fontSize: '0.95rem', color: 'rgba(180,175,165,0.8)', maxWidth: '700px', lineHeight: 1.7, margin: '0.75rem 0 0' },
 };

@@ -1,5 +1,5 @@
 // src/pages/datos-tiempo-real/index.js
-// Hub page — sección "📡 DATOS EN TIEMPO REAL"
+// Hub page — sección "DATOS EN TIEMPO REAL"
 // Ruta: /datos-tiempo-real
 
 import React from 'react';
@@ -8,59 +8,39 @@ import Link from '@docusaurus/Link';
 
 const FEATURES = [
   {
-    emoji: '🌊',
-    name: 'Sismógrafo de Frecuencia',
-    path: '/datos-tiempo-real/sismografo',
-    description: 'Frecuencia del sistema ibérico histórica del 28-A con los umbrales UFLS de desconexión automática.',
-    available: true,
-    source: 'Histórico ENTSO-E',
-  },
-  {
-    emoji: '🍩',
     name: 'Mix de Generación',
     path: '/datos-tiempo-real/mix-generacion',
     description: 'Donuts comparativos de generación por tecnología: ahora vs el instante del colapso (84.5% renovable).',
-    available: true,
     source: 'ESIOS · 5 min',
   },
   {
-    emoji: '📈',
     name: 'Demanda y Renovable',
     path: '/datos-tiempo-real/demanda-renovable',
     description: 'Barras comparativas de demanda, eólica, solar, nuclear, hidráulica y ciclo combinado vs 28-A.',
-    available: true,
     source: 'ESIOS · 5 min',
   },
   {
-    emoji: '🌡️',
     name: 'Termómetro de Riesgo',
     path: '/datos-tiempo-real/termometro-riesgo',
     description: 'Gauges de penetración renovable e inercia estimada del sistema. Umbral crítico marcado en 84.5% / 2.3 GW·s.',
-    available: true,
     source: 'ESIOS · 5 min',
   },
   {
-    emoji: '🔄',
     name: 'Balance de Intercambios',
     path: '/datos-tiempo-real/balance-intercambios',
     description: 'Flujos de exportación e importación con Francia y Portugal en tiempo real vs el 28-A.',
-    available: true,
     source: 'ESIOS · 5 min',
   },
   {
-    emoji: '💶',
     name: 'Precio SPOT vs Demanda',
     path: '/datos-tiempo-real/precio-spot',
     description: 'Relación precio mayorista–demanda ahora vs trayectoria del 28-A, donde el precio cayó a −2.5 €/MWh.',
-    available: true,
     source: 'ESIOS · 5 min',
   },
   {
-    emoji: '📊',
     name: 'Radar de Vulnerabilidad',
     path: '/datos-tiempo-real/radar-vulnerabilidad',
     description: 'Análisis multidimensional (5 ejes) de similitud con el perfil de colapso del 28-A. Índice 0–100.',
-    available: true,
     source: 'ESIOS · 5 min',
   },
 ];
@@ -69,21 +49,21 @@ export default function DatosTiempoReal() {
   return (
     <Layout
       title="Datos en Tiempo Real — Sistema Eléctrico Ibérico"
-      description="7 herramientas de monitorización avanzada del sistema eléctrico ibérico con datos de ESIOS (REE)"
+      description="6 herramientas de monitorización avanzada del sistema eléctrico ibérico con datos de ESIOS (REE)"
     >
       <div style={styles.page}>
         {/* Hero */}
         <div style={styles.hero}>
           <div style={styles.heroLabel}>MONITORIZACIÓN EN VIVO</div>
-          <h1 style={styles.heroTitle}>📡 DATOS EN TIEMPO REAL</h1>
+          <h1 style={styles.heroTitle}>DATOS EN TIEMPO REAL</h1>
           <p style={styles.heroSubtitle}>
-            7 herramientas de análisis del sistema eléctrico ibérico usando datos oficiales de
+            6 herramientas de análisis del sistema eléctrico ibérico usando datos oficiales de
             ESIOS (REE), actualizados cada 5 minutos. Compara el estado actual con el colapso del 28 de abril de 2025.
           </p>
           <div style={styles.badges}>
             <span style={{ ...styles.badge, borderColor: 'rgba(16,185,129,0.4)', color: '#10b981' }}>● ESIOS API</span>
             <span style={{ ...styles.badge, borderColor: 'rgba(255,170,0,0.3)', color: '#ffaa00' }}>↺ Refresco 5 min</span>
-            <span style={{ ...styles.badge, borderColor: 'rgba(6,182,212,0.4)', color: '#06b6d4' }}>7 herramientas activas</span>
+            <span style={{ ...styles.badge, borderColor: 'rgba(6,182,212,0.4)', color: '#06b6d4' }}>6 herramientas activas</span>
           </div>
         </div>
 
@@ -98,7 +78,7 @@ export default function DatosTiempoReal() {
 
         {/* Nota técnica */}
         <div style={styles.note}>
-          <span style={{ color: 'rgba(255,170,0,0.6)' }}>ℹ</span>
+          <span style={{ color: 'rgba(255,170,0,0.6)' }}>i</span>
           {' '}El token de ESIOS se mantiene exclusivamente en el servidor (Vercel Serverless Functions).
           Nunca se expone al navegador. Las llamadas del cliente se realizan a{' '}
           <code>/api/esios-multi</code> que agrega todos los indicadores en una sola petición.
@@ -108,14 +88,13 @@ export default function DatosTiempoReal() {
   );
 }
 
-function FeatureCard({ emoji, name, description, source }) {
+function FeatureCard({ name, description, source }) {
   return (
     <div style={styles.card}>
-      <div style={styles.cardEmoji}>{emoji}</div>
       <h3 style={styles.cardTitle}>{name}</h3>
       <p style={styles.cardDesc}>{description}</p>
       <div style={styles.cardFooter}>
-        <span style={styles.badgeLive}>▶ EN VIVO</span>
+        <span style={styles.badgeLive}>EN VIVO</span>
         <span style={styles.sourceTag}>{source}</span>
       </div>
     </div>
@@ -169,7 +148,6 @@ const styles = {
     height: '100%',
     boxSizing: 'border-box',
   },
-  cardEmoji: { fontSize: '2rem', marginBottom: '0.75rem' },
   cardTitle: { fontSize: '1rem', fontWeight: 700, margin: '0 0 0.5rem' },
   cardDesc: { fontSize: '0.85rem', color: 'rgba(160,155,140,0.75)', margin: '0 0 1rem', lineHeight: 1.5 },
   cardFooter: { display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' },

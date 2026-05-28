@@ -118,43 +118,38 @@ const sidebars = {
     // BLOQUE 8.5: DATOS EN TIEMPO REAL
     {
       type: 'category',
-      label: '📡 DATOS EN TIEMPO REAL',
+      label: 'DATOS EN TIEMPO REAL',
       collapsed: false,
       className: 'sidebar-icon-zap',
       items: [
         {
           type: 'link',
-          label: '🌊 Sismógrafo de Frecuencia',
-          href: '/datos-tiempo-real/sismografo',
-        },
-        {
-          type: 'link',
-          label: '🍩 Mix de Generación',
+          label: 'Mix de Generación',
           href: '/datos-tiempo-real/mix-generacion',
         },
         {
           type: 'link',
-          label: '📈 Demanda y Renovable',
+          label: 'Demanda y Renovable',
           href: '/datos-tiempo-real/demanda-renovable',
         },
         {
           type: 'link',
-          label: '🌡️ Termómetro de Riesgo',
+          label: 'Termómetro de Riesgo',
           href: '/datos-tiempo-real/termometro-riesgo',
         },
         {
           type: 'link',
-          label: '🔄 Balance de Intercambios',
+          label: 'Balance de Intercambios',
           href: '/datos-tiempo-real/balance-intercambios',
         },
         {
           type: 'link',
-          label: '💶 Precio SPOT',
+          label: 'Precio SPOT',
           href: '/datos-tiempo-real/precio-spot',
         },
         {
           type: 'link',
-          label: '📊 Radar de Vulnerabilidad',
+          label: 'Radar de Vulnerabilidad',
           href: '/datos-tiempo-real/radar-vulnerabilidad',
         },
       ],
