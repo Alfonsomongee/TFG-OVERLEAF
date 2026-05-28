@@ -172,8 +172,22 @@ code, pre, .number, .data {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin: 2rem 0;
+  margin: 2rem auto;      /* auto left/right = centred within the content column */
   border-radius: 4px;
+}
+
+/* Markdown tables inside ForensicTable and standalone — centred, numeric columns respect alignment */
+.telemetry-table-container table,
+.forensic-table table,
+.markdown table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Numeric / centred columns — reinforce text-align for cells under a centred header */
+.forensic-table td:not(:first-child),
+.telemetry-table-container td:not(:first-child) {
+  text-align: center;
 }
 
 /* Base Forensic Table Styling */
@@ -1556,42 +1570,50 @@ body.intro-page header {
 }
 
 /* ============================================================
-   FIGURE CAPTIONS — visual hierarchy & proximity
+   FIGURE CAPTIONS — visual hierarchy, proximity & exaggerated italic
    ============================================================ */
 
-/* Step 1: Collapse the bottom margin of paragraphs that contain ONLY an image,
-   so the caption <p> directly below sits tight against the image.
-   p:has(> img:only-child) is supported in all modern browsers (Chrome 105+, FF 121+, Safari 15.4+) */
+/* Step 1: Collapse the paragraph that wraps the image AND the image's own
+   bottom margin, so the caption sits visually anchored to the figure.
+   Without touching .markdown img directly we'd still have the 2rem gap. */
 article p:has(> img:only-child),
 .markdown p:has(> img:only-child),
 .theme-doc-markdown p:has(> img:only-child) {
-  margin-bottom: 0.15rem !important;
+  margin-bottom: 0 !important;
+}
+article p:has(> img:only-child) > img,
+.markdown p:has(> img:only-child) > img,
+.theme-doc-markdown p:has(> img:only-child) > img {
+  margin-bottom: 0.35rem !important;   /* tight — caption will be ~4–6px below image */
 }
 
-/* Step 2: Caption text — unmistakably italic, clearly subordinate gray, tight to image */
+/* Step 2: Caption text
+   - Serif italic is unmistakably different from the sans-serif body
+   - hsl(220 8% 40%) is noticeably dimmer than body text
+   - font-size and weight make it clearly secondary                      */
 article p > em:only-child,
 .markdown p > em:only-child,
 .theme-doc-markdown p > em:only-child {
   display: block;
-  margin-top: 0.1rem;
-  margin-bottom: 2rem;
-  color: hsl(220 8% 40%) !important;   /* noticeably dimmer than body text */
-  font-style: oblique 18deg !important; /* exaggerated oblique angle */
-  font-size: 0.77rem;
-  font-family: var(--font-body);
-  font-weight: 300;
-  line-height: 1.35;
-  letter-spacing: 0.018em;
-  opacity: 1;
-  padding-left: 0.75rem;
-  border-left: 2px solid rgba(255, 255, 255, 0.07);
+  margin-top: 0.25rem;
+  margin-bottom: 2.25rem;
+  color: hsl(220 8% 42%) !important;
+  font-style: italic !important;
+  font-family: Georgia, 'Times New Roman', serif !important;  /* serif = visually unmistakable italic */
+  font-size: 0.76rem !important;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.012em;
+  opacity: 0.9;
+  padding-left: 0.7rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.08);
 }
 
-/* In light mode: slightly darker so it remains readable on cream */
+/* Light-mode variant */
 html[data-theme='light'] article p > em:only-child,
 html[data-theme='light'] .markdown p > em:only-child,
 html[data-theme='light'] .theme-doc-markdown p > em:only-child {
-  color: hsl(220 8% 52%) !important;
-  border-left-color: rgba(0, 0, 0, 0.08);
+  color: hsl(220 8% 48%) !important;
+  border-left-color: rgba(0, 0, 0, 0.1);
 }
 
