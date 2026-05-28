@@ -1320,6 +1320,13 @@ html[data-theme="dark"] .navbar__item {
     background-color: #0b0f19;
   }
 
+  /* Intro page: override the mobile navbar background so no black bar appears */
+  html[data-intro-page='true'] .navbar,
+  body.intro-page .navbar {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
   /* Forzar que el botón hamburguesa se muestre en móvil */
   .navbar__toggle {
     display: flex !important;
@@ -1517,26 +1524,74 @@ body.intro-page #executive-hook button {
   -webkit-user-select: auto !important;
 }
 
+/* ── Hide locale/language selector ONLY on intro page ───────────
+   The locale dropdown is the only .dropdown in the navbar.
+   Hiding it on the intro prevents rendering glitches when switching
+   language from the portada. Users can switch locale once inside content. */
+html[data-intro-page='true'] .navbar__items .dropdown,
+html[data-intro-page='true'] .navbar__items .dropdown--hoverable,
+body.intro-page .navbar__items .dropdown,
+body.intro-page .navbar__items .dropdown--hoverable,
+/* Docusaurus sometimes uses a specific localeDropdown class */
+html[data-intro-page='true'] [class*='localeDropdown'],
+body.intro-page [class*='localeDropdown'] {
+  display: none !important;
+}
+
+/* ── Force all Docusaurus wrappers to the intro background colour ──
+   Prevents any wrapper div from leaking a slightly different dark shade
+   that appears as a black/dark rectangle at the top of the viewport. */
+html[data-intro-page='true'] #__docusaurus,
+html[data-intro-page='true'] .main-wrapper,
+html[data-intro-page='true'] [class*='mainWrapper'],
+html[data-intro-page='true'] [class*='docPage'],
+html[data-intro-page='true'] [class*='heroBanner'],
+html[data-intro-page='true'] header,
+body.intro-page #__docusaurus,
+body.intro-page .main-wrapper,
+body.intro-page [class*='mainWrapper'],
+body.intro-page header {
+  background-color: #03060c !important;
+  background: #03060c !important;
+}
+
 /* ============================================================
    FIGURE CAPTIONS — visual hierarchy & proximity
    ============================================================ */
 
-/* Target the <em> that immediately follows an image paragraph:
-   pattern is <p><img></p><p><em>caption</em></p>
-   Docusaurus renders: img wrapped in p, then caption in next p > em */
+/* Step 1: Collapse the bottom margin of paragraphs that contain ONLY an image,
+   so the caption <p> directly below sits tight against the image.
+   p:has(> img:only-child) is supported in all modern browsers (Chrome 105+, FF 121+, Safari 15.4+) */
+article p:has(> img:only-child),
+.markdown p:has(> img:only-child),
+.theme-doc-markdown p:has(> img:only-child) {
+  margin-bottom: 0.15rem !important;
+}
+
+/* Step 2: Caption text — unmistakably italic, clearly subordinate gray, tight to image */
 article p > em:only-child,
 .markdown p > em:only-child,
 .theme-doc-markdown p > em:only-child {
   display: block;
-  margin-top: -0.6rem;          /* pull tightly under the image */
-  margin-bottom: 1.5rem;
-  color: var(--text-3);         /* subtler than body text */
-  font-style: italic;
-  font-size: 0.82rem;
-  font-variation-settings: "ital" 1;  /* max italic on variable fonts */
-  line-height: 1.4;
-  letter-spacing: 0.01em;
+  margin-top: 0.1rem;
+  margin-bottom: 2rem;
+  color: hsl(220 8% 40%) !important;   /* noticeably dimmer than body text */
+  font-style: oblique 18deg !important; /* exaggerated oblique angle */
+  font-size: 0.77rem;
   font-family: var(--font-body);
-  opacity: 0.75;
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: 0.018em;
+  opacity: 1;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.07);
+}
+
+/* In light mode: slightly darker so it remains readable on cream */
+html[data-theme='light'] article p > em:only-child,
+html[data-theme='light'] .markdown p > em:only-child,
+html[data-theme='light'] .theme-doc-markdown p > em:only-child {
+  color: hsl(220 8% 52%) !important;
+  border-left-color: rgba(0, 0, 0, 0.08);
 }
 
