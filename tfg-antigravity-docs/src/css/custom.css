@@ -1912,7 +1912,31 @@ body.intro-page .global-toc-btn {
 }
 
 
-/* Forzar visibilidad del TOC cuando toc-visible está activo, incluso en zen-mode */
+/* ============================================================
+   TOC FLOTANTE EN MODO ZEN (sidebar cerrada)
+   ============================================================ */
 html.zen-mode.toc-visible .theme-doc-toc-desktop {
+  position: fixed;
+  top: var(--ifm-navbar-height, 60px);
+  right: 0;
+  width: 280px;
+  max-width: 90vw;
+  height: calc(100vh - var(--ifm-navbar-height, 60px));
+  overflow-y: auto;
+  z-index: 900;
+  background: var(--ifm-background-surface-color, #0f1830);
+  border-left: 1px solid var(--ifm-toc-border-color, rgba(255,255,255,0.1));
+  box-shadow: -4px 0 12px rgba(0,0,0,0.3);
+  padding: 1.5rem 1.2rem;
   display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html.zen-mode.toc-visible .theme-doc-toc-desktop::-webkit-scrollbar {
+  width: 6px;
+}
+html.zen-mode.toc-visible .theme-doc-toc-desktop::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
 }
