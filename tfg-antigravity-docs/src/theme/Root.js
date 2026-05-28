@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
-import { useLocation } from '@docusaurus/router';
 
 export default function Root({ children }) {
   const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [tocVisible, setTocVisible] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
@@ -15,8 +13,6 @@ export default function Root({ children }) {
     document.documentElement.classList.toggle('zen-mode', isZen);
     setMounted(true);
   }, []);
-
-  const isExcluded = location.pathname === '/' || location.pathname.startsWith('/cine');
 
   const toggleSidebar = () => {
     const next = !sidebarOpen;
@@ -31,7 +27,7 @@ export default function Root({ children }) {
     document.documentElement.classList.toggle('toc-visible', next);
   };
 
-  if (!mounted || isExcluded) return <>{children}</>;
+  if (!mounted) return <>{children}</>;
 
   return (
     <>
@@ -41,14 +37,12 @@ export default function Root({ children }) {
         Modo Cine
       </Link>
 
-      {/* ☰ solo cuando sidebar cerrada */}
       {!sidebarOpen && (
         <button className="global-sidebar-btn" onClick={toggleSidebar} aria-label="Mostrar barra lateral">
           ☰
         </button>
       )}
 
-      {/* ‹ en el borde derecho del sidebar cuando está abierta */}
       {sidebarOpen && (
         <button className="global-sidebar-close-btn" onClick={toggleSidebar} aria-label="Cerrar barra lateral">
           ‹
