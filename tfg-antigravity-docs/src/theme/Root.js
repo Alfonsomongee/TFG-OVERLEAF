@@ -1,70 +1,63 @@
-// src/theme/Root.js
-// Global wrapper — FAB flotante "Modo Cine" + controles de barra lateral e índice
-
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
+import { useLocation } from '@docusaurus/router';
 
 export default function Root({ children }) {
-  const [zenMode, setZenMode] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [tocVisible, setTocVisible] = useState(false);
+  const location = useLocation();
 
-  // Inicializar desde localStorage en cliente
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
-    const isZen = saved === null ? true : saved === 'true';
-    setZenMode(isZen);
-    if (isZen) {
-      document.documentElement.classList.add('zen-mode');
-    } else {
-      document.documentElement.classList.remove('zen-mode');
-    }
+    const isZen = saved === 'true';
+    setSidebarOpen(!isZen);
+    document.documentElement.classList.toggle('zen-mode', isZen);
+    setMounted(true);
   }, []);
 
+  const isExcluded = location.pathname === '/' || location.pathname.startsWith('/cine');
+
   const toggleSidebar = () => {
-    const next = !zenMode;
-    setZenMode(next);
-    if (next) {
-      document.documentElement.classList.add('zen-mode');
-    } else {
-      document.documentElement.classList.remove('zen-mode');
-    }
-    localStorage.setItem('zen-mode', String(next));
+    const next = !sidebarOpen;
+    setSidebarOpen(next);
+    document.documentElement.classList.toggle('zen-mode', !next);
+    localStorage.setItem('zen-mode', String(!next));
   };
 
   const toggleToc = () => {
     const next = !tocVisible;
     setTocVisible(next);
-    if (next) {
-      document.documentElement.classList.add('toc-visible');
-    } else {
-      document.documentElement.classList.remove('toc-visible');
-    }
+    document.documentElement.classList.toggle('toc-visible', next);
   };
+
+  if (!mounted || isExcluded) return <>{children}</>;
 
   return (
     <>
       {children}
 
-      {/* FAB Modo Cine */}
       <Link to="/cine" className="cine-fab" aria-label="Abrir Modo Cine">
         Modo Cine
       </Link>
 
-      {/* ☰ — siempre visible, togglea la barra lateral */}
-      <button
-        className="global-sidebar-btn"
-        onClick={toggleSidebar}
-        aria-label={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
-        title={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
-      >
-        ☰
-      </button>
+      {/* ☰ solo cuando sidebar cerrada */}
+      {!sidebarOpen && (
+        <button className="global-sidebar-btn" onClick={toggleSidebar} aria-label="Mostrar barra lateral">
+          ☰
+        </button>
+      )}
 
-      {/* Mostrar/Ocultar índice — siempre visible */}
+      {/* ‹ en el borde derecho del sidebar cuando está abierta */}
+      {sidebarOpen && (
+        <button className="global-sidebar-close-btn" onClick={toggleSidebar} aria-label="Cerrar barra lateral">
+          ‹
+        </button>
+      )}
+
       <button
         className={`global-toc-btn${tocVisible ? ' active' : ''}`}
         onClick={toggleToc}
-        aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
       >
         {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
       </button>
