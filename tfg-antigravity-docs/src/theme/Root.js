@@ -55,17 +55,19 @@ export default function Root({ children }) {
         Modo Cine
       </Link>
 
-      {/* Botón flotante barra lateral */}
-      <button
-        className="global-sidebar-btn"
-        onClick={toggleSidebar}
-        aria-label={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
-        title={zenMode ? 'Mostrar barra lateral' : 'Ocultar barra lateral'}
-      >
-        ☰
-      </button>
+      {/* Botón ☰ — solo visible cuando la barra lateral está CERRADA */}
+      {zenMode && (
+        <button
+          className="global-sidebar-btn"
+          onClick={toggleSidebar}
+          aria-label="Mostrar barra lateral"
+          title="Mostrar barra lateral"
+        >
+          ☰
+        </button>
+      )}
 
-      {/* Botón flotante mostrar índice */}
+      {/* Botón mostrar índice */}
       <button
         className={`global-toc-btn${tocVisible ? ' active' : ''}`}
         onClick={toggleToc}
