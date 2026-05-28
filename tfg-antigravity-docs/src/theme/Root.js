@@ -1,6 +1,4 @@
 // src/theme/Root.js
-// Global wrapper — FAB Modo Cine + controles de barra lateral e índice
-
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 import { useLocation } from '@docusaurus/router';
@@ -13,7 +11,7 @@ export default function Root({ children }) {
   const isIntro = location.pathname === '/' || location.pathname === '';
   const isCine  = location.pathname.startsWith('/cine');
 
-  // Inicializar desde localStorage en cliente
+  // Inicializar desde localStorage
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
     const isZen = saved === null ? true : saved === 'true';
@@ -21,7 +19,7 @@ export default function Root({ children }) {
     document.documentElement.classList.toggle('zen-mode', isZen);
   }, []);
 
-  // Al cambiar de página, resetear toc-visible
+  // Resetear TOC al cambiar de página
   useEffect(() => {
     setTocVisible(false);
     document.documentElement.classList.remove('toc-visible');
@@ -31,9 +29,6 @@ export default function Root({ children }) {
     setZenMode(false);
     document.documentElement.classList.remove('zen-mode');
     localStorage.setItem('zen-mode', 'false');
-    // Al abrir sidebar, ocultar toc flotante (ya estará visible en sidebar)
-    setTocVisible(false);
-    document.documentElement.classList.remove('toc-visible');
   };
 
   const closeSidebar = () => {
@@ -48,7 +43,6 @@ export default function Root({ children }) {
     document.documentElement.classList.toggle('toc-visible', next);
   };
 
-  // No mostrar nada en intro ni en cine
   if (isIntro || isCine) {
     return <>{children}</>;
   }
@@ -62,7 +56,7 @@ export default function Root({ children }) {
         Modo Cine
       </Link>
 
-      {/* ☰ — solo cuando sidebar está cerrada */}
+      {/* ☰ abre sidebar — solo cuando está cerrada */}
       {zenMode && (
         <button
           className="global-sidebar-btn"
@@ -74,7 +68,7 @@ export default function Root({ children }) {
         </button>
       )}
 
-      {/* ✕ — solo cuando sidebar está abierta */}
+      {/* ✕ cierra sidebar — en el borde derecho de la barra lateral */}
       {!zenMode && (
         <button
           className="global-sidebar-close-btn"
@@ -82,20 +76,18 @@ export default function Root({ children }) {
           aria-label="Cerrar barra lateral"
           title="Cerrar barra lateral"
         >
-          ✕
+          ‹
         </button>
       )}
 
-      {/* Mostrar índice — solo útil en zen-mode (TOC oculto) */}
-      {zenMode && (
-        <button
-          className={`global-toc-btn${tocVisible ? ' active' : ''}`}
-          onClick={toggleToc}
-          aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
-        >
-          {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
-        </button>
-      )}
+      {/* Mostrar/Ocultar índice — siempre visible, independiente del sidebar */}
+      <button
+        className={`global-toc-btn${tocVisible ? ' active' : ''}`}
+        onClick={toggleToc}
+        aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+      >
+        {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+      </button>
     </>
   );
 }

@@ -1789,37 +1789,45 @@ body.intro-page .global-toc-btn {
    GLOBAL SIDEBAR & TOC FLOATING BUTTONS
    ============================================================ */
 
-/* Botón ✕ cerrar sidebar */
+/* Botón ‹ cerrar sidebar — en el borde derecho de la barra lateral */
 .global-sidebar-close-btn {
   position: fixed;
-  top: 4.5rem;
-  left: 1rem;
+  top: 50vh;
+  left: var(--doc-sidebar-width, 300px);
+  transform: translate(-50%, -50%);
   z-index: 800;
   cursor: pointer;
-  border: none;
-  background: transparent;
-  color: rgba(200, 195, 185, 0.55);
-  width: 40px;
-  height: 40px;
+  border: 1px solid rgba(200, 195, 185, 0.15);
+  background: rgba(20, 18, 14, 0.7);
+  color: rgba(200, 195, 185, 0.6);
+  width: 20px;
+  height: 48px;
   font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: color 0.2s;
+  border-radius: 0 6px 6px 0;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
   line-height: 1;
+  backdrop-filter: blur(4px);
 }
 
 .global-sidebar-close-btn:hover {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(40, 35, 25, 0.9);
+  border-color: rgba(255, 170, 0, 0.3);
 }
 
 html[data-theme='light'] .global-sidebar-close-btn {
-  color: rgba(80, 75, 65, 0.5);
+  background: rgba(235, 230, 220, 0.85);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(80, 75, 65, 0.6);
 }
 
 html[data-theme='light'] .global-sidebar-close-btn:hover {
-  color: rgba(30, 25, 15, 0.85);
+  color: rgba(30, 25, 15, 0.9);
+  background: rgba(220, 215, 205, 0.98);
 }
 
 .global-toc-btn {
@@ -1884,9 +1892,11 @@ html[data-theme='light'] .global-sidebar-close-btn:hover {
   color: rgba(200, 225, 255, 1);
 }
 
-/* Show TOC when toc-visible class is set — más específico que zen-mode para ganar */
-html.toc-visible .theme-doc-toc-desktop,
-html.zen-mode.toc-visible .theme-doc-toc-desktop {
+/* TOC siempre oculto — solo visible cuando el botón lo activa */
+.theme-doc-toc-desktop {
+  display: none !important;
+}
+html.toc-visible .theme-doc-toc-desktop {
   display: block !important;
 }
 
