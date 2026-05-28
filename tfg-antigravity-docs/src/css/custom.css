@@ -1487,3 +1487,56 @@ body.intro-page .container {
   margin: 0 !important;
 }
 
+/* ============================================================
+   INTRO PAGE — BACKGROUND + CURSOR FIXES
+   ============================================================ */
+
+/* Force dark background on the whole page (including html/body)
+   so no gray/cream rectangle appears at the top in any color theme */
+html[data-intro-page='true'],
+html[data-intro-page='true'] body,
+body.intro-page,
+html[data-theme='light'] body.intro-page,
+html[data-theme='dark'] body.intro-page {
+  background-color: #03060c !important;
+  background: #03060c !important;
+}
+
+/* Prevent I-beam text cursor when hovering over titles/stats/subtitle */
+body.intro-page #executive-hook {
+  cursor: default !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* Restore pointer cursor on interactive elements inside the hook */
+body.intro-page #executive-hook a,
+body.intro-page #executive-hook button {
+  cursor: pointer !important;
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+/* ============================================================
+   FIGURE CAPTIONS — visual hierarchy & proximity
+   ============================================================ */
+
+/* Target the <em> that immediately follows an image paragraph:
+   pattern is <p><img></p><p><em>caption</em></p>
+   Docusaurus renders: img wrapped in p, then caption in next p > em */
+article p > em:only-child,
+.markdown p > em:only-child,
+.theme-doc-markdown p > em:only-child {
+  display: block;
+  margin-top: -0.6rem;          /* pull tightly under the image */
+  margin-bottom: 1.5rem;
+  color: var(--text-3);         /* subtler than body text */
+  font-style: italic;
+  font-size: 0.82rem;
+  font-variation-settings: "ital" 1;  /* max italic on variable fonts */
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-family: var(--font-body);
+  opacity: 0.75;
+}
+
