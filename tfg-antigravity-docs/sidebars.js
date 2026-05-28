@@ -115,6 +115,33 @@ const sidebars = {
       ],
     },
 
+    // BLOQUE 8.5: DATOS EN TIEMPO REAL
+    {
+      type: 'category',
+      label: '📡 DATOS EN TIEMPO REAL',
+      collapsed: false,
+      className: 'sidebar-icon-zap',
+      items: [
+        {
+          type: 'link',
+          label: '🌊 Sismógrafo de Frecuencia',
+          href: '/datos-tiempo-real/sismografo',
+        },
+        {
+          type: 'link',
+          label: '⚠️ Detector de Patrones',
+          href: '/datos-tiempo-real/detector-patrones',
+          className: 'sidebar-link-soon',
+        },
+        {
+          type: 'link',
+          label: '📊 Índice de Estrés',
+          href: '/datos-tiempo-real/indice-estres',
+          className: 'sidebar-link-soon',
+        },
+      ],
+    },
+
     // BLOQUE 9: CIERRE NARRATIVO
     {
       type: 'category',
