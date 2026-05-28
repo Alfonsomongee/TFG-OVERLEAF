@@ -167,150 +167,159 @@ code, pre, .number, .data {
    TABLES
    ============================================================ */
 
-/* Base Wrapper to fix mobile overflow globally */
+/* ============================================================
+   TABLES — organic, native to the chapter narrative
+   Philosophy: transparent background, flush width, minimal lines.
+   The table should feel "printed" in the text, not embedded.
+   ============================================================ */
+
+/* ── Container ──────────────────────────────────────────────── */
 .telemetry-table-container {
   width: 100%;
+  max-width: 100%;
+  margin: 1.75rem 0;          /* vertical rhythm only — no side auto-margins */
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin: 2rem auto;      /* auto left/right = centred within the content column */
-  border-radius: 4px;
+  /* Remove any decoration from the wrapper itself */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
-/* Markdown tables inside ForensicTable and standalone — centred, numeric columns respect alignment */
+/* Docusaurus sometimes wraps tables in .table-container — force flush */
+.table-container,
+div[class*='tableContainer'] {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: auto;
+}
+
+/* Scroll wrapper inside ForensicTable component */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ── The actual <table> element ─────────────────────────────── */
 .telemetry-table-container table,
 .forensic-table table,
-.markdown table {
-  margin-left: auto;
-  margin-right: auto;
+table.forensic-table,
+.markdown table,
+.theme-doc-markdown table,
+article table {
+  width: 100% !important;
+  margin: 0 !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  background: transparent !important;   /* no alien amber tint */
+  box-shadow: none !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.9rem;
+  position: static !important;          /* disable relative positioning for scanline */
 }
 
-/* Numeric / centred columns — reinforce text-align for cells under a centred header */
-.forensic-table td:not(:first-child),
-.telemetry-table-container td:not(:first-child) {
-  text-align: center;
-}
-
-/* Base Forensic Table Styling */
-.forensic-table table,
-table.forensic-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
-  background: rgba(255, 170, 0, 0.015);
-  font-family: var(--font-body);
-  font-size: 0.9em;
-  position: relative;
-}
-
-/* Subtle scanline texture layer */
+/* Kill the scanline ::before pseudo-element — it adds visual noise */
 .forensic-table table::before,
-table.forensic-table::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255, 170, 0, 0.02) 1px, rgba(255, 170, 0, 0.02) 2px);
-  pointer-events: none;
-  opacity: 0.5;
-  z-index: 0;
+table.forensic-table::before,
+.telemetry-table-container table::before {
+  display: none !important;
+  content: none !important;
 }
 
+/* ── Header cells ───────────────────────────────────────────── */
+.telemetry-table-container th,
 .forensic-table th,
-.forensic-table td,
 table.forensic-table th,
-table.forensic-table td {
-  position: relative;
-  z-index: 1;
-}
-
-.forensic-table th,
-table.forensic-table th {
-  background: linear-gradient(to bottom, rgba(255,170,0,0.12), rgba(255,170,0,0.05));
+.markdown th,
+article th {
+  font-family: var(--font-body) !important;
+  font-size: 0.73rem !important;
+  font-weight: 700 !important;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent-electric);
-  padding: var(--space-md) var(--space-lg);
+  letter-spacing: 0.07em;
+  color: var(--text-2) !important;
+  background: transparent !important;
+  padding: 0.55rem 0.85rem !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
   text-align: left;
-  border-bottom: 1px solid rgba(255,170,0,0.3);
-  font-family: var(--telemetry-font);
+  position: static !important;
+  z-index: auto !important;
 }
 
+html[data-theme='light'] .telemetry-table-container th,
 html[data-theme='light'] .forensic-table th,
-html[data-theme='light'] table.forensic-table th {
-  color: var(--text-0);
-  background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.02));
-  border-bottom: 2px solid rgba(0,0,0,0.1);
+html[data-theme='light'] article th {
+  color: var(--text-0) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.14) !important;
 }
 
+/* ── Body cells ─────────────────────────────────────────────── */
+.telemetry-table-container td,
 .forensic-table td,
-table.forensic-table td {
-  padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid rgba(255,170,0,0.08);
-  border-right: 1px solid rgba(255,170,0,0.02);
-  color: var(--forensic-text-primary);
-  text-align: left;
+table.forensic-table td,
+.markdown td,
+article td {
+  font-family: var(--font-body) !important;
+  font-size: 0.88rem !important;
+  color: var(--text-1) !important;
+  padding: 0.5rem 0.85rem !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  border-right: none !important;
   font-variant-numeric: tabular-nums;
-  font-family: var(--telemetry-font);
+  position: static !important;
+  z-index: auto !important;
 }
 
+html[data-theme='light'] .telemetry-table-container td,
+html[data-theme='light'] .forensic-table td,
+html[data-theme='light'] article td {
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Hover — barely-there, keeps the table legible without "widget" feel */
+.telemetry-table-container tr:hover td,
 .forensic-table tr:hover td,
-table.forensic-table tr:hover td {
-  background: rgba(255,170,0,0.04);
+article tr:hover td {
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+html[data-theme='light'] article tr:hover td {
+  background: rgba(0, 0, 0, 0.025) !important;
 }
 
-/* Specific styling for narrative cells that shouldn't be monospace */
-.forensic-table .narrative-cell {
-  font-family: var(--font-body);
-  color: var(--text-1);
-}
+/* ── Semantic row states (incident timeline tables) ─────────── */
+/* These remain meaningful for the forensic timeline tables     */
+.forensic-table tr.state-normal td:first-child  { border-left: 2px solid rgba(255,210,150,0.4) !important; }
+.forensic-table tr.state-warning td             { background: rgba(255,170,0,0.03) !important; }
+.forensic-table tr.state-warning td:first-child { border-left: 2px solid rgba(255,170,0,0.5) !important; }
+.forensic-table tr.state-critical td            { background: rgba(255,85,0,0.04) !important; }
+.forensic-table tr.state-critical td:first-child{ border-left: 2px solid rgba(255,85,0,0.6) !important; }
+.forensic-table tr.state-blackout td            { background: rgba(204,17,0,0.06) !important; color: #ffb3b3 !important; }
+.forensic-table tr.state-blackout td:first-child{ border-left: 2px solid rgba(204,17,0,0.8) !important; }
 
-/* Semantic Row States */
-.forensic-table tr.state-normal td {
-  background: rgba(255, 210, 150, 0.02);
-}
-.forensic-table tr.state-normal td:first-child {
-  border-left: 3px solid rgba(255, 210, 150, 0.5);
-}
-
-.forensic-table tr.state-warning td {
-  background: rgba(255, 170, 0, 0.05);
-}
-.forensic-table tr.state-warning td:first-child {
-  border-left: 3px solid var(--forensic-amber-primary);
-}
-
-.forensic-table tr.state-critical td {
-  background: rgba(255, 85, 0, 0.06);
-}
-.forensic-table tr.state-critical td:first-child {
-  border-left: 3px solid var(--forensic-amber-warning);
-}
-
-.forensic-table tr.state-blackout td {
-  background: rgba(204, 17, 0, 0.08);
-  color: #ffb3b3; /* slightly red tinted text */
-}
-.forensic-table tr.state-blackout td:first-child {
-  border-left: 3px solid var(--forensic-amber-critical);
-}
-
-/* Metadata components for tables */
+/* ── TelemetryMetadata header (title/source block) ─────────── */
+/* Rendered by ForensicTable component above the table.
+   Reduce it to a whisper — it's metadata, not a headline.      */
 .telemetry-metadata {
-  margin-bottom: var(--space-xs);
-  font-family: var(--telemetry-font);
-  font-size: var(--telemetry-xs);
-  letter-spacing: 0.05em;
-  color: var(--forensic-text-dim);
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
   text-transform: uppercase;
+  opacity: 0.5;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 .telemetry-header {
   font-weight: 700;
-  color: var(--forensic-text-secondary);
-  margin-bottom: 4px;
+  color: var(--text-3);
+  margin-bottom: 2px;
 }
 
 /* ============================================================
