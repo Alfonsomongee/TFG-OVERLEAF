@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import BalanceIntercambios from '../../components/BalanceIntercambios';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function BalanceIntercambiosPage() {
   return (
@@ -11,6 +12,7 @@ export default function BalanceIntercambiosPage() {
       title="Balance de Intercambios — España, Francia y Portugal"
       description="Flujos de energía en tiempo real entre España, Francia y Portugal vs el colapso del 28-A"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/balance-intercambios" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>

@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import TermometroRiesgo from '../../components/TermometroRiesgo';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function TermometroRiesgoPage() {
   return (
@@ -11,6 +12,7 @@ export default function TermometroRiesgoPage() {
       title="Termómetro de Riesgo — Penetración Renovable e Inercia"
       description="Indicadores en tiempo real de penetración renovable e inercia estimada del sistema eléctrico ibérico"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/termometro-riesgo" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>

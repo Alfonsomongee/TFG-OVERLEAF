@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import PrecioSpotScatter from '../../components/PrecioSpotScatter';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function PrecioSpotPage() {
   return (
@@ -11,6 +12,7 @@ export default function PrecioSpotPage() {
       title="Precio SPOT vs Demanda — Hoy vs 28-A"
       description="Relación entre precio del mercado mayorista, demanda y generación renovable comparada con el colapso del 28-A"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/precio-spot" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>

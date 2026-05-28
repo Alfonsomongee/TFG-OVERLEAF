@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import DemandaRenovableTrend from '../../components/DemandaRenovableTrend';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function DemandaRenovablePage() {
   return (
@@ -11,6 +12,7 @@ export default function DemandaRenovablePage() {
       title="Demanda y Renovable — Hoy vs 28-A"
       description="Evolución comparada de demanda eléctrica y generación renovable respecto al colapso del 28-A"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/demanda-renovable" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>

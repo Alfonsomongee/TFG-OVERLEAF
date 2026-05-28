@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import RadarVulnerabilidad from '../../components/RadarVulnerabilidad';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function RadarVulnerabilidadPage() {
   return (
@@ -11,6 +12,7 @@ export default function RadarVulnerabilidadPage() {
       title="Radar de Vulnerabilidad — Hoy vs 28-A"
       description="Análisis multidimensional de vulnerabilidad sistémica comparado con el perfil del colapso del 28-A"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/radar-vulnerabilidad" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>

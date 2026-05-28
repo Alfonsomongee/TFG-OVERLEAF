@@ -4,6 +4,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import GlitchTitle from '@site/src/components/GlitchTitle';
 import MixGeneracion from '../../components/MixGeneracion';
+import DatosTiempoRealNav from '../../components/DatosTiempoRealNav';
 
 export default function MixGeneracionPage() {
   return (
@@ -11,6 +12,7 @@ export default function MixGeneracionPage() {
       title="Mix de Generación — Hoy vs 28-A"
       description="Compara la estructura de generación eléctrica hoy con el instante del colapso del 28 de abril de 2025"
     >
+      <DatosTiempoRealNav currentPath="/datos-tiempo-real/mix-generacion" />
       <div style={styles.page}>
         <div style={styles.breadcrumb}>
           <Link to="/datos-tiempo-real" style={styles.breadcrumbLink}>Datos en Tiempo Real</Link>
