@@ -11,43 +11,57 @@ const FEATURES = [
     emoji: '🌊',
     name: 'Sismógrafo de Frecuencia',
     path: '/datos-tiempo-real/sismografo',
-    description: 'Frecuencia del sistema ibérico en tiempo real vs la caída del 28-A.',
+    description: 'Frecuencia del sistema ibérico histórica del 28-A con los umbrales UFLS de desconexión automática.',
     available: true,
+    source: 'Histórico ENTSO-E',
   },
   {
-    emoji: '⚠️',
-    name: 'Detector de Patrones Pre-Colapso',
-    path: '/datos-tiempo-real/detector-patrones',
-    description: 'Similitud en tiempo real con la ventana crítica de las 2 horas previas al apagón.',
-    available: false,
+    emoji: '🍩',
+    name: 'Mix de Generación',
+    path: '/datos-tiempo-real/mix-generacion',
+    description: 'Donuts comparativos de generación por tecnología: ahora vs el instante del colapso (84.5% renovable).',
+    available: true,
+    source: 'ESIOS · 5 min',
+  },
+  {
+    emoji: '📈',
+    name: 'Demanda y Renovable',
+    path: '/datos-tiempo-real/demanda-renovable',
+    description: 'Barras comparativas de demanda, eólica, solar, nuclear, hidráulica y ciclo combinado vs 28-A.',
+    available: true,
+    source: 'ESIOS · 5 min',
+  },
+  {
+    emoji: '🌡️',
+    name: 'Termómetro de Riesgo',
+    path: '/datos-tiempo-real/termometro-riesgo',
+    description: 'Gauges de penetración renovable e inercia estimada del sistema. Umbral crítico marcado en 84.5% / 2.3 GW·s.',
+    available: true,
+    source: 'ESIOS · 5 min',
+  },
+  {
+    emoji: '🔄',
+    name: 'Balance de Intercambios',
+    path: '/datos-tiempo-real/balance-intercambios',
+    description: 'Flujos de exportación e importación con Francia y Portugal en tiempo real vs el 28-A.',
+    available: true,
+    source: 'ESIOS · 5 min',
+  },
+  {
+    emoji: '💶',
+    name: 'Precio SPOT vs Demanda',
+    path: '/datos-tiempo-real/precio-spot',
+    description: 'Relación precio mayorista–demanda ahora vs trayectoria del 28-A, donde el precio cayó a −2.5 €/MWh.',
+    available: true,
+    source: 'ESIOS · 5 min',
   },
   {
     emoji: '📊',
-    name: 'Índice de Estrés del Sistema',
-    path: '/datos-tiempo-real/indice-estres',
-    description: 'Termómetro de vulnerabilidad sistémica basado en mix renovable, inercia y RoCoF.',
-    available: false,
-  },
-  {
-    emoji: '⚡',
-    name: 'Monitor de Inercia',
-    path: '/datos-tiempo-real/monitor-inercia',
-    description: 'Inercia sintética y real del sistema peninsular, comparada con el 28-A.',
-    available: false,
-  },
-  {
-    emoji: '🗺️',
-    name: 'Mapa de Flujos Transfronterizos',
-    path: '/datos-tiempo-real/flujos-transfronterizos',
-    description: 'Intercambios físicos en tiempo real España–Francia–Portugal.',
-    available: false,
-  },
-  {
-    emoji: '🌞',
-    name: 'Mix de Generación en Vivo',
-    path: '/datos-tiempo-real/mix-generacion',
-    description: 'Desglose de generación por tecnología y comparación con mix del 28-A.',
-    available: false,
+    name: 'Radar de Vulnerabilidad',
+    path: '/datos-tiempo-real/radar-vulnerabilidad',
+    description: 'Análisis multidimensional (5 ejes) de similitud con el perfil de colapso del 28-A. Índice 0–100.',
+    available: true,
+    source: 'ESIOS · 5 min',
   },
 ];
 
@@ -55,7 +69,7 @@ export default function DatosTiempoReal() {
   return (
     <Layout
       title="Datos en Tiempo Real — Sistema Eléctrico Ibérico"
-      description="Monitorización avanzada del sistema eléctrico ibérico con datos de ESIOS y ENTSO-E"
+      description="7 herramientas de monitorización avanzada del sistema eléctrico ibérico con datos de ESIOS (REE)"
     >
       <div style={styles.page}>
         {/* Hero */}
@@ -63,55 +77,47 @@ export default function DatosTiempoReal() {
           <div style={styles.heroLabel}>MONITORIZACIÓN EN VIVO</div>
           <h1 style={styles.heroTitle}>📡 DATOS EN TIEMPO REAL</h1>
           <p style={styles.heroSubtitle}>
-            Herramientas de análisis del sistema eléctrico ibérico usando datos oficiales de
-            ESIOS (REE) y ENTSO-E. Compara el estado actual con el colapso del 28 de abril de 2025.
+            7 herramientas de análisis del sistema eléctrico ibérico usando datos oficiales de
+            ESIOS (REE), actualizados cada 5 minutos. Compara el estado actual con el colapso del 28 de abril de 2025.
           </p>
           <div style={styles.badges}>
             <span style={{ ...styles.badge, borderColor: 'rgba(16,185,129,0.4)', color: '#10b981' }}>● ESIOS API</span>
-            <span style={{ ...styles.badge, borderColor: 'rgba(6,182,212,0.4)', color: '#06b6d4' }}>● ENTSO-E API</span>
-            <span style={{ ...styles.badge, borderColor: 'rgba(255,170,0,0.3)', color: '#ffaa00' }}>↺ Refresco 30 s</span>
+            <span style={{ ...styles.badge, borderColor: 'rgba(255,170,0,0.3)', color: '#ffaa00' }}>↺ Refresco 5 min</span>
+            <span style={{ ...styles.badge, borderColor: 'rgba(6,182,212,0.4)', color: '#06b6d4' }}>7 herramientas activas</span>
           </div>
         </div>
 
         {/* Grid de funcionalidades */}
         <div style={styles.grid}>
           {FEATURES.map(f => (
-            f.available
-              ? (
-                <Link key={f.path} to={f.path} style={{ textDecoration: 'none' }}>
-                  <FeatureCard {...f} />
-                </Link>
-              )
-              : <FeatureCard key={f.path} {...f} />
+            <Link key={f.path} to={f.path} style={{ textDecoration: 'none' }}>
+              <FeatureCard {...f} />
+            </Link>
           ))}
         </div>
 
         {/* Nota técnica */}
         <div style={styles.note}>
           <span style={{ color: 'rgba(255,170,0,0.6)' }}>ℹ</span>
-          {' '}Los tokens de ESIOS y ENTSO-E se mantienen exclusivamente en el servidor (Vercel Serverless Functions).
-          Nunca se exponen al navegador. Las llamadas del cliente se realizan a <code>/api/esios-proxy</code> y <code>/api/entsoe-frequency</code>.
+          {' '}El token de ESIOS se mantiene exclusivamente en el servidor (Vercel Serverless Functions).
+          Nunca se expone al navegador. Las llamadas del cliente se realizan a{' '}
+          <code>/api/esios-multi</code> que agrega todos los indicadores en una sola petición.
         </div>
       </div>
     </Layout>
   );
 }
 
-function FeatureCard({ emoji, name, description, available }) {
+function FeatureCard({ emoji, name, description, source }) {
   return (
-    <div style={{
-      ...styles.card,
-      opacity: available ? 1 : 0.45,
-      cursor: available ? 'pointer' : 'default',
-      borderColor: available ? 'rgba(255,170,0,0.15)' : 'rgba(255,255,255,0.05)',
-    }}>
+    <div style={styles.card}>
       <div style={styles.cardEmoji}>{emoji}</div>
       <h3 style={styles.cardTitle}>{name}</h3>
       <p style={styles.cardDesc}>{description}</p>
-      {available
-        ? <span style={styles.badgeLive}>▶ EN VIVO</span>
-        : <span style={styles.badgeSoon}>PRÓXIMAMENTE</span>
-      }
+      <div style={styles.cardFooter}>
+        <span style={styles.badgeLive}>▶ EN VIVO</span>
+        <span style={styles.sourceTag}>{source}</span>
+      </div>
     </div>
   );
 }
@@ -155,14 +161,18 @@ const styles = {
   },
   card: {
     background: 'rgba(13,16,24,0.7)',
-    border: '1px solid',
+    border: '1px solid rgba(255,170,0,0.15)',
     borderRadius: '12px',
     padding: '1.5rem',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+    cursor: 'pointer',
+    height: '100%',
+    boxSizing: 'border-box',
   },
   cardEmoji: { fontSize: '2rem', marginBottom: '0.75rem' },
   cardTitle: { fontSize: '1rem', fontWeight: 700, margin: '0 0 0.5rem' },
   cardDesc: { fontSize: '0.85rem', color: 'rgba(160,155,140,0.75)', margin: '0 0 1rem', lineHeight: 1.5 },
+  cardFooter: { display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' },
   badgeLive: {
     fontFamily: "'JetBrains Mono', monospace",
     fontSize: '0.6rem', letterSpacing: '0.1em',
@@ -171,13 +181,10 @@ const styles = {
     border: '1px solid rgba(16,185,129,0.3)',
     borderRadius: '20px', color: '#10b981',
   },
-  badgeSoon: {
+  sourceTag: {
     fontFamily: "'JetBrains Mono', monospace",
-    fontSize: '0.6rem', letterSpacing: '0.1em',
-    padding: '0.2rem 0.6rem',
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '20px', color: 'rgba(160,155,140,0.5)',
+    fontSize: '0.58rem', letterSpacing: '0.05em',
+    color: 'rgba(255,170,0,0.5)',
   },
   note: {
     fontFamily: "'JetBrains Mono', monospace",

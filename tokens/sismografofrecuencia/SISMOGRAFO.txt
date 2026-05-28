@@ -1,0 +1,173 @@
+SISMOGRAFO
+
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+const EVENTOS_28A = [
+  { time: '2025-04-28T10:03:00Z', label: 'Oscilación forzada 0.6Hz', color: '#f59e0b' },
+  { time: '2025-04-28T10:19:00Z', label: 'Modo inter-área 0.2Hz', color: '#f59e0b' },
+  { time: '2025-04-28T10:32:57Z', label: 'Disparo Granada', color: '#ef4444' },
+  { time: '2025-04-28T10:33:16Z', label: 'Desconexión Badajoz', color: '#ef4444' },
+  { time: '2025-04-28T10:33:21Z', label: 'Apertura AC Francia', color: '#d946ef' },
+  { time: '2025-04-28T10:33:27Z', label: 'CERO ELÉCTRICO', color: '#dc2626' },
+];
+
+export default function Sismografo() {
+  const [realTimeData, setRealTimeData] = useState([]);
+  const [historicalData, setHistoricalData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Cargar histórico
+  useEffect(() => {
+    fetch('/data/frequency_28A.json')
+      .then(res => res.json())
+      .then(data => {
+        // Asumiendo que el JSON tiene estructura [{datetime, freq}]
+        const formatted = data.map(d => ({ time: d.datetime, frequency: d.freq }));
+        setHistoricalData(formatted);
+      })
+      .catch(err => console.error('Error loading historical data:', err));
+  }, []);
+
+  // Cargar tiempo real
+  const fetchRealTime = async () => {
+    try {
+      const res = await fetch('/api/entsoe-frequency');
+      const data = await res.json();
+      setRealTimeData(data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching real-time frequency:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchRealTime();
+    const interval = setInterval(fetchRealTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading) return <div>Cargando datos de frecuencia...</div>;
+
+  // Construir figura Plotly
+  const traceActual = {
+    x: realTimeData.map(d => d.time),
+    y: realTimeData.map(d => d.frequency),
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Frecuencia actual',
+    line: { color: '#06b6d4', width: 2.5 },
+  };
+
+  const traceHistorico = {
+    x: historicalData.map(d => d.time),
+    y: historicalData.map(d => d.frequency),
+    type: 'scatter',
+    mode: 'lines',
+    name: '28-A (histórico)',
+    line: { color: '#ef4444', width: 1.8, dash: 'dot' },
+  };
+
+  // Líneas verticales de eventos
+  const shapes = EVENTOS_28A.map(ev => ({
+    type: 'line',
+    x0: ev.time,
+    x1: ev.time,
+    y0: 47.5,
+    y1: 50.5,
+    line: { color: ev.color, width: 1.5, dash: 'dash' },
+    label: { text: ev.label, textposition: 'top', font: { color: ev.color, size: 10 } }
+  }));
+
+  const layout = {
+    title: 'Sismógrafo de frecuencia - Hoy vs 28 de abril de 2025',
+    xaxis: { title: 'Hora', gridcolor: 'rgba(255,255,255,0.1)' },
+    yaxis: { title: 'Frecuencia (Hz)', range: [47.5, 50.5], gridcolor: 'rgba(255,255,255,0.1)' },
+    shapes: shapes,
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    hovermode: 'x unified',
+  };
+
+  return (
+    <div>
+      <h2>📊 Sismógrafo de frecuencia en tiempo real</h2>
+      <Plot data={[traceActual, traceHistorico]} layout={layout} style={{ width: '100%', height: '500px' }} />
+      <p className="text-sm text-gray-400 mt-2">Actualización cada 30 segundos. Los datos de ENTSO-E pueden tener latencia.</p>
+    </div>
+  );
+}
+5️⃣ Página principal de la sección
+Crea src/pages/datos-tiempo-real/index.js:
+
+jsx
+import React from 'react';
+import Link from '@docusaurus/Link';
+
+const features = [
+  { name: 'Sismógrafo de frecuencia', path: '/datos-tiempo-real/sismografo', description: 'Compara frecuencia actual con el 28-A', emoji: '🌊' },
+  { name: 'Detector de patrones pre-colapso', path: '/datos-tiempo-real/detector-patrones', description: 'Similitud con ventana crítica', emoji: '⚠️' },
+  { name: 'Índice de estrés del sistema', path: '/datos-tiempo-real/indice-estres', description: 'Termómetro de vulnerabilidad', emoji: '📊' },
+  // ... más
+];
+
+export default function DatosTiempoReal() {
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>📡 DATOS EN TIEMPO REAL</h1>
+      <p>Monitorización avanzada del sistema eléctrico ibérico usando datos de ESIOS y ENTSO-E.</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '2rem' }}>
+        {features.map(f => (
+          <Link key={f.path} to={f.path} style={{ textDecoration: 'none' }}>
+            <div style={{ background: '#111827', border: '1px solid #2a2a2e', borderRadius: '12px', padding: '1.5rem', transition: 'transform 0.2s', cursor: 'pointer' }}>
+              <div style={{ fontSize: '2rem' }}>{f.emoji}</div>
+              <h3>{f.name}</h3>
+              <p style={{ color: '#a0a0b0', fontSize: '0.9rem' }}>{f.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+6️⃣ Página del sismógrafo
+Crea src/pages/datos-tiempo-real/sismografo.jsx:
+
+jsx
+import React from 'react';
+import Layout from '@theme/Layout';
+import Sismografo from '../../components/Sismografo';
+
+export default function SismografoPage() {
+  return (
+    <Layout title="Sismógrafo de frecuencia" description="Frecuencia del sistema ibérico en tiempo real vs 28-A">
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <Sismografo />
+      </div>
+    </Layout>
+  );
+}
+7️⃣ Actualizar sidebars.js
+Añade la nueva categoría al principio o al final:
+
+js
+module.exports = {
+  mySidebar: [
+    // ... tus secciones existentes
+    {
+      type: 'category',
+      label: '📡 DATOS EN TIEMPO REAL',
+      items: [
+        'datos-tiempo-real/sismografo',
+        'datos-tiempo-real/detector-patrones',
+        // ... añadir el resto cuando estén listos
+      ],
+    },
+  ],
+};
+🚀 Instrucciones para desplegar
+Localmente, ejecuta vercel dev para probar las serverless functions.
+
+Asegúrate de que el archivo frequency_28A.json está en static/data/.
+
+Despliega a Vercel con vercel --prod.

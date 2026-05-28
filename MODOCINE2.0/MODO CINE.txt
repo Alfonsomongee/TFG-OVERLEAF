@@ -1,0 +1,2679 @@
+MODO CINE
+
+
+src/
+├── components/
+│   ├── cine-mode/
+│   │   ├── CineModeIntegrated.jsx      # Orquestador principal (player)
+│   │   ├── CineModePlayer.jsx          # Reproductor con scroll, controles, sincronización
+│   │   ├── Scene.jsx                   # Envoltorio de cada escena (con botón PDF y transiciones)
+│   │   ├── TimelineController.jsx      # Barra de progreso + botones (velocidad, skip, spotlight, kiosk)
+│   │   ├── chartRegistry.js            # Registro de componentes y metadatos de escenas
+│   │   ├── ActTransition.jsx           # Fundido a negro entre actos
+│   │   ├── ParticleSystem.jsx          # Partículas contextuales por acto (canvas)
+│   │   ├── PDFExportButton.jsx         # Exportar escena actual a PDF
+│   │   └── cine-mode.css               # Estilos globales unificados
+│   ├── Bloque1KPI.jsx                  # KPIs animados (mejorados con conteo)
+│   ├── Bloque2MixGeneracion.jsx        # Mix de generación
+│   ├── Bloque3Cascada.jsx              # Cascada de eventos (timeline interactivo)
+│   ├── Bloque4Frecuencia.jsx           # Gráfica de frecuencia con slider
+│   ├── Bloque5Interconexiones.jsx      # Interconexiones (barras, alerta crítica)
+│   ├── Bloque6Cronologia.jsx           # Cronología de reposición (cards)
+│   └── ... (otros componentes gráficos de ESIOS/ENTSO-E)
+├── pages/
+│   └── cine.jsx                        # Página dedicada al modo película
+├── styles/
+│   └── forensic-global.css             # (opcional, unificado en cine-mode.css)
+└── data/                               # Archivos JSON históricos (lista en DATOS_FORENSES_28A.txt)
+
+CineModePlayer.jsx	Reproductor principal. Gestiona scroll, detección de escena visible, cambios de acto, postMessage con Streamlit, y control de reproducción automática.
+Scene.jsx	Envuelve cada bloque (ej. Bloque1KPI). Añade botón PDF y transiciones de entrada.
+TimelineController.jsx	Barra de control con slider, botones de reproducción, velocidad, skip intro, spotlight y modo kiosco.
+chartRegistry.js	Mapeo de nombres de escenas a componentes React lazy, más metadatos (título, acto, descripción).
+ActTransition.jsx	Animación de fundido a negro cuando se cambia de acto.
+ParticleSystem.jsx	Genera partículas visuales según el acto (polvo solar, glitch, ceniza, líneas fluidas).
+PDFExportButton.jsx	Captura el contenido de la escena y genera un PDF con html2canvas + jsPDF.
+Bloque*.jsx	Componentes de visualización (KPI, mix, cascada, frecuencia, interconexiones, cronología). Todos aceptan el tema forense y ya tienen su propio CSS.
+
+
+
+/* ============================================================
+   FORENSE GLOBAL THEME - Modo Película 28-A
+   Basado en tus módulos .css existentes + mejoras cinematográficas
+   ============================================================ */
+
+:root {
+  /* Paleta oscura forense */
+  --forense-bg-primary: #0a0a0c;
+  --forense-bg-secondary: #111214;
+  --forense-bg-tertiary: #1a1b1f;
+  --forense-text-primary: #e6e6ea;
+  --forense-text-secondary: #a0a0b0;
+  --forense-text-tertiary: #6b6b7a;
+  --forense-accent-red: #d32f2f;
+  --forense-accent-red-hover: #f44336;
+  --forense-accent-blue: #2196f3;
+  --forense-accent-amber: #EF9F27;
+  --forense-accent-green: #1D9E75;
+  --forense-border: 1px solid #2a2a2e;
+  --forense-border-red: 1px solid rgba(211, 47, 47, 0.3);
+  
+  /* Tipografía forense */
+  --font-mono: 'Space Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Transiciones */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.25s ease-out;
+  --transition-slow: 0.4s ease-out;
+  
+  /* Efectos */
+  --glitch-offset: 2px;
+  --pulse-shadow: 0 0 4px rgba(211, 47, 47, 0.4);
+}
+
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.cine-mode-active {
+  background: var(--forense-bg-primary);
+  color: var(--forense-text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* ==========================
+   🎬 MODO PELÍCULA - CONTENEDORES PRINCIPALES
+   ========================== */
+.cine-mode-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  scroll-behavior: smooth;
+}
+
+.cine-act-section {
+  min-height: 100vh;
+  padding: 4rem 0;
+  transition: background 0.5s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cine-act-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--forense-accent-red);
+  display: inline-block;
+}
+
+.cine-act-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--forense-accent-red);
+  margin-bottom: 0.5rem;
+}
+
+.cine-act-subtitle {
+  font-family: var(--font-sans);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--forense-text-primary);
+  line-height: 1.2;
+}
+
+/* ==========================
+   📊 BLOQUES EXISTENTES - SOBREESCRITURA DE ESTILOS
+   ========================== */
+/* Aseguramos que todos los bloques hereden el tema forense */
+[class*="Bloque"] {
+  background: transparent !important;
+}
+
+[class*="container"], [class*="timelineContainer"], [class*="frequencyContainer"] {
+  background: transparent !important;
+}
+
+[class*="kpiCard"], [class*="timelineCard"], [class*="utilizationCard"], [class*="blackstartCard"] {
+  background: var(--forense-bg-secondary) !important;
+  border-color: var(--forense-border) !important;
+}
+
+[class*="alertBox"] {
+  background: rgba(211, 47, 47, 0.1) !important;
+  border-left-color: var(--forense-accent-red) !important;
+}
+
+/* Gráficas recharts - forzar colores */
+.recharts-cartesian-grid line {
+  stroke: rgba(128, 128, 128, 0.2);
+}
+
+.recharts-text {
+  fill: var(--forense-text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+}
+
+/* ==========================
+   🕹️ TIMELINE CONTROLLER (barra de progreso)
+   ========================== */
+.timeline-controller {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 12, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: var(--forense-border);
+  padding: 0.75rem 1.5rem;
+  z-index: 1000;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.timeline-slider {
+  flex: 1;
+  height: 3px;
+  -webkit-appearance: none;
+  background: var(--forense-bg-tertiary);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.timeline-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--forense-accent-red);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px var(--forense-accent-red);
+}
+
+.timeline-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.timeline-btn {
+  background: var(--forense-bg-tertiary);
+  border: var(--forense-border);
+  color: var(--forense-text-secondary);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timeline-btn:hover {
+  background: var(--forense-accent-red);
+  color: white;
+  border-color: var(--forense-accent-red);
+}
+
+.timeline-progress-text {
+  color: var(--forense-text-tertiary);
+  min-width: 80px;
+  text-align: right;
+}
+
+/* ==========================
+   ✨ ANIMACIONES CINEMATOGRÁFICAS
+   ========================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cine-scene {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-effect {
+  animation: glitch 0.2s ease-in-out;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+.pulse-border {
+  animation: pulse-red 0.8s ease-out;
+}
+
+/* ==========================
+   📱 RESPONSIVE MÓVIL
+   ========================== */
+@media (max-width: 768px) {
+  .cine-mode-container {
+    padding: 0 1rem;
+  }
+  
+  .cine-act-subtitle {
+    font-size: 1.3rem;
+  }
+  
+  .timeline-controller {
+    padding: 0.5rem 1rem;
+  }
+  
+  .timeline-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.6rem;
+  }
+  
+  .timeline-progress-text {
+    min-width: 60px;
+    font-size: 0.6rem;
+  }
+}
+
+// Registro de todos los componentes (bloques) para lazy loading
+import { lazy } from 'react';
+
+export const chartRegistry = {
+  // Bloques existentes (carga lazy)
+  'Bloque1KPI': lazy(() => import('../Bloque1KPI')),
+  'Bloque2MixGeneracion': lazy(() => import('../Bloque2MixGeneracion')),
+  'Bloque3Cascada': lazy(() => import('../Bloque3Cascada')),
+  'Bloque4Frecuencia': lazy(() => import('../Bloque4Frecuencia')),
+  'Bloque5Interconexiones': lazy(() => import('../Bloque5Interconexiones')),
+  'Bloque6Cronologia': lazy(() => import('../Bloque6Cronologia')),
+  
+  // Aquí puedes añadir más componentes si los creas
+};
+
+// Metadatos para cada bloque (orden, título, tiempo estimado)
+export const sceneMetadata = [
+  { id: 'kpi', component: 'Bloque1KPI', title: 'Impacto del colapso', act: 1, estimatedDuration: 10 },
+  { id: 'mix', component: 'Bloque2MixGeneracion', title: 'Mix de generación', act: 1, estimatedDuration: 15 },
+  { id: 'cascada', component: 'Bloque3Cascada', title: 'Cascada de eventos', act: 2, estimatedDuration: 20 },
+  { id: 'frecuencia', component: 'Bloque4Frecuencia', title: 'Evolución de frecuencia', act: 2, estimatedDuration: 25 },
+  { id: 'interconexiones', component: 'Bloque5Interconexiones', title: 'Interconexiones', act: 3, estimatedDuration: 15 },
+  { id: 'cronologia', component: 'Bloque6Cronologia', title: 'Cronología de reposición', act: 4, estimatedDuration: 20 },
+];
+
+import React, { Suspense, useEffect, useRef } from 'react';
+import { chartRegistry } from './chartRegistry';
+
+const LoadingPlaceholder = () => (
+  <div style={{ 
+    minHeight: '300px', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    background: 'var(--forense-bg-secondary)',
+    borderRadius: '8px',
+    border: '1px solid var(--forense-border)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    color: 'var(--forense-text-tertiary)'
+  }}>
+    <span>Cargando visualización forense...</span>
+  </div>
+);
+
+export default function Scene({ scene, isActive, onEnter, onLeave, currentTime }) {
+  const sceneRef = useRef(null);
+  const Component = chartRegistry[scene.component];
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            onEnter?.(scene.id);
+            entry.target.classList.add('cine-scene');
+          } else {
+            onLeave?.(scene.id);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sceneRef.current) {
+      observer.observe(sceneRef.current);
+    }
+
+    return () => {
+      if (sceneRef.current) observer.unobserve(sceneRef.current);
+    };
+  }, [scene.id, onEnter, onLeave]);
+
+  return (
+    <div 
+      ref={sceneRef} 
+      className="cine-scene-wrapper"
+      data-scene-id={scene.id}
+      style={{ opacity: 0, marginBottom: '4rem' }}
+    >
+      <div className="cine-act-header">
+        <div className="cine-act-title">ACTO {scene.act}</div>
+        <div className="cine-act-subtitle">{scene.title}</div>
+      </div>
+      <Suspense fallback={<LoadingPlaceholder />}>
+        <Component />
+      </Suspense>
+    </div>
+  );
+}
+
+import React, { useState, useEffect, useRef } from 'react';
+
+export default function TimelineController({ scenes, currentSceneId, onSceneChange, isPlaying, onPlayPause }) {
+  const [progress, setProgress] = useState(0);
+  const currentIndex = scenes.findIndex(s => s.id === currentSceneId);
+  
+  useEffect(() => {
+    setProgress(((currentIndex + 1) / scenes.length) * 100);
+  }, [currentIndex, scenes.length]);
+
+  const handleSliderChange = (e) => {
+    const index = Math.floor((parseFloat(e.target.value) / 100) * scenes.length);
+    const targetScene = scenes[Math.min(index, scenes.length - 1)];
+    if (targetScene) onSceneChange(targetScene.id);
+  };
+
+  return (
+    <div className="timeline-controller">
+      <div className="timeline-controls">
+        <button className="timeline-btn" onClick={onPlayPause}>
+          {isPlaying ? '⏸' : '▶'}
+        </button>
+      </div>
+      
+      <input
+        type="range"
+        className="timeline-slider"
+        min="0"
+        max="100"
+        step="1"
+        value={progress}
+        onChange={handleSliderChange}
+      />
+      
+      <div className="timeline-progress-text">
+        {currentIndex + 1} / {scenes.length}
+      </div>
+    </div>
+  );
+}
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Scene from './Scene';
+import TimelineController from './TimelineController';
+import { sceneMetadata } from './chartRegistry';
+import './cine-mode.css';
+
+export default function CineModePlayer() {
+  const [currentSceneId, setCurrentSceneId] = useState(sceneMetadata[0]?.id || '');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
+  const sceneRefs = useRef({});
+  const containerRef = useRef(null);
+
+  // Sincronizar con Streamlit (postMessage)
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === 'SYNC_SCENE') {
+        const targetScene = sceneMetadata.find(s => s.id === event.data.sceneId);
+        if (targetScene && sceneRefs.current[targetScene.id]) {
+          sceneRefs.current[targetScene.id].scrollIntoView({ behavior: 'smooth' });
+          setCurrentSceneId(targetScene.id);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    
+    // Notificar que el reproductor está listo
+    window.parent.postMessage({ type: 'CINE_MODE_READY' }, '*');
+    
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // Detectar escena visible por scroll
+  useEffect(() => {
+    if (!autoScrollEnabled) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleScenes = entries.filter(e => e.isIntersecting);
+        if (visibleScenes.length > 0) {
+          const topScene = visibleScenes.reduce((prev, curr) => 
+            curr.boundingClientRect.top < prev.boundingClientRect.top ? curr : prev
+          );
+          const sceneId = topScene.target.getAttribute('data-scene-id');
+          if (sceneId && sceneId !== currentSceneId) {
+            setCurrentSceneId(sceneId);
+            // Notificar a Streamlit
+            window.parent.postMessage({ type: 'SCENE_CHANGE', sceneId }, '*');
+          }
+        }
+      },
+      { threshold: 0.3 }
+    );
+    
+    Object.values(sceneRefs.current).forEach(ref => {
+      if (ref) observer.observe(ref);
+    });
+    
+    return () => observer.disconnect();
+  }, [currentSceneId, autoScrollEnabled]);
+
+  const handleSceneEnter = useCallback((sceneId) => {
+    console.log(`📽️ Escena activa: ${sceneId}`);
+    // Aquí puedes añadir lógica para activar audio ambiental, etc.
+  }, []);
+
+  const handleSceneChange = (sceneId) => {
+    if (sceneRefs.current[sceneId]) {
+      sceneRefs.current[sceneId].scrollIntoView({ behavior: 'smooth' });
+      setCurrentSceneId(sceneId);
+      setAutoScrollEnabled(true);
+    }
+  };
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    if (!isPlaying) {
+      // Reproducción automática: desplazamiento suave cada X segundos
+      let index = sceneMetadata.findIndex(s => s.id === currentSceneId);
+      const interval = setInterval(() => {
+        if (!isPlaying) return;
+        if (index < sceneMetadata.length - 1) {
+          index++;
+          handleSceneChange(sceneMetadata[index].id);
+        } else {
+          clearInterval(interval);
+          setIsPlaying(false);
+        }
+      }, 8000);
+      return () => clearInterval(interval);
+    }
+  };
+
+  return (
+    <div className="cine-mode-container" ref={containerRef}>
+      {sceneMetadata.map((scene, idx) => (
+        <div
+          key={scene.id}
+          ref={(el) => { sceneRefs.current[scene.id] = el; }}
+          data-scene-id={scene.id}
+          style={{ scrollMarginTop: '80px' }}
+        >
+          <Scene
+            scene={scene}
+            isActive={currentSceneId === scene.id}
+            onEnter={handleSceneEnter}
+            currentTime={null}
+          />
+        </div>
+      ))}
+      
+      <TimelineController
+        scenes={sceneMetadata}
+        currentSceneId={currentSceneId}
+        onSceneChange={handleSceneChange}
+        isPlaying={isPlaying}
+        onPlayPause={togglePlayPause}
+      />
+    </div>
+  );
+}
+
+import React, { useEffect } from 'react';
+import Layout from '@theme/Layout';
+import CineModePlayer from '../components/cine-mode/CineModePlayer';
+
+export default function CineModePage() {
+  useEffect(() => {
+    // Añadir clase al body para estilos globales
+    document.body.classList.add('cine-mode-active');
+    return () => {
+      document.body.classList.remove('cine-mode-active');
+    };
+  }, []);
+
+  return (
+    <Layout
+      title="Modo Película - Anatomía del Colapso Eléctrico 28-A"
+      description="Experiencia cinematográfica interactiva del apagón ibérico del 28 de abril de 2025"
+      noFooter
+      wrapperClassName="cine-mode-layout"
+    >
+      <div style={{ paddingTop: '2rem', minHeight: '100vh' }}>
+        <CineModePlayer />
+      </div>
+    </Layout>
+  );
+}
+
+# En app.py, añade al principio o donde manejes postMessage
+import streamlit as st
+import json
+
+# Escuchar mensajes desde Docusaurus (modo película)
+def handle_cine_message():
+    query_params = st.query_params
+    if "scene" in query_params:
+        scene_id = query_params["scene"]
+        # Actualizar slider maestro o gráficas según la escena
+        st.session_state.cine_scene = scene_id
+        st.rerun()
+
+# En el layout principal, puedes añadir un botón para volver al modo película
+st.markdown("""
+<style>
+.cine-mode-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-family: monospace;
+    cursor: pointer;
+    z-index: 1000;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(211,47,47,0.5);
+}
+</style>
+<a href="/cine" target="_blank" class="cine-mode-button">🎬 Modo Película</a>
+""", unsafe_allow_html=True)
+
+
+Archivo a modificar: src/components/Bloque1KPI.jsx
+
+Instalación necesaria (si no la tienes):
+
+bash
+npm install react-spring
+Código completo actualizado de Bloque1KPI.jsx:
+
+jsx
+import React, { useEffect, useRef, useState } from 'react';
+import { useSpring, animated } from 'react-spring';
+import styles from './Bloque1KPI.module.css';
+
+const KPI_DATA = [
+  {
+    id: 'duration',
+    label: 'DURACIÓN DEL COLAPSO',
+    value: 27,
+    unit: ' s',
+    context: '12:32:57 → 12:33:24 CEST',
+    source: 'ENTSO-E Final Report, 20/03/2026',
+    color: 'red'
+  },
+  {
+    id: 'load',
+    label: 'CARGA INTERRUMPIDA',
+    value: 31,
+    unit: ' GW',
+    context: 'Sistema ibérico completo',
+    source: 'ENTSO-E Final Report, 20/03/2026',
+    color: 'red'
+  },
+  {
+    id: 'population',
+    label: 'POBLACIÓN AFECTADA',
+    value: 55,
+    unit: ' M',
+    context: 'España peninsular + Portugal continental',
+    source: 'Censos España + Portugal',
+    color: 'amber'
+  },
+  {
+    id: 'deaths',
+    label: 'FALLECIDOS CONFIRMADOS',
+    value: 8,
+    unit: '',
+    context: '7 España · 1 Portugal',
+    source: 'El País / RTP, 28–29/04/2025',
+    color: 'red'
+  },
+  {
+    id: 'recovery',
+    label: 'REPOSICIÓN COMPLETA',
+    value: 18,
+    unit: ' h',
+    context: '99,95% a las 07:00 del 29 abr',
+    source: 'REE Operación, 29/04/2025',
+    color: 'green'
+  },
+  {
+    id: 'losses',
+    label: 'PÉRDIDAS ECONÓMICAS',
+    value: 1600,
+    unit: ' M€',
+    context: 'Est. CEOE · 0,1% del PIB español',
+    source: 'CEOE, declaración Antonio Garamendi, 29/04/2025',
+    color: 'amber'
+  }
+];
+
+// Componente de número animado
+const AnimatedNumber = ({ value, unit, isVisible }) => {
+  const { number } = useSpring({
+    from: { number: 0 },
+    to: { number: isVisible ? value : 0 },
+    delay: 200,
+    config: { mass: 1, tension: 50, friction: 20 }
+  });
+
+  return (
+    <animated.div className={styles.kpiValue}>
+      {number.to(n => `${Math.floor(n).toLocaleString('es-ES')}${unit}`)}
+    </animated.div>
+  );
+};
+
+export default function Bloque1KPI() {
+  const [visibleCards, setVisibleCards] = useState({});
+  const cardRefs = useRef({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          const id = entry.target.getAttribute('data-id');
+          if (entry.isIntersecting) {
+            setVisibleCards(prev => ({ ...prev, [id]: true }));
+            // Opcional: dejar de observar una vez animado
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    Object.values(cardRefs.current).forEach(ref => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className={styles.kpiDashboard}>
+      <div className={styles.kpiGrid}>
+        {KPI_DATA.map((kpi) => (
+          <div
+            key={kpi.id}
+            className={`${styles.kpiCard} ${styles[kpi.color]}`}
+            ref={el => cardRefs.current[kpi.id] = el}
+            data-id={kpi.id}
+            aria-label={`${kpi.label}: ${kpi.value}${kpi.unit}`}
+          >
+            <div className={styles.kpiLabel}>{kpi.label}</div>
+            <AnimatedNumber 
+              value={kpi.value} 
+              unit={kpi.unit} 
+              isVisible={visibleCards[kpi.id]} 
+            />
+            <div className={styles.kpiContext}>{kpi.context}</div>
+            
+            <div className={styles.kpiTooltip} role="tooltip">
+              {kpi.source}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className={styles.kpiFooter}>
+        <p>
+          Las cifras presentadas provienen del informe oficial de ENTSO-E (marzo de 2026) y 
+          comunicados gubernamentales. El margen de error en la carga interrumpida es ±0.5 GW 
+          debido a la pérdida de telemetría SCADA durante la cascada final.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+🎬 Mejora 2: Transiciones entre actos
+Archivo a modificar: src/components/cine-mode/CineModePlayer.jsx
+
+Añadir al principio del archivo (imports):
+
+jsx
+import { useSpring, animated } from 'react-spring';
+Añadir dentro del componente CineModePlayer (estado y lógica):
+
+jsx
+const [showActTransition, setShowActTransition] = useState(false);
+const [currentAct, setCurrentAct] = useState(1);
+const lastActRef = useRef(1);
+Detectar cambio de acto y activar transición (dentro del useEffect que observa el scroll o cuando cambia currentSceneId):
+
+jsx
+useEffect(() => {
+  const scene = sceneMetadata.find(s => s.id === currentSceneId);
+  const newAct = scene?.act || 1;
+  if (newAct !== lastActRef.current) {
+    setCurrentAct(newAct);
+    setShowActTransition(true);
+    const timer = setTimeout(() => setShowActTransition(false), 1000);
+    lastActRef.current = newAct;
+    return () => clearTimeout(timer);
+  }
+}, [currentSceneId]);
+Componente de transición (dentro del return, después del containerRef):
+
+jsx
+{showActTransition && (
+  <animated.div className="act-transition-overlay" style={{ opacity: 1 }}>
+    <div className="act-transition-content">
+      <span className="act-transition-label">ACTO</span>
+      <span className="act-transition-number">{currentAct}</span>
+    </div>
+  </animated.div>
+)}
+Añadir CSS en cine-mode.css:
+
+css
+/* Transición entre actos */
+.act-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: fadeOutAct 1s ease-out forwards;
+}
+
+@keyframes fadeOutAct {
+  0% { opacity: 1; background: black; }
+  70% { opacity: 1; background: black; }
+  100% { opacity: 0; background: black; visibility: hidden; }
+}
+
+.act-transition-content {
+  text-align: center;
+  transform: scale(1);
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.act-transition-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  color: var(--forense-accent-red);
+  margin-bottom: 0.5rem;
+}
+
+.act-transition-number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 4rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 20px var(--forense-accent-red);
+}
+
+Archivos a modificar/crear:
+
+src/components/cine-mode/ActTransition.jsx (nuevo)
+
+src/components/cine-mode/CineModePlayer.jsx (modificar)
+
+src/components/cine-mode/cine-mode.css (añadir estilos)
+
+1. Nuevo componente ActTransition.jsx
+jsx
+// src/components/cine-mode/ActTransition.jsx
+import React, { useEffect, useState } from 'react';
+
+const ACT_TITLES = {
+  1: 'EL CONTEXTO – LA TORMENTA PERFECTA',
+  2: 'EL COLAPSO',
+  3: 'EL PRECIPICIO – CONSECUENCIAS INMEDIATAS',
+  4: 'LA REPOSICIÓN',
+  5: 'LAS REFORMAS'
+};
+
+export default function ActTransition({ act, duration = 1000 }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (!act) return;
+    setVisible(true);
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [act, duration]);
+
+  if (!visible) return null;
+
+  return (
+    <div className="act-transition-overlay">
+      <div className="act-transition-content">
+        <div className="act-transition-label">ACTO {act}</div>
+        <div className="act-transition-title">{ACT_TITLES[act] || ''}</div>
+      </div>
+    </div>
+  );
+}
+2. Modificar CineModePlayer.jsx
+Añade el estado currentAct y detecta cuándo cambia para lanzar la transición.
+
+jsx
+// Dentro de CineModePlayer.jsx, añade al inicio de los imports:
+import ActTransition from './ActTransition';
+
+// Dentro del componente, añade estado:
+const [currentAct, setCurrentAct] = useState(1);
+const [prevAct, setPrevAct] = useState(1);
+
+// En el useEffect que detecta la escena visible, añade:
+const detectedAct = sceneMetadata.find(s => s.id === sceneId)?.act || 1;
+if (detectedAct !== currentAct) {
+  setPrevAct(currentAct);
+  setCurrentAct(detectedAct);
+}
+
+// En el render, al final, antes de TimelineController:
+<ActTransition key={currentAct} act={currentAct} duration={800} />
+Fragmento completo integrado (solo la parte del render y el useEffect ajustado):
+
+jsx
+// Dentro del useEffect de detección de escena visible:
+const observer = new IntersectionObserver(
+  (entries) => {
+    const visibleScenes = entries.filter(e => e.isIntersecting);
+    if (visibleScenes.length > 0) {
+      const topScene = visibleScenes.reduce((prev, curr) => 
+        curr.boundingClientRect.top < prev.boundingClientRect.top ? curr : prev
+      );
+      const sceneId = topScene.target.getAttribute('data-scene-id');
+      if (sceneId && sceneId !== currentSceneId) {
+        setCurrentSceneId(sceneId);
+        const newAct = sceneMetadata.find(s => s.id === sceneId)?.act || 1;
+        if (newAct !== currentAct) {
+          setCurrentAct(newAct);
+        }
+        window.parent.postMessage({ type: 'SCENE_CHANGE', sceneId }, '*');
+      }
+    }
+  },
+  { threshold: 0.3 }
+);
+Y en el JSX:
+
+jsx
+return (
+  <div className="cine-mode-container" ref={containerRef}>
+    {/* ... el map de escenas ... */}
+    <ActTransition key={currentAct} act={currentAct} duration={800} />
+    <TimelineController ... />
+  </div>
+);
+3. Añadir estilos a cine-mode.css
+css
+/* ==========================
+   TRANSICIONES DE ACTO (fundido a negro)
+   ========================== */
+.act-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: actFadeOut 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes actFadeOut {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(8px);
+    visibility: hidden;
+  }
+}
+
+.act-transition-content {
+  text-align: center;
+  transform: translateY(-20px);
+  animation: actTextRise 0.6s ease-out forwards;
+}
+
+@keyframes actTextRise {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.act-transition-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  color: var(--forense-accent-red);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.act-transition-title {
+  font-family: var(--font-sans);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  max-width: 80vw;
+  line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+  .act-transition-title {
+    font-size: 1.1rem;
+  }
+  .act-transition-label {
+    font-size: 0.6rem;
+  }
+}
+
+🎮 Mejora 3: Controles de reproducción mejorados
+1. Modificar TimelineController.jsx
+jsx
+// src/components/cine-mode/TimelineController.jsx
+import React, { useState, useEffect } from 'react';
+
+export default function TimelineController({ 
+  scenes, 
+  currentSceneId, 
+  onSceneChange, 
+  isPlaying, 
+  onPlayPause,
+  onSkipBack,
+  onSkipForward,
+  onSpeedChange,
+  speed,
+  onSkipIntro
+}) {
+  const [progress, setProgress] = useState(0);
+  const currentIndex = scenes.findIndex(s => s.id === currentSceneId);
+  
+  useEffect(() => {
+    setProgress(((currentIndex + 1) / scenes.length) * 100);
+  }, [currentIndex, scenes.length]);
+
+  const handleSliderChange = (e) => {
+    const index = Math.floor((parseFloat(e.target.value) / 100) * scenes.length);
+    const targetScene = scenes[Math.min(index, scenes.length - 1)];
+    if (targetScene) onSceneChange(targetScene.id);
+  };
+
+  return (
+    <div className="timeline-controller">
+      <div className="timeline-controls">
+        <button className="timeline-btn" onClick={onSkipIntro} title="Saltar introducción (Acto II)">
+          ⏭ Skip Intro
+        </button>
+        <button className="timeline-btn" onClick={onSkipBack} title="Escena anterior">
+          ⏪
+        </button>
+        <button className="timeline-btn play-pause" onClick={onPlayPause}>
+          {isPlaying ? '⏸' : '▶'}
+        </button>
+        <button className="timeline-btn" onClick={onSkipForward} title="Escena siguiente">
+          ⏩
+        </button>
+        <select className="timeline-btn" value={speed} onChange={(e) => onSpeedChange(parseFloat(e.target.value))}>
+          <option value={0.5}>0.5x</option>
+          <option value={1}>1x</option>
+          <option value={1.5}>1.5x</option>
+          <option value={2}>2x</option>
+        </select>
+      </div>
+      
+      <input
+        type="range"
+        className="timeline-slider"
+        min="0"
+        max="100"
+        step="1"
+        value={progress}
+        onChange={handleSliderChange}
+      />
+      
+      <div className="timeline-progress-text">
+        {currentIndex + 1} / {scenes.length}
+      </div>
+    </div>
+  );
+}
+2. Modificar CineModePlayer.jsx para manejar la lógica de reproducción automática
+Añadir estados y funciones para controlar la reproducción, la velocidad y el salto de escenas.
+
+jsx
+// src/components/cine-mode/CineModePlayer.jsx
+// Añadir dentro del componente:
+
+const [isPlaying, setIsPlaying] = useState(false);
+const [speed, setSpeed] = useState(1);
+const intervalRef = useRef(null);
+
+// Función para avanzar automáticamente
+const startAutoPlay = () => {
+  if (intervalRef.current) clearInterval(intervalRef.current);
+  intervalRef.current = setInterval(() => {
+    setCurrentSceneId(prevId => {
+      const currentIdx = sceneMetadata.findIndex(s => s.id === prevId);
+      if (currentIdx < sceneMetadata.length - 1) {
+        const nextScene = sceneMetadata[currentIdx + 1];
+        // Scroll suave a la siguiente escena
+        const nextElement = sceneRefs.current[nextScene.id];
+        if (nextElement) {
+          nextElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        return nextScene.id;
+      } else {
+        // Llegó al final, detener reproducción
+        setIsPlaying(false);
+        clearInterval(intervalRef.current);
+        return prevId;
+      }
+    });
+  }, 8000 / speed); // velocidad ajustable
+};
+
+const handlePlayPause = () => {
+  if (isPlaying) {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setIsPlaying(false);
+  } else {
+    setIsPlaying(true);
+    startAutoPlay();
+  }
+};
+
+const handleSkipBack = () => {
+  const currentIdx = sceneMetadata.findIndex(s => s.id === currentSceneId);
+  if (currentIdx > 0) {
+    const prevScene = sceneMetadata[currentIdx - 1];
+    if (sceneRefs.current[prevScene.id]) {
+      sceneRefs.current[prevScene.id].scrollIntoView({ behavior: 'smooth' });
+      setCurrentSceneId(prevScene.id);
+    }
+  }
+};
+
+const handleSkipForward = () => {
+  const currentIdx = sceneMetadata.findIndex(s => s.id === currentSceneId);
+  if (currentIdx < sceneMetadata.length - 1) {
+    const nextScene = sceneMetadata[currentIdx + 1];
+    if (sceneRefs.current[nextScene.id]) {
+      sceneRefs.current[nextScene.id].scrollIntoView({ behavior: 'smooth' });
+      setCurrentSceneId(nextScene.id);
+    }
+  }
+};
+
+const handleSkipIntro = () => {
+  // Saltar al acto II (cascada o frecuencia, según tu mapeo)
+  const act2Scene = sceneMetadata.find(s => s.act === 2);
+  if (act2Scene && sceneRefs.current[act2Scene.id]) {
+    sceneRefs.current[act2Scene.id].scrollIntoView({ behavior: 'smooth' });
+    setCurrentSceneId(act2Scene.id);
+  }
+};
+
+const handleSpeedChange = (newSpeed) => {
+  setSpeed(newSpeed);
+  if (isPlaying) {
+    // Reiniciar el intervalo con la nueva velocidad
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    startAutoPlay();
+  }
+};
+
+// Limpiar intervalo al desmontar
+useEffect(() => {
+  return () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+}, []);
+
+// En el render, pasar las props al TimelineController:
+<TimelineController
+  scenes={sceneMetadata}
+  currentSceneId={currentSceneId}
+  onSceneChange={handleSceneChange}
+  isPlaying={isPlaying}
+  onPlayPause={handlePlayPause}
+  onSkipBack={handleSkipBack}
+  onSkipForward={handleSkipForward}
+  onSpeedChange={handleSpeedChange}
+  speed={speed}
+  onSkipIntro={handleSkipIntro}
+/>
+3. Añadir estilos adicionales para el botón play/pause (opcional)
+css
+/* En cine-mode.css, añadir estilo para el botón play/pause */
+.timeline-btn.play-pause {
+  background: var(--forense-accent-red);
+  color: white;
+  border-color: var(--forense-accent-red);
+  min-width: 50px;
+}
+.timeline-btn.play-pause:hover {
+  background: var(--forense-accent-red-hover);
+}
+
+🎮 Mejora 3: Controles de reproducción mejorados
+1. Modificar TimelineController.jsx
+jsx
+// src/components/cine-mode/TimelineController.jsx
+import React, { useState, useEffect } from 'react';
+
+export default function TimelineController({ 
+  scenes, 
+  currentSceneId, 
+  onSceneChange, 
+  isPlaying, 
+  onPlayPause,
+  onSkipBack,
+  onSkipForward,
+  onSpeedChange,
+  speed,
+  onSkipIntro
+}) {
+  const [progress, setProgress] = useState(0);
+  const currentIndex = scenes.findIndex(s => s.id === currentSceneId);
+  
+  useEffect(() => {
+    setProgress(((currentIndex + 1) / scenes.length) * 100);
+  }, [currentIndex, scenes.length]);
+
+  const handleSliderChange = (e) => {
+    const index = Math.floor((parseFloat(e.target.value) / 100) * scenes.length);
+    const targetScene = scenes[Math.min(index, scenes.length - 1)];
+    if (targetScene) onSceneChange(targetScene.id);
+  };
+
+  return (
+    <div className="timeline-controller">
+      <div className="timeline-controls">
+        <button className="timeline-btn" onClick={onSkipIntro} title="Saltar introducción (Acto II)">
+          ⏭ Skip Intro
+        </button>
+        <button className="timeline-btn" onClick={onSkipBack} title="Escena anterior">
+          ⏪
+        </button>
+        <button className="timeline-btn play-pause" onClick={onPlayPause}>
+          {isPlaying ? '⏸' : '▶'}
+        </button>
+        <button className="timeline-btn" onClick={onSkipForward} title="Escena siguiente">
+          ⏩
+        </button>
+        <select className="timeline-btn" value={speed} onChange={(e) => onSpeedChange(parseFloat(e.target.value))}>
+          <option value={0.5}>0.5x</option>
+          <option value={1}>1x</option>
+          <option value={1.5}>1.5x</option>
+          <option value={2}>2x</option>
+        </select>
+      </div>
+      
+      <input
+        type="range"
+        className="timeline-slider"
+        min="0"
+        max="100"
+        step="1"
+        value={progress}
+        onChange={handleSliderChange}
+      />
+      
+      <div className="timeline-progress-text">
+        {currentIndex + 1} / {scenes.length}
+      </div>
+    </div>
+  );
+}
+2. Modificar CineModePlayer.jsx
+Añade los estados y funciones de control de reproducción:
+
+jsx
+// src/components/cine-mode/CineModePlayer.jsx
+// Añadir dentro del componente, después de las declaraciones de estado existentes:
+
+const [isPlaying, setIsPlaying] = useState(false);
+const [speed, setSpeed] = useState(1);
+const intervalRef = useRef(null);
+
+// Función para avanzar automáticamente
+const startAutoPlay = () => {
+  if (intervalRef.current) clearInterval(intervalRef.current);
+  intervalRef.current = setInterval(() => {
+    setCurrentSceneId(prevId => {
+      const currentIdx = sceneMetadata.findIndex(s => s.id === prevId);
+      if (currentIdx < sceneMetadata.length - 1) {
+        const nextScene = sceneMetadata[currentIdx + 1];
+        const nextElement = sceneRefs.current[nextScene.id];
+        if (nextElement) {
+          nextElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        return nextScene.id;
+      } else {
+        // Llegó al final, detener reproducción
+        setIsPlaying(false);
+        clearInterval(intervalRef.current);
+        return prevId;
+      }
+    });
+  }, 8000 / speed);
+};
+
+// Handlers
+const handlePlayPause = () => {
+  if (isPlaying) {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setIsPlaying(false);
+  } else {
+    setIsPlaying(true);
+    startAutoPlay();
+  }
+};
+
+const handleSkipBack = () => {
+  const currentIdx = sceneMetadata.findIndex(s => s.id === currentSceneId);
+  if (currentIdx > 0) {
+    const prevScene = sceneMetadata[currentIdx - 1];
+    if (sceneRefs.current[prevScene.id]) {
+      sceneRefs.current[prevScene.id].scrollIntoView({ behavior: 'smooth' });
+      setCurrentSceneId(prevScene.id);
+    }
+  }
+};
+
+const handleSkipForward = () => {
+  const currentIdx = sceneMetadata.findIndex(s => s.id === currentSceneId);
+  if (currentIdx < sceneMetadata.length - 1) {
+    const nextScene = sceneMetadata[currentIdx + 1];
+    if (sceneRefs.current[nextScene.id]) {
+      sceneRefs.current[nextScene.id].scrollIntoView({ behavior: 'smooth' });
+      setCurrentSceneId(nextScene.id);
+    }
+  }
+};
+
+const handleSkipIntro = () => {
+  // Saltar al Acto II (buscar primera escena con act === 2)
+  const act2Scene = sceneMetadata.find(s => s.act === 2);
+  if (act2Scene && sceneRefs.current[act2Scene.id]) {
+    sceneRefs.current[act2Scene.id].scrollIntoView({ behavior: 'smooth' });
+    setCurrentSceneId(act2Scene.id);
+  }
+};
+
+const handleSpeedChange = (newSpeed) => {
+  setSpeed(newSpeed);
+  if (isPlaying) {
+    // Reiniciar el intervalo con la nueva velocidad
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    startAutoPlay();
+  }
+};
+
+// Limpiar intervalo al desmontar
+useEffect(() => {
+  return () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+}, []);
+
+// En el render, añadir las nuevas props al TimelineController:
+// (dentro del return, donde está <TimelineController ... />)
+<TimelineController
+  scenes={sceneMetadata}
+  currentSceneId={currentSceneId}
+  onSceneChange={handleSceneChange}
+  isPlaying={isPlaying}
+  onPlayPause={handlePlayPause}
+  onSkipBack={handleSkipBack}
+  onSkipForward={handleSkipForward}
+  onSpeedChange={handleSpeedChange}
+  speed={speed}
+  onSkipIntro={handleSkipIntro}
+/>
+3. Añadir estilo para el botón play/pause (en cine-mode.css)
+css
+/* Botón play/pause destacado */
+.timeline-btn.play-pause {
+  background: var(--forense-accent-red);
+  color: white;
+  border-color: var(--forense-accent-red);
+  min-width: 50px;
+}
+.timeline-btn.play-pause:hover {
+  background: var(--forense-accent-red-hover);
+  transform: scale(1.02);
+}
+
+
+🎯 Mejora 4: Modo spotlight (modo noche / enfoque)
+1. Modificar CineModePlayer.jsx
+Añade estado y toggle para activar/desactivar el spotlight.
+
+jsx
+// src/components/cine-mode/CineModePlayer.jsx
+// Añadir estado:
+const [spotlightActive, setSpotlightActive] = useState(false);
+const spotlightRef = useRef(null);
+
+// Función para calcular la posición del spotlight (sigue al bloque activo)
+useEffect(() => {
+  if (!spotlightActive) return;
+  
+  const updateSpotlight = () => {
+    const activeElement = sceneRefs.current[currentSceneId];
+    if (activeElement && spotlightRef.current) {
+      const rect = activeElement.getBoundingClientRect();
+      const scrollTop = window.scrollY;
+      const spotlight = spotlightRef.current;
+      // Actualizar clip-path para crear un agujero circular alrededor del elemento activo
+      const top = rect.top + scrollTop - 20;
+      const left = rect.left - 20;
+      const width = rect.width + 40;
+      const height = rect.height + 40;
+      spotlight.style.clipPath = `polygon(
+        0% 0%, 100% 0%, 100% 100%, 0% 100%,
+        0% ${top}px, 100% ${top}px, 100% ${top + height}px, 0% ${top + height}px
+      )`;
+    }
+  };
+  
+  updateSpotlight();
+  window.addEventListener('scroll', updateSpotlight);
+  window.addEventListener('resize', updateSpotlight);
+  return () => {
+    window.removeEventListener('scroll', updateSpotlight);
+    window.removeEventListener('resize', updateSpotlight);
+  };
+}, [spotlightActive, currentSceneId]);
+
+// Toggle spotlight
+const toggleSpotlight = () => {
+  setSpotlightActive(!spotlightActive);
+  if (!spotlightActive) {
+    document.body.classList.add('spotlight-active');
+  } else {
+    document.body.classList.remove('spotlight-active');
+  }
+};
+
+// Añadir botón en algún lugar (por ejemplo, en el controlador de línea de tiempo)
+// Puedes añadirlo en TimelineController o en un botón flotante.
+2. Modificar TimelineController.jsx para incluir botón spotlight
+jsx
+// Dentro de TimelineController.jsx, añade una nueva prop y botón
+export default function TimelineController({ 
+  // ... otras props
+  onToggleSpotlight,
+  spotlightActive 
+}) {
+  // ...
+  return (
+    <div className="timeline-controller">
+      {/* ... otros botones ... */}
+      <button 
+        className={`timeline-btn ${spotlightActive ? 'spotlight-active' : ''}`} 
+        onClick={onToggleSpotlight}
+        title="Modo noche / enfocar"
+      >
+        {spotlightActive ? '🌙' : '☀️'}
+      </button>
+      {/* ... resto ... */}
+    </div>
+  );
+}
+3. Añadir CSS en cine-mode.css
+css
+/* ==========================
+   MODO SPOTLIGHT (NOCHE / ENFOQUE)
+   ========================== */
+.spotlight-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 999;
+  pointer-events: none;
+  transition: clip-path 0.2s ease;
+  /* El clip-path se actualiza dinámicamente desde JS */
+}
+
+body.spotlight-active .cine-scene-wrapper:not(.active-spotlight) {
+  filter: blur(2px);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+body.spotlight-active .cine-scene-wrapper.active-spotlight {
+  filter: none;
+  opacity: 1;
+  z-index: 1000;
+  position: relative;
+}
+
+/* También podemos añadir un botón flotante adicional */
+.spotlight-toggle-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: var(--forense-bg-tertiary);
+  border: 1px solid var(--forense-accent-red);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+4. En CineModePlayer.jsx, añade el overlay dinámico y la clase al wrapper de escena
+jsx
+// En el render, antes de TimelineController, añade:
+{spotlightActive && <div ref={spotlightRef} className="spotlight-overlay" />}
+
+// Y en cada escena wrapper, añade una clase condicional para identificar la activa:
+<div
+  ref={(el) => { sceneRefs.current[scene.id] = el; }}
+  data-scene-id={scene.id}
+  className={`cine-scene-wrapper ${currentSceneId === scene.id ? 'active-spotlight' : ''}`}
+  style={{ scrollMarginTop: '80px' }}
+>
+5. Añade el botón flotante como alternativa (opcional)
+jsx
+// Al final del render, fuera del container
+<button className="spotlight-toggle-btn" onClick={toggleSpotlight}>
+  {spotlightActive ? '🔆' : '🌙'}
+</button>
+
+1. Modificar TimelineController.jsx
+Añadimos estado para la miniatura, manejo del hover y renderizado condicional.
+
+jsx
+// src/components/cine-mode/TimelineController.jsx
+import React, { useState, useEffect, useRef } from 'react';
+
+export default function TimelineController({ 
+  scenes, 
+  currentSceneId, 
+  onSceneChange, 
+  isPlaying, 
+  onPlayPause,
+  onSkipBack,
+  onSkipForward,
+  onSpeedChange,
+  speed,
+  onSkipIntro,
+  onToggleSpotlight,
+  spotlightActive 
+}) {
+  const [progress, setProgress] = useState(0);
+  const [hoverScene, setHoverScene] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState(0);
+  const sliderRef = useRef(null);
+  
+  const currentIndex = scenes.findIndex(s => s.id === currentSceneId);
+  
+  useEffect(() => {
+    setProgress(((currentIndex + 1) / scenes.length) * 100);
+  }, [currentIndex, scenes.length]);
+
+  const handleSliderChange = (e) => {
+    const index = Math.floor((parseFloat(e.target.value) / 100) * scenes.length);
+    const targetScene = scenes[Math.min(index, scenes.length - 1)];
+    if (targetScene) onSceneChange(targetScene.id);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!sliderRef.current) return;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = Math.min(1, Math.max(0, x / rect.width));
+    const sceneIndex = Math.floor(percent * scenes.length);
+    if (sceneIndex !== hoverScene?.index) {
+      const scene = scenes[Math.min(sceneIndex, scenes.length - 1)];
+      setHoverScene({ ...scene, index: sceneIndex });
+      setHoverPosition(x);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoverScene(null);
+  };
+
+  return (
+    <div className="timeline-controller">
+      <div className="timeline-controls">
+        <button className="timeline-btn" onClick={onSkipIntro} title="Saltar introducción (Acto II)">
+          ⏭ Skip Intro
+        </button>
+        <button className="timeline-btn" onClick={onSkipBack} title="Escena anterior">
+          ⏪
+        </button>
+        <button className="timeline-btn play-pause" onClick={onPlayPause}>
+          {isPlaying ? '⏸' : '▶'}
+        </button>
+        <button className="timeline-btn" onClick={onSkipForward} title="Escena siguiente">
+          ⏩
+        </button>
+        <select className="timeline-btn" value={speed} onChange={(e) => onSpeedChange(parseFloat(e.target.value))}>
+          <option value={0.5}>0.5x</option>
+          <option value={1}>1x</option>
+          <option value={1.5}>1.5x</option>
+          <option value={2}>2x</option>
+        </select>
+        <button 
+          className={`timeline-btn ${spotlightActive ? 'spotlight-active' : ''}`} 
+          onClick={onToggleSpotlight}
+          title="Modo noche / enfocar"
+        >
+          {spotlightActive ? '🌙' : '☀️'}
+        </button>
+      </div>
+      
+      <div style={{ position: 'relative', flex: 1 }}>
+        <input
+          ref={sliderRef}
+          type="range"
+          className="timeline-slider"
+          min="0"
+          max="100"
+          step="1"
+          value={progress}
+          onChange={handleSliderChange}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        />
+        
+        {/* Miniatura de vista previa */}
+        {hoverScene && (
+          <div 
+            className="timeline-preview"
+            style={{ left: `${hoverPosition}px`, transform: 'translateX(-50%)' }}
+          >
+            <div className="timeline-preview-content">
+              <div className="timeline-preview-act">ACTO {hoverScene.act}</div>
+              <div className="timeline-preview-title">{hoverScene.title}</div>
+              <div className="timeline-preview-desc">
+                {hoverScene.description || 'Haz clic para ir a esta escena'}
+              </div>
+            </div>
+            <div className="timeline-preview-arrow" />
+          </div>
+        )}
+      </div>
+      
+      <div className="timeline-progress-text">
+        {currentIndex + 1} / {scenes.length}
+      </div>
+    </div>
+  );
+}
+2. Actualizar sceneMetadata en chartRegistry.js para incluir descripciones
+jsx
+// src/components/cine-mode/chartRegistry.js
+export const sceneMetadata = [
+  { id: 'kpi', component: 'Bloque1KPI', title: 'Impacto del colapso', act: 1, description: 'Cifras clave: duración, carga interrumpida, población afectada', estimatedDuration: 10 },
+  { id: 'mix', component: 'Bloque2MixGeneracion', title: 'Mix de generación', act: 1, description: '82% de energía renovable en el momento crítico', estimatedDuration: 15 },
+  { id: 'cascada', component: 'Bloque3Cascada', title: 'Cascada de eventos', act: 2, description: 'Secuencia cronológica del colapso', estimatedDuration: 20 },
+  { id: 'frecuencia', component: 'Bloque4Frecuencia', title: 'Evolución de frecuencia', act: 2, description: 'Caída a 47,79 Hz en 33 segundos', estimatedDuration: 25 },
+  { id: 'interconexiones', component: 'Bloque5Interconexiones', title: 'Interconexiones', act: 3, description: 'Flujos Francia, Portugal y Marruecos', estimatedDuration: 15 },
+  { id: 'cronologia', component: 'Bloque6Cronologia', title: 'Cronología de reposición', act: 4, description: 'Recuperación del suministro en 18 horas', estimatedDuration: 20 },
+];
+3. Añadir estilos CSS para la miniatura en cine-mode.css
+css
+/* ==========================
+   TIMELINE PREVIEW (miniaturas)
+   ========================== */
+.timeline-preview {
+  position: absolute;
+  bottom: 30px;
+  background: var(--forense-bg-secondary);
+  border: 1px solid var(--forense-accent-red);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 200px;
+  max-width: 280px;
+  z-index: 1100;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.timeline-preview-content {
+  font-family: var(--font-sans);
+}
+
+.timeline-preview-act {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--forense-accent-red);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.timeline-preview-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--forense-text-primary);
+  margin-bottom: 4px;
+}
+
+.timeline-preview-desc {
+  font-size: 0.7rem;
+  color: var(--forense-text-secondary);
+  line-height: 1.4;
+}
+
+.timeline-preview-arrow {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--forense-accent-red);
+}
+
+/* Responsive móvil: ocultar miniaturas por espacio */
+@media (max-width: 768px) {
+  .timeline-preview {
+    display: none;
+  }
+}
+
+✨ Mejora 6: Partículas contextuales por acto
+1. Crear nuevo componente ParticleSystem.jsx
+jsx
+// src/components/cine-mode/ParticleSystem.jsx
+import React, { useEffect, useRef, useState } from 'react';
+
+const PARTICLE_CONFIGS = {
+  1: { // Acto I - Polvo solar / energía
+    count: 150,
+    color: [245, 158, 11], // ámbar
+    size: 1.5,
+    speed: 0.3,
+    shape: 'circle',
+    opacity: 0.4
+  },
+  2: { // Acto II - Glitch / fallo
+    count: 80,
+    color: [211, 47, 47], // rojo
+    size: 3,
+    speed: 1.5,
+    shape: 'square',
+    opacity: 0.6,
+    glitch: true
+  },
+  3: { // Acto III - Ceniza negra
+    count: 120,
+    color: [50, 50, 60], // gris oscuro
+    size: 2,
+    speed: 0.8,
+    shape: 'circle',
+    opacity: 0.5
+  },
+  4: { // Acto IV - Líneas verdes de restauración
+    count: 200,
+    color: [29, 158, 117], // verde
+    size: 1,
+    speed: 1.2,
+    shape: 'line',
+    opacity: 0.3
+  },
+  5: { // Acto V - Corriente azul estabilizada
+    count: 180,
+    color: [33, 150, 243], // azul
+    size: 1,
+    speed: 0.5,
+    shape: 'line',
+    opacity: 0.2
+  }
+};
+
+export default function ParticleSystem({ act }) {
+  const canvasRef = useRef(null);
+  const animationRef = useRef(null);
+  const particlesRef = useRef([]);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const config = PARTICLE_CONFIGS[act] || PARTICLE_CONFIGS[1];
+
+  // Inicializar partículas
+  const initParticles = (width, height) => {
+    const particles = [];
+    for (let i = 0; i < config.count; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: config.size * (0.5 + Math.random() * 1.5),
+        speedX: (Math.random() - 0.5) * config.speed,
+        speedY: (Math.random() - 0.5) * config.speed,
+        color: config.color,
+        shape: config.shape,
+        life: Math.random() * 100,
+        glitchOffset: config.glitch ? Math.random() * 10 : 0
+      });
+    }
+    particlesRef.current = particles;
+  };
+
+  // Actualizar dimensiones
+  useEffect(() => {
+    const updateDimensions = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  // Inicializar/actualizar partículas cuando cambian dimensiones o configuración
+  useEffect(() => {
+    if (dimensions.width && dimensions.height) {
+      initParticles(dimensions.width, dimensions.height);
+    }
+  }, [dimensions, config]);
+
+  // Dibujar partículas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const animate = () => {
+      if (!canvas || !ctx) return;
+      ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+      
+      particlesRef.current.forEach(p => {
+        // Actualizar posición
+        p.x += p.speedX;
+        p.y += p.speedY;
+        
+        // Rebote en bordes (o reaparecer)
+        if (p.x < 0) p.x = dimensions.width;
+        if (p.x > dimensions.width) p.x = 0;
+        if (p.y < 0) p.y = dimensions.height;
+        if (p.y > dimensions.height) p.y = 0;
+        
+        // Efecto glitch: desplazamiento aleatorio en rojo
+        let drawX = p.x;
+        let drawY = p.y;
+        let opacityMod = 1;
+        if (config.glitch && Math.random() < 0.05) {
+          drawX += (Math.random() - 0.5) * p.glitchOffset;
+          drawY += (Math.random() - 0.5) * p.glitchOffset;
+          opacityMod = 0.8 + Math.random() * 0.5;
+        }
+        
+        ctx.save();
+        if (p.shape === 'square') {
+          ctx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${config.opacity * opacityMod})`;
+          ctx.fillRect(drawX - p.size/2, drawY - p.size/2, p.size, p.size);
+        } else if (p.shape === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(drawX, drawY);
+          ctx.lineTo(drawX + p.speedX * 5, drawY + p.speedY * 5);
+          ctx.strokeStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${config.opacity * opacityMod})`;
+          ctx.lineWidth = p.size;
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, p.size / 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${config.opacity * opacityMod})`;
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [dimensions, config]);
+
+  return <canvas ref={canvasRef} className="particle-canvas" width={dimensions.width} height={dimensions.height} />;
+}
+2. Modificar CineModePlayer.jsx para integrar partículas
+jsx
+// Añadir import al inicio
+import ParticleSystem from './ParticleSystem';
+
+// Dentro del componente, después de las declaraciones de estado, añadir:
+const [currentAct, setCurrentAct] = useState(1);
+
+// En el useEffect que detecta escena visible, actualizar currentAct:
+const detectedAct = sceneMetadata.find(s => s.id === sceneId)?.act || 1;
+if (detectedAct !== currentAct) {
+  setCurrentAct(detectedAct);
+  // Opcional: disparar transición de acto
+}
+
+// En el render, antes del container o después, añadir el sistema de partículas:
+<ParticleSystem act={currentAct} />
+3. Añadir estilos para el canvas en cine-mode.css
+css
+/* ==========================
+   SISTEMA DE PARTÍCULAS (fondo contextual)
+   ========================== */
+.particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  /* Asegurar que está detrás del contenido */
+}
+
+/* Ajuste para que el contenido tenga fondo semitransparente si es necesario */
+.cine-scene-wrapper {
+  position: relative;
+  z-index: 1;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+✨ Mejora 6: Partículas contextuales por acto
+Crearemos un sistema de partículas que cambia según el acto en el que se encuentre el usuario, añadiendo capas de inmersión visual.
+
+1. Nuevo componente ParticleBackground.jsx
+jsx
+// src/components/cine-mode/ParticleBackground.jsx
+import React, { useEffect, useRef } from 'react';
+
+const PARTICLE_CONFIGS = {
+  1: { // Acto I - Calma solar
+    count: 80,
+    color: '#EF9F27',
+    size: { min: 1, max: 3 },
+    speed: 0.2,
+    opacity: 0.15,
+    shape: 'circle'
+  },
+  2: { // Acto II - Colapso / Glitch
+    count: 150,
+    color: '#E24B4A',
+    size: { min: 2, max: 6 },
+    speed: 0.8,
+    opacity: 0.25,
+    shape: 'square',
+    flicker: true
+  },
+  3: { // Acto III - Caos / Ceniza
+    count: 200,
+    color: '#6B6B7A',
+    size: { min: 1, max: 4 },
+    speed: 0.5,
+    opacity: 0.2,
+    shape: 'circle',
+    fallDirection: 'down'
+  },
+  4: { // Acto IV - Restauración / Verde
+    count: 100,
+    color: '#1D9E75',
+    size: { min: 1, max: 3 },
+    speed: 0.3,
+    opacity: 0.1,
+    shape: 'line',
+    direction: 'up'
+  },
+  5: { // Acto V - Reformas / Azul estable
+    count: 60,
+    color: '#378ADD',
+    size: { min: 1, max: 2 },
+    speed: 0.1,
+    opacity: 0.08,
+    shape: 'circle'
+  }
+};
+
+export default function ParticleBackground({ act }) {
+  const canvasRef = useRef(null);
+  const animationRef = useRef(null);
+  const particlesRef = useRef([]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    
+    const config = PARTICLE_CONFIGS[act] || PARTICLE_CONFIGS[1];
+    
+    // Inicializar partículas
+    const initParticles = () => {
+      const particles = [];
+      for (let i = 0; i < config.count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: config.size.min + Math.random() * (config.size.max - config.size.min),
+          speedX: (Math.random() - 0.5) * config.speed,
+          speedY: (Math.random() - 0.5) * config.speed,
+          opacity: Math.random() * config.opacity,
+          flicker: config.flicker ? Math.random() * 0.1 : 0
+        });
+      }
+      particlesRef.current = particles;
+    };
+    
+    const drawParticle = (p) => {
+      ctx.save();
+      ctx.globalAlpha = p.opacity + (p.flicker ? Math.sin(Date.now() * 0.005 * p.flicker) * 0.1 : 0);
+      ctx.fillStyle = config.color;
+      
+      if (config.shape === 'square') {
+        ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+      } else if (config.shape === 'line') {
+        ctx.beginPath();
+        ctx.moveTo(p.x - p.size, p.y);
+        ctx.lineTo(p.x + p.size, p.y);
+        ctx.strokeStyle = config.color;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    };
+    
+    const updateParticle = (p) => {
+      if (config.fallDirection === 'down') {
+        p.y += p.speedY;
+        if (p.y > height) p.y = 0;
+      } else if (config.direction === 'up') {
+        p.y -= p.speedY;
+        if (p.y < 0) p.y = height;
+      } else {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+      }
+    };
+    
+    const animate = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      particlesRef.current.forEach(p => {
+        updateParticle(p);
+        drawParticle(p);
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    
+    const handleResize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    animate();
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [act]);
+  
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 1
+      }}
+    />
+  );
+}
+2. Integrar en CineModePlayer.jsx
+jsx
+// Añadir import al inicio
+import ParticleBackground from './ParticleBackground';
+
+// Dentro del componente, obtener el acto actual (ya lo tienes de la transición)
+// En el render, justo después del container principal:
+return (
+  <div className="cine-mode-container" ref={containerRef}>
+    <ParticleBackground act={currentAct} />
+    {/* ... resto del contenido ... */}
+  </div>
+);
+3. Ajustar cine-mode.css para que el contenido esté por encima de las partículas
+css
+.cine-mode-container {
+  position: relative;
+  z-index: 2;
+}
+
+.cine-scene-wrapper {
+  position: relative;
+  z-index: 3;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(2px);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+✨ Mejora 6: Partículas contextuales (por acto)
+1. Crear componente ParticleSystem.jsx
+jsx
+// src/components/cine-mode/ParticleSystem.jsx
+import React, { useEffect, useRef } from 'react';
+
+const PARTICLE_CONFIGS = {
+  1: { // Acto I - Calma / polvo solar
+    count: 80,
+    color: '#EF9F27',
+    size: 2,
+    speed: 0.3,
+    opacity: 0.4,
+    shape: 'circle'
+  },
+  2: { // Acto II - Colapso / glitch rojo
+    count: 150,
+    color: '#d32f2f',
+    size: 3,
+    speed: 1.2,
+    opacity: 0.6,
+    shape: 'square',
+    glitch: true
+  },
+  3: { // Acto III - Caos / ceniza negra
+    count: 100,
+    color: '#333333',
+    size: 4,
+    speed: 0.8,
+    opacity: 0.5,
+    shape: 'circle',
+    falling: true
+  },
+  4: { // Acto IV - Restauración / líneas verdes
+    count: 60,
+    color: '#1D9E75',
+    size: 2,
+    speed: 0.5,
+    opacity: 0.5,
+    shape: 'line',
+    flowing: true
+  },
+  5: { // Acto V - Reformas / azul estable
+    count: 40,
+    color: '#2196f3',
+    size: 2,
+    speed: 0.2,
+    opacity: 0.3,
+    shape: 'circle',
+    organized: true
+  }
+};
+
+export default function ParticleSystem({ act }) {
+  const canvasRef = useRef(null);
+  const animationRef = useRef(null);
+  const particlesRef = useRef([]);
+  const config = PARTICLE_CONFIGS[act] || PARTICLE_CONFIGS[1];
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Inicializar partículas
+    const initParticles = () => {
+      const particles = [];
+      for (let i = 0; i < config.count; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * config.speed,
+          vy: config.falling ? Math.random() * config.speed : (Math.random() - 0.5) * config.speed,
+          size: config.size * (0.5 + Math.random() * 0.5),
+          alpha: config.opacity * (0.3 + Math.random() * 0.7),
+          angle: Math.random() * Math.PI * 2,
+          length: config.shape === 'line' ? 8 + Math.random() * 8 : 0
+        });
+      }
+      particlesRef.current = particles;
+    };
+    initParticles();
+
+    let lastTimestamp = 0;
+    const animate = (timestamp) => {
+      if (!canvas || !ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      particlesRef.current.forEach(p => {
+        // Actualizar posición
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Rebote o looping según tipo
+        if (config.glitch) {
+          // Movimiento errático
+          p.vx += (Math.random() - 0.5) * 0.2;
+          p.vy += (Math.random() - 0.5) * 0.2;
+          p.x = (p.x + canvas.width) % canvas.width;
+          p.y = (p.y + canvas.height) % canvas.height;
+        } else if (config.organized) {
+          // Movimiento ordenado (órbitas pequeñas)
+          p.angle += 0.02;
+          p.x += Math.cos(p.angle) * 0.5;
+          p.y += Math.sin(p.angle) * 0.5;
+        } else {
+          // Reborde suave
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+        }
+        
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = config.color;
+        ctx.strokeStyle = config.color;
+        
+        if (config.shape === 'square') {
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        } else if (config.shape === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p.x + p.length, p.y + p.length * 0.5);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    
+    animationRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, [act, config]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 1
+      }}
+    />
+  );
+}
+2. Integrar en CineModePlayer.jsx
+jsx
+// Importar el componente
+import ParticleSystem from './ParticleSystem';
+
+// Dentro del componente, añadir estado para el acto actual
+const [currentAct, setCurrentAct] = useState(1);
+
+// En el useEffect que detecta la escena visible, actualizar currentAct
+// (ya lo tenemos de la transición de acto)
+
+// En el render, añadir el sistema de partículas antes del contenido
+return (
+  <>
+    <ParticleSystem act={currentAct} />
+    <div className="cine-mode-container" ref={containerRef}>
+      {/* ... resto del contenido ... */}
+    </div>
+  </>
+);
+3. Ajustar z-index para que las partículas no interfieran
+Asegúrate de que el canvas de partículas tenga zIndex: 1 y que los demás elementos tengan zIndex superior (2 o más) para que sean clickeables.
+
+🎬 Mejora 7: Modo presentación / kiosk
+Este modo oculta los controles y la interfaz de navegación, dejando solo el contenido de las escenas en pantalla completa, ideal para ferias, exposiciones o demostraciones autónomas.
+
+1. Modificar CineModePlayer.jsx
+Añade estado y lógica para activar/desactivar el modo kiosco.
+
+jsx
+// src/components/cine-mode/CineModePlayer.jsx
+// Añadir estado:
+const [kioskMode, setKioskMode] = useState(false);
+
+// Función para alternar modo kiosco
+const toggleKioskMode = () => {
+  if (!kioskMode) {
+    // Entrar en modo kiosco
+    document.body.classList.add('kiosk-mode');
+    if (document.fullscreenEnabled) {
+      document.documentElement.requestFullscreen();
+    }
+  } else {
+    // Salir del modo kiosco
+    document.body.classList.remove('kiosk-mode');
+    if (document.fullscreenEnabled && document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  }
+  setKioskMode(!kioskMode);
+};
+
+// Efecto para manejar el cambio de escena automático en modo kiosco
+useEffect(() => {
+  if (kioskMode) {
+    // Reproducción automática lenta (opcional)
+    const interval = setInterval(() => {
+      const currentIdx = sceneMetadata.findIndex(s => s.id === currentSceneId);
+      if (currentIdx < sceneMetadata.length - 1) {
+        const nextScene = sceneMetadata[currentIdx + 1];
+        const nextElement = sceneRefs.current[nextScene.id];
+        if (nextElement) {
+          nextElement.scrollIntoView({ behavior: 'smooth' });
+          setCurrentSceneId(nextScene.id);
+        }
+      } else {
+        // Volver al inicio
+        const firstScene = sceneMetadata[0];
+        if (firstScene && sceneRefs.current[firstScene.id]) {
+          sceneRefs.current[firstScene.id].scrollIntoView({ behavior: 'smooth' });
+          setCurrentSceneId(firstScene.id);
+        }
+      }
+    }, 15000); // Avanza cada 15 segundos
+    return () => clearInterval(interval);
+  }
+}, [kioskMode, currentSceneId, sceneMetadata]);
+
+// Botón para activar modo kiosco (puedes ponerlo en la barra de control o como botón flotante)
+2. Añadir botón de modo kiosco en TimelineController.jsx
+jsx
+// Dentro del bloque de botones
+<button 
+  className={`timeline-btn ${kioskMode ? 'kiosk-active' : ''}`} 
+  onClick={onToggleKiosk}
+  title="Modo presentación (pantalla completa)"
+>
+  {kioskMode ? '🔴 KIOSK' : '🖥️ KIOSK'}
+</button>
+En CineModePlayer.jsx pasar las props:
+
+jsx
+<TimelineController
+  // ... otras props
+  kioskMode={kioskMode}
+  onToggleKiosk={toggleKioskMode}
+/>
+3. Estilos CSS en cine-mode.css
+css
+/* ==========================
+   MODO KIOSCO / PRESENTACIÓN
+   ========================== */
+body.kiosk-mode .timeline-controller {
+  display: none !important;
+}
+
+body.kiosk-mode .cine-mode-container {
+  padding: 0;
+  max-width: 100%;
+}
+
+body.kiosk-mode .cine-scene-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+}
+
+body.kiosk-mode {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+body.kiosk-mode .cine-act-header {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+/* Botón flotante para salir del modo kiosco (visible solo en kiosk) */
+.kiosk-exit-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--forense-accent-red);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+  z-index: 10000;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.kiosk-exit-btn:hover {
+  opacity: 1;
+}
+4. En CineModePlayer.jsx, renderizar botón de salida cuando kioskMode esté activo
+jsx
+{kioskMode && (
+  <button className="kiosk-exit-btn" onClick={toggleKioskMode}>
+    ⬛ Salir del modo presentación (ESC)
+  </button>
+)}
+
+🔗 Mejora 8: Compartir escena (shareable link)
+1. Modificar CineModePlayer.jsx
+Añadir lógica para leer ?scene=... de la URL y actualizar la escena correspondiente al cargar, además de actualizar la URL cuando cambia la escena activa.
+
+jsx
+// src/components/cine-mode/CineModePlayer.jsx
+// Añadir al principio, después de los imports
+import { useLocation, useNavigate } from 'react-router-dom'; // si usas React Router (Docusaurus lo tiene)
+
+// O si no, usar window.history directamente:
+const updateUrlScene = (sceneId) => {
+  const url = new URL(window.location);
+  url.searchParams.set('scene', sceneId);
+  window.history.pushState({}, '', url);
+};
+
+// Dentro del componente, añadir un useEffect para leer la URL inicial
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const sceneParam = params.get('scene');
+  if (sceneParam && sceneRefs.current[sceneParam]) {
+    setCurrentSceneId(sceneParam);
+    sceneRefs.current[sceneParam].scrollIntoView({ behavior: 'smooth' });
+  }
+}, []);
+
+// En el useEffect que actualiza currentSceneId, añadir:
+useEffect(() => {
+  updateUrlScene(currentSceneId);
+}, [currentSceneId]);
+2. Añadir botón "Compartir escena"
+En TimelineController.jsx, añadir un botón que copie el enlace al portapapeles y muestre un tooltip.
+
+jsx
+// Dentro de los botones
+<button 
+  className="timeline-btn share-btn" 
+  onClick={onShareScene}
+  title="Copiar enlace a esta escena"
+>
+  🔗 Compartir
+</button>
+En CineModePlayer.jsx:
+
+jsx
+const handleShareScene = () => {
+  const url = `${window.location.origin}${window.location.pathname}?scene=${currentSceneId}`;
+  navigator.clipboard.writeText(url);
+  // Mostrar un pequeño toast o tooltip
+  alert('Enlace copiado al portapapeles');
+};
+// Pasar la prop al TimelineController
+3. Mejorar con notificación visual (toast)
+Añadir un componente simple de notificación:
+
+jsx
+const [showToast, setShowToast] = useState(false);
+const handleShareScene = () => {
+  const url = `${window.location.origin}${window.location.pathname}?scene=${currentSceneId}`;
+  navigator.clipboard.writeText(url);
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 2000);
+};
+
+// En el render:
+{showToast && (
+  <div className="toast-notification">
+    ✅ Enlace copiado al portapapeles
+  </div>
+)}
+CSS:
+
+css
+.toast-notification {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--forense-accent-green);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  z-index: 1100;
+  animation: fadeInOut 2s ease forwards;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
+📄 Mejora 9: Exportar informe PDF de la escena actual
+Vamos a implementar la generación de un PDF con el contenido de la escena activa (título, descripción, gráfica visible). Esto permite al tribunal o a los usuarios llevarse un registro impreso del análisis.
+
+1. Instalar dependencias necesarias
+bash
+npm install html2canvas jspdf
+2. Crear componente PDFExportButton.jsx
+jsx
+// src/components/cine-mode/PDFExportButton.jsx
+import React, { useState } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
+export default function PDFExportButton({ targetRef, title }) {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    if (!targetRef?.current) return;
+    setIsExporting(true);
+    
+    try {
+      const canvas = await html2canvas(targetRef.current, {
+        scale: 2,
+        backgroundColor: '#0a0a0c',
+        logging: false,
+        useCORS: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 190; // mm
+      const pageHeight = 277; // mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let position = 10;
+      
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      
+      // Añadir título y metadata
+      pdf.setFontSize(16);
+      pdf.setTextColor(40, 40, 40);
+      pdf.text(title || 'Análisis forense', 10, 10);
+      pdf.setFontSize(10);
+      pdf.text(`Generado: ${new Date().toLocaleString()}`, 10, pageHeight - 10);
+      
+      pdf.save(`forense_${title?.replace(/\s/g, '_') || 'escena'}.pdf`);
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Error al generar el PDF. Inténtalo de nuevo.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  return (
+    <button 
+      className="timeline-btn pdf-export-btn" 
+      onClick={handleExport}
+      disabled={isExporting}
+      title="Exportar esta escena a PDF"
+    >
+      {isExporting ? '⏳ Generando...' : '📄 PDF'}
+    </button>
+  );
+}
+3. Modificar Scene.jsx para incluir un ref y pasar título
+jsx
+// src/components/cine-mode/Scene.jsx
+import React, { useRef } from 'react';
+import PDFExportButton from './PDFExportButton';
+
+export default function Scene({ scene, isActive, onEnter, onLeave, currentTime }) {
+  const sceneRef = useRef(null);
+  const Component = chartRegistry[scene.component];
+
+  return (
+    <div ref={sceneRef} className="cine-scene-wrapper" data-scene-id={scene.id}>
+      <div className="cine-act-header">
+        <div className="cine-act-title">ACTO {scene.act}</div>
+        <div className="cine-act-subtitle">{scene.title}</div>
+        <PDFExportButton targetRef={sceneRef} title={scene.title} />
+      </div>
+      <Suspense fallback={<LoadingPlaceholder />}>
+        <Component />
+      </Suspense>
+    </div>
+  );
+}
+4. Añadir estilos para el botón PDF en cine-mode.css
+css
+.timeline-btn.pdf-export-btn {
+  background: var(--forense-bg-tertiary);
+  color: var(--forense-text-secondary);
+}
+.timeline-btn.pdf-export-btn:hover:not(:disabled) {
+  background: var(--forense-accent-blue);
+  color: white;
+}
+.timeline-btn.pdf-export-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

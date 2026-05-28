@@ -1,0 +1,463 @@
+esios
+
+
+📦 Estructura de archivos a añadir
+text
+api/
+├── esios-multi.js          # Proxy mejorado para obtener múltiples indicadores de una vez
+src/
+├── components/
+│   ├── MixGeneracion.jsx           # 1. Mix de generación "Ahora vs 28A"
+│   ├── DemandaRenovableTrend.jsx   # 2. Evolución comparada demanda y renovable
+│   ├── TermometroRiesgo.jsx        # 3. Termómetro de penetración e inercia
+│   ├── BalanceIntercambios.jsx     # 4. Balance de intercambios internacionales
+│   ├── PrecioSpotScatter.jsx       # 5. Precio SPOT vs demanda/renovables
+│   └── RadarVulnerabilidad.jsx     # 6. Radar de vulnerabilidad
+src/pages/datos-tiempo-real/
+├── index.js                        # Hub actualizado con 6 tarjetas
+├── mix-generacion.jsx
+├── demanda-renovable.jsx
+├── termometro-riesgo.jsx
+├── balance-intercambios.jsx
+├── precio-spot.jsx
+└── radar-vulnerabilidad.jsx
+static/data/
+└── blackout_snapshot_28A.json      # Datos históricos del colapso
+🔧 1. Proxy serverless mejorado api/esios-multi.js
+Este proxy obtiene todos los indicadores de una sola vez (mucho más eficiente).
+
+javascript
+// api/esios-multi.js
+export default async function handler(req, res) {
+  const token = process.env.ESIOS_TOKEN || '59f41cbd500501a872390d7e3d838b29ea20b2e55b3fa96153adf270840b11f5';
+  
+  // Lista completa de indicadores que usaremos
+  const indicators = {
+    demanda: 1293,
+    solar: 2044,
+    eolica: 2038,
+    nuclear: 2039,
+    hidro: 2042,
+    gas: 2041,
+    renovable_total: 10351,
+    no_renovable_total: 10352,
+    intercambio_neto: 2043,
+    export_francia: 2071,
+    export_portugal: 2070,
+    precio_spot: 600,
+  };
+  
+  const results = {};
+  
+  for (const [key, id] of Object.entries(indicators)) {
+    try {
+      const url = `https://api.esios.ree.es/indicators/${id}`;
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json', 'x-api-key': token }
+      });
+      const data = await response.json();
+      const lastValue = data.indicator.values[data.indicator.values.length - 1]?.value;
+      results[key] = lastValue ?? null;
+    } catch (err) {
+      results[key] = null;
+    }
+  }
+  
+  // Añadir timestamp
+  results.timestamp = new Date().toISOString();
+  
+  res.status(200).json(results);
+}
+📜 2. Datos históricos del 28A (static/data/blackout_snapshot_28A.json)
+Crea este archivo con los valores del momento del colapso (ejemplo ajustable a tus datos reales):
+
+json
+{
+  "timestamp": "2025-04-28T14:32:00Z",
+  "demanda": 25184,
+  "solar": 19155,
+  "eolica": 3540,
+  "nuclear": 3870,
+  "hidro": 2000,
+  "gas": 990,
+  "renovable_total": 22695,
+  "no_renovable_total": 4860,
+  "intercambio_neto": -2500,
+  "export_francia": -870,
+  "export_portugal": -2600,
+  "precio_spot": -2.5,
+  "penetracion_renovable": 84.5,
+  "inercia_estimada": 2.3
+}
+🎨 3. Componentes React (6 herramientas)
+1️⃣ Mix de generación “Ahora vs 28A” (MixGeneracion.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+const BLACKOUT = {
+  solar: 19155, eolica: 3540, nuclear: 3870, gas: 990, hidro: 2000
+};
+
+export default function MixGeneracion() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch('/api/esios-multi');
+      const json = await res.json();
+      setData(json);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data) return <div>Cargando mix de generación...</div>;
+
+  const hoy = {
+    Solar: data.solar || 0,
+    Eólica: data.eolica || 0,
+    Nuclear: data.nuclear || 0,
+    Gas: data.gas || 0,
+    Hidráulica: data.hidro > 0 ? data.hidro : 0,
+  };
+  const hoyPenetracion = (data.renovable_total / (data.renovable_total + data.no_renovable_total)) * 100;
+  const blackoutPenetracion = 84.5;
+  const delta = hoyPenetracion - blackoutPenetracion;
+
+  const donutHoy = { labels: Object.keys(hoy), values: Object.values(hoy) };
+  const donut28A = { labels: Object.keys(BLACKOUT), values: Object.values(BLACKOUT) };
+
+  return (
+    <div style={{ padding: '1rem' }}>
+      <h2>🍩 Mix de generación: Hoy vs 28-A</h2>
+      <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div>
+          <h3>Hoy {new Date(data.timestamp).toLocaleTimeString()}</h3>
+          <Plot data={[{
+            values: donutHoy.values, labels: donutHoy.labels, type: 'pie', hole: 0.4,
+            marker: { colors: ['#f1c40f', '#2ecc71', '#e74c3c', '#95a5a6', '#3498db'] }
+          }]} layout={{ width: 400, height: 400, showlegend: true }} />
+        </div>
+        <div>
+          <h3>28 de abril de 2025 (colapso)</h3>
+          <Plot data={[{
+            values: donut28A.values, labels: donut28A.labels, type: 'pie', hole: 0.4,
+            marker: { colors: ['#f1c40f', '#2ecc71', '#e74c3c', '#95a5a6', '#3498db'] }
+          }]} layout={{ width: 400, height: 400, showlegend: false }} />
+        </div>
+      </div>
+      <div style={{ textAlign: 'center', marginTop: '1rem', fontWeight: 'bold' }}>
+        Penetración renovable: {hoyPenetracion.toFixed(1)}% (28-A: 84.5%) 
+        <span style={{ color: delta > 0 ? '#e74c3c' : '#2ecc71' }}>
+          {delta > 0 ? ` 🔴 +${delta.toFixed(1)}%` : ` 🟢 ${delta.toFixed(1)}%`}
+        </span>
+      </div>
+    </div>
+  );
+}
+2️⃣ Evolución comparada de demanda y renovable (DemandaRenovableTrend.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+export default function DemandaRenovableTrend() {
+  const [current, setCurrent] = useState(null);
+  const [historical, setHistorical] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/esios-multi')
+      .then(res => res.json())
+      .then(setCurrent)
+      .catch(console.error);
+    fetch('/data/blackout_snapshot_28A.json')
+      .then(res => res.json())
+      .then(setHistorical)
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch('/api/esios-multi').then(setCurrent).catch(console.error);
+    }, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !current || !historical) return <div>Cargando...</div>;
+
+  const data = [
+    { variable: 'Demanda (MW)', hoy: current.demanda, historical: historical.demanda },
+    { variable: 'Renovable total (MW)', hoy: current.renovable_total, historical: historical.renovable_total },
+  ];
+
+  return (
+    <div>
+      <h2>📈 Demanda y generación renovable: Hoy vs 28-A</h2>
+      <Plot data={[
+        { x: data.map(d => d.variable), y: data.map(d => d.hoy), type: 'bar', name: 'Hoy', marker: { color: '#06b6d4' } },
+        { x: data.map(d => d.variable), y: data.map(d => d.historical), type: 'bar', name: '28-A', marker: { color: '#ef4444' } }
+      ]} layout={{ title: 'Comparativa', barmode: 'group', yaxis: { title: 'MW' } }} />
+    </div>
+  );
+}
+3️⃣ Termómetro de penetración renovable e inercia estimada (TermometroRiesgo.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+export default function TermometroRiesgo() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/esios-multi')
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+    const interval = setInterval(() => {
+      fetch('/api/esios-multi').then(setData).catch(console.error);
+    }, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data) return <div>Cargando...</div>;
+
+  const penetracion = (data.renovable_total / (data.renovable_total + data.no_renovable_total)) * 100;
+  const inerciaEstimada = (data.nuclear * 5 + (data.hidro > 0 ? data.hidro * 3 : 0) + data.gas * 4) / 1000;
+
+  return (
+    <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+      <div>
+        <h3>Penetración renovable</h3>
+        <Plot data={[{
+          type: 'indicator', mode: 'gauge+number', value: penetracion,
+          gauge: { axis: { range: [0, 100] }, bar: { color: penetracion > 75 ? '#ef4444' : '#10b981' },
+                   steps: [{ range: [0, 50], color: '#10b981' }, { range: [50, 75], color: '#f59e0b' }, { range: [75, 100], color: '#ef4444' }] }
+        }]} layout={{ width: 300, height: 250 }} />
+        <p>28-A: 84.5%</p>
+      </div>
+      <div>
+        <h3>Inercia estimada (GW·s)</h3>
+        <Plot data={[{
+          type: 'indicator', mode: 'gauge+number', value: inerciaEstimada,
+          gauge: { axis: { range: [0, 10] }, bar: { color: inerciaEstimada < 2 ? '#ef4444' : '#10b981' },
+                   steps: [{ range: [0, 2], color: '#ef4444' }, { range: [2, 4], color: '#f59e0b' }, { range: [4, 10], color: '#10b981' }] }
+        }]} layout={{ width: 300, height: 250 }} />
+        <p>28-A: 2.3 GW·s</p>
+      </div>
+    </div>
+  );
+}
+4️⃣ Balance de intercambios internacionales (BalanceIntercambios.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+export default function BalanceIntercambios() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/esios-multi')
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+    const interval = setInterval(() => {
+      fetch('/api/esios-multi').then(setData).catch(console.error);
+    }, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data) return <div>Cargando...</div>;
+
+  const hoy = { Francia: -data.export_francia, Portugal: -data.export_portugal };
+  const blackout = { Francia: 870, Portugal: 2600 }; // exportaciones positivas
+
+  return (
+    <div>
+      <h2>🔄 Balance de intercambios (exportaciones netas)</h2>
+      <Plot data={[
+        { x: ['Francia', 'Portugal'], y: [hoy.Francia, hoy.Portugal], type: 'bar', name: 'Hoy', marker: { color: '#06b6d4' } },
+        { x: ['Francia', 'Portugal'], y: [blackout.Francia, blackout.Portugal], type: 'bar', name: '28-A', marker: { color: '#ef4444' } }
+      ]} layout={{ title: 'Exportaciones netas (MW)', barmode: 'group', yaxis: { title: 'MW' } }} />
+      <p style={{ fontSize: '0.9rem', color: '#666' }}>Valores positivos = exportación desde España.</p>
+    </div>
+  );
+}
+5️⃣ Precio SPOT vs demanda/renovables (PrecioSpotScatter.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+export default function PrecioSpotScatter() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/esios-multi')
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+    const interval = setInterval(() => {
+      fetch('/api/esios-multi').then(setData).catch(console.error);
+    }, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data) return <div>Cargando...</div>;
+
+  // Simulamos nube de puntos histórica (ejemplo, sustituir con datos reales)
+  const historicalPoints = Array.from({ length: 24 }, (_, i) => ({
+    demanda: 20000 + i * 500,
+    renovable: 5000 + i * 800,
+    precio: 50 + i * 5
+  }));
+
+  return (
+    <div>
+      <h2>💶 Precio SPOT vs Demanda y Renovable</h2>
+      <Plot data={[
+        { x: historicalPoints.map(p => p.demanda), y: historicalPoints.map(p => p.precio), mode: 'markers', type: 'scatter', name: 'Histórico (28-A)', marker: { color: '#95a5a6', size: 6 } },
+        { x: [data.demanda], y: [data.precio_spot], mode: 'markers', type: 'scatter', name: 'Hoy', marker: { color: '#ef4444', size: 12 } }
+      ]} layout={{ title: 'Relación precio-demanda', xaxis: { title: 'Demanda (MW)' }, yaxis: { title: 'Precio SPOT (€/MWh)' } }} />
+    </div>
+  );
+}
+6️⃣ Radar de vulnerabilidad (RadarVulnerabilidad.jsx)
+jsx
+import React, { useState, useEffect } from 'react';
+import Plot from 'react-plotly.js';
+
+export default function RadarVulnerabilidad() {
+  const [data, setData] = useState(null);
+  const [historical, setHistorical] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/esios-multi').then(res => res.json()),
+      fetch('/data/blackout_snapshot_28A.json').then(res => res.json())
+    ]).then(([current, hist]) => {
+      setData(current);
+      setHistorical(hist);
+      setLoading(false);
+    }).catch(console.error);
+
+    const interval = setInterval(() => {
+      fetch('/api/esios-multi').then(setData).catch(console.error);
+    }, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (loading || !data || !historical) return <div>Cargando...</div>;
+
+  const categories = ['Penetración renovable', 'Inercia estimada', 'Exportación neta', 'Demanda'];
+  const hoyValues = [
+    (data.renovable_total / (data.renovable_total + data.no_renovable_total)) * 100,
+    (data.nuclear * 5 + (data.hidro > 0 ? data.hidro * 3 : 0) + data.gas * 4) / 1000,
+    -data.intercambio_neto / 1000,
+    data.demanda / 1000,
+  ];
+  const historicalValues = [
+    historical.penetracion_renovable,
+    historical.inercia_estimada,
+    -historical.intercambio_neto / 1000,
+    historical.demanda / 1000,
+  ];
+
+  return (
+    <div>
+      <h2>📊 Radar de vulnerabilidad</h2>
+      <Plot data={[
+        { r: hoyValues, theta: categories, type: 'scatterpolar', name: 'Hoy', fill: 'toself', marker: { color: '#06b6d4' } },
+        { r: historicalValues, theta: categories, type: 'scatterpolar', name: '28-A (colapso)', fill: 'toself', marker: { color: '#ef4444' } }
+      ]} layout={{ polar: { radialaxis: { range: [0, 100] } }, title: 'Distancia al perfil de colapso' }} />
+      <p>Valores más altos = mayor riesgo. Cuanto más se aproxime el polígono azul al rojo, más vulnerable es el sistema.</p>
+    </div>
+  );
+}
+📄 4. Páginas y hub principal
+Hub actualizado src/pages/datos-tiempo-real/index.js
+jsx
+import React from 'react';
+import Link from '@docusaurus/Link';
+
+const tools = [
+  { name: 'Mix de generación', path: '/datos-tiempo-real/mix-generacion', emoji: '🍩', desc: 'Compara la estructura de generación hoy vs 28-A' },
+  { name: 'Demanda y renovable', path: '/datos-tiempo-real/demanda-renovable', emoji: '📈', desc: 'Evolución de demanda y generación renovable' },
+  { name: 'Termómetro de riesgo', path: '/datos-tiempo-real/termometro-riesgo', emoji: '🌡️', desc: 'Penetración renovable e inercia estimada' },
+  { name: 'Balance intercambios', path: '/datos-tiempo-real/balance-intercambios', emoji: '🔄', desc: 'Exportaciones/importaciones con Francia y Portugal' },
+  { name: 'Precio SPOT', path: '/datos-tiempo-real/precio-spot', emoji: '💶', desc: 'Relación precio-demanda y renovable' },
+  { name: 'Radar vulnerabilidad', path: '/datos-tiempo-real/radar-vulnerabilidad', emoji: '📊', desc: 'Comparativa multidimensional con el colapso' },
+];
+
+export default function DatosTiempoReal() {
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>📡 DATOS EN TIEMPO REAL</h1>
+      <p>Monitorización avanzada del sistema eléctrico ibérico usando datos de ESIOS en tiempo real.</p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '2rem' }}>
+        {tools.map(t => (
+          <Link key={t.path} to={t.path} style={{ textDecoration: 'none' }}>
+            <div style={{ background: '#111827', border: '1px solid #2a2a2e', borderRadius: '12px', padding: '1.5rem', transition: 'transform 0.2s', cursor: 'pointer' }}>
+              <div style={{ fontSize: '2rem' }}>{t.emoji}</div>
+              <h3>{t.name}</h3>
+              <p style={{ color: '#a0a0b0', fontSize: '0.9rem' }}>{t.desc}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+Páginas individuales (ejemplo para mix-generacion.jsx)
+jsx
+import React from 'react';
+import Layout from '@theme/Layout';
+import MixGeneracion from '../../components/MixGeneracion';
+
+export default function MixGeneracionPage() {
+  return (
+    <Layout title="Mix de generación" description="Comparativa mix de generación hoy vs 28-A">
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <MixGeneracion />
+      </div>
+    </Layout>
+  );
+}
+(Repetir para cada una de las 5 restantes, cambiando el componente importado y el título)
+
+🧩 Actualización de sidebars.js
+Añade (o modifica) la categoría "DATOS EN TIEMPO REAL" con las 6 rutas:
+
+js
+{
+  type: 'category',
+  label: '📡 DATOS EN TIEMPO REAL',
+  items: [
+    'datos-tiempo-real/mix-generacion',
+    'datos-tiempo-real/demanda-renovable',
+    'datos-tiempo-real/termometro-riesgo',
+    'datos-tiempo-real/balance-intercambios',
+    'datos-tiempo-real/precio-spot',
+    'datos-tiempo-real/radar-vulnerabilidad',
+  ],
+},
+🚀 Despliegue y prueba
+Copia todos los archivos en sus rutas correspondientes.
+
+Asegúrate de que el archivo static/data/blackout_snapshot_28A.json existe con los valores históricos reales (ajústalos según tus datos).
+
+Ejecuta vercel dev para probar localmente.
+
+Despliega con vercel --prod.
