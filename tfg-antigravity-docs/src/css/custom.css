@@ -89,13 +89,32 @@
 }
 
 html[data-theme='light'] {
+  /* ── Custom design tokens ──────────────────────────────── */
   --bg-0: #f5f2eb;
   --bg-1: #efebe1;
   --bg-2: #e8e3d5;
+  --bg-3: #ddd8c8;
   --text-0: #111827;
   --text-1: #1b1b1b;
   --text-2: #374151;
   --text-3: #4b5563;
+
+  /* ── IFM overrides — beat Docusaurus own light-theme CSS ── */
+  --ifm-background-color: #f5f2eb;
+  --ifm-background-surface-color: #efebe1;
+  --ifm-font-color-base: #1b1b1b;
+  --ifm-navbar-background-color: rgba(239, 235, 225, 0.92);
+  --ifm-color-primary: hsl(190 80% 38%);
+  --ifm-color-primary-dark: hsl(190 80% 32%);
+  --ifm-color-primary-darker: hsl(190 80% 28%);
+  --ifm-color-primary-darkest: hsl(190 80% 22%);
+  --ifm-color-primary-light: hsl(190 80% 48%);
+  --ifm-color-primary-lighter: hsl(190 80% 55%);
+  --ifm-color-primary-lightest: hsl(190 80% 65%);
+  --ifm-menu-color: #374151;
+  --ifm-menu-color-active: #111827;
+  --accent-electric: hsl(190 80% 38%);
+
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -818,6 +837,27 @@ html.zen-mode .zen-mode-icon-active {
   position: relative;
 }
 
+html[data-theme='light'] .theme-doc-sidebar-container {
+  background: linear-gradient(to bottom, #efebe1, #e8e3d5) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: inset -4px 0 12px rgba(0, 0, 0, 0.04) !important;
+}
+html[data-theme='light'] .menu__link { color: #374151 !important; }
+html[data-theme='light'] .menu__link:hover {
+  color: hsl(190 80% 32%) !important;
+  text-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+html[data-theme='light'] .menu__link.menu__link--active {
+  color: hsl(190 80% 28%) !important;
+  background: rgba(0, 120, 140, 0.08) !important;
+  border-left-color: hsl(190 80% 38%) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+html[data-theme='light'] .menu__link.menu__link--sublist-caret { color: #4b5563 !important; }
+html[data-theme='light'] .menu__list-item .menu__list-item .menu__link { color: #6b7280 !important; }
+
 /* Subtle texture overlay for telemetry feel */
 .theme-doc-sidebar-container::after {
   content: "";
@@ -978,7 +1018,7 @@ html.zen-mode .zen-mode-icon-active {
 /* PART 8 - Mobile Override */
 @media (max-width: 996px) {
   .theme-doc-sidebar-container {
-    background: #050505 !important;
+    background: var(--bg-0) !important;
   }
   .menu__link {
     font-size: 14px;
@@ -1155,7 +1195,7 @@ body::before {
 /* PART 8 - Mobile Override */
 @media (max-width: 996px) {
   .theme-doc-sidebar-container {
-    background: #050505 !important;
+    background: var(--bg-0) !important;
   }
   .menu__link {
     font-size: 14px;
@@ -1340,7 +1380,7 @@ html[data-theme="dark"] .navbar__item {
     z-index: 1000 !important;
     position: sticky;
     top: 0;
-    background-color: #0b0f19;
+    background-color: var(--bg-1);
   }
 
   /* Intro page: override the mobile navbar background so no black bar appears */
@@ -1359,7 +1399,7 @@ html[data-theme="dark"] .navbar__item {
   /* El menú lateral debe estar por encima del mapa */
   .navbar-sidebar {
     z-index: 1002 !important;
-    background: #0b0f19 !important;
+    background: var(--bg-1) !important;
   }
 
   /* El mapa no debe tapar el menú */
@@ -1624,5 +1664,81 @@ html[data-theme='light'] .markdown p > em:only-child,
 html[data-theme='light'] .theme-doc-markdown p > em:only-child {
   color: hsl(220 8% 48%) !important;
   border-left-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ── Light mode — belt-and-suspenders for body background ── */
+html[data-theme='light'] body,
+html[data-theme='light'] #__docusaurus,
+html[data-theme='light'] .main-wrapper {
+  background-color: var(--ifm-background-color);
+}
+
+html[data-theme='light'] .footer {
+  background-color: var(--bg-1);
+  border-top-color: rgba(0, 0, 0, 0.07);
+}
+
+/* ============================================================
+   CINE FAB — Floating Action Button → /cine
+   ============================================================ */
+
+.cine-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  background: rgba(10, 12, 20, 0.82);
+  border: 1px solid rgba(255, 170, 0, 0.25);
+  border-radius: 40px;
+  color: rgba(255, 210, 140, 0.9);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.cine-fab:hover {
+  background: rgba(18, 20, 32, 0.92);
+  border-color: rgba(255, 170, 0, 0.55);
+  color: rgba(255, 220, 160, 1);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45), 0 0 14px rgba(255, 170, 0, 0.12);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.cine-fab:active { transform: translateY(0); }
+
+.cine-fab__icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+.cine-fab__label { white-space: nowrap; }
+
+html[data-theme='light'] .cine-fab {
+  background: rgba(239, 235, 225, 0.88);
+  border-color: rgba(0, 120, 140, 0.35);
+  color: hsl(190 80% 28%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme='light'] .cine-fab:hover {
+  background: rgba(232, 227, 213, 0.96);
+  border-color: hsl(190 80% 38%);
+  color: hsl(190 80% 22%);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* Hidden on the /cine page itself */
+body.cine-mode-active .cine-fab {
+  display: none !important;
 }
 
