@@ -147,7 +147,7 @@ export default function ExecutiveHook() {
         statPower: 'Power Lost', statSeverity: 'ENTSO-E Severity', statDate: 'April 28 2025', statAffected: 'Affected',
         heroTitle1: 'Anatomy of a', heroTitleHighlight: 'Systemic Collapse',
         heroSubtitle: 'Forensic analysis of the 2025 Iberian Peninsula blackout',
-        startAnalysis: 'Start Analysis ⚡',
+        startAnalysis: 'Start Analysis',
         cards: [
           { title: 'FORENSIC ANALYSIS', description: '27-second cascade dissection: oscillations, Tap‑Lag, overvoltages and the voltage zero.' },
           { title: 'CONFLICTING REPORTS', description: 'Three institutional narratives: Administration, Generators (ICAI) and ENTSO‑E.' },
@@ -164,7 +164,7 @@ export default function ExecutiveHook() {
         statPower: 'Potência Perdida', statSeverity: 'Severidade ENTSO-E', statDate: '28 Abril 2025', statAffected: 'Afetados',
         heroTitle1: 'Anatomia de um', heroTitleHighlight: 'Colapso Sistémico',
         heroSubtitle: 'Análise forense do apagão da Península Ibérica de 2025',
-        startAnalysis: 'Iniciar Análise ⚡',
+        startAnalysis: 'Iniciar Análise',
         cards: [
           { title: 'ANÁLISE FORENSE', description: 'Dissecção da cascata de 27 segundos: oscilações, Tap‑Lag, sobretensões e o zero de tensão.' },
           { title: 'RELATÓRIOS EM CONFLITO', description: 'As três narrativas institucionais: Administração, Geradores (ICAI) e ENTSO‑E.' },
@@ -181,7 +181,7 @@ export default function ExecutiveHook() {
         statPower: 'Puissance Perdue', statSeverity: 'Sévérité ENTSO-E', statDate: '28 avril 2025', statAffected: 'Personnes Touchées',
         heroTitle1: "Anatomie d'un", heroTitleHighlight: 'Effondrement Systémique',
         heroSubtitle: "Analyse forensique du black-out de la péninsule ibérique en 2025",
-        startAnalysis: "Commencer l'analyse ⚡",
+        startAnalysis: "Commencer l'analyse",
         cards: [
           { title: 'ANALYSE FORENSIQUE', description: 'Dissection de la cascade de 27 secondes : oscillations, Tap‑Lag, surtensions et le zéro de tension.' },
           { title: 'RAPPORTS EN CONFLIT', description: 'Les trois narratives institutionnelles : Administration, Générateurs (ICAI) et ENTSO‑E.' },
@@ -198,7 +198,7 @@ export default function ExecutiveHook() {
         statPower: 'Potenza Persa', statSeverity: 'Gravità ENTSO-E', statDate: '28 aprile 2025', statAffected: 'Persone Coinvolte',
         heroTitle1: 'Anatomia di un', heroTitleHighlight: 'Collasso Sistemico',
         heroSubtitle: 'Analisi forense del blackout della penisola iberica del 2025',
-        startAnalysis: "Inizia l'analisi ⚡",
+        startAnalysis: "Inizia l'analisi",
         cards: [
           { title: 'ANALISI FORENSE', description: 'Dissezione della cascata di 27 secondi: oscillazioni, Tap‑Lag, sovratensioni e il punto zero di tensione.' },
           { title: 'RAPPORTI IN CONFLITTO', description: 'Le tre narrative istituzionali: Amministrazione, Generatori (ICAI) e ENTSO‑E.' },
@@ -215,7 +215,7 @@ export default function ExecutiveHook() {
         statPower: 'Leistungsverlust', statSeverity: 'ENTSO-E Schweregrad', statDate: '28. April 2025', statAffected: 'Betroffene',
         heroTitle1: 'Anatomie eines', heroTitleHighlight: 'Systemkollapses',
         heroSubtitle: 'Forensische Analyse des Stromausfalls auf der Iberischen Halbinsel 2025',
-        startAnalysis: 'Analyse starten ⚡',
+        startAnalysis: 'Analyse starten',
         cards: [
           { title: 'FORENSISCHE ANALYSE', description: '27-Sekunden-Kaskade: Schwingungen, Tap‑Lag, Überspannungen und der Spannungsnullpunkt.' },
           { title: 'WIDERSPRÜCHLICHE BERICHTE', description: 'Drei institutionelle Narrative: Verwaltung, Erzeuger (ICAI) und ENTSO‑E.' },
@@ -232,7 +232,7 @@ export default function ExecutiveHook() {
         statPower: 'Potencia Perdida', statSeverity: 'Severidad ENTSO-E', statDate: '28 Abril 2025', statAffected: 'Afectados',
         heroTitle1: 'Anatomía de un', heroTitleHighlight: 'Colapso Sistémico',
         heroSubtitle: 'Análisis forense del apagón de la Península Ibérica de 2025',
-        startAnalysis: 'Comenzar Análisis ⚡',
+        startAnalysis: 'Comenzar Análisis',
         cards: [
           { title: 'ANÁLISIS FORENSE', description: 'Disección de la cascada de 27 segundos: oscilaciones, Tap‑Lag, sobretensiones y el cero de tensión.' },
           { title: 'INFORMES EN CONFLICTO', description: 'Las tres narrativas institucionales: Administración, Generadores (ICAI) y ENTSO‑E.' },

@@ -52,8 +52,7 @@ export default function Root({ children }) {
 
       {/* FAB Modo Cine */}
       <Link to="/cine" className="cine-fab" aria-label="Abrir Modo Cine">
-        <span className="cine-fab__icon">🎬</span>
-        <span className="cine-fab__label">Modo Cine</span>
+        Modo Cine
       </Link>
 
       {/* Botón flotante barra lateral */}
