@@ -38,8 +38,8 @@ $$
 $$
 
 <ForensicTable 
-  title="SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
-  source="SYSTEM ENGINEERING STANDARDS"
+  title="TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+  source="Estándar ENTSO-E / literatura técnica"
 >
 
 | Categoría | Umbral SCR | Implicación operativa |
@@ -52,7 +52,7 @@ $$
 
 Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
-![Mapas de tensión en la red peninsular de 400 kV en la franja crítica previa al colapso](/figuras/scr_iberia.png) _Evolución geográfica de las tensiones en la red de 400 kV previa al colapso (secuencia a–d). Las zonas de color cálido muestran la progresión y concentración de sobretensiones severas en el sur y suroeste peninsular —precisamente los nudos con mayor deficiencia estructural de potencia de cortocircuito. Fuente: IIT-ICAI._
+![Mapas de tensión en la red peninsular de 400 kV en la franja crítica previa al colapso](/figuras/scr_iberia.png) _Figura 37. Mapas de tensión en red 400 kV en franja crítica previa al colapso. Fuente: IIT-ICAI._
 
 ### La paradoja geométrica de los inversores: conflicto P-Q
 
@@ -68,7 +68,7 @@ Esta contradicción explica por qué el 28-A no fue un colapso de energía sino 
 
 El escenario operativo del 28-A se situaba en el **valle profundo de la _duck curve_**: demanda bruta estructuralmente baja —análoga a los mínimos de hace dos décadas— con irradiación próxima a los máximos estivales por la menor degradación térmica de primavera.
 
-![Evolución del número de unidades síncronas convencionales acopladas entre las 12h y 13h](/figuras/conventionalunits.png) _Unidades síncronas convencionales acopladas diariamente entre las 12h y 13h. La tendencia decreciente en los meses previos al 28-A refleja la expulsión sistemática por orden de mérito — vaciando al sistema de inercia electromecánica en el instante crítico. Fuente: ENTSO-E / elaboración propia._
+![Evolución del número de unidades síncronas convencionales acopladas entre las 12h y 13h](/figuras/conventionalunits.png) _Figura 38. Unidades síncronas convencionales acopladas diariamente (12-13h). La tendencia decreciente previa al 28-A refleja la expulsión sistemática por orden de mérito. Fuente: ENTSO-E._
 
 A las 12:30 CEST, REE había agotado sus herramientas de gestión manual: apertura preventiva de decenas de líneas de muy alta tensión para aumentar la impedancia en serie, más la operación de reactancias al 85 % de su capacidad — sin lograr contener el ascenso de tensión.
 
@@ -82,7 +82,7 @@ La superación de la vulnerabilidad exige una transición en la arquitectura de 
 
 A diferencia del inversor GFL, un inversor <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión en magnitud y ángulo ($V\angle\delta$) detrás de una impedancia virtual de acoplamiento. Al imponer este vector de forma instantánea, el inversor GFM inyecta o absorbe corriente activa y reactiva de forma inherente ante cualquier variación de la red, sin depender de mediciones externas de fase ni de retardos de cálculo.
 
-![Circuitos equivalentes de las topologías Grid-Following (GFL) y Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Izquierda: inversor GFL como fuente de corriente controlada dependiente del PLL. Derecha: inversor GFM como fuente de tensión autónoma detrás de una impedancia virtual $Z_{\mathrm{GFM}}$. La diferencia fundamental es que el GFM no necesita "leer" la red para operar — la crea._
+![Circuitos equivalentes de las topologías Grid-Following (GFL) y Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Figura 39. Circuitos equivalentes de topologías Grid-Following (GFL) y Grid-Forming (GFM). Fuente: elaboración propia (basado en literatura)._
 
 Cuando el inversor GFM está respaldado por un banco de baterías (BESS-GFM), la combinación provee dos servicios adicionales:
 
@@ -113,11 +113,11 @@ Ninguna de las tres familias tecnológicas, desplegada de forma aislada, es sufi
 - Los **SynCons** proveen inercia rotacional genuina y potencia de cortocircuito elevada, pero carecen de la agilidad subcíclica de la electrónica de potencia y no gestionan energía activa.
 - La **inercia sintética y la FFR** maximizan la utilización del margen energético del banco de baterías, pero dependen de una rigidez nodal mínima —provista por los SynCons— para que sus algoritmos sean efectivos.
 
-![Arquitectura híbrida para la resiliencia sistémica en redes descarbonizadas](/figuras/hitachi_hybrid.png) _Esquema de arquitectura híbrida: los BESS-GFM gestionan la tensión en tiempo real y proveen FFR; los compensadores síncronos aportan inercia rotacional y potencia de cortocircuito para la rigidez nodal. La resiliencia requiere ambos componentes — ninguno es sustituto del otro. Fuente: Hitachi Energy / FUTURED._
+![Arquitectura híbrida para la resiliencia sistémica en redes descarbonizadas](/figuras/hitachi_hybrid.png) _Figura 40. Arquitectura híbrida para la resiliencia sistémica (BESS-GFM + SynCons). Fuente: Hitachi Energy / FUTURED._
 
 La minimización del coste total del sistema no coincide con la minimización del <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, sino que exige internalizar en el diseño de mercado los <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Servicios Esenciales de Confiabilidad (ERS</GlossaryLink>) que las máquinas síncronas aportaban de forma implícita.
 
-![Optimización tecno-económica de la resiliencia en sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _El mínimo de coste total del sistema se alcanza con un mix que remunera los ERS, no con la simple maximización de la penetración renovable. La diferencia entre el óptimo de LCOE y el óptimo sistémico es el coste de los servicios ancilares no remunerados. Fuente: Julia Matevosyan (ESIG) / FUTURED._
+![Optimización tecno-económica de la resiliencia en sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _Figura 41. Optimización tecno-económica de la resiliencia en sistemas dominados por IBR. Fuente: Julia Matevosyan (ESIG) / FUTURED._
 
 ### IA y Redes Neuronales de Grafos (GNN) para la estabilidad
 
@@ -153,8 +153,8 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 Los sistemas BESS reciben adicionalmente un pago de disponibilidad de **2,7 €/MW/día**, condicionado al mantenimiento de una tasa de cumplimiento de muestras válidas superior al **90 %**.
 
 <ForensicTable 
-  title="P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
-  source="BOE-A-2025-13076 / CNMC"
+  title="TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+  source="CNMC / REE"
 >
 
 | Atributo operativo | P.O. 7.4 original (pre-2025) | Marco actualizado (post-2025) |
@@ -185,8 +185,8 @@ El Grupo Técnico de ENTSO-E (TG GFC) cristalizó su trabajo en dos documentos:
 Las obligaciones del **NC RfG 2.0** se aplican con un enfoque tecnológicamente agnóstico, clasificando los módulos en cuatro tipos:
 
 <ForensicTable 
-  title="NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
-  source="ENTSO-E TG GFC"
+  title="TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+  source="ENTSO-E / Comisión Europea"
 >
 
 | Tipo | Potencia / Conexión | Requisito GFM | Cronograma |
@@ -226,8 +226,8 @@ EirGrid (Irlanda) y ERCOT (Texas) son las referencias operativas contrastadas ha
 El programa **DS3** de EirGrid fragmentó la provisión de estabilidad en 14 productos especializados. Los tres más relevantes para el contexto del 28-A:
 
 <ForensicTable 
-  title="EIRGRID DS3 SERVICES - CORE PARAMETERS"
-  source="EIRGRID DS3 PROGRAMME"
+  title="TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+  source="EirGrid / ENTSO-E"
 >
 
 | Servicio | Definición técnica | Umbral / Ventana |
