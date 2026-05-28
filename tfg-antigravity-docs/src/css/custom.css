@@ -1773,9 +1773,14 @@ body.cine-mode-active .cine-fab {
   display: none !important;
 }
 
-/* Hidden on the intro page */
+/* Hidden on the intro page (selector síncrono — se aplica antes de hidratación) */
+html[data-intro-page='true'] .cine-fab,
+html[data-intro-page='true'] .global-sidebar-btn,
+html[data-intro-page='true'] .global-sidebar-close-btn,
+html[data-intro-page='true'] .global-toc-btn,
 body.intro-page .cine-fab,
 body.intro-page .global-sidebar-btn,
+body.intro-page .global-sidebar-close-btn,
 body.intro-page .global-toc-btn {
   display: none !important;
 }
@@ -1783,6 +1788,39 @@ body.intro-page .global-toc-btn {
 /* ============================================================
    GLOBAL SIDEBAR & TOC FLOATING BUTTONS
    ============================================================ */
+
+/* Botón ✕ cerrar sidebar */
+.global-sidebar-close-btn {
+  position: fixed;
+  top: 4.5rem;
+  left: 1rem;
+  z-index: 800;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(200, 195, 185, 0.55);
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.global-sidebar-close-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+html[data-theme='light'] .global-sidebar-close-btn {
+  color: rgba(80, 75, 65, 0.5);
+}
+
+html[data-theme='light'] .global-sidebar-close-btn:hover {
+  color: rgba(30, 25, 15, 0.85);
+}
 
 .global-toc-btn {
   position: fixed;

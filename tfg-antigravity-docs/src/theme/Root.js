@@ -1,50 +1,57 @@
 // src/theme/Root.js
-// Global wrapper — FAB flotante "Modo Cine" + controles de barra lateral e índice
+// Global wrapper — FAB Modo Cine + controles de barra lateral e índice
 
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
+import { useLocation } from '@docusaurus/router';
 
 export default function Root({ children }) {
   const [zenMode, setZenMode] = useState(true);
   const [tocVisible, setTocVisible] = useState(false);
+  const location = useLocation();
+
+  const isIntro = location.pathname === '/' || location.pathname === '';
+  const isCine  = location.pathname.startsWith('/cine');
 
   // Inicializar desde localStorage en cliente
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
     const isZen = saved === null ? true : saved === 'true';
     setZenMode(isZen);
-    if (isZen) {
-      document.documentElement.classList.add('zen-mode');
-    } else {
-      document.documentElement.classList.remove('zen-mode');
-    }
+    document.documentElement.classList.toggle('zen-mode', isZen);
   }, []);
 
-  const toggleSidebar = () => {
-    const next = !zenMode;
-    setZenMode(next);
-    if (next) {
-      document.documentElement.classList.add('zen-mode');
-    } else {
-      document.documentElement.classList.remove('zen-mode');
-    }
-    localStorage.setItem('zen-mode', String(next));
-    // Al mostrar sidebar, ocultar TOC independiente
-    if (!next === false) {
-      setTocVisible(false);
-      document.documentElement.classList.remove('toc-visible');
-    }
+  // Al cambiar de página, resetear toc-visible
+  useEffect(() => {
+    setTocVisible(false);
+    document.documentElement.classList.remove('toc-visible');
+  }, [location.pathname]);
+
+  const openSidebar = () => {
+    setZenMode(false);
+    document.documentElement.classList.remove('zen-mode');
+    localStorage.setItem('zen-mode', 'false');
+    // Al abrir sidebar, ocultar toc flotante (ya estará visible en sidebar)
+    setTocVisible(false);
+    document.documentElement.classList.remove('toc-visible');
+  };
+
+  const closeSidebar = () => {
+    setZenMode(true);
+    document.documentElement.classList.add('zen-mode');
+    localStorage.setItem('zen-mode', 'true');
   };
 
   const toggleToc = () => {
     const next = !tocVisible;
     setTocVisible(next);
-    if (next) {
-      document.documentElement.classList.add('toc-visible');
-    } else {
-      document.documentElement.classList.remove('toc-visible');
-    }
+    document.documentElement.classList.toggle('toc-visible', next);
   };
+
+  // No mostrar nada en intro ni en cine
+  if (isIntro || isCine) {
+    return <>{children}</>;
+  }
 
   return (
     <>
@@ -55,11 +62,11 @@ export default function Root({ children }) {
         Modo Cine
       </Link>
 
-      {/* Botón ☰ — solo visible cuando la barra lateral está CERRADA */}
+      {/* ☰ — solo cuando sidebar está cerrada */}
       {zenMode && (
         <button
           className="global-sidebar-btn"
-          onClick={toggleSidebar}
+          onClick={openSidebar}
           aria-label="Mostrar barra lateral"
           title="Mostrar barra lateral"
         >
@@ -67,14 +74,28 @@ export default function Root({ children }) {
         </button>
       )}
 
-      {/* Botón mostrar índice */}
-      <button
-        className={`global-toc-btn${tocVisible ? ' active' : ''}`}
-        onClick={toggleToc}
-        aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
-      >
-        {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
-      </button>
+      {/* ✕ — solo cuando sidebar está abierta */}
+      {!zenMode && (
+        <button
+          className="global-sidebar-close-btn"
+          onClick={closeSidebar}
+          aria-label="Cerrar barra lateral"
+          title="Cerrar barra lateral"
+        >
+          ✕
+        </button>
+      )}
+
+      {/* Mostrar índice — solo útil en zen-mode (TOC oculto) */}
+      {zenMode && (
+        <button
+          className={`global-toc-btn${tocVisible ? ' active' : ''}`}
+          onClick={toggleToc}
+          aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+        >
+          {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+        </button>
+      )}
     </>
   );
 }
