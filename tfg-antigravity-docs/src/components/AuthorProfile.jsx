@@ -6,13 +6,12 @@ export default function AuthorProfile() {
     <>
       <style>
         {`
-          /* Forzar diseño de pantalla única sin scroll (eliminando padding extra de Docusaurus) */
+          /* Permitir scroll si el contenido es mayor que el alto de pantalla, centrando verticalmente si hay espacio */
           .theme-doc-markdown {
-            height: calc(100vh - 140px);
+            min-height: calc(100vh - 140px);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow: hidden;
           }
           .theme-doc-breadcrumbs, .theme-doc-footer {
             display: none !important;
@@ -25,6 +24,7 @@ export default function AuthorProfile() {
             margin: 0 auto;
             width: 100%;
             animation: fadeIn 0.8s ease-out forwards;
+            padding: 1.5rem 0;
           }
 
           .author-header {
@@ -141,6 +141,38 @@ export default function AuthorProfile() {
           @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+          }
+
+          /* Consultas de medios para responsive */
+          @media (max-width: 960px) {
+            .theme-doc-markdown {
+              min-height: auto;
+              display: block;
+              padding: 1rem 0;
+            }
+            .author-grid {
+              grid-template-columns: 1fr;
+              gap: 2.5rem;
+            }
+            .author-container {
+              padding: 0 1rem;
+            }
+            .author-header {
+              margin-bottom: 1.5rem;
+              padding-bottom: 1rem;
+            }
+            .author-cta {
+              flex-wrap: wrap;
+              gap: 0.75rem;
+              margin-top: 1.5rem;
+              padding-top: 1.5rem;
+            }
+            .btn-primary, .btn-secondary {
+              flex-grow: 1;
+              text-align: center;
+              font-size: 0.8rem;
+              padding: 0.6rem 1rem;
+            }
           }
         `}
       </style>
