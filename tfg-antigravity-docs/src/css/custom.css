@@ -356,34 +356,70 @@ html[data-theme='light'] article tr:hover td {
 }
 
 /* ============================================================
-   KATEX MATH
+   KATEX MATH — tipografía premium y espaciado editorial
    ============================================================ */
 
+/* Bloque display: aislamiento generoso del texto narrativo */
 .math.math-display {
-  margin: 2rem 0;
-  padding: 1.5rem;
-  background: var(--ifm-color-emphasis-50);
-  border-radius: 12px;
-  border-left: 4px solid var(--ifm-color-primary);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  margin: 2.5rem auto;
+  padding: 1.75rem 2rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+  border-left: 3px solid var(--ifm-color-primary);
   overflow-x: auto;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Color heredado por KaTeX (no tocar font-family ni font-weight internos) */
+  color: #333;
 }
 
 .math.math-display:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
+/* Modo oscuro: gris acero, no blanco puro */
 html[data-theme='dark'] .math.math-display {
-  background: rgba(15, 23, 42, 0.6);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  background: rgba(10, 17, 40, 0.4);
+  border-left-color: var(--accent-electric);
+  color: #e2e8f0;
+  box-shadow: none;
 }
 
+/* KaTeX scroll horizontal sin barra visible en móvil */
 .katex-display {
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 10px 0;
+  padding: 6px 0;
+}
+
+/* ── Leyenda de variables (.equation-legend) ───────────────────
+   Uso en MDX:
+   <div className="equation-legend">
+     <span>$C_{var}$</span><span>descripción de la variable</span>
+     <span>$H$</span><span>constante de inercia del sistema (GWs)</span>
+   </div>
+   ─────────────────────────────────────────────────────────── */
+.equation-legend {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 1.25rem;
+  margin-top: -1.25rem;      /* se pega visualmente a la fórmula */
+  margin-bottom: 2rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: #6b7280;            /* gris tenue light mode */
+  border-left: 3px solid transparent; /* alineación con la fórmula */
+}
+
+html[data-theme='dark'] .equation-legend {
+  color: rgba(226, 232, 240, 0.5); /* gris acero tenue dark mode */
+}
+
+/* Las partes KaTeX dentro de .equation-legend heredan el color */
+.equation-legend .katex {
+  color: inherit;
+  font-size: 1em;
 }
 
 /* ============================================================
@@ -558,26 +594,35 @@ html[data-theme='dark'].zen-mode #zen-mode-toggle {
   color: var(--ifm-color-primary-light);
 }
 
-/* Estilos para Formulas KaTeX */
+/* math-display alias (compatibilidad con markdown directo) */
 .math-display {
   text-align: center;
-  font-size: 1.3em;
-  margin: 2rem 0;
+  font-size: 1.15em;
+  margin: 2.5rem 0;
   overflow-x: auto;
+  color: #333;
+}
+html[data-theme='dark'] .math-display {
+  color: #e2e8f0;
 }
 
-
+/* .formula-legend — alias legacy (sustituida por .equation-legend) */
 .formula-legend {
-  background: var(--ifm-color-emphasis-100);
-  border-left: 4px solid var(--ifm-color-primary);
-  padding: 1rem;
-  margin: 1.5rem 0;
-  border-radius: 4px;
-  font-size: 0.9em;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 1.25rem;
+  padding: 0.75rem 1.25rem;
+  margin: 0.5rem 0 2rem;
+  font-size: 0.83rem;
+  color: #6b7280;
+}
+html[data-theme='dark'] .formula-legend {
+  color: rgba(226, 232, 240, 0.5);
 }
 .formula-legend ul {
-  margin-bottom: 0;
-  padding-left: 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 /* Zen mode text and icon toggling */
@@ -751,27 +796,7 @@ html[data-theme='dark'].zen-mode #zen-mode-toggle {
   color: var(--ifm-color-primary-light);
 }
 
-/* Estilos para Formulas KaTeX */
-.math-display {
-  text-align: center;
-  font-size: 1.3em;
-  margin: 2rem 0;
-  overflow-x: auto;
-}
-
-
-.formula-legend {
-  background: var(--ifm-color-emphasis-100);
-  border-left: 4px solid var(--ifm-color-primary);
-  padding: 1rem;
-  margin: 1.5rem 0;
-  border-radius: 4px;
-  font-size: 0.9em;
-}
-.formula-legend ul {
-  margin-bottom: 0;
-  padding-left: 1.2rem;
-}
+/* Duplicado eliminado — ver bloque KATEX MATH más arriba */
 
 /* Zen mode text and icon toggling */
 .zen-mode-text-active,
