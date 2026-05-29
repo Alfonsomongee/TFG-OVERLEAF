@@ -38,7 +38,7 @@ function PrecioSpotScatterInner() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  if (!Plot || loading) return <div style={S.loading}>⟳ Cargando precio SPOT...</div>;
+  if (!Plot || loading) return <div style={S.loading}>Cargando precio SPOT...</div>;
 
   const demandaHoy  = data?.demanda    ?? null;
   const precioHoy   = data?.precio_spot ?? null;
@@ -62,7 +62,7 @@ function PrecioSpotScatterInner() {
       y: [-2.5],
       mode: 'markers',
       type: 'scatter',
-      name: '⚡ Colapso 12:33',
+      name: 'Colapso 12:33',
       marker: { color: '#dc2626', size: 14, symbol: 'x', line: { color: '#fff', width: 2 } },
       hovertemplate: 'COLAPSO<br>Demanda: 25.184 MW<br>Precio: −2,5 €/MWh<extra></extra>',
     },
@@ -124,7 +124,7 @@ function PrecioSpotScatterInner() {
       )}
 
       <p style={S.note}>
-        ℹ️ El 28-A el precio SPOT cayó a <strong style={{ color: '#ef4444' }}>−2,5 €/MWh</strong> porque la
+        El 28-A el precio SPOT cayó a <strong style={{ color: '#ef4444' }}>−2,5 €/MWh</strong> porque la
         sobreproducción renovable superaba la demanda. El precio negativo es señal de estrés sistémico extremo.
         La trayectoria roja muestra las horas del 28-A desde medianoche hasta el colapso.
       </p>
@@ -132,7 +132,7 @@ function PrecioSpotScatterInner() {
       <p style={S.caption}>
         {lastUpdate
           ? `Actualizado: ${lastUpdate.toLocaleTimeString('es-ES')} · Fuente: ESIOS (REE) · Refresco cada 5 min`
-          : '⚠️ Sin datos en tiempo real'}
+          : 'Sin datos en tiempo real'}
       </p>
     </div>
   );
@@ -148,19 +148,19 @@ function Chip({ label, value, color }) {
 }
 
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
-  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.75rem' },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
+  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' },
   chip: { flex: 1, minWidth: '150px', background: 'rgba(255,255,255,0.03)', border: '1px solid', borderRadius: '8px', padding: '0.6rem 1rem', textAlign: 'center' },
   chipLabel: { display: 'block', fontSize: '0.6rem', color: '#a0a0b0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.2rem' },
   chipVal: { fontSize: '1rem', fontWeight: 700 },
-  note: { marginTop: '1rem', fontSize: '0.78rem', color: 'rgba(160,155,140,0.7)', background: 'rgba(255,170,0,0.04)', border: '1px solid rgba(255,170,0,0.08)', borderRadius: '8px', padding: '0.75rem 1rem', lineHeight: 1.6 },
+  note: { marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
-  caption: { marginTop: '0.75rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
+  caption: { marginTop: '1.25rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
 };
 
 export default function PrecioSpotScatter() {
   return (
-    <BrowserOnly fallback={<div style={S.loading}>⟳ Cargando...</div>}>
+    <BrowserOnly fallback={<div style={S.loading}>Cargando...</div>}>
       {() => <PrecioSpotScatterInner />}
     </BrowserOnly>
   );

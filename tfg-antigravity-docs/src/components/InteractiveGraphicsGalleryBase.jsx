@@ -12,6 +12,7 @@ import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
 import FinancialWaterfallChart from './FinancialWaterfallChart';
 import BlackoutPropagationMap from './BlackoutPropagationMap';
 import IberianGridTopology from './IberianGridTopology';
+import CollapseSismograph from './CollapseSismograph';
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
@@ -74,6 +75,14 @@ const getGraphicData = (id, lang) => {
       it: { title: 'Topologia di Rete Neurale (GNN)', desc: 'Grafo diretto dalla forza delle impedenze della rete di trasmissione.' },
       de: { title: 'Neuronale Netztopologie (GNN)', desc: 'Kraftgesteuerter Graph der Übertragungsnetzimpedanzen.' }
     },
+    sismograph: {
+      es: { title: 'Sismógrafo del Colapso', desc: 'Evolución transitoria de la frecuencia y la tensión de red en Carmona durante los 27 segundos críticos del colapso.' },
+      en: { title: 'Collapse Sismograph', desc: 'Transient evolution of grid frequency and voltage at Carmona during the critical 27 seconds of the collapse.' },
+      pt: { title: 'Sismógrafo do Colapso', desc: 'Evolução transitória de frequência e tensão de rede em Carmona durante os 27 segundos críticos del colapso.' },
+      fr: { title: 'Sismographe de l\'Effondrement', desc: 'Évolution transitoire de la fréquence et de la tension de réseau à Carmona pendant les 27 secondes critiques de l\'effondrement.' },
+      it: { title: 'Sismografo del Collasso', desc: 'Evoluzione transitoria della frequenza e della tensión di rete a Carmona durante i 27 secondi critici del collasso.' },
+      de: { title: 'Kollaps-Sismograph', desc: 'Transiente Entwicklung von Netzfrequenz und -spannung in Carmona während der kritischen 27 Sekunden des Kollapses.' }
+    },
     phasor: {
       es: { title: 'Gráfico Fasorial Transitorio', desc: 'Dispersión polar de Unidades de Medición Fasorial (PMU) a 50Hz ilustrando la divergencia angular y colapso de la estabilidad.' },
       en: { title: 'Transient Phasor Plot', desc: 'Polar scatter of Phasor Measurement Units (PMU) at 50Hz illustrating angular divergence and stability collapse.' },
@@ -123,6 +132,7 @@ const graphicsData = [
   { id: 'streamgraph', icon: '🌍', component: EnergyTransitionStreamgraph },
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart },
   { id: 'topology', icon: '🕸️', component: IberianGridTopology },
+  { id: 'sismograph', icon: '📊', component: CollapseSismograph },
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot },
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard },

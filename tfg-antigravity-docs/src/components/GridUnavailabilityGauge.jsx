@@ -80,7 +80,7 @@ function GridUnavailabilityGaugeInner() {
 
   if (loading) {
     return (
-      <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
+      <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
         <span>Cargando índice de indisponibilidad...</span>
       </div>
     );
@@ -88,8 +88,8 @@ function GridUnavailabilityGaugeInner() {
 
   if (value === null && error) {
     return (
-      <div style={{ textAlign: 'center', padding: '1rem', color: '#ef4444', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
-        ⚠️ Error: {error}
+      <div style={{ textAlign: 'center', padding: '1rem', color: '#ef4444', background: 'transparent' }}>
+        Error: {error}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>Reintentar</button>
       </div>
     );
@@ -139,10 +139,10 @@ function GridUnavailabilityGaugeInner() {
   };
 
   return (
-    <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
+    <div style={{ padding: '1rem 0', background: 'transparent' }}>
       <DynamicPlotlyWrapper data={[gaugeTrace]} layout={layout} />
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', textAlign: 'center' }}>
-        ℹ️ El umbral de referencia (línea roja) marca el <strong>35,0%</strong> de indisponibilidad de la red de 400 kV registrado en las áreas Centro y Sur en la mañana del 28 de abril de 2025 (según informe pericial del IIT-Comillas). Esto contrasta con un baseline histórico habitual inferior al 1,5%, evidenciando la extrema debilidad estructural de la red de transporte horas antes de la cascada dinámica.
+      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
+        El umbral de referencia (línea roja) marca el <strong>35,0%</strong> de indisponibilidad de la red de 400 kV registrado en las áreas Centro y Sur en la mañana del 28 de abril de 2025 (según informe pericial del IIT-Comillas). Esto contrasta con un baseline histórico habitual inferior al 1,5%, evidenciando la extrema debilidad estructural de la red de transporte horas antes de la cascada dinámica.
       </div>
     </div>
   );

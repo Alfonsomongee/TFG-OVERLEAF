@@ -36,7 +36,7 @@ function BalanceIntercambiosInner() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  if (!Plot || loading) return <div style={S.loading}>⟳ Cargando intercambios...</div>;
+  if (!Plot || loading) return <div style={S.loading}>Cargando intercambios...</div>;
 
   // ESIOS devuelve export_francia negativo cuando España exporta (convención de flujos)
   const franciaHoy  = data ? -(data.export_francia ?? 0)  : 0;
@@ -99,20 +99,20 @@ function BalanceIntercambiosInner() {
             <span style={{ ...S.chipVal, color: neto < 0 ? '#10b981' : '#ef4444' }}>
               {neto > 0 ? '+' : ''}{neto.toFixed(0)} MW
             </span>
-            <span style={S.chipSub}>{neto < 0 ? '🟢 Exportador neto' : '🔴 Importador neto'}</span>
+            <span style={S.chipSub}>{neto < 0 ? 'Exportador neto' : 'Importador neto'}</span>
           </div>
         )}
       </div>
 
       <p style={S.note}>
-        ℹ️ El 28-A España era <strong>exportador neto</strong> hacia Francia y Portugal con 870 + 2.600 MW,
+        El 28-A España era <strong>exportador neto</strong> hacia Francia y Portugal con 870 + 2.600 MW,
         vaciando sus propias reservas mientras el sistema oscilaba. Valores negativos = importación.
       </p>
 
       <p style={S.caption}>
         {lastUpdate
           ? `Actualizado: ${lastUpdate.toLocaleTimeString('es-ES')} · Fuente: ESIOS (REE) · Refresco cada 5 min`
-          : '⚠️ Sin datos en tiempo real'}
+          : 'Sin datos en tiempo real'}
       </p>
     </div>
   );
@@ -131,20 +131,20 @@ function FlowChip({ country, value, ref28A }) {
 }
 
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
-  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.75rem' },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
+  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' },
   chip: { flex: 1, minWidth: '150px', background: 'rgba(255,255,255,0.03)', border: '1px solid', borderRadius: '8px', padding: '0.6rem 1rem', textAlign: 'center' },
   chipLabel: { display: 'block', fontSize: '0.6rem', color: '#a0a0b0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.2rem' },
   chipVal: { display: 'block', fontSize: '1rem', fontWeight: 700 },
   chipSub: { display: 'block', fontSize: '0.65rem', color: '#a0a0b0', marginTop: '0.15rem' },
-  note: { marginTop: '1rem', fontSize: '0.78rem', color: 'rgba(160,155,140,0.7)', background: 'rgba(255,170,0,0.04)', border: '1px solid rgba(255,170,0,0.08)', borderRadius: '8px', padding: '0.75rem 1rem', lineHeight: 1.6 },
+  note: { marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
-  caption: { marginTop: '0.75rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
+  caption: { marginTop: '1.25rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
 };
 
 export default function BalanceIntercambios() {
   return (
-    <BrowserOnly fallback={<div style={S.loading}>⟳ Cargando...</div>}>
+    <BrowserOnly fallback={<div style={S.loading}>Cargando...</div>}>
       {() => <BalanceIntercambiosInner />}
     </BrowserOnly>
   );

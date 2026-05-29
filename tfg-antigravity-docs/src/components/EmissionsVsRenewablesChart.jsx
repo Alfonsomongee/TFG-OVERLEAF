@@ -137,7 +137,7 @@ function EmissionsVsRenewablesChartInner() {
 
   if (loading) {
     return (
-      <div style={{ height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
+      <div style={{ height: '450px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
         <span>Cargando datos de emisiones y penetración renovable...</span>
       </div>
     );
@@ -145,8 +145,8 @@ function EmissionsVsRenewablesChartInner() {
 
   if (error || !chartData) {
     return (
-      <div style={{ textAlign: 'center', padding: '1rem', color: '#ef4444', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
-        ⚠️ Error: {error || 'No se pudieron cargar los datos'}
+      <div style={{ textAlign: 'center', padding: '1rem', color: '#ef4444', background: 'transparent' }}>
+        Error: {error || 'No se pudieron cargar los datos'}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>Reintentar</button>
       </div>
     );
@@ -277,12 +277,12 @@ function EmissionsVsRenewablesChartInner() {
   };
 
   return (
-    <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
+    <div style={{ padding: '1rem 0', background: 'transparent' }}>
       <DynamicPlotlyWrapper data={[traceEmissions, tracePenetration]} layout={layout} />
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>📉 <strong>Paradoja ambiental del 28-A:</strong> El sistema eléctrico colapsó en su punto de máxima limpieza instantánea, alcanzando una <strong>penetración no síncrona en el mix del 82% (84,5% agregada en la semana)</strong> y emisiones mínimas récord. Esto demuestra que la descarbonización masiva sin inercia síncrona ni control de tensión dinámico compromete físicamente el suministro.</p>
+      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 0.5rem' }}><strong>Paradoja ambiental del 28-A:</strong> El sistema eléctrico colapsó en su punto de máxima limpieza instantánea, alcanzando una <strong>penetración no síncrona en el mix del 82% (84,5% agregada en la semana)</strong> y emisiones mínimas récord. Esto demuestra que la descarbonización masiva sin inercia síncrona ni control de tensión dinámico compromete físicamente el suministro.</p>
         <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0 }}>
-          ℹ️ Datos anuales de referencia 2025: Penetración renovable del **55,5%** (ISE-2025 REE) y factor de emisión mix red de **258 gCO₂eq/kWh** (CNMC, 28 abr 2026). Emisiones diarias: REData (REE).
+          Datos anuales de referencia 2025: Penetración renovable del **55,5%** (ISE-2025 REE) y factor de emisión mix red de **258 gCO₂eq/kWh** (CNMC, 28 abr 2026). Emisiones diarias: REData (REE).
         </p>
       </div>
     </div>

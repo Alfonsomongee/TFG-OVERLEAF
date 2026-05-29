@@ -47,7 +47,7 @@ function RadarVulnerabilidadInner() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  if (!Plot || loading) return <div style={S.loading}>⟳ Cargando radar...</div>;
+  if (!Plot || loading) return <div style={S.loading}>Cargando radar...</div>;
 
   const categories = Object.keys(BLACKOUT_NORMALIZED);
 
@@ -78,7 +78,7 @@ function RadarVulnerabilidadInner() {
   const vuln28A  = (val28A.reduce((a, b) => a + b, 0) / val28A.length).toFixed(1);
 
   const vulnColor = vulnHoy > 70 ? '#ef4444' : vulnHoy > 45 ? '#f59e0b' : '#10b981';
-  const vulnLabel = vulnHoy > 70 ? 'RIESGO ALTO' : vulnHoy > 45 ? 'VIGILANCIA' : 'ESTABLE';
+  const vulnLabel = vulnHoy > 70 ? 'CRÍTICO' : vulnHoy > 45 ? 'ALERTA' : 'ESTABLE';
 
   const traces = [
     {
@@ -86,11 +86,11 @@ function RadarVulnerabilidadInner() {
       r: [...val28A, val28A[0]],
       theta: [...categories, categories[0]],
       fill: 'toself',
-      name: '28-A (colapso)',
+      name: 'Referencia (28-A)',
       fillcolor: 'rgba(239,68,68,0.12)',
       line: { color: '#ef4444', width: 2 },
       marker: { color: '#ef4444', size: 5 },
-      hovertemplate: '<b>%{theta}</b><br>28-A: %{r:.1f}/100<extra></extra>',
+      hovertemplate: '<b>%{theta}</b><br>Referencia: %{r:.1f}/100<extra></extra>',
     },
     {
       type: 'scatterpolar',
@@ -160,14 +160,14 @@ function RadarVulnerabilidadInner() {
       </div>
 
       <p style={S.note}>
-        ℹ️ Cuanto más se aproxima el polígono azul al rojo, mayor es la similitud con las condiciones del colapso.
+        Cuanto más se aproxima el polígono azul al rojo, mayor es la similitud con las condiciones del colapso.
         100 = máximo riesgo conocido (perfil 28-A). Las dimensiones están normalizadas para comparabilidad.
       </p>
 
       <p style={S.caption}>
         {lastUpdate
           ? `Actualizado: ${lastUpdate.toLocaleTimeString('es-ES')} · Fuente: ESIOS (REE) · Refresco cada 5 min`
-          : '⚠️ Sin datos en tiempo real'}
+          : 'Sin datos en tiempo real'}
       </p>
     </div>
   );
@@ -193,7 +193,7 @@ function DimRow({ label, hoy, ref28A }) {
 }
 
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
   indexRow: { display: 'flex', gap: '1rem', marginBottom: '1.25rem' },
   indexCard: { flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid', borderRadius: '10px', padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem' },
   indexLabel: { fontSize: '0.6rem', color: '#a0a0b0', letterSpacing: '0.08em', textTransform: 'uppercase', textAlign: 'center' },
@@ -207,14 +207,14 @@ const S = {
   dimRef: { position: 'absolute', top: '-3px', width: '2px', height: '12px', background: '#ef4444', borderRadius: '1px' },
   dimVal: { fontSize: '0.75rem', fontWeight: 700, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace" },
   dimDiff: { fontSize: '0.65rem', textAlign: 'right', fontFamily: "'JetBrains Mono', monospace" },
-  note: { marginTop: '1rem', fontSize: '0.78rem', color: 'rgba(160,155,140,0.7)', background: 'rgba(255,170,0,0.04)', border: '1px solid rgba(255,170,0,0.08)', borderRadius: '8px', padding: '0.75rem 1rem', lineHeight: 1.6 },
+  note: { marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
-  caption: { marginTop: '0.75rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
+  caption: { marginTop: '1.25rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
 };
 
 export default function RadarVulnerabilidad() {
   return (
-    <BrowserOnly fallback={<div style={S.loading}>⟳ Cargando...</div>}>
+    <BrowserOnly fallback={<div style={S.loading}>Cargando...</div>}>
       {() => <RadarVulnerabilidadInner />}
     </BrowserOnly>
   );

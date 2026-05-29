@@ -38,8 +38,8 @@ function DemandaRenovableTrendInner() {
     return () => clearInterval(id);
   }, [fetchCurrent]);
 
-  if (!Plot || loading) return <div style={S.loading}>⟳ Cargando tendencia...</div>;
-  if (!snapshot) return <div style={S.loading}>⚠ Sin datos históricos</div>;
+  if (!Plot || loading) return <div style={S.loading}>Cargando tendencia...</div>;
+  if (!snapshot) return <div style={S.loading}>Sin datos históricos</div>;
 
   const VARS = [
     { key: 'demanda',          label: 'Demanda',       unit: 'MW', color: '#06b6d4' },
@@ -131,13 +131,13 @@ function Chip({ label, value, color }) {
 }
 
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
-  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '0.75rem' },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
+  row: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' },
   chip: { flex: 1, minWidth: '160px', background: 'rgba(255,255,255,0.03)', border: '1px solid', borderRadius: '8px', padding: '0.5rem 0.8rem', textAlign: 'center' },
   chipLabel: { display: 'block', fontSize: '0.6rem', color: '#a0a0b0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.2rem' },
   chipVal: { fontSize: '1rem', fontWeight: 700 },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
-  caption: { marginTop: '0.75rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
+  caption: { marginTop: '1.25rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
 };
 
 export default function DemandaRenovableTrend() {

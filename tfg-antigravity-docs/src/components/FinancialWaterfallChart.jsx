@@ -142,7 +142,7 @@ function FinancialWaterfallChartInner() {
   // Renderizado condicional
   if (loading) {
     return (
-      <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
+      <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
         <span>Cargando datos financieros auditados...</span>
       </div>
     );
@@ -150,8 +150,8 @@ function FinancialWaterfallChartInner() {
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444', background: 'rgba(7,9,15,0.6)', borderRadius: '12px' }}>
-        ⚠️ Error: {error}
+      <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444', background: 'transparent' }}>
+        Error: {error}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>Reintentar</button>
       </div>
     );
@@ -212,10 +212,10 @@ function FinancialWaterfallChartInner() {
   };
 
   return (
-    <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
+    <div style={{ padding: '1rem 0', background: 'transparent' }}>
       <DynamicPlotlyWrapper data={[waterfallTrace]} layout={layout} />
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>ℹ️ <strong>Estructura de impacto macroeconómico (múltiples fuentes):</strong> El coste total acumulado en el sistema MIBEL se estima en **2.703,5 M€**. El valor de la energía no suministrada (VoLL, **1.277,5 M€**) se calcula valorando a 5.000 €/MWh la ENS estimada de Iberia (~255.490 MWh, que incluye 55.489 MWh oficiales de Portugal ERSE y ~200.000 MWh aproximados de España). Se integra el sobrecoste acumulado de la **Operación Reforzada (666 M€)** por despacho forzoso de gas, la pérdida neta de gasto presencial de consumo de hogares y comercio **(400 M€ según CaixaBank Research)**, y la exposición potencial máxima a **sanciones de la CNMC (240 M€)**.</p>
+      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 0.5rem' }}><strong>Estructura de impacto macroeconómico (múltiples fuentes):</strong> El coste total acumulado en el sistema MIBEL se estima en **2.703,5 M€**. El valor de la energía no suministrada (VoLL, **1.277,5 M€**) se calcula valorando a 5.000 €/MWh la ENS estimada de Iberia (~255.490 MWh, que incluye 55.489 MWh oficiales de Portugal ERSE y ~200.000 MWh aproximados de España). Se integra el sobrecoste acumulado de la **Operación Reforzada (666 M€)** por despacho forzoso de gas, la pérdida neta de gasto presencial de consumo de hogares y comercio **(400 M€ según CaixaBank Research)**, y la exposición potencial máxima a **sanciones de la CNMC (240 M€)**.</p>
         <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0 }}>
           Fuentes periciales primarias: ERSE decision (mayo 2026), CaixaBank Research (julio 2025), CNMC process (abril 2026), e Informes E-P de REE (abril 2026).
         </p>

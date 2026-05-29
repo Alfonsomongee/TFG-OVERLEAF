@@ -33,7 +33,7 @@ function TermometroRiesgoInner() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  if (!Plot || loading) return <div style={S.loading}>⟳ Cargando termómetro...</div>;
+  if (!Plot || loading) return <div style={S.loading}>Cargando termómetro...</div>;
 
   const penetracion   = data?.penetracion_renovable ?? null;
   const inercia       = data?.inercia_estimada ?? null;
@@ -108,7 +108,7 @@ function TermometroRiesgoInner() {
       <p style={S.caption}>
         {lastUpdate
           ? `Actualizado: ${lastUpdate.toLocaleTimeString('es-ES')} · Fuente: ESIOS (REE) · Refresco cada 5 min`
-          : '⚠️ Sin datos en tiempo real'}
+          : 'Sin datos en tiempo real'}
       </p>
     </div>
   );
@@ -132,18 +132,18 @@ function RiskBadge({ value, thresholds, dangerLabel, dangerInverted }) {
 }
 
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
-  grid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' },
   gaugeBox: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
   badge: { marginTop: '0.25rem', padding: '0.25rem 0.75rem', borderRadius: '20px', border: '1px solid', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
   ref: { fontSize: '0.72rem', color: 'rgba(160,155,140,0.65)', textAlign: 'center', marginTop: '0.4rem', lineHeight: 1.4 },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
-  caption: { marginTop: '1rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
+  caption: { marginTop: '1.25rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
 };
 
 export default function TermometroRiesgo() {
   return (
-    <BrowserOnly fallback={<div style={S.loading}>⟳ Cargando...</div>}>
+    <BrowserOnly fallback={<div style={S.loading}>Cargando...</div>}>
       {() => <TermometroRiesgoInner />}
     </BrowserOnly>
   );

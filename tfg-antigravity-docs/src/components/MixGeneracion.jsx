@@ -290,14 +290,14 @@ const MetricPill = React.memo(({ label, value, accent = '#06b6d4', tooltip = '' 
 // Estilos
 // ----------------------------------------------
 const S = {
-  wrapper: { background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)', padding: '1.5rem', fontFamily: "'Inter', sans-serif" },
-  skeletonWrapper: { minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', padding: '1.5rem' },
+  wrapper: { background: 'transparent', padding: '1rem 0', fontFamily: "'Inter', sans-serif" },
+  skeletonWrapper: { minHeight: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '1rem', background: 'transparent', padding: '1rem 0' },
   skeletonGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' },
   skeletonDonut: { background: '#2a2a2e', borderRadius: '50%', width: '200px', height: '200px', margin: '0 auto' },
   skeletonText: { width: '80%', height: '20px', background: '#2a2a2e', margin: '0 auto', borderRadius: '4px' },
-  errorBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', minHeight: '300px', color: '#ef4444', background: 'rgba(239,68,68,0.1)', borderRadius: '12px', padding: '2rem', textAlign: 'center' },
+  errorBox: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', minHeight: '300px', color: '#ef4444', background: 'rgba(239,68,68,0.05)', borderRadius: '8px', padding: '2rem', textAlign: 'center' },
   retryBtn: { background: '#ef4444', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontFamily: "'Inter', sans-serif" },
-  metricRow: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem', alignItems: 'center' },
+  metricRow: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1.5rem', alignItems: 'center' },
   pill: { flex: 1, minWidth: '160px', background: 'rgba(255,255,255,0.03)', border: '1px solid', borderRadius: '8px', padding: '0.6rem 1rem', textAlign: 'center' },
   pillLabel: { display: 'block', fontSize: '0.62rem', color: '#a0a0b0', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.25rem' },
   pillValue: { fontSize: '1.1rem', fontWeight: 700 },
@@ -305,8 +305,8 @@ const S = {
   toggleContainer: { display: 'flex', alignItems: 'center' },
   pauseBtn: { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(6,182,212,0.4)', color: '#06b6d4', padding: '0.4rem 0.9rem', borderRadius: '20px', cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.68rem', letterSpacing: '0.06em', transition: '0.2s' },
   pauseBtnActive: { background: '#06b6d4', border: '1px solid #06b6d4', color: '#000', padding: '0.4rem 0.9rem', borderRadius: '20px', cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", fontSize: '0.68rem', letterSpacing: '0.06em' },
-  footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' },
-  freshnessIndicator: { fontSize: '0.68rem', color: '#10b981', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.04em' },
+  footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' },
+  freshnessIndicator: { fontSize: '0.68rem', color: '#10b981', fontFamily: "'JetBrains Mono', monospace', sans-serif", letterSpacing: '0.04em' },
   caption: { fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)', letterSpacing: '0.04em', fontFamily: "'JetBrains Mono', monospace" },
   loading: { display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', color: 'rgba(160,155,140,0.7)', fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'JetBrains Mono', monospace" },
 };

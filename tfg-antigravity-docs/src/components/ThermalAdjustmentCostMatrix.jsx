@@ -217,12 +217,12 @@ function ThermalAdjustmentCostMatrixInner() {
   };
 
   return (
-    <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
+    <div style={{ padding: '1rem 0', background: 'transparent' }}>
       <DynamicPlotlyWrapper data={[heatmapTrace]} layout={layout} />
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>ℹ️ <strong>Métricas anuales de ajuste (ISE-2025 REE):</strong> En el año 2025, el coste total de los servicios de ajuste se disparó hasta los <strong>3.812 M€ (+43% respecto a 2024)</strong>, con las restricciones técnicas acumulando entre <strong>3.351 M€ y 3.770 M€ (+63%)</strong> debido a la baja inercia y al despacho forzoso de ciclos combinados ("Operación Reforzada"). En marzo de 2026, las restricciones llegaron a representar el <strong>28% del término de energía en la factura PVPC</strong>.</p>
+      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 0.5rem' }}><strong>Métricas anuales de ajuste (ISE-2025 REE):</strong> En el año 2025, el coste total de los servicios de ajuste se disparó hasta los <strong>3.812 M€ (+43% respecto a 2024)</strong>, con las restricciones técnicas acumulando entre <strong>3.351 M€ y 3.770 M€ (+63%)</strong> debido a la baja inercia y al despacho forzoso de ciclos combinados ("Operación Reforzada"). En marzo de 2026, las restricciones llegaron a representar el <strong>28% del término de energía en la factura PVPC</strong>.</p>
         <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
-          <span>🟢 Datos históricos reales · Período del colapso (26/04 a 02/05)</span>
+          <span>Datos históricos reales · Período del colapso (26/04 a 02/05)</span>
           <span>Fuente: ESIOS / REE (Indicadores 680, 71-74, 638)</span>
         </p>
       </div>
