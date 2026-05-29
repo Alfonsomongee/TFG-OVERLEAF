@@ -3,84 +3,98 @@
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
   tutorialSidebar: [
+
+    // PREFACIO
     'intro',
-    // BLOQUE 1: INTRODUCCIÓN
+
+    // 1 · INTRODUCCIÓN
     {
       type: 'doc',
       id: 'introduccion',
-      label: 'Introducción',
+      label: '¿Por qué estudiar el 28-A?',
     },
 
-    // BLOQUE 2: FUNDAMENTOS
+    // 2 · CONTEXTO
     {
       type: 'doc',
       id: 'contexto',
-      label: 'Contexto Técnico',
+      label: 'La Red que Ocultaba su Fragilidad',
     },
 
-    // BLOQUE 3: NARRATIVA DEL INCIDENTE
+    // 3 · EL COLAPSO (análisis del incidente + impacto comunicativo)
     {
       type: 'category',
-      label: 'ANÁLISIS DEL INCIDENTE',
+      label: 'EL COLAPSO',
       collapsed: false,
       className: 'sidebar-icon-zap',
       items: [
         {
           type: 'doc',
           id: 'analisis-incidente',
-          label: 'Análisis del Incidente',
-        },
-        {
-          type: 'doc',
-          id: 'reaccion-reposicion',
-          label: 'Reacción y Reposición',
+          label: '27 Segundos: Anatomía del Colapso',
         },
         {
           type: 'doc',
           id: 'impacto-comunicativo',
-          label: 'Impacto Comunicativo',
+          label: 'El Relato Oficial vs. la Física Real',
         },
       ],
     },
 
-    // BLOQUE 4: ANÁLISIS TÉCNICO PROFUNDO
+    // 4 · ANÁLISIS PERICIAL
+    {
+      type: 'doc',
+      id: 'analisis-informes',
+      label: 'Tres Verdades, un Apagón',
+    },
+
+    // 5 · DIMENSIÓN EUROPEA (elevada desde el final al centro del relato)
     {
       type: 'category',
-      label: 'ANÁLISIS TÉCNICO',
+      label: 'DIMENSIÓN EUROPEA',
       collapsed: false,
-      className: 'sidebar-icon-bar-chart',
+      className: 'sidebar-icon-globe',
       items: [
         {
           type: 'doc',
-          id: 'analisis-informes',
-          label: 'Análisis de los Informes Oficiales',
+          id: 'dimension-europea/francia-portugal',
+          label: 'La Cascada Cruza los Pirineos',
+        },
+        {
+          type: 'doc',
+          id: 'dimension-europea/coordinacion-continental',
+          label: 'Europa Sostuvo la Frecuencia',
+        },
+        {
+          type: 'doc',
+          id: 'dimension-europea/dia-despues',
+          label: 'Un Continente que Aprendió a Tener Miedo',
         },
       ],
     },
 
-
-
-    // BLOQUE 6: PROSPECTIVA
+    // 6 · RESTAURACIÓN
     {
-      type: 'category',
-      label: 'FUTURO Y RESILIENCIA',
-      collapsed: false,
-      className: 'sidebar-icon-compass',
-      items: [
-        {
-          type: 'doc',
-          id: 'resiliencia-futuro',
-          label: 'Resiliencia y Futuro',
-        },
-        {
-          type: 'doc',
-          id: '07b-consecuencias-financieras',
-          label: 'Consecuencias Financieras',
-        },
-      ],
+      type: 'doc',
+      id: 'reaccion-reposicion',
+      label: 'El Despertar de la Red',
     },
 
-    // BLOQUE 7: HERRAMIENTAS 2026
+    // 7 · ECONOMÍA DEL COLAPSO (separada de resiliencia)
+    {
+      type: 'doc',
+      id: '07b-consecuencias-financieras',
+      label: 'El Precio del Cero Eléctrico',
+    },
+
+    // 8 · RESILIENCIA Y PROPUESTAS
+    {
+      type: 'doc',
+      id: 'resiliencia-futuro',
+      label: 'La Red que Debe Nacer',
+    },
+
+    // 9–10 · MÉTODOS Y ACTUALIZACIONES
     {
       type: 'category',
       label: 'MÉTODOS Y ACTUALIZACIONES',
@@ -90,32 +104,32 @@ const sidebars = {
         {
           type: 'doc',
           id: 'uso-ia',
-          label: 'Uso de Inteligencia Artificial',
+          label: 'Investigar con IA: Límites y Correcciones',
         },
         {
           type: 'doc',
           id: '08.5-actualizacion-2026',
-          label: 'Actualización 2026',
+          label: 'Juicios, Reformas y el Boom de las Baterías',
         },
       ],
     },
 
-    // BLOQUE 8: RESUMEN DE CIFRAS
+    // 11 · CONCLUSIONES
     {
       type: 'category',
-      label: 'RESUMEN DE CIFRAS',
+      label: 'CONCLUSIONES',
       collapsed: false,
-      className: 'sidebar-icon-bar-chart',
+      className: 'sidebar-icon-flag',
       items: [
         {
           type: 'doc',
-          id: 'resumen-de-cifras',
-          label: 'Cifras Maestras',
+          id: 'conclusiones',
+          label: 'El Trilema que Nadie Quiso Ver',
         },
       ],
     },
 
-    // BLOQUE 8.5: DATOS EN TIEMPO REAL Y CONTEXTO
+    // ── DATOS EN TIEMPO REAL (Opción B) ───────────────────────────────
     {
       type: 'category',
       label: 'DATOS EN TIEMPO REAL',
@@ -125,12 +139,12 @@ const sidebars = {
         {
           type: 'doc',
           id: 'datos-tiempo-real/index',
-          label: 'Portal de Datos',
+          label: 'Centro de Control del 28-A',
         },
         {
           type: 'doc',
           id: 'datos-tiempo-real/mix-generacion',
-          label: 'Mix de Generación',
+          label: '¿Quién Generaba cuando Cayó la Red?',
         },
         {
           type: 'doc',
@@ -140,7 +154,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'datos-tiempo-real/termometro-riesgo',
-          label: 'Termómetro de Riesgo',
+          label: 'Pulso de la Red en Tiempo Real',
         },
         {
           type: 'doc',
@@ -155,7 +169,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'datos-tiempo-real/radar-vulnerabilidad',
-          label: 'Radar de Vulnerabilidad',
+          label: 'Mapa de Fragilidad Nodal',
         },
         {
           type: 'html',
@@ -190,47 +204,24 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 9: CIERRE NARRATIVO
+    // ── GALERÍAS / APÉNDICES ──────────────────────────────────────────
+
+    // RESUMEN DE CIFRAS
     {
       type: 'category',
-      label: 'CONCLUSIONES',
+      label: 'RESUMEN DE CIFRAS',
       collapsed: false,
-      className: 'sidebar-icon-flag',
+      className: 'sidebar-icon-bar-chart',
       items: [
         {
           type: 'doc',
-          id: 'conclusiones',
-          label: 'Conclusiones Finales',
+          id: 'resumen-de-cifras',
+          label: 'Las Cifras que No Mienten',
         },
       ],
     },
 
-    // BLOQUE 10: CONTEXTO AMPLIADO
-    {
-      type: 'category',
-      label: 'DIMENSIÓN EUROPEA',
-      collapsed: true,
-      className: 'sidebar-icon-globe',
-      items: [
-        {
-          type: 'doc',
-          id: 'dimension-europea/francia-portugal',
-          label: 'Francia y Portugal',
-        },
-        {
-          type: 'doc',
-          id: 'dimension-europea/coordinacion-continental',
-          label: 'Coordinación Continental',
-        },
-        {
-          type: 'doc',
-          id: 'dimension-europea/dia-despues',
-          label: 'El Día Después',
-        },
-      ],
-    },
-
-    // BLOQUE 10: REFERENCIAS Y GLOSARIO
+    // REFERENCIA
     {
       type: 'category',
       label: 'REFERENCIA',
@@ -250,7 +241,7 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 11: VISUALIZACIÓN
+    // VISUALIZACIONES
     {
       type: 'category',
       label: 'VISUALIZACIONES',
@@ -285,9 +276,7 @@ const sidebars = {
       ],
     },
 
-
-
-    // BLOQUE 13: AUTOR
+    // AUTOR
     {
       type: 'doc',
       id: 'sobre-el-autor',
@@ -297,5 +286,3 @@ const sidebars = {
 };
 
 module.exports = sidebars;
-
-
