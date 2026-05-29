@@ -4,6 +4,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { economicImpactData } from '@site/src/data/forensicData';
 
 const PROXY_URL = '/api/redata-proxy?url=';
 
@@ -106,7 +107,7 @@ function FinancialWaterfallChartInner() {
         { label: 'Daños Directos en Red (M€)', value: directDamagesM, isTotal: false, color: '#eab308' },
       ];
 
-      const total = waterfallData.reduce((acc, item) => acc + item.value, 0);
+      const total = economicImpactData.totalImpactMillions;
       waterfallData.push({ label: 'IMPACTO ECONÓMICO TOTAL (M€)', value: total, isTotal: true, color: '#dc2626' });
 
       setData(waterfallData);
@@ -121,7 +122,7 @@ function FinancialWaterfallChartInner() {
           { label: 'Exposición a Sanciones CNMC (M€)', value: 240.0, isTotal: false, color: '#8b5cf6' },
           { label: 'Daños Directos en Red (M€)', value: 120.0, isTotal: false, color: '#eab308' },
         ];
-        const total = waterfallData.reduce((acc, item) => acc + item.value, 0);
+        const total = economicImpactData.totalImpactMillions;
         waterfallData.push({ label: 'IMPACTO ECONÓMICO TOTAL (M€)', value: total, isTotal: true, color: '#dc2626' });
         
         setData(waterfallData);

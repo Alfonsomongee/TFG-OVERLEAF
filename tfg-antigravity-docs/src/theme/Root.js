@@ -19,22 +19,22 @@ export default function Root({ children }) {
     const saved = localStorage.getItem('zen-mode');
     const isZen = saved === 'true';
     setSidebarOpen(!isZen);
-    document.documentElement.classList.toggle('zen-mode', isZen);
   }, []);
+
+  // Re-aplicar clases en cada cambio de ruta (Docusaurus resetea la etiqueta <html> al navegar)
+  useEffect(() => {
+    document.documentElement.classList.toggle('zen-mode', !sidebarOpen);
+    document.documentElement.classList.toggle('toc-visible', tocVisible);
+  }, [location.pathname, sidebarOpen, tocVisible]);
 
   const toggleSidebar = () => {
     const nextOpen = !sidebarOpen;
     setSidebarOpen(nextOpen);
-    const isZen = !nextOpen;
-    document.documentElement.classList.toggle('zen-mode', isZen);
-    localStorage.setItem('zen-mode', String(isZen));
-    // No tocamos el TOC; cada botón es independiente
+    localStorage.setItem('zen-mode', String(!nextOpen));
   };
 
   const toggleToc = () => {
-    const next = !tocVisible;
-    setTocVisible(next);
-    document.documentElement.classList.toggle('toc-visible', next);
+    setTocVisible(!tocVisible);
   };
 
   return (

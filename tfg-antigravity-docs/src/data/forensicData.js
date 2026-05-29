@@ -36,3 +36,27 @@ export const rocofData = [
   { fase: "Deslastre 1", tiempoS: 25, rocof: -1.500, mecanismo: "UFLS Bombeo 5GW", fallo: "Retardo ms frente a caída acelerada" },
   { fase: "Deslastre 2", tiempoS: 26, rocof: -1.600, mecanismo: "UFLS Civil 5GW", fallo: "Incapacidad para igualar gradiente" }
 ];
+
+export const economicImpactData = {
+  totalImpactMillions: 2703.5,
+  sectorBreakdown: [
+    {
+      sector: "Residencial / Doméstico",
+      rangoVoLL: "5,00 - 45,00",
+      sensibilidad: "Baja-Media (Aumenta exponencialmente con la duración)",
+      rippleEffects: "Pérdida de bienestar térmico, deterioro de inventarios perecederos, interrupción masiva de la productividad laboral por la caída del teletrabajo y comunicaciones."
+    },
+    {
+      sector: "Servicios / Comercio Minorista",
+      rangoVoLL: "15,00 - 90,00",
+      sensibilidad: "Media-Alta (Sensibilidad extrema en horarios diurnos)",
+      rippleEffects: "Cierre forzoso de establecimientos comerciales, paralización absoluta de pasarelas de pago y datáfonos, colapso logístico y de servidores de datos en el sector terciario."
+    },
+    {
+      sector: "Industrial (Manufactura General)",
+      rangoVoLL: "50,00 - 250,00",
+      sensibilidad: "Muy Alta (Procesos en cadena)",
+      rippleEffects: "Desabastecimiento de líneas de producción, pérdida de materias primas por paradas no secuenciadas, daños en bienes de equipo por transitorios de tensión y rotura de cadenas de suministro Just-In-Time."
+    }
+  ]
+};

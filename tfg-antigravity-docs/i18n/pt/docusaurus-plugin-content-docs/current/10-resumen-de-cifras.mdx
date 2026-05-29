@@ -1,0 +1,137 @@
+---
+sidebar_position: 10
+sidebar_label: "Números Principais"
+hide_title: true
+title: "Resumo de Números"
+---
+
+import GlitchTitle from '@site/src/components/GlitchTitle';
+import Bloque1KPI from '@site/src/components/ResumenCifras/Bloque1KPI';
+import Bloque2MixGeneracion from '@site/src/components/ResumenCifras/Bloque2MixGeneracion';
+import Bloque3Cascada from '@site/src/components/ResumenCifras/Bloque3Cascada';
+import Bloque4Frecuencia from '@site/src/components/ResumenCifras/Bloque4Frecuencia';
+import Bloque5Interconexiones from '@site/src/components/ResumenCifras/Bloque5Interconexiones';
+import Bloque6Cronologia from '@site/src/components/ResumenCifras/Bloque6Cronologia';
+
+<GlitchTitle>Resumo de Números</GlitchTitle>
+
+## O maior apagão do sistema europeu continental em mais de 20 anos
+
+O dia 28 de abril de 2025 ficará gravado como a data em que a península ibérica experimentou um colapso elétrico total sem precedentes na história moderna europeia. Em apenas 32 segundos —entre as 12:32:57 e as 12:33:29 CEST—, uma cascata de desconexões de geração envolveu a Espanha peninsular e Portugal continental em um apagão que interrompeu o fornecimento de ~25,2 GW de demanda para aproximadamente 57 milhões de pessoas.
+
+O que se segue é um resumo numérico do incidente através de seis visualizações interativas que documentam a magnitude do evento, suas causas técnicas, o mecanismo de seu desenvolvimento e a excepcional resposta operativa que permitiu a recuperação em aproximadamente 18,5 horas.
+
+---
+
+### 1. O impacto imediato: Seis números que definem uma crise
+
+<Bloque1KPI />
+
+O colapso foi tão rápido e total que a maioria dos operadores regionais não teve tempo de implementar manobras corretivas. Os primeiros disparos de geração —ocorridos entre os segundos 0 e 20 da cascata— eliminaram ~2.500 MW de capacidade de geração de uma rede peninsular que operava com uma demanda de ~29,6 GW.
+
+Mas esses números, embora enormes, ocultam uma realidade mais sutil: o apagão não foi causado pela falta de energia disponível (o sistema contava com geração suficiente), mas sim por uma falha catastrófica no controle de tensão de uma rede onde a grande maioria da geração era operada por eletrônica de potência sem capacidade de estabilização dinâmica (os 82% detalhados no §2.3).
+
+---
+
+### 2. A geração no momento do colapso: Um sistema desequilibrado
+
+<Bloque2MixGeneracion />
+
+Às 12:30 CEST, instantes antes do colapso, o sistema peninsular espanhol operava com uma geração total de aproximadamente 29,6 GW. A composição dessa geração revelava uma concentração extrema em tecnologias baseadas em conversores eletrônicos, particularmente em energia solar fotovoltaica (veja a [**Tabela 15**](./15-galeria-de-tablas.mdx) na Galeria de Tabelas para o detalhamento métrico exato por tecnologia).
+
+Esta distribuição é o contexto estrutural do incidente. A geração síncrona —ou seja, máquinas rotativas (nucleares, hidráulicas, turbinas a gás) que produzem corrente alternada por rotação eletromagnética— representava apenas 18% do mix instantâneo. Os 82% restantes operavam através de inversores eletrônicos de potência (Solar PV + Eólica principalmente) configurados naquele momento para controle de potência reativa em modo "fator-de-potência fixo", sem capacidade de ajuste dinâmico de tensão.
+
+Este desequilíbrio é fundamental para compreender por que o apagão ocorreu. Em uma rede tradicional do século XX, dominada por geração síncrona, uma perda súbita de ~2.500 MW teria causado uma queda de frequência severa, mas controlável, através da inércia rotacional dos geradores (tipicamente H > 3 segundos). Na península ibérica do dia 28 de abril, a inércia equivalente do sistema era de apenas ~2,3 segundos, mal suficiente para as margens normativas, e a resposta à perturbação dependia inteiramente da capacidade dos inversores de sustentar tensão e ângulo de fase. Quando essa capacidade colapsou, o sistema colapsou com ela.
+
+---
+
+### 3. A cascata de 32 segundos: Cronologia do colapso
+
+<Bloque3Cascada />
+
+O incidente desenrolou-se numa sequência estritamente cronológica que cruzou o ponto sem retorno aos 24 segundos. A progressão detalhada da perda de carga, desde o disparo raiz em Granada até o zero de tensão definitivo (incluindo o nadir de frequência a 47,79 Hz), encontra-se consolidada na [**Linha do Tempo (Tabela 16)**](./16-galeria-forense.mdx) interativa.
+
+---
+
+### 4. A queda de frequência: A janela de instabilidade
+
+<Bloque4Frecuencia />
+
+A frequência do sistema é o pulso vital de uma rede elétrica. Em operação normal, mantém um valor estável de 50 Hz (na Europa continental). Cada 0,1 Hz de desvio dispara proteções de baixo ou alto nível, porque um desvio de frequência indica desequilíbrio entre demanda e geração.
+
+Durante os 27 segundos do colapso, a frequência comportou-se como um eletrocardiograma de um sistema agonizante:
+
+- **Segundos −2 a 0**: Estável em 50,00 Hz. Sistema normal.
+- **Segundos 0–19**: Queda lenta a 49,95 Hz. O sistema absorve o primeiro disparo (Granada, −355 MW) sem alarme imediato.
+- **Segundo 19,34 em diante**: Queda acelerada. Aos 21 segundos: 49,30 Hz. Ativam-se proteções UFLS de bombeamento (49,5 Hz, depois 49,3 Hz).
+- **Segundo 22**: 49,00 Hz. Ativação de UFLS carga industrial de transporte. O sistema tenta aliviar-se (reduzir demanda), mas a velocidade de queda (ROCOF) é superior ao que as proteções podem fazer.
+- **Segundo 23,53**: 48,46 Hz. Trip AC França. A importação perde-se. ROCOF continua ≤ 1 Hz/s, mas a margem é nula.
+- **Segundo 24**: 47,79 Hz (nadir). Ativação de nucleares e bloqueio HVDC.
+- **Segundo 24,5 em diante**: Colapso. Tensão zero. Frequência indefinida.
+
+O ROCOF (Rate of Change of Frequency) máximo registrado foi aproximadamente 1,0–1,2 Hz/s em janelas de 100 milissegundos durante a cascata, superando em vários momentos as margens dinâmicas que os inversores podem seguir. Isto é a essência física do incidente: uma rede com 82% de geração eletrônica enfrentando uma perturbação que se desenvolvia mais rápido do que essa geração podia responder.
+
+---
+
+### 5. As interconexões: O fator geográfico que confinou a crise
+
+<Bloque5Interconexiones />
+
+Um dos fatores estruturais do colapso foi a baixa interconexão da península ibérica com o resto do sistema europeu continental às 12:30 CEST (o detalhamento minucioso de fluxos físicos, exportações e graus de saturação de cada conexão transfronteiriça detalha-se na [**Tabela 14**](./15-galeria-de-tablas.mdx) e nos [**Forensic Charts 1-5**](./16-galeria-forense.mdx)).
+
+A taxa de interconexão —o quociente entre capacidade de importação e demanda total— era de aproximadamente 3–5%. Isto significa que, mesmo no melhor cenário, a Espanha peninsular contava com uma capacidade de apoio externo de apenas ~900 MW a ~1.500 MW de um sistema de 25–30 GW de demanda típica. Ou seja, ~3–5 minutos de cobertura em caso de perda de geração interna.
+
+Durante a cascada (12:33:19), quando o sistema tentou importar massivamente da França para sustentar a tensão, os inversores solicitaram fluxos transitórios de até 4.609 MVAr (potência reativa), que superaram os limites de operação segura da interconexão AC, cuja capacidade nominal de potência ativa é de 2.700 MW (limite térmico equivalente ~3.000 MVA em potência aparente). Isso acelerou a propagação da instabilidade para a França, ativando proteções ENTSO-E de isolamento fronteiriço (trip de linhas AC aos 48,46 Hz, 12:33:21.535).
+
+Diferentemente da Itália (2003) ou França (2006), onde uma maior interconexão permitiu uma rápida distribuição do esforço de recuperação, a península ibérica ficou confinada e isolada, forçando uma reposição autônoma do zero.
+
+---
+
+### 6. A reposição: ~18,5 horas desde o zero elétrico
+
+<Bloque6Cronologia />
+
+Apenas 2 minutos após o zero elétrico (12:35 CEST), a Red Eléctrica Española solicitou à EDP Portugal a partida autônoma da central hidrelétrica de Castelo do Bode (138 MW, bacia do Zêzere). Esta ação foi o primeiro passo do que se tornaria uma das operações de reposição mais complexas já registradas na Europa.
+
+A cronologia foi a seguinte:
+
+**12:43–12:44 CEST (Duração: 10–11 minutos a partir do zero)**
+Reenergização da primeira artéria de transporte: a subestação de Hernani no País Basco recebe fornecimento a partir da interconexão com a França. Importação inicial: ~31 MW (apenas 0,1% da demanda pré-apagão).
+
+**12:45 CEST (WEST: 11:45, _Western European Summer Time_ utilizado em Portugal)**
+Castelo do Bode (Portugal) conecta-se com sucesso à barra 220 kV da REN. Partida autônoma em ~10 minutos. Primeira ilha elétrica portuguesa criada. Operadores da REN começam expansão gradual para Lisboa e o Tejo.
+
+**13:35 CEST**
+Sincronização da linha Baixàs–Vic (França–Catalunha, 400 kV leste). Segunda artéria a partir da França. Expansão para o litoral mediterrâneo.
+
+**18:36 CEST (WEST: 17:36)**
+Sincronização Aldeadávila–Pocinho (220 kV): Primeira interconexão Espanha–Portugal em alta tensão. Portugal conecta-se à frequência europeia continental. Esquemas black-start espanhóis (BS-Duero 1, BS-Extremadura, BS-Aragão) ativados em cadeia a partir de ~16:00 CEST.
+
+**23:00 CEST (Duração: ~10,5 horas a partir do zero)**
+Recuperação: 51% da demanda peninsular (12.847 MW ativos). 70% de subestações de transporte energizadas. Hospitais, serviços essenciais e a maioria das redes de distribuição restauradas. Ainda ~8% de população sem fornecimento, principalmente em áreas rurais isoladas.
+
+**00:22 CEST – 29 de abril**
+Rede de transporte portuguesa 100% restaurada (duração total para Portugal: ~12 horas).
+
+**04:00 CEST – 29 de abril**
+Rede de transporte espanhola 100% restaurada. Tempo acumulado do zero: ~15,5 horas. Distribuição em processo de reposição de última milha.
+
+**07:00 CEST – 29 de abril (Duração total: ~18,5 horas)**
+99,95% da demanda peninsular recuperada. Apenas pequenas áreas rurais isoladas ainda sem cobertura. Sistema completamente estável. Voltagem e frequência normais. Fim operativo do incidente.
+
+**As plantas de partida autônoma (black-start) foram o gargalo e o fator crítico da reposição:**
+
+- **Castelo do Bode (Portugal, EDP)**: Hidrelétrica, 138 MW. Deu partida em ~10 minutos graças à água represada na bacia do Zêzere. Custo do serviço de black-start: ~240.000 €/ano (Governo português anunciou extensão até 2030 e incorporação de Alqueva e Baixo Sabor em 29 de abril).
+- **Aldeadávila (Espanha, Iberdrola)**: Hidrelétrica reversível no Douro, ~1.100 MW (bomba + turbina). Esquema BS-Duero ativado ~16:00 CEST. Capacidade de partida controlada sem apoio externo garantida por água represada e capacidade de sincronização gradual.
+
+O sistema ibérico, em retrospectiva, foi salvo pela sorte de que duas usinas hidrelétricas estrategicamente localizadas tivessem capacidade de partida autônoma. Sem Castelo do Bode e Aldeadávila, a reposição teria exigido importação sustentada da França, tema que teria complicado a coordenação operativa com a RTE e a ENTSO-E durante horas críticas adicionais.
+
+---
+
+## Conclusão: De números à estrutura
+
+As seis visualizações que precedem não são meros números. São a tradução de uma falha sistêmica profunda: uma rede moderna, descarbonizada, eficiente em produção, mas fatalmente desequilibrada em sua composição de geração, controlada por sistemas de proteção concebidos para um paradigma do século XX que já não existia.
+
+O apagão de 28 de abril de 2025 foi inevitável dados os parâmetros daquele dia. Mas foi evitável com políticas de longo prazo: maior inércia síncrona, melhor interconexão, controle dinâmico obrigatório em renováveis e —mais fundamentalmente— uma velocidade de transição energética que respeitasse os limites de inércia e estabilidade da rede.
+
+A lição, gravada em 27 segundos de cascata e aproximadamente 18,5 horas de reposição, reformou a arquitetura elétrica europeia. O dia 28 de abril de 2025 foi o dia em que a engenharia elétrica continental teve que admitir que o século XX havia terminado e o futuro exigia novas leis, não apenas novas máquinas.
