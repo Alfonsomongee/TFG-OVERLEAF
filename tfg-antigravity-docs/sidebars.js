@@ -115,7 +115,7 @@ const sidebars = {
       ],
     },
 
-    // BLOQUE 8.5: DATOS EN TIEMPO REAL
+    // BLOQUE 8.5: DATOS EN TIEMPO REAL Y CONTEXTO
     {
       type: 'category',
       label: 'DATOS EN TIEMPO REAL',
@@ -151,6 +151,36 @@ const sidebars = {
           type: 'link',
           label: 'Radar de Vulnerabilidad',
           href: '/datos-tiempo-real/radar-vulnerabilidad',
+        },
+        {
+          type: 'html',
+          value: '<div class="sidebar-divider">Contexto Histórico (REData)</div>',
+          defaultStyle: true,
+        },
+        {
+          type: 'link',
+          label: 'Costes de Ajuste',
+          href: '/datos-tiempo-real/costes-ajuste',
+        },
+        {
+          type: 'link',
+          label: 'Impacto Económico',
+          href: '/datos-tiempo-real/waterfall-financiero',
+        },
+        {
+          type: 'link',
+          label: 'Indisponibilidad de Red',
+          href: '/datos-tiempo-real/indisponibilidad',
+        },
+        {
+          type: 'link',
+          label: 'Emisiones vs Renovable',
+          href: '/datos-tiempo-real/emisiones-renovable',
+        },
+        {
+          type: 'link',
+          label: 'Resiliencia Sectorial',
+          href: '/datos-tiempo-real/resiliencia-sectorial',
         },
       ],
     },
