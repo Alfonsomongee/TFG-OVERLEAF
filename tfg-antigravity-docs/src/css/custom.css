@@ -102,7 +102,7 @@ html[data-theme='dark'] {
   --ifm-background-color: #0a1128;
   --ifm-background-surface-color: #0f1830;
   --ifm-font-color-base: #ffffff;
-  --ifm-navbar-background-color: rgba(10, 17, 40, 0.88);
+  --ifm-navbar-background-color: var(--bg-0);
 }
 
 /* ── LIGHT THEME — variables explícitas ──────────────────────────── */
@@ -841,9 +841,9 @@ html.zen-mode .zen-mode-icon-active {
 
 /* PART 1 - Overall Atmosphere */
 .theme-doc-sidebar-container {
-  background: linear-gradient(to bottom, #0a1128, #0d1535) !important;
+  background: var(--bg-0) !important;
   border-right: 1px solid rgba(255,170,0,0.05) !important;
-  box-shadow: inset -10px 0 20px rgba(0,0,0,0.3);
+  box-shadow: inset -10px 0 20px rgba(0,0,0,0.15);
   position: relative;
 }
 
@@ -1261,10 +1261,10 @@ html[data-theme="dark"] body::before {
   border-bottom: none !important;
 }
 
-/* Dark mode: navbar con el mismo fondo del área de capítulos — sin rectángulo azul */
+/* Dark mode: navbar unificado con sidebar y main — color --bg-0 */
 html[data-theme="dark"] .navbar {
-  background: var(--forensic-bg-primary, #050403) !important;
-  background-color: var(--forensic-bg-primary, #050403) !important;
+  background: var(--bg-0, #0a1128) !important;
+  background-color: var(--bg-0, #0a1128) !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1703,8 +1703,10 @@ html[data-theme='dark'],
 html[data-theme='dark'] body,
 html[data-theme='dark'] #__docusaurus,
 html[data-theme='dark'] .main-wrapper,
-html[data-theme='dark'] [class*='mainWrapper'] {
-  background-color: #0a1128 !important;
+html[data-theme='dark'] [class*='mainWrapper'],
+html[data-theme='dark'] [class*='docPage'],
+html[data-theme='dark'] main {
+  background-color: var(--bg-0) !important;
   color: #ffffff;
 }
 
