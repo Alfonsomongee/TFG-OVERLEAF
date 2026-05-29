@@ -6,6 +6,8 @@ title: "Einsatz von Künstlicher Intelligenz"
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 <GlitchTitle>Einsatz von Künstlicher Intelligenz</GlitchTitle>
 
 Die Erstellung dieser Bachelorarbeit erfolgte in einem untypischen methodischen Kontext: dem gleichzeitigen Zusammentreffen einer systemischen Krise im iberischen Stromnetz und einer beschleunigten Transformation der Werkzeuge zur Verarbeitung natürlicher Sprache im Zeitraum 2024–2026. Die Verfügbarkeit von _Large Language Models_ (LLMs), die in der Lage sind, technische Dokumente von Hunderten von Seiten in wenigen Minuten zu verarbeiten, fiel mit der Veröffentlichung von vier primären Gutachten und einem Dutzend akademischer Analysen zu demselben Ereignis innerhalb eines Jahres zusammen. Dieses Kapitel dokumentiert transparent, wie diese Werkzeuge integriert wurden, welche konkreten Aufgaben sie ausgeführt haben, welche systematischen Fehler erkannt und korrigiert wurden und welche erkenntnistheoretischen Überlegungen sich daraus für die Forschungspraxis in den Ingenieurwissenschaften ergeben.
@@ -62,6 +64,14 @@ Die Verwendung generativer Modelle in einer so dichten Domäne kausaler Zusammen
 Das anschaulichste Beispiel für das Fehlermuster: Auf die Frage nach der Rolle des Lastabwurfs bei der Entwicklung des Vorfalls lieferten die Modelle konsequent eine von klassischen Ausfällen übernommene Interpretation, bei denen das UFLS die letzte Verteidigungslinie darstellt und durch die Wiederherstellung des Frequenz-Wirkleistungs-Gleichgewichts üblicherweise Teile des Netzes schützt. Diese Schlussfolgerung ist physikalisch korrekt für das Universum der Ereignisse, anhand derer das Modell trainiert wurde, für den 28-A jedoch ungültig: Bei einem durch die Q-V-Ebene dominierten Kollaps entfernte die Aktivierung des UFLS gleichzeitig die induktiven Blindleistungssenken, die von den abgeschalteten Lasten bereitgestellt wurden, **wodurch die Überspannung verschärft statt abgemildert wurde**.
 
 Die Korrektur erforderte die Formulierung des _Prompts_ mit einer expliziten Einschränkung hinsichtlich der Analyseebene und die manuelle Überprüfung, ob die resultierende Argumentation mit den vom NREL im Zeitfenster 12:33:19–12:33:27 MESZ veröffentlichten Oszillogrammen konsistent war.
+
+<InteractiveCTA 
+  title="DEMONTAGE DER HALLUZINATION: PHASENPORTRÄT" 
+  description="Falls Sie es in Kapitel 3 nicht erkundet haben, hier ist der Simulator für das Phasenporträt, der die Halluzination des LLM demontiert. Beobachten Sie, warum ein Lastabwurf in einem System mit geringer Trägheit die Überspannung verschlimmern kann."
+  icon="🧠"
+>
+  <PhasePlanePlot />
+</InteractiveCTA>
 
 ### Der Fall des Tap-Lag
 

@@ -7,6 +7,10 @@ title: "Analyse des Vorfalls"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import IberianGridTopologyBase from "@site/src/components/IberianGridTopologyBase";
+import SynchrophasorPlot from "@site/src/components/SynchrophasorPlot";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 
 <GlitchTitle>Analyse des Vorfalls</GlitchTitle>
 
@@ -25,6 +29,14 @@ Während beider Transienten brach das <GlossaryLink term="Damping ratio">Dämpfu
 
 Um diese Schwingungen einzudämmen, führte REE ein <GlossaryLink term="Mallado">Vermaschungsmanöver</GlossaryLink> durch: Zwischen 12:03 und 12:30 MESZ schaltete es **11 Leitungen von 400 kV** wieder zu, die wegen der geringen Nachfrage offen geblieben waren. Das Manöver erreichte sein unmittelbares Ziel — die Impedanz zu reduzieren und den Peitscheneffekt der Schwingungen zu bremsen —, führte jedoch laut dem IIT-ICAI-Bericht einen relevanten Nebeneffekt ein: Durch den <GlossaryLink term="Efecto Ferranti">Ferranti-Effekt</GlossaryLink> speisten die im Leerlauf wieder zugeschalteten Leitungen abrupt kapazitive Blindleistung in ein Netz ein, dem es bereits an Absorptionsspielraum mangelte. Die Quantifizierung dieser Einspeisung ist einer der Schwerpunkte des technischen Streits: Der ICAI-Bericht beziffert sie auf bis zu **2,4 GVAr**; die unabhängige NREL-Analyse geht von einer konservativeren Schätzung von **1.050 MVAr** aus. Beide Zahlen stimmen darin überein, dass die Einspeisung die verbleibende Absorptionskapazität des Systems überstieg, die zu diesem Zeitpunkt auf nur **3,3 GVAr** im Vergleich zu den üblichen 5,8 GVAr geschätzt wurde.
 
+<InteractiveCTA 
+  title="INTERAKTIVES LABOR: TOPOLOGISCHE KARTE UND FERRANTI-EFFEKT" 
+  description="Aktivieren Sie den Simulator für den Ferranti-Effekt, um zu sehen, wie die Spannung in Andalusien über 1,12 p.u. ansteigt, während Madrid stabil bleibt."
+  icon="🗺️"
+>
+  <IberianGridTopologyBase />
+</InteractiveCTA>
+
 Die forensischen Simulationen des IIT-ICAI schätzen, dass nach der Vermaschung der Abstand zum Kollapspunkt am Netzknoten Carmona 400 kV von einer Marge von **2.964 MW** auf **1.268 MW** schrumpfte — eine Reduzierung von **57 %**, die das System an die Schwelle der kapazitiven Sättigung brachte.
 
 ![WAMS-Aufzeichnung der 0,6-Hz-Schwingung um 12:03 MESZ in Carmona](/figuras/wams_oscilaciones_carmona.png) _Abbildung 13. Aufzeichnung des <GlossaryLink term="WAMS (Wide Area Monitoring Systems)">WAMS</GlossaryLink>, die die elektromechanische Schwingung von 0,6 Hz in Carmona (Sevilla) um 12:03 MESZ erfasst. WAMS-Systeme, die auf Netzwerken von GPS-synchronisierten <GlossaryLink term="PMU (Phasor Measurement Unit)">PMUs</GlossaryLink> basieren, ermöglichen die Beobachtung der kontinentalen Dynamik mit Millisekundenauflösung. Quelle: ENTSO-E / REE._
@@ -40,6 +52,14 @@ Die Natur des ersten Transienten — die 0,6-Hz-Schwingung von 12:03 MESZ — is
 Die Instabilität verstärkte sich um **12:19 MESZ** mit dem **0,2-Hz**-Modus, der durch europäische Zeigertelemetrie als natürlicher Ost-Zentrum-West-Modus des Synchrongebiets bestätigt wurde: Die reduzierte iberische rotierende Masse schwang in Gegenphase zum europäischen Trägheitszentrum und materialisierte den in Kapitel 2 beschriebenen Peitscheneffekt.
 
 Der Point of no Return wurde um **12:32:57 MESZ** erreicht. Ein 400/220-kV-Transformator in einem Sammelumspannwerk in der Provinz **Granada** wurde durch die Auslösung seiner Überspannungsschutzvorrichtungen abgeschaltet, als auf der 220-kV-Sekundärseite ein Wert von etwa **244 kV** erkannt wurde, der die dielektrische Sicherheitsschwelle überschritt. Das Ausmaß der Auswirkung lag nicht in den verlorenen 355 MW an <GlossaryLink term="Potencia activa">Wirkleistung</GlossaryLink> — eine handhabbare Zahl für das System —, sondern im augenblicklichen und unwiederbringlichen Verlust von **165 MVAr** an induktiver Blindleistungsabsorptionskapazität. In einem System, das mit kapazitiver Blindleistung gesättigt war und verringerte <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink>-Margen aufwies, verursachte das Verschwinden dieser Senke einen aufwärts gerichteten Spannungssprung in den umliegenden Knoten: der physikalische Auslöser der Kettenreaktion.
+
+<InteractiveCTA 
+  title="ERWEITERTE TELEMETRIE: WINKELDIVERGENZ" 
+  description="Beobachten Sie die Winkeldivergenz an den PMU-Knoten Granada, Badajoz und Vic Sekunde für Sekunde. Das klassische SCADA-System hat dies nicht gesehen; Sie können es."
+  icon="📡"
+>
+  <SynchrophasorPlot />
+</InteractiveCTA>
 
 ## Phase 2: Das Tap-Lag-Phänomen und die Entkopplung der Spannungen (12:32:57–12:33:18 MESZ)
 
@@ -78,6 +98,14 @@ Als die Kaskade die verbleibende Erzeugung zerstörte, begann die Frequenz mit e
 ![Gekoppelte Entwicklung von Spannung und Frequenz während Phase 3](/figuras/tension_frecuencia_colapso.png) _Abbildung 18. Gekoppelte Entwicklung von Spannung (kV) und Frequenz (Hz) während Phase 3. Der Spannungsanstieg auf über 1,10 p.u. geht dem Frequenzabfall zeitlich voraus und bestätigt, dass der Kollaps primär kapazitiver, nicht trägheitsbedingter Natur war. Quelle: Analyseausschuss der Regierung._
 
 Die Reaktion des UFLS deckte das sogenannte **UFLS-Paradoxon** auf: Durch die Abschaltung der Wirkleistungsnachfrage zur Stabilisierung der Frequenz eliminierte das Schema gleichzeitig den induktiven Blindleistungsverbrauch dieser selben Nachfrage. In einem mit kapazitiver Blindleistung gesättigten Netz führte die Beseitigung der letzten Senken — Motoren und industrielle Lasten — zu einem erneuten Anstieg von Überspannungen und **verstärkte den Kollaps, den das UFLS selbst aufhalten sollte**. Die für Frequenzdefizite entwickelten Abwehrlogiken erwiesen sich bei einem primär durch Spannungsinstabilität angetriebenen Kollaps als kontraproduktiv.
+
+<InteractiveCTA 
+  title="PHASENPORTRÄT: DAS UFLS-PARADOXON" 
+  description="Verfolgen Sie die Trajektorie des dynamischen Systemzustands im Phasenraum während der Kaskade: Beobachten Sie, wie das Einzugsgebiet im Moment des massiven Lastabwurfs kollabiert."
+  icon="📉"
+>
+  <PhasePlanePlot />
+</InteractiveCTA>
 
 In den letzten Momenten verursachte das massive interne Erzeugungsdefizit eine gewaltsame Umkehrung der Pyrenäenflüsse: Die AC-Leitungen versuchten Notfall-Blindleistung in einer Größenordnung von über **4.500 MVAr** aus Frankreich zu importieren. Gleichzeitig zog die HVDC-Verbindung INELFE-1 — die seit 12:08 MESZ auf PMODE1 fixiert war — weiterhin Wirkleistung in der Größenordnung von **1 GW** aus dem iberischen System (die genaue Aufschlüsselung nach Stromkreis und Kapazität kann in [**Tabelle 14**](./15-galeria-de-tablas.mdx) und in den **Forensic Charts 1-5**, Kategorie Interconnections, eingesehen werden). Diese asymmetrische Operation verringerte die Netto-Unterstützungskapazität vom Kontinent drastisch.
 

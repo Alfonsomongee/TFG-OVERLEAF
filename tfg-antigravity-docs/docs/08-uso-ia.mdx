@@ -5,6 +5,8 @@ title: "Uso de Inteligencia Artificial"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 
 <GlitchTitle>Uso de Inteligencia Artificial</GlitchTitle>
 
@@ -15,7 +17,7 @@ La elaboración de este TFG se ha desarrollado en un contexto metodológico atí
 El cuerpo documental de partida abarca expedientes técnicos, normativas de ENTSO-E, informes oficiales de extensión superior a 200 páginas, simulaciones PSS/E del IIT-ICAI, actas de la CNMC, registros oscilográficos del NREL y un volumen amplio de hemeroteca especializada. Su lectura lineal sin mediación informática resultaba incompatible con los plazos académicos del TFG. La integración de modelos generativos se ha articulado en torno a cinco funciones operativas claramente delimitadas, **ninguna de las cuales involucra inferencia causal autónoma sobre la física del sistema**:
 
 <ForensicTable 
-  title="TABLA 17 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+  title="TABLA 15 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
   source="Elaboración propia"
 >
 
@@ -38,7 +40,7 @@ El elemento metodológicamente decisivo no es la asistencia LLM en sí misma, si
 La utilización de modelos generativos en un dominio tan denso en relaciones causales como la dinámica de sistemas de potencia revela, de forma sistemática, un comportamiento que los sistemas eléctricos no toleran: la **inferencia por analogía estadística**. Los LLM tienden a aplicar patrones causales _típicos_ —los más frecuentes en la literatura de su corpus de entrenamiento— a casos cuya estructura física es _atípica_. El 28-A es, por su naturaleza dual (estabilidad de tensión en lugar de balance de frecuencia), un caso atípico respecto a la mayoría de los apagones documentados en la bibliografía técnica del siglo XX, lo que hizo especialmente productiva la observación de los puntos en los que la IA "por defecto" se desviaba del fenómeno real.
 
 <ForensicTable 
-  title="TABLA 18 | LLM HEURISTIC FAILURE MODES"
+  title="TABLA 16 | LLM HEURISTIC FAILURE MODES"
   source="Elaboración propia"
 >
 
@@ -57,6 +59,14 @@ La utilización de modelos generativos en un dominio tan denso en relaciones cau
 El caso más ilustrativo del patrón de error: ante la consulta sobre el papel del deslastre en el desarrollo del incidente, los modelos ofrecieron sistemáticamente una interpretación heredada de los apagones clásicos, en los que el UFLS constituye la última línea de defensa y consigue habitualmente preservar porciones de la red al recuperar el balance frecuencia-potencia activa. Esta inferencia es físicamente correcta para el universo de eventos sobre los que el modelo fue entrenado, pero inválida para el 28-A: en un colapso dominado por el plano Q-V, la activación del UFLS retiró simultáneamente los sumideros de potencia reactiva inductiva que aportaban las cargas desconectadas, **agravando la sobretensión en lugar de mitigarla**.
 
 La corrección requirió formular el _prompt_ con una restricción explícita sobre el plano de análisis y verificar manualmente que el razonamiento resultante fuese consistente con la oscilografía publicada por el NREL en la franja temporal 12:33:19–12:33:27 CEST.
+
+<InteractiveCTA 
+  title="DESMONTANDO LA ALUCINACIÓN: RETRATO DE FASES" 
+  description="Si no lo exploraste en el Capítulo 3, aquí tienes el simulador de retrato de fases que desmonta la alucinación del LLM. Observa por qué el deslastre de carga en un sistema de baja inercia puede empeorar la sobretensión."
+  icon="🧠"
+>
+  <PhasePlanePlot />
+</InteractiveCTA>
 
 ### El caso del Tap-Lag
 

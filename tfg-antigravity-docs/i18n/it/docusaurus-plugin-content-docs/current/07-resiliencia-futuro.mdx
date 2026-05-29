@@ -3,10 +3,13 @@ sidebar_position: 7
 hide_title: true
 title: "Resilienza e Futuro"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
+import TermometroRiesgo from "@site/src/components/TermometroRiesgo";
+import FrequencyChart from "@site/src/components/FrequencyChart";
 
 <GlitchTitle>Resilienza e Futuro</GlitchTitle>
 
@@ -47,13 +50,19 @@ $$
 | --- | --- | --- |
 | **Rete forte** | SCR > 3 | Gli inverter GFL operano con stabilità di piccolo segnale. Le protezioni di distanza mantengono selettività. |
 | **Rete debole** | 2 ≤ SCR ≤ 3 | Degradazione del margine di stabilità del <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> di fronte a rapide perturbazioni. Rischio di interazione avversa tra anelli di controllo vicini. |
-| **Rete molto debole** | SCR &lt; 2 | PLL propensi alla perdita di sincronismo dinanzi a variazioni di tensione minori. Le protezioni di distanza perdono direzionalità. |
-
-
+| **Rete molto debole** | SCR < 2 | I PLL sono inclini alla perdita di sincronismo di fronte a variazioni di tensione minori. Le protezioni di distanza perdono direzionalità.<br/>*(Nota: Nelle zone ad alta densità di inverter, questa debolezza strutturale viene valutata mediante la metrica MRSCR, discussa nella sezione Dimensione Europea)* |
 
 </ForensicTable>
 
-Nelle ore precedenti al collasso, vaste zone della Penisola operavano come **reti molto deboli** (SCR &lt; 2): la massiccia produzione solare aveva estromesso per ordine di merito i cicli combinati, la cui disconnessione ha eliminato proprio le fonti di $S_{sc}$ che conferiscono rigidità ai nodi della rete di trasmissione. In queste condizioni, con $X/R$ elevato ma $\mathrm{SCR} \ll 2$, l'impedenza globale fa sì che la tensione diventi sensibile anche alle variazioni di <GlossaryLink term="Potencia activa">potenza attiva</GlossaryLink>: le rampe di iniezione solare acquisiscono un potere di perturbazione della tensione che, in reti sincrone convenzionali, risulterebbe inoffensivo.
+<InteractiveCTA 
+  title="RADAR DI VULNERABILITÀ NODALE" 
+  description="Il Radar Nodale sovrappone le cinque sottostazioni critiche con i loro SCR reali del 28-A. Confronta quali rispettavano le soglie della Tabella e quali no."
+  icon="🎯"
+>
+  <RadarVulnerabilidad />
+</InteractiveCTA>
+
+Durante le ore precedenti al collasso, ampie zone della Penisola operavano come **reti molto deboli** (SCR < 2): la produzione massiccia di solare aveva estromesso in base all'ordine di merito i cicli combinati, la cui disconnessione aveva eliminato proprio le fonti di $S_{sc}$ che conferiscono rigidità ai nodi della rete di trasmissione. In queste condizioni, con un rapporto $X/R$ elevato ma un $\mathrm{SCR} \ll 2$, l'impedenza globale rende la tensione sensibile anche alle variazioni di <GlossaryLink term="Potencia activa">potenza attiva</GlossaryLink>: le rampe di iniezione solare acquisiscono un potere di perturbazione della tensione che nelle reti sincrone convenzionali risulterebbe inoffensivo.
 
 ![Mappe di tensione nella rete peninsulare a 400 kV nella fascia critica precedente il collasso](/figuras/scr_iberia.png) _Figura 37. Evoluzione geografica delle tensioni nella rete a 400 kV prima del collasso (sequenza a–d). Le zone di colore caldo mostrano la progressione e la concentrazione di gravi sovratensioni nel sud e sud-ovest della penisola —proprio i nodi con la maggiore carenza strutturale di potenza di cortocircuito. Fonte: IIT-ICAI._
 
@@ -168,13 +177,19 @@ I sistemi BESS ricevono inoltre un pagamento per la disponibilità di **2,7 €/
 | Risposta in reattiva | Gradini di consegna lenti su richiesta dell'OS. | Risposta automatica ad anello chiuso (_droop control_). |
 | Remunerazione di Q | Basata sulla disponibilità tecnica dichiarata. | Mercati zonali dei servizi ERS. |
 | Osservabilità | Telemetria SCADA 400 kV, risoluzione di svariati secondi. | PMU e telemetria a 4 s per gli IBR distribuiti. |
-| Regime sanzionatorio | Senza penalità specifiche per l'inadempienza in reattiva. | Penalità per il mancato rispetto della soglia minima del 90%. |
-
-
+| **Regime sanzionatorio** | Nessuna penalizzazione specifica per mancato rispetto della reattiva. | Penalizzazioni per il mancato rispetto della soglia minima del 90%. |
 
 </ForensicTable>
 
-Il **Regio Decreto 997/2025** ha integrato la riforma con quattro misure d'urgenza: ridefinizione giuridica dei BESS come asset di servizio di stabilità sistemica; risanamento del registro dei permessi di connessione obsoleti; obbligo di telemetria con risoluzione &lt; 4 s per tutto il parco IBR significativo; e obbligo del modulo PSS/POD in tutti gli inverter GFM di nuova installazione con potenza > 10 MW.
+<InteractiveCTA 
+  title="SIMULATORE: RISPOSTA DROOP AUTOMATICA" 
+  description="Simula la risposta droop automatica del quadro post-2025: quanti millisecondi di differenza ci sono tra la risposta del P.O. 7.4 originale e il nuovo protocollo di fronte a un gradino di 1.050 MVAr?"
+  icon="🌡️"
+>
+  <TermometroRiesgo />
+</InteractiveCTA>
+
+Il **Regio Decreto 997/2025** ha integrato la riforma con quattro misure d'urgenza: ridefinizione giuridica dei BESS come asset di servizio per la stabilità sistemica; risanamento del registro dei permessi di connessione obsoleti; obbligo di telemetria con risoluzione &lt; 4 s per tutto il parco IBR significativo; e obbligatorietà del modulo PSS/POD in tutti gli inverter GFM di nuova installazione con potenza > 10 MW.
 
 Una tensione rivelatrice è emersa durante il processo: nell'ottobre 2025, REE ha chiesto di innalzare il requisito di conformità dal 75% al 90% del tempo. La CNMC lo ha respinto argomentando l'**impossibilità tecnica dei gruppi sincroni esistenti** di raggiungere quel livello con le rampe di adeguamento richieste. Il dato è significativo nel senso opposto: gli inverter GFM potrebbero soddisfare tale requisito senza difficoltà. L'adeguamento del quadro operativo alle capacità degli IBR-GFM procede più velocemente di quello degli asset sincroni che la norma sostituisce come fornitori di servizi ancillari.
 
@@ -200,13 +215,19 @@ Gli obblighi del **NC RfG 2.0** si applicano con un approccio tecnologicamente a
 | **Tipo B** | 1–50 MW | Obbligatorio. Inerzia sintetica e supporto dinamico di base. | Max. 3 anni dopo la pubblicazione dell'IGD di ENTSO-E. |
 | **Tipo C** | > 50 MW | Obbligatorio ed esaustivo. Piena operatività come generatore di tensione; profili di corrente di guasto; funzionalità POD. | 3 anni dopo l'adozione da parte della Commissione Europea. |
 | **Tipo D** | ≥ 110 kV o > 75 MW | Idem Tipo C, più test di certificazione. | 3 anni dopo l'adozione da parte della Commissione Europea. |
-| **ESM (BESS)** | Secondo la categoria | Idem PPM equivalente. Sistemi V2G con capacità congiunta > 1 MW classificati come ESM Tipo B. | Secondo la categoria. |
-
-
+| **ESM (BESS)** | A seconda della categoria | Idem PPM equivalente. Sistemi V2G con capacità congiunta > 1 MW classificati come ESM Tipo B. | A seconda della categoria. |
 
 </ForensicTable>
 
-Al momento della stesura, l'adozione formale dell'NC RfG 2.0 da parte della Commissione Europea **è deprioritizzata e priva di calendario ufficiale**, generando una finestra di incertezza normativa che gli operatori nazionali stanno gestendo attraverso misure preventive al di fuori del codice.
+<InteractiveCTA 
+  title="SIMULATORE: IMPATTO DEL GRID-FORMING" 
+  description="Configura la simulazione con un 15% di capacità BESS Grid-Forming attiva. Il nadir di frequenza non scende sotto i 49.5 Hz. Senza BESS, scende a 47.8 Hz."
+  icon="📊"
+>
+  <FrequencyChart />
+</InteractiveCTA>
+
+Alla data di stesura del presente documento, l'adozione formale del NC RfG 2.0 da parte della Commissione Europea **è stata deprioritizzata e risulta priva di un calendario ufficiale**, generando una finestra di incertezza normativa che gli operatori nazionali stanno gestendo tramite misure preventive al di fuori del codice.
 
 ## Mercati dei Servizi Essenziali di Affidabilità (ERS)
 

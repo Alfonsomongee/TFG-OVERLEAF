@@ -6,6 +6,10 @@ title: "Resiliencia y Futuro"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
+import TermometroRiesgo from "@site/src/components/TermometroRiesgo";
+import FrequencyChart from "@site/src/components/FrequencyChart";
 
 <GlitchTitle>Resiliencia y Futuro</GlitchTitle>
 
@@ -49,6 +53,14 @@ $$
 | **Red muy débil** | SCR < 2 | PLL propensos a pérdida de sincronismo ante variaciones de tensión menores. Protecciones de distancia pierden direccionalidad.<br/>*(Nota: En zonas de alta densidad de inversores, esta debilidad estructural se evalúa mediante la métrica MRSCR, discutida en el apartado de Dimensión Europea)* |
 
 </ForensicTable>
+
+<InteractiveCTA 
+  title="RADAR DE VULNERABILIDAD NODAL" 
+  description="El Radar Nodal superpone las cinco subestaciones críticas con sus SCR reales del 28-A. Compara cuáles cumplían los umbrales de la Tabla y cuáles no."
+  icon="🎯"
+>
+  <RadarVulnerabilidad />
+</InteractiveCTA>
 
 Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
@@ -138,7 +150,7 @@ El P.O. 7.4 vigente en el momento del apagón no había sido revisado sustancial
 1. **Asimetría de participación**: el 82 % del parque generador operaba con factor de potencia fijo, inhabilitado para inyectar o absorber reactiva dinámicamente.
 2. **Banda muerta**: los generadores síncronos estaban eximidos de actuar si la tensión se mantenía entre 405 kV y 410 kV, configurando una respuesta por escalones estructuralmente incompatible con la velocidad del transitorio capacitivo documentado.
 
-![Curva característica del P.O. 7.4 original: banda muerta entre 405 kV y 410 kV](/figuras/po74_banda_muerta.png) _La zona sombreada ilustra la "banda muerta" del antiguo P.O. 7.4: rango en el que el parque generador no estaba obligado a proveer respuesta dinámica, inhabilitando la defensa del sistema frente a transitorios capacitivos rápidos. Fuente: REE._
+![Curva característica del P.O. 7.4 original: banda muerta entre 405 kV y 410 kV](/figuras/po74_banda_muerta.png) _Figura 42. Curva característica del P.O. 7.4 original. La zona sombreada ilustra la "banda muerta" entre 405 kV y 410 kV: rango en el que el parque generador no estaba obligado a proveer respuesta dinámica, inhabilitando la defensa del sistema frente a transitorios capacitivos rápidos. Fuente: REE._
 
 ### Revisión del P.O. 7.4, sistema VOLTAIRE y nuevo esquema retributivo
 
@@ -168,6 +180,14 @@ Los sistemas BESS reciben adicionalmente un pago de disponibilidad de **2,7 €/
 | Régimen sancionador | Sin penalizaciones específicas por incumplimiento de reactiva. | Penalizaciones por incumplimiento de la tasa mínima del 90 %. |
 
 </ForensicTable>
+
+<InteractiveCTA 
+  title="SIMULADOR: RESPUESTA DROOP AUTOMÁTICA" 
+  description="Simula la respuesta droop automática del marco post-2025: ¿cuántos milisegundos de diferencia hay entre la respuesta del P.O. 7.4 original y el nuevo protocolo ante un escalón de 1.050 MVAr?"
+  icon="🌡️"
+>
+  <TermometroRiesgo />
+</InteractiveCTA>
 
 El **Real Decreto 997/2025** complementó la reforma con cuatro medidas de urgencia: redefinición jurídica de los BESS como activos de servicio de estabilidad sistémica; saneamiento del registro de permisos de conexión obsoletos; obligatoriedad de telemedida con resolución &lt; 4 s para todo el parque IBR significativo; y obligatoriedad del módulo PSS/POD en todos los inversores GFM de nueva instalación con potencia > 10 MW.
 
@@ -199,6 +219,14 @@ Las obligaciones del **NC RfG 2.0** se aplican con un enfoque tecnológicamente 
 
 </ForensicTable>
 
+<InteractiveCTA 
+  title="SIMULADOR: IMPACTO DEL GRID-FORMING" 
+  description="Configura la simulación con un 15% de capacidad BESS Grid-Forming activa. El nadir de frecuencia no baja de 49.5 Hz. Sin BESS, cae a 47.8 Hz."
+  icon="📊"
+>
+  <FrequencyChart />
+</InteractiveCTA>
+
 A la fecha de redacción, la adopción formal del NC RfG 2.0 por la Comisión Europea **se encuentra despriorizada y sin calendario oficial**, generando una ventana de incertidumbre regulatoria que los operadores nacionales están gestionando mediante medidas preventivas al margen del código.
 
 ## Mercados de Servicios Esenciales de Confiabilidad (ERS)
@@ -217,7 +245,7 @@ El fracaso estructural de la arquitectura regulatoria hasta el 28-A residía en 
 
 **3. Remuneración _ex ante_ para SynCons.** Para infraestructuras como los SynCons —que aportan inercia física pura y corrientes de cortocircuito masivas pero no pueden vender energía en el mercado horario— la regulación contempla modelos de _Rate of Return Regulation_ sin exposición al riesgo de precio de la energía, o adjudicaciones a largo plazo que blindan la inversión de capital.
 
-![Diagrama de revenue stacking para un sistema BESS-GFM bajo el marco post-28A](/figuras/ers_revenue_stacking.png) _Fuentes de ingresos apiladas para un sistema BESS-GFM: mercado de energía diario, mercados de balance de frecuencia (aFRR/mFRR), subastas de inercia sintética y FFR, y pagos por disponibilidad de reactiva ERS. La multiplicidad de flujos compensa el sobredimensionamiento técnico requerido. Fuente: elaboración propia basada en estructura ENTSO-E._
+![Diagrama de revenue stacking para un sistema BESS-GFM bajo el marco post-28A](/figuras/ers_revenue_stacking.png) _Figura 43. Fuentes de ingresos apiladas para un sistema BESS-GFM: mercado de energía diario, mercados de balance de frecuencia (aFRR/mFRR), subastas de inercia sintética y FFR, y pagos por disponibilidad de reactiva ERS. La multiplicidad de flujos compensa el sobredimensionamiento técnico requerido. Fuente: elaboración propia basada en estructura ENTSO-E._
 
 ### Modelos de referencia: DS3 de EirGrid y RRS-FFR de ERCOT
 

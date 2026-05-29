@@ -6,6 +6,9 @@ title: "Contexto Técnico"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import EnergyTransitionStreamgraph from "@site/src/components/EnergyTransitionStreamgraph";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator";
+import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
 
 <GlitchTitle>Contexto Técnico</GlitchTitle>
 
@@ -29,7 +32,23 @@ Como contrapartida, la generación síncrona convencional ha sido progresivament
 
 Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, <GlossaryLink term="Inercia (H)">inercia física</GlossaryLink> y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante <GlossaryLink term="IBR">inversores (_IBR_</GlossaryLink>), que operan en modo estándar como seguidores de red (<GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink>): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una <GlossaryLink term="Tasa de Cambio de Frecuencia (RoCoF)">RoCoF</GlossaryLink> amplificada ante cualquier desequilibrio de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>.
 
+<InteractiveCTA 
+  title="LABORATORIO INTERACTIVO: VULNERABILIDAD NODAL" 
+  description="Examina el SCR real del nudo de Granada en la mañana del 28-A y compáralo con los umbrales de estabilidad de la Tabla 2."
+  icon="🎯"
+>
+  <RadarVulnerabilidad />
+</InteractiveCTA>
+
 La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s — por encima del umbral ENTSO-E — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.
+
+<InteractiveCTA 
+  title="SIMULADOR: ECUACIÓN DE OSCILACIÓN" 
+  description="Ajusta tú mismo la inercia H del sistema al 82% de renovables del 28-A y observa cómo la frecuencia colapsa en menos de 3 segundos."
+  icon="⏱️"
+>
+  <SwingEquationSimulator />
+</InteractiveCTA>
 
 ## Descarbonización e implicaciones operativas
 

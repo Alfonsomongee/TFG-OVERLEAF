@@ -6,6 +6,9 @@ title: "Utilisation de l'Intelligence Artificielle"
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
+
 <GlitchTitle>Utilisation de l'Intelligence Artificielle</GlitchTitle>
 
 L'élaboration de ce TFE s'est déroulée dans un contexte méthodologique atypique : la concomitance simultanée, durant la période 2024–2026, d'une crise systémique du système électrique ibérique et d'une transformation accélérée des outils de traitement du langage naturel. La disponibilité de _Large Language Models_ (LLMs) capables de traiter des documents techniques de centaines de pages en quelques minutes a coïncidé avec la publication, en l'espace d'un an, de quatre rapports d'expertise primaires et d'une dizaine d'analyses académiques sur le même événement. Ce chapitre documente de manière transparente comment ces outils ont été intégrés, quelles tâches concrètes ils ont accomplies, quelles erreurs systématiques ont été détectées et corrigées, et quelle réflexion épistémologique en découle pour la pratique de la recherche en ingénierie.
@@ -60,6 +63,14 @@ L'utilisation de modèles génératifs dans un domaine si dense en relations cau
 Le cas le plus illustratif du modèle d'erreur : interrogés sur le rôle du délestage dans le développement de l'incident, les modèles ont systématiquement proposé une interprétation héritée des pannes classiques, dans lesquelles l'UFLS constitue la dernière ligne de défense et parvient habituellement à préserver des portions du réseau en rétablissant le bilan fréquence-puissance active. Cette inférence est physiquement correcte pour l'univers d'événements sur lesquels le modèle a été entraîné, mais invalide pour le 28-A : dans un effondrement dominé par le plan Q-V, l'activation de l'UFLS a simultanément retiré les puits de puissance réactive inductive qu'apportaient les charges déconnectées, **aggravant la surtension au lieu de l'atténuer**.
 
 La correction a nécessité de formuler le _prompt_ avec une restriction explicite sur le plan d'analyse et de vérifier manuellement que le raisonnement résultant était cohérent avec l'oscillographie publiée par le NREL dans la plage horaire 12:33:19–12:33:27 CEST.
+
+<InteractiveCTA 
+  title="DÉMONTER L'HALLUCINATION : PORTRAIT DE PHASES" 
+  description="Si vous ne l'avez pas exploré au Chapitre 3, voici le simulateur de portrait de phases qui démonte l'hallucination du LLM. Observez pourquoi le délestage de charge dans un système à faible inertie peut aggraver la surtension."
+  icon="🧠"
+>
+  <PhasePlanePlot />
+</InteractiveCTA>
 
 ### Le cas du Tap-Lag
 

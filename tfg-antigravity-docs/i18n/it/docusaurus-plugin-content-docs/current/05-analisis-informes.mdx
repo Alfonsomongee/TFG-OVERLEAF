@@ -7,6 +7,8 @@ import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import IberianGridTopologyBase from "@site/src/components/IberianGridTopologyBase";
 
 <GlitchTitle>Analisi dei Rapporti Ufficiali</GlitchTitle>
 
@@ -95,7 +97,7 @@ La tabella completa della **sequenza ufficiale dei 18 eventi scatenanti** second
 
 Di fronte alla narrativa governativa, il parere peritale dell'IIT-ICAI insieme a Compass Lexecon e INESC TEC diagnostica formalmente l'evento come un **collasso per sovratensione**: un fenomeno di instabilità di <GlossaryLink term="Estabilidad de tensión">tensione</GlossaryLink> guidato dall'esaurimento della capacità di assorbimento di potenza reattiva, in cui le stesse azioni preventive di REE hanno agito come vettore primario della cascata.
 
-Il fulcro della critica è quantitativo. Di fronte alle oscillazioni iniziate alle 12:03 CEST, REE ha accoppiato **11 circuiti da 400 kV** a vuoto. A causa dell'<GlossaryLink term="Efecto Ferranti">Effetto Ferranti</GlossaryLink>, queste linee si sono comportate come grandi banchi di condensatori, iniettando tra **1,05 e 2,4 GVAr** di reattiva capacitiva in una rete che già mancava di margine di assorbimento. Le simulazioni stimano che il margine al collasso nel nodo di Carmona 400 kV si sia ridotto da **2.964 MW** a **1.268 MW** — una riduzione del **57%** che ha portato il sistema alla soglia di saturazione capacitiva.
+The fulcro della critica è quantitativo. Di fronte alle oscillazioni iniziate alle 12:03 CEST, REE ha accoppiato **11 circuiti da 400 kV** a vuoto. A causa dell'<GlossaryLink term="Efecto Ferranti">Effetto Ferranti</GlossaryLink>, queste linee si sono comportate come grandi banchi di condensatori, iniettando tra **1,05 e 2,4 GVAr** di reattiva capacitiva in una rete che già mancava di margine di assorbimento. Le simulazioni stimano che il margine al collasso nel nodo di Carmona 400 kV si sia ridotto da **2.964 MW** a **1.268 MW** — una riduzione del **57%** che ha portato il sistema alla soglia di saturazione capacitiva.
 
 ![Curve Q-V nel nodo di Carmona 400 kV secondo l'analisi peritale ICAI](/figuras/fluctuaciones_tension_previas.png) _Figura 28. Curve <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> di stabilità di tensione a Carmona 400 kV. Le manovre di magliatura (LIN&SHN) hanno spostato il punto operativo riducendo il margine al collasso del 57%. La linea tratteggiata rossa segna il limite V = 1,2 p.u. (480 kV). Fonte: IIT-ICAI / Compass Lexecon._
 
@@ -185,11 +187,19 @@ Nonostante la polarizzazione del dibattito, i quattro rapporti convergono su un 
 | **2. Natura dell'oscillazione di 0,6 Hz** | Oscillazione forzata con origine nell'anello di controllo di un impianto FV di Badajoz: innesco della sequenza che ha portato al collasso. | Le evidenze non sono conclusive. Potrebbe essere stato un modo inter-area naturale amplificato dal rapporto di smorzamento dell'1%, per l'assenza di PSS nei CCGT spenti. | Documenta l'oscillazione come atipica (rilevata fino in Germania) ma non attribuisce una causalità definitiva. |
 | **3. Legittimità degli scatti (Tap-Lag)** | I primi scatti sono stati «inadeguati» o prematuri: lo SCADA registrava 418 kV nei 400 kV, entro i limiti della P.O. 1.1. | Gli scatti sono stati normativamente corretti. Il Tap-Lag ha creato un punto cieco: le reti a 220 kV raggiungevano i 244 kV (>1,10 p.u.), invisibili allo SCADA. Il titolare dell'ICE di Granada ha confermato il corretto intervento della propria protezione. | Non qualifica gli scatti come inadeguati. Sottolinea l'inosservabilità come limite sistemico dell'operatore e dei RCC. |
 | **4. Dispacciamento nella zona sud** | Riconosce l'indisponibilità del CCGT andaluso dal 27-A. Giustifica la mancata sostituzione per livelli di tensione adeguati e disponibilità di altre risorse. | La zona sud disponeva di soli 0,2 GVAr di assorbimento contro >0,7 GVAr di iniezione capacitiva indotta dallo stesso operatore. La mancata sostituzione è stata la decisione di dispacciamento più determinante. | Segnala la bassa potenza di cortocircuito in Andalusia come fattore strutturale aggravante, senza pronunciarsi sulla decisione singola. |
-| **5. Responsabilità principale** | I generatori sono venuti meno ai loro obblighi di controllo della tensione. Il blackout è stato un fallimento del parco di generazione privato. | REE ha portato la rete a uno stato di collasso inevitabile attraverso la magliatura. I generatori hanno agito conformemente alla fisica e alla normativa. Il blackout è stato un fallimento dell'operatore e del regolatore. | La causa radice è normativa: la restrizione che impediva agli IBR di controllare dinamicamente la tensione. Il guasto è del sistema regolatorio europeo e nazionale. |
+| **5. Responsabilità principale** | I generatori non hanno rispettato i loro obblighi di controllo della tensione. Il blackout è stato un fallimento del parco di generazione privato. | REE ha portato la rete a uno stato di collasso inevitabile attraverso la magliatura. I generatori hanno agito conformemente alla fisica e alla normativa. Il blackout è stato un fallimento dell'operatore e del regolatore. | La causa radice è normativa: la restrizione che impediva agli IBR di controllare la tensione dinamicamente. Il fallimento è del sistema regolatorio europeo e nazionale. |
 
 
 
 </ForensicTable>
+
+<InteractiveCTA 
+  title="SIMULATORE PERITALE: APPORTO CAPACITIVO" 
+  description="Questa volta, attiva il livello di potenza di cortocircuito della perizia ICAI e verifica quanti MVAr inietta la magliatura a Granada."
+  icon="⚖️"
+>
+  <IberianGridTopologyBase />
+</InteractiveCTA>
 
 ## Sintesi interpretativa: tre fratture di governance
 

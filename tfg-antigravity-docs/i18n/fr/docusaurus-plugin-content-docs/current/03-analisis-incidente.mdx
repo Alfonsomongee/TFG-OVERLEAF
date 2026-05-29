@@ -7,7 +7,10 @@ title: "Analyse de l'incident"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import BrowserOnly from '@docusaurus/BrowserOnly';
-
+import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import IberianGridTopologyBase from "@site/src/components/IberianGridTopologyBase";
+import SynchrophasorPlot from "@site/src/components/SynchrophasorPlot";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 <GlitchTitle>Analyse de l'Incident</GlitchTitle>
 
 Le zéro de tension du 28 avril n'a pas été un événement instantané : ce fut l'aboutissement d'une dégradation progressive et mesurable de la stabilité statique et dynamique du réseau. La reconstruction médico-légale des quatre phases de l'effondrement — depuis les oscillations du matin jusqu'à l'isolement définitif de la péninsule à 12:33:29 CEST — permet d'identifier avec précision les mécanismes physiques qu'aucun automatisme de protection conventionnel n'a pu arrêter.
@@ -26,6 +29,14 @@ Pendant ces deux transitoires, le <GlossaryLink term="Damping ratio">taux d'amor
 
 Pour contenir ces oscillations, REE a exécuté une manœuvre de <GlossaryLink term="Mallado">maillage</GlossaryLink> : entre 12:03 et 12:30 CEST, il a reconnecté **11 lignes de 400 kV** qui restaient ouvertes en raison de la faible demande. La manœuvre a atteint son objectif immédiat — réduire l'impédance et freiner le coup de fouet des oscillations — mais a introduit, selon le rapport de l'IIT-ICAI, un effet secondaire pertinent : par l'<GlossaryLink term="Efecto Ferranti">Effet Ferranti</GlossaryLink>, les lignes reconnectées à vide ont injecté brusquement de la puissance réactive capacitive dans un réseau qui manquait déjà de marge d'absorption. La quantification de cette injection est l'un des axes de la dispute technique : le rapport de l'ICAI la chiffre à **2,4 GVAr** ; l'analyse indépendante du NREL adopte une estimation plus prudente de **1.050 MVAr**. Les deux chiffres s'accordent à souligner que l'injection a dépassé la capacité d'absorption résiduelle du système, estimée à ce moment-là à peine à **3,3 GVAr** contre les 5,8 GVAr habituels.
 
+<InteractiveCTA 
+  title="LABORATOIRE INTERACTIF : CARTE TOPOLOGIQUE ET EFFET FERRANTI" 
+  description="Activez le simulateur de l'Effet Ferranti pour voir comment la tension dépasse 1,12 p.u. en Andalousie tandis que Madrid reste stable."
+  icon="🗺️"
+>
+  <IberianGridTopologyBase />
+</InteractiveCTA>
+
 <span id="t3"></span>
 Les simulations d'expertise de l'IIT-ICAI estiment qu'après le maillage, la distance au point d'effondrement au nœud de Carmona 400 kV s'est contractée d'une marge de **2.964 MW** à **1.268 MW** — une réduction de **57 %** qui a rapproché le système du seuil de saturation capacitive.
 
@@ -43,6 +54,14 @@ L'instabilité s'est intensifiée à **12:19 CEST** avec le mode de **0,2 Hz**, 
 
 <span id="t5"></span>
 Le point de non-retour a été atteint à **12:32:57 CEST**. Un transformateur de 400/220 kV dans une sous-station collectrice de la province de **Grenade** s'est déconnecté suite à l'action de ses protections contre les surtensions, lorsqu'une valeur d'environ **244 kV** a été détectée dans le secondaire de 220 kV, dépassant le seuil diélectrique de sécurité. L'ampleur de l'impact ne résidait pas dans les 355 MW de <GlossaryLink term="Potencia activa">puissance active</GlossaryLink> perdus — un chiffre gérable pour le système —, mais dans la perte instantanée et irrécupérable de **165 MVAr** de capacité d'absorption de puissance réactive inductive. Dans un système saturé de réactif capacitif et avec des marges <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> réduites, la disparition de ce puits a provoqué une marche ascendante de la tension dans les nœuds environnants : le déclencheur physique de la réaction en chaîne.
+
+<InteractiveCTA 
+  title="TÉLÉMÉTRIE AVANCÉE : DIVERGENCE ANGULAIRE" 
+  description="Observez la divergence angulaire dans les nœuds PMU de Grenade, Badajoz et Vic seconde par seconde. Le SCADA classique ne l'a pas vue ; vous le pouvez."
+  icon="📡"
+>
+  <SynchrophasorPlot />
+</InteractiveCTA>
 
 ## Phase 2 : le phénomène Tap-Lag et le découplage des tensions (12:32:57–12:33:18 CEST)
 
@@ -145,6 +164,14 @@ Au fur et à mesure que la cascade détruisait la production restante, la fréqu
 ![Évolution couplée de la tension et de la fréquence pendant la Phase 3](/figuras/tension_frecuencia_colapso.png) _Figure 18. Évolution couplée de la tension (kV) et de la fréquence (Hz) pendant la Phase 3. L'augmentation de la tension au-dessus de 1,10 p.u. précède dans le temps la chute de fréquence, confirmant que l'effondrement était d'abord capacitif, et non inertiel. Source : Comité d'Analyse du Gouvernement._
 
 L'action de l'UFLS a révélé le soi-disant **paradoxe de l'UFLS** : en coupant la consommation active pour stabiliser la fréquence, le schéma a simultanément éliminé la consommation de puissance réactive inductive de cette même demande. Dans un réseau saturé de réactif capacitif, supprimer les derniers puits — moteurs et charges industrielles — a produit une nouvelle hausse des surtensions, **renforçant l'effondrement que l'UFLS lui-même tentait de freiner**. Les logiques de défense conçues pour des déficits de fréquence se sont avérées contre-productives face à un effondrement principalement entraîné par l'instabilité de la tension.
+
+<InteractiveCTA 
+  title="PORTRAIT DE PHASES : LE PARADOXE DE L'UFLS" 
+  description="Tracez la trajectoire de l'état dynamique du système dans l'espace des phases pendant la cascade : observez comment le bassin d'attraction s'effondre au moment du délestage massif."
+  icon="📉"
+>
+  <PhasePlanePlot />
+</InteractiveCTA>
 
 <span id="t2"></span>
 Dans les derniers instants, le déficit massif de production interne a provoqué une violente inversion des flux pyrénéens : les lignes AC ont tenté d'importer une magnitude de réactive d'urgence supérieure à **4.500 MVAr** depuis la France. Simultanément, la liaison HVDC INELFE-1 — fixée en PMODE1 depuis 12:08 CEST — continuait d'extraire de l'active de l'ordre de **1 GW** du système ibérique (la répartition précise par circuit et capacité peut être auditée dans le [**Tableau 14**](./15-galeria-de-tablas.mdx) et dans les [**Forensic Charts 1-5**](./16-galeria-forense.mdx), catégorie Interconnexions). Cette opération asymétrique a considérablement réduit la capacité de soutien net depuis le continent.
