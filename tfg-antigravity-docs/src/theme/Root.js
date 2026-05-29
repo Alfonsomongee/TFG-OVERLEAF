@@ -52,8 +52,8 @@ export default function Root({ children }) {
             <button
               className="global-sidebar-btn"
               onClick={toggleSidebar}
-              aria-label="Abrir barra lateral"
-              title="Abrir barra lateral"
+              aria-label={translate({id: 'theme.sidebar.open', message: 'Abrir barra lateral'})}
+              title={translate({id: 'theme.sidebar.open', message: 'Abrir barra lateral'})}
             >
               ☰
             </button>
@@ -64,8 +64,8 @@ export default function Root({ children }) {
             <button
               className="global-sidebar-close-btn"
               onClick={toggleSidebar}
-              aria-label="Cerrar barra lateral"
-              title="Cerrar barra lateral"
+              aria-label={translate({id: 'theme.sidebar.close', message: 'Cerrar barra lateral'})}
+              title={translate({id: 'theme.sidebar.close', message: 'Cerrar barra lateral'})}
             >
               ‹
             </button>
