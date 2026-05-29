@@ -193,6 +193,33 @@ function EmissionsVsRenewablesChartInner() {
     hovertemplate: '<b>%{x}</b><br>Penetración renovable: %{y:.1f}%<extra></extra>'
   };
 
+  const annotationsList = collapseAnnotation ? [collapseAnnotation] : [];
+  
+  // Añadir etiquetas para los baselines anuales 2025
+  annotationsList.push({
+    x: dates[0],
+    y: 258,
+    xref: 'x',
+    yref: 'y',
+    text: 'Promedio CO₂ 2025: 258g/kWh',
+    showarrow: false,
+    xanchor: 'left',
+    yanchor: 'bottom',
+    font: { color: 'rgba(239, 68, 68, 0.8)', size: 10 }
+  });
+
+  annotationsList.push({
+    x: dates[0],
+    y: 55.5,
+    xref: 'x',
+    yref: 'y2',
+    text: 'Promedio Renovable 2025: 55.5%',
+    showarrow: false,
+    xanchor: 'left',
+    yanchor: 'bottom',
+    font: { color: 'rgba(6, 182, 212, 0.8)', size: 10 }
+  });
+
   const layout = {
     title: {
       text: 'Emisiones de CO₂ vs Penetración renovable durante la semana del colapso',
@@ -223,16 +250,40 @@ function EmissionsVsRenewablesChartInner() {
     font: { color: '#a0a0b0', family: 'Inter, sans-serif' },
     height: 450,
     margin: { l: 70, r: 80, t: 80, b: 60 },
-    legend: { orientation: 'h', y: -0.2 },
-    annotations: collapseAnnotation ? [collapseAnnotation] : []
+    legend: { orientation: 'h', y: -0.25 },
+    annotations: annotationsList,
+    shapes: [
+      {
+        type: 'line',
+        xref: 'paper',
+        x0: 0,
+        x1: 1,
+        yref: 'y',
+        y0: 258,
+        y1: 258,
+        line: { color: 'rgba(239, 68, 68, 0.4)', width: 1.5, dash: 'dash' }
+      },
+      {
+        type: 'line',
+        xref: 'paper',
+        x0: 0,
+        x1: 1,
+        yref: 'y2',
+        y0: 55.5,
+        y1: 55.5,
+        line: { color: 'rgba(6, 182, 212, 0.4)', width: 1.5, dash: 'dash' }
+      }
+    ]
   };
 
   return (
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
       <DynamicPlotlyWrapper data={[traceEmissions, tracePenetration]} layout={layout} />
       <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>📉 <strong>Paradoja ambiental:</strong> El sistema eléctrico colapsó el 28 de abril alcanzando su <strong>máxima penetración renovable (84,5%)</strong> y <strong>mínimas emisiones de CO₂</strong> del período. La crisis no fue por falta de energía limpia, sino por <strong>falta de inercia síncrona y control dinámico de tensión</strong>.</p>
-        <p>ℹ️ Datos de emisiones: REData (REE). Penetración renovable: datos reales basados en informes técnicos del 28-A.</p>
+        <p>📉 <strong>Paradoja ambiental del 28-A:</strong> El sistema eléctrico colapsó en su punto de máxima limpieza instantánea, alcanzando una <strong>penetración no síncrona en el mix del 82% (84,5% agregada en la semana)</strong> y emisiones mínimas récord. Esto demuestra que la descarbonización masiva sin inercia síncrona ni control de tensión dinámico compromete físicamente el suministro.</p>
+        <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0 }}>
+          ℹ️ Datos anuales de referencia 2025: Penetración renovable del **55,5%** (ISE-2025 REE) y factor de emisión mix red de **258 gCO₂eq/kWh** (CNMC, 28 abr 2026). Emisiones diarias: REData (REE).
+        </p>
       </div>
     </div>
   );

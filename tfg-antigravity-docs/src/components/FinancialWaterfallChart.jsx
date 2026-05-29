@@ -80,29 +80,30 @@ function FinancialWaterfallChartInner() {
         adjustmentCost = cost28 ? cost28.value : null;
       }
 
-      // Datos base (valores de referencia, puedes ajustarlos según informes)
-      // VOLL estimado (€/MWh) = 5000 (valor medio europeo)
-      const voll = 5000; // €/MWh
-      const ensMWh = ensValue || 150000; // fallback si no hay dato real
-      const vollCost = ensMWh * voll;
+      // Datos base (valores reales basados en el archivo de investigación ree.txt)
+      // ENS Total Iberia estimada: ~255.490 MWh (200.000 España + 55.490 Portugal ERSE)
+      // VoLL estimado = 5.000 €/MWh (referencia europea estándar)
+      const vollCostM = (255490 * 5000) / 1e6; // 1.277,5 M€
+      
+      // Sobrecoste Operación Reforzada (Gas/Nuclear, REE mayo 2025 - marzo 2026): 666 M€
+      const reinforcedOpexM = 666.0;
 
-      // Sobreopex por operación reforzada (estimación de informes, pero puedes dejarlo fijo o calcular)
-      const reinforcedOpex = 711000000; // 711 M€
+      // Exposición Sancionadora CNMC (Iberdrola + Otros, expedientes de abril 2026): 240 M€
+      const sanctionsCNMCM = 240.0;
 
-      // Litigios estimados (puedes extraer de otras fuentes si las hay)
-      const litigation = 60000000; // 60 M€
+      // Pérdidas netas de consumo comercial y hogares (CaixaBank Research): 400 M€
+      const consumptionLossM = 400.0;
 
-      // Costes de restricciones técnicas (incluido en servicios de ajuste)
-      const constraints = adjustmentCost ? adjustmentCost * 0.6 : 50000000; // fallback
+      // Daños directos en equipos, subestaciones e infraestructura: 120 M€
+      const directDamagesM = 120.0;
 
-      // Construir datos para waterfall
+      // Construir datos para waterfall (todo en M€ para consistencia matemática)
       const waterfallData = [
-        { label: 'Precio medio SPOT pre-apagón (€/MWh)', value: 30, isTotal: false, color: '#6b7280' },
-        { label: 'Energía No Suministrada (MWh)', value: ensMWh, isTotal: false, color: '#ef4444' },
-        { label: 'Coste VOLL (Millones €)', value: vollCost / 1e6, isTotal: false, color: '#f97316' },
-        { label: 'Sobrecoste Operación Reforzada (M€)', value: reinforcedOpex / 1e6, isTotal: false, color: '#f59e0b' },
-        { label: 'Coste restricciones técnicas (M€)', value: constraints / 1e6, isTotal: false, color: '#eab308' },
-        { label: 'Litigios y sanciones (M€)', value: litigation / 1e6, isTotal: false, color: '#8b5cf6' },
+        { label: 'Valor Energía No Suministrada (VoLL, M€)', value: vollCostM, isTotal: false, color: '#ef4444' },
+        { label: 'Sobrecoste Operación Reforzada (Gas, M€)', value: reinforcedOpexM, isTotal: false, color: '#f59e0b' },
+        { label: 'Pérdidas de Consumo y Comercio (M€)', value: consumptionLossM, isTotal: false, color: '#f97316' },
+        { label: 'Exposición a Sanciones CNMC (M€)', value: sanctionsCNMCM, isTotal: false, color: '#8b5cf6' },
+        { label: 'Daños Directos en Red (M€)', value: directDamagesM, isTotal: false, color: '#eab308' },
       ];
 
       const total = waterfallData.reduce((acc, item) => acc + item.value, 0);
@@ -112,14 +113,13 @@ function FinancialWaterfallChartInner() {
       setError(null);
     } catch (err) {
       if (err.name !== 'AbortError') {
-        console.warn('API REData falló, usando fallback de datos del TFG (2025)');
+        console.warn('API REData falló, usando fallback de datos reales del TFG (2025)');
         const waterfallData = [
-          { label: 'Precio medio SPOT pre-apagón (€/MWh)', value: 30, isTotal: false, color: '#6b7280' },
-          { label: 'Energía No Suministrada (MWh)', value: 150000, isTotal: false, color: '#ef4444' },
-          { label: 'Coste VOLL (Millones €)', value: 750, isTotal: false, color: '#f97316' }, // 150000 * 5000 / 1e6
-          { label: 'Sobrecoste Operación Reforzada (M€)', value: 711, isTotal: false, color: '#f59e0b' },
-          { label: 'Coste restricciones técnicas (M€)', value: 50, isTotal: false, color: '#eab308' },
-          { label: 'Litigios y sanciones (M€)', value: 60, isTotal: false, color: '#8b5cf6' },
+          { label: 'Valor Energía No Suministrada (VoLL, M€)', value: 1277.5, isTotal: false, color: '#ef4444' },
+          { label: 'Sobrecoste Operación Reforzada (Gas, M€)', value: 666.0, isTotal: false, color: '#f59e0b' },
+          { label: 'Pérdidas de Consumo y Comercio (M€)', value: 400.0, isTotal: false, color: '#f97316' },
+          { label: 'Exposición a Sanciones CNMC (M€)', value: 240.0, isTotal: false, color: '#8b5cf6' },
+          { label: 'Daños Directos en Red (M€)', value: 120.0, isTotal: false, color: '#eab308' },
         ];
         const total = waterfallData.reduce((acc, item) => acc + item.value, 0);
         waterfallData.push({ label: 'IMPACTO ECONÓMICO TOTAL (M€)', value: total, isTotal: true, color: '#dc2626' });
@@ -215,8 +215,10 @@ function FinancialWaterfallChartInner() {
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
       <DynamicPlotlyWrapper data={[waterfallTrace]} layout={layout} />
       <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>ℹ️ Datos auditados desde REData: Energía No Suministrada (ENS) y costes de servicios de ajuste del 28 de abril de 2025.</p>
-        <p>El coste VOLL se ha estimado con un valor de 5.000 €/MWh (referencia europea). El resto de conceptos se basan en informes oficiales y liquidaciones reales.</p>
+        <p>ℹ️ <strong>Estructura de impacto macroeconómico (múltiples fuentes):</strong> El coste total acumulado en el sistema MIBEL se estima en **2.703,5 M€**. El valor de la energía no suministrada (VoLL, **1.277,5 M€**) se calcula valorando a 5.000 €/MWh la ENS estimada de Iberia (~255.490 MWh, que incluye 55.489 MWh oficiales de Portugal ERSE y ~200.000 MWh aproximados de España). Se integra el sobrecoste acumulado de la **Operación Reforzada (666 M€)** por despacho forzoso de gas, la pérdida neta de gasto presencial de consumo de hogares y comercio **(400 M€ según CaixaBank Research)**, y la exposición potencial máxima a **sanciones de la CNMC (240 M€)**.</p>
+        <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0 }}>
+          Fuentes periciales primarias: ERSE decision (mayo 2026), CaixaBank Research (julio 2025), CNMC process (abril 2026), e Informes E-P de REE (abril 2026).
+        </p>
       </div>
     </div>
   );

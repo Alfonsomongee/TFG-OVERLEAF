@@ -53,9 +53,9 @@ function GridUnavailabilityGaugeInner() {
         }
       }
 
-      // Fallback si no hay datos: usar valor documentado en informes (22.9%)
+      // Fallback si no hay datos: usar valor real documentado en informes (35.0% para las zonas centro y sur)
       if (unavailability === null) {
-        unavailability = 22.9; // porcentaje de red abierta el día del colapso según informes técnicos
+        unavailability = 35.0; // porcentaje de red fuera de servicio en áreas centro y sur según IIT-Comillas/Xataka
       }
 
       setValue(unavailability);
@@ -64,7 +64,7 @@ function GridUnavailabilityGaugeInner() {
       if (err.name !== 'AbortError') {
         console.error('Error fetching unavailability data:', err);
         setError(err.message);
-        setValue(22.9); // fallback con valor conocido
+        setValue(35.0); // fallback con valor real conocido (IIT-Comillas)
       }
     } finally {
       setLoading(false);
@@ -125,7 +125,7 @@ function GridUnavailabilityGaugeInner() {
       threshold: {
         line: { color: '#ef4444', width: 4 },
         thickness: 0.75,
-        value: 22.9
+        value: 35.0
       }
     }
   };
@@ -142,7 +142,7 @@ function GridUnavailabilityGaugeInner() {
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
       <DynamicPlotlyWrapper data={[gaugeTrace]} layout={layout} />
       <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', textAlign: 'center' }}>
-        ℹ️ El umbral de referencia (línea roja) marca el <strong>22,9%</strong> de indisponibilidad registrado el 28 de abril de 2025 según informes técnicos (valor que REData puede confirmar). Un valor superior indica mayor vulnerabilidad estructural de la red de transporte.
+        ℹ️ El umbral de referencia (línea roja) marca el <strong>35,0%</strong> de indisponibilidad de la red de 400 kV registrado en las áreas Centro y Sur en la mañana del 28 de abril de 2025 (según informe pericial del IIT-Comillas). Esto contrasta con un baseline histórico habitual inferior al 1,5%, evidenciando la extrema debilidad estructural de la red de transporte horas antes de la cascada dinámica.
       </div>
     </div>
   );

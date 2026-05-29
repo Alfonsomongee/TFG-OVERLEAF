@@ -224,8 +224,10 @@ function SectorialResilienceChartInner() {
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
       <DynamicPlotlyWrapper data={[traceIndustry, traceServices]} layout={layout} />
       <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '0.75rem' }}>
-        <p>📈 <strong>Resiliencia asimétrica:</strong> El sector servicios/residencial recuperó la demanda más rápidamente, mientras que la industria pesada (electrointensiva) fue reconectada de forma más lenta por razones de estabilidad de red, priorizando cargas críticas.</p>
-        <p>ℹ️ Datos: Índice de Red Eléctrica (IRE) por sector desde REData. Normalizado a base 100 el día del colapso (28 de abril de 2025).</p>
+        <p>📈 <strong>Resiliencia asimétrica y Gasto Neto (CaixaBank Research):</strong> El sector de servicios/residencial recuperó la demanda más rápidamente, mientras que la industria pesada (electrointensiva) fue reconectada de forma más lenta para asegurar la estabilidad del voltaje. Según CaixaBank Research, el impacto del apagón provocó una caída del <strong>-42% en el gasto presencial con tarjeta de hogares</strong> en la península el día 28-A, un <strong>-54% en comercio electrónico</strong> y un <strong>-34% en cajeros</strong>. A las 22:00h del 28-A se había recuperado el 50% de la demanda, y la normalización total (99.95%) se alcanzó a las 07:00h del 29 de abril (según el preámbulo del RDL 7/2025).</p>
+        <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0 }}>
+          ℹ️ Datos: Índice de Red Eléctrica (IRE) por sector desde REData. Normalizado a base 100 el día del colapso (28 de abril de 2025). Gasto sectorial: CaixaBank Research (julio 2025).
+        </p>
       </div>
     </div>
   );
