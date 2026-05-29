@@ -28,6 +28,12 @@ const DATA_LINKS = [
   { label: 'Balance de Intercambios',     href: '/datos-tiempo-real/balance-intercambios' },
   { label: 'Precio SPOT',                 href: '/datos-tiempo-real/precio-spot' },
   { label: 'Radar de Vulnerabilidad',     href: '/datos-tiempo-real/radar-vulnerabilidad' },
+  { label: '— Contexto Histórico —',      href: '#' },
+  { label: 'Costes de Ajuste',            href: '/datos-tiempo-real/costes-ajuste' },
+  { label: 'Impacto Económico',           href: '/datos-tiempo-real/waterfall-financiero' },
+  { label: 'Indisponibilidad de Red',     href: '/datos-tiempo-real/indisponibilidad' },
+  { label: 'Emisiones vs Renovable',      href: '/datos-tiempo-real/emisiones-renovable' },
+  { label: 'Resiliencia Sectorial',       href: '/datos-tiempo-real/resiliencia-sectorial' },
 ];
 
 export default function DatosTiempoRealNav({ currentPath = '' }) {
