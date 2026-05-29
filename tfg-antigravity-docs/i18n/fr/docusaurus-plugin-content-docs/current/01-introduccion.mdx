@@ -3,6 +3,8 @@ sidebar_position: 1
 hide_title: true
 title: "Introduction"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 
@@ -23,7 +25,7 @@ l'opérateur, arguant qu'elle a augmenté la contribution capacitive du réseau 
 **Vision du gestionnaire européen (<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>).** Le rapport factuel d'ENTSO-E adopte une perspective de zone synchrone continentale : il analyse la propagation d'<GlossaryLink term="Oscilaciones electromecánicas">oscillations inter-régionales</GlossaryLink> et remet en question la suffisance du <GlossaryLink term="Criterio N-1">Critère *N*−1</GlossaryLink> face à des
 phénomènes dynamiques ultra-rapides propres aux systèmes dominés par l'électronique de puissance.
 
-![Réplication de la séquence de l'effondrement](/figuras/albustami_ieee39_secuencia.png) _Séquence de l'effondrement du 28 avril montrant l'interaction entre les Actions de l'Opérateur (OA) et les Actions Automatiques de protection (AA). Source : Albustami et al., 2025._
+> ![Réplication de la séquence de l'effondrement](/figuras/albustami_ieee39_secuencia.png) _Figure 1. Séquence de l'effondrement du 28 avril montrant l'interaction entre les Actions de l'Opérateur (OA) et les Actions Automatiques de protection (AA). Source : Albustami et al., 2025._
 
 La portée du travail s'articule autour de la confrontation de ces trois récits avec les _Network Codes_ européens — en particulier le <GlossaryLink term="NC RfG">Règlement RfG</GlossaryLink> — et avec les principes modernes de <GlossaryLink term="Estabilidad de tensión">stabilité de tension</GlossaryLink> dans les systèmes dominés par des onduleurs, dans le but d'identifier les leçons structurelles, les limites méthodologiques et les vides réglementaires qui conditionnent la résilience du système électrique européen dans la transition vers la décarbonation.
 
@@ -32,12 +34,18 @@ La portée du travail s'articule autour de la confrontation de ces trois récits
 La transition énergétique a profondément modifié la dynamique du système péninsulaire. Le remplacement accéléré des centrales synchrones par des IBR réduit les masses tournantes couplées au réseau et, avec elles, deux paramètres critiques simultanément : l'<GlossaryLink term="Inercia (H)">inertie du système (*H*</GlossaryLink>) — qui
 a chuté à des valeurs zonales comprises entre **1,3 s et 1,8 s** dans le sud de la péninsule, en dessous du seuil de 2 s que la littérature technique associe à des marges dynamiques compromises — et la puissance de court-circuit disponible aux nœuds. Cette double diminution n'affecte pas seulement l'axe fréquence–puissance active : elle érode de manière critique la capacité du système à absorber dynamiquement la puissance réactive et à maintenir la tension face à des transitoires rapides, ce qui est précisément l'axe autour duquel s'est articulé l'effondrement.
 
-![Métamorphose électromécanique du système de puissance](/figuras/futured_grid_evolution.png) _Le remplacement de grandes masses tournantes par des ressources IBR réduit considérablement l'inertie totale du système. Source : FutuRed, 2024._
+> ![Métamorphose électromécanique du système de puissance](/figuras/futured_grid_evolution.png) _Figure 2. Le remplacement de grandes masses tournantes par des ressources IBR réduit considérablement l'inertie totale du système. Source : FutuRed, 2024._
 
 Le matin de l'incident, le système fonctionnait avec une **pénétration renouvelable non synchrone de 82 %** dans des conditions de demande creuse. Pour équilibrer la production, Redeia a découplé la quasi-totalité des groupes thermiques disponibles, ramenant le nombre de générateurs synchrones à des minimums historiques. Le parc IBR fonctionnait presque entièrement en mode <GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink> :
 des onduleurs qui nécessitent une tension et une fréquence externes stables comme référence de synchronisme. Avec la disparition des groupes synchrones, le système a perdu son principal mécanisme d'absorption dynamique de puissance réactive et, avec lui, l'amortissement naturel face aux transitoires de tension.
 
 À cette fragilité interne s'ajoute l'isolement structurel de la péninsule ibérique. Avec une capacité d'interconnexion transfrontalière de **7,9 %** par rapport à la demande de pointe — très en dessous des objectifs communautaires —, le système ibérique ne peut pas importer de stabilité dynamique depuis le cœur continental en situation d'urgence. La confluence d'une faible robustesse synchrone et d'un isolement relatif du réseau a configuré la vulnérabilité qui a rendu impossible de freiner la cascade de surtensions à **12:33:24 CEST**.
+
+<ForensicTable 
+    title="TABLA 1 | GRID INTERCONNECTION SNAPSHOT"
+    source="MIT CEEPR / Comisión Europea, 2025"
+    confidence="HIGH"
+  >
 
 | État Membre       | Interconnexion / Demande de pointe (%) |
 | ----------------- | -------------------------------------- |
@@ -45,6 +53,10 @@ des onduleurs qui nécessitent une tension et une fréquence externes stables co
 | France            | ~14                                    |
 | Allemagne         | ~17                                    |
 | Objectif UE 2030  | 15                                     |
+
+
+
+</ForensicTable>
 
 _Tableau : Niveau d'interconnexion électrique nominale par rapport à la demande de pointe (sélection). Source : MIT CEEPR / Commission Européenne, 2025._
 
@@ -58,6 +70,6 @@ La recherche adopte une approche d'analyse médico-légale comparative, structur
 
 **3. Validation technique croisée.** Comparaison des séquences chronologiques avec l'analyse indépendante du NREL sur les oscillations inter-régionales, obtenue à partir des enregistrements d'<GlossaryLink term="PMU (Phasor Measurement Unit)">Unités de Mesure Phasorielle (*PMU*</GlossaryLink>) à couverture continentale — des données dont l'indépendance institutionnelle permet d'arbitrer entre les versions divergentes.
 
-![Localisation topologique des PMU dans le système synchrone européen](/figuras/pmu_sensors_europe.png) _La densité de couverture des PMU a été déterminante pour la vérification indépendante des oscillations inter-régionales. Source : NREL._
+> ![Localisation topologique des PMU dans le système synchrone européen](/figuras/pmu_sensors_europe.png) _Figure 3. La densité de couverture des PMU a été déterminante pour la vérification indépendante des oscillations inter-régionales. Source : NREL._
 
 Les grands modèles de langage ont été utilisés comme outil d'assistance documentaire — classification, synthèse et extraction de données critiques — compte tenu du volume exceptionnel de documentation technique généré après l'incident. Leur application a été strictement limitée à l'organisation documentaire : ils présentent des limites connues face à des phénomènes de dynamique rapide tels que le mécanisme du _Tap-Lag_ ou le paradoxe de l'<GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>. La comparaison technique, l'évaluation de la causalité et les conclusions de ce travail relèvent exclusivement du jugement de l'auteur.

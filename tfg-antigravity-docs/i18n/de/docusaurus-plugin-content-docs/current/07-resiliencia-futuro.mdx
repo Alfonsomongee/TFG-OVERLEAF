@@ -3,6 +3,8 @@ sidebar_position: 7
 hide_title: true
 title: "Resilienz und Zukunft"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 
@@ -36,15 +38,24 @@ $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
+<ForensicTable 
+    title="TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+    source="Estándar ENTSO-E / literatura técnica"
+  >
+
 | Kategorie | SCR-Schwellenwert | Operative Auswirkung |
 | --- | --- | --- |
 | **Starkes Netz** | SCR > 3 | Die GFL-Wechselrichter arbeiten mit Kleinsignalstabilität. Distanzschutzrelais behalten ihre Selektivität. |
 | **Schwaches Netz** | 2 ≤ SCR ≤ 3 | Verschlechterung der Stabilitätsmarge des <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> bei schnellen Störungen. Risiko einer nachteiligen Interaktion zwischen benachbarten Regelkreisen. |
 | **Sehr schwaches Netz** | SCR &lt; 2 | PLLs neigen bei geringfügigen Spannungsschwankungen zum Synchronitätsverlust. Distanzschutzrelais verlieren ihre Richtungsabhängigkeit. |
 
+
+
+</ForensicTable>
+
 In den Stunden vor dem Zusammenbruch arbeiteten weite Teile der Halbinsel als **sehr schwache Netze** (SCR &lt; 2): Die massive Solarproduktion hatte die Gas-und-Dampf-Kombikraftwerke in der Merit-Order verdrängt, deren Abschaltung genau die Quellen von $S_{sc}$ beseitigte, die den Knotenpunkten des Übertragungsnetzes Stabilität verleihen. Unter diesen Bedingungen, mit hohem $X/R$, aber $\mathrm{SCR} \ll 2$, führt die Gesamtimpedanz dazu, dass die Spannung auch auf Schwankungen der <GlossaryLink term="Potencia activa">Wirkleistung</GlossaryLink> reagiert: Solare Einspeiserampen erlangen eine spannungsstörende Kraft, die in konventionellen synchronen Netzen harmlos wäre.
 
-![Spannungskarten im 400-kV-Netz der Halbinsel in der kritischen Phase vor dem Zusammenbruch](/figuras/scr_iberia.png) _Geografische Entwicklung der Spannungen im 400-kV-Netz vor dem Zusammenbruch (Sequenz a–d). Die warm gefärbten Zonen zeigen die Ausbreitung und Konzentration schwerer Überspannungen im Süden und Südwesten der Halbinsel – genau an den Knoten mit dem größten strukturellen Mangel an Kurzschlussleistung. Quelle: IIT-ICAI._
+> ![Spannungskarten im 400-kV-Netz der Halbinsel in der kritischen Phase vor dem Zusammenbruch](/figuras/scr_iberia.png) _Abbildung 37. Geografische Entwicklung der Spannungen im 400-kV-Netz vor dem Zusammenbruch (Sequenz a–d). Die warm gefärbten Zonen zeigen die Ausbreitung und Konzentration schwerer Überspannungen im Süden und Südwesten der Halbinsel – genau an den Knoten mit dem größten strukturellen Mangel an Kurzschlussleistung. Quelle: IIT-ICAI._
 
 ### Das geometrische Paradoxon der Wechselrichter: P-Q-Konflikt
 
@@ -60,7 +71,7 @@ Dieser Widerspruch erklärt, warum der 28-A kein Energie-, sondern ein Kontrollk
 
 Das operative Szenario des 28-A befand sich im **tiefen Tal der _Duck-Curve_**: strukturell niedrige Bruttonachfrage – vergleichbar mit den Tiefstwerten vor zwei Jahrzehnten – bei einer Sonneneinstrahlung nahe den sommerlichen Höchstwerten aufgrund der geringeren thermischen Degradation im Frühling.
 
-![Entwicklung der Anzahl der zwischen 12 und 13 Uhr gekoppelten konventionellen synchronen Einheiten](/figuras/conventionalunits.png) _Täglich zwischen 12 und 13 Uhr gekoppelte konventionelle synchrone Einheiten. Der Abwärtstrend in den Monaten vor dem 28-A spiegelt die systematische Verdrängung durch die Merit-Order wider – was das System im kritischen Moment seiner elektromechanischen Trägheit beraubte. Quelle: ENTSO-E / Eigene Darstellung._
+> ![Entwicklung der Anzahl der zwischen 12 und 13 Uhr gekoppelten konventionellen synchronen Einheiten](/figuras/conventionalunits.png) _Abbildung 38. Täglich zwischen 12 und 13 Uhr gekoppelte konventionelle synchrone Einheiten. Der Abwärtstrend in den Monaten vor dem 28-A spiegelt die systematische Verdrängung durch die Merit-Order wider – was das System im kritischen Moment seiner elektromechanischen Trägheit beraubte. Quelle: ENTSO-E / Eigene Darstellung._
 
 Um 12:30 Uhr MESZ hatte REE seine manuellen Managementwerkzeuge ausgeschöpft: vorbeugende Öffnung Dutzender Höchstspannungsleitungen zur Erhöhung der Serienimpedanz sowie der Betrieb von Drosselspulen mit 85 % ihrer Kapazität – ohne den Spannungsanstieg eindämmen zu können.
 
@@ -74,7 +85,7 @@ Die Überwindung der Verwundbarkeit erfordert einen Übergang in der Kontrollarc
 
 Im Gegensatz zum GFL-Wechselrichter arbeitet ein <GlossaryLink term="GFM (Grid-Forming)">Grid-Forming</GlossaryLink> (GFM)-Wechselrichter als Thévenin-Äquivalent: Er synthetisiert autonom eine interne Spannungsreferenz in Betrag und Winkel ($V\angle\delta$) hinter einer virtuellen Kopplungsimpedanz. Durch die sofortige Aufprägung dieses Vektors speist der GFM-Wechselrichter bei jeder Netzänderung inhärent Wirk- und Blindstrom ein oder absorbiert ihn, ohne von externen Phasenmessungen oder Berechnungsverzögerungen abhängig zu sein.
 
-![Ersatzschaltbilder der Grid-Following (GFL) und Grid-Forming (GFM) Topologien](/figuras/gfl_vs_gfm_circuit1.png) _Links: GFL-Wechselrichter als geregelte Stromquelle in Abhängigkeit vom PLL. Rechts: GFM-Wechselrichter als autonome Spannungsquelle hinter einer virtuellen Impedanz $Z_{\mathrm{GFM}}$. Der fundamentale Unterschied ist, dass der GFM das Netz nicht „lesen“ muss, um zu funktionieren – er erschafft es._
+> ![Ersatzschaltbilder der Grid-Following (GFL) und Grid-Forming (GFM) Topologien](/figuras/gfl_vs_gfm_circuit1.png) _Abbildung 39. Links: GFL-Wechselrichter als geregelte Stromquelle in Abhängigkeit vom PLL. Rechts: GFM-Wechselrichter als autonome Spannungsquelle hinter einer virtuellen Impedanz $Z_{\mathrm{GFM}}$. Der fundamentale Unterschied ist, dass der GFM das Netz nicht „lesen“ muss, um zu funktionieren – er erschafft es._
 
 Wenn der GFM-Wechselrichter von einer Batteriebank (BESS-GFM) gestützt wird, bietet die Kombination zwei zusätzliche Dienste:
 
@@ -105,11 +116,11 @@ Keine der drei Technologiefamilien reicht isoliert eingesetzt aus:
 - Die **SynCons** bieten echte Rotationsträgheit und hohe Kurzschlussleistung, aber es fehlt ihnen die subzyklische Agilität der Leistungselektronik und sie verwalten keine Wirkenergie.
 - Die **synthetische Trägheit und FFR** maximieren die Ausnutzung der Energiemarge der Batteriebank, sind aber auf eine minimale Knotenfestigkeit angewiesen – bereitgestellt von den SynCons –, damit ihre Algorithmen effektiv sind.
 
-![Hybride Architektur für systemische Resilienz in dekarbonisierten Netzen](/figuras/hitachi_hybrid.png) _Schema einer hybriden Architektur: Die BESS-GFM steuern die Spannung in Echtzeit und liefern FFR; die Phasenschieber bieten Rotationsträgheit und Kurzschlussleistung für die Knotenfestigkeit. Die Resilienz erfordert beide Komponenten – keine ist ein Ersatz für die andere. Quelle: Hitachi Energy / FUTURED._
+> ![Hybride Architektur für systemische Resilienz in dekarbonisierten Netzen](/figuras/hitachi_hybrid.png) _Abbildung 40. Schema einer hybriden Architektur: Die BESS-GFM steuern die Spannung in Echtzeit und liefern FFR; die Phasenschieber bieten Rotationsträgheit und Kurzschlussleistung für die Knotenfestigkeit. Die Resilienz erfordert beide Komponenten – keine ist ein Ersatz für die andere. Quelle: Hitachi Energy / FUTURED._
 
 Die Minimierung der Gesamtsystemkosten deckt sich nicht mit der Minimierung der <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, sondern erfordert die Internalisierung der <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Essentiellen Zuverlässigkeitsdienste (ERS)</GlossaryLink>, die Synchronmaschinen implizit bereitstellten, in das Marktdesign.
 
-![Techno-ökonomische Optimierung der Resilienz in von IBR dominierten Systemen](/figuras/coste_optimo_ers.png) _Das Minimum der Gesamtsystemkosten wird mit einem Mix erreicht, der ERS vergütet, nicht durch die einfache Maximierung der Durchdringung mit Erneuerbaren. Die Differenz zwischen dem LCOE-Optimum und dem Systemoptimum sind die Kosten für nicht vergütete Systemdienstleistungen. Quelle: Julia Matevosyan (ESIG) / FUTURED._
+> ![Techno-ökonomische Optimierung der Resilienz in von IBR dominierten Systemen](/figuras/coste_optimo_ers.png) _Abbildung 41. Das Minimum der Gesamtsystemkosten wird mit einem Mix erreicht, der ERS vergütet, nicht durch die einfache Maximierung der Durchdringung mit Erneuerbaren. Die Differenz zwischen dem LCOE-Optimum und dem Systemoptimum sind die Kosten für nicht vergütete Systemdienstleistungen. Quelle: Julia Matevosyan (ESIG) / FUTURED._
 
 ### KI und Graph Neural Networks (GNN) für die Stabilität
 
@@ -144,6 +155,11 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 
 BESS-Systeme erhalten zusätzlich eine Verfügbarkeitszahlung von **2,7 €/MW/Tag**, bedingt durch die Aufrechterhaltung einer Erfüllungsquote gültiger Stichproben von über **90 %**.
 
+<ForensicTable 
+    title="TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+    source="CNMC / REE"
+  >
+
 | Operatives Merkmal | Ursprüngliches P.O. 7.4 (vor 2025) | Aktualisierter Rahmen (nach 2025) |
 | --- | --- | --- |
 | Natur der Regelung | Statisch und asymmetrisch. Betrieb in Stufen. | Dynamisch, kontinuierlich und proportional zur Abweichung. |
@@ -153,6 +169,10 @@ BESS-Systeme erhalten zusätzlich eine Verfügbarkeitszahlung von **2,7 €/MW/T
 | Vergütung von Q | Basierend auf der deklarierten technischen Verfügbarkeit. | Zonale Märkte für ERS-Dienste. |
 | Beobachtbarkeit | SCADA 400-kV-Telemetrie, Auflösung von mehreren Sekunden. | PMU und 4-s-Telemetrie für verteilte IBR. |
 | Sanktionssystem | Keine spezifischen Sanktionen bei Nichterfüllung der Blindleistung. | Sanktionen bei Nichterfüllung der Mindestquote von 90 %. |
+
+
+
+</ForensicTable>
 
 Das **Königliche Dekret 997/2025** ergänzte die Reform durch vier Dringlichkeitsmaßnahmen: die rechtliche Neudefinition von BESS als Vermögenswerte für Systemstabilitätsdienste; die Bereinigung des Registers veralteter Netzanschlusszusagen; die Verpflichtung zur Telemetrie mit einer Auflösung von &lt; 4 s für den gesamten bedeutenden IBR-Park; und die Verpflichtung zum PSS/POD-Modul in allen neu installierten GFM-Wechselrichtern mit einer Leistung > 10 MW.
 
@@ -169,6 +189,11 @@ Die technische Gruppe von ENTSO-E (TG GFC) fasste ihre Arbeit in zwei Dokumenten
 
 Die Verpflichtungen des **NC RfG 2.0** werden technologieunabhängig angewandt und klassifizieren die Module in vier Typen:
 
+<ForensicTable 
+    title="TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+    source="ENTSO-E / Comisión Europea"
+  >
+
 | Typ | Leistung / Anschluss | GFM-Anforderung | Zeitplan |
 | --- | --- | --- | --- |
 | **Typ A** | &lt; 1 MW | Freiwillig. Kriterium des DSO. | N/A |
@@ -176,6 +201,10 @@ Die Verpflichtungen des **NC RfG 2.0** werden technologieunabhängig angewandt u
 | **Typ C** | > 50 MW | Obligatorisch und umfassend. Voller Betrieb als Spannungsquelle; Fehlerstromprofile; POD-Funktionalität. | 3 Jahre nach Verabschiedung durch die Europäische Kommission. |
 | **Typ D** | ≥ 110 kV oder > 75 MW | Wie Typ C plus Zertifizierungstests. | 3 Jahre nach Verabschiedung durch die Europäische Kommission. |
 | **ESM (BESS)** | Je nach Kategorie | Wie äquivalentes PPM. V2G-Systeme mit gemeinsamer Kapazität > 1 MW als ESM Typ B klassifiziert. | Je nach Kategorie. |
+
+
+
+</ForensicTable>
 
 Zum Zeitpunkt der Erstellung dieses Dokuments ist die formelle Annahme des NC RfG 2.0 durch die Europäische Kommission **entpriorisiert und ohne offiziellen Zeitplan**, was ein Fenster regulatorischer Unsicherheit schafft, das die nationalen Betreiber durch präventive Maßnahmen außerhalb des Kodex verwalten.
 
@@ -203,11 +232,20 @@ EirGrid (Irland) und ERCOT (Texas) sind die bewährten operativen Referenzen, au
 
 Das **DS3**-Programm von EirGrid hat die Bereitstellung von Stabilität in 14 spezialisierte Produkte aufgeteilt. Die drei relevantesten für den Kontext des 28-A:
 
+<ForensicTable 
+    title="TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+    source="EirGrid / ENTSO-E"
+  >
+
 | Dienst | Technische Definition | Schwellenwert / Fenster |
 | --- | --- | --- |
 | **Synchronous Inertial Response (SIR)** | Quasi-sofortige Bereitstellung von Wirkleistung und synchronisierendem Drehmoment bei Frequenzeinbrüchen. Vergütet durch den SIRF-Index = $E_k / P_{\min}$, der die Dispatchierung von Anlagen bestraft, die ungewollt Leistung einspeisen, nur um marginale Trägheit zu liefern. | SIRF ≥ 15 s |
 | **Fast Frequency Response (FFR)** | Schnelle Einspeisung von Wirkleistung nach plötzlichem Frequenzeinbruch. Die validierbare Energie ist das Integral der in den ersten 10 s zusätzlich eingespeisten Leistung. Es wird gefordert, dass die bereitgestellte Energie größer ist als der Verlust bei der Erholung (T+10s → T+20s). | Reaktion zwischen 0,15 s und 2 s |
 | **Steady-State Reactive Power (SSRP)** | Gesamter disponierbarer Blindleistungsbereich ($Q_{\mathrm{range}}$), den der Wechselrichter im kontinuierlichen Betrieb über seinen gesamten Wirkleistungsbereich einspeisen oder aufnehmen kann. Beinhaltet einen günstigen Vergütungsskalierer für IBR, die Blindleistung im Leerlauf liefern können (_watt-less VARs_). | Stationärer Zustand; jährliche Bewertung durch PLEXOS-Modelle |
+
+
+
+</ForensicTable>
 
 Der Vergleich zwischen DS3 und RRS-FFR legt eine Architektur von **zweischichtigen ERS-Märkten** für den europäischen Kontext nahe: eine Schicht von geografischen Kurzschlusssignalen – analog zum SSRP von EirGrid – und eine Schicht der subzyklischen Frequenzantwort – analog zum RRS-FFR von ERCOT.
 

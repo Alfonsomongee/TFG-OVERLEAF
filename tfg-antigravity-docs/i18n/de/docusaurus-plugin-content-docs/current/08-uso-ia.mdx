@@ -3,6 +3,8 @@ sidebar_position: 8
 hide_title: true
 title: "Einsatz von Künstlicher Intelligenz"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 <GlitchTitle>Einsatz von Künstlicher Intelligenz</GlitchTitle>
 
@@ -12,6 +14,11 @@ Die Erstellung dieser Bachelorarbeit erfolgte in einem untypischen methodischen 
 
 Der dokumentarische Ausgangskorpus umfasst technische Unterlagen, ENTSO-E-Vorschriften, offizielle Berichte mit einem Umfang von über 200 Seiten, PSS/E-Simulationen des IIT-ICAI, Protokolle der CNMC, oszillographische Aufzeichnungen des NREL und einen großen Umfang an Fachpresse. Das lineare Lesen ohne computergestützte Vermittlung war mit den akademischen Fristen der Bachelorarbeit unvereinbar. Die Integration generativer Modelle wurde um fünf klar abgegrenzte operative Funktionen herum strukturiert, **von denen keine eine autonome kausale Schlussfolgerung über die Physik des Systems beinhaltet**:
 
+<ForensicTable 
+    title="TABLA 14 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+    source="Elaboración propia"
+  >
+
 | Funktion | Beschreibung |
 | --- | --- |
 | **Chronologischer Abgleich** | Die vier Berichte beschreiben dieselben physikalischen Fakten des 28-A mit unterschiedlichem Detaillierungsgrad und zeitlichen Abweichungen von bis zu 200 ms zwischen den Versionen. Die automatische Unterstützung ermöglichte den Aufbau einer einheitlichen Mastertabelle von _Timestamps_ und Querverweisen, die als Gerüst für die Kapitel 3 und 4 diente. |
@@ -19,6 +26,10 @@ Der dokumentarische Ausgangskorpus umfasst technische Unterlagen, ENTSO-E-Vorsch
 | **Quantitative Tabellierung** | Konsolidierung von über die Berichte verteilten Größen: zonale Trägheitswerte, momentane Durchdringung erneuerbarer Energien, grenzüberschreitender Austausch, UFLS-Zahlen, kapazitive Beiträge der Vermaschung. |
 | **Redaktionelle Unterstützung** | Vorschlag von lexikalischen Varianten, Bereinigung von Synonymen, Terminologiekontrolle und Umformulierung von Passagen dichter akademischer Prosa. Diese Unterstützung **hat weder die argumentative Struktur noch inhaltliche Entscheidungen verändert**, die in der alleinigen Verantwortung des Autors liegen. |
 | **Gerüst für grafische Elemente** | Generierung von Entwürfen in TikZ und `pgfplots` aus Textbeschreibungen, die anschließend manuell überprüft, bereinigt und validiert wurden, um visuelle Konsistenz und Treue zu den dargestellten Daten zu gewährleisten. |
+
+
+
+</ForensicTable>
 
 Der Workflow ist in drei aufeinanderfolgende Phasen mit einer Korrekturschleife strukturiert:
 [Primärquellen] → [LLM-Unterstützung] → [Physikalischer Validierungsfilter] → [Hauptteil der Bachelorarbeit]
@@ -30,12 +41,21 @@ Das methodisch entscheidende Element ist nicht die LLM-Unterstützung an sich, s
 
 Die Verwendung generativer Modelle in einer so dichten Domäne kausaler Zusammenhänge wie der Dynamik von Stromsystemen offenbart systematisch ein Verhalten, das Stromsysteme nicht tolerieren: die **Schlussfolgerung durch statistische Analogie**. LLMs neigen dazu, _typische_ kausale Muster – die am häufigsten in der Literatur ihres Trainingskorpus vorkommenden – auf Fälle anzuwenden, deren physikalische Struktur _untypisch_ ist. Der 28-A ist aufgrund seiner dualen Natur (Spannungsstabilität anstelle von Frequenzgleichgewicht) ein untypischer Fall im Vergleich zu den meisten dokumentierten Stromausfällen in der Fachliteratur des 20. Jahrhunderts. Dies machte die Beobachtung der Punkte, an denen die KI „standardmäßig“ vom tatsächlichen Phänomen abwich, besonders produktiv.
 
+<ForensicTable 
+    title="TABLA 15 | LLM HEURISTIC FAILURE MODES"
+    source="Elaboración propia"
+  >
+
 | Phänomen | Standardmäßig fehlerhafte Schlussfolgerung des LLM | Angewandte physikalische Korrektur | Korrigierende _Prompt_-Strategie |
 | --- | --- | --- | --- |
 | **UFLS-Paradoxon** | Der Lastabwurf durch Unterfrequenz „rettete“ Systembereiche durch die Wiederherstellung des Wirkleistungsgleichgewichts. | Das UFLS ist spannungsblind: Durch das Abschalten von Lasten wurden induktive Blindleistungssenken mitten im kapazitiven Transienten entfernt, was die Überspannung verschärfte. | Explizite Einschränkung: Ausschließliche Argumentation in der Q-V-Ebene, wobei die bei klassischen Ausfällen übliche Logik Frequenz-Wirkleistung ignoriert wird. |
 | **Tap-Lag** | Die OLTC reagierten korrekt auf den Transienten, indem sie die Sekundärspannung proportional anhoben oder senkten. | Die absichtlichen Verzögerungen der OLTC – entwickelt zur Vermeidung von _Hunting_ – ließen sie gegenüber einem Transienten von mehreren zehn Millisekunden phasenverschoben reagieren, wodurch sich die Spannung in Richtung des 220-kV- und 132-kV-Netzes vervielfachte. | Injektion der echten Zeitkonstante der elektromechanischen OLTC-Baugruppe und Verbot der Annahme einer quasi-sofortigen Reaktion. |
 | **Kapazitiver Beitrag der Vermaschung** | Die Vermaschung reduzierte die Systemimpedanz und erhöhte damit die Spannungsstabilität. | Bei geringer Last aktivierte die Vermaschung die Queradmittanz der 400-kV-Leitungen (Ferranti-Effekt), wobei die 1.050 kapazitiven MVAr eingespeist wurden, die die Überspannung herbeiführten. | Beschränkung auf den Betriebszustand „unbelastete Leitung“ und Anforderung, die Blindleistungsbilanz mit der kapazitiven Admittanz $Y_t$ im π-Modell der Leitung zu berechnen. |
 | **0,6-Hz-Schwingung** | Erzeugung einer _integrierten_ Antwort – die „wahrscheinlichste“ über die Quellen gemittelte Lesart. | Der Ursprung der Mode (erzwungene Schwingung durch ein bestimmtes Kraftwerk laut ICAI; natürliche Systemmode laut REE) ist genau die Diskrepanz, die die Bachelorarbeit bewahren und nicht redaktionell auflösen muss. | Veto gegen die einseitige Wahl zwischen beiden Hypothesen und Verpflichtung, duale Versionen mit expliziter Zuordnung zu ihrer Quelle zu erstellen. |
+
+
+
+</ForensicTable>
 
 ### Der Fall des UFLS-Paradoxons
 

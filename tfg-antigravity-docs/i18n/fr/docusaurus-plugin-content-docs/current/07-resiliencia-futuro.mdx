@@ -3,6 +3,8 @@ sidebar_position: 7
 hide_title: true
 title: "Résilience et Avenir"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 
@@ -36,15 +38,24 @@ $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
+<ForensicTable 
+    title="TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+    source="Estándar ENTSO-E / literatura técnica"
+  >
+
 | Catégorie | Seuil SCR | Implication opérationnelle |
 | --- | --- | --- |
 | **Réseau fort** | SCR > 3 | Les onduleurs GFL fonctionnent avec une stabilité aux petits signaux. Les protections de distance maintiennent la sélectivité. |
 | **Réseau faible** | 2 ≤ SCR ≤ 3 | Dégradation de la marge de stabilité de la <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> face aux perturbations rapides. Risque d'interaction indésirable entre des boucles de contrôle proches. |
 | **Réseau très faible** | SCR < 2 | PLLs sujettes à une perte de synchronisme face à des variations de tension mineures. Les protections de distance perdent leur directionnalité. |
 
+
+
+</ForensicTable>
+
 Dans les heures précédant l'effondrement, de vastes zones de la Péninsule fonctionnaient comme des **réseaux très faibles** (SCR < 2) : la production solaire massive avait supplanté, par ordre de mérite, les cycles combinés, dont la déconnexion a éliminé précisément les sources de $S_{sc}$ qui donnent de la rigidité aux nœuds du réseau de transport. Dans ces conditions, avec un rapport $X/R$ élevé mais un $\mathrm{SCR} \ll 2$, l'impédance globale rend la tension sensible également aux variations de <GlossaryLink term="Potencia activa">puissance active</GlossaryLink> : les rampes d'injection solaire acquièrent un pouvoir de perturbation de tension qui, dans les réseaux synchrones conventionnels, serait inoffensif.
 
-![Cartes de tension du réseau péninsulaire 400 kV dans la plage critique avant l'effondrement](/figuras/scr_iberia.png) _Évolution géographique des tensions sur le réseau 400 kV avant l'effondrement (séquence a–d). Les zones de couleur chaude montrent la progression et la concentration des surtensions sévères dans le sud et le sud-ouest de la péninsule —précisément les nœuds présentant le plus grand déficit structurel de puissance de court-circuit. Source : IIT-ICAI._
+> ![Cartes de tension du réseau péninsulaire 400 kV dans la plage critique avant l'effondrement](/figuras/scr_iberia.png) _Figure 37. Évolution géographique des tensions sur le réseau 400 kV avant l'effondrement (séquence a–d). Les zones de couleur chaude montrent la progression et la concentration des surtensions sévères dans le sud et le sud-ouest de la péninsule —précisément les nœuds présentant le plus grand déficit structurel de puissance de court-circuit. Source : IIT-ICAI._
 
 ### Le paradoxe géométrique des onduleurs : conflit P-Q
 
@@ -60,7 +71,7 @@ Cette contradiction explique pourquoi le 28-A n'était pas un effondrement d'én
 
 Le scénario opérationnel du 28-A se situait dans la **vallée profonde de la _duck curve_** : demande brute structurellement faible —analogue aux minima d'il y a deux décennies— avec une irradiation proche des maxima estivaux en raison de la moindre dégradation thermique printanière.
 
-![Évolution du nombre d'unités synchrones conventionnelles couplées entre 12h et 13h](/figuras/conventionalunits.png) _Unités synchrones conventionnelles couplées quotidiennement entre 12h et 13h. La tendance à la baisse dans les mois précédant le 28-A reflète l'éviction systématique par l'ordre de mérite — vidant le système de son inertie électromécanique à l'instant critique. Source : ENTSO-E / élaboration propre._
+> ![Évolution du nombre d'unités synchrones conventionnelles couplées entre 12h et 13h](/figuras/conventionalunits.png) _Figure 38. Unités synchrones conventionnelles couplées quotidiennement entre 12h et 13h. La tendance à la baisse dans les mois précédant le 28-A reflète l'éviction systématique par l'ordre de mérite — vidant le système de son inertie électromécanique à l'instant critique. Source : ENTSO-E / élaboration propre._
 
 À 12h30 CEST, REE avait épuisé ses outils de gestion manuelle : ouverture préventive de dizaines de lignes à très haute tension pour augmenter l'impédance en série, plus le fonctionnement des réactances à 85 % de leur capacité — sans parvenir à contenir la hausse de tension.
 
@@ -74,7 +85,7 @@ Surmonter la vulnérabilité nécessite une transition dans l'architecture de co
 
 Contrairement à l'onduleur GFL, un onduleur <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) fonctionne comme un équivalent de Thévenin : il synthétise de manière autonome une référence interne de tension en amplitude et en angle ($V\angle\delta$) derrière une impédance de couplage virtuelle. En imposant ce vecteur instantanément, l'onduleur GFM injecte ou absorbe le courant actif et réactif de manière inhérente face à toute variation du réseau, sans dépendre de mesures de phase externes ni de retards de calcul.
 
-![Circuits équivalents des topologies Grid-Following (GFL) et Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Gauche : onduleur GFL comme source de courant contrôlée dépendante de la PLL. Droite : onduleur GFM comme source de tension autonome derrière une impédance virtuelle $Z_{\mathrm{GFM}}$. La différence fondamentale est que le GFM n'a pas besoin de « lire » le réseau pour fonctionner — il le crée._
+> ![Circuits équivalents des topologies Grid-Following (GFL) et Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Figure 39. Gauche : onduleur GFL comme source de courant contrôlée dépendante de la PLL. Droite : onduleur GFM comme source de tension autonome derrière une impédance virtuelle $Z_{\mathrm{GFM}}$. La différence fondamentale est que le GFM n'a pas besoin de « lire » le réseau pour fonctionner — il le crée._
 
 Lorsque l'onduleur GFM est soutenu par un banc de batteries (BESS-GFM), la combinaison fournit deux services supplémentaires :
 
@@ -105,11 +116,11 @@ Aucune des trois familles technologiques, déployée de manière isolée, n'est 
 - Les **SynCons** fournissent une inertie rotationnelle authentique et une puissance de court-circuit élevée, mais manquent de l'agilité sous-cyclique de l'électronique de puissance et ne gèrent pas d'énergie active.
 - L'**inertie synthétique et la FFR** maximisent l'utilisation de la marge énergétique du banc de batteries, mais dépendent d'une rigidité nodale minimale —fournie par les SynCons— pour que leurs algorithmes soient efficaces.
 
-![Architecture hybride pour la résilience systémique dans les réseaux décarbonés](/figuras/hitachi_hybrid.png) _Schéma d'architecture hybride : les BESS-GFM gèrent la tension en temps réel et fournissent de la FFR ; les compensateurs synchrones apportent l'inertie rotationnelle et la puissance de court-circuit pour la rigidité nodale. La résilience nécessite les deux composants — aucun ne remplace l'autre. Source : Hitachi Energy / FUTURED._
+> ![Architecture hybride pour la résilience systémique dans les réseaux décarbonés](/figuras/hitachi_hybrid.png) _Figure 40. Schéma d'architecture hybride : les BESS-GFM gèrent la tension en temps réel et fournissent de la FFR ; les compensateurs synchrones apportent l'inertie rotationnelle et la puissance de court-circuit pour la rigidité nodale. La résilience nécessite les deux composants — aucun ne remplace l'autre. Source : Hitachi Energy / FUTURED._
 
 La minimisation du coût total du système ne coïncide pas avec la minimisation du <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, mais nécessite d'internaliser dans la conception du marché les <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Services Essentiels de Fiabilité (ERS</GlossaryLink>) que les machines synchrones fournissaient de manière implicite.
 
-![Optimisation technico-économique de la résilience dans les systèmes dominés par les IBR](/figuras/coste_optimo_ers.png) _Le coût total minimum du système est atteint avec un mix qui rémunère les ERS, et non avec la simple maximisation de la pénétration des énergies renouvelables. La différence entre l'optimum LCOE et l'optimum systémique est le coût des services auxiliaires non rémunérés. Source : Julia Matevosyan (ESIG) / FUTURED._
+> ![Optimisation technico-économique de la résilience dans les systèmes dominés par les IBR](/figuras/coste_optimo_ers.png) _Figure 41. Le coût total minimum du système est atteint avec un mix qui rémunère les ERS, et non avec la simple maximisation de la pénétration des énergies renouvelables. La différence entre l'optimum LCOE et l'optimum systémique est le coût des services auxiliaires non rémunérés. Source : Julia Matevosyan (ESIG) / FUTURED._
 
 ### IA et Réseaux de Neurones sur Graphes (GNN) pour la stabilité
 
@@ -144,6 +155,11 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 
 Les systèmes BESS reçoivent en outre un paiement de disponibilité de **2,7 €/MW/jour**, conditionné au maintien d'un taux de conformité d'échantillons valides supérieur à **90 %**.
 
+<ForensicTable 
+    title="TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+    source="CNMC / REE"
+  >
+
 | Attribut opérationnel | P.O. 7.4 original (pré-2025) | Cadre actualisé (post-2025) |
 | --- | --- | --- |
 | Nature du contrôle | Statique et asymétrique. Opération par paliers. | Dynamique, continue et proportionnelle à l'écart. |
@@ -153,6 +169,10 @@ Les systèmes BESS reçoivent en outre un paiement de disponibilité de **2,7 �
 | Rémunération de Q | Basée sur la disponibilité technique déclarée. | Marchés zonaux des services ERS. |
 | Observabilité | Télémesures SCADA 400 kV, résolution de plusieurs secondes. | PMU et télémesure de 4 s pour IBR distribués. |
 | Régime de sanctions | Sans pénalités spécifiques pour non-respect de la réactive. | Pénalités pour non-respect du taux minimum de 90 %. |
+
+
+
+</ForensicTable>
 
 Le **Décret Royal 997/2025** a complété la réforme avec quatre mesures d'urgence : la redéfinition juridique des BESS comme actifs de service de stabilité systémique ; l'assainissement du registre des permis de connexion obsolètes ; l'obligation de télémesure avec une résolution < 4 s pour l'ensemble du parc IBR significatif ; et l'obligation du module PSS/POD dans tous les onduleurs GFM nouvellement installés avec une puissance > 10 MW.
 
@@ -169,6 +189,11 @@ Le Groupe Technique d'ENTSO-E (TG GFC) a cristallisé son travail dans deux docu
 
 Les obligations du **NC RfG 2.0** s'appliquent selon une approche technologiquement agnostique, classant les modules en quatre types :
 
+<ForensicTable 
+    title="TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+    source="ENTSO-E / Comisión Europea"
+  >
+
 | Type | Puissance / Connexion | Exigence GFM | Calendrier |
 | --- | --- | --- | --- |
 | **Type A** | < 1 MW | Volontaire. À la discrétion du DSO. | N/A |
@@ -176,6 +201,10 @@ Les obligations du **NC RfG 2.0** s'appliquent selon une approche technologiquem
 | **Type C** | > 50 MW | Obligatoire et exhaustif. Fonctionnement complet comme source de tension ; profils de courant de défaut ; fonctionnalité POD. | 3 ans après adoption par la Commission Européenne. |
 | **Type D** | ≥ 110 kV ou > 75 MW | Idem Type C plus tests de certification. | 3 ans après adoption par la Commission Européenne. |
 | **ESM (BESS)** | Selon catégorie | Idem PPM équivalent. Systèmes V2G avec capacité conjointe > 1 MW classés comme ESM Type B. | Selon catégorie. |
+
+
+
+</ForensicTable>
 
 À la date de rédaction, l'adoption formelle du NC RfG 2.0 par la Commission Européenne **est dépriorisée et sans calendrier officiel**, générant une fenêtre d'incertitude réglementaire que les opérateurs nationaux gèrent par des mesures préventives en marge du code.
 
@@ -203,11 +232,20 @@ EirGrid (Irlande) et ERCOT (Texas) sont les références opérationnelles confir
 
 Le programme **DS3** d'EirGrid a fragmenté la fourniture de stabilité en 14 produits spécialisés. Les trois plus pertinents pour le contexte du 28-A :
 
+<ForensicTable 
+    title="TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+    source="EirGrid / ENTSO-E"
+  >
+
 | Service | Définition technique | Seuil / Fenêtre |
 | --- | --- | --- |
 | **Synchronous Inertial Response (SIR)** | Fourniture quasi-instantanée de puissance active et de couple synchronisant face aux chutes de fréquence. Rémunéré par l'indice SIRF = $E_k / P_{\min}$, qui pénalise le dispatch des centrales injectant de la puissance non désirée uniquement pour apporter de l'inertie marginale. | SIRF ≥ 15 s |
 | **Fast Frequency Response (FFR)** | Injection rapide de puissance active après une chute brutale de fréquence. L'énergie validable est l'intégrale de la puissance supplémentaire injectée dans les 10 premières secondes. Il est exigé que l'énergie fournie soit supérieure à la perte lors de la récupération (T+10s → T+20s). | Réponse entre 0,15 s et 2 s |
 | **Steady-State Reactive Power (SSRP)** | Plage totale de puissance réactive dispatchable ($Q_{\mathrm{range}}$) que l'onduleur peut injecter ou absorber en fonctionnement continu sur l'ensemble de sa plage de puissance active. Comprend un scalaire de rémunération favorable pour les IBR capables de fournir de la réactive à vide (_watt-less VARs_). | Régime permanent ; évaluation annuelle par des modèles PLEXOS |
+
+
+
+</ForensicTable>
 
 La comparaison entre DS3 et RRS-FFR suggère une architecture de **marchés ERS à double couche** pour le contexte européen : une couche de signaux géographiques de court-circuit —analogue au SSRP d'EirGrid— et une couche de réponse de fréquence sous-cyclique —analogue au RRS-FFR d'ERCOT.
 

@@ -3,6 +3,8 @@ sidebar_position: 8
 hide_title: true
 title: "Uso de Inteligência Artificial"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 <GlitchTitle>Uso de Inteligência Artificial</GlitchTitle>
 
@@ -12,6 +14,11 @@ A elaboração deste TFG desenvolveu-se num contexto metodológico atípico: a o
 
 O corpo documental de partida abrange processos técnicos, normativas da ENTSO-E, relatórios oficiais de extensão superior a 200 páginas, simulações PSS/E do IIT-ICAI, atas da CNMC, registros oscilográficos do NREL e um amplo volume de hemeroteca especializada. A sua leitura linear sem mediação informática resultava incompatível com os prazos acadêmicos do TFG. A integração de modelos generativos articulou-se em torno de cinco funções operacionais claramente delimitadas, **nenhuma das quais envolve inferência causal autônoma sobre a física do sistema**:
 
+<ForensicTable 
+    title="TABLA 14 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+    source="Elaboración propia"
+  >
+
 | Função | Descrição |
 | --- | --- |
 | **Reconciliação cronológica** | Os quatro relatórios descrevem os mesmos fatos físicos de 28-A com diferentes níveis de granularidade e desfasamentos de até 200 ms entre versões. A assistência automática permitiu construir uma tabela mestra unificada de _timestamps_ e referências cruzadas que serviu de andaime para os capítulos 3 e 4. |
@@ -19,6 +26,10 @@ O corpo documental de partida abrange processos técnicos, normativas da ENTSO-E
 | **Tabulação quantitativa** | Consolidação de grandezas distribuídas ao longo dos relatórios: valores zonais de inércia, penetração renovável instantânea, intercâmbios transfronteiriços, números do UFLS, contribuições capacitivas da malha. |
 | **Suporte redacional** | Sugestão de variantes lexicais, depuração de sinonímias, controle de terminologia e reformulação de passagens de prosa acadêmica densa. Este apoio **não alterou a estrutura argumental nem as decisões de conteúdo**, que são responsabilidade exclusiva do autor. |
 | **Andaime de elementos gráficos** | Geração de rascunhos em TikZ e `pgfplots` a partir de descrições textuais, posteriormente revisados, depurados e validados manualmente para assegurar a consistência visual e a fidelidade aos dados representados. |
+
+
+
+</ForensicTable>
 
 O fluxo de trabalho estrutura-se em três etapas sequenciais com um laço de correção: [Fontes primárias] → [Assistência LLM] → [Filtro de validação física] → [Corpo do TFG] ↑**********\_\_\_\_**********| (reformulação de prompt perante alucinação detectada)
 
@@ -28,12 +39,21 @@ O elemento metodologicamente decisivo não é a assistência do LLM em si mesma,
 
 A utilização de modelos generativos num domínio tão denso em relações causais como a dinâmica de sistemas de potência revela, de forma sistemática, um comportamento que os sistemas elétricos não toleram: a **inferência por analogia estatística**. Os LLMs tendem a aplicar padrões causais _típicos_ —os mais frequentes na literatura de seu corpus de treinamento— a casos cuja estrutura física é _atípica_. O 28-A é, pela sua natureza dual (estabilidade de tensão em vez de balanço de frequência), um caso atípico face à maioria dos apagões documentados na bibliografia técnica do século XX, o que tornou especialmente produtiva a observação dos pontos em que a IA «por defeito» se desviava do fenômeno real.
 
+<ForensicTable 
+    title="TABLA 15 | LLM HEURISTIC FAILURE MODES"
+    source="Elaboración propia"
+  >
+
 | Fenômeno | Inferência errônea por defeito do LLM | Correção física aplicada | Estratégia de _prompt_ corretora |
 | --- | --- | --- | --- |
 | **Paradoxo do UFLS** | O corte de cargas por subfrequência «salvou» áreas do sistema ao recuperar o balanço de potência ativa. | O UFLS é cego à voltagem: ao desconectar carga, retirou sumidouros de reativa indutiva em pleno transitório capacitivo, agravando a sobretensão. | Restrição explícita: raciocinar exclusivamente no plano Q-V, ignorando a lógica frequência–potência ativa habitual em apagões clássicos. |
 | **Tap-Lag** | Os OLTC responderam corretamente ao transitório elevando ou rebaixando a tensão secundária de forma proporcional. | Os atrasos intencionais dos OLTC —projetados para evitar _hunting_— deixaram-nos defasados perante um transitório de dezenas de milissegundos, multiplicando a tensão em direção à rede de 220 kV e 132 kV. | Injeção da constante de tempo real do conjunto eletromecânico OLTC e proibição de assumir resposta quase instantânea. |
 | **Aporte capacitivo da malha** | A malha reduziu a impedância do sistema e, por conseguinte, aumentou a estabilidade de tensão. | Em condições de baixa carga, a malha ativou a admitância transversal das linhas de 400 kV (efeito Ferranti), injetando os 1.050 MVAr capacitivos que precipitaram a sobretensão. | Restrição ao regime «linha descarregada» e exigência de calcular o balanço de reativa com a admitância capacitiva $Y_t$ no modelo π da linha. |
 | **Oscilação de 0,6 Hz** | Produção de uma resposta _integrada_ — a leitura «mais provável» calculada como média sobre as fontes. | A origem do modo (oscilação forçada por uma usina concreta, segundo a ICAI; modo natural do sistema, segundo a REE) é precisamente a discrepância que o TFG deve preservar, não resolver editorialmente. | Veto à escolha unilateral entre ambas as hipóteses e obrigação de produzir versões duais com atribuição explícita à sua fonte. |
+
+
+
+</ForensicTable>
 
 ### O caso do paradoxo do UFLS
 

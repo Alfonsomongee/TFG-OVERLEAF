@@ -3,6 +3,8 @@ sidebar_position: 5
 hide_title: true
 title: "Analyse des Rapports Officiels"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 
@@ -14,17 +16,26 @@ L'analyse croisée des quatre rapports sur la panne du 28 avril révèle une arc
 
 Le récit officiel qualifie la panne non pas comme une erreur de conception opérationnelle ni comme la conséquence directe des manœuvres du dispatching, mais comme un événement de **nature multifactorielle** : la convergence d'une faible demande (vallée), de la pénétration massive d'<GlossaryLink term="IBR">IBR</GlossaryLink> et du comportement technique inadéquat des agents privés qui, agissant simultanément, a dépassé les seuils du <GlossaryLink term="Criterio N-1">Critère *N*−1</GlossaryLink>.
 
+<ForensicTable 
+    title="TABLA 3 | MULTI-FACTOR CAUSALITY MODEL"
+    source="Comité de Análisis del Gobierno / REE"
+  >
+
 | Facteur | Description |
 | --- | --- |
 | **Contrôle de tension insuffisant** | Non-respect de la P.O. 7.4 par les générateurs synchrones et les RCR |
 | **Oscillations électromécaniques** | Conditions de l'état du système avant l'effondrement |
 | **Déconnexions de production** | Certaines qualifiées de prématurées → vecteur final de la surtension |
 
+
+
+</ForensicTable>
+
 _Schéma de causalité multifactorielle selon le Comité d'Analyse du Gouvernement._
 
 La défense technique de REE concernant la manœuvre de <GlossaryLink term="Mallado">maillage</GlossaryLink> mérite un examen précis. Le rapport souligne un aspect fréquemment omis dans les critiques : les oscillations initiales n'ont pas provoqué de surtensions mais des **chutes de tension** aux nœuds du réseau de transport. Face à ce risque, le Centre de Contrôle a exécuté des actions strictement protocolisées — reconnexion de circuits, couplage de réactances, coordination avec RTE pour commuter la liaison CCHT (HVDC) en PMODE1 —, en reconnaissant que ces manœuvres « ont contribué à la hausse des tensions », mais en les qualifiant de nécessaires. REE soutient que toute augmentation de tension ultérieure aurait pu être absorbée si les agents avaient respecté leurs obligations réglementaires.
 
-![Cartes thermiques de tension sur le réseau 400 kV dans les instants précédant le déclenchement racine](/figuras/mapas_termicos_tension_ree.png) _Cartographie de la tension sur le réseau 400 kV (12:30–12:32:57 CEST) selon l'analyse de l'Opérateur du Système. REE soutient que les profils sont restés dans les limites de la P.O. 1.1 jusqu'au début des déconnexions dans les réseaux collecteurs. Source : Red Eléctrica._
+> ![Cartes thermiques de tension sur le réseau 400 kV dans les instants précédant le déclenchement racine](/figuras/mapas_termicos_tension_ree.png) _Figure 27. Cartographie de la tension sur le réseau 400 kV (12:30–12:32:57 CEST) selon l'analyse de l'Opérateur du Système. REE soutient que les profils sont restés dans les limites de la P.O. 1.1 jusqu'au début des déconnexions dans les réseaux collecteurs. Source : Red Eléctrica._
 
 L'argument central reporte la responsabilité sur le parc de production : l'analyse des 850 plus grandes installations de production documente qu'environ **22 %** ne respectaient pas le critère de facteur de puissance exigible conformément au RD 413/2014, bien que le rapport lui-même nuance le fait qu'une partie de ce manquement pourrait être attribuée à l'effet capacitif des infrastructures d'évacuation avec une faible production. En particulier, une centrale thermique dans la zone sud a non seulement échoué à absorber de la <GlossaryLink term="Potencia reactiva">puissance réactive</GlossaryLink> inductive, mais a également injecté de la puissance réactive capacitive supplémentaire. Pour REE, l'inhibition collective du parc privé a privé le système de la marge dynamique nécessaire pour contenir le régime transitoire.
 
@@ -35,6 +46,11 @@ Le récit gouvernemental présente une cohérence interne appréciable et identi
 Le tableau complet de la **séquence officielle de 18 événements déclencheurs** selon REE, et ses **propositions réglementaires** dans quatre domaines (contrôle de tension, exploitation, observabilité et surveillance), sont présentés ci-dessous :
 
 ### Séquence officielle des événements déclencheurs (REE)
+
+<ForensicTable 
+    title="TABLA 4 | OFFICIAL EVENT SEQUENCE LOG"
+    source="Red Eléctrica (REE)"
+  >
 
 | N.º | Réf. | Description |
 | --- | --- | --- |
@@ -53,7 +69,16 @@ Le tableau complet de la **séquence officielle de 18 événements déclencheurs
 | 17 | — | Le HVDC INELFE-1 continue d'exporter 1 000 MW en PMODE1. |
 | 18 | N-12 | Déclenchement d'un groupe nucléaire. Perte de synchronisme et tension à zéro à **12:33:29.741 CEST**. |
 
+
+
+</ForensicTable>
+
 ### Propositions réglementaires de Redeia
+
+<ForensicTable 
+    title="TABLA 5 | PROPOSED REGULATORY AMENDMENTS"
+    source="Redeia / REE"
+  >
 
 | Domaine | Mesure proposée |
 | --- | --- |
@@ -62,25 +87,29 @@ Le tableau complet de la **séquence officielle de 18 événements déclencheurs
 | **Observabilité** | Renforcement du contrôle de tension sur la distribution. Fourniture à l'OS d'une observabilité sur l'autoconsommation. Extension du <GlossaryLink term="WAMS (Wide Area Monitoring Systems)">WAMS</GlossaryLink> avec une <GlossaryLink term="PMU (Phasor Measurement Unit)">PMU</GlossaryLink> par parc de transport. |
 | **Surveillance** | Enregistrements de défauts avec un échantillonnage minimum de 20 ms et synchronisation horaire. Plateforme centralisée de collecte des données d'incidents. |
 
+
+
+</ForensicTable>
+
 ## La vision du secteur de la production (ICAI / AELEC) : maillage excessif et effondrement inévitable
 
 Face au récit gouvernemental, l'expertise de l'IIT-ICAI en collaboration avec Compass Lexecon et INESC TEC diagnostique formellement l'événement comme un **effondrement par surtension** : un phénomène d'instabilité de <GlossaryLink term="Estabilidad de tensión">tension</GlossaryLink> poussé par l'épuisement de la capacité d'absorption de puissance réactive, dans lequel les propres actions préventives de REE ont agi comme le vecteur primaire de la cascade.
 
 Le cœur de la critique est quantitatif. Face aux oscillations survenues à partir de 12:03 CEST, REE a couplé **11 circuits de 400 kV** à vide. En raison de l'<GlossaryLink term="Efecto Ferranti">Effet Ferranti</GlossaryLink>, ces lignes se sont comportées comme de grands bancs de condensateurs, injectant entre **1,05 et 2,4 GVAr** de puissance réactive capacitive dans un réseau qui manquait déjà de marge d'absorption. Les simulations estiment que la marge à l'effondrement au nœud de Carmona 400 kV s'est contractée de **2 964 MW** à **1 268 MW** — une réduction de **57 %** qui a mené le système au seuil de saturation capacitive.
 
-![Courbes Q-V au nœud de Carmona 400 kV selon l'analyse d'expertise ICAI](/figuras/fluctuaciones_tension_previas.png) _Courbes <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> de stabilité de tension à Carmona 400 kV. Les manœuvres de maillage (LIN&SHN) ont déplacé le point de fonctionnement, contractant la marge à l'effondrement de 57 %. La ligne pointillée rouge marque la limite V = 1,2 p.u. (480 kV). Source : IIT-ICAI / Compass Lexecon._
+> ![Courbes Q-V au nœud de Carmona 400 kV selon l'analyse d'expertise ICAI](/figuras/fluctuaciones_tension_previas.png) _Figure 28. Courbes <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> de stabilité de tension à Carmona 400 kV. Les manœuvres de maillage (LIN&SHN) ont déplacé le point de fonctionnement, contractant la marge à l'effondrement de 57 %. La ligne pointillée rouge marque la limite V = 1,2 p.u. (480 kV). Source : IIT-ICAI / Compass Lexecon._
 
 La divergence entre les chiffres de l'ICAI (2,4 GVAr) et l'analyse indépendante du NREL (1,05 GVAr) ne modifie pas la conclusion partagée : dans les deux cas, l'injection capacitive a dépassé la capacité d'absorption résiduelle du système, estimée à peine à **3,3 GVAr** contre les 5,8 GVAr habituels.
 
 Concernant les déclenchements en cascade, le secteur de la production réfute la qualification de « déclenchements inadéquats » en soulignant la limite d'observabilité de l'opérateur. Alors que le <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> de REE affichait 418 kV sur le réseau 400 kV — dans les limites réglementaires —, le phénomène du Tap-Lag générait un point aveugle dans les réseaux collecteurs : l'inertie mécanique des <GlossaryLink term="OLTC (On-Load Tap Changer)">OLTC</GlossaryLink> a amplifié le transitoire vers les réseaux 220 kV, où ont été atteints **244 kV** (>110 % de la tension nominale). Le propriétaire de l'infrastructure de Grenade a confirmé que sa protection « était correctement ajustée et a fonctionné de manière adéquate ».
 
-![Enregistrement oscillographique du déclenchement racine à Grenade à 12:32:56.993 CEST](/figuras/aluvion_alertas_sobretension_sur.png) _Oscillogramme du déclenchement racine (Grenade, 12:32:56.993 CEST). Panneau supérieur : courant triphasé stable jusqu'au déclenchement de l'interrupteur en amont. Panneau inférieur : tension au secondaire collecteur — la phase A atteint ~145 kV (>1,10 p.u.) — invisible pour le SCADA de REE sur le réseau 400 kV en raison de l'effet Tap-Lag. Source : IIT-ICAI / AELEC._
+> ![Enregistrement oscillographique du déclenchement racine à Grenade à 12:32:56.993 CEST](/figuras/aluvion_alertas_sobretension_sur.png) _Figure 29. Oscillogramme du déclenchement racine (Grenade, 12:32:56.993 CEST). Panneau supérieur : courant triphasé stable jusqu'au déclenchement de l'interrupteur en amont. Panneau inférieur : tension au secondaire collecteur — la phase A atteint ~145 kV (>1,10 p.u.) — invisible pour le SCADA de REE sur le réseau 400 kV en raison de l'effet Tap-Lag. Source : IIT-ICAI / AELEC._
 
 La deuxième ligne d'argumentation vise le cadre réglementaire : la P.O. 7.4, dans sa rédaction antérieure à la réforme, obligeait les IBR à fonctionner avec un facteur de puissance **fixe**, empêchant leur électronique de puissance d'absorber ou d'injecter de l'énergie réactive de manière dynamique bien qu'ils disposent de cette capacité technologique. Cette restriction excluait **82 % de la production instantanée** du contrôle actif de la tension, concentrant la responsabilité sur le rare parc thermique synchrone disponible.
 
 Le déséquilibre quantitatif qui en résulte était, selon l'expertise, **mathématiquement insurmontable** : dans la zone sud — épicentre des oscillations et du maillage —, REE disposait d'à peine **0,2 GVAr** de capacité d'absorption de réactive inductive face à une injection capacitive estimée supérieure à **0,7 GVAr** induite par ses propres manœuvres.
 
-![Bilan de puissance réactive dans la zone sud à 12:30 CEST selon IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png) _Bilan de puissance réactive à 12:30 CEST. Les manœuvres de REE ont ajouté 0,7 GVAr capacitifs aux 3,4 GVAr déjà existants, tandis que la production synchrone conventionnelle n'apportait qu'à peine 0,2 GVAr d'absorption. Déficit net : −0,6 GVAr. Source : IIT-ICAI / Compass Lexecon._
+> ![Bilan de puissance réactive dans la zone sud à 12:30 CEST selon IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png) _Figure 30. Bilan de puissance réactive à 12:30 CEST. Les manœuvres de REE ont ajouté 0,7 GVAr capacitifs aux 3,4 GVAr déjà existants, tandis que la production synchrone conventionnelle n'apportait qu'à peine 0,2 GVAr d'absorption. Déficit net : −0,6 GVAr. Source : IIT-ICAI / Compass Lexecon._
 
 La conclusion de l'expertise identifie **trois facteurs directement imputables à l'opérateur et au régulateur** : le maillage qui a saturé les marges Q-V, l'inobservabilité structurelle du réseau 220 kV due au Tap-Lag, et le cadre réglementaire (P.O. 7.4) qui empêchait 82 % du parc de participer au contrôle dynamique de la tension.
 
@@ -92,6 +121,11 @@ L'analyse identifie une tension technique fondamentale : la majorité des instal
 
 En réponse directe, ENTSO-E a consolidé dans son Rapport de Phase II la mise à jour du **NC RfG 2.0**, qui prévoit d'imposer le <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> comme exigence obligatoire pour tous les modules non synchrones ≥ 1 MW :
 
+<ForensicTable 
+    title="TABLA 6 | NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
+    source="ENTSO-E (Phase II Report)"
+  >
+
 | Exigence | <GlossaryLink term="NC RfG">NC RfG en vigueur</GlossaryLink> | NC RfG 2.0 (proposé) |
 | --- | --- | --- |
 | Mode de fonctionnement | _Grid-following_ | _Grid-forming_ obligatoire |
@@ -101,9 +135,13 @@ En réponse directe, ENTSO-E a consolidé dans son Rapport de Phase II la mise �
 | _Black Start_ | Non requis pour les IBR | Capacité de démarrage en îlotage |
 | Référence de synchronisme | Externe (PLL sur réseau) | Générée en interne (source de tension idéale) |
 
+
+
+</ForensicTable>
+
 Concernant la topologie de l'incident, ENTSO-E analyse la perte de <GlossaryLink term="Sincronismo">synchronisme</GlossaryLink> à **12:33:19 CEST** : le système est passé d'une exportation de 469 MW (12:32:57) à une importation maximale de **3 807 MW** (12:33:19), moment de la perte de synchronisme. La divergence angulaire des pôles est devenue insoutenable et les protections *Out-of-Step* (OST) ont agi à **12:33:21 CEST**, ordonnant l'ouverture des circuits transpyrénéens (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
-![Évolution de l'échange Espagne-France et perte de synchronisme (12:32:57–12:33:20 CEST)](/figuras/perdida_sincronismo_frontera.png) _Échange de puissance active à la frontière Espagne-France durant la Phase 3. Panneau supérieur : flux net total (exportation 469 MW → importation maximale 3 807 MW). Panneau inférieur : décomposition par circuit. L'oscillation finale reflète la divergence des pôles avant l'ouverture définitive. Source : ENTSO-E._
+> ![Évolution de l'échange Espagne-France et perte de synchronisme (12:32:57–12:33:20 CEST)](/figuras/perdida_sincronismo_frontera.png) _Figure 31. Échange de puissance active à la frontière Espagne-France durant la Phase 3. Panneau supérieur : flux net total (exportation 469 MW → importation maximale 3 807 MW). Panneau inférieur : décomposition par circuit. L'oscillation finale reflète la divergence des pôles avant l'ouverture définitive. Source : ENTSO-E._
 
 Cette séparation a évité que l'effondrement capacitif et la chute de fréquence — avec un <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink> supérieur à **1,5 Hz/s** — n'entraînent le système français et le reste de l'Europe continentale.
 
@@ -115,6 +153,11 @@ L'avertissement final d'ENTSO-E est structurel : les analyses de sécurité coor
 
 Malgré la polarisation du débat, les quatre rapports convergent vers un ensemble de conclusions techniques qui nuancent ou démentent les récits médiatiques les plus répandus :
 
+<ForensicTable 
+    title="TABLA 7 | TECHNICAL CONSENSUS MATRIX"
+    source="Elaboración propia"
+  >
+
 | Point de consensus | Fondement technique partagé | GOUV | REE | ICAI | ENTSO-E |
 | --- | --- | :-: | :-: | :-: | :-: |
 | **L'inertie n'était pas la cause racine** | Le système fonctionnait avec H = 2,3 s (> seuil 2,0 s). Une inertie plus importante aurait retardé la chute de fréquence de quelques dixièmes de seconde, sans éviter l'effondrement par surtension. | ✓ | ✓ | ✓ | ✓ |
@@ -125,7 +168,16 @@ Malgré la polarisation du débat, les quatre rapports convergent vers un ensemb
 | **La réglementation IBR était insuffisante** | La P.O. 7.4 et le RD 413/2014 empêchaient les IBR de participer au contrôle dynamique de la tension malgré leur capacité technologique. | ✓ | ✓ | ✓ | ✓ |
 | **Le Critère N−1 statique est insuffisant** | Les outils d'analyse statique ont évalué le système comme sûr des heures avant l'effondrement, sans capacité à anticiper la dynamique ultra-rapide de l'instabilité capacitive. | ✓ | ✓ | ✓ | ✓ |
 
+
+
+</ForensicTable>
+
 ### Divergences techniques irréconciliables
+
+<ForensicTable 
+    title="TABLA 8 | TECHNICAL DIVERGENCE MATRIX"
+    source="Elaboración propia"
+  >
 
 | Axe de conflit | Gouvernement / REE | ICAI / AELEC | ENTSO-E |
 | --- | --- | --- | --- |
@@ -134,6 +186,10 @@ Malgré la polarisation du débat, les quatre rapports convergent vers un ensemb
 | **3. Légitimité des déclenchements (Tap-Lag)** | Les premiers déclenchements ont été « inadéquats » ou prématurés : le SCADA enregistrait 418 kV sur 400 kV, dans les limites de la P.O. 1.1. | Les déclenchements étaient réglementairement corrects. Le Tap-Lag a créé un point aveugle : les réseaux de 220 kV atteignaient 244 kV (>1,10 p.u.), invisibles pour le SCADA. Le propriétaire de l'ICE de Grenade a confirmé que sa protection a agi correctement. | Ne qualifie pas les déclenchements d'inadéquats. Souligne l'inobservabilité comme limitation systémique de l'opérateur et des RCC. |
 | **4. Dispatching dans la zone sud** | Reconnaît l'indisponibilité du CCGT andalou depuis le 27-A. Justifie la non-substitution par des niveaux de tension adéquats et la disponibilité d'autres ressources. | La zone sud ne disposait que de 0,2 GVAr d'absorption face à >0,7 GVAr d'injection capacitive induite par l'opérateur lui-même. La non-substitution a été la décision de dispatching la plus déterminante. | Signale la faible puissance de court-circuit en Andalousie comme un facteur structurel aggravant, sans se prononcer sur la décision individuelle. |
 | **5. Responsabilité principale** | Les générateurs ont manqué à leurs obligations de contrôle de tension. La panne est un échec du parc de production privé. | REE a mené le réseau vers un état d'effondrement inévitable par le biais du maillage. Les générateurs ont agi conformément à la physique et à la réglementation. La panne est un échec de l'opérateur et du régulateur. | La cause racine est normative : la restriction qui empêchait les IBR de contrôler la tension de manière dynamique. L'échec incombe au système réglementaire européen et national. |
+
+
+
+</ForensicTable>
 
 ## Synthèse interprétative : trois fractures de gouvernance
 

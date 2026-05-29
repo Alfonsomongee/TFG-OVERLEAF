@@ -3,6 +3,8 @@ sidebar_position: 7
 hide_title: true
 title: "Resiliência e Futuro"
 ---
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 
@@ -36,15 +38,24 @@ $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
+<ForensicTable 
+    title="TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+    source="Estándar ENTSO-E / literatura técnica"
+  >
+
 | Categoria | Limiar SCR | Implicação operacional |
 | --- | --- | --- |
 | **Rede forte** | SCR > 3 | Os inversores GFL operam com estabilidade de pequeno sinal. Proteções de distância mantêm seletividade. |
 | **Rede fraca** | 2 ≤ SCR ≤ 3 | Degradação da margem de estabilidade do <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> perante perturbações rápidas. Risco de interação adversa entre laços de controle próximos. |
 | **Rede muito fraca** | SCR &lt; 2 | PLLs propensos a perda de sincronismo diante de pequenas variações de tensão. Proteções de distância perdem direcionalidade. |
 
+
+
+</ForensicTable>
+
 Durante as horas prévias ao colapso, amplas zonas da Península operavam como **redes muito fracas** (SCR &lt; 2): a produção massiva de energia solar havia deslocado, por ordem de mérito, os ciclos combinados, cuja desconexão eliminou precisamente as fontes de $S_{sc}$ que dão rigidez aos nós da rede de transporte. Nestas condições, com $X/R$ elevado mas $\mathrm{SCR} \ll 2$, a impedância global faz com que a tensão se torne sensível também a variações de <GlossaryLink term="Potencia activa">potência ativa</GlossaryLink>: as rampas de injeção solar adquirem um poder de perturbação de tensão que em redes síncronas convencionais resultaria inofensivo.
 
-![Mapas de tensão na rede peninsular de 400 kV na faixa crítica prévia ao colapso](/figuras/scr_iberia.png) _Evolução geográfica das tensões na rede de 400 kV antes do colapso (sequência a–d). As zonas de cores quentes mostram a progressão e concentração de sobretensões severas no sul e sudoeste peninsular —precisamente os nós com maior deficiência estrutural de potência de curto-circuito. Fonte: IIT-ICAI._
+> ![Mapas de tensão na rede peninsular de 400 kV na faixa crítica prévia ao colapso](/figuras/scr_iberia.png) _Figura 37. Evolução geográfica das tensões na rede de 400 kV antes do colapso (sequência a–d). As zonas de cores quentes mostram a progressão e concentração de sobretensões severas no sul e sudoeste peninsular —precisamente os nós com maior deficiência estrutural de potência de curto-circuito. Fonte: IIT-ICAI._
 
 ### O paradoxo geométrico dos inversores: conflito P-Q
 
@@ -60,7 +71,7 @@ Esta contradição explica por que o 28-A não foi um colapso de energia, mas de
 
 O cenário operacional de 28-A situava-se no **vale profundo da _duck curve_**: demanda bruta estruturalmente baixa —análoga aos mínimos de há duas décadas— com irradiação próxima dos máximos de verão devido à menor degradação térmica da primavera.
 
-![Evolução do número de unidades síncronas convencionais acopladas entre as 12h e 13h](/figuras/conventionalunits.png) _Unidades síncronas convencionais acopladas diariamente entre as 12h e 13h. A tendência decrescente nos meses prévios a 28-A reflete a expulsão sistemática por ordem de mérito — esvaziando o sistema de inércia eletromecânica no instante crítico. Fonte: ENTSO-E / elaboração própria._
+> ![Evolução do número de unidades síncronas convencionais acopladas entre as 12h e 13h](/figuras/conventionalunits.png) _Figura 38. Unidades síncronas convencionais acopladas diariamente entre as 12h e 13h. A tendência decrescente nos meses prévios a 28-A reflete a expulsão sistemática por ordem de mérito — esvaziando o sistema de inércia eletromecânica no instante crítico. Fonte: ENTSO-E / elaboração própria._
 
 Às 12:30 CEST, a REE esgotara as suas ferramentas de gestão manual: abertura preventiva de dezenas de linhas de muito alta tensão para aumentar a impedância em série, mais a operação de reatâncias a 85% da sua capacidade — sem conseguir conter o aumento de tensão.
 
@@ -74,7 +85,7 @@ A superação da vulnerabilidade exige uma transição na arquitetura de control
 
 Diferentemente do inversor GFL, um inversor <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) opera como um equivalente de Thévenin: sintetiza de forma autônoma uma referência interna de tensão em magnitude e ângulo ($V\angle\delta$) por trás de uma impedância virtual de acoplamento. Ao impor este vetor de forma instantânea, o inversor GFM injeta ou absorve corrente ativa e reativa de modo inerente diante de qualquer variação da rede, sem depender de medições externas de fase nem de atrasos de cálculo.
 
-![Circuitos equivalentes das topologias Grid-Following (GFL) e Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Esquerda: inversor GFL como fonte de corrente controlada dependente do PLL. Direita: inversor GFM como fonte de tensão autônoma atrás de uma impedância virtual $Z_{\mathrm{GFM}}$. A diferença fundamental é que o GFM não necessita «ler» a rede para operar — ele a cria._
+> ![Circuitos equivalentes das topologias Grid-Following (GFL) e Grid-Forming (GFM)](/figuras/gfl_vs_gfm_circuit1.png) _Figura 39. Esquerda: inversor GFL como fonte de corrente controlada dependente do PLL. Direita: inversor GFM como fonte de tensão autônoma atrás de uma impedância virtual $Z_{\mathrm{GFM}}$. A diferença fundamental é que o GFM não necessita «ler» a rede para operar — ele a cria._
 
 Quando o inversor GFM está respaldado por um banco de baterias (BESS-GFM), a combinação providencia dois serviços adicionais:
 
@@ -105,11 +116,11 @@ Nenhuma das três famílias tecnológicas, implantada isoladamente, é suficient
 - Os **SynCons** providenciam inércia rotacional genuína e potência de curto-circuito elevada, mas carecem da agilidade subcíclica da eletrônica de potência e não gerem energia ativa.
 - A **inércia sintética e a FFR** maximizam a utilização da margem energética do banco de baterias, mas dependem de uma rigidez nodal mínima —provida pelos SynCons— para que os seus algoritmos sejam efetivos.
 
-![Arquitetura híbrida para a resiliência sistêmica em redes descarbonizadas](/figuras/hitachi_hybrid.png) _Esquema de arquitetura híbrida: os BESS-GFM gerem a tensão em tempo real e fornecem FFR; os compensadores síncronos aportam inércia rotacional e potência de curto-circuito para a rigidez nodal. A resiliência exige ambos componentes — nenhum substitui o outro. Fonte: Hitachi Energy / FUTURED._
+> ![Arquitetura híbrida para a resiliência sistêmica em redes descarbonizadas](/figuras/hitachi_hybrid.png) _Figura 40. Esquema de arquitetura híbrida: os BESS-GFM gerem a tensão em tempo real e fornecem FFR; os compensadores síncronos aportam inércia rotacional e potência de curto-circuito para a rigidez nodal. A resiliência exige ambos componentes — nenhum substitui o outro. Fonte: Hitachi Energy / FUTURED._
 
 A minimização do custo total do sistema não coincide com a minimização do <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, mas exige internalizar no desenho do mercado os <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Serviços Essenciais de Confiabilidade (ERS</GlossaryLink>) que as máquinas síncronas forneciam de forma implícita.
 
-![Otimização tecno-econômica da resiliência em sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _O mínimo de custo total do sistema é alcançado com um mix que remunera os ERS, não com a simples maximização da penetração renovável. A diferença entre o ótimo de LCOE e o ótimo sistêmico é o custo dos serviços ancilares não remunerados. Fonte: Julia Matevosyan (ESIG) / FUTURED._
+> ![Otimização tecno-econômica da resiliência em sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _Figura 41. O mínimo de custo total do sistema é alcançado com um mix que remunera os ERS, não com a simples maximização da penetração renovável. A diferença entre o ótimo de LCOE e o ótimo sistêmico é o custo dos serviços ancilares não remunerados. Fonte: Julia Matevosyan (ESIG) / FUTURED._
 
 ### IA e Redes Neurais de Grafos (GNN) para a estabilidade
 
@@ -144,6 +155,11 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 
 Os sistemas BESS recebem adicionalmente um pagamento por disponibilidade de **2,7 €/MW/dia**, condicionado à manutenção de uma taxa de cumprimento de amostras válidas superior a **90%**.
 
+<ForensicTable 
+    title="TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+    source="CNMC / REE"
+  >
+
 | Atributo operacional | P.O. 7.4 original (pré-2025) | Arcabouço atualizado (pós-2025) |
 | --- | --- | --- |
 | Natureza do controle | Estática e assimétrica. Operação por degraus. | Dinâmica, contínua e proporcional ao desvio. |
@@ -153,6 +169,10 @@ Os sistemas BESS recebem adicionalmente um pagamento por disponibilidade de **2,
 | Remuneração de Q | Baseada em disponibilidade técnica declarada. | Mercados zonais de serviços ERS. |
 | Observabilidade | Telemedidas SCADA 400 kV, resolução de vários segundos. | PMU e telemedida de 4 s para IBR distribuídos. |
 | Regime sancionador | Sem penalizações específicas por descumprimento de reativa. | Penalizações por descumprimento da taxa mínima de 90%. |
+
+
+
+</ForensicTable>
 
 O **Real Decreto 997/2025** complementou a reforma com quatro medidas de urgência: redefinição jurídica dos BESS como ativos de serviço de estabilidade sistêmica; saneamento do registro de permissões de conexão obsoletas; obrigatoriedade de telemedida com resolução &lt; 4 s para todo o parque IBR significativo; e obrigatoriedade do módulo PSS/POD em todos os inversores GFM de nova instalação com potência > 10 MW.
 
@@ -169,6 +189,11 @@ O Grupo Técnico da ENTSO-E (TG GFC) cristalizou o seu trabalho em dois document
 
 As obrigações do **NC RfG 2.0** aplicam-se com um enfoque tecnologicamente agnóstico, classificando os módulos em quatro tipos:
 
+<ForensicTable 
+    title="TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+    source="ENTSO-E / Comisión Europea"
+  >
+
 | Tipo | Potência / Conexão | Requisito GFM | Cronograma |
 | --- | --- | --- | --- |
 | **Tipo A** | &lt; 1 MW | Voluntário. Critério do DSO. | N/A |
@@ -176,6 +201,10 @@ As obrigações do **NC RfG 2.0** aplicam-se com um enfoque tecnologicamente agn
 | **Tipo C** | > 50 MW | Obrigatório e exaustivo. Operação plena como fonte de tensão; perfis de corrente de falta; funcionalidade POD. | 3 anos após adoção pela Comissão Europeia. |
 | **Tipo D** | ≥ 110 kV ou > 75 MW | Ídem Tipo C mais testes de certificação. | 3 anos após adoção pela Comissão Europeia. |
 | **ESM (BESS)** | Segundo a categoria | Ídem PPM equivalente. Sistemas V2G com capacidade conjunta > 1 MW classificados como ESM Tipo B. | Segundo a categoria. |
+
+
+
+</ForensicTable>
 
 Na data de redação, a adoção formal do NC RfG 2.0 pela Comissão Europeia **encontra-se despriorizada e sem calendário oficial**, gerando uma janela de incerteza regulatória que os operadores nacionais estão gerindo através de medidas preventivas à margem do código.
 
@@ -203,11 +232,20 @@ EirGrid (Irlanda) e ERCOT (Texas) são as referências operacionais consolidadas
 
 O programa **DS3** da EirGrid fragmentou o fornecimento de estabilidade em 14 produtos especializados. Os três mais relevantes para o contexto do 28-A:
 
+<ForensicTable 
+    title="TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+    source="EirGrid / ENTSO-E"
+  >
+
 | Serviço | Definição técnica | Limiar / Janela |
 | --- | --- | --- |
 | **Synchronous Inertial Response (SIR)** | Fornecimento quase instantâneo de potência ativa e torque sincronizante diante de quedas de frequência. Remunerado através do índice SIRF = $E_k / P_{\min}$, que penaliza o despacho de usinas que injetam potência não desejada apenas para prover inércia marginal. | SIRF ≥ 15 s |
 | **Fast Frequency Response (FFR)** | Injeção rápida de potência ativa após queda abrupta de frequência. A energia validável é a integral da potência adicional injetada nos primeiros 10 s. Exige-se que a energia fornecida seja maior que a perda na recuperação (T+10s → T+20s). | Resposta entre 0,15 s e 2 s |
 | **Steady-State Reactive Power (SSRP)** | Faixa total de potência reativa despachável ($Q_{\mathrm{range}}$) que o inversor pode injetar ou absorver em operação contínua ao longo de toda a sua faixa de potência ativa. Inclui escalar remuneratório favorável para IBR capazes de fornecer reativa no vazio (_watt-less VARs_). | Estado estacionário; valorização anual através de modelos PLEXOS |
+
+
+
+</ForensicTable>
 
 A comparação entre o DS3 e o RRS-FFR sugere uma arquitetura de **mercados ERS de dupla camada** para o contexto europeu: uma camada de sinais geográficos de curto-circuito —análoga ao SSRP da EirGrid— e uma camada de resposta de frequência subcíclica —análoga ao RRS-FFR da ERCOT.
 
