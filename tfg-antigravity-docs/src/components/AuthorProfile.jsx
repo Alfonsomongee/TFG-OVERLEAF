@@ -1,47 +1,195 @@
 import React from 'react';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import styles from './AuthorProfile.module.css';
+import GlitchTitle from './GlitchTitle';
 
-export default function AuthorProfile({ lang = 'es' }) {
-  const isEn = lang === 'en';
-  
+export default function AuthorProfile() {
   return (
-    <div className={styles.profileCard}>
-      <div className={styles.headerBackground}></div>
-      <div className={styles.profileContent}>
-        <div className={styles.avatarContainer}>
-          {/* Using a placeholder SVG or ETSI logo as avatar */}
-          <div className={styles.avatar}>
-            <span className={styles.initials}>AM</span>
+    <>
+      <style>
+        {`
+          /* Forzar diseño de pantalla única sin scroll (eliminando padding extra de Docusaurus) */
+          .theme-doc-markdown {
+            height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+          }
+          .theme-doc-breadcrumbs, .theme-doc-footer {
+            display: none !important;
+          }
+          
+          .author-container {
+            font-family: 'Inter', sans-serif;
+            color: var(--ifm-font-color-base);
+            max-width: 1050px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeIn 0.8s ease-out forwards;
+          }
+
+          .author-header {
+            text-align: left;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255,170,0,0.15);
+            padding-bottom: 1.5rem;
+          }
+
+          .author-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: rgba(255,170,0,0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.75rem;
+          }
+
+          .author-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+          }
+
+          .author-text p {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: rgba(200,195,185,0.9);
+            margin-bottom: 1.2rem;
+            text-align: justify;
+          }
+
+          .author-section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.2rem;
+            border-left: 2px solid rgba(255,170,0,0.5);
+            padding-left: 0.75rem;
+          }
+
+          .author-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 2.5rem;
+          }
+
+          .author-skill-tag {
+            background: rgba(255,170,0,0.05);
+            border: 1px solid rgba(255,170,0,0.2);
+            color: rgba(255,170,0,0.9);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+          }
+
+          .author-blockquote {
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid rgba(6,182,212,0.5);
+            padding: 1.2rem 1.5rem;
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(200,195,185,0.85);
+          }
+
+          .author-cta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+          }
+
+          .btn-primary {
+            background: rgba(255,170,0,0.1);
+            border: 1px solid rgba(255,170,0,0.4);
+            color: #ffaa00;
+            padding: 0.7rem 1.4rem;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+          }
+          .btn-primary:hover {
+            background: rgba(255,170,0,0.2);
+            text-decoration: none;
+            color: #ffaa00;
+          }
+
+          .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.8);
+            padding: 0.7rem 1.4rem;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+          }
+          .btn-secondary:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.4);
+            color: #fff;
+            text-decoration: none;
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}
+      </style>
+
+      <div className="author-container">
+        <div className="author-header">
+          <GlitchTitle as="h1" className="glitch-page-title" style={{ fontSize: '2.8rem', marginBottom: '0' }}>Alfonso Monge Díaz-Ángel</GlitchTitle>
+          <div className="author-subtitle">Graduando en Ingeniería de la Energía | Especialista en Estabilidad del Sistema Eléctrico e Integración Renovable</div>
+        </div>
+
+        <div className="author-grid">
+          <div className="author-text">
+            <div className="author-section-title">Trayectoria</div>
+            <p>
+              A punto de finalizar mis estudios de grado, me preparo para dar el salto al mercado laboral como ingeniero junior. Mi enfoque profesional se centra en los retos técnicos y operativos que plantea la descarbonización masiva de la red.
+            </p>
+            <p>
+              A lo largo de mi formación he aplicado conceptos teóricos en entornos reales, desde el cálculo de instalaciones fotovoltaicas hasta el análisis de ubicación de aerogeneradores. Recientemente, una estancia Erasmus de nueve meses en Polonia me ha aportado una alta capacidad de adaptación y una perspectiva pan-europea fundamental para comprender los mercados interconectados.
+            </p>
+            <p>
+              Me apasiona la investigación técnica profunda: la evolución estructural del mix energético, la pérdida crítica de inercia síncrona y el estudio exhaustivo de incidencias a gran escala en sistemas de potencia.
+            </p>
+          </div>
+
+          <div>
+            <div className="author-section-title">Competencias Técnicas</div>
+            <div className="author-skills">
+              <span className="author-skill-tag">Termodinámica</span>
+              <span className="author-skill-tag">Estabilidad de Red Ibérica</span>
+              <span className="author-skill-tag">Generadores de Vapor</span>
+              <span className="author-skill-tag">Balances Energéticos</span>
+              <span className="author-skill-tag">React / MDX</span>
+              <span className="author-skill-tag">Redacción Avanzada LaTeX</span>
+            </div>
+
+            <div className="author-section-title">Enfoque del Proyecto</div>
+            <div className="author-blockquote">
+              He dedicado esta investigación al apagón ibérico y al análisis histórico del sistema porque considero vital aprender de nuestras vulnerabilidades. Entender por qué un sistema colapsa es el primer paso indispensable para construir la red del mañana.
+            </div>
+
+            <div className="author-cta">
+              <a href="mailto:alfonsomongediazangel@gmail.com" className="btn-primary">Email Profesional</a>
+              <a href="https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/" target="_blank" rel="noreferrer" className="btn-secondary">LinkedIn</a>
+              <a href="https://github.com/alfonsomongee" target="_blank" rel="noreferrer" className="btn-secondary">GitHub</a>
+              <a href="/cv.pdf" target="_blank" rel="noreferrer" className="btn-secondary">Descargar CV</a>
+            </div>
           </div>
         </div>
-        
-        <h2 className={styles.name}>Alfonso Monge Díaz-Ángel</h2>
-        <p className={styles.title}>
-          {isEn ? "Author & Power Systems Engineer" : "Autor e Ingeniero Eléctrico"}
-        </p>
-        
-        <div className={styles.details}>
-          <div className={styles.detailItem}>
-            <strong>{isEn ? "University:" : "Universidad:"}</strong> 
-            <span>ETSI, Universidad de Sevilla</span>
-          </div>
-          <div className={styles.detailItem}>
-            <strong>{isEn ? "Year:" : "Año:"}</strong> 
-            <span>2026</span>
-          </div>
-          <div className={styles.detailItem}>
-            <strong>{isEn ? "Contact:" : "Contacto:"}</strong> 
-            <a href="mailto:alfonsomongediazangel@gmail.com">alfonsomongediazangel@gmail.com</a>
-          </div>
-        </div>
-        
-        <p className={styles.bio}>
-          {isEn 
-            ? "This interactive thesis represents a comprehensive forensic analysis of the Iberian electrical collapse. It aims to bridge the gap between technical power systems engineering and effective crisis communication."
-            : "Este TFG interactivo representa un análisis forense integral del colapso eléctrico ibérico. Su objetivo es tender un puente entre la ingeniería técnica de sistemas de potencia y la comunicación efectiva de crisis."}
-        </p>
       </div>
-    </div>
+    </>
   );
 }
