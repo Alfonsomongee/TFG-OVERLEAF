@@ -140,7 +140,7 @@ function GridUnavailabilityGaugeInner() {
 
   return (
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
-      <PlotlyChart data={[gaugeTrace]} layout={layout} />
+      <DynamicPlotlyWrapper data={[gaugeTrace]} layout={layout} />
       <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'rgba(160,155,140,0.7)', textAlign: 'center' }}>
         ℹ️ El umbral de referencia (línea roja) marca el <strong>22,9%</strong> de indisponibilidad registrado el 28 de abril de 2025 según informes técnicos (valor que REData puede confirmar). Un valor superior indica mayor vulnerabilidad estructural de la red de transporte.
       </div>

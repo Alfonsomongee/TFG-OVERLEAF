@@ -199,7 +199,7 @@ function ThermalAdjustmentCostMatrixInner() {
 
   return (
     <div style={{ padding: '1rem', background: 'rgba(7,9,15,0.6)', borderRadius: '12px', border: '1px solid rgba(255,170,0,0.1)' }}>
-      <PlotlyChart data={[heatmapTrace]} layout={layout} />
+      <DynamicPlotlyWrapper data={[heatmapTrace]} layout={layout} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)' }}>
         <span>🟢 Datos históricos inmutables · Actualización única</span>
         <span>Fuente: REData (REE) · Proxy con caché</span>
