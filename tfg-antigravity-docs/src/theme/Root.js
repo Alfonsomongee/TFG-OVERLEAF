@@ -9,8 +9,9 @@ export default function Root({ children }) {
   const [tocVisible, setTocVisible] = useState(false);
   const location = useLocation();
 
-  const path = location.pathname.toLowerCase();
-  const isHomePage = path === '/' || path.match(/^\/[a-z]{2}\/$/);
+  const rawPath = location.pathname.toLowerCase();
+  const path = rawPath.endsWith('/') && rawPath !== '/' ? rawPath.slice(0, -1) : rawPath;
+  const isHomePage = path === '/' || path.match(/^\/[a-z]{2}$/);
   const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', 'galeria', '/cronologia', '/sobre-el-autor'];
   const shouldHideButtons = isHomePage || hideButtonsPaths.some(keyword => path.includes(keyword));
 
