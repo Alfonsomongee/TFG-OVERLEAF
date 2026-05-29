@@ -1,6 +1,7 @@
 // src/theme/Root.js
 import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
+import Translate, { translate } from '@docusaurus/Translate';
 
 export default function Root({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true); // true = sidebar visible
@@ -33,8 +34,8 @@ export default function Root({ children }) {
       {children}
 
       {/* FAB Modo Cine (ya sin emoji, tipografía Space Grotesk vía CSS) */}
-      <Link to="/cine" className="cine-fab" aria-label="Abrir Modo Cine">
-        Modo Cine
+      <Link to="/cine" className="cine-fab" aria-label={translate({id: 'theme.cine.open', message: 'Abrir Modo Cine'})}>
+        <Translate id="theme.cine.button">Modo Cine</Translate>
       </Link>
 
       {/* ☰ solo si el sidebar está cerrado */}
@@ -65,9 +66,13 @@ export default function Root({ children }) {
       <button
         className={`global-toc-btn${tocVisible ? ' active' : ''}`}
         onClick={toggleToc}
-        aria-label={tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+        aria-label={tocVisible 
+          ? translate({id: 'theme.toc.hide', message: 'Ocultar índice'}) 
+          : translate({id: 'theme.toc.show', message: 'Mostrar índice'})}
       >
-        {tocVisible ? 'Ocultar índice' : 'Mostrar índice'}
+        {tocVisible 
+          ? <Translate id="theme.toc.hide">Ocultar índice</Translate> 
+          : <Translate id="theme.toc.show">Mostrar índice</Translate>}
       </button>
     </>
   );

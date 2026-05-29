@@ -1980,3 +1980,41 @@ body.hide-floating-buttons .cine-fab,
 body.hide-floating-buttons .global-toc-btn {
   display: none !important;
 }
+
+/* ============================================================
+   TARGET / HASH LINK ANIMATION (Glosario y Anclas)
+   ============================================================ */
+/* Cuando navegamos a un hash (ej. #termino), iluminamos el elemento suavemente */
+:target {
+  animation: target-highlight 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  scroll-margin-top: 100px; /* Evita que el navbar tape la palabra */
+  border-radius: 4px;
+}
+
+@keyframes target-highlight {
+  0% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  15% {
+    background-color: rgba(6, 182, 212, 0.25); /* Cyan eléctrico suave */
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+html[data-theme='light'] :target {
+  animation: target-highlight-light 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes target-highlight-light {
+  0% { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+  15% {
+    background-color: rgba(16, 185, 129, 0.15); /* Verde suave */
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+  }
+  100% { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+}
