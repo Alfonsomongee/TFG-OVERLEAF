@@ -19,16 +19,6 @@ export default function ExecutiveHook() {
     const isIntro = path === '/' || path === '' || (path.startsWith(`/${lang}`) && path.split('/').filter(Boolean).length <= 1);
     setIsIntroPage(isIntro);
 
-    const hideButtonsPaths = [
-      '/datos-tiempo-real',
-      '/glosario',
-      '/referencias',
-      'galeria',
-      '/cronologia',
-      '/sobre-el-autor'
-    ];
-    const shouldHideButtons = hideButtonsPaths.some(keyword => path.includes(keyword));
-
     if (typeof window !== 'undefined') {
       const btn = document.getElementById('zen-mode-toggle');
       if (btn) {
@@ -45,20 +35,12 @@ export default function ExecutiveHook() {
         document.body.style.overflow = '';
         document.documentElement.style.overflow = '';
       }
-
-      // Add/remove class to hide floating buttons on specific pages
-      if (shouldHideButtons) {
-        document.body.classList.add('hide-floating-buttons');
-      } else {
-        document.body.classList.remove('hide-floating-buttons');
-      }
     }
 
     // Cleanup: when component unmounts (navigating away from intro), always restore
     return () => {
       if (typeof window !== 'undefined') {
         document.body.classList.remove('intro-page');
-        document.body.classList.remove('hide-floating-buttons');
         document.body.style.overflow = '';
         document.documentElement.style.overflow = '';
         const btn = document.getElementById('zen-mode-toggle');
