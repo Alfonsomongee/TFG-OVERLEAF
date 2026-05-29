@@ -1,115 +1,198 @@
 ---
+id: sobre-el-autor
 title: Sobre el Autor
 description: Alfonso Monge Díaz-Ángel - Ingeniero de la Energía
+hide_table_of_contents: true
+pagination_next: null
+pagination_prev: null
+custom_edit_url: null
 ---
 
-# Sobre el Autor
+import GlitchTitle from '@site/src/components/GlitchTitle';
 
-## Alfonso Monge Díaz-Ángel
+<style>
+{`
+  /* Forzar diseño de pantalla única sin scroll (eliminando padding extra de Docusaurus) */
+  .theme-doc-markdown {
+    height: calc(100vh - 140px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .theme-doc-breadcrumbs, .theme-doc-footer {
+    display: none !important;
+  }
+  
+  .author-container {
+    font-family: 'Inter', sans-serif;
+    color: var(--ifm-font-color-base);
+    max-width: 1050px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.8s ease-out forwards;
+  }
 
-**Ingeniero de la Energía • Desarrollador FullStack**
+  .author-header {
+    text-align: left;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,170,0,0.15);
+    padding-bottom: 1.5rem;
+  }
 
-### Información Profesional
+  .author-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: rgba(255,170,0,0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.75rem;
+  }
 
-- **Universidad:** ETSI, Universidad de Sevilla
-- **Año:** 2026
-- **Especialidad:** Energías Renovables & Sistemas Eléctricos
-- **Email:** alfonsomongediazangel@gmail.com
-- **LinkedIn:** [linkedin.com/in/alfonso-monge-diaz-angel](https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/)
-- **GitHub:** [github.com/alfonsomongee](https://github.com/alfonsomongee)
+  .author-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
 
----
+  .author-text p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: rgba(200,195,185,0.9);
+    margin-bottom: 1.2rem;
+    text-align: justify;
+  }
 
-## 📖 Sobre este TFG
+  .author-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.2rem;
+    border-left: 2px solid rgba(255,170,0,0.5);
+    padding-left: 0.75rem;
+  }
 
-Este TFG interactivo representa un **análisis técnico-forense integral del colapso eléctrico ibérico del 28 de abril de 2025**. Su objetivo es tender un puente entre la ingeniería técnica de sistemas de potencia y la comunicación efectiva de crisis.
+  .author-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+  }
 
-### 🎯 Motivación
+  .author-skill-tag {
+    background: rgba(255,170,0,0.05);
+    border: 1px solid rgba(255,170,0,0.2);
+    color: rgba(255,170,0,0.9);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
 
-El apagón ibérico de 2025 fue un evento sin precedentes: **31 GW de pérdida en 11 segundos**, afectando a millones de personas. Este proyecto busca:
+  .author-blockquote {
+    background: rgba(255,255,255,0.02);
+    border-left: 3px solid rgba(6,182,212,0.5);
+    padding: 1.2rem 1.5rem;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(200,195,185,0.85);
+  }
 
-- **Desmitificar** el evento mediante análisis técnico riguroso
-- **Educar** sobre estabilidad transitoria y debilidad estructural de redes
-- **Documentar** las lecciones aprendidas para la transición energética
-- **Comunicar** eficazmente crisis eléctricas complejas
+  .author-cta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
 
-### ⚡ Contenidos Principales
+  .btn-primary {
+    background: rgba(255,170,0,0.1);
+    border: 1px solid rgba(255,170,0,0.4);
+    color: #ffaa00;
+    padding: 0.7rem 1.4rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: rgba(255,170,0,0.2);
+    text-decoration: none;
+    color: #ffaa00;
+  }
 
-1. **Cronograma Detallado** — Eventos minuto a minuto
-2. **Análisis Técnico** — Newton-Raphson, RoCoF, contingencia N-1
-3. **Datos Cuantitativos** — +170 GB de registros SCADA y PMU europeos
-4. **Visualizaciones Interactivas** — Gráficos en tiempo real y análisis forense
-5. **Conclusiones** — Síntomas de debilidad estructural (colapso Q-V) inducida por penetración solar extrema
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    padding: 0.7rem 1.4rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.4);
+    color: #fff;
+    text-decoration: none;
+  }
 
----
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`}
+</style>
 
-## 🔧 Stack Tecnológico
+<div className="author-container">
+  <div className="author-header">
+    <GlitchTitle as="h1" className="glitch-page-title" style={{ fontSize: '2.8rem', marginBottom: '0' }}>Alfonso Monge Díaz-Ángel</GlitchTitle>
+    <div className="author-subtitle">Graduando en Ingeniería de la Energía | Especialista en Estabilidad del Sistema Eléctrico e Integración Renovable</div>
+  </div>
 
-### Frontend
-- React 19 + TypeScript
-- Docusaurus + MDX
-- Tailwind CSS
-- Recharts (visualización)
+  <div className="author-grid">
+    <div className="author-text">
+      <div className="author-section-title">Trayectoria</div>
+      <p>
+        A punto de finalizar mis estudios de grado, me preparo para dar el salto al mercado laboral como ingeniero junior. Mi enfoque profesional se centra en los retos técnicos y operativos que plantea la descarbonización masiva de la red.
+      </p>
+      <p>
+        A lo largo de mi formación he aplicado conceptos teóricos en entornos reales, desde el cálculo de instalaciones fotovoltaicas hasta el análisis de ubicación de aerogeneradores. Recientemente, una estancia Erasmus de nueve meses en Polonia me ha aportado una alta capacidad de adaptación y una perspectiva pan-europea fundamental para comprender los mercados interconectados.
+      </p>
+      <p>
+        Me apasiona la investigación técnica profunda: la evolución estructural del mix energético, la pérdida crítica de inercia síncrona y el estudio exhaustivo de incidencias a gran escala en sistemas de potencia.
+      </p>
+    </div>
 
-### Backend & Data
-- Python (análisis de datos)
-- MATLAB (simulaciones)
-- SQL (base de datos)
-- API REST (datos en vivo)
+    <div>
+      <div className="author-section-title">Competencias Técnicas</div>
+      <div className="author-skills">
+        <span className="author-skill-tag">Termodinámica</span>
+        <span className="author-skill-tag">Estabilidad de Red Ibérica</span>
+        <span className="author-skill-tag">Generadores de Vapor</span>
+        <span className="author-skill-tag">Balances Energéticos</span>
+        <span className="author-skill-tag">React / MDX</span>
+        <span className="author-skill-tag">Redacción Avanzada LaTeX</span>
+      </div>
 
-### DevOps & Deploy
-- Git + GitHub
-- Vercel (hosting)
-- CI/CD automatizado
-- Lighthouse 100/100
+      <div className="author-section-title">Enfoque del Proyecto</div>
+      <div className="author-blockquote">
+        He dedicado esta investigación al apagón ibérico y al análisis histórico del sistema porque considero vital aprender de nuestras vulnerabilidades. Entender por qué un sistema colapsa es el primer paso indispensable para construir la red del mañana.
+      </div>
 
----
-
-## 🌐 Enlaces de Interés
-
-### Documentación & Código
-- 📖 [Documentación Completa](https://tfg-overleaf.vercel.app/) — Análisis técnico en profundidad
-- 💻 [Plataforma Interactiva](https://tfg-blackout-interactivo.vercel.app/) — Visualizaciones en tiempo real
-- 🔗 [Repositorio GitHub](https://github.com/Alfonsomongee/TFG-OVERLEAF) — Código fuente completo
-
-### Perfil Profesional
-- 💼 [LinkedIn](https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/) — Experiencia y certificaciones
-- 👨‍💻 [GitHub Profile](https://github.com/alfonsomongee) — Proyectos y contribuciones
-- ✉️ [Email](mailto:alfonsomongediazangel@gmail.com) — Contacto directo
-
-### Recursos Relacionados
-- 📊 [REE (Red Eléctrica de España)](https://www.ree.es/) — Datos en tiempo real del sistema eléctrico
-- 🌍 [ENTSO-E](https://www.entsoe.eu/) — Sistema síncrono europeo
-- ⚡ [IFT-ICAIEC](https://www.ift-icaiec.org/) — Informe oficial del incidente
-
----
-
-## 📚 Formación Académica
-
-### Grado en Ingeniería de la Energía (2022 – 2026)
-Universidad de Sevilla · ETSI  
-Mención: Energías Renovables
-
-### Movilidad Erasmus+ (2024 – 2025)
-AGH University of Kraków, Polonia  
-9 meses integro en inglés
-
-### Máster Habilitante Industrial (oct 2026 – )
-VIU · Universitat Internacional de Valencia
-
----
-
-## 💡 Metodología
-
-Este proyecto combina:
-
-1. **Rigor Técnico** — Modelado matemático riguroso de sistemas de potencia
-2. **Análisis Forense** — Triangulación de múltiples fuentes institucionales
-3. **Visualización Interactiva** — Comunicación efectiva de conceptos complejos
-4. **Educación** — Explicaciones accesibles para múltiples niveles de expertise
-
----
-
-**Autor:** Alfonso Monge Díaz-Ángel  
-**Última actualización:** Mayo 2026  
-**Tutor:** D. T. Sánchez (Catedrático, ETSI Sevilla)
+      <div className="author-cta">
+        <a href="mailto:alfonsomongediazangel@gmail.com" className="btn-primary">Email Profesional</a>
+        <a href="https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/" target="_blank" className="btn-secondary">LinkedIn</a>
+        <a href="https://github.com/alfonsomongee" target="_blank" className="btn-secondary">GitHub</a>
+        <a href="/cv.pdf" target="_blank" className="btn-secondary">Descargar CV</a>
+      </div>
+    </div>
+  </div>
+</div>
