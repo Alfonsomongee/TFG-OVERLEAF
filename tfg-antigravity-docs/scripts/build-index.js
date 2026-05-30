@@ -78,9 +78,33 @@ function walkDir(dir) {
   }
 }
 
+function injectMasterData() {
+  const masterDataPath = path.join(OUTPUT_DIR, 'data', 'datos28A.json');
+  if (fs.existsSync(masterDataPath)) {
+    const data = JSON.parse(fs.readFileSync(masterDataPath, 'utf8'));
+    allChunks.push({
+      id: docId++,
+      title: 'Tabla Maestra de Cifras Consolidadas (28-A)',
+      heading: 'Datos Oficiales, Exportaciones Netas y Mix de Generación',
+      text: `Datos críticos del colapso del 28-A:
+- Demanda peninsular: ${data.demanda.peninsular_MW} MW. ${data.demanda.descripcion}
+- Mix renovable: ${data.mix_generacion.renovable_total_porcentaje}%, fotovoltaica: ${data.mix_generacion.fotovoltaica_porcentaje}%, nuclear: ${data.mix_generacion.nuclear_porcentaje}%, bombeo: ${data.mix_generacion.bombeo_activo_MW} MW.
+- Intercambios internacionales (importaciones y exportaciones netas): España exportaba ${data.intercambios_internacionales.exportacion_francia_MW} MW a Francia, ${data.intercambios_internacionales.exportacion_portugal_MW} MW a Portugal y ${data.intercambios_internacionales.exportacion_marruecos_MW} MW a Marruecos. ${data.intercambios_internacionales.descripcion}
+- Inercia Ibérica: entre ${data.inercia_y_estabilidad.inercia_iberia_s} segundos. Energía cinética: ${data.inercia_y_estabilidad.energia_cinetica_total_iberia_MWs} MWs.
+- Frecuencia de pérdida de sincronismo: ${data.inercia_y_estabilidad.frecuencia_perdida_sincronismo_Hz} Hz. RoCoF pico: ${data.inercia_y_estabilidad.rocof_maximo_Hz_s} Hz/s.
+- Tensión máxima en barras: >${data.colapso_y_reposicion.tension_maxima_barras_colectoras_kV} kV.
+- Pérdida de generación en la cascada: ${data.colapso_y_reposicion.perdida_generacion_cascada_MW} MW.
+- Desconexiones de demanda (SO): ${data.colapso_y_reposicion.desconexiones_SO_MW} MW.
+- Coste de operación reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} millones de euros.`,
+      slug: '/docs/15-galeria-de-tablas', // Enlazamos a la galería de tablas
+    });
+  }
+}
+
 function buildIndex() {
   console.log('🔍 Construyendo índice de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
+  injectMasterData();
 
   miniSearch.addAll(allChunks);
 

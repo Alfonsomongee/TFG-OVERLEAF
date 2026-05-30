@@ -4,11 +4,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import datos28A from '@site/static/data/datos28A.json';
 
 // Valores del 28-A en el instante del colapso (positivo = exportación desde España)
 const SNAPSHOT_28A = {
-  Francia:  870,
-  Portugal: 2600,
+  Francia:  datos28A.intercambios_internacionales.exportacion_francia_MW,
+  Portugal: datos28A.intercambios_internacionales.exportacion_portugal_MW,
 };
 
 function BalanceIntercambiosInner() {
