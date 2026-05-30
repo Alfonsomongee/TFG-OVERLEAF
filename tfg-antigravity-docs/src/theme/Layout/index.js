@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import OriginalLayout from '@theme-original/Layout';
 import { useLocation } from '@docusaurus/router';
+import ChatWidget from '@site/src/components/ChatWidget';
 
 export default function Layout(props) {
   const location = useLocation();
@@ -35,5 +36,13 @@ export default function Layout(props) {
     };
   }, [location.pathname]);
 
-  return <OriginalLayout {...props} />;
+  const path = location.pathname.toLowerCase();
+  const isHomePage = path === '/' || path.match(/^\/[a-z]{2}\/$/);
+
+  return (
+    <>
+      <OriginalLayout {...props} />
+      {!isHomePage && <ChatWidget />}
+    </>
+  );
 }

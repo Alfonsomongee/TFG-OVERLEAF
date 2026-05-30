@@ -1,0 +1,125 @@
+// api/chat.js
+// Endpoint para el chatbot RAG del TFG
+// Usa MiniSearch (BM25) + Gemini 1.5 Flash (gratuito)
+
+import MiniSearch from 'minisearch';
+import fs from 'fs';
+import path from 'path';
+
+// Carga los datos estáticos generados en la compilación de forma robusta
+const searchIndexData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'search-index.json'), 'utf8'));
+const chunks = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'chunks.json'), 'utf8'));
+
+// Cache del motor de búsqueda para no reconstruirlo en cada invocación
+let miniSearch = null;
+function getSearch() {
+  if (!miniSearch) {
+    miniSearch = MiniSearch.loadJSON(
+      JSON.stringify(searchIndexData),
+      { documentIds: chunks.map((_, i) => i) }
+    );
+  }
+  return miniSearch;
+}
+
+export default async function handler(req, res) {
+  // CORS configuration
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  // Handle OPTIONS request for CORS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Solo acepta POST
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
+  }
+
+  const { question } = req.body;
+  if (!question || typeof question !== 'string' || question.trim().length < 3) {
+    return res.status(400).json({ error: 'La pregunta debe tener al menos 3 caracteres.' });
+  }
+
+  try {
+    // 1. Recuperación: busca los 5 fragmentos más relevantes con BM25
+    const searcher = getSearch();
+    const results = searcher.search(question.trim(), {
+      prefix: true,
+      fuzzy: 0.2,
+    });
+
+    if (results.length === 0) {
+      return res.status(200).json({
+        answer: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
+      });
+    }
+
+    const topChunks = results.slice(0, 5).map(r => chunks[r.id]);
+    const context = topChunks
+      .map(c => `## ${c.title} – ${c.heading}\n${c.text}`)
+      .join('\n\n');
+
+    // 2. Generación: llama a Gemini 1.5 Flash
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({ error: 'API Key de Gemini no configurada.' });
+    }
+
+    const prompt = `Eres un asistente especializado en el análisis del apagón ibérico del 28 de abril de 2025. Responde ÚNICAMENTE con la información contenida en el CONTEXTO proporcionado a continuación. Si la información no está en el contexto, di: "Este detalle no aparece en el TFG; te recomiendo consultar el glosario o los capítulos técnicos."
+
+Reglas:
+- Sé preciso con las cifras y cita las magnitudes correctamente (MW, Hz, kV, s, etc.).
+- Si el contexto menciona fuentes (REE, ENTSO-E, ICAI, CNMC), indícalas.
+- Responde en español, en un máximo de 250 palabras.
+- No inventes datos.
+
+CONTEXTO:
+${context}
+
+PREGUNTA DEL USUARIO:
+${question}
+
+RESPUESTA:`;
+
+    const model = 'gemini-1.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        safetySettings: [
+          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+        ],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 500,
+          topP: 0.9,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Gemini API error:', response.status, await response.text());
+      return res.status(502).json({ answer: 'El servicio de IA no está disponible en este momento. Inténtalo de nuevo en unos segundos.' });
+    }
+
+    const data = await response.json();
+    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text
+      || 'No pude generar una respuesta. ¿Puedes reformular la pregunta?';
+
+    return res.status(200).json({ answer });
+
+  } catch (error) {
+    console.error('Error en /api/chat:', error);
+    return res.status(500).json({ answer: 'Error interno del servidor. Por favor, inténtalo más tarde.' });
+  }
+}
