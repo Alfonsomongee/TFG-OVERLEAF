@@ -1,12 +1,13 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import styles from './styles.module.css';
-import { computeCoords, computeMetrics } from './trilemmaModel';
+import { computeMetrics, cartesianToBarycentric, barycentricToCartesian } from './trilemmaModel';
 
 const PRESETS = [
-  { label: 'El Colapso (28-A)', values: { penetration: 82, gfm: 0, ersPrice: 0 } },
-  { label: 'Mercado ERS Activo', values: { penetration: 82, gfm: 0, ersPrice: 40 } },
-  { label: 'GFM Obligatorio', values: { penetration: 82, gfm: 25, ersPrice: 0 } },
-  { label: 'Red Tradicional', values: { penetration: 45, gfm: 0, ersPrice: 0 } },
+  { label: 'España pre-28A', values: { a: 0.18, b: 0.32, c: 0.50 } },
+  { label: 'Post-28A reforzado', values: { a: 0.34, b: 0.30, c: 0.36 } },
+  { label: 'PNIEC 2030 BESS-GFM', values: { a: 0.31, b: 0.27, c: 0.42 } },
+  { label: 'ERCOT actual', values: { a: 0.42, b: 0.36, c: 0.22 } },
+  { label: 'Irlanda DS3', values: { a: 0.45, b: 0.20, c: 0.35 } },
 ];
 
 const ZONE_COLORS = {
@@ -15,28 +16,88 @@ const ZONE_COLORS = {
   'EQUILIBRIO': { bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.4)', text: '#34d399' }
 };
 
-// ── COMPONENTES SECUNDARIOS ──────────────────────────────────────────────────
+// ── COMPONENTE SVG INTERACTIVO ───────────────────────────────────────────────
 
-function TrilemmaTriangle({ coords, pointColor }) {
+function TrilemmaTriangle({ coords, setCoords, pointColor }) {
   const W = 450;
   const H = 390;
-  const L = 400;
+  const L = 340;
+  const h_tri = L * Math.sqrt(3) / 2;
   const cx = W / 2;
-  const cy = H * 0.55;
+  const cy = 210;
+  
+  const svgRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const vTop = { x: cx, y: cy - L * Math.sin(Math.PI / 3) / 2 };
-  const vLeft = { x: cx - L / 2, y: cy + L * Math.sin(Math.PI / 3) / 2 };
-  const vRight = { x: cx + L / 2, y: cy + L * Math.sin(Math.PI / 3) / 2 };
+  // Vértices del triángulo
+  const vTop = { x: cx, y: cy - h_tri * 2 / 3 };
+  const vLeft = { x: cx - L / 2, y: cy + h_tri / 3 };
+  const vRight = { x: cx + L / 2, y: cy + h_tri / 3 };
 
-  const point = {
-    x: coords.a * vTop.x + coords.b * vLeft.x + coords.c * vRight.x,
-    y: coords.a * vTop.y + coords.b * vLeft.y + coords.c * vRight.y,
+  // Posición del punto en el DOM
+  const point = barycentricToCartesian(coords.a, coords.b, coords.c, cx, cy, L, h_tri);
+
+  const handlePointerDown = (e) => {
+    setIsDragging(true);
+    e.target.setPointerCapture(e.pointerId);
+    updateFromEvent(e);
   };
+
+  const handlePointerMove = (e) => {
+    if (isDragging) {
+      updateFromEvent(e);
+    }
+  };
+
+  const handlePointerUp = (e) => {
+    setIsDragging(false);
+    e.target.releasePointerCapture(e.pointerId);
+  };
+
+  const updateFromEvent = (e) => {
+    if (!svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * W;
+    const y = ((e.clientY - rect.top) / rect.height) * H;
+    const newCoords = cartesianToBarycentric(x, y, cx, cy, L, h_tri);
+    setCoords(newCoords);
+  };
+
+  const handleKeyDown = (e) => {
+    const step = 0.05;
+    let { a, b, c } = coords;
+    
+    if (e.key === 'ArrowUp') { a += step; b -= step/2; c -= step/2; }
+    else if (e.key === 'ArrowDown') { a -= step; b += step/2; c += step/2; }
+    else if (e.key === 'ArrowLeft') { b += step; a -= step/2; c -= step/2; }
+    else if (e.key === 'ArrowRight') { c += step; a -= step/2; b -= step/2; }
+    else return; // Ignorar si no es una flecha
+    
+    e.preventDefault();
+    
+    // Normalización de seguridad tras modificar con teclado
+    if (a < 0) { a = 0; const s = b+c; b = b/s; c = c/s; }
+    else if (b < 0) { b = 0; const s = a+c; a = a/s; c = c/s; }
+    else if (c < 0) { c = 0; const s = a+b; a = a/s; b = b/s; }
+    
+    const sum = a + b + c;
+    setCoords({ a: a/sum, b: b/sum, c: c/sum });
+  };
+
+  const riesgo = Math.round(100 * (Math.sqrt(Math.pow(coords.a - 1/3, 2) + Math.pow(coords.b - 1/3, 2) + Math.pow(coords.c - 1/3, 2)) / 0.816496));
 
   return (
     <div className={styles.triangleContainer}>
-      <svg viewBox={`0 0 ${W} ${H}`} className={styles.svg}>
-        {/* Fondo del triángulo */}
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className={styles.svg}>
+        
+        {/* Halo del Centroide */}
+        <circle cx={cx} cy={cy} r="45" fill="rgba(16, 185, 129, 0.12)" filter="blur(12px)" />
+        <circle cx={cx} cy={cy} r="4" fill="rgba(16, 185, 129, 0.5)" />
+        <text x={cx} y={cy - 12} textAnchor="middle" fill="rgba(16, 185, 129, 0.65)" fontSize="9" fontFamily="var(--font-mono)">
+          EQUILIBRIO (1/3)
+        </text>
+
+        {/* Estructura del Triángulo */}
         <polygon
           points={`${vTop.x},${vTop.y} ${vLeft.x},${vLeft.y} ${vRight.x},${vRight.y}`}
           fill="rgba(255,255,255,0.02)"
@@ -44,215 +105,179 @@ function TrilemmaTriangle({ coords, pointColor }) {
           strokeWidth="1.5"
         />
 
-        {/* Guías baricéntricas sutiles (medianas) */}
-        <line x1={vTop.x} y1={vTop.y} x2={cx} y2={vLeft.y} stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-        <line x1={vLeft.x} y1={vLeft.y} x2={cx + L/4} y2={cy - L*Math.sin(Math.PI/3)/4} stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
-        <line x1={vRight.x} y1={vRight.y} x2={cx - L/4} y2={cy - L*Math.sin(Math.PI/3)/4} stroke="rgba(255,255,255,0.05)" strokeDasharray="4" />
+        {/* Guías Baricéntricas */}
+        <line x1={vTop.x} y1={vTop.y} x2={cx} y2={vLeft.y} stroke="rgba(255,255,255,0.06)" strokeDasharray="4" />
+        <line x1={vLeft.x} y1={vLeft.y} x2={cx + L/4} y2={cy - h_tri/4} stroke="rgba(255,255,255,0.06)" strokeDasharray="4" />
+        <line x1={vRight.x} y1={vRight.y} x2={cx - L/4} y2={cy - h_tri/4} stroke="rgba(255,255,255,0.06)" strokeDasharray="4" />
 
-        {/* Punto móvil */}
+        {/* Etiquetas de Vértices */}
+        <text x={vTop.x} y={vTop.y - 12} textAnchor="middle" fill="#94a3b8" fontSize="12" fontWeight="bold">SEGURIDAD (S)</text>
+        <text x={vLeft.x - 10} y={vLeft.y + 15} textAnchor="end" fill="#94a3b8" fontSize="12" fontWeight="bold">EQUIDAD (E)</text>
+        <text x={vRight.x + 10} y={vRight.y + 15} textAnchor="start" fill="#94a3b8" fontSize="12" fontWeight="bold">SOSTENIBILIDAD (A)</text>
+
+        {/* Área de Captura de Eventos (Invisible pero Clickable) */}
+        <polygon
+          points={`${vTop.x},${vTop.y} ${vLeft.x},${vLeft.y} ${vRight.x},${vRight.y}`}
+          fill="transparent"
+          cursor={isDragging ? 'grabbing' : 'grab'}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        />
+
+        {/* Animación de Peligro si hay alto riesgo (España pre-28A) */}
+        {riesgo > 80 && (
+          <circle cx={point.x} cy={point.y} r="20" fill="none" stroke={pointColor} strokeWidth="1" opacity="0.6">
+            <animate attributeName="r" values="9;28;9" dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.8;0;0.8" dur="1.8s" repeatCount="indefinite" />
+          </circle>
+        )}
+
+        {/* Punto Móvil (Draggable Slider) */}
         <circle
           cx={point.x}
           cy={point.y}
-          r="9"
+          r="10"
           fill={pointColor}
-          stroke="#fff"
-          strokeWidth="2.5"
-          className={styles.animatedPoint}
-          style={{ filter: `drop-shadow(0 0 10px ${pointColor})` }}
+          className={styles.draggablePoint}
+          tabIndex={0}
+          role="slider"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow={Math.round(coords.a * 100)}
+          aria-valuetext={`Seguridad: ${Math.round(coords.a * 100)}%, Equidad: ${Math.round(coords.b * 100)}%, Sostenibilidad: ${Math.round(coords.c * 100)}%. Riesgo Blackout: ${riesgo}%`}
+          onKeyDown={handleKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          style={{ pointerEvents: 'auto' }}
         />
-
-        {/* Etiquetas de vértices */}
-        <text x={vTop.x} y={vTop.y - 15} textAnchor="middle" fill="#94a3b8" fontSize="13" fontWeight="600">
-          Descarbonización
-        </text>
-        <text x={vLeft.x - 5} y={vLeft.y + 22} textAnchor="start" fill="#94a3b8" fontSize="13" fontWeight="600">
-          Estabilidad Dinámica
-        </text>
-        <text x={vRight.x + 5} y={vRight.y + 22} textAnchor="end" fill="#94a3b8" fontSize="13" fontWeight="600">
-          Asequibilidad
-        </text>
-
-        {/* Tensión lines desde el punto a los vértices (opcional visual effect) */}
-        <line x1={point.x} y1={point.y} x2={vTop.x} y2={vTop.y} stroke={pointColor} strokeOpacity={coords.a * 0.6} strokeWidth="2" className={styles.animatedPoint}/>
-        <line x1={point.x} y1={point.y} x2={vLeft.x} y2={vLeft.y} stroke={pointColor} strokeOpacity={coords.b * 0.6} strokeWidth="2" className={styles.animatedPoint}/>
-        <line x1={point.x} y1={point.y} x2={vRight.x} y2={vRight.y} stroke={pointColor} strokeOpacity={coords.c * 0.6} strokeWidth="2" className={styles.animatedPoint}/>
       </svg>
     </div>
   );
 }
 
-// ── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
+// ── COMPONENTE DE BARRA DE SALIDA ────────────────────────────────────────────
+
+function OutputBar({ label, tooltip, value, color }) {
+  return (
+    <div className={styles.sliderRow}>
+      <div className={styles.sliderHeader}>
+        <span className={styles.sliderLabel}>{label}</span>
+        <span className={styles.sliderValue} style={{ color }}>{value}%</span>
+      </div>
+      <div className={styles.outputTrack}>
+        <div className={styles.outputFill} style={{ width: `${value}%`, backgroundColor: color }} />
+      </div>
+      <p className={styles.sliderTooltip}>{tooltip}</p>
+    </div>
+  );
+}
+
+// ── COMPONENTE PRINCIPAL EXPORTADO ───────────────────────────────────────────
 
 export default function EnergyTrilemmaSimulator() {
-  const [sliders, setSliders] = useState(PRESETS[0].values);
+  // Estado inicial: Presets[0] (España pre-28A)
+  const [coords, setCoords] = useState(PRESETS[0].values);
 
-  const handleSlider = useCallback((name, value) => {
-    setSliders(prev => ({ ...prev, [name]: value }));
-  }, []);
-
-  const coords = useMemo(() => computeCoords(sliders.penetration, sliders.gfm, sliders.ersPrice), [sliders]);
-  const metrics = useMemo(() => computeMetrics(sliders.penetration, sliders.gfm, sliders.ersPrice), [sliders]);
-
-  const zoneColor = ZONE_COLORS[metrics.zone];
+  // Derivar métricas usando la cinemática del modelo
+  const metrics = useMemo(() => computeMetrics(coords.a, coords.b, coords.c), [coords]);
+  const zoneStyle = ZONE_COLORS[metrics.zone];
 
   return (
     <div className={styles.wrapper}>
-      {/* Columna Izquierda: Triángulo y Zona */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
-        
-        <div 
-          className={styles.zone} 
-          style={{ background: zoneColor.bg, borderColor: zoneColor.border }}
-        >
-          <span style={{ fontSize: '1.1rem' }}>{metrics.zone === 'COLAPSO' ? '⚠️' : metrics.zone === 'TENSIÓN' ? '⚡' : '✅'}</span>
-          <span className={styles.zoneLabel} style={{ color: zoneColor.text }}>
-            ZONA DE {metrics.zone}
-          </span>
-        </div>
+      
+      {/* Visualización Gráfica */}
+      <TrilemmaTriangle 
+        coords={coords} 
+        setCoords={setCoords} 
+        pointColor={zoneStyle.text} 
+      />
 
-        <TrilemmaTriangle coords={coords} pointColor={zoneColor.text} />
-      </div>
-
-      {/* Columna Derecha: Controles y Métricas */}
+      {/* Panel de Control y Outputs */}
       <div className={styles.controls}>
         
+        {/* Presets Obligatorios */}
         <div className={styles.presetsSection}>
-          <p className={styles.presetsLabel}>Escenarios Predefinidos</p>
+          <p className={styles.presetsLabel}>Estados de Red Clave</p>
           <div className={styles.presets}>
-            {PRESETS.map(preset => (
-              <button 
-                key={preset.label} 
+            {PRESETS.map((p, idx) => (
+              <button
+                key={idx}
                 className={styles.presetBtn}
-                onClick={() => setSliders(preset.values)}
+                onClick={() => setCoords(p.values)}
+                title={`Cargar calibración: ${p.label}`}
               >
-                {preset.label}
+                {p.label}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Monitores Baricéntricos (Salidas) */}
         <div className={styles.slidersSection}>
-          {/* Slider: IBR */}
-          <div className={styles.sliderRow}>
-            <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Penetración IBR (Renovables)</span>
-              <span className={styles.sliderValue} style={{ color: '#0ea5e9' }}>{sliders.penetration}%</span>
-            </div>
-            <div className={styles.sliderTrack}>
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: '100%', background: 'rgba(255,255,255,0.1)', zIndex: 1
-                }}
-              />
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: `${sliders.penetration}%`, background: '#0ea5e9', zIndex: 1, transition: 'width 0.2s ease'
-                }}
-              />
-              <input 
-                type="range" min="0" max="100" step="1" 
-                value={sliders.penetration} 
-                onChange={e => handleSlider('penetration', Number(e.target.value))} 
-                className={styles.sliderInput} 
-                style={{ '--thumb-color': '#0ea5e9' }}
-              />
-            </div>
-            <p className={styles.sliderTooltip}>Presiona hacia Descarbonización, pero reduce Inercia y SCR.</p>
-          </div>
-
-          {/* Slider: GFM */}
-          <div className={styles.sliderRow}>
-            <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Obligación Grid-Forming (GFM)</span>
-              <span className={styles.sliderValue} style={{ color: '#10b981' }}>{sliders.gfm}%</span>
-            </div>
-            <div className={styles.sliderTrack}>
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: '100%', background: 'rgba(255,255,255,0.1)', zIndex: 1
-                }}
-              />
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: `${sliders.gfm}%`, background: '#10b981', zIndex: 1, transition: 'width 0.2s ease'
-                }}
-              />
-              <input 
-                type="range" min="0" max="100" step="1" 
-                value={sliders.gfm} 
-                onChange={e => handleSlider('gfm', Number(e.target.value))} 
-                className={styles.sliderInput}
-              />
-            </div>
-            <p className={styles.sliderTooltip}>Mejora la Estabilidad, compensando la falta de síncronas.</p>
-          </div>
-
-          {/* Slider: ERS */}
-          <div className={styles.sliderRow}>
-            <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Precio Mercado ERS</span>
-              <span className={styles.sliderValue} style={{ color: '#f59e0b' }}>{sliders.ersPrice} €/MWh</span>
-            </div>
-            <div className={styles.sliderTrack}>
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: '100%', background: 'rgba(255,255,255,0.1)', zIndex: 1
-                }}
-              />
-              <div 
-                style={{
-                  position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, height: '4px', borderRadius: '2px',
-                  width: `${(sliders.ersPrice / 50) * 100}%`, background: '#f59e0b', zIndex: 1, transition: 'width 0.2s ease'
-                }}
-              />
-              <input 
-                type="range" min="0" max="50" step="1" 
-                value={sliders.ersPrice} 
-                onChange={e => handleSlider('ersPrice', Number(e.target.value))} 
-                className={styles.sliderInput}
-              />
-            </div>
-            <p className={styles.sliderTooltip}>Incentiva servicios de red, pero penaliza la Asequibilidad.</p>
-          </div>
+          <OutputBar
+            label="Seguridad (α)"
+            value={Math.round(coords.a * 100)}
+            color="#3b82f6"
+            tooltip="Robusteza física: inercia rotatoria y ratio de cortocircuito (SCR)."
+          />
+          <OutputBar
+            label="Equidad (β)"
+            value={Math.round(coords.b * 100)}
+            color="#8b5cf6"
+            tooltip="Asequibilidad: precios mayoristas y accesibilidad de la demanda."
+          />
+          <OutputBar
+            label="Sostenibilidad (γ)"
+            value={Math.round(coords.c * 100)}
+            color="#10b981"
+            tooltip="Descarbonización: penetración de renovables asíncronas y reducción de emisiones."
+          />
         </div>
 
+        {/* Zona de Riesgo y Euclidiana */}
+        <div
+          className={styles.zone}
+          style={{ backgroundColor: zoneStyle.bg, borderColor: zoneStyle.border }}
+        >
+          <span className={styles.zoneLabel} style={{ color: zoneStyle.text }}>
+            ZONA DE {metrics.zone}
+          </span>
+          <span style={{ fontSize: '0.85rem', color: '#94a3b8', marginLeft: 'auto', fontWeight: 'bold' }}>
+            Riesgo Blackout: {metrics.riesgo}%
+          </span>
+        </div>
+
+        {/* Métricas Derivadas */}
         <div className={styles.metrics}>
           <div className={styles.metricCard}>
-            <div className={styles.metricItem}>
-              <span className={styles.metricLabel}>Inercia (H)</span>
+            <span className={styles.metricLabel}>H Eq.</span>
+            <span className={styles.metricValue} style={{ color: zoneStyle.text }}>
               {metrics.H_total} <span className={styles.metricUnit}>s</span>
-            </div>
-            <div className={styles.metricItem}>
-              <span className={styles.metricLabel}>Damping</span>
-              {metrics.damping} <span className={styles.metricUnit}>%</span>
-            </div>
-            <p className={styles.metricNote}>Global sistema</p>
+            </span>
+            <span className={styles.metricNote}>Inercia Equivalente</span>
           </div>
           <div className={styles.metricCard}>
-            <h4 className={styles.metricLabel}>SCR Promedio</h4>
-            <div className={styles.metricValue} style={{ color: metrics.SCR < 1.5 ? '#f87171' : metrics.SCR < 2 ? '#fbbf24' : '#e2e8f0' }}>
+            <span className={styles.metricLabel}>SCR min</span>
+            <span className={styles.metricValue} style={{ color: zoneStyle.text }}>
               {metrics.SCR}
-            </div>
-            <p className={styles.metricNote}>Umbral MRSCR = 1.5</p>
+            </span>
+            <span className={styles.metricNote}>Ratio de Cortocircuito</span>
           </div>
           <div className={styles.metricCard}>
-            <h4 className={styles.metricLabel}>Precio Diario</h4>
-            <div className={styles.metricValue} style={{ color: metrics.precio > 50 ? '#f87171' : metrics.precio > 35 ? '#fbbf24' : '#e2e8f0' }}>
-              {metrics.precio} <span className={styles.metricUnit}>€/MWh</span>
-            </div>
-            <p className={styles.metricNote}>Estimación pool</p>
+            <span className={styles.metricLabel}>Emisiones</span>
+            <span className={styles.metricValue}>
+              {metrics.emisiones} <span className={styles.metricUnit}>g/kWh</span>
+            </span>
+            <span className={styles.metricNote}>Intensidad de CO₂</span>
           </div>
+          <p className={styles.methodNote}>
+            Modelo Baricéntrico: Las métricas derivan de la distancia cartesiana al punto de equilibrio óptimo (Centroide). El riesgo Blackout escala con la distancia a los vértices asimétricos, tal y como detalla el WEC.
+          </p>
         </div>
-
-        <div className={styles.methodNote}>
-          <strong>Nota Metodológica:</strong> El simulador ancla el estado del 28-A (82% IBR, 0% GFM, 0 €/MWh) en el centro de máxima tensión del trilema, y aproxima métricas del análisis forense.
-        </div>
-
       </div>
     </div>
   );

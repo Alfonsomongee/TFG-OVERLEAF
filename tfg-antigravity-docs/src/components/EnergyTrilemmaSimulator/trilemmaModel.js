@@ -1,103 +1,114 @@
 /**
- * trilemmaModel.js — Funciones puras para el EnergyTrilemmaSimulator
+ * trilemmaModel.js — Funciones puras para el EnergyTrilemmaSimulator (Refactor Sprint 12)
  *
- * MODELO DE CALIBRACIÓN:
- * El punto 28-A (IBR=82, GFM=0, ERS=0) ancla en el CENTRO del triángulo
- * por definición: es el punto de máxima tensión simultánea en los tres ejes.
- * Las desviaciones desde ese ancla mueven el punto hacia los vértices.
+ * MODELO BARICÉNTRICO:
+ * a (alpha) = Seguridad (vértice superior)
+ * b (beta)  = Equidad (vértice inferior izquierdo)
+ * c (gamma) = Sostenibilidad (vértice inferior derecho)
+ * a + b + c = 1
  *
- * Métricas calibradas con datos reales del TFG (09-conclusiones.mdx):
- *   H_total(28-A) = 2.3 GWs (global), 1.3 GWs (zona sur)
- *   precio(28-A)  = 18.50 €/MWh (precio medio diario real)
- *   SCR(28-A)     ≈ 1.8 (zona sur: 1.3, ambos próximos al umbral crítico 1.5)
+ * Centroide (1/3, 1/3, 1/3) = equilibrio óptimo.
+ * Riesgo de blackout = distancia euclidiana al centroide.
  */
 
-// Punto de anclaje: el estado del 28-A es el centro del trilema
-const ANCHOR = { penetration: 82, gfm: 0, ersPrice: 0 };
-
-function clamp(val, min, max) {
+// Utilidad para asegurar que un valor esté entre min y max
+export function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
 }
 
 /**
- * Mapea los valores de los sliders a coordenadas baricéntricas (a, b, c) con a+b+c=1.
- *
- * Vértices:
- *   a = Descarbonización (arriba)    — mayor IBR mueve hacia aquí
- *   b = Estabilidad dinámica (izq.)  — mayor GFM + ERS mueve hacia aquí
- *   c = Asequibilidad (dcha.)        — menor ERS mueve hacia aquí
- *
- * El estado 28-A (82, 0, 0) = anchor → desviaciones = 0 → punto = (1/3, 1/3, 1/3)
+ * Calcula la distancia euclidiana 3D al centroide (1/3, 1/3, 1/3)
  */
-export function computeCoords(penetration, gfm, ersPrice) {
-  // Desviaciones normalizadas respecto al ancla 28-A
-  const dP = (penetration - ANCHOR.penetration) / 100;  // -0.82 a +0.18
-  const dG = (gfm - ANCHOR.gfm) / 100;                 //  0.00 a +1.00
-  const dE = (ersPrice - ANCHOR.ersPrice) / 50;         //  0.00 a +1.00
-
-  // Cada desviación contribuye al desplazamiento hacia un vértice:
-  // Más IBR (dP > 0) → tensión Desc↔Est → hacia Descarbonización
-  // Más GFM + ERS (dG, dE > 0) → relaja inestabilidad → hacia Estabilidad
-  // Más ERS (dE > 0) encarece → se aleja de Asequibilidad
-  const toDesc = clamp(dP * 1.8, -0.9, 0.9);
-  const toStab = clamp(dG * 1.2 + dE * 0.3 - dP * 0.3, -0.9, 0.9);
-  const toAse  = clamp(-dE * 1.5 - dG * 0.3, -0.9, 0.9);
-
-  // Partimos del centro y aplicamos desplazamientos
-  const SPREAD = 0.27;
-  const a_raw = 1 / 3 + toDesc * SPREAD;
-  const b_raw = 1 / 3 + toStab * SPREAD;
-  const c_raw = 1 / 3 + toAse  * SPREAD;
-
-  // Clamp y normalizar
-  const a = clamp(a_raw, 0.02, 0.96);
-  const b = clamp(b_raw, 0.02, 0.96);
-  const c = clamp(c_raw, 0.02, 0.96);
-  const sum = a + b + c;
-
-  return { a: a / sum, b: b / sum, c: c / sum };
+export function computeDistanceToCentroid(a, b, c) {
+  const da = a - 1/3;
+  const db = b - 1/3;
+  const dc = c - 1/3;
+  return Math.sqrt(da * da + db * db + dc * dc);
 }
 
 /**
- * Métricas físicas derivadas calibradas con datos reales del TFG.
+ * Clasifica la zona de riesgo basándose exclusivamente en la distancia euclidiana.
  */
-export function computeMetrics(penetration, gfm, ersPrice) {
-  const p = penetration / 100;
-  const g = gfm / 100;
-  const e = ersPrice / 50;
+export function classifyZone(a, b, c) {
+  const d = computeDistanceToCentroid(a, b, c);
+  if (d < 0.15) return 'EQUILIBRIO';
+  if (d < 0.35) return 'TENSIÓN';
+  return 'COLAPSO';
+}
 
-  // Inercia H (GWs): decrece con IBR, crece con síncronas equivalentes (proxy: GFM)
-  // Calibración: H(0.82, 0) = 2.3 GWs (dato real conclusiones.mdx línea 27)
-  const H_total = clamp(6.5 - 5.1 * p + 2.8 * g, 0.8, 7.0);
-
-  // SCR promedio nodal: crítico cuando < 1.5 (umbral MRSCR del TFG Tabla 2)
-  // Calibración: SCR(0.82, 0) ≈ 1.8 (zona media entre global 2.3 y sur 1.3)
-  const SCR = clamp(4.2 - 2.9 * p + 1.8 * g, 0.5, 5.0);
-
-  // Precio medio electricidad (€/MWh)
-  // Calibración: precio(0.82, 0, 0) ≈ 18.50 €/MWh (dato real conclusiones.mdx línea 66)
-  const precio = clamp(20 + ersPrice * 1.8 - (1 - p) * 8, 5, 95);
-
-  // Clasificación de zona de riesgo
-  const zone = classifyZone(penetration, gfm, ersPrice);
-
+/**
+ * Métricas físicas derivadas del modelo de Heffron et al. y datos del 28-A.
+ */
+export function computeMetrics(a, b, c) {
+  // Inercia equivalente (s)
+  const H_eq = 2.0 + 6.0 * a;
+  
+  // Ratio de Cortocircuito (SCR mínimo)
+  const SCR_min = 1.5 + 4.5 * a;
+  
+  // Precio medio (€/MWh)
+  const precio = 35 + 70 * (1 - b);
+  
+  // Emisiones (g CO2/kWh)
+  const emisiones = 50 + 350 * (1 - c);
+  
+  // Riesgo de Blackout normalizado [0, 1] (distancia max = sqrt(6)/3 ≈ 0.816)
+  const d = computeDistanceToCentroid(a, b, c);
+  const riesgo = clamp(d / 0.816496, 0, 1);
+  
   return {
-    H_total: H_total.toFixed(1),
-    SCR: SCR.toFixed(1),
+    H_total: H_eq.toFixed(1),
+    SCR: SCR_min.toFixed(1),
     precio: Math.round(precio),
-    zone,
+    emisiones: Math.round(emisiones),
+    riesgo: Math.round(riesgo * 100),
+    zone: classifyZone(a, b, c),
   };
 }
 
-function classifyZone(penetration, gfm, ersPrice) {
-  // COLAPSO: alta penetración IBR + sin GFM + sin mercado ERS → réplica del 28-A
-  if (penetration > 72 && gfm < 15 && ersPrice < 8) return 'COLAPSO';
+/**
+ * Proyecta coordenadas cartesianas SVG (x,y) a baricéntricas (a,b,c).
+ */
+export function cartesianToBarycentric(x, y, cx, cy, L, h) {
+  // 1. Calcular alpha desde Y
+  let a_raw = (1 / 3) - (y - cy) / h;
+  
+  // 2. Calcular diferencia c - b desde X
+  const diff_cb = (2 * (x - cx)) / L;
+  
+  // 3. Obtener c y b
+  let c_raw = (1 - a_raw + diff_cb) / 2;
+  let b_raw = 1 - a_raw - c_raw;
+  
+  // 4. Clamping baricéntrico duro
+  let a = a_raw, b = b_raw, c = c_raw;
+  
+  if (a < 0) {
+    a = 0;
+    const sum = b_raw + c_raw;
+    if (sum === 0) { b = 0.5; c = 0.5; }
+    else { b = clamp(b_raw / sum, 0, 1); c = 1 - b; }
+  } else if (b < 0) {
+    b = 0;
+    const sum = a_raw + c_raw;
+    if (sum === 0) { a = 0.5; c = 0.5; }
+    else { a = clamp(a_raw / sum, 0, 1); c = 1 - a; }
+  } else if (c < 0) {
+    c = 0;
+    const sum = a_raw + b_raw;
+    if (sum === 0) { a = 0.5; b = 0.5; }
+    else { a = clamp(a_raw / sum, 0, 1); b = 1 - a; }
+  }
+  
+  const total = a + b + c;
+  return { a: a/total, b: b/total, c: c/total };
+}
 
-  // TENSIÓN: condiciones comprometidas en al menos un eje
-  const ibr_sin_gfm = penetration > 65 && gfm < 25;
-  const gfm_sin_mercado = gfm > 35 && ersPrice < 5;
-  const coste_prohibitivo = ersPrice > 40 && gfm < 35;
-  if (ibr_sin_gfm || gfm_sin_mercado || coste_prohibitivo) return 'TENSIÓN';
-
-  return 'EQUILIBRIO';
+/**
+ * Proyecta coordenadas baricéntricas (a,b,c) a cartesianas SVG (x,y).
+ */
+export function barycentricToCartesian(a, b, c, cx, cy, L, h) {
+  const x = cx + (L / 2) * (c - b);
+  const y = cy + (h / 3) * (1 - 3 * a);
+  return { x, y };
 }
