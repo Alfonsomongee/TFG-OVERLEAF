@@ -10,16 +10,16 @@ The abrupt separation of the Iberian Peninsula from the Continental European syn
 
 ## Synchronous Area Monitors (SAM): activation of unified command
 
-<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>'s governance architecture designates **Synchronous Area Monitors** (SAM) to assume macroscopic coordination control in events threatening the integrity of Continental Europe. In April 2025, these roles fell to **Swissgrid** (Switzerland) and **Amprion** (Germany). The 28 April contingencies in Spain, Portugal and France fell directly under Swissgrid's supervisory domain.
+<GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>'s governance architecture designates *Synchronous Area Monitors* (SAM) to assume macroscopic coordination control in events threatening the integrity of Continental Europe. In April 2025, these roles fell to *Swissgrid* (Switzerland) and *Amprion* (Germany). The 28 April contingencies in Spain, Portugal and France fell directly under Swissgrid's supervisory domain.
 
 The <GlossaryLink term="EAS (ENTSO-E Awareness System)">ENTSO-E Awareness System (EAS)</GlossaryLink> — an encrypted, centralised communications platform — operated as the nervous system of crisis management. The dispatch timeline reveals the speed at which a supranational unified command was structured:
 
 | Time (CEST) | Sender | Recipient | Message / Strategic decision |
 | --- | --- | --- | --- |
 | 12:34–12:36 | REE | REN | Mutual confirmation of total blackout; agreement to set exchange programmes at 0 MW. |
-| 12:39 | Amprion | Swissgrid | Formal _System Split_ alert confirmation on EAS portal, activating the European emergency state. |
+| 12:39 | Amprion | Swissgrid | Formal System Split alert confirmation on EAS portal, activating the European emergency state. |
 | 12:41 | Swissgrid | RTE | Status update request; RTE confirms plans to send 400 MW initial support to REE. |
-| 12:47 | REE | Swissgrid | Official _Blackout_ report from Madrid; sharing of initial Top-Down restoration schemes. |
+| 12:47 | REE | Swissgrid | Official Blackout report from Madrid; sharing of initial Top-Down restoration schemes. |
 | 12:47 | TERNA | RTE | Italian TSO offers active support and flow flexibility on the eastern French border. |
 | 12:49–12:54 | Swissgrid / Amprion | All (CE) | Formalisation of unified command structure. |
 | 15:50 | Amprion | RTE | Alert over anomalous PICASSO requests of 2,500 MW associated with negative prices. |
@@ -34,7 +34,7 @@ The critical window is **12:49 to 12:54 CEST**: in just five minutes, the SAMs a
 
 ## The role of Coreso: the mathematical shield of restoration
 
-While national TSOs operated physical circuit breakers, the Regional Coordination Centre (RCC) **Coreso** (Brussels) executed an immense computational task to ensure that crisis solutions did not trigger new blackouts.
+While national TSOs operated physical circuit breakers, the Regional Coordination Centre (RCC) *Coreso* (Brussels) executed an immense computational task to ensure that crisis solutions did not trigger new blackouts.
 
 As the afternoon progressed, emergency power transfers from France to Spain escalated, with transient imports negotiated up to **2,000 MW**. These massive injections severely modify the natural load flows across French, Swiss and German networks. Coreso, using **Coordinated Security Analysis** (CSA) tools, processed AC load flows on the **unified European model** (CGM) in near-real time.
 

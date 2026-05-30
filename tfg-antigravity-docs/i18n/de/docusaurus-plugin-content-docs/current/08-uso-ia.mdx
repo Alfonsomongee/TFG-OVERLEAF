@@ -34,10 +34,16 @@ Der dokumentarische Ausgangskorpus umfasst technische Unterlagen, ENTSO-E-Vorsch
 </ForensicTable>
 
 Der Workflow ist in drei aufeinanderfolgende Phasen mit einer Korrekturschleife strukturiert:
-[Primärquellen] → [LLM-Unterstützung] → [Physikalischer Validierungsfilter] → [Hauptteil der Bachelorarbeit]
-↑**********\_\_\_\_**********| (Neuformulierung des Prompts bei erkannter Halluzination)
 
-Das methodisch entscheidende Element ist nicht die LLM-Unterstützung an sich, sondern der **physikalische Validierungsfilter**, der zwischen einer Modellausgabe und ihrer Aufnahme in den Text steht: Kirchhoffsche Gesetze, Q-V-Kurven, Rotor-Schwingungsgleichung und Abgleich mit der Primärquelle. Wenn der Filter eine mit der Systemmechanik unvereinbare Schlussfolgerung erkennt, wird der _Prompt_ mit zusätzlichen semantischen Einschränkungen neu formuliert und der Zyklus neu gestartet.
+
+```text
+[Primärquellen] ──> [LLM-Unterstützung] ──> [Physikalischer Validierungsfilter] ──> [Hauptteil der Bachelorarbeit]
+                          ▲                                      │
+                          └──────────────────────────────────────┘
+                            (Neuformulierung des Prompts bei erkannter Halluzination)
+```
+
+Das methodisch entscheidende Element ist nicht die LLM-Unterstützung an sich, sondern der **physikalische Validierungsfilter**, der zwischen einer Modellausgabe und ihrer Aufnahme in den Text steht: Kirchhoffsche Gesetze, Q-V-Kurven, Rotor-Schwingungsgleichung und Abgleich mit der Primärquelle. Wenn der Filter eine mit der Systemmechanik unvereinbare Schlussfolgerung erkennt, wird der Prompt mit zusätzlichen semantischen Einschränkungen neu formuliert und der Zyklus neu gestartet.
 
 ## Validierung und Verifizierung: Die vier Fälle fehlerhafter Schlussfolgerungen
 
@@ -48,7 +54,7 @@ Die Verwendung generativer Modelle in einer so dichten Domäne kausaler Zusammen
     source="Elaboración propia"
   >
 
-| Phänomen | Standardmäßig fehlerhafte Schlussfolgerung des LLM | Angewandte physikalische Korrektur | Korrigierende _Prompt_-Strategie |
+| Phänomen | Standardmäßig fehlerhafte Schlussfolgerung des LLM | Angewandte physikalische Korrektur | Korrigierende Prompt-Strategie |
 | --- | --- | --- | --- |
 | **UFLS-Paradoxon** | Der Lastabwurf durch Unterfrequenz „rettete“ Systembereiche durch die Wiederherstellung des Wirkleistungsgleichgewichts. | Das UFLS ist spannungsblind: Durch das Abschalten von Lasten wurden induktive Blindleistungssenken mitten im kapazitiven Transienten entfernt, was die Überspannung verschärfte. | Explizite Einschränkung: Ausschließliche Argumentation in der Q-V-Ebene, wobei die bei klassischen Ausfällen übliche Logik Frequenz-Wirkleistung ignoriert wird. |
 | *Tap-Lag* | Die OLTC reagierten korrekt auf den Transienten, indem sie die Sekundärspannung proportional anhoben oder senkten. | Die absichtlichen Verzögerungen der OLTC – entwickelt zur Vermeidung von Hunting – ließen sie gegenüber einem Transienten von mehreren zehn Millisekunden phasenverschoben reagieren, wodurch sich die Spannung in Richtung des 220-kV- und 132-kV-Netzes vervielfachte. | Injektion der echten Zeitkonstante der elektromechanischen OLTC-Baugruppe und Verbot der Annahme einer quasi-sofortigen Reaktion. |
@@ -63,7 +69,7 @@ Die Verwendung generativer Modelle in einer so dichten Domäne kausaler Zusammen
 
 Das anschaulichste Beispiel für das Fehlermuster: Auf die Frage nach der Rolle des Lastabwurfs bei der Entwicklung des Vorfalls lieferten die Modelle konsequent eine von klassischen Ausfällen übernommene Interpretation, bei denen das UFLS die letzte Verteidigungslinie darstellt und durch die Wiederherstellung des Frequenz-Wirkleistungs-Gleichgewichts üblicherweise Teile des Netzes schützt. Diese Schlussfolgerung ist physikalisch korrekt für das Universum der Ereignisse, anhand derer das Modell trainiert wurde, für den 28-A jedoch ungültig: Bei einem durch die Q-V-Ebene dominierten Kollaps entfernte die Aktivierung des UFLS gleichzeitig die induktiven Blindleistungssenken, die von den abgeschalteten Lasten bereitgestellt wurden, **wodurch die Überspannung verschärft statt abgemildert wurde**.
 
-Die Korrektur erforderte die Formulierung des _Prompts_ mit einer expliziten Einschränkung hinsichtlich der Analyseebene und die manuelle Überprüfung, ob die resultierende Argumentation mit den vom NREL im Zeitfenster 12:33:19–12:33:27 MESZ veröffentlichten Oszillogrammen konsistent war.
+Die Korrektur erforderte die Formulierung des Prompts mit einer expliziten Einschränkung hinsichtlich der Analyseebene und die manuelle Überprüfung, ob die resultierende Argumentation mit den vom NREL im Zeitfenster 12:33:19–12:33:27 MESZ veröffentlichten Oszillogrammen konsistent war.
 
 <InteractiveCTA 
   title="DEMONTAGE DER HALLUZINATION: PHASENPORTRÄT" 
@@ -89,7 +95,7 @@ Die allgemeingültige Beobachtung, die sich aus diesen vier Fällen ableiten lä
 
 ## Kritische Reflexion: KI in der ingenieurwissenschaftlichen Forschung
 
-Die dokumentierte Erfahrung führt zu einer strukturellen Schlussfolgerung, die weder triumphalistisch noch katastrophistisch ist: Generative Modelle sind leistungsstarke _Beschleuniger_ der kognitiven Prozesse des Forschers, aber sie arbeiten auf der Grundlage einer probabilistischen Logik, die nicht mit der deterministischen Logik übereinstimmt, die die Physik materieller Systeme bestimmt.
+Die dokumentierte Erfahrung führt zu einer strukturellen Schlussfolgerung, die weder triumphalistisch noch katastrophistisch ist: Generative Modelle sind leistungsstarke Beschleuniger der kognitiven Prozesse des Forschers, aber sie arbeiten auf der Grundlage einer probabilistischen Logik, die nicht mit der deterministischen Logik übereinstimmt, die die Physik materieller Systeme bestimmt.
 
 ### Methodische Implikation
 
@@ -105,4 +111,4 @@ Die Stromnetze des nächsten Jahrzehnts – dominiert von Leistungselektronik, m
 
 Die hybride Architektur **– LLM als semantische und synthetisierende Schnittstelle, physikalische Simulatoren als Motor kausaler Inferenzen –** ist plausiblerweise die Richtung, in die sich die Werkzeuge der Stromsystemtechnik entwickeln werden. Ihre Entwicklung wird genau dieselbe erkenntnistheoretische Wachsamkeit erfordern, die den Arbeitsablauf dieser Bachelorarbeit strukturiert hat: stets präsent zu haben, was jedes Werkzeug tut und was man explizit von ihm verlangt, nicht zu tun.
 
-Die detaillierte Aufzeichnung des Ablaufs der verwendeten restriktiven _Prompts_ zusammen mit repräsentativen Beispielen der angewandten Korrekturen wird im Anhang zur KI-Methodik dokumentiert, wobei den Empfehlungen für gute Praktiken in der methodischen Transparenz bei der Integration generativer Modelle in die Bachelor- und Masterforschung gefolgt wird.
+Die detaillierte Aufzeichnung des Ablaufs der verwendeten restriktiven Prompts zusammen mit repräsentativen Beispielen der angewandten Korrekturen wird im Anhang zur KI-Methodik dokumentiert, wobei den Empfehlungen für gute Praktiken in der methodischen Transparenz bei der Integration generativer Modelle in die Bachelor- und Masterforschung gefolgt wird.

@@ -31,9 +31,16 @@ Il corpus documentale di partenza comprende fascicoli tecnici, normative di ENTS
 
 </ForensicTable>
 
-Il flusso di lavoro si struttura in tre fasi sequenziali con un ciclo di correzione: [Fonti primarie] → [Assistenza LLM] → [Filtro di validazione fisica] → [Corpo del TFG] ↑**********\_\_\_\_**********| (riformulazione del prompt a fronte di allucinazione rilevata)
+Il flusso di lavoro si struttura in tre fasi sequenziali con un ciclo di correzione: 
 
-L'elemento metodologicamente decisivo non è l'assistenza dell'LLM in sé, ma il **filtro di validazione fisica** che si interpone tra qualsiasi output del modello e il suo inserimento nel testo: Leggi di Kirchhoff, curve Q-V, equazione di oscillazione del rotore e riscontro con la fonte primaria. Quando il filtro rileva un'inferenza incompatibile con la meccanica del sistema, il _prompt_ viene riformulato con ulteriori restrizioni semantiche e il ciclo ricomincia.
+```text
+[Fonti primarie] ──> [Assistenza LLM] ──> [Filtro di validazione fisica] ──> [Corpo del TFG]
+                          ▲                              │
+                          └──────────────────────────────┘
+                            (riformulazione del prompt a fronte di allucinazione rilevata)
+```
+
+L'elemento metodologicamente decisivo non è l'assistenza dell'LLM in sé, ma il **filtro di validazione fisica** che si interpone tra qualsiasi output del modello e il suo inserimento nel testo: Leggi di Kirchhoff, curve Q-V, equazione di oscillazione del rotore e riscontro con la fonte primaria. Quando il filtro rileva un'inferenza incompatibile con la meccanica del sistema, il prompt viene riformulato con ulteriori restrizioni semantiche e il ciclo ricomincia.
 
 ## Validazione e verifica: i quattro casi di inferenza errata
 
@@ -44,7 +51,7 @@ L'utilizzo di modelli generativi in un dominio così denso di relazioni causali 
     source="Elaboración propia"
   >
 
-| Fenomeno | Inferenza errata di default dell'LLM | Correzione fisica applicata | Strategia di _prompt_ correttiva |
+| Fenomeno | Inferenza errata di default dell'LLM | Correzione fisica applicata | Strategia di prompt correttiva |
 | --- | --- | --- | --- |
 | **Paradosso dell'UFLS** | Il distacco dei carichi per sottofrequenza ha «salvato» aree del sistema ripristinando l'equilibrio della potenza attiva. | L'UFLS è cieco alla tensione: scollegando il carico ha rimosso i pozzi di reattiva induttiva in pieno transitorio capacitivo, aggravando la sovratensione. | Restrizione esplicita: ragionare esclusivamente nel piano Q-V, ignorando la consueta logica frequenza–potenza attiva dei blackout classici. |
 | *Tap-Lag* | Gli OLTC hanno risposto correttamente al transitorio alzando o abbassando la tensione secondaria in modo proporzionale. | I ritardi intenzionali degli OLTC —concepiti per evitare l'hunting— li hanno resi sfasati rispetto a un transitorio di decine di millisecondi, moltiplicando la tensione verso la rete a 220 kV e 132 kV. | Iniezione della costante di tempo reale del complesso elettromeccanico OLTC e divieto di presumere una risposta quasi istantanea. |
@@ -59,7 +66,7 @@ L'utilizzo di modelli generativi in un dominio così denso di relazioni causali 
 
 Il caso più illustrativo del modello di errore: a fronte di una query sul ruolo del distacco di carico nello sviluppo dell'incidente, i modelli hanno sistematicamente offerto un'interpretazione ereditata dai blackout classici, nei quali l'UFLS costituisce l'ultima linea di difesa e riesce di solito a preservare porzioni di rete recuperando l'equilibrio frequenza-potenza attiva. Questa inferenza è fisicamente corretta per l'universo di eventi su cui il modello è stato addestrato, ma non è valida per il 28-A: in un collasso dominato dal piano Q-V, l'attivazione dell'UFLS ha rimosso contemporaneamente i pozzi di potenza reattiva induttiva forniti dai carichi disconnessi, **aggravando la sovratensione anziché mitigarla**.
 
-La correzione ha richiesto la formulazione di un _prompt_ con una limitazione esplicita sul piano di analisi, verificando manualmente che il ragionamento risultante fosse coerente con l'oscillografia pubblicata dal NREL nella fascia oraria 12:33:19–12:33:27 CEST.
+La correzione ha richiesto la formulazione di un prompt con una limitazione esplicita sul piano di analisi, verificando manualmente che il ragionamento risultante fosse coerente con l'oscillografia pubblicata dal NREL nella fascia oraria 12:33:19–12:33:27 CEST.
 
 ### Il caso del Tap-Lag
 
@@ -77,7 +84,7 @@ L'osservazione di portata generale che questi quattro casi consentono di formula
 
 ## Riflessione critica: IA nella ricerca ingegneristica
 
-L'esperienza documentata porta a una conclusione strutturale, né trionfalistica né catastrofista: i modelli generativi sono potenti _acceleratori_ dei processi cognitivi del ricercatore, ma operano su una logica probabilistica che non coincide con la logica deterministica che governa la fisica dei sistemi materiali.
+L'esperienza documentata porta a una conclusione strutturale, né trionfalistica né catastrofista: i modelli generativi sono potenti acceleratori dei processi cognitivi del ricercatore, ma operano su una logica probabilistica che non coincide con la logica deterministica che governa la fisica dei sistemi materiali.
 
 ### Implicazione metodologica
 
@@ -93,4 +100,4 @@ I sistemi elettrici del prossimo decennio — dominati dall'elettronica di poten
 
 L'architettura ibrida **— LLM come interfaccia semantica e di sintesi, simulatori fisici come motore di inferenza causale —** è, plausibilmente, la direzione verso cui evolveranno gli strumenti di ingegneria dei sistemi di potenza. Il loro sviluppo richiederà esattamente la stessa vigilanza epistemologica che ha strutturato il flusso di lavoro del presente TFG: tenere sempre a mente cosa fa ogni strumento e cosa gli viene esplicitamente chiesto di non fare.
 
-La registrazione dettagliata del flusso dei _prompt_ restrittivi utilizzati, assieme agli esempi rappresentativi delle correzioni applicate, è documentata nell'Allegato Metodologico IA, seguendo le raccomandazioni di buone pratiche in merito alla trasparenza metodologica per l'integrazione di modelli generativi nella ricerca di primo e secondo livello.
+La registrazione dettagliata del flusso dei prompt restrittivi utilizzati, assieme agli esempi rappresentativi delle correzioni applicate, è documentata nell'Allegato Metodologico IA, seguendo le raccomandazioni di buone pratiche in merito alla trasparenza metodologica per l'integrazione di modelli generativi nella ricerca di primo e secondo livello.

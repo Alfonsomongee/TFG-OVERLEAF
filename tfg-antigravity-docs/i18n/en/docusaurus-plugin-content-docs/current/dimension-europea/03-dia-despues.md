@@ -24,11 +24,11 @@ Implementation forced a regulatory divergence grounded in each region's technica
 
 The underlying reasoning is significant: the Amendment acknowledges that imbalance distribution tails in high-renewable systems are substantially fatter than historical models calibrated on thermal fleets could capture. The 28 April event demonstrated that «tail risk» scenarios are no longer statistically exceptional.
 
-Jointly, Article 157 of the <GlossaryLink term="SO GL (System Operation Guidelines)">SO GL</GlossaryLink> mandated the obligatory formalisation and real-time instrumentation of **Reserve Sharing Agreements**. The **PICASSO** platform for cross-border aFRR exchange transitions from an optional economic efficiency scheme to a mandatory structural resilience safeguard, whose mechanisms are developed in the following section.
+Jointly, Article 157 of the <GlossaryLink term="SO GL (System Operation Guidelines)">SO GL</GlossaryLink> mandated the obligatory formalisation and real-time instrumentation of **Reserve Sharing Agreements**. The *PICASSO* platform for cross-border aFRR exchange transitions from an optional economic efficiency scheme to a mandatory structural resilience safeguard, whose mechanisms are developed in the following section.
 
 ## Post-2025 ERAA reform: from probabilistic LOLE to multifactorial assessment
 
-The **European Resource Adequacy Assessment** (ERAA) is the pillar on which member states justify to the European Commission the implementation of Capacity Mechanisms (CRM). Following 28 April, **ACER Decision 06/2026 on ERAA 2025** dismantled fundamental ENTSO-E methodologies.
+The *European Resource Adequacy Assessment* (ERAA) is the pillar on which member states justify to the European Commission the implementation of Capacity Mechanisms (CRM). Following 28 April, **ACER Decision 06/2026 on ERAA 2025** dismantled fundamental ENTSO-E methodologies.
 
 **CARA function recalibration.** ENTSO-E used a CARA (Constant Absolute Risk Aversion) coefficient of 0.0075 to simulate combined-cycle investor behaviour under price volatility. ACER ruled that this coefficient lacked post-blackout empirical evidence: the risks of operational instabilities generate investor risk aversion significantly greater than simple hourly price volatility. The «target year repeated to infinity» modelling (TY2035) in the EVA methodology was also severely criticised, as it generated artificial profitability signals discouraging simulated decommissioning of obsolete coal plants in countries such as Poland, falsifying systemic security assessments.
 
@@ -36,7 +36,7 @@ The **European Resource Adequacy Assessment** (ERAA) is the pillar on which memb
 
 ## PICASSO metamorphosis: from economic efficiency to structural resilience
 
-The **PICASSO** platform (Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation) was originally conceived as a market optimisation tool: its algorithm sought the cheapest cross-border matching of <GlossaryLink term="Fast Frequency Response (FFR)">aFRR</GlossaryLink> bids with 15-minute granularity, minimising consumer costs under normal conditions.
+The *PICASSO* platform (Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation) was originally conceived as a market optimisation tool: its algorithm sought the cheapest cross-border matching of <GlossaryLink term="Fast Frequency Response (FFR)">aFRR</GlossaryLink> bids with 15-minute granularity, minimising consumer costs under normal conditions.
 
 During crisis management, at **15:50 CEST** on 28 April, Amprion alerted RTE to massive computational requests of up to **2,500 MW** placed in PICASSO associated with **strongly negative prices**. These financial distortions revealed that, in the midst of islanding and massive load shedding, a purely economic algorithm collapses conceptually.
 
@@ -46,7 +46,7 @@ The subsequent institutional reform mandated the formalisation of PICASSO as a *
 
 From a fundamental electrical engineering perspective, the most profound contribution of the post-28 April analysis was the death certificate of the traditional **Short Circuit Ratio** (SCR) as a valid metric for assessing high-renewable penetration networks.
 
-The simultaneous collapse of photovoltaic inverters in Spain and the Dax–Arriosses sub-network in France demonstrated that the SCR, by evaluating a single isolated node, blindly ignores the resonant oscillations and destructive interactions occurring between multiple nearby power electronic converters. European network codes forcibly adopted the *MRSCR* (Multiple Renewable Energy Stations Short-Circuit Ratio) metric:
+The simultaneous collapse of photovoltaic inverters in Spain and the Dax–Arriosses sub-network in France demonstrated that the SCR, by evaluating a single isolated node, blindly ignores the resonant oscillations and destructive interactions occurring between multiple nearby power electronic converters. European network codes forcibly adopted the MRSCR (Multiple Renewable Energy Stations Short-Circuit Ratio) metric:
 
 $$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
 

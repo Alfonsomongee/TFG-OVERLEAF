@@ -11,13 +11,13 @@ words_to_clean = [
     "tap-lag", "Tap-Lag", "tap -lag", "Tap -Lag",
     "tail-risk", "Tail-risk", "tail risk", "Tail risk",
     "black-start", "Black-Start", "black start", "Black Start",
-    "grid-forming", "Grid-forming",
-    "grid-following", "Grid-following",
+    "grid-forming", "Grid-forming", "Grid-Forming",
+    "grid-following", "Grid-following", "Grid-Following",
     "out-of-step", "Out-of-Step", "Out-of-step",
-    "power swing", "Power Swing", "power swinging", "Power Swinging",
+    "power swing", "Power Swing", "power swinging", "Power Swinging", "power-swinging",
     "first beat", "First Beat", "first-beat", "First-beat",
     "infinite bus", "Infinite Bus", "infinite-bus", "Infinite-bus",
-    "sympathetic inrush", "Sympathetic Inrush", "sympathetic inrush current", "Sympathetic Inrush Current",
+    "sympathetic inrush", "Sympathetic Inrush", "sympathetic inrush current", "Sympathetic Inrush Current", "sympathetic-inrush",
     "synchro-check", "Synchro-check", "Synchro-Check",
     "afrr", "aFRR", "AFRR",
     "ufls", "UFLS",
@@ -42,13 +42,28 @@ words_to_clean = [
     "ansi", "ANSI",
     "utilities", "Utilities",
     "payback", "Payback",
-    "swing", "Swing"
+    "swing", "Swing",
+    "top-down", "Top-Down", "Top-down",
+    "bottom-up", "Bottom-Up", "Bottom-up",
+    "Blackout", "blackout", "Black-out", "black-out",
+    "PICASSO", "Picasso",
+    "Swissgrid", "swissgrid",
+    "prompt", "Prompt", "prompts", "Prompts",
+    "IBR", "ibr",
+    "PMODE1", "PMODE2", "PMODE3",
+    "ex ante", "ex-ante", "Ex ante", "Ex-ante",
+    "Normal", "normal",
+    "headroom", "Headroom",
+    "amprion", "Amprion",
+    "System Split", "system split", "System-Split", "system-split",
+    "Coreso", "coreso",
+    "European Resource Adequacy Assessment",
+    "PMU", "pmu", "PMUs",
+    "IEEE39", "ieee39", "IEEE-39",
+    "sensors", "Sensors",
+    "900 MW", "244 kV", "870 MVAr", "426 MVAr", "5 MW", "1 V",
+    "Forensic Charts 1-5", "Synchronous Area Monitors"
 ]
-
-# We want to replace e.g. _hunting_ with hunting, or *hunting* with hunting
-# Regex: (?<=\b|[\s.,;:\(\)"'])[\*_](word)[\*_](?=\b|[\s.,;:\(\)"'])
-# But let's be simpler: we can just replace exactly for each word in the list with boundary check or literal replace of `_word_` or `*word*`.
-# Let's use re.sub with case-insensitive / word list or compile a robust regex for each word.
 
 def clean_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -56,11 +71,7 @@ def clean_file(filepath):
     
     modified = content
     
-    # We will build a regex for all the terms to replace them in one go if they have * or _ around them
-    # Ensure they match either _term_ or *term*
     for word in words_to_clean:
-        # Match _word_ or *word*
-        # We handle case-insensitive or exact match by specifying the exact words
         pattern_under = rf'_{re.escape(word)}_'
         pattern_star = rf'\*{re.escape(word)}\*'
         

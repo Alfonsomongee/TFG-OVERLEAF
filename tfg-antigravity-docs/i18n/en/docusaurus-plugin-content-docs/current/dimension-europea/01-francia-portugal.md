@@ -12,9 +12,9 @@ The 28 April Iberian voltage collapse did not stop at the Pyrenees or the Guadia
 
 ### The Golfech 1 trip and negative sequence currents
 
-The propagation mechanism towards France was dominated by a sudden, massive excess of capacitive <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>. Seconds before separation, the <GlossaryLink term="HVDC">HVDC</GlossaryLink> Baixas–Santa Llogaia link was absorbing **870 MVAr**, acting as a dynamic reactive power sink at the border. The instantaneous loss of this sink, combined with the opening of 400 kV lines that remained energised no-load from the French side — generating reactive power through the capacitive <GlossaryLink term="Efecto Ferranti">Ferranti Effect</GlossaryLink> — induced a severe transient overvoltage profile that propagated rapidly across the entire southwest of France.
+The propagation mechanism towards France was dominated by a sudden, massive excess of capacitive <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink>. Seconds before separation, the <GlossaryLink term="HVDC">HVDC</GlossaryLink> Baixas–Santa Llogaia link was absorbing *870 MVAr*, acting as a dynamic reactive power sink at the border. The instantaneous loss of this sink, combined with the opening of 400 kV lines that remained energised no-load from the French side — generating reactive power through the capacitive <GlossaryLink term="Efecto Ferranti">Ferranti Effect</GlossaryLink> — induced a severe transient overvoltage profile that propagated rapidly across the entire southwest of France.
 
-Facing this voltage escalation, RTE's secondary voltage control forced the large synchronous alternators in the region to operate deep into their underexcitation capability curves. The most critical case was **Golfech Nuclear Unit 1**, a **1,290 MW** generating block. To contain the voltage profile, its Automatic Voltage Regulators (AVR) drastically reduced rotor excitation current, driving the machine to absorb **426 MVAr** at 12:33 CEST.
+Facing this voltage escalation, RTE's secondary voltage control forced the large synchronous alternators in the region to operate deep into their underexcitation capability curves. The most critical case was **Golfech Nuclear Unit 1**, a **1,290 MW** generating block. To contain the voltage profile, its Automatic Voltage Regulators (AVR) drastically reduced rotor excitation current, driving the machine to absorb *426 MVAr* at 12:33 CEST.
 
 This extreme operating condition severely compromises machine stability. As the air-gap magnetic flux decreases, the synchronising torque maintaining the rotor coupled to the network frequency weakens. Simultaneously, the asymmetric character of the border opening transients generated significant negative sequence currents in the 400 kV network. Symmetrical components theory establishes that negative sequence currents produce a magnetic field rotating in the opposite direction to the rotor at synchronous speed, inducing double-frequency (100 Hz) eddy currents in the solid rotor body and retaining rings, causing adiabatic heating within seconds.
 
@@ -69,7 +69,7 @@ With no external links available, REN executed a pure <GlossaryLink term="Black 
 
 **12:43–16:38 CEST — Combined-cycle control system failures.** At 12:43, REN dispatched the black start order for CCGT 1-Norte. Despite the gas turbine responding mechanically, the plant was unable to close the generator circuit breaker for hours: the substation's DC battery banks had discharged during the prolonged blackout, leaving the high-voltage circuit breaker closing coils without power. The blockage was resolved at **16:38 CEST**.
 
-**15:40–15:55 CEST — Second attempt and renewed collapse.** After reconfiguration work, HPP 1-Centro restarted at 15:40 and energised the Zêzere 220 kV busbar. At 15:51, a local demand block of **5 MW** was connected, but the island's inertial fragility was such that load fluctuations triggered another trip at 15:55.
+**15:40–15:55 CEST — Second attempt and renewed collapse.** After reconfiguration work, HPP 1-Centro restarted at 15:40 and energised the Zêzere 220 kV busbar. At 15:51, a local demand block of *5 MW* was connected, but the island's inertial fragility was such that load fluctuations triggered another trip at 15:55.
 
 ### The decisive manoeuvre: Torrão as a pure synchronous condenser
 
@@ -85,7 +85,7 @@ By 20:00 CEST, the two Portuguese islands had been internally meshed but were st
 
 At **20:25 CEST**, the interconnection was closed under one non-negotiable technical requirement: a **0 MW exchange programme**. The underlying physics is governed by the inter-area active power transfer equation:
 
-$$P = \frac{V_1 V_2}{X} \sin\delta$$
+$$P = \frac{V1 V2}{X} \sin\delta$$
 
 To close the interconnection breaker without generating a destructive synchronising power surge, the phase angle difference ($\delta$) between the Portuguese and Spanish nodes had to be exactly zero, with equal voltage magnitudes. By setting a 0 MW setpoint in the Automatic Generation Control (AGC) systems, operators ensured neither network would attempt to export inertia to the other at the coupling instant. An error would have forced a violent power flow, tripping the directional protections and plunging Portugal into a second blackout.
 
