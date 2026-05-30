@@ -10,6 +10,10 @@ export default function ExecutiveHook() {
   const [elapsed, setElapsed] = useState(0);
   const [isIntroPage, setIsIntroPage] = useState(true);
 
+  // Modo congreso: ?modo=congreso desactiva el auto-dismiss del splash
+  const isCongreso = typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).get('modo') === 'congreso';
+
   const { i18n } = useDocusaurusContext();
   const location = useLocation();
   const lang = i18n.currentLocale;
@@ -123,10 +127,11 @@ export default function ExecutiveHook() {
       setElapsed(ms);
       if (ms < 5000) {
         animationFrame = requestAnimationFrame(animate);
-      } else {
-        // Auto-dismiss splash after 5s
+      } else if (!isCongreso) {
+        // Auto-dismiss splash after 5s (desactivado en modo congreso)
         handleEnter();
       }
+      // En modo congreso: el splash permanece hasta click del usuario
     };
     animationFrame = requestAnimationFrame(animate);
 
