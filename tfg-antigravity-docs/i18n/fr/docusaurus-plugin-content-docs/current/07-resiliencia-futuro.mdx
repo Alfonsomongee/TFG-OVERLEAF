@@ -43,7 +43,7 @@ $$
 $$
 
 <ForensicTable 
-    title="TABLEAU 14 | TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+    title="TABLEAU 16 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
     source="Estándar ENTSO-E / literatura técnica"
   >
 
@@ -124,8 +124,8 @@ La **<GlossaryLink term="Estrategia Brownfield">stratégie Brownfield</GlossaryL
 
 Aucune des trois familles technologiques, déployée de manière isolée, n'est suffisante :
 
-- Les **BESS-GFM** offrent vitesse de réponse, précision de contrôle et capacité de _Black Start_, mais sont limités en courant de court-circuit.
-- Les **SynCons** fournissent une inertie rotationnelle authentique et une puissance de court-circuit élevée, mais manquent de l'agilité sous-cyclique de l'électronique de puissance et ne gèrent pas d'énergie active.
+- Les **BESS-GFM** offrent vitesse de réponse, précision de contrôle et capacité de Black Start, mais sont limités en courant de court-circuit.
+- Les *SynCons* fournissent une inertie rotationnelle authentique et une puissance de court-circuit élevée, mais manquent de l'agilité sous-cyclique de l'électronique de puissance et ne gèrent pas d'énergie active.
 - L'**inertie synthétique et la FFR** maximisent l'utilisation de la marge énergétique du banc de batteries, mais dépendent d'une rigidité nodale minimale —fournie par les SynCons— pour que leurs algorithmes soient efficaces.
 
 ![Architecture hybride pour la résilience systémique dans les réseaux décarbonés](/figuras/hitachi_hybrid.png) _Figure 40. Schéma d'architecture hybride : les BESS-GFM gèrent la tension en temps réel et fournissent de la FFR ; les compensateurs synchrones apportent l'inertie rotationnelle et la puissance de court-circuit pour la rigidité nodale. La résilience nécessite les deux composants — aucun ne remplace l'autre. Source : Hitachi Energy / FUTURED._
@@ -142,7 +142,7 @@ Les architectures de **Réseaux de Neurones sur Graphes (GNN)** sont intrinsèqu
 
 ### Essaims Multi-Agents pour Black-Start Décentralisé
 
-Le *black-start* ibérique de 2025 a nécessité près de 16 heures pour rétablir complètement la péninsule en fonctionnant sous le modèle classique *top-down* centralisé. L'avenir du rétablissement de l'alimentation, en particulier avec le déploiement du Grid-Forming, pointe vers un modèle distribué. Grâce aux Systèmes Multi-Agents (MAS), de multiples micro-réseaux équipés de GFM peuvent se pré-synchroniser de manière autonome (en communiquant entre eux par des algorithmes de consensus) en formant des "îlots vivants" qui se connectent ensuite les uns aux autres. Cette technique, déjà testée dans des projets pilotes comme celui de Holy Cross Energy au Colorado (NREL, 2024), a le potentiel de réduire les temps de rétablissement de quelques jours à quelques heures.
+Le black-start ibérique de 2025 a nécessité près de 16 heures pour rétablir complètement la péninsule en fonctionnant sous le modèle classique *top-down* centralisé. L'avenir du rétablissement de l'alimentation, en particulier avec le déploiement du Grid-Forming, pointe vers un modèle distribué. Grâce aux Systèmes Multi-Agents (MAS), de multiples micro-réseaux équipés de GFM peuvent se pré-synchroniser de manière autonome (en communiquant entre eux par des algorithmes de consensus) en formant des "îlots vivants" qui se connectent ensuite les uns aux autres. Cette technique, déjà testée dans des projets pilotes comme celui de Holy Cross Energy au Colorado (NREL, 2024), a le potentiel de réduire les temps de rétablissement de quelques jours à quelques heures.
 
 ## La réponse normative : du P.O. 7.4 obsolète au grid-forming obligatoire
 
@@ -168,14 +168,14 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 Les systèmes BESS reçoivent en outre un paiement de disponibilité de **2,7 €/MW/jour**, conditionné au maintien d'un taux de conformité d'échantillons valides supérieur à **90 %**.
 
 <ForensicTable 
-    title="TABLEAU 15 | TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+    title="TABLEAU 17 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
     source="CNMC / REE"
   >
 
 | Attribut opérationnel | P.O. 7.4 original (pré-2025) | Cadre actualisé (post-2025) |
 | --- | --- | --- |
 | Nature du contrôle | Statique et asymétrique. Opération par paliers. | Dynamique, continue et proportionnelle à l'écart. |
-| Participation IBR | _Grid-following_ passif avec facteur de puissance fixe. | _Grid-forming_ obligatoire. Contrôle actif de $V$ et $Q$. |
+| Participation IBR | Grid-following passif avec facteur de puissance fixe. | Grid-forming obligatoire. Contrôle actif de $V$ et $Q$. |
 | Bande morte | 405–410 kV sans réponse obligatoire. | Éliminée ou réduite à ±0,5 % de $U_n$. |
 | Réponse en réactive | Paliers de consigne lente après demande de l'OS. | Réponse automatique en boucle fermée (droop control). |
 | Rémunération de Q | Basée sur la disponibilité technique déclarée. | Marchés zonaux des services ERS. |
@@ -210,7 +210,7 @@ Le Groupe Technique d'ENTSO-E (TG GFC) a cristallisé son travail dans deux docu
 Les obligations du **NC RfG 2.0** s'appliquent selon une approche technologiquement agnostique, classant les modules en quatre types :
 
 <ForensicTable 
-    title="TABLEAU 16 | TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+    title="TABLEAU 18 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
     source="ENTSO-E / Comisión Europea"
   >
 
@@ -261,7 +261,7 @@ EirGrid (Irlande) et ERCOT (Texas) sont les références opérationnelles confir
 Le programme **DS3** d'EirGrid a fragmenté la fourniture de stabilité en 14 produits spécialisés. Les trois plus pertinents pour le contexte du 28-A :
 
 <ForensicTable 
-    title="TABLEAU 17 | TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+    title="TABLEAU 19 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
     source="EirGrid / ENTSO-E"
   >
 

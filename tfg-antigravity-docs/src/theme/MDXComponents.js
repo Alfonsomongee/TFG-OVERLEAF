@@ -6,6 +6,7 @@ import GlitchTitle from '@site/src/components/GlitchTitle';
 import ForensicReveal from '@site/src/components/ForensicReveal';
 import GlossaryLink from '@site/src/components/GlossaryLink';
 import ForensicNarrative from '@site/src/components/GaleriaForense/ForensicNarrative';
+import { ForensicTable } from '@site/src/components/ForensicUI/Primitives';
 
 export default {
   // Re-use the default mapping
@@ -16,4 +17,5 @@ export default {
   ForensicReveal,
   GlossaryLink,
   ForensicNarrative,
+  ForensicTable,
 };

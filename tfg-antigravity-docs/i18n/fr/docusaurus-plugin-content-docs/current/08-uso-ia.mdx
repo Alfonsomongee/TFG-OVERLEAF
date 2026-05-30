@@ -18,7 +18,7 @@ L'élaboration de ce TFE s'est déroulée dans un contexte méthodologique atypi
 Le corpus documentaire de départ comprend des dossiers techniques, des réglementations de l'ENTSO-E, des rapports officiels de plus de 200 pages, des simulations PSS/E de l'IIT-ICAI, des actes de la CNMC, des enregistrements oscillographiques du NREL et un vaste volume d'archives spécialisées. Leur lecture linéaire sans médiation informatique était incompatible avec les délais académiques du TFE. L'intégration de modèles génératifs s'est articulée autour de cinq fonctions opérationnelles clairement délimitées, **dont aucune n'implique d'inférence causale autonome sur la physique du système** :
 
 <ForensicTable 
-    title="TABLEAU 18 | TABLA 14 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+    title="TABLEAU 20 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
     source="Elaboración propia"
   >
 
@@ -43,14 +43,14 @@ L'élément méthodologiquement décisif n'est pas l'assistance LLM en soi, mais
 L'utilisation de modèles génératifs dans un domaine si dense en relations causales que la dynamique des systèmes de puissance révèle, de manière systématique, un comportement que les réseaux électriques ne tolèrent pas : l'**inférence par analogie statistique**. Les LLMs ont tendance à appliquer des schémas causaux _typiques_ — les plus fréquents dans la littérature de leur corpus d'entraînement — à des cas dont la structure physique est _atypique_. Le 28-A est, de par sa double nature (stabilité de tension au lieu du bilan de fréquence), un cas atypique par rapport à la majorité des pannes documentées dans la bibliographie technique du XXe siècle, ce qui a rendu particulièrement productive l'observation des points où l'IA s'écartait « par défaut » du phénomène réel.
 
 <ForensicTable 
-    title="TABLEAU 19 | TABLA 15 | LLM HEURISTIC FAILURE MODES"
+    title="TABLEAU 21 | LLM HEURISTIC FAILURE MODES"
     source="Elaboración propia"
   >
 
 | Phénomène | Inférence erronée par défaut du LLM | Correction physique appliquée | Stratégie de _prompt_ correctrice |
 | --- | --- | --- | --- |
 | **Paradoxe de l'UFLS** | Le délestage de charges par sous-fréquence a « sauvé » des zones du réseau en rétablissant le bilan de puissance active. | L'UFLS est aveugle à la tension : en déconnectant la charge, il a retiré des puits de réactif inductif en plein transitoire capacitif, aggravant la surtension. | Restriction explicite : raisonner exclusivement dans le plan Q-V, en ignorant la logique fréquence–puissance active habituelle dans les pannes classiques. |
-| **Tap-Lag** | Les OLTC ont répondu correctement au transitoire en élevant ou abaissant la tension secondaire de manière proportionnelle. | Les retards intentionnels des OLTC — conçus pour éviter le _hunting_ — les ont laissés déphasés face à un transitoire de quelques dizaines de millisecondes, multipliant la tension vers le réseau de 220 kV et 132 kV. | Injection de la constante de temps réelle de l'ensemble électromécanique OLTC et interdiction de supposer une réponse quasi-instantanée. |
+| *Tap-Lag* | Les OLTC ont répondu correctement au transitoire en élevant ou abaissant la tension secondaire de manière proportionnelle. | Les retards intentionnels des OLTC — conçus pour éviter le hunting — les ont laissés déphasés face à un transitoire de quelques dizaines de millisecondes, multipliant la tension vers le réseau de 220 kV et 132 kV. | Injection de la constante de temps réelle de l'ensemble électromécanique OLTC et interdiction de supposer une réponse quasi-instantanée. |
 | **Apport capacitif du maillage** | Le maillage a réduit l'impédance du système et, par conséquent, augmenté la stabilité de tension. | Dans des conditions de faible charge, le maillage a activé l'admittance transversale des lignes de 400 kV (effet Ferranti), injectant les 1 050 MVAr capacitifs qui ont précipité la surtension. | Restriction au régime de « ligne à vide » et exigence de calculer le bilan de réactif avec l'admittance capacitive $Y_t$ dans le modèle π de la ligne. |
 | **Oscillation de 0,6 Hz** | Production d'une réponse _intégrée_ — la lecture « la plus probable » moyennée sur les sources. | L'origine du mode (oscillation forcée par une centrale concrète selon l'ICAI ; mode naturel du système selon REE) est précisément la divergence que le TFE doit préserver, et non résoudre sur le plan éditorial. | Veto sur le choix unilatéral entre les deux hypothèses et obligation de produire des versions doubles avec attribution explicite à leur source. |
 
@@ -74,7 +74,7 @@ La correction a nécessité de formuler le _prompt_ avec une restriction explici
 
 ### Le cas du Tap-Lag
 
-La description qualitative que les modèles produisent de l'OLTC est correcte en régime permanent, mais suppose par défaut une réponse proportionnelle et instantanée que l'ensemble électromécanique réel ne possède pas. Le retard intentionnel introduit pour éviter le _hunting_ s'est traduit le 28-A par un rapport de transformation déphasé par rapport au transitoire électrique, ce qui a multiplié la surtension vers les réseaux de 220 kV et 132 kV — un phénomène invisible pour le SCADA de l'opérateur, ancré sur les mesures du primaire de 400 kV. Toute la chaîne causale du Tap-Lag a exigé de décrire au modèle, à l'avance, les constantes de temps de l'OLTC et de lui interdire de supposer une réponse quasi-instantanée.
+La description qualitative que les modèles produisent de l'OLTC est correcte en régime permanent, mais suppose par défaut une réponse proportionnelle et instantanée que l'ensemble électromécanique réel ne possède pas. Le retard intentionnel introduit pour éviter le hunting s'est traduit le 28-A par un rapport de transformation déphasé par rapport au transitoire électrique, ce qui a multiplié la surtension vers les réseaux de 220 kV et 132 kV — un phénomène invisible pour le SCADA de l'opérateur, ancré sur les mesures du primaire de 400 kV. Toute la chaîne causale du Tap-Lag a exigé de décrire au modèle, à l'avance, les constantes de temps de l'OLTC et de lui interdire de supposer une réponse quasi-instantanée.
 
 ### Le cas de l'apport capacitif du maillage
 

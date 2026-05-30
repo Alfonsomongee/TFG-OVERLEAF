@@ -15,7 +15,7 @@ This thesis was developed under an atypical methodological context: the simultan
 The initial documentary body encompasses technical dossiers, ENTSO-E regulations, official reports exceeding 200 pages, IIT-ICAI PSS/E simulations, CNMC proceedings, NREL oscillographic records and a substantial volume of specialist press. Linear reading without computational mediation was incompatible with the TFG's academic timeline. Generative model integration was structured around five clearly delineated operational functions, **none of which involves autonomous causal inference about system physics**:
 
 <ForensicTable 
-    title="TABLE 18 | TABLA 14 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+    title="TABLE 20 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
     source="Elaboración propia"
   >
 
@@ -42,14 +42,14 @@ The methodologically decisive element is not the LLM assistance itself, but the 
 The use of generative models in a domain as causally dense as power system dynamics reveals, systematically, a behaviour that electrical systems do not tolerate: **inference by statistical analogy**. LLMs tend to apply _typical_ causal patterns — the most frequent in their training corpus literature — to cases whose physical structure is _atypical_. The 28 April event is, due to its dual nature (voltage stability rather than frequency balance), atypical relative to the majority of blackouts documented in 20th-century technical literature, making the observation of where the AI «defaulted» away from the actual phenomenon especially productive.
 
 <ForensicTable 
-    title="TABLE 19 | TABLA 15 | LLM HEURISTIC FAILURE MODES"
+    title="TABLE 21 | LLM HEURISTIC FAILURE MODES"
     source="Elaboración propia"
   >
 
 | Phenomenon | LLM default erroneous inference | Physical correction applied | Corrective prompt strategy |
 | --- | --- | --- | --- |
 | **UFLS paradox** | Underfrequency load shedding «saved» areas of the system by restoring active power balance. | UFLS is voltage-blind: by disconnecting load it removed inductive reactive power sinks during a capacitive transient, aggravating the overvoltage. | Explicit restriction: reason exclusively in the Q-V plane, ignoring the frequency–active power logic habitual in classic blackouts. |
-| **Tap-Lag** | OLTCs responded correctly to the transient, proportionally raising or lowering secondary voltage. | The intentional OLTC time delays — designed to prevent _hunting_ — left them out of phase with a millisecond-scale transient, multiplying voltage towards the 220 kV and 132 kV networks. | Injection of the actual OLTC electromechanical time constants and prohibition of assuming quasi-instantaneous tap changer response. |
+| *Tap-Lag* | OLTCs responded correctly to the transient, proportionally raising or lowering secondary voltage. | The intentional OLTC time delays — designed to prevent hunting — left them out of phase with a millisecond-scale transient, multiplying voltage towards the 220 kV and 132 kV networks. | Injection of the actual OLTC electromechanical time constants and prohibition of assuming quasi-instantaneous tap changer response. |
 | **Meshing capacitive injection** | The meshing manoeuvre reduced system impedance and therefore increased voltage stability. | Under low-load conditions, meshing activated the shunt admittance of the 400 kV lines (Ferranti Effect), injecting the 1,050 MVAr capacitive power that precipitated the overvoltage. | Restriction to «unloaded line» regime and requirement to calculate the reactive power balance with the capacitive admittance $Y_t$ in the line π model. |
 | **0.6 Hz oscillation** | Production of an _integrated_ response — the «most probable» reading averaged across sources. | The mode origin (forced oscillation from a specific plant per ICAI; natural system mode aggravated by operational state per REE) is precisely the discrepancy the TFG must preserve, not editorially resolve. | Veto on unilateral choice between the two hypotheses and obligation to produce dual versions with explicit source attribution. |
 
@@ -65,7 +65,7 @@ Correction required formulating the prompt with an explicit restriction on the a
 
 ### The Tap-Lag case
 
-The qualitative description models produce of OLTCs is correct in steady state, but by default assumes a proportional, instantaneous response that the actual electromechanical assembly does not possess. The intentional delay introduced to prevent _hunting_ translated on 28 April into a transformation ratio out of phase with the electrical transient, multiplying the overvoltage towards the 220 kV and 132 kV networks — a phenomenon invisible to the operator's SCADA, anchored to 400 kV primary measurements. The entire Tap-Lag causal chain required pre-loading the model with the OLTC time constants and prohibiting it from assuming quasi-instantaneous response.
+The qualitative description models produce of OLTCs is correct in steady state, but by default assumes a proportional, instantaneous response that the actual electromechanical assembly does not possess. The intentional delay introduced to prevent hunting translated on 28 April into a transformation ratio out of phase with the electrical transient, multiplying the overvoltage towards the 220 kV and 132 kV networks — a phenomenon invisible to the operator's SCADA, anchored to 400 kV primary measurements. The entire Tap-Lag causal chain required pre-loading the model with the OLTC time constants and prohibiting it from assuming quasi-instantaneous response.
 
 ### The meshing capacitive injection case
 

@@ -46,7 +46,7 @@ The subsequent institutional reform mandated the formalisation of PICASSO as a *
 
 From a fundamental electrical engineering perspective, the most profound contribution of the post-28 April analysis was the death certificate of the traditional **Short Circuit Ratio** (SCR) as a valid metric for assessing high-renewable penetration networks.
 
-The simultaneous collapse of photovoltaic inverters in Spain and the Dax–Arriosses sub-network in France demonstrated that the SCR, by evaluating a single isolated node, blindly ignores the resonant oscillations and destructive interactions occurring between multiple nearby power electronic converters. European network codes forcibly adopted the **MRSCR** (Multiple Renewable Energy Stations Short-Circuit Ratio) metric:
+The simultaneous collapse of photovoltaic inverters in Spain and the Dax–Arriosses sub-network in France demonstrated that the SCR, by evaluating a single isolated node, blindly ignores the resonant oscillations and destructive interactions occurring between multiple nearby power electronic converters. European network codes forcibly adopted the *MRSCR* (Multiple Renewable Energy Stations Short-Circuit Ratio) metric:
 
 $$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
 

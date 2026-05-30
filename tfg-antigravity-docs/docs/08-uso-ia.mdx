@@ -16,7 +16,7 @@ La elaboración de este TFG se ha desarrollado en un contexto metodológico atí
 El cuerpo documental de partida abarca expedientes técnicos, normativas de ENTSO-E, informes oficiales de extensión superior a 200 páginas, simulaciones PSS/E del IIT-ICAI, actas de la CNMC, registros oscilográficos del NREL y un volumen amplio de hemeroteca especializada. Su lectura lineal sin mediación informática resultaba incompatible con los plazos académicos del TFG. La integración de modelos generativos se ha articulado en torno a cinco funciones operativas claramente delimitadas, **ninguna de las cuales involucra inferencia causal autónoma sobre la física del sistema**:
 
 <ForensicTable 
-  title="TABLA 20 | TABLA 20 | TABLA 15 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+  title="TABLA 20 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
   source="Elaboración propia"
 >
 
@@ -39,14 +39,14 @@ El elemento metodológicamente decisivo no es la asistencia LLM en sí misma, si
 La utilización de modelos generativos en un dominio tan denso en relaciones causales como la dinámica de sistemas de potencia revela, de forma sistemática, un comportamiento que los sistemas eléctricos no toleran: la **inferencia por analogía estadística**. Los LLM tienden a aplicar patrones causales _típicos_ —los más frecuentes en la literatura de su corpus de entrenamiento— a casos cuya estructura física es _atípica_. El 28-A es, por su naturaleza dual (estabilidad de tensión en lugar de balance de frecuencia), un caso atípico respecto a la mayoría de los apagones documentados en la bibliografía técnica del siglo XX, lo que hizo especialmente productiva la observación de los puntos en los que la IA "por defecto" se desviaba del fenómeno real.
 
 <ForensicTable 
-  title="TABLA 21 | TABLA 21 | TABLA 16 | LLM HEURISTIC FAILURE MODES"
+  title="TABLA 21 | LLM HEURISTIC FAILURE MODES"
   source="Elaboración propia"
 >
 
 | Fenómeno | Inferencia errónea por defecto del LLM | Corrección física aplicada | Estrategia de _prompt_ correctora |
 | --- | --- | --- | --- |
 | **Paradoja del UFLS** | El deslastre de cargas por subfrecuencia "salvó" áreas del sistema al recuperar el balance de potencia activa. | El UFLS es ciego al voltaje: al desconectar carga retiró sumideros de reactiva inductiva en pleno transitorio capacitivo, agravando la sobretensión. | Restricción explícita: razonar exclusivamente en el plano Q-V, ignorando la lógica frecuencia–potencia activa habitual en apagones clásicos. |
-| **Tap-Lag** | Los OLTC respondieron correctamente al transitorio elevando o rebajando la tensión secundaria de forma proporcional. | Los retardos intencionales de los OLTC —diseñados para evitar _hunting_— los dejaron desfasados frente a un transitorio de decenas de milisegundos, multiplicando la tensión hacia la red de 220 kV y 132 kV. | Inyección de la constante de tiempo real del conjunto electromecánico OLTC y prohibición de asumir respuesta cuasi-instantánea. |
+| *Tap-Lag* | Los OLTC respondieron correctamente al transitorio elevando o rebajando la tensión secundaria de forma proporcional. | Los retardos intencionales de los OLTC —diseñados para evitar hunting— los dejaron desfasados frente a un transitorio de decenas de milisegundos, multiplicando la tensión hacia la red de 220 kV y 132 kV. | Inyección de la constante de tiempo real del conjunto electromecánico OLTC y prohibición de asumir respuesta cuasi-instantánea. |
 | **Aporte capacitivo del mallado** | El mallado redujo la impedancia del sistema y, por tanto, aumentó la estabilidad de tensión. | En condiciones de baja carga, el mallado activó la admitancia transversal de las líneas de 400 kV (efecto Ferranti), inyectando los 1.050 MVAr capacitivos que precipitaron la sobretensión. | Restricción al régimen "línea descargada" y exigencia de calcular el balance de reactiva con la admitancia capacitiva $Y_t$ en el modelo π de la línea. |
 | **Oscilación de 0,6 Hz** | Producción de una respuesta _integrada_ — la lectura "más probable" promediada sobre las fuentes. | El origen del modo (oscilación forzada por una planta concreta según ICAI; modo natural del sistema según REE) es precisamente la discrepancia que el TFG debe preservar, no resolver editorialmente. | Veto a la elección unilateral entre ambas hipótesis y obligación de producir versiones duales con atribución explícita a su fuente. |
 | **Topología de red oculta** | Alucinación de esquemas de conexión y arquitecturas de control de inversores específicos. | La arquitectura interna de los lazos de control de las plantas no es pública. Ante la ausencia de datos en internet, el LLM inventa diagramas plausibles pero ficticios. | Restricción estricta a basarse únicamente en los diagramas unifilares aportados en los informes oficiales, prohibiendo inferir topologías no documentadas. |
@@ -61,7 +61,7 @@ La corrección requirió formular el _prompt_ con una restricción explícita so
 
 ### El caso del Tap-Lag
 
-La descripción cualitativa que los modelos producen del OLTC es correcta en régimen estacionario, pero asume por defecto una respuesta proporcional e instantánea que el conjunto electromecánico real no posee. El retardo intencional introducido para evitar _hunting_ se tradujo el 28-A en una relación de transformación desfasada respecto al transitorio eléctrico, lo que multiplicó la sobretensión hacia las redes de 220 kV y 132 kV — fenómeno invisible para el SCADA del operador, anclado en las medidas del primario de 400 kV. Toda la cadena causal del Tap-Lag exigió describir al modelo, por adelantado, las constantes de tiempo del OLTC y prohibirle asumir respuesta cuasi-instantánea.
+La descripción cualitativa que los modelos producen del OLTC es correcta en régimen estacionario, pero asume por defecto una respuesta proporcional e instantánea que el conjunto electromecánico real no posee. El retardo intencional introducido para evitar hunting se tradujo el 28-A en una relación de transformación desfasada respecto al transitorio eléctrico, lo que multiplicó la sobretensión hacia las redes de 220 kV y 132 kV — fenómeno invisible para el SCADA del operador, anclado en las medidas del primario de 400 kV. Toda la cadena causal del Tap-Lag exigió describir al modelo, por adelantado, las constantes de tiempo del OLTC y prohibirle asumir respuesta cuasi-instantánea.
 
 ### El caso del aporte capacitivo del mallado
 

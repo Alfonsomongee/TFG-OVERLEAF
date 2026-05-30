@@ -15,7 +15,7 @@ L'elaborazione di questo TFG (Lavoro di Fine Grado) si è sviluppata in un conte
 Il corpus documentale di partenza comprende fascicoli tecnici, normative di ENTSO-E, rapporti ufficiali di oltre 200 pagine, simulazioni PSS/E dell'IIT-ICAI, verbali della CNMC, registrazioni oscillografiche del NREL e un ampio volume di emeroteca specializzata. La loro lettura lineare senza mediazione informatica risultava incompatibile con le scadenze accademiche del TFG. L'integrazione di modelli generativi si è articolata attorno a cinque funzioni operative chiaramente delimitate, **nessuna delle quali comporta un'inferenza causale autonoma sulla fisica del sistema**:
 
 <ForensicTable 
-    title="TABELLA 18 | TABLA 14 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+    title="TABELLA 20 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
     source="Elaboración propia"
   >
 
@@ -40,14 +40,14 @@ L'elemento metodologicamente decisivo non è l'assistenza dell'LLM in sé, ma il
 L'utilizzo di modelli generativi in un dominio così denso di relazioni causali come la dinamica dei sistemi di potenza rivela, sistematicamente, un comportamento che i sistemi elettrici non tollerano: l'**inferenza per analogia statistica**. Gli LLM tendono ad applicare schemi causali _tipici_ —i più frequenti nella letteratura del loro corpus di addestramento— a casi la cui struttura fisica è _atipica_. Il 28-A è, per la sua natura duale (stabilità di tensione anziché bilancio di frequenza), un caso atipico rispetto alla maggior parte dei blackout documentati nella bibliografia tecnica del XX secolo; ciò ha reso particolarmente fruttuosa l'osservazione dei punti in cui l'IA «di default» si discostava dal fenomeno reale.
 
 <ForensicTable 
-    title="TABELLA 19 | TABLA 15 | LLM HEURISTIC FAILURE MODES"
+    title="TABELLA 21 | LLM HEURISTIC FAILURE MODES"
     source="Elaboración propia"
   >
 
 | Fenomeno | Inferenza errata di default dell'LLM | Correzione fisica applicata | Strategia di _prompt_ correttiva |
 | --- | --- | --- | --- |
 | **Paradosso dell'UFLS** | Il distacco dei carichi per sottofrequenza ha «salvato» aree del sistema ripristinando l'equilibrio della potenza attiva. | L'UFLS è cieco alla tensione: scollegando il carico ha rimosso i pozzi di reattiva induttiva in pieno transitorio capacitivo, aggravando la sovratensione. | Restrizione esplicita: ragionare esclusivamente nel piano Q-V, ignorando la consueta logica frequenza–potenza attiva dei blackout classici. |
-| **Tap-Lag** | Gli OLTC hanno risposto correttamente al transitorio alzando o abbassando la tensione secondaria in modo proporzionale. | I ritardi intenzionali degli OLTC —concepiti per evitare l'_hunting_— li hanno resi sfasati rispetto a un transitorio di decine di millisecondi, moltiplicando la tensione verso la rete a 220 kV e 132 kV. | Iniezione della costante di tempo reale del complesso elettromeccanico OLTC e divieto di presumere una risposta quasi istantanea. |
+| *Tap-Lag* | Gli OLTC hanno risposto correttamente al transitorio alzando o abbassando la tensione secondaria in modo proporzionale. | I ritardi intenzionali degli OLTC —concepiti per evitare l'hunting— li hanno resi sfasati rispetto a un transitorio di decine di millisecondi, moltiplicando la tensione verso la rete a 220 kV e 132 kV. | Iniezione della costante di tempo reale del complesso elettromeccanico OLTC e divieto di presumere una risposta quasi istantanea. |
 | **Apporto capacitivo della magliatura** | La magliatura ha ridotto l'impedenza del sistema e, di conseguenza, aumentato la stabilità di tensione. | In condizioni di basso carico, la magliatura ha attivato l'ammettenza trasversale delle linee a 400 kV (effetto Ferranti), iniettando i 1.050 MVAr capacitivi che hanno fatto precipitare la sovratensione. | Restrizione al regime di «linea scarica» e richiesta di calcolare il bilancio della reattiva con l'ammettenza capacitiva $Y_t$ nel modello π della linea. |
 | **Oscillazione di 0,6 Hz** | Produzione di una risposta _integrata_ — la lettura «più probabile» mediata sulle fonti. | L'origine del modo (oscillazione forzata da un impianto specifico secondo ICAI; modo naturale del sistema secondo REE) è precisamente la discrepanza che il TFG deve preservare, non risolvere editorialmente. | Veto alla scelta unilaterale tra le due ipotesi e obbligo di produrre versioni duali con attribuzione esplicita alla relativa fonte. |
 
@@ -63,7 +63,7 @@ La correzione ha richiesto la formulazione di un _prompt_ con una limitazione es
 
 ### Il caso del Tap-Lag
 
-La descrizione qualitativa dell'OLTC fornita dai modelli è corretta in regime stazionario, ma presume di default una risposta proporzionale e istantanea che il reale complesso elettromeccanico non possiede. Il ritardo intenzionale introdotto per evitare l'_hunting_ si è tradotto il 28-A in un rapporto di trasformazione sfasato rispetto al transitorio elettrico, moltiplicando la sovratensione verso le reti a 220 kV e 132 kV — un fenomeno invisibile allo SCADA dell'operatore, ancorato alle misurazioni del primario a 400 kV. L'intera catena causale del Tap-Lag ha richiesto di descrivere al modello, anticipatamente, le costanti di tempo dell'OLTC, vietandogli di presumere una risposta quasi istantanea.
+La descrizione qualitativa dell'OLTC fornita dai modelli è corretta in regime stazionario, ma presume di default una risposta proporzionale e istantanea che il reale complesso elettromeccanico non possiede. Il ritardo intenzionale introdotto per evitare l'hunting si è tradotto il 28-A in un rapporto di trasformazione sfasato rispetto al transitorio elettrico, moltiplicando la sovratensione verso le reti a 220 kV e 132 kV — un fenomeno invisibile allo SCADA dell'operatore, ancorato alle misurazioni del primario a 400 kV. L'intera catena causale del Tap-Lag ha richiesto di descrivere al modello, anticipatamente, le costanti di tempo dell'OLTC, vietandogli di presumere una risposta quasi istantanea.
 
 ### Il caso dell'apporto capacitivo della magliatura
 
