@@ -98,7 +98,9 @@ const config = {
     ],
   ],
 
-  clientModules: [],
+  clientModules: [
+    require.resolve('./src/js/copyEmail.js'),
+  ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
