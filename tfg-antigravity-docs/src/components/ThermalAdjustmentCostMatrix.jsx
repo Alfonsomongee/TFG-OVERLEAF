@@ -1,4 +1,4 @@
-/ src/components/ThermalAdjustmentCostMatrix.jsx
+// src/components/ThermalAdjustmentCostMatrix.jsx
 // Mapa de calor horario de costes de servicios de ajuste (€/MWh)
 // Fuente: REData API (REE) con fallback a datos históricos reales del período 26/04-02/05/2025
 
