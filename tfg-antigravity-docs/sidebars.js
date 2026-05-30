@@ -137,6 +137,11 @@ const sidebars = {
       className: 'sidebar-icon-zap',
       items: [
         {
+          type: 'html',
+          value: '<div style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--ifm-color-primary); letter-spacing: 0.1em; margin-top: 0.5rem; margin-bottom: 0.5rem; padding-left: 0.5rem; text-transform: uppercase; border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding-bottom: 0.3rem;">Telemetría del Incidente</div>',
+          defaultStyle: true,
+        },
+        {
           type: 'doc',
           id: 'datos-tiempo-real/index',
           label: 'Centro de Control del 28-A',
@@ -173,7 +178,7 @@ const sidebars = {
         },
         {
           type: 'html',
-          value: '<div class="sidebar-divider">Contexto Histórico (REData)</div>',
+          value: '<div style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--ifm-color-primary); letter-spacing: 0.1em; margin-top: 1.5rem; margin-bottom: 0.5rem; padding-left: 0.5rem; text-transform: uppercase; border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding-bottom: 0.3rem;">Estructura y Mercado</div>',
           defaultStyle: true,
         },
         {
