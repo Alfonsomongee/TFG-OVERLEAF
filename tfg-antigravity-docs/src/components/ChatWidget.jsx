@@ -69,23 +69,23 @@ export default function ChatWidget() {
           zIndex: 9999,
           background: 'none',
           border: 'none',
-          color: open ? '#ff4b4b' : '#00f2fe',
+          color: open ? '#ff4b4b' : '#ffffff',
           cursor: 'pointer',
           fontSize: 42,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'all 0.3s ease',
-          filter: open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 12px rgba(0,242,254,0.8))',
+          filter: open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 15px rgba(59,130,246,0.9))',
           padding: 0,
         }}
         onMouseEnter={e => {
           e.currentTarget.style.transform = 'scale(1.15) translateY(-4px)';
-          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 20px rgba(255,75,75,1))' : 'drop-shadow(0 0 25px rgba(0,242,254,1))';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 20px rgba(255,75,75,1))' : 'drop-shadow(0 0 25px rgba(59,130,246,1))';
         }}
         onMouseLeave={e => {
           e.currentTarget.style.transform = 'scale(1) translateY(0)';
-          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 12px rgba(0,242,254,0.8))';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 15px rgba(59,130,246,0.9))';
         }}
       >
         {open ? '✕' : '✨'}

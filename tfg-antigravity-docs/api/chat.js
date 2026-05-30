@@ -16,7 +16,10 @@ function getSearch() {
   if (!miniSearch) {
     miniSearch = MiniSearch.loadJSON(
       JSON.stringify(searchIndexData),
-      { documentIds: chunks.map((_, i) => i) }
+      {
+        fields: ['title', 'heading', 'text'],
+        storeFields: ['title', 'heading', 'text', 'slug']
+      }
     );
   }
   return miniSearch;
