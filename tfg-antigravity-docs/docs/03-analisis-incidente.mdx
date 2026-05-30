@@ -10,6 +10,8 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
 import PVCurveSimulator from "@site/src/components/PVCurveSimulator";
 import ANSI59Cascade from "@site/src/components/ANSI59Cascade";
+import FrequencyChart from "@site/src/components/FrequencyChart";
+import BlackoutPropagationMap from "@site/src/components/BlackoutPropagationMap";
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
@@ -38,7 +40,9 @@ Las simulaciones periciales del IIT-ICAI estiman que, tras el mallado, la distan
 
 La naturaleza del primer transitorio —la oscilación de 0,6 Hz de las 12:03 CEST— es objeto de controversia técnica directa. REE la clasifica como una oscilación forzada originada en el lazo de control de una planta fotovoltaica en Badajoz. El informe ICAI argumenta, en cambio, que se trató de un modo natural inter-área exacerbado por un ratio de amortiguamiento sistémico del **1 %**, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados andaluces que permanecían apagados.
 
-![Evolución de la frecuencia del sistema durante la Fase 1. Análisis NREL](/figuras/timeline_frecuencia_nrel.png) _Figura 14. Evolución de la frecuencia durante la Fase 1 (análisis NREL). La frecuencia cae de 50,00 Hz a 48,30 Hz en 11 s, cruzando los umbrales de deslastre automático (49,0 Hz) y disparo de generación (48,5 Hz). Fuente: Red Eléctrica de España (ENTSO-E open data)._
+<FrequencyChart isGallery={true} lang={frontMatter.locale || 'es'} />
+
+_Figura 14. Evolución de la frecuencia durante la Fase 1. Datos: ENTSO-E / REE. Visualización interactiva de elaboración propia._
 
 La inestabilidad se intensificó a las **12:19 CEST** con el modo de **0,2 Hz**, confirmado por telemetría fasorial europea como el modo natural Este-Centro-Oeste del área síncrona: la reducida masa rotatoria ibérica oscilaba en contrafase respecto al centro de inercia europeo, materializando el efecto látigo descrito en el Capítulo 2.
 
@@ -137,7 +141,9 @@ Una vez que la tensión supera el umbral de las protecciones ANSI 59, el sistema
 
 En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo vicioso dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR para autoprotegerse, la red perdía instantáneamente su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de **443 kV** en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
 
-![Cascada de Desconexiones IBR](/figuras/cascada_desconexiones.png) _Figura 17. Cascada de desconexiones IBR — propagación geográfica durante los once segundos de la Fase 3. Fuente: Comité de Análisis del Gobierno._
+<BlackoutPropagationMap lang={frontMatter.locale || 'es'} />
+
+_Figura 17. Cascada de desconexiones IBR — propagación geográfica durante la Fase 3. Simulación interactiva de elaboración propia basada en datos ENTSO-E / Comité de Análisis._
 
 <span id="t6"></span>
 Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz** (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de **Segovia, Sevilla y Huelva**. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación (casi el 60% de la capacidad instantánea ibérica previa), dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda española completamente sin suministro y llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia exactos de cada desconexión, véase la [**Tabla 16 / Línea Temporal**](./16-galeria-forense.mdx) en la Galería Forense).
@@ -146,7 +152,7 @@ Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz*
 
 A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink> extrema (con picos secundarios estimados de <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>), activando los esquemas de <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>. Al cruzar el umbral de **49,5 Hz** a las 12:33:20 CEST, se desconectaron automáticamente más de **2.000 MW** de bombeo hidráulico, y al caer la red por debajo de **<CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta>**, se deslastraron los primeros escalones de demanda industrial.
 
-![Evolución Acoplada de Tensión y Frecuencia](/figuras/tension_frecuencia_colapso.png) _Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3. El incremento de tensión precede a la caída de frecuencia, confirmando colapso primariamente capacitivo. Fuente: Comité de Análisis del Gobierno._
+_Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3 — Ver Figura 11 arriba (Sismógrafo del Colapso)._
 
 La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, **reforzando el colapso que el propio UFLS pretendía frenar**. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión ([*simular Retrato de Fases del UFLS*](./galeria-graficas.mdx#phaseplane)).
 

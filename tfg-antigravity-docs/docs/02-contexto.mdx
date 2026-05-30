@@ -6,6 +6,8 @@ title: "Contexto Técnico"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import EnergyTransitionStreamgraph from "@site/src/components/EnergyTransitionStreamgraph";
+import MixGeneracion from "@site/src/components/MixGeneracion";
+import CollapseSismograph from "@site/src/components/CollapseSismograph";
 
 <GlitchTitle>Contexto Técnico</GlitchTitle>
 
@@ -45,7 +47,9 @@ En los días previos al apagón, el sistema peninsular operó bajo lo que la lit
 
 Este escenario de demanda valle coincidió con una excepcional disponibilidad de recurso renovable, de modo que la generación no síncrona cubría el **82 % del mix instantáneo**: aproximadamente **18.000 MW** de solar fotovoltaica (*53 %*) y **3.500 MW** de eólica (*11 %*). Para equilibrar el excedente de potencia activa, el sistema recurrió simultáneamente al bombeo hidráulico (~3.000 MW) y a la exportación neta hacia Francia, Portugal y Marruecos. La generación síncrona convencional quedó desplazada a mínimos históricos: nuclear al **10 %** (3,4 GW) y ciclos combinados de gas a un exiguo **3 %** (~1.600 MW).
 
-![Perfil de generación del sistema peninsular el 28 de abril de 2025](/figuras/ree_generation_mix_28april.png) _Figura 7. Perfil de generación del 28-A. El valle de demanda coincidió con el pico fotovoltaico, desplazando la generación síncrona a mínimos históricos. Fuente: NREL / Red Eléctrica._
+<MixGeneracion />
+
+_Figura 7. Perfil de generación del sistema peninsular el 28 de abril de 2025 (12:30 CEST). Datos: ESIOS (REE) / Comité de Análisis. Visualización interactiva de elaboración propia._
 
 Esta reducción de masas rotatorias se tradujo en valores de inercia síncrona excepcionalmente bajos: **1,3 s** en el área Sur y **1,84 s** en el área Centro — ambos por debajo del umbral de 2 s recomendado por <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>. La operación prolongada en estas condiciones ya había producido señales de estrés dinámico los días **16, 22 y 24 de abril**, con episodios de inestabilidad de tensión en la red de transporte.
 
@@ -89,4 +93,6 @@ El análisis de los registros del <GlossaryLink term="EAS (ENTSO-E Awareness Sys
 
 Esta ausencia de escalada generó visibilidad limitada hacia los operadores vecinos. El operador francés (RTE) no recibió señales de vulnerabilidad dinámica al sur de los Pirineos; al permanecer el EAS en estado "Normal", no se activaron protocolos de cooperación transfronteriza ni se preparó la red francesa para el transitorio que afectó a la frontera a las 12:33:21 CEST. El episodio pone de manifiesto que el EAS actuó no como herramienta de alerta temprana, sino como **notificador post mortem** del colapso — una limitación estructural del sistema europeo de monitorización para capturar la dinámica rápida de tensión en redes de baja inercia, y una de las lecciones regulatorias centrales del incidente.
 
-![Evolución de la frecuencia y la tensión en la subestación de Carmona (400 kV)](/figuras/frequency_voltage_carmona.png) _Figura 11. Frecuencia y tensión en la subestación de Carmona (400 kV). La transición abrupta Normal → Blackout queda registrada en la caída simultánea de ambas variables. Fuente: ENTSO-E / REE._
+<CollapseSismograph lang={frontMatter.locale || 'es'} />
+
+_Figura 11. Frecuencia y tensión en la subestación de Carmona (400 kV). Datos: ENTSO-E / REE. Visualización interactiva de elaboración propia._
