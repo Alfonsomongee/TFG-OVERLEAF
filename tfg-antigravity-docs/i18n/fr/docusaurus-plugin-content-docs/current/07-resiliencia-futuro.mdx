@@ -20,7 +20,7 @@ La leçon structurelle du 28 avril ne réside pas dans l'effondrement lui-même,
 
 ### Inertie, RoCoF et l'équation d'oscillation
 
-La stabilité dynamique de la fréquence dans un système électrique est régie par l'**Équation d'oscillation** (_Swing Equation_) :
+La stabilité dynamique de la fréquence dans un système électrique est régie par l'**Équation d'oscillation** (Swing Equation) :
 
 $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
@@ -43,7 +43,7 @@ $$
 $$
 
 <ForensicTable 
-    title="TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
+    title="TABLEAU 14 | TABLA 9 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
     source="Estándar ENTSO-E / literatura técnica"
   >
 
@@ -136,7 +136,7 @@ La minimisation du coût total du système ne coïncide pas avec la minimisation
 
 ### IA et Réseaux de Neurones sur Graphes (GNN) pour la stabilité
 
-Le vide entre l'état de l'art académique et la réalité opérationnelle des TSO européens a été mis en évidence dans la panne ibérique. Tandis que des centres de contrôle comme ceux de REE ou RTE (France) continuent d'utiliser des outils d'analyse modale classique pour surveiller les Unités de Mesure Phasorielle (PMU), la frontière de la recherche a résolu la prédiction de l'effondrement par l'apprentissage profond (*Deep Learning*).
+Le vide entre l'état de l'art académique et la réalité opérationnelle des TSO européens a été mis en évidence dans la panne ibérique. Tandis que des centres de contrôle comme ceux de REE ou RTE (France) continuent d'utiliser des outils d'analyse modale classique pour surveiller les Unités de Mesure Phasorielle (PMU), la frontière de la recherche a résolu la prédiction de l'effondrement par l'apprentissage profond (Deep Learning).
 
 Les architectures de **Réseaux de Neurones sur Graphes (GNN)** sont intrinsèquement topologiques : elles comprennent le réseau électrique non pas comme des variables indépendantes, mais comme un graphe interconnecté d'impédances. Des modèles mathématiques récents (comme ceux de Nauck et al., 2023) appliquent les GNN sur des données phasorielles pour prédire le *Bassin de Stabilité* d'un nœud (SNBS) avant que la tension ne commence à chuter. De manière similaire, des architectures basées sur les *Transformers* (comme le modèle StaaT, 2024) ont démontré qu'elles surpassent largement les réseaux LSTM dans la prédiction de la stabilité de la tension à court terme en utilisant uniquement des séries temporelles de PMU. La mise en œuvre d'un système d'Intelligence Artificielle basé sur ces architectures aurait détecté le rétrécissement de la marge Q-V au nœud de Grenade quelques minutes avant que le transformateur ne s'effondre thermiquement.
 
@@ -168,7 +168,7 @@ $$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
 Les systèmes BESS reçoivent en outre un paiement de disponibilité de **2,7 €/MW/jour**, conditionné au maintien d'un taux de conformité d'échantillons valides supérieur à **90 %**.
 
 <ForensicTable 
-    title="TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
+    title="TABLEAU 15 | TABLA 10 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
     source="CNMC / REE"
   >
 
@@ -177,7 +177,7 @@ Les systèmes BESS reçoivent en outre un paiement de disponibilité de **2,7 �
 | Nature du contrôle | Statique et asymétrique. Opération par paliers. | Dynamique, continue et proportionnelle à l'écart. |
 | Participation IBR | _Grid-following_ passif avec facteur de puissance fixe. | _Grid-forming_ obligatoire. Contrôle actif de $V$ et $Q$. |
 | Bande morte | 405–410 kV sans réponse obligatoire. | Éliminée ou réduite à ±0,5 % de $U_n$. |
-| Réponse en réactive | Paliers de consigne lente après demande de l'OS. | Réponse automatique en boucle fermée (_droop control_). |
+| Réponse en réactive | Paliers de consigne lente après demande de l'OS. | Réponse automatique en boucle fermée (droop control). |
 | Rémunération de Q | Basée sur la disponibilité technique déclarée. | Marchés zonaux des services ERS. |
 | Observabilité | Télémesures SCADA 400 kV, résolution de plusieurs secondes. | PMU et télémesure de 4 s pour IBR distribués. |
 | Régime de sanctions | Sans pénalités spécifiques pour non-respect de la réactive. | Pénalités pour non-respect du taux minimum de 90 %. |
@@ -210,7 +210,7 @@ Le Groupe Technique d'ENTSO-E (TG GFC) a cristallisé son travail dans deux docu
 Les obligations du **NC RfG 2.0** s'appliquent selon une approche technologiquement agnostique, classant les modules en quatre types :
 
 <ForensicTable 
-    title="TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
+    title="TABLEAU 16 | TABLA 11 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
     source="ENTSO-E / Comisión Europea"
   >
 
@@ -261,7 +261,7 @@ EirGrid (Irlande) et ERCOT (Texas) sont les références opérationnelles confir
 Le programme **DS3** d'EirGrid a fragmenté la fourniture de stabilité en 14 produits spécialisés. Les trois plus pertinents pour le contexte du 28-A :
 
 <ForensicTable 
-    title="TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
+    title="TABLEAU 17 | TABLA 12 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
     source="EirGrid / ENTSO-E"
   >
 
@@ -269,7 +269,7 @@ Le programme **DS3** d'EirGrid a fragmenté la fourniture de stabilité en 14 pr
 | --- | --- | --- |
 | **Synchronous Inertial Response (SIR)** | Fourniture quasi-instantanée de puissance active et de couple synchronisant face aux chutes de fréquence. Rémunéré par l'indice SIRF = $E_k / P_{\min}$, qui pénalise le dispatch des centrales injectant de la puissance non désirée uniquement pour apporter de l'inertie marginale. | SIRF ≥ 15 s |
 | **Fast Frequency Response (FFR)** | Injection rapide de puissance active après une chute brutale de fréquence. L'énergie validable est l'intégrale de la puissance supplémentaire injectée dans les 10 premières secondes. Il est exigé que l'énergie fournie soit supérieure à la perte lors de la récupération (T+10s → T+20s). | Réponse entre 0,15 s et 2 s |
-| **Steady-State Reactive Power (SSRP)** | Plage totale de puissance réactive dispatchable ($Q_{\mathrm{range}}$) que l'onduleur peut injecter ou absorber en fonctionnement continu sur l'ensemble de sa plage de puissance active. Comprend un scalaire de rémunération favorable pour les IBR capables de fournir de la réactive à vide (_watt-less VARs_). | Régime permanent ; évaluation annuelle par des modèles PLEXOS |
+| **Steady-State Reactive Power (SSRP)** | Plage totale de puissance réactive dispatchable ($Q_{\mathrm{range}}$) que l'onduleur peut injecter ou absorber en fonctionnement continu sur l'ensemble de sa plage de puissance active. Comprend un scalaire de rémunération favorable pour les IBR capables de fournir de la réactive à vide (watt-less VARs). | Régime permanent ; évaluation annuelle par des modèles PLEXOS |
 
 
 
