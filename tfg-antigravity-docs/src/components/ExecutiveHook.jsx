@@ -121,8 +121,11 @@ export default function ExecutiveHook() {
     const animate = () => {
       const ms = Date.now() - start;
       setElapsed(ms);
-      if (ms < 10000) {
+      if (ms < 5000) {
         animationFrame = requestAnimationFrame(animate);
+      } else {
+        // Auto-dismiss splash after 5s
+        handleEnter();
       }
     };
     animationFrame = requestAnimationFrame(animate);
@@ -246,10 +249,10 @@ export default function ExecutiveHook() {
   };
   const strings = getStrings(lang);
 
-  let titleOpacity = Math.min(1, Math.max(0, (elapsed - 500) / 1000));
-  let subtitleOpacity = Math.min(1, Math.max(0, (elapsed - 1500) / 1000));
-  let authorOpacity = Math.min(1, Math.max(0, (elapsed - 2500) / 1000));
-  let clickOpacity = Math.min(1, Math.max(0, (elapsed - 3500) / 1000));
+  let titleOpacity = Math.min(1, Math.max(0, (elapsed - 200) / 500));
+  let subtitleOpacity = Math.min(1, Math.max(0, (elapsed - 700) / 500));
+  let authorOpacity = Math.min(1, Math.max(0, (elapsed - 1200) / 500));
+  let clickOpacity = Math.min(1, Math.max(0, (elapsed - 1700) / 500));
 
   return (
     <>
