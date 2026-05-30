@@ -4,7 +4,6 @@ hide_title: true
 title: "Finanzielle Folgen und Kosten der Resilienz: Ein wirtschaftliches Audit"
 ---
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-import EconomicImpactTable from "@site/src/components/EconomicImpactTable";
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
@@ -35,7 +34,18 @@ Während des Stromausfalls vom 28. April 2025 erlebte die Iberische Halbinsel ei
 
 Um die aggregierten makroökonomischen Kosten zu parametrisieren, ist es zwingend erforderlich, den VoLL nach Sektoren aufzuschlüsseln, angesichts der großen Heterogenität der Energieabhängigkeit, der Resilienz von Prozessen und der Elastizität des finanziellen Schadens gegenüber der Unterbrechungsdauer. Die ökonometrischen Methoden der Europäischen Union und Studien zu Ausfällen (*Blackout Studies*) legen die folgenden Bewertungsspannen für entwickelte Volkswirtschaften wie die spanische und portugiesische fest.
 
-<EconomicImpactTable />
+<ForensicTable 
+    title="TABLA 13 | VoLL ESTIMATES BY SECTOR"
+    source="Elaboración propia (modelo VoLL)"
+  >
+
+| Makroökonomischer Sektor | Geschätzter VoLL-Bereich (€/kWh) | Marginale Sensibilität für Unterbrechungen | Effekte zweiter Ordnung (*Ripple Effects*) in der Wirtschaft |
+| :--- | :--- | :--- | :--- |
+| **Wohnbereich / Haushalte** | 5,00 - 45,00 | Gering-Mittel (steigt exponentiell mit der Dauer) | Verlust des thermischen Komforts, Verderb von Vorräten, massive Unterbrechung der Arbeitsproduktivität durch Ausfall von Telearbeit und Kommunikation. |
+| **Dienstleistungen / Einzelhandel** | 15,00 - 90,00 | Mittel-Hoch (Extreme Sensibilität zu Tageszeiten) | Zwangsweise Schließung von Gewerbebetrieben, völliger Stillstand von Zahlungsgateways und Kartenterminals, logistischer und Datenserver-Kollaps im tertiären Sektor. |
+| **Industrie (Allgemeine Fertigung)** | 50,00 - 250,00 | Sehr hoch (Kettenprozesse) | Versorgungsengpässe in Produktionslinien, Verlust von Rohstoffen durch nicht sequenzierte Stopps, Schäden an Investitionsgütern durch Spannungstransienten und Bruch von Just-in-Time-Lieferketten. |
+
+</ForensicTable>
 
 Unter Berücksichtigung der für den 28. April geplanten und prognostizierten tatsächlichen Nachfragekurve und der Berechnung des Integrals der Fläche unter der Kurve von 12:33 Uhr (Zeitpunkt des Zusammenbruchs) bis zur schrittweisen Wiederherstellung von 99,95 % der Nachfrage um 07:00 Uhr am 29. April liegt die aggregierte nicht gelieferte Energie (Energy Not Supplied, ENS) für das iberische System konservativ im Bereich von **150.000 bis 180.000 Megawattstunden (MWh)**, d. h. zwischen 150 und 180 GWh.
 
@@ -133,7 +143,10 @@ Basierend auf realen Pilotprojekten (wie der Unternehmensvereinbarung 2026 zwisc
 Damit der Systembetreiber (REE) auf die Überprogrammierung von Gas, die der "Verstärkten Operation" zugrunde liegt, verzichten kann, ist eine operative Mindestinstallation von **3.000 bis 4.000 MW** erforderlich.
 
 **Schätzung des strukturellen CAPEX auf nationaler Ebene:**
-> $3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Millionen Euro}$
+
+$$
+3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Millionen Euro}
+$$
 
 Unter dem Tarifsystem nach dem Ausfall belaufen sich die OPEX, die für die von der "Verstärkten Operation" auferlegten technischen Beschränkungen verschwendet werden, auf mehr als 1.000 Millionen Euro. In einem grundlegenden finanziellen Bewertungsmodell hätte ein CAPEX von 3.000 Millionen Euro zur Ausstattung des Netzes mit sauberer Trägheit eine dynamische Amortisationszeit (*Payback*) von weniger als fünf Jahren. Der Kapitalwert (Net Present Value, NPV) des Projekts ist massiv positiv.
 

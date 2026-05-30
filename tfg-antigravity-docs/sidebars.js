@@ -266,7 +266,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'galeria-graficas',
-          label: 'Galería de Gráficas',
+          label: 'Gráficas Interactivas',
         },
         {
           type: 'doc',

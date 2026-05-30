@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
 
@@ -12,6 +12,7 @@ import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
 import FinancialWaterfallChart from './FinancialWaterfallChart';
 import BlackoutPropagationMap from './BlackoutPropagationMap';
 import IberianGridTopology from './IberianGridTopology';
+import ThermalAdjustmentCostMatrix from './ThermalAdjustmentCostMatrix';
 import CollapseSismograph from './CollapseSismograph';
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -114,6 +115,14 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Simulateur Équation du Swing', desc: 'Simulateur interactif de l\'inertie (H), déséquilibre (ΔP) et Réponse Rapide de Fréquence (FFR).' },
       it: { title: 'Simulatore Equazione dello Swing', desc: 'Simulatore interattivo dell\'inerzia (H), squilibrio (ΔP) e Risposta Rapida di Frequenza (FFR).' },
       de: { title: 'Swing-Gleichung-Simulator', desc: 'Interaktiver Simulator für Trägheit (H), Ungleichgewicht (ΔP) und Schnelle Frequenzantwort (FFR).' }
+    },
+    matrix: {
+      es: { title: 'Matriz de Costes de Inacción', desc: 'Análisis comparativo entre el OPEX tóxico diario por inacción y el CAPEX del retrofitting.' },
+      en: { title: 'Cost of Inaction Matrix', desc: 'Comparative analysis between daily toxic OPEX from inaction and retrofitting CAPEX.' },
+      pt: { title: 'Matriz de Custos de Inação', desc: 'Análise comparativa entre o OPEX tóxico diário por inação e o CAPEX do retrofitting.' },
+      fr: { title: 'Matrice des Coûts de l\'Inaction', desc: 'Analyse comparative entre l\'OPEX toxique quotidien dû à l\'inaction et le CAPEX du rétrofitting.' },
+      it: { title: 'Matrice dei Costi dell\'Inazione', desc: 'Analisi comparativa tra l\'OPEX tossico giornaliero per inazione e il CAPEX del retrofitting.' },
+      de: { title: 'Kosten der Untätigkeit Matrix', desc: 'Vergleichende Analyse zwischen dem täglichen toxischen OPEX durch Untätigkeit und dem Retrofitting-CAPEX.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -136,13 +145,26 @@ const graphicsData = [
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot },
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot },
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard },
-  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator }
+  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator },
+  { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {
   const { i18n } = useDocusaurusContext();
   const locale = propLang || i18n.currentLocale;
   const [activeGraphicId, setActiveGraphicId] = useState(graphicsData[0].id);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && graphicsData.some(g => g.id === hash)) {
+        setActiveGraphicId(hash);
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const activeGraphic = graphicsData.find(g => g.id === activeGraphicId);
   const ActiveComponent = activeGraphic.component;

@@ -6,7 +6,6 @@ title: "Conseguenze Finanziarie e Costi di Resilienza: Audit Economico"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-import EconomicImpactTable from "@site/src/components/EconomicImpactTable";
 import InteractiveCTA from "@site/src/components/InteractiveCTA";
 import ThermalAdjustmentCostMatrix from "@site/src/components/ThermalAdjustmentCostMatrix";
 
@@ -34,7 +33,18 @@ Durante il blackout del 28 aprile 2025, la penisola iberica ha affrontato uno ze
 
 Per parametrizzare il costo macroeconomico aggregato, è imperativo disaggregare il VoLL per segmenti settoriali, data la profonda eterogeneità nella dipendenza energetica, nella resilienza dei processi e nell'elasticità del danno finanziario rispetto al tempo di interruzione. Le metodologie econometriche dell'Unione Europea e gli studi sui guasti (*Blackout Studies*) stabiliscono i seguenti intervalli di valutazione per economie sviluppate equivalenti a quella spagnola e portoghese.
 
-<EconomicImpactTable />
+<ForensicTable 
+    title="TABLA 13 | VoLL ESTIMATES BY SECTOR"
+    source="Elaboración propia (modelo VoLL)"
+  >
+
+| Settore Macroeconomico | Intervallo VoLL Stimato (€/kWh) | Sensibilità Marginale all'Interruzione | Impatto di Secondo Ordine (*Ripple Effects*) sull'Economia |
+| :--- | :--- | :--- | :--- |
+| **Residenziale / Domestico** | 5,00 - 45,00 | Bassa-Media (Aumenta esponenzialmente con la durata) | Perdita di benessere termico, deterioramento delle scorte deperibili, massiccia interruzione della produttività lavorativa per il crollo del telelavoro e delle comunicazioni. |
+| **Servizi / Commercio al Dettaglio** | 15,00 - 90,00 | Media-Alta (Estrema sensibilità in orari diurni) | Chiusura forzata degli esercizi commerciali, totale paralisi dei gateway di pagamento e dei POS, collasso logistico e dei server di dati nel settore terziario. |
+| **Industriale (Manifattura Generale)** | 50,00 - 250,00 | Molto Alta (Processi a catena) | Carenza di approvvigionamento delle linee di produzione, perdita di materie prime per arresti non sequenziati, danni ai beni strumentali per transitori di tensione e rottura delle catene di fornitura Just-In-Time. |
+
+</ForensicTable>
 
 Prendendo in considerazione la curva di domanda reale, programmata e prevista per il 28 aprile, e calcolando l'integrale dell'area sotto la curva dalle ore 12:33 (momento del collasso) fino al progressivo ripristino del 99,95% della domanda alle 07:00 del 29 aprile, l'Energia Non Fornita (ENS) aggregata per il sistema iberico si colloca in modo conservativo nello spettro dei **150.000 - 180.000 Megawattora (MWh)**, ovvero tra 150 e 180 GWh.
 
@@ -132,7 +142,10 @@ Basandosi su progetti pilota reali (come l'accordo societario del 2026 tra Engie
 Affinché l'operatore di sistema (REE) possa fare a meno della sovra-programmazione del gas che sostiene l'"Operazione Rinforzata", è necessaria l'installazione di un minimo operativo compreso tra **3.000 e 4.000 MW**.
 
 **Stima del CAPEX Strutturale a Livello Nazionale:**
-> $3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Milioni di Euro}$
+
+$$
+3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Milioni di Euro}
+$$
 
 Sotto il regime tariffario post-blackout, l'OPEX sperperato nei costi delle restrizioni tecniche imposte dall'"Operazione Rinforzata" ammonta a oltre 1.000 milioni. In un modello basilare di valutazione finanziaria, un CAPEX di 3.000 milioni di euro per dotare la rete di inerzia pulita avrebbe un periodo di ritorno dell'investimento dinamico (*Payback*) inferiore a cinque anni. Il Valore Attuale Netto (VAN) del progetto è massicciamente positivo.
 

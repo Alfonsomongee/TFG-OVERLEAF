@@ -6,7 +6,6 @@ title: "Consecuencias Financieras y Costes de Resiliencia: Auditoría Económica
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-import EconomicImpactTable from "@site/src/components/EconomicImpactTable";
 
 <GlitchTitle>Consecuencias Financieras y Costes de Resiliencia: Auditoría Económica</GlitchTitle>
 
@@ -32,7 +31,18 @@ Durante el apagón del 28 de abril de 2025, la península ibérica se enfrentó 
 
 Para parametrizar el coste macroeconómico agregado, es imperativo desglosar el VoLL por segmentos sectoriales, dada la profunda heterogeneidad en la dependencia energética, la resiliencia de los procesos y la elasticidad del daño financiero frente al tiempo de interrupción. Las metodologías econométricas de la Unión Europea y los estudios de fallas (*Blackout Studies*) establecen las siguientes horquillas valorativas para economías desarrolladas equivalentes a la española y portuguesa.
 
-<EconomicImpactTable />
+<ForensicTable
+  title="TABLE 13 | VoLL ESTIMATES BY SECTOR"
+  source="Own elaboration (VoLL model)"
+>
+
+| Macroeconomic Sector | Estimated VoLL Range (€/kWh) | Marginal Sensitivity to Disruption | Second-Order Impact (*Ripple Effects*) on the Economy |
+| :--- | :--- | :--- | :--- |
+| **Residential / Domestic** | 5.00 - 45.00 | Low-Medium (Increases exponentially with duration) | Loss of thermal comfort, deterioration of perishable inventories, massive disruption of labor productivity due to the drop in telecommuting and communications. |
+| **Services / Retail Trade** | 15.00 - 90.00 | Medium-High (Extreme sensitivity during daytime hours) | Forced closure of commercial establishments, absolute paralysis of payment gateways and POS terminals, logistical and data server collapse in the tertiary sector. |
+| **Industrial (General Manufacturing)** | 50.00 - 250.00 | Very High (Chain processes) | Supply shortages in production lines, loss of raw materials due to non-sequenced stops, damage to capital equipment due to voltage transients, and breakdown of Just-in-Time supply chains. |
+
+</ForensicTable>
 
 Tomando en consideración la curva de demanda real, programada y prevista para el día 28 de abril, y calculando la integral del área bajo la curva desde las 12:33 horas (momento del colapso) hasta el restablecimiento progresivo del 99,95% de la demanda a las 07:00 horas del 29 de abril, la Energía No Suministrada (ENS) agregada para el sistema ibérico se sitúa de forma conservadora en el espectro de los **150.000 a 180.000 Megavatios-hora (MWh)**, es decir, entre 150 y 180 GWh. *(Nota metodológica: La horquilla de 150–180 GWh refleja la incertidumbre en la estimación del consumo elástico destruido versus desplazado. El límite inferior asume recuperación parcial de carga industrial nocturna; el superior asume destrucción neta por parada fría de procesos)*.
 
@@ -122,7 +132,10 @@ Basado en proyectos piloto reales (como el acuerdo corporativo en 2026 entre Eng
 Para que el operador del sistema (REE) prescinda de la sobreprogramación de gas que sustenta la "Operación Reforzada", se requiere la instalación de un mínimo operativo de entre **3.000 y 4.000 MW**.
 
 **Estimación del CAPEX Estructural a Nivel Nacional:**
-> $3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Millones de Euros}$
+
+$$
+3.500 \text{ MW} \times 0,86 \text{ M€/MW} \approx 3.010 \text{ Millones de Euros}
+$$
 
 Bajo el régimen tarifario post-apagón, el OPEX despilfarrado en el coste de restricciones técnicas impuestas por la "Operación Reforzada" asciende a más de 1.000 millones. En un modelo básico de evaluación financiera, un CAPEX de 3.000 millones de euros para dotar de inercia limpia a la red tendría un periodo de retorno de inversión dinámico (*Payback*) menor a cinco años. El Valor Actual Neto (VAN) del proyecto es masivamente positivo.
 
