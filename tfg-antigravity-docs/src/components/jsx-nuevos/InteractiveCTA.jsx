@@ -10,17 +10,7 @@
  * 3. aria-expanded en el botón para lectores de pantalla.
  * 4. aria-controls apuntando al panel expandible.
  */
-import React, { useState, useRef } from 'react';
-
-// useId polyfill: genera un ID único por instancia (compatible con React 17)
-let _idCounter = 0;
-function useUniqueId() {
-  const ref = useRef(null);
-  if (ref.current === null) {
-    ref.current = `cta-panel-${++_idCounter}`;
-  }
-  return ref.current;
-}
+import React, { useState, useId } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveCTA.module.css';
 
@@ -31,8 +21,8 @@ export default function InteractiveCTA({
   icon        = '⚡',
 }) {
   const [expanded, setExpanded] = useState(false);
-  // ID único por instancia (polyfill de useId para React 17)
-  const panelId = useUniqueId();
+  // useId genera un ID único por instancia, necesario si hay varios CTAs en la misma página
+  const panelId = useId();
 
   return (
     <div className={`${styles.ctaContainer} ${expanded ? styles.expanded : ''}`}>
