@@ -1,0 +1,25 @@
+# REGISTRO DE MEJORAS IMPLEMENTADAS (TFG OVERLEAF)
+Este archivo documenta los cambios reales aplicados en el código y el contenido del proyecto. 
+Sirve como registro de retroalimentación para la IA asesora.
+
+--------------------------------------------------
+## FECHA: 30 de Mayo de 2026
+**SPRINT / FASE:** Setup de IA y UX inicial
+**TAREAS IMPLEMENTADAS:**
+- Revisión general del "DOCUMENTO FINAL.txt" (Plan Maestro de Mejora).
+- Creación de este registro de trazabilidad.
+- **Rediseño del ChatWidget:** Eliminación del fondo circular oscuro, movimiento hacia arriba (bottom: 100) para no solapar el botón del Modo Cine, y aplicación de un efecto de luz "glow" azul brillante (`#3b82f6` en drop-shadow).
+- **Backend RAG:** Refactorización de `api/chat.js` solucionando el error 500 del indexado de `MiniSearch` (añadiendo el parámetro `fields: ['title', 'heading', 'text']` en la carga del JSON).
+- **Migración a DeepSeek:** Ante la caída de compatibilidad y los errores 400 masivos de la API de Gemini Flash 1.5, se ha reescrito por completo el backend para conectarse al modelo `deepseek-chat` utilizando el endpoint oficial de DeepSeek.
+- **Sprint 1 (Single Source of Truth):** Se ha extraído toda la información paramétrica de los componentes React y se ha creado el archivo maestro `static/data/datos28A.json` con las cifras oficiales de exportaciones netas, inercia, etc.
+- **RAG + Datos Estructurados:** Se ha modificado el indexador `build-index.js` para inyectar este JSON en el cerebro de DeepSeek, mapeándolo a la URL `/docs/galeria-de-tablas`.
+- **Saneamiento Masivo de Datos (Corrección Quirúrgica):** Se han escaneado todos los archivos `.mdx` para alinear sus valores numéricos con el análisis oficial aportado por el usuario en su JSON maestro. Se han corregido métricas de inercia (2,14 -> 2,17), mix renovable (84,5% -> 82%), y se ha rectificado terminología ("sympathetic inrush" a "magnetizing inrush en red de bajo SCR", y referencias correctas a Kundur 1994 en lugar del P.O. 13.1).
+- **Refactorización de Simuladores:** 
+  - `EnergyTrilemmaSimulator`: Corrección de la unidad de inercia en la interfaz y CSS (de "GWs" a "s").
+  - `CollapseSismograph`: Corrección del límite visual de tensión (ahora muestra picos >440 kV) y corrección del título temporal ("30 segundos: 12:32:57 → 12:33:27 CEST").
+- **Sprints 1 y 3 (Componentes Forenses Completados):** 
+  - Archivo `datos28A.json` de 30KB asegurado en backend (`src/data/datosForenses.json`) para evitar exposición estática, pero permitiendo extraer `fuentePrimaria` y `notaDiscrepancia`.
+  - Creación de `<CuestionAbierta />` (glow dinámico) inyectado en `03-analisis-incidente.mdx` (desambiguando umbrales UFLS, 15GW vs 25.2GW, RoCoF de 1.5Hz/s y 4.609 MVAr de reactiva) y en `07b-consecuencias-financieras.mdx` (150.000 MWh de ENS).
+  - Creación de `<TablaMaestra28A />` (filtros múltiples de auditoría) e incrustada en lo alto de `15-galeria-de-tablas.mdx`.
+  - **Sprint 11 (Adelanto Interactivo):** Migración total del `CollapseSismograph` de Plotly a **Recharts**. Incorporación de los 11+ puntos de fallo, área fantasma de MW perdidos, línea UFLS a 49.0Hz, tooltips analíticos, y variables directas del JSON maestro (tensión a 440kV).
+  - **RAG Completado:** Índice reconstruido (97 fragmentos) para que DeepSeek interiorice las nuevas tablas y notas.

@@ -1,201 +1,179 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+  Area,
+  ComposedChart
+} from 'recharts';
+import datosForenses from '@site/src/data/datosForenses.json';
+import styles from './CollapseSismograph.module.css';
 
-// Lazy load Plotly para no bloquear el hilo principal
-const Plot = React.lazy(() => import('react-plotly.js'));
+export default function CollapseSismograph() {
+  const duration = datosForenses.cronologia_cascada.duracion_cascada.valor;
+  const t_max = datosForenses.potencias_cascada.tension_maxima_barras_colectoras.valor || 440;
+  const p_lost = datosForenses.potencias_cascada.perdida_generacion_total_cascada.valor || 15000;
+  const sync_freq = datosForenses.cronologia_cascada.frecuencia_perdida_sincronismo.valor || 48.46;
 
-// Datos constantes (fuera del componente para evitar recreaciones)
-const timeSec = [0, 57, 57.12, 76.46, 78.56, 81, 84, 87];
-const frequency = [50.0, 49.977, 49.95, 49.8, 49.8, 49.5, 48.0, 0];
-const voltage = [418, 418, 417.9, 425, 428, 432, 442, 0];
+  // Los 11+ puntos sincronizados con la narrativa y la Tabla 16
+  const cascadeData = useMemo(() => [
+    { time: 0, timeLabel: '12:32:57', freq: 50.00, volt: 418, lostMW: 0, event: 'Disparo raíz (Transf. Granada)' },
+    { time: 8, timeLabel: '12:33:05', freq: 49.98, volt: 420, lostMW: 317, event: 'Desconexión GDR local' },
+    { time: 19, timeLabel: '12:33:16', freq: 49.95, volt: 425, lostMW: 1044, event: 'Cascada en Badajoz' },
+    { time: 20, timeLabel: '12:33:17', freq: 49.90, volt: 428, lostMW: 1594, event: 'Cascada Segovia/Sevilla' },
+    { time: 21, timeLabel: '12:33:18', freq: 49.80, volt: 432, lostMW: 3000, event: 'Aceleración del colapso (Tap-Lag)' },
+    { time: 22, timeLabel: '12:33:19', freq: 49.70, volt: 435, lostMW: 5000, event: 'Superación umbral LVRT normativo' },
+    { time: 23, timeLabel: '12:33:20', freq: 49.50, volt: 438, lostMW: 8000, event: '1er escalón UFLS: Deslastre Bombeo' },
+    { time: 24, timeLabel: '12:33:21', freq: sync_freq, volt: t_max, lostMW: 12000, event: 'Pérdida de Sincronismo Transpirenaico' },
+    { time: 25, timeLabel: '12:33:22', freq: 48.00, volt: 442, lostMW: 14000, event: 'Aislamiento y sobretensiones pico' },
+    { time: 26, timeLabel: '12:33:23', freq: 47.50, volt: 443, lostMW: 14500, event: 'Caída libre de frecuencia' },
+    { time: 27, timeLabel: '12:33:24', freq: 47.00, volt: 0, lostMW: p_lost, event: 'Cero funcional del sistema (ENTSO-E)' },
+    { time: 32.7, timeLabel: '12:33:29', freq: 0, volt: 0, lostMW: p_lost, event: 'Disparo último grupo (Comité)' }
+  ], [t_max, p_lost, sync_freq]);
 
-const events = [
-  { t: 57, label: 'Disparo GDR (317 MW)', color: '#f59e0b', yFreq: 49.98, yVolt: 418 },
-  { t: 57.12, label: 'G-1 Granada (355 MW)', color: '#ef4444', yFreq: 49.95, yVolt: 417.9 },
-  { t: 76.46, label: 'G-2 Badajoz (727 MW)', color: '#ef4444', yFreq: 49.8, yVolt: 425 },
-  { t: 78.56, label: 'G-3 Cascada (1.150 MW)', color: '#ef4444', yFreq: 49.8, yVolt: 428 },
-  { t: 81, label: '1er UFLS (49.5 Hz)', color: '#f59e0b', yFreq: 49.5, yVolt: 432 },
-  { t: 84, label: 'Pérdida sincronismo Francia', color: '#d946ef', yFreq: 48.0, yVolt: 442 },
-  { t: 87, label: 'CERO ELÉCTRICO', color: '#000000', yFreq: 0, yVolt: 0 },
-];
-
-// RoCoF calculado (derivada discreta) - calculado como constante pura de forma segura para SSR
-const rocof = (() => {
-  const vals = [];
-  for (let i = 0; i < frequency.length - 1; i++) {
-    const dt = timeSec[i + 1] - timeSec[i];
-    const df = frequency[i + 1] - frequency[i];
-    vals.push({ t: timeSec[i], value: df / dt });
-  }
-  vals.push({ t: timeSec[frequency.length - 1], value: null }); // último punto sin RoCoF
-  return vals;
-})();
-
-function CollapseSismographInner({ showRoCoF = false }) {
-  const plotData = useMemo(() => {
-    const traces = [
-      {
-        x: timeSec,
-        y: frequency,
-        name: 'Frecuencia (Hz)',
-        type: 'scatter',
-        mode: 'lines+markers',
-        line: { color: '#06b6d4', width: 3 },
-        marker: { size: 8, color: '#06b6d4' },
-        yaxis: 'y',
-        hovertemplate: '<b>t=%{x:.1f} s</b><br>Frecuencia: %{y:.2f} Hz<extra></extra>',
-      },
-      {
-        x: timeSec,
-        y: voltage,
-        name: 'Tensión Carmona (kV)',
-        type: 'scatter',
-        mode: 'lines+markers',
-        line: { color: '#ef4444', width: 3, dash: 'dot' },
-        marker: { size: 8, color: '#ef4444' },
-        yaxis: 'y2',
-        hovertemplate: '<b>t=%{x:.1f} s</b><br>Tensión: %{y:.0f} kV<extra></extra>',
-      },
-    ];
-
-    if (showRoCoF) {
-      traces.push({
-        x: rocof.map(p => p.t),
-        y: rocof.map(p => p.value),
-        name: 'RoCoF (Hz/s)',
-        type: 'scatter',
-        mode: 'lines',
-        line: { color: '#a78bfa', width: 2, dash: 'dashdot' },
-        yaxis: 'y3',
-        hovertemplate: '<b>t=%{x:.1f} s</b><br>RoCoF: %{y:.2f} Hz/s<extra></extra>',
-      });
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className={styles.customTooltip}>
+          <div className={styles.tooltipHeader}>
+            <span className={styles.tooltipTime}>{data.timeLabel}</span>
+            <span className={styles.tooltipSec}>(t = {data.time} s)</span>
+          </div>
+          <div className={styles.tooltipBody}>
+            <p className={styles.tooltipEvent}><strong>Falla:</strong> {data.event}</p>
+            <div className={styles.metricsGrid}>
+              <div className={styles.metricRow}>
+                <span className={styles.dot} style={{background: '#06b6d4'}}></span>
+                <span className={styles.metricLabel}>Frecuencia:</span>
+                <span className={styles.metricValue}>{data.freq.toFixed(2)} Hz</span>
+              </div>
+              <div className={styles.metricRow}>
+                <span className={styles.dot} style={{background: '#ef4444'}}></span>
+                <span className={styles.metricLabel}>Tensión 400kV:</span>
+                <span className={styles.metricValue}>{data.volt.toFixed(0)} kV</span>
+              </div>
+              <div className={styles.metricRow}>
+                <span className={styles.dot} style={{background: '#f59e0b'}}></span>
+                <span className={styles.metricLabel}>Pot. Perdida:</span>
+                <span className={styles.metricValue}>{data.lostMW} MW</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     }
-
-    return traces;
-  }, [showRoCoF]);
-
-  const layout = useMemo(() => {
-    const shapes = events.map(ev => ({
-      type: 'line',
-      x0: ev.t,
-      x1: ev.t,
-      y0: 0,
-      y1: 1,
-      yref: 'paper',
-      line: { color: ev.color, width: 1.5, dash: 'dash' },
-    }));
-
-    const annotations = events.map(ev => ({
-      x: ev.t,
-      y: ev.yFreq + 0.8,
-      xref: 'x',
-      yref: 'y',
-      text: ev.label,
-      showarrow: true,
-      arrowhead: 2,
-      arrowcolor: ev.color,
-      ax: -40,
-      ay: -30,
-      font: { size: 10, color: ev.color },
-      bgcolor: 'rgba(0,0,0,0.7)',
-      borderpad: 4,
-    }));
-
-    const hlines = [
-      { t0: 0, t1: 87, y: 49.5, label: 'UFLS 49.5 Hz', color: '#f59e0b' },
-      { t0: 0, t1: 87, y: 49.0, label: 'UFLS 49.0 Hz', color: '#ef4444' },
-      { t0: 0, t1: 87, y: 435, label: 'Umbral LVRT 435 kV', color: '#ef4444', yref: 'y2' },
-      { t0: 0, t1: 87, y: 420, label: 'Alerta 420 kV', color: '#f59e0b', yref: 'y2' },
-    ].map(th => ({
-      type: 'line',
-      x0: th.t0,
-      x1: th.t1,
-      y0: th.y,
-      y1: th.y,
-      line: { color: th.color, width: 1, dash: 'dash' },
-      label: { text: th.label, textposition: 'end', font: { size: 9, color: th.color } },
-      yref: th.yref || 'y',
-    }));
-
-    const yaxes = {
-      yaxis: {
-        title: 'Frecuencia (Hz)',
-        range: [45, 51],
-        gridcolor: 'rgba(255,255,255,0.1)',
-        color: '#06b6d4',
-        tickformat: '.2f',
-      },
-      yaxis2: {
-        title: 'Tensión (kV)',
-        overlaying: 'y',
-        side: 'right',
-        range: [0, 500],
-        gridcolor: 'rgba(0,0,0,0)',
-        color: '#ef4444',
-        tickformat: '.0f',
-      },
-    };
-
-    if (showRoCoF) {
-      yaxes.yaxis3 = {
-        title: 'RoCoF (Hz/s)',
-        overlaying: 'y',
-        side: 'right',
-        position: 0.9,
-        range: [-2, 1],
-        gridcolor: 'rgba(0,0,0,0)',
-        color: '#a78bfa',
-        tickformat: '.1f',
-      };
-    }
-
-    return {
-      title: {
-        text: 'Sismógrafo del colapso: Frecuencia y Tensión (30 segundos: 12:32:57 → 12:33:27 CEST)',
-        font: { size: 16, color: '#e0ddd5' },
-      },
-      xaxis: {
-        title: 'Tiempo (s) desde 12:32:00 CEST',
-        range: [0, 90],
-        gridcolor: 'rgba(255,255,255,0.1)',
-        tick0: 0,
-        dtick: 10,
-      },
-      ...yaxes,
-      shapes: [...shapes, ...hlines],
-      annotations,
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      font: { color: '#a0a0b0', family: 'Inter, sans-serif' },
-      height: 550,
-      margin: { l: 80, r: showRoCoF ? 120 : 80, t: 80, b: 60 },
-      legend: { orientation: 'h', y: -0.2 },
-    };
-  }, [showRoCoF]);
+    return null;
+  };
 
   return (
-    <div style={{ width: '100%', minHeight: 500 }} role="img" aria-label="Sismógrafo interactivo">
-      <React.Suspense fallback={<div style={{ color: '#a0a0b0', textAlign: 'center', paddingTop: 200 }}>Cargando sismógrafo...</div>}>
-        <Plot
-          data={plotData}
-          layout={layout}
-          config={{
-            responsive: true,
-            displayModeBar: true,
-            modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-          }}
-          style={{ width: '100%', height: '100%' }}
-          useResizeHandler={true}
-        />
-      </React.Suspense>
+    <div className={styles.sismographContainer}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>
+          <span className={styles.indicator}></span>
+          Sismógrafo del Colapso ({duration} segundos: 12:32:57 → 12:33:27 CEST)
+        </h3>
+      </div>
+
+      <div className={styles.chartWrapper}>
+        <BrowserOnly fallback={<div className={styles.loading}>Activando telemetría forense...</div>}>
+          {() => (
+            <ResponsiveContainer width="100%" height={480}>
+              <ComposedChart data={cascadeData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
+                <defs>
+                  <linearGradient id="colorLost" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.02}/>
+                  </linearGradient>
+                </defs>
+                
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                
+                <XAxis 
+                  dataKey="time" 
+                  type="number"
+                  domain={[0, 33]}
+                  tick={{ fill: 'var(--text-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  tickFormatter={(val) => `${val}s`}
+                  stroke="rgba(255,255,255,0.1)"
+                />
+                
+                <YAxis 
+                  yAxisId="freq"
+                  domain={[46, 50.5]}
+                  tick={{ fill: '#06b6d4', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  stroke="rgba(6, 182, 212, 0.3)"
+                  orientation="left"
+                  label={{ value: 'Frecuencia (Hz)', angle: -90, position: 'insideLeft', fill: '#06b6d4', style: {textAnchor: 'middle'} }}
+                />
+                
+                <YAxis 
+                  yAxisId="volt"
+                  domain={[400, 450]}
+                  tick={{ fill: '#ef4444', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  stroke="rgba(239, 68, 68, 0.3)"
+                  orientation="right"
+                  label={{ value: 'Tensión (kV)', angle: 90, position: 'insideRight', fill: '#ef4444', style: {textAnchor: 'middle'} }}
+                />
+
+                <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }} />
+
+                {/* Línea horizontal de UFLS */}
+                <ReferenceLine 
+                  yAxisId="freq" 
+                  y={49.0} 
+                  stroke="rgba(245, 158, 11, 0.6)" 
+                  strokeDasharray="4 4"
+                  label={{ position: 'insideBottomLeft', value: 'Umbral UFLS Demanda (49.0 Hz)', fill: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}
+                />
+
+                {/* Área Fantasma (Generación Perdida escalada en background) */}
+                <Area 
+                  yAxisId="volt" 
+                  type="stepAfter" 
+                  dataKey="lostMW" 
+                  fill="url(#colorLost)" 
+                  stroke="none"
+                />
+
+                {/* Tensión */}
+                <Line 
+                  yAxisId="volt"
+                  type="monotone"
+                  dataKey="volt"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={{ r: 4, fill: '#ef4444', strokeWidth: 0 }}
+                  activeDot={{ r: 6, fill: '#fff', stroke: '#ef4444', strokeWidth: 2 }}
+                  isAnimationActive={true}
+                  animationDuration={2000}
+                />
+
+                {/* Frecuencia */}
+                <Line 
+                  yAxisId="freq"
+                  type="stepAfter"
+                  dataKey="freq"
+                  stroke="#06b6d4"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: '#06b6d4', strokeWidth: 0 }}
+                  activeDot={{ r: 8, fill: '#fff', stroke: '#06b6d4', strokeWidth: 2 }}
+                  isAnimationActive={true}
+                  animationDuration={2000}
+                />
+
+              </ComposedChart>
+            </ResponsiveContainer>
+          )}
+        </BrowserOnly>
+      </div>
     </div>
-  );
-}
-
-export default function CollapseSismograph({ showRoCoF = false }) {
-  return (
-    <BrowserOnly fallback={<div style={{ color: '#a0a0b0' }}>Cargando componente...</div>}>
-      {() => <CollapseSismographInner showRoCoF={showRoCoF} />}
-    </BrowserOnly>
   );
 }

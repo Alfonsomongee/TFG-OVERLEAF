@@ -1,0 +1,134 @@
+.sismographContainer {
+  margin: 2rem 0;
+  background: var(--bg-1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-0);
+  letter-spacing: 0.02em;
+}
+
+.indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--ifm-color-primary);
+  box-shadow: 0 0 10px var(--ifm-color-primary);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; box-shadow: 0 0 10px var(--ifm-color-primary); }
+  50% { opacity: 0.5; box-shadow: 0 0 5px var(--ifm-color-primary); }
+  100% { opacity: 1; box-shadow: 0 0 10px var(--ifm-color-primary); }
+}
+
+.chartWrapper {
+  padding: 1rem;
+  background: var(--bg-0);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--ifm-color-primary);
+  font-family: var(--font-mono);
+  animation: pulse 1.5s infinite;
+}
+
+/* Tooltip */
+.customTooltip {
+  background: var(--bg-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  min-width: 250px;
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltipTime {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-0);
+}
+
+.tooltipSec {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-3);
+}
+
+.tooltipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltipEvent {
+  margin: 0 0 0.5rem 0;
+  color: var(--ifm-color-warning);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.metricsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.metricRow {
+  display: grid;
+  grid-template-columns: 8px 100px 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.metricLabel {
+  color: var(--text-2);
+}
+
+.metricValue {
+  font-family: var(--font-mono);
+  font-weight: bold;
+  color: var(--text-0);
+  text-align: right;
+}

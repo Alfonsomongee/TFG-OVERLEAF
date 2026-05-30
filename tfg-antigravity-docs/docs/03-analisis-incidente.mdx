@@ -7,6 +7,7 @@ title: "Análisis del incidente"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import CuestionAbierta from "@site/src/components/CuestionAbierta";
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
@@ -129,11 +130,11 @@ En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo 
 ![Cascada de Desconexiones IBR](/figuras/cascada_desconexiones.png) _Figura 17. Cascada de desconexiones IBR — propagación geográfica durante los once segundos de la Fase 3. Fuente: Comité de Análisis del Gobierno._
 
 <span id="t6"></span>
-Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz** (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de **Segovia, Sevilla y Huelva**. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó un orden de magnitud cercano al **60 % de la demanda instantánea nacional** en generación perdida, llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia exactos de cada desconexión, véase la [**Tabla 16 / Línea Temporal**](./16-galeria-forense.mdx) en la Galería Forense).
+Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz** (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de **Segovia, Sevilla y Huelva**. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación (casi el 60% de la capacidad instantánea ibérica previa), dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda española completamente sin suministro y llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia exactos de cada desconexión, véase la [**Tabla 16 / Línea Temporal**](./16-galeria-forense.mdx) en la Galería Forense).
 
 
 
-A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink> extrema, activando los esquemas de <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>. Al cruzar el umbral de **49,5 Hz** a las 12:33:20 CEST, se desconectaron automáticamente más de **2.000 MW** de bombeo hidráulico, seguidos de múltiples escalones de demanda industrial.
+A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink> extrema (con picos secundarios estimados de <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>), activando los esquemas de <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink>. Al cruzar el umbral de **49,5 Hz** a las 12:33:20 CEST, se desconectaron automáticamente más de **2.000 MW** de bombeo hidráulico, y al caer la red por debajo de **<CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta>**, se deslastraron los primeros escalones de demanda industrial.
 
 ![Evolución Acoplada de Tensión y Frecuencia](/figuras/tension_frecuencia_colapso.png) _Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3. El incremento de tensión precede a la caída de frecuencia, confirmando colapso primariamente capacitivo. Fuente: Comité de Análisis del Gobierno._
 
@@ -142,7 +143,7 @@ La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar co
 <span id="t2"></span>
 En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC intentaron importar una magnitud de reactiva de emergencia superior a los **4.500 MVAr** desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo activa del orden de **1 GW** del sistema ibérico (el desglose preciso por circuito y capacidad puede auditarse en la [**Tabla 14**](./15-galeria-de-tablas.mdx) y en los *Forensic Charts 1-5*, categoría Interconexiones). Esta operación asimétrica contrajo drásticamente la capacidad de soporte neto desde el continente.
 
-![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Figura 19. Inversión de flujos en enlaces AC/DC en frontera pirenaica (Fase 3): importación de 4.609 MVAr por líneas AC y extracción simultánea de 1.000 MW por el HVDC hasta la pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._
+![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Figura 19. Inversión de flujos en enlaces AC/DC en frontera pirenaica (Fase 3): importación de <CuestionAbierta metricKey="potencias_cascada.reactiva_frontera_ac_pico">4.609 MVAr</CuestionAbierta> por líneas AC y extracción simultánea de 1.000 MW por el HVDC hasta la pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._
 
 <span id="t7"></span>
 A las **12:33:21 CEST**, las protecciones de pérdida de <GlossaryLink term="Sincronismo">sincronismo</GlossaryLink> abrieron los enlaces AC para evitar el contagio al sistema europeo continental, aislando la península ibérica. 
