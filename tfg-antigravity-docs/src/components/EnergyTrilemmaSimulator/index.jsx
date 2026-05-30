@@ -223,9 +223,13 @@ export default function EnergyTrilemmaSimulator() {
 
         <div className={styles.metrics}>
           <div className={styles.metricCard}>
-            <h4 className={styles.metricLabel}>Inercia (H)</h4>
-            <div className={styles.metricValue} style={{ color: metrics.H_total < 2.5 ? '#f87171' : '#e2e8f0' }}>
-              {metrics.H_total} <span className={styles.metricUnit}>GWs</span>
+            <div className={styles.metricItem}>
+              <span className={styles.metricLabel}>Inercia (H)</span>
+              {metrics.H_total} <span className={styles.metricUnit}>s</span>
+            </div>
+            <div className={styles.metricItem}>
+              <span className={styles.metricLabel}>Damping</span>
+              {metrics.damping} <span className={styles.metricUnit}>%</span>
             </div>
             <p className={styles.metricNote}>Global sistema</p>
           </div>

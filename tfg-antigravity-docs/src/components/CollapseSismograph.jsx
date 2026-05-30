@@ -7,7 +7,7 @@ const Plot = React.lazy(() => import('react-plotly.js'));
 // Datos constantes (fuera del componente para evitar recreaciones)
 const timeSec = [0, 57, 57.12, 76.46, 78.56, 81, 84, 87];
 const frequency = [50.0, 49.977, 49.95, 49.8, 49.8, 49.5, 48.0, 0];
-const voltage = [418, 418, 417.9, 425, 428, 432, 435, 0];
+const voltage = [418, 418, 417.9, 425, 428, 432, 442, 0];
 
 const events = [
   { t: 57, label: 'Disparo GDR (317 MW)', color: '#f59e0b', yFreq: 49.98, yVolt: 418 },
@@ -15,7 +15,7 @@ const events = [
   { t: 76.46, label: 'G-2 Badajoz (727 MW)', color: '#ef4444', yFreq: 49.8, yVolt: 425 },
   { t: 78.56, label: 'G-3 Cascada (1.150 MW)', color: '#ef4444', yFreq: 49.8, yVolt: 428 },
   { t: 81, label: '1er UFLS (49.5 Hz)', color: '#f59e0b', yFreq: 49.5, yVolt: 432 },
-  { t: 84, label: 'Pérdida sincronismo Francia', color: '#d946ef', yFreq: 48.0, yVolt: 435 },
+  { t: 84, label: 'Pérdida sincronismo Francia', color: '#d946ef', yFreq: 48.0, yVolt: 442 },
   { t: 87, label: 'CERO ELÉCTRICO', color: '#000000', yFreq: 0, yVolt: 0 },
 ];
 
@@ -104,7 +104,7 @@ function CollapseSismographInner({ showRoCoF = false }) {
     const hlines = [
       { t0: 0, t1: 87, y: 49.5, label: 'UFLS 49.5 Hz', color: '#f59e0b' },
       { t0: 0, t1: 87, y: 49.0, label: 'UFLS 49.0 Hz', color: '#ef4444' },
-      { t0: 0, t1: 87, y: 435, label: 'Límite 435 kV', color: '#ef4444', yref: 'y2' },
+      { t0: 0, t1: 87, y: 435, label: 'Umbral LVRT 435 kV', color: '#ef4444', yref: 'y2' },
       { t0: 0, t1: 87, y: 420, label: 'Alerta 420 kV', color: '#f59e0b', yref: 'y2' },
     ].map(th => ({
       type: 'line',
@@ -151,7 +151,7 @@ function CollapseSismographInner({ showRoCoF = false }) {
 
     return {
       title: {
-        text: 'Sismógrafo del colapso: Frecuencia y Tensión (27 segundos)',
+        text: 'Sismógrafo del colapso: Frecuencia y Tensión (30 segundos: 12:32:57 → 12:33:27 CEST)',
         font: { size: 16, color: '#e0ddd5' },
       },
       xaxis: {

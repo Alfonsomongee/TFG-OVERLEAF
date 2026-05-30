@@ -40,7 +40,6 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Solo acepta POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
   }
@@ -51,7 +50,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 1. Recuperación: busca los 5 fragmentos más relevantes con BM25
     const searcher = getSearch();
     const results = searcher.search(question.trim(), {
       prefix: true,
@@ -66,18 +64,21 @@ export default async function handler(req, res) {
 
     const topChunks = results.slice(0, 5).map(r => chunks[r.id]);
     const context = topChunks
-      .map(c => `## ${c.title} – ${c.heading}\n${c.text}`)
+      .map(c => `## ${c.title} – ${c.heading} (Enlace: ${c.slug})\n${c.text}`)
       .join('\n\n');
 
-    // 2. Generación: llama a Gemini 1.5 Flash
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-    if (!GEMINI_API_KEY) {
-      return res.status(500).json({ error: 'API Key de Gemini no configurada.' });
+    const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+    if (!DEEPSEEK_API_KEY) {
+      return res.status(500).json({ error: 'API Key de DeepSeek no configurada.' });
     }
 
     const prompt = `Eres un asistente especializado en el análisis del apagón ibérico del 28 de abril de 2025. Responde ÚNICAMENTE con la información contenida en el CONTEXTO proporcionado a continuación. Si la información no está en el contexto, di: "Este detalle no aparece en el TFG; te recomiendo consultar el glosario o los capítulos técnicos."
 
-Reglas:
+Reglas críticas:
+- NO empieces NUNCA la frase con "Según el contexto proporcionado", "Basado en el contexto", ni nada similar. Responde directamente de forma natural y conversacional.
+- NO uses formato Markdown para negritas (no uses asteriscos * ni **). Usa texto plano y limpio.
+- Si la pregunta está relacionada con datos, gráficas o tablas, SIEMPRE debes añadir un enlace al final de tu respuesta apuntando a la URL proporcionada en el contexto. Ejemplo: "Puedes ver la gráfica detallada aquí: [Ver gráfica interactiva](/docs/ruta-al-capitulo)". 
+- OBLIGATORIO: Los enlaces que generes DEBEN usar la sintaxis Markdown de enlaces: [Texto](/ruta).
 - Sé preciso con las cifras y cita las magnitudes correctamente (MW, Hz, kV, s, etc.).
 - Si el contexto menciona fuentes (REE, ENTSO-E, ICAI, CNMC), indícalas.
 - Responde en español, en un máximo de 250 palabras.
@@ -89,35 +90,32 @@ ${context}
 PREGUNTA DEL USUARIO:
 ${question}
 
-RESPUESTA:`;
+RESPUESTA NATURAL Y DIRECTA:`;
 
-    const model = 'gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-
-    const response = await fetch(url, {
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        safetySettings: [
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.' },
+          { role: 'user', content: prompt }
         ],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 500,
-          topP: 0.9,
-        },
-      }),
+        temperature: 0.2,
+        max_tokens: 500
+      })
     });
 
     if (!response.ok) {
-      console.error('Gemini API error:', response.status, await response.text());
+      console.error('DeepSeek API error:', response.status, await response.text());
       return res.status(502).json({ answer: 'El servicio de IA no está disponible en este momento. Inténtalo de nuevo en unos segundos.' });
     }
 
     const data = await response.json();
-    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text
-      || 'No pude generar una respuesta. ¿Puedes reformular la pregunta?';
+    const answer = data.choices?.[0]?.message?.content || 'No pude generar una respuesta. ¿Puedes reformular la pregunta?';
 
     return res.status(200).json({ answer });
 

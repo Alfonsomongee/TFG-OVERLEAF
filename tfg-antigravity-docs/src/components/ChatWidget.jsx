@@ -56,6 +56,29 @@ export default function ChatWidget() {
     }
   };
 
+  const renderText = (text) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <a href={match[2]} target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', textDecoration: 'underline' }} key={match.index}>
+          {match[1]}
+        </a>
+      );
+      lastIndex = linkRegex.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+    return parts.length > 0 ? parts : text;
+  };
+
   return (
     <>
       {/* Botón flotante */}
@@ -77,22 +100,31 @@ export default function ChatWidget() {
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'all 0.3s ease',
-          filter: open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 15px rgba(59,130,246,0.9))',
+          filter: open ? 'drop-shadow(0 0 8px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 8px rgba(59,130,246,0.6))',
+          animation: !open ? 'neonPulseChat 2.5s infinite alternate' : 'none',
           padding: 0,
         }}
         onMouseEnter={e => {
           e.currentTarget.style.transform = 'scale(1.15) translateY(-4px)';
-          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 20px rgba(255,75,75,1))' : 'drop-shadow(0 0 25px rgba(59,130,246,1))';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 15px rgba(255,75,75,1))' : 'drop-shadow(0 0 15px rgba(59,130,246,1))';
         }}
         onMouseLeave={e => {
           e.currentTarget.style.transform = 'scale(1) translateY(0)';
-          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 15px rgba(59,130,246,0.9))';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 8px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 8px rgba(59,130,246,0.6))';
         }}
       >
         {open ? <X size={28} /> : <Sparkles size={28} />}
       </button>
 
       {/* Panel del chat */}
+      <style>
+        {`
+          @keyframes neonPulseChat {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(59,130,246,0.5)); }
+            50% { filter: drop-shadow(0 0 12px rgba(59,130,246,0.8)); }
+          }
+        `}
+      </style>
       {open && (
         <div
           style={{
@@ -124,7 +156,7 @@ export default function ChatWidget() {
               gap: 8,
             }}
           >
-            <span>⚡</span> Asistente del TFG – Apagón 28A
+            Asistente del TFG – Apagón 28A
           </div>
 
           {/* Mensajes */}
@@ -155,7 +187,7 @@ export default function ChatWidget() {
                   wordBreak: 'break-word',
                 }}
               >
-                {m.text}
+                {renderText(m.text)}
               </div>
             ))}
             {loading && (
