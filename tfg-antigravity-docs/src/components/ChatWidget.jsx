@@ -1,5 +1,6 @@
 // src/components/ChatWidget.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import { Sparkles, X } from 'lucide-react';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -88,7 +89,7 @@ export default function ChatWidget() {
           e.currentTarget.style.filter = open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 15px rgba(59,130,246,0.9))';
         }}
       >
-        {open ? '✕' : '✨'}
+        {open ? <X size={28} /> : <Sparkles size={28} />}
       </button>
 
       {/* Panel del chat */}
