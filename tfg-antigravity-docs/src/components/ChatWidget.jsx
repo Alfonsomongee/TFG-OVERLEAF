@@ -64,27 +64,31 @@ export default function ChatWidget() {
         title="Pregunta al TFG"
         style={{
           position: 'fixed',
-          bottom: 24,
+          bottom: 100, /* Más arriba para no tapar el modo cine */
           right: 24,
           zIndex: 9999,
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          backgroundColor: '#0f172a',
-          color: '#e2e8f0',
-          border: '2px solid #334155',
+          background: 'none',
+          border: 'none',
+          color: open ? '#ff4b4b' : '#00f2fe',
           cursor: 'pointer',
-          fontSize: 24,
+          fontSize: 42,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-          transition: 'transform 0.2s ease',
+          transition: 'all 0.3s ease',
+          filter: open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 12px rgba(0,242,254,0.8))',
+          padding: 0,
         }}
-        onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.1)')}
-        onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = 'scale(1.15) translateY(-4px)';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 20px rgba(255,75,75,1))' : 'drop-shadow(0 0 25px rgba(0,242,254,1))';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = 'scale(1) translateY(0)';
+          e.currentTarget.style.filter = open ? 'drop-shadow(0 0 10px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 12px rgba(0,242,254,0.8))';
+        }}
       >
-        {open ? '✕' : '💬'}
+        {open ? '✕' : '✨'}
       </button>
 
       {/* Panel del chat */}
@@ -92,7 +96,7 @@ export default function ChatWidget() {
         <div
           style={{
             position: 'fixed',
-            bottom: 96,
+            bottom: 160, /* Panel sube también para dejar espacio al botón */
             right: 24,
             width: 380,
             maxHeight: 520,
@@ -102,7 +106,7 @@ export default function ChatWidget() {
             display: 'flex',
             flexDirection: 'column',
             zIndex: 9999,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+            boxShadow: '0 8px 32px rgba(0,242,254,0.15)',
             animation: 'fadeInUp 0.3s ease',
           }}
         >
