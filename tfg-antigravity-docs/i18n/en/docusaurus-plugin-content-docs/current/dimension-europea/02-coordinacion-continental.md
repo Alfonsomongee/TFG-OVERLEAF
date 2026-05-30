@@ -34,11 +34,11 @@ The critical window is **12:49 to 12:54 CEST**: in just five minutes, the SAMs a
 
 ## The role of Coreso: the mathematical shield of restoration
 
-While national TSOs operated physical circuit breakers, the Regional Coordination Centre (RCC) *Coreso* (Brussels) executed an immense computational task to ensure that crisis solutions did not trigger new blackouts.
+While national TSOs operated physical circuit breakers, the Regional Coordination Centre (RCC) Coreso (Brussels) executed an immense computational task to ensure that crisis solutions did not trigger new blackouts.
 
 As the afternoon progressed, emergency power transfers from France to Spain escalated, with transient imports negotiated up to **2,000 MW**. These massive injections severely modify the natural load flows across French, Swiss and German networks. Coreso, using **Coordinated Security Analysis** (CSA) tools, processed AC load flows on the **unified European model** (CGM) in near-real time.
 
-Its objective was to verify strict compliance with the <GlossaryLink term="Criterio N-1">*N*−1 Criterion</GlossaryLink>: to certify through simulation that if, while France was exporting 2,000 MW of support, an internal French or German corridor was suddenly lost, the remaining interconnected network would not suffer thermal overloads or voltage range violations. Simultaneously, the Nordic RCC led the **Short-Term Adequacy** (STA) analysis, confirming to the SAMs that rolling capacity was available in central Europe to sustain this effort without jeopardising the evening demand peak in donor countries.
+Its objective was to verify strict compliance with the <GlossaryLink term="Criterio N-1">N−1 Criterion</GlossaryLink>: to certify through simulation that if, while France was exporting 2,000 MW of support, an internal French or German corridor was suddenly lost, the remaining interconnected network would not suffer thermal overloads or voltage range violations. Simultaneously, the Nordic RCC led the **Short-Term Adequacy** (STA) analysis, confirming to the SAMs that rolling capacity was available in central Europe to sustain this effort without jeopardising the evening demand peak in donor countries.
 
 Coreso's validation was the **mathematical shield** that allowed RTE to operate with tactical confidence. Without it, the risk of instability propagating from the peninsula towards the continental network core would have forced severe limits on support flows, slowing recovery considerably.
 
