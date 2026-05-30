@@ -44,4 +44,27 @@ Sirve como registro de retroalimentación para la IA asesora.
 - **Integración e Inyección MDX:** Ambos componentes interactivos refinados han sido inyectados con transiciones fluidas en el capítulo `docs/03-analisis-incidente.mdx` justo antes de la Fase 3 del colapso.
 - **Verificación:** Compilación completa de Docusaurus en curso para asegurar que la reestructuración lateral y nuevos componentes operan sin advertencias ni errores.
 
+--------------------------------------------------
+## FECHA: 30 de Mayo de 2026
+**SPRINT / FASE:** Correcciones críticas pre-Milán (LCP, datos ENTSO-E, accesibilidad)
+**TAREAS IMPLEMENTADAS:**
+
+### InteractiveGraphicsGalleryBase.jsx
+- Convertidos todos los imports de componentes (15 en total) de estáticos a `React.lazy` con `webpackChunkName` para code-splitting por simulador.
+- Añadido `<Suspense>` dentro de `<BrowserOnly>` con fallback "Iniciando [título]…".
+- Accesibilidad ARIA completa: `role="tablist"` en `<ul>`, `role="tab"` + `aria-selected` + `aria-controls` en botones, `role="tabpanel"` + `id` + `aria-labelledby` en el panel de contenido.
+- Corregidos títulos/descripciones del diccionario `topology`: eliminadas todas las referencias erróneas a "GNN".
+
+### IberianGridTopologyBase.jsx
+- Corregidas las 7 entradas del log de eventos: horas "16:32:xx" → horas verificadas ENTSO-E (12:32:57–12:33:24 CEST).
+- Actualizado el contenido del log con datos factuales: mecanismo de disparo transformador, ANSI 59, oscilaciones 0,21 Hz, HVDC INELFE 1.000 MW PMODE1, pérdida de sincronismo ANSI 78, 15 GW perdidos.
+- Eliminadas todas las referencias a "GNN" en `getStrings()` para los 6 idiomas; sustituidas por descripción correcta de grafo de fuerza dirigida.
+- Añadido `webpackChunkName: "force-graph-topology"` al import dinámico de `react-force-graph-2d`.
+
+### BlackoutPropagationMapBase.jsx
+- Corregida descripción de Caparacena en los 6 idiomas: mecanismo cambiado de "cortocircuito doble" a "disparo del transformador 400/220 kV por sobretensión en colector 220 kV (242 kV)" con cita ENTSO-E Factual p.28 y hora 12:32:57 CEST.
+- Corregida descripción de Francia (RTE): eliminado el dato sin fuente "2.500 MW"; sustituido por valores verificados (HVDC INELFE 1.000 MW ES→FR PMODE1, pico transitorio AC 3.800 MW @ 12:33:19, cita ENTSO-E Factual pp.12,108).
+- Añadida nota WebGL visible en el panel del mapa para fallback en congreso.
+
+**VERIFICACIÓN:** `npm run build` completado con exit code 0. Sin errores de compilación.
 

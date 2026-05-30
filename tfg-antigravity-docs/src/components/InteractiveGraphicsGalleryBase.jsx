@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
 
-// Import components directly if they are safe for SSR, or we wrap their usage in BrowserOnly.
-// Since some of them need BrowserOnly, we'll wrap the active component renderer.
-import FrequencyChart from './FrequencyChart';
-import AnimatedMap from './AnimatedMap';
-import VerticalTimeline from './VerticalTimeline';
-
-import EnergyTransitionStreamgraph from './EnergyTransitionStreamgraph';
-import FinancialWaterfallChart from './FinancialWaterfallChart';
-import BlackoutPropagationMap from './BlackoutPropagationMap';
-import IberianGridTopology from './IberianGridTopology';
-import ThermalAdjustmentCostMatrix from './ThermalAdjustmentCostMatrix';
-import CollapseSismograph from './CollapseSismograph';
-import PVCurveSimulator from './PVCurveSimulator';
-import ANSI59Cascade from './ANSI59Cascade';
+const FrequencyChart = lazy(() => import(/* webpackChunkName: "chart-frequency" */ './FrequencyChart'));
+const AnimatedMap = lazy(() => import(/* webpackChunkName: "chart-animated-map" */ './AnimatedMap'));
+const VerticalTimeline = lazy(() => import(/* webpackChunkName: "chart-timeline" */ './VerticalTimeline'));
+const EnergyTransitionStreamgraph = lazy(() => import(/* webpackChunkName: "chart-streamgraph" */ './EnergyTransitionStreamgraph'));
+const FinancialWaterfallChart = lazy(() => import(/* webpackChunkName: "chart-waterfall" */ './FinancialWaterfallChart'));
+const BlackoutPropagationMap = lazy(() => import(/* webpackChunkName: "chart-blackout-map" */ './BlackoutPropagationMap'));
+const IberianGridTopology = lazy(() => import(/* webpackChunkName: "chart-topology" */ './IberianGridTopology'));
+const ThermalAdjustmentCostMatrix = lazy(() => import(/* webpackChunkName: "chart-thermal-matrix" */ './ThermalAdjustmentCostMatrix'));
+const CollapseSismograph = lazy(() => import(/* webpackChunkName: "chart-sismograph" */ './CollapseSismograph'));
+const PVCurveSimulator = lazy(() => import(/* webpackChunkName: "chart-pvcurve" */ './PVCurveSimulator'));
+const ANSI59Cascade = lazy(() => import(/* webpackChunkName: "chart-ansi59" */ './ANSI59Cascade'));
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
@@ -71,12 +68,12 @@ const getGraphicData = (id, lang) => {
       de: { title: '3D-Blackout-Karte (WebGL)', desc: 'Interaktive geografische Simulation mit Deck.gl der Kaskadentrennungen.' }
     },
     topology: {
-      es: { title: 'Topología de Red Neuronal (GNN)', desc: 'Grafo Force-Directed de las impedancias de la red de transporte y dependencias de tensión inter-área.' },
-      en: { title: 'Neural Grid Topology (GNN)', desc: 'Force-directed graph of the transmission grid impedances.' },
-      pt: { title: 'Topologia de Rede Neural (GNN)', desc: 'Grafo Force-Directed das impedâncias da rede de transmissão.' },
-      fr: { title: 'Topologie de Réseau Neuronal (GNN)', desc: 'Graphe dirigé par la force des impédances du réseau de transport.' },
-      it: { title: 'Topologia di Rete Neurale (GNN)', desc: 'Grafo diretto dalla forza delle impedenze della rete di trasmissione.' },
-      de: { title: 'Neuronale Netztopologie (GNN)', desc: 'Kraftgesteuerter Graph der Übertragungsnetzimpedanzen.' }
+      es: { title: 'Topología de Red', desc: 'Grafo de fuerza dirigida de las dependencias topológicas de la red de transporte ibérica.' },
+      en: { title: 'Grid Topology', desc: 'Force-directed graph of the topological dependencies of the Iberian transmission grid.' },
+      pt: { title: 'Topologia de Rede', desc: 'Grafo de força dirigida das dependências topológicas da rede de transmissão ibérica.' },
+      fr: { title: 'Topologie de Réseau', desc: 'Graphe de force dirigée des dépendances topologiques du réseau de transport ibérique.' },
+      it: { title: 'Topologia di Rete', desc: 'Grafo a forza diretta delle dipendenze topologiche della rete di trasmissione iberica.' },
+      de: { title: 'Netztopologie', desc: 'Kraftgesteuerter Graph der topologischen Abhängigkeiten des iberischen Übertragungsnetzes.' }
     },
     sismograph: {
       es: { title: 'Sismógrafo del Colapso', desc: 'Evolución transitoria de la frecuencia y la tensión de red en Carmona durante los 27 segundos críticos del colapso.' },
@@ -146,10 +143,10 @@ const getGraphicData = (id, lang) => {
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
 };
 
-import SynchrophasorPlot from './SynchrophasorPlot';
-import PhasePlanePlot from './PhasePlanePlot';
-import InterconnectionDashboard from './InterconnectionDashboard';
-import SwingEquationSimulator from './SwingEquationSimulator/SwingEquationSimulator';
+const SynchrophasorPlot = lazy(() => import(/* webpackChunkName: "chart-synchrophasor" */ './SynchrophasorPlot'));
+const PhasePlanePlot = lazy(() => import(/* webpackChunkName: "chart-phaseplane" */ './PhasePlanePlot'));
+const InterconnectionDashboard = lazy(() => import(/* webpackChunkName: "chart-interconnection" */ './InterconnectionDashboard'));
+const SwingEquationSimulator = lazy(() => import(/* webpackChunkName: "chart-swing" */ './SwingEquationSimulator/SwingEquationSimulator'));
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -218,12 +215,20 @@ export default function InteractiveGraphicsGallery({ lang: propLang }) {
         <h3 className={styles.sidebarTitle}>
           {getAvailableTitle(locale)}
         </h3>
-        <ul className={styles.graphicList}>
+        <ul
+          role="tablist"
+          aria-label={getAvailableTitle(locale)}
+          className={styles.graphicList}
+        >
           {graphicsData.map(graphic => {
             const content = getGraphicData(graphic.id, locale);
             return (
             <li key={graphic.id}>
               <button
+                role="tab"
+                aria-selected={activeGraphicId === graphic.id}
+                aria-controls={`panel-${graphic.id}`}
+                id={`tab-${graphic.id}`}
                 className={`${styles.graphicButton} ${activeGraphicId === graphic.id ? styles.activeButton : ''}`}
                 onClick={() => setActiveGraphicId(graphic.id)}
               >
@@ -244,9 +249,30 @@ export default function InteractiveGraphicsGallery({ lang: propLang }) {
           <h2>{activeGraphicContent.title}</h2>
           <p>{activeGraphicContent.desc}</p>
         </div>
-        <div className={styles.graphicStage}>
+        <div
+          className={styles.graphicStage}
+          role="tabpanel"
+          id={`panel-${activeGraphicId}`}
+          aria-labelledby={`tab-${activeGraphicId}`}
+        >
           <BrowserOnly fallback={<div>{getLoadingText(locale)}</div>}>
-            {() => <ActiveComponent lang={locale} isGallery={true} />}
+            {() => (
+              <Suspense fallback={
+                <div style={{
+                  height: '400px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#64748b',
+                  fontFamily: 'monospace',
+                  fontSize: 13
+                }}>
+                  Iniciando {activeGraphicContent.title}…
+                </div>
+              }>
+                <ActiveComponent lang={locale} isGallery={true} />
+              </Suspense>
+            )}
           </BrowserOnly>
         </div>
       </div>
