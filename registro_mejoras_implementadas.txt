@@ -23,3 +23,25 @@ Sirve como registro de retroalimentación para la IA asesora.
   - Creación de `<TablaMaestra28A />` (filtros múltiples de auditoría) e incrustada en lo alto de `15-galeria-de-tablas.mdx`.
   - **Sprint 11 (Adelanto Interactivo):** Migración total del `CollapseSismograph` de Plotly a **Recharts**. Incorporación de los 11+ puntos de fallo, área fantasma de MW perdidos, línea UFLS a 49.0Hz, tooltips analíticos, y variables directas del JSON maestro (tensión a 440kV).
   - **RAG Completado:** Índice reconstruido (97 fragmentos) para que DeepSeek interiorice las nuevas tablas y notas.
+
+--------------------------------------------------
+## FECHA: 30 de Mayo de 2026 (Fase Final S13)
+**SPRINT / FASE:** Sprint 13 — Simuladores Dinámicos de Colapso de Tensión y Refinamiento Forense
+**TAREAS IMPLEMENTADAS:**
+- **Refinamiento Forense de Componentes (S13-2.0):** Se han incorporado las optimizaciones matemáticas y de control creadas en `S13-2.0`:
+  - `computePVCurve.js`: Implementa la ecuación canónica exacta (Kundur 1994) para tensión del sistema de 2 nudos y calcula la tensión de operación de la rama estable `opV` desde el modelo físico.
+  - `PVCurveSimulator/index.jsx`: Renders Recharts con leyenda estática explicativa, aria-valuetext nativos en sliders para lectores de pantalla, y etiquetas descriptivas estáticas para el nose point del colapso.
+  - `useCascadeSimulation.js`: Solución robusta al bug de closure de React en `setInterval` usando referencias reactivas (`nodesRef`, `timeRef`, `isRunningRef`) para que el tick siempre lea el estado actualizado.
+- **Relocalización de la Base de Datos Maestra:** Se ha creado una página exclusiva para la [Base de Datos Maestra del 28-A](file:///c:/Users/aphmo/Proyectos/TFG%20OVERLEAF/tfg-antigravity-docs/docs/15-base-datos-maestra.mdx) (`docs/15-base-datos-maestra.mdx`) inyectando un details desplegable elegante que previene la propagación de clics (`e.stopPropagation()`) e incorporando una descripción pericial clara.
+- **Limpieza de Galería de Tablas:** La página [Registros de Datos Oficiales](file:///c:/Users/aphmo/Proyectos/TFG%20OVERLEAF/tfg-antigravity-docs/docs/15-galeria-de-tablas.mdx) ahora renderiza exclusivamente las 6 tablas forenses de respaldo del TFG mediante `<ForensicGallery />` sin solapamientos.
+- **Rediseño Profesional de Visualizaciones (sidebars.js):** Se ha reestructurado por completo la sección "VISUALIZACIONES" en la barra lateral, añadiendo la base de datos maestra y asignando nombres periciales y de alto nivel a las subsecciones:
+  1. Base de Datos Maestra del 28-A
+  2. Secuencia Temporal del Colapso (antes Cronograma del Incidente)
+  3. Atlas Forense y Esquemas (antes Galería de Imágenes)
+  4. Laboratorio de Dinámica de Sistemas (antes Gráficas Interactivas)
+  5. Respuestas Periciales en Gráficas (antes Galería Forense)
+  6. Registros de Datos Oficiales (antes Galería de Tablas)
+- **Integración e Inyección MDX:** Ambos componentes interactivos refinados han sido inyectados con transiciones fluidas en el capítulo `docs/03-analisis-incidente.mdx` justo antes de la Fase 3 del colapso.
+- **Verificación:** Compilación completa de Docusaurus en curso para asegurar que la reestructuración lateral y nuevos componentes operan sin advertencias ni errores.
+
+

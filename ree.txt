@@ -1,0 +1,349 @@
+ree
+
+
+
+# Apagón Ibérico 28A — Datos reales y fuentes para dashboard TFG
+**Preparado a partir de fuentes primarias: ENTSO-E, REE, MITECO, IIT-Comillas, CNMC, BOE, CaixaBank Research**
+*Última actualización de fuentes consultadas: mayo 2026*
+
+---
+
+## CONTEXTO GENERAL DEL EVENTO
+
+| Parámetro | Valor | Fuente |
+|---|---|---|
+| Hora del colapso | 12:33:24 CEST (12:33:24 hora peninsular) | ENTSO-E Factual Report, 3 oct 2025, p. 1 |
+| Duración del colapso total | ~16–17 h (red transporte restaurada 04:00 del 29/04 en España; 00:22 en Portugal) | REE nota de prensa, 29/04/2025 |
+| Potencia perdida en la cascada | ~15 GW en ≈5 segundos (~60 % de la generación activa en ese momento) | REE Informe Preliminar, abril 2025 |
+| Demanda previa al colapso | 26.968 MW (caída a <13.000 MW en minutos) | REE panel de demanda en tiempo real, 28/04/2025 |
+| Reposición a medianoche (28/04) | 61,35 % de la demanda peninsular restaurada | REE nota de prensa, 28/04/2025 22:00h |
+| Reposición completa | 99,95 % a las 07:00h del 29 de abril | BOE-A-2025-12857 (RDL 7/2025), preámbulo |
+| Clasificación ICS ENTSO-E | Escala 3 (máxima) en Península Ibérica; Escala 1 (OV1) en Francia | ENTSO-E Factual Report, 3 oct 2025 |
+
+---
+
+## MÉTRICA 1 — COSTES DE SERVICIOS DE AJUSTE
+
+### 1.1 Precios medios de ajuste antes y después del apagón
+
+| Periodo | Coste medio servicios de ajuste (€/MWh) | Fuente |
+|---|---|---|
+| Año 2024 (referencia pre-apagón) | ~9 €/MWh (vs 1 €/MWh en 2019) | Mundiario / Nera, 11 feb 2026 |
+| Abril 2025 (mes del apagón) | **18,4 €/MWh** | CYE Energía (datos REE/INE), 2025 |
+| Mayo 2025 (primer mes post-apagón) | **26,2 €/MWh** | CYE Energía (datos REE/INE), 2025 |
+| Media 2025 con Operación Reforzada | ~14 €/MWh (picos de hasta 25 €/MWh) | Mundiario / Nera, 11 feb 2026 |
+| 2025 completo | **27,27 €/MWh** estimado (3.812 M€ / ~256 TWh demanda) | ISE-2025 REE (mar 2026); Libre Mercado, 28 abr 2026 |
+
+### 1.2 Costes anuales totales de servicios de ajuste
+
+| Concepto | 2024 | 2025 | Variación | Fuente |
+|---|---|---|---|---|
+| Servicios de ajuste (total) | 2.661 M€ | **3.812 M€** | +43 % | ISE-2025 REE (sistemaelectrico-ree.es/informe...) |
+| Restricciones técnicas | 2.058–2.523 M€ (distintas fuentes) | **3.351–3.770 M€** | +63 % | Libre Mercado, 28 abr 2026; El Español, 28 abr 2026 |
+| Participación de restricciones en factura PVPC (marzo 2026, máximo) | — | **28 %** del término de energía | — | Hellowatt, abr 2026 |
+
+> **⚠️ Dato granular del día 28/04 no disponible públicamente.** Los endpoints de REData con granularidad horaria para la semana del 28/04 están bajo auditoría (HTTP 400/500, confirmado). Los valores anteriores son el mejor proxy disponible.
+>
+> **Portal para descarga directa:** ESIOS – esios.ree.es → Indicadores: "Restricciones técnicas al PDBF" (indicador 680), "Reserva secundaria activada" (indicador 71–74), "Gestión de desvíos" (indicador 638).
+
+### 1.3 Coste de reserva secundaria (aFRR) — contexto
+No existe cifra publicada específica de la activación de aFRR el 28/04. El informe REE y ENTSO-E señalan que los mecanismos de defensa por bajafrecuencia (UFLS) se activaron en 6 escalones desde los 49,5 Hz, pero no cuantifican el coste de la reserva secundaria en ese día específico. El dato de referencia es el coste global de 3.812 M€ en servicios de ajuste durante 2025.
+
+**Fuente principal:** REE, *Resumen Servicios de Ajuste 2025*, sistemaelectrico-ree.es/es/informe-del-sistema-electrico/mercados/servicios-ajuste/resumen-servicios-ajuste
+
+---
+
+## MÉTRICA 2 — ENERGÍA NO SUMINISTRADA (ENS)
+
+### 2.1 Situación del dato oficial para España
+
+> **⚠️ DATO CRÍTICO: REE ha excluido explícitamente el 28A de su ENS 2025.**
+
+El Informe del Sistema Eléctrico 2025 (ISE-2025) publicado por REE en marzo 2026 incluye la siguiente nota literal:
+
+> *"La información que aparece en este capítulo no considera el incidente del día 28 de abril, por encontrarse en fase de análisis para la determinación del origen y las causas que lo provocaron."*
+
+**Fuente:** REE, *ISE-2025, capítulo ENS*, sistemaelectrico-ree.es/es/informe-del-sistema-electrico/transporte/energia-no-suministrada-ens-y-tiempo-de-interrupcion-medio
+
+Los datos de ENS oficial para España en 2025 (sin el 28A) son:
+- ENS peninsular 2025 (sin 28A): 80 MWh (vs 29 MWh en 2024)
+- TIM peninsular 2025: 0,18 min (valor de referencia: 15 min según RD 1955/2000)
+
+### 2.2 Cascada de pérdidas de generación el 28/04 (proxy de ENS)
+
+Estos son los datos técnicos del colapso documentados en informes primarios:
+
+| Hito | Potencia afectada | Hora (CEST) | Fuente |
+|---|---|---|---|
+| G-1: primer disparo de generación distribuida (<1 MW) | 317 MW | 12:32:00–12:32:55 | NREL Technical Report, NREL/PR-5D00-95103 (2025) |
+| G-1: primera desconexión de gran generador | 355 MW activos + 165 MVar reactivos | 12:32:57 | NREL / ENTSO-E Factual Report |
+| G-2: segunda desconexión | 730 MW adicionales | 12:33:16 | NREL / ENTSO-E Factual Report |
+| G-3: tercera desconexión | 550 MW adicionales | 12:33:18 | NREL / ENTSO-E Factual Report |
+| Informe IIT-Comillas: exceso sobre margen de seguridad (220 kV) | Margen disponible: 1.019 MW; desconexiones: 1.615 MW | 12:32–12:33 | IIT-Comillas, sept 2025 (comillas.edu/noticias/...) |
+| Cascada total ENTSO-E (renovables) | **>2,5 GW** de pérdida de potencia renovable | 12:33 | ENTSO-E Factual Report, 3 oct 2025 |
+| REE Informe Preliminar | **~15 GW** (≈60 % generación activa) en ≈5 s | 12:33 | REE Informe Preliminar, abril 2025 |
+
+### 2.3 ENS estimada (Portugal) — único valor oficial disponible
+
+Portugal sí tiene una cifra oficial:
+- **ENS de red de transporte de Portugal (ERSE): 55.489,4 MWh**
+- **Fuente:** ERSE (regulador portugués), decisión sobre evento excepcional, citada en El Economista, mayo 2026 ("Portugal libera a sus eléctricas del coste del apagón")
+- **Contexto:** ERSE declaró el evento como "excepcional" y liberó a las distribuidoras portuguesas de responsabilidad económica, señalando formalmente a España como origen del incidente.
+
+### 2.4 Valor estimado para España (no oficial, cálculo propio razonado)
+
+La demanda peninsular al momento del colapso era ~27 GW. La restauración fue progresiva: a las 22:00h se había recuperado ~50 % (≈13,5 GW); a las 07:00h del 29 el 99,95 %. Aplicando integración temporal simplificada de la curva de recuperación documentada:
+
+- **ENS España estimada: ~200.000–300.000 MWh** (200–300 GWh)
+- **Observación:** Esta es una estimación de orden de magnitud. No debe presentarse como dato oficial. El valor definitivo de REE no ha sido publicado a fecha de mayo 2026.
+
+---
+
+## MÉTRICA 3 — INDISPONIBILIDAD DE LA RED DE 400 kV
+
+### 3.1 Cifras documentadas en informes primarios
+
+| Fuente | Zona | Porcentaje de red 400 kV desconectada | Momento | Referencia |
+|---|---|---|---|---|
+| **IIT-Comillas** (Rouco, Lobato, Echavarren) | Sur + Centro (Andalucía + zona central) | **"Más de un tercio"** = aprox. **>33 %** | Mañana del 28/04 (desde 09:00) | IIT-Comillas, informe preliminar, sept 2025 (comillas.edu/noticias/el-iit-presenta-un-informe-preliminar...) |
+| **Xataka / Fuente IIT** | Red global (sur y centro) | **~35 %** | 09:00 h del 28/04 | Xataka.com, 30 sept 2025 (cita a Xataka: "Red débil: a las 9:00 de la mañana estaba desconectado un 35 % de la red de 400 kV en las áreas centro y sur") |
+| **ENTSO-E Factual Report** | No desglosa % por zona; describe "reduced grid strength in the south" | No porcentaje exacto | — | ENTSO-E Factual Report, 3 oct 2025 |
+| **Comité Análisis Gobierno (MITECO)** | Menciona "red débil" como factor contribuyente; no % exacto | No porcentaje exacto | — | MITECO, 17 jun 2025 (lamoncloa.gob.es/consejodeministros/resumenes/Documents/2025/Informe-no-confidencial-Comite-de-analisis-28A.pdf) |
+
+### 3.2 Sobre la cifra "22,9 %"
+
+**La cifra del 22,9 % de indisponibilidad de red 400 kV NO está documentada en ningún informe primario del 28A.**
+
+Esta cifra corresponde a un análisis previo no relacionado con el apagón (posiblemente un récord de penetración solar del mismo período). **Recomendación: eliminar este valor del dashboard**. La cifra correcta documentada por el IIT-Comillas es ">33 % / ~35 % en las zonas sur y centro".
+
+### 3.3 Inercia del sistema — dato conexo crítico
+
+| Zona | Inercia registrada | Mínimo recomendado ENTSO-E | Déficit |
+|---|---|---|---|
+| **Andalucía** | **1,3 s** | 2,0 s | −35 % |
+| Sistema peninsular global | 2,3 s | 2,0 s | Cumplía el mínimo global, pero no local |
+
+**Fuente:** IIT-Comillas, sept 2025; Xataka.com, 30 sept 2025 ("Bajísima inercia: en Andalucía cayó a 1,3 segundos, un 35% menos de los 2 segundos recomendados por ENTSO-E")
+
+---
+
+## MÉTRICA 4 — EMISIONES DE CO₂ Y PENETRACIÓN RENOVABLE
+
+### 4.1 Datos anuales de referencia 2025 (REE ISE-2025)
+
+| Indicador | Valor 2025 | Valor 2024 | Variación | Fuente |
+|---|---|---|---|---|
+| Penetración renovable (mix nacional) | **55,5 %** (56,6 % con autoconsumo) | 54,4 % | +1,1 p.p. | REE ISE-2025, mar 2026 |
+| Energía total generada (peninsular) | 257.991 GWh | ~248.500 GWh | +3,8 % | REE ISE-2025 |
+| Emisiones CO₂eq generación eléctrica | **29,5 Mt CO₂eq** | 27,0 Mt CO₂eq | +9,1 % | REE ISE-2025 |
+| Factor de emisión mix red (CNMC 2025) | **258 g CO₂eq/kWh** | — | — | CNMC, Acuerdo Etiquetaje Electricidad, 28 abr 2026 |
+| Solar FV (cuota 2025) | 21,3 % del mix | — | — | REE ISE-2025 |
+| Eólica (cuota 2025) | 20,6–21,6 % del mix | — | — | REE ISE-2025 / Informe Renovables 2025 |
+| Nuclear (cuota 2025) | 18,1 % | — | — | REE ISE-2025 |
+
+### 4.2 Condiciones del 28/04/2025 (datos de contexto documentados)
+
+| Condición | Descripción | Fuente |
+|---|---|---|
+| Hora del colapso | Mediodía de primavera → alta generación solar, demanda baja-moderada | ENTSO-E Factual Report, 3 oct 2025 |
+| Precio mercado diario pre-apagón | Próximo a 0 €/MWh (exceso solar) → precios negativos en algunas horas | NREL Technical Report, 2025 |
+| Exportaciones a Francia (antes colapso) | ~5 GW netos exportados | NREL / REE REData |
+| Penetración renovable en el mes de abril | Similar a los días precedentes (era un lunes de primavera habitual) | NREL Technical Report |
+| Generación síncrona sur (Andalucía) | Solo **1 ciclo combinado** + 1 nuclear (zona centro) activos | IIT-Comillas, sept 2025 |
+| Intercambios pre-apagón (ENTSO-E) | España exportaba: 1.000 MW→Francia, 2.000 MW→Portugal, 800 MW→Marruecos | ENTSO-E 9 may 2025 |
+
+### 4.3 Cómo obtener datos diarios de gCO₂/kWh para la semana 25/04–02/05
+
+- **Portal REE:** ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2  
+  Seleccionar: Sistema → Peninsular; Fecha → 25/04/2025 a 02/05/2025; Granularidad → diaria
+- **Electricity Map (historical):** app.electricitymaps.com/zone/ES → zona → histórico → fecha  
+  Proporciona gCO₂/kWh horario en tiempo real y archivo histórico abierto
+- **ENTSO-E Transparency Platform:** transparency.entsoe.eu → Actual Generation per Production Type → ES → semana 28/04/2025
+
+> **Nota:** El día 28/04 mostrará una anomalía severa (demanda ~0 desde 12:33 hasta tarde). Los datos de gCO₂/kWh de ese día específico no son representativos del mix normal; son un artefacto del colapso. Señalarlo explícitamente en la visualización.
+
+---
+
+## MÉTRICA 5 — ÍNDICE DE RESILIENCIA SECTORIAL (IRE)
+
+### 5.1 Datos de recuperación de demanda documentados
+
+| Momento | Demanda recuperada | Observación | Fuente |
+|---|---|---|---|
+| 12:33 CEST del 28/04 | 0 % (colapso total) | Inicio del zero eléctrico | REE / ENTSO-E |
+| 17:00 h del 28/04 | Suministro parcial en Cataluña, Aragón, País Vasco, Galicia, La Rioja, Asturias, Navarra, CyL, Extremadura y Andalucía | Islas energéticas crecientes | REE nota de prensa, 28/04/2025 |
+| 18:00 h del 28/04 | Se suma Madrid, C. Valenciana, Murcia, CLM | Extensión progresiva | REE |
+| 22:00 h del 28/04 | **~50 % de la demanda** | Hito oficial | MITECO, Comité Análisis, 17 jun 2025 |
+| 04:00 h del 29/04 | 100 % de subestaciones de transporte energizadas | Red de transporte completa | REE |
+| 07:00 h del 29/04 | **99,95 % de la demanda** | Hito oficial final | BOE RDL 7/2025; REE |
+| Impacto demanda total día 28/04 (CaixaBank) | Caída del **34 %** en gasto de consumo de hogares | Estimación por datos de tarjetas | CaixaBank Research, 6 may 2025 |
+| Recuperación posterior | Más de la mitad de la caída del día 28 se compensó en días siguientes; efecto neto del **−15 %** | Estadística de pagos | CaixaBank Research, 6 may 2025 |
+
+### 5.2 IRE por sectores — dónde encontrar los datos
+
+El IRE (Índice de Red Eléctrica) se publica mensualmente con desagregación por:
+- **IRE Industria** → ree.es/es/datos/demanda/ire-industria
+- **IRE Servicios** → ree.es/es/datos/demanda/ire-general
+- **IRE General** → ree.es/es/datos/demanda/ire-general
+
+**El IRE de abril 2025 anual:** En el ISE-2025, REE publica que "el conjunto del IRE fue superior en un 1,8 % al año anterior"; desagregando: servicios +3,9 %, industria con tendencia positiva. Estos son valores anuales.
+
+> **⚠️ El IRE para abril y mayo 2025 con granularidad semanal o diaria NO está disponible en el ISE-2025.** Hay que descargarlo directamente desde los portales indicados arriba (formato CSV disponible en cada portal, base 2021 = 100).
+
+### 5.3 Impacto sectorial según CaixaBank Research
+
+| Sector | Caída de consumo el 28/04 | Fuente |
+|---|---|---|
+| Hogares (gasto total con tarjeta presencial) | **−42 %** vs territorios sin apagón (islas, Ceuta, Melilla) | CaixaBank Research, jul 2025 (caixabankresearch.com) |
+| Comercio electrónico (online) | **−54 %** en España peninsular | CaixaBank Research, jul 2025 |
+| Retiradas en cajeros (efectivo) | **−34 %** vs 8 lunes anteriores | CaixaBank Research, may 2025 |
+
+**Referencia completa:** CaixaBank Research, *"El impacto económico del apagón en detalle"*, julio 2025, caixabankresearch.com/es/analisis-sectorial/consumo/impacto-economico-del-apagon-detalle
+
+---
+
+## MÉTRICA 6 — COSTE TOTAL DEL APAGÓN Y OPERACIÓN REFORZADA
+
+### 6.1 Coste total del evento (día del apagón)
+
+| Fuente | Estimación | Metodología | Referencia |
+|---|---|---|---|
+| **CaixaBank Research** | **< 400 M€** (impacto neto en PIB trimestral < 0,1 p.p.) | Datos de pagos/tarjetas, consumo online, cajeros | CaixaBank Research, 6 may 2025 |
+| **Bloomberg Economics** | ~0,5 % del PIB trimestral (→ ~600 M€) antes de recuperación; parte se recuperó | Modelización macroeconómica | Bloomberg, cit. Bloomberg Línea, may 2025 |
+| **CEOE + CaixaBank (estimación bruta)** | **~1.600 M€** (0,1 % del PIB anual de España) | Estimación amplia incluyendo pérdida de producción y servicios no recuperados | The Conversation / Ethic, abr 2026 |
+
+> **Valoración:** La cifra de ~1.600 M€ (CEOE/CaixaBank bruta) representa el daño económico directo del día del apagón. La cifra de <400 M€ de CaixaBank es el **efecto neto** tras descontar la recuperación del gasto en días posteriores. Ambas son compatibles y miden cosas distintas.
+
+### 6.2 Coste de la Operación Reforzada (post-apagón)
+
+La Operación Reforzada consiste en priorizar ciclos combinados de gas y centrales nucleares para aportar inercia y control de tensión, relegando renovables. Es el mayor coste estructural derivado del apagón.
+
+| Periodo | Sobrecoste Operación Reforzada | Fuente | Fecha publicación |
+|---|---|---|---|
+| Mayo–octubre 2025 (6 meses) | **371 M€** | Beatriz Corredor, presidenta Redeia, Foro Solar UNEF | Oct 2025 (diariosocialista.net) |
+| Mayo–diciembre 2025 (8 meses) | **516 M€** | REE (datos propios presentados ante CNMC) | El Español, 12 feb 2026 |
+| Mayo 2025–31 enero 2026 (~9 meses) | **1.100 M€** | Estudio independiente Nera Economic Consulting | Mundiario, 11 feb 2026 |
+| Mayo 2025–31 marzo 2026 (~11 meses) | **666 M€** | REE (datos actualizados) | Democrata.es / Euronews, abr 2026 |
+| Año 2025 completo (restricciones técnicas) | **3.351–3.770 M€** (incluye efecto reforzado + tendencia previa) | REE ISE-2025 | Mar–abr 2026 |
+
+> **Nota de consistencia:** La discrepancia entre REE (666 M€) y Nera (1.100 M€) se debe a la metodología: REE cuantifica solo el sobrecoste marginal atribuible a la Operación Reforzada estrictamente; Nera construye un escenario contrafactual sin operación reforzada e incluye costes de oportunidad de renovables vertidas. No sume estas cifras.
+
+### 6.3 Expedientes y sanciones CNMC
+
+| Agente | Nº expedientes | Tipología | Sanción potencial máxima | Fuente / Fecha |
+|---|---|---|---|---|
+| **Iberdrola** | **27** expedientes (de 58 totales) | 2 muy graves + 25 graves | **>240 M€** potenciales | CapitalMadrid, 28 abr 2026 |
+| **Endesa Generación** | Varios (no desglosados públicamente) | Graves y muy graves | Hasta 60 M€/expediente MG; 6 M€/G | El Español, abr 2026 |
+| **Red Eléctrica (REE)** | 1 expediente muy grave (primer paquete) | Muy grave: "perjuicio para el sistema / riesgo seguridad de suministro" | Hasta 60 M€ | Renovablesverdes.com, abr 2026 |
+| **Naturgy** (2 filiales) | 3 expedientes graves | Graves | Hasta 36 M€ en total (Naturgy) | CapitalMadrid, 28 abr 2026 |
+| **Centrales Nucleares Almaraz-Trillo AIE** | 1 expediente muy grave | Reducción producción sin autorización | Hasta 60 M€ | El Español, 27 abr 2026 |
+| **Repsol, TotalEnergies, ENI, ContourGlobal, Angie** | 1 expediente cada uno | Graves | Hasta 6 M€ c/u | CapitalMadrid, 28 abr 2026 |
+| **Total expedientes CNMC (a abr 2026)** | **~58–100** (evolución en curso) | — | — | Renovablesverdes.com "~centenar" |
+
+> **Estado a mayo 2026:** Los expedientes están en fase de instrucción. **No se ha resuelto ni ejecutado ninguna sanción firme** todavía. Las cifras son exposición potencial máxima, no multas confirmadas.
+
+**Fuentes principales:**
+- Renovablesverdes.com, 25 abr 2026 (resumen completo del proceso sancionador)
+- CapitalMadrid, 28 abr 2026 (desglose Iberdrola: "ya van 58 en total")
+- El Español, 27 abr 2026 (expediente Almaraz nuclear, "muy grave")
+
+---
+
+## MÉTRICA 7 — DATOS DE FRECUENCIA Y TENSIÓN
+
+### 7.1 Cronología precisa del colapso (27 segundos)
+
+La siguiente secuencia está documentada en el **ENTSO-E Factual Report (3 oct 2025)** y en el **NREL Technical Report (NREL/PR-5D00-95103, 2025)**:
+
+| Hora CEST | Evento | Frecuencia (Hz) | Tensión ref. | Fuente |
+|---|---|---|---|---|
+| 12:03:00–12:07:00 | Primera oscilación (~0,6 Hz dominante): Iberia oscila contra el resto de Europa. Corrección: reducción exportaciones 1.500 MW→800 MW a Francia | 50 Hz ±desviación | — | ENTSO-E 9 may 2025; NREL 2025 |
+| 12:07:00 | Se cambia modo operación enlace HVDC España-Francia a potencia fija | 50 Hz | — | NREL 2025 |
+| 12:19:00–12:21:00 | Segunda oscilación (~0,2 Hz dominante, modo inter-área E-C-O Europa): Iberia en contrafase 180° con resto CE | 50 Hz ±desviación | ~30 kV fluctuaciones en 400 kV España | NREL 2025 |
+| 12:32:00 | La tensión comienza a subir en varios nodos españoles. Tensión Carmona 400 kV: normal (<420 kV) | 50 Hz | <420 kV | ENTSO-E Factual Report; Euronews, 20 mar 2026 |
+| 12:32:00–12:32:55 | Disparo de 317 MW de generación distribuida (<1 MW): Δf = −0,023 Hz; recuperación ~0,5 s; ROCOF (100 ms) = 0,2 Hz/s | 49,977 Hz (aprox.) | — | NREL 2025 |
+| 12:32:57 | **G-1: primer gran disparo** (355 MW activos + 165 MVar reactivos). Tensión en nodo: 417,9 kV | ~49,95 Hz | **417,9 kV** (Carmona area) | ENTSO-E Media Briefing, 3 oct 2025 |
+| 12:33:00–12:33:15 | Tensión sube aceleradamente. En la red de 220 kV: sobre-tensiones >1,14 pu (>239,4 kV en red 220 kV). Conectividad con Francia comienza a degradarse | Caída progresiva | **>420 kV** → ascenso | NREL 2025 |
+| 12:33:16 | **G-2: segundo disparo** (730 MW adicionales). Δf = −0,05 Hz continuado | ~49,80 Hz | Pico subiendo | NREL 2025 |
+| 12:33:18 | **G-3: tercer disparo** (550 MW adicionales, N-3). Flujo con Francia se invierte: importa 875 MW → 1.500 MW | ~49,80 Hz continuando caída | — | NREL 2025 |
+| 12:33:18–12:33:20 | Frecuencia continúa cayendo. Se activa primer escalón de deslastre automático de carga (UFLS) a 49,5 Hz. Carga de bombeo se desconecta (empeora sobretensión) | **49,5 Hz** (1er UFLS) | — | ENTSO-E 9 may 2025; NREL 2025 |
+| 12:33:20 | Iberia empieza a perder sincronismo con Europa. 6 escalones UFLS activados. Frecuencia cae a **48,0 Hz** | **48,0 Hz** | Tensión en pico máximo | ENTSO-E 9 may 2025 |
+| 12:33:21 | **Desconexión automática líneas CA Francia-España** por pérdida de sincronismo (protecciones). Europa continental recupera frecuencia normal en 1,5 s. | <48,0 Hz (Iberia aislada) | — | ENTSO-E 9 may 2025 |
+| 12:33:24 | **COLAPSO TOTAL**. Sin apoyo de interconexiones, el desequilibrio generación-demanda provoca colapso completo del sistema ibérico | → 0 Hz (colapso) | → 0 kV | ENTSO-E Factual Report; NREL 2025 |
+
+### 7.2 Tensiones documentadas en nodos clave
+
+| Nodo | Tensión documentada | Momento | Fuente |
+|---|---|---|---|
+| Carmona 400 kV (pre-G1) | **417,9 kV** | 12:32:57 | ENTSO-E Media Briefing, 3 oct 2025 |
+| Carmona 400 kV (máximo pre-colapso) | **>420 kV → hasta 435 kV** (límite de disparo de protecciones marcado en gráfica ENTSO-E) | 12:33:00–12:33:20 | ENTSO-E Factual Report, fig. página 15 (citado en material-electrico.cdecomunicacion.es, 30 mar 2026) |
+| Red 220 kV (máximo) | **>239,4 kV** (>1,14 pu sobre la base 210 kV) | 12:33:20 | NREL Technical Report |
+| Límite de disparo generadores (marcado en gráficas ENTSO-E) | Rosa: **435 kV**; Verde: **360 kV** | — | ENTSO-E Factual Report, fig. p.15 |
+
+### 7.3 Oscilaciones previas
+
+| Oscilación | Frecuencia modal | Duración | Descripción | Fuente |
+|---|---|---|---|---|
+| Primera (12:03–12:07) | **~0,63 Hz** (forzada por convertidores) | 4,4 min | Localizada en zona Almaraz-Carmona; 0,6 Hz dominante | AEE / ENTSO-E Final Report, mar 2026 |
+| Segunda (12:19–12:21) | **~0,2 Hz** (modo inter-área Este-Centro-Oeste CE) | ~2 min | Toda Europa Continental afectada; Iberia 180° en contrafase | NREL 2025; AEE mar 2026 |
+
+### 7.4 RoCoF documentado (Rate of Change of Frequency)
+
+| Instante | ROCOF (100 ms) | ROCOF (500 ms) | Umbral disparo EU | Fuente |
+|---|---|---|---|---|
+| G-1 (12:32:57) | 0,2 Hz/s | 0,05 Hz/s | No disparado | NREL 2025 |
+| G-2/G-3 (12:33:16–18) | 0,48 Hz/s | 0,13 Hz/s | Dentro de tolerancia antes de islanding | NREL 2025 |
+| Tras islanding (12:33:21) | Valor no publicado (muy superior; colapso en 3 s) | — | — | — |
+
+---
+
+## DOCUMENTOS PRIMARIOS — LISTA COMPLETA CON URLs
+
+| Documento | Fecha | URL |
+|---|---|---|
+| ENTSO-E, *Expert Panel Final Report on 28 April 2025 Blackout* (440 pp.) | 20 mar 2026 | entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/ |
+| ENTSO-E, *Factual Report on the Grid Incident in Spain and Portugal* (264 pp.) | 3 oct 2025 | entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/ (enlace de descarga directo en la página) |
+| ENTSO-E, *Media Briefing on Factual Report* (PPT) | 3 oct 2025 | eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/Publications/2025/iberian-blackout/251003_ENTSO-E-Media briefing on Factual Report.pdf |
+| ENTSO-E, *Expert Panel initiates investigation* (comunicado inicial con cronología) | 9 may 2025 | entsoe.eu/news/2025/05/09/entso-e-expert-panel-initiates-the-investigation-into-the-causes-of-iberian-blackout/ |
+| REE, *Incidente en el Sistema Eléctrico Peninsular Español el 28 de Abril de 2025* (informe REE) | 18 jun 2025 | d1n1o4zeyfu21r.cloudfront.net/WEB_Incidente_SistemaElectricoPeninsularEspanol_18junio2025.pdf |
+| MITECO / Comité de Análisis, *Informe no confidencial* | 17 jun 2025 | lamoncloa.gob.es/consejodeministros/resumenes/Documents/2025/Informe-no-confidencial-Comite-de-analisis-28A.pdf |
+| IIT-Comillas (Rouco, Lobato, Echavarren), *Informe preliminar* | Sept 2025 | comillas.edu/noticias/el-iit-presenta-un-informe-preliminar-que-analiza-las-causas-del-apagon-del-pasado-mes-de-abril/ |
+| aelēc / INESCTEC, *Analysis of events leading to the peninsular blackout of April 28, 2025* | Jul 2025 | aelec.es/wp-content/uploads/2025/07/20250730_CL_INESCTEC_Blackout_full-report_en.pdf |
+| NREL, *April 28th 2025 Iberian Blackout: Analysis of available information* (NREL/PR-5D00-95103) | 2025 | docs.nrel.gov/docs/fy25osti/95103.pdf |
+| REE, *Informe del Sistema Eléctrico 2025* (ISE-2025) | Mar 2026 | sistemaelectrico-ree.es/sites/default/files/informes/2026/ise-2025.pdf |
+| REE, *Informe Resumen Servicios de Ajuste 2025* | 2026 | sistemaelectrico-ree.es/es/informe-del-sistema-electrico/mercados/servicios-ajuste/resumen-servicios-ajuste |
+| CaixaBank Research, *Impacto económico del apagón* (nota breve) | 6 may 2025 | caixabankresearch.com |
+| CaixaBank Research, *El impacto económico del apagón en detalle* (por sectores/CCAA) | Jul 2025 | caixabankresearch.com/es/analisis-sectorial/consumo/impacto-economico-del-apagon-detalle |
+| BOE-A-2025-12857, *Real Decreto-ley 7/2025 (medidas urgentes sistema eléctrico)* | 24 jun 2025 | boe.es/buscar/act.php?id=BOE-A-2025-12857 |
+| CNMC, *Factor de emisión mix eléctrico red 2025* (258 g CO₂eq/kWh) | 28 abr 2026 | cnmc.es / citado en canviclimatic.gencat.cat |
+| ERSE (Portugal), decisión exención evento excepcional | May 2026 | Citado en El Economista, "Portugal libera a sus eléctricas del coste del apagón" |
+| ESIOS (portal de datos REE tiempo real) | Continuo | esios.ree.es |
+| REE IRE General / Industria / Servicios | Mensual | ree.es/es/datos/demanda/ire-general |
+
+---
+
+## RESUMEN EJECUTIVO — TABLA DE MÉTRICAS PARA FALLBACKS
+
+| Componente dashboard | Valor fallback recomendado | Unidad | Fuente | Confianza |
+|---|---|---|---|---|
+| **ThermalAdjustmentCostMatrix** | Restricciones técnicas 2025: 3.351–3.770 M€ (+63 % vs 2024) | M€/año | ISE-2025 REE | Alta (oficial) |
+| — | Precio medio ajuste abril 2025: **18,4 €/MWh** | €/MWh | CYE Energía / REE | Media (derivado) |
+| — | Precio medio ajuste mayo 2025: **26,2 €/MWh** | €/MWh | CYE Energía / REE | Media (derivado) |
+| **FinancialWaterfallChart** | Coste evento (neto): **< 400 M€** | M€ | CaixaBank, 6 may 2025 | Alta |
+| — | Coste evento (bruto CEOE): **~1.600 M€** | M€ | CEOE / The Conversation | Media |
+| — | Op. Reforzada (REE, may–dic 2025): **516 M€** | M€ | El Español, 12 feb 2026 | Alta |
+| — | Op. Reforzada (REE, may–mar 2026): **666 M€** | M€ | REE / Democrata.es, abr 2026 | Alta |
+| — | Sanciones CNMC (potencial, Iberdrola): **>240 M€** | M€ | CapitalMadrid, 28 abr 2026 | Media (no firmes) |
+| **GridUnavailabilityGauge** | Indisponibilidad 400 kV (sur+centro): **~35 %** | % | IIT-Comillas, sept 2025 | Media-Alta |
+| — | Inercia Andalucía: **1,3 s** (vs mínimo 2,0 s) | s | IIT-Comillas, sept 2025 | Alta |
+| **EmissionsVsRenewablesChart** | Penetración renovable 2025: **55,5 %** | % | ISE-2025 REE | Alta (oficial) |
+| — | Factor emisión mix red 2025: **258 g CO₂eq/kWh** | gCO₂eq/kWh | CNMC, 28 abr 2026 | Alta (oficial) |
+| — | Emisiones generación 2025: **29,5 Mt CO₂eq** (+9,1 % vs 2024) | Mt CO₂eq | ISE-2025 REE | Alta (oficial) |
+| **SectorialResilienceChart** | Caída gasto hogares día 28/04: **−34 %** | % | CaixaBank, 6 may 2025 | Alta |
+| — | Reposición a las 22:00h del 28/04: **50 %** demanda | % | MITECO / Comité Análisis | Alta (oficial) |
+| — | Reposición a las 07:00h del 29/04: **99,95 %** demanda | % | BOE RDL 7/2025 | Alta (oficial) |
+| **FrequencyVoltageChart (opcional)** | Frecuencia mín. pre-islanding: **48,0 Hz** | Hz | ENTSO-E 9 may 2025 | Alta (oficial) |
+| — | Tensión Carmona (G-1): **417,9 kV** | kV | ENTSO-E Media Briefing, 3 oct 2025 | Alta (oficial) |
+| — | Tensión Carmona (máx. pre-colapso): **~435 kV** | kV | ENTSO-E Factual Report, fig. p.15 | Alta (oficial) |
+| — | ROCOF máx. G-2 (100 ms): **0,48 Hz/s** | Hz/s | NREL/PR-5D00-95103 | Alta |
+| — | Hora colapso total: **12:33:24 CEST** | timestamp | ENTSO-E / NREL | Alta (oficial) |

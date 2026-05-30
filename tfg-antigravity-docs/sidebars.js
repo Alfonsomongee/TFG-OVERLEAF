@@ -255,28 +255,33 @@ const sidebars = {
       items: [
         {
           type: 'doc',
+          id: 'base-datos-maestra',
+          label: 'Base de Datos Maestra del 28-A',
+        },
+        {
+          type: 'doc',
           id: 'cronologia',
-          label: 'Cronograma del Incidente',
+          label: 'Secuencia Temporal del Colapso',
         },
         {
           type: 'doc',
           id: 'galeria-imagenes',
-          label: 'Galería de Imágenes',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-de-tablas',
-          label: 'Galería de Tablas',
+          label: 'Atlas Forense y Esquemas',
         },
         {
           type: 'doc',
           id: 'galeria-graficas',
-          label: 'Gráficas Interactivas',
+          label: 'Laboratorio de Dinámica de Sistemas',
         },
         {
           type: 'doc',
           id: 'galeria-forense',
-          label: 'Galería Forense',
+          label: 'Bases de Datos ENTSO-E y ESIOS',
+        },
+        {
+          type: 'doc',
+          id: 'galeria-de-tablas',
+          label: 'Registros de Datos Oficiales',
         },
       ],
     },

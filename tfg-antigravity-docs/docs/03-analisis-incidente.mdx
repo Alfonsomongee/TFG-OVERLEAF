@@ -8,6 +8,8 @@ import GlitchTitle from "@site/src/components/GlitchTitle";
 import GlossaryLink from "@site/src/components/GlossaryLink";
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
+import PVCurveSimulator from "@site/src/components/PVCurveSimulator";
+import ANSI59Cascade from "@site/src/components/ANSI59Cascade";
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
@@ -41,7 +43,7 @@ La naturaleza del primer transitorio —la oscilación de 0,6 Hz de las 12:03 CE
 La inestabilidad se intensificó a las **12:19 CEST** con el modo de **0,2 Hz**, confirmado por telemetría fasorial europea como el modo natural Este-Centro-Oeste del área síncrona: la reducida masa rotatoria ibérica oscilaba en contrafase respecto al centro de inercia europeo, materializando el efecto látigo descrito en el Capítulo 2.
 
 <span id="t5"></span>
-El punto de no retorno se alcanzó a las **12:32:57 CEST**. Un transformador de 400/220 kV en una subestación colectora de la provincia de **Granada** se desconectó por actuación de sus protecciones de sobretensión, al detectarse en el secundario de 220 kV un valor de aproximadamente *244 kV*, excediendo el umbral dieléctrico de seguridad. La magnitud del impacto no residió en los 355 MW de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink> perdidos —una cifra manejable para el sistema—, sino en <ForensicReveal>la pérdida instantánea e irrecuperable de 165 MVAr de capacidad de absorción</ForensicReveal> de potencia reactiva inductiva. En un sistema saturado de reactiva capacitiva y con márgenes <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> reducidos, la desaparición de este sumidero provocó un escalón ascendente de tensión en los nudos circundantes: el detonante físico de la reacción en cadena ([*explorar Telemetría de Divergencia Angular*](./galeria-graficas.mdx#phasor)).
+El punto de no retorno se alcanzó a las **12:32:57 CEST**. Un transformador de 400/220 kV en una subestación colectora de la provincia de **Granada** se desconectó por actuación de sus protecciones de sobretensión, al detectarse en el secundario de 220 kV un valor de aproximadamente *244 kV*, excediendo el umbral dieléctrico de seguridad. La magnitud del impacto no residió en los 355 MW de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink> perdidos —una cifra manejable para el sistema—, sino en <ForensicReveal>la pérdida instantánea e irrecuperable de 165 MVAr de capacidad de absorción</ForensicReveal> de potencia reactiva inductiva. En un sistema saturado de reactiva capacitiva y con márgenes <GlossaryLink term="Colapso Q-V">Q-V</GlossaryLink> reducidos, la desaparición de este sumidero provocó un escalón ascendente de tensión en los nudos circundantes: el detonante físico de la reacción en cadena (<Link to="/docs/galeria-graficas#phasor">explorar Telemetría de Divergencia Angular</Link>).
 
 ## Fase 2: el fenómeno Tap-Lag y el desacoplamiento de voltajes (12:32:57–12:33:18 CEST) {#fase-2}
 
@@ -120,6 +122,14 @@ Esta incapacidad mecánica creó un **"espejismo" en la sala de control de REE**
 ![Mapa de Calor: Propagación de Sobretensiones](/figuras/heatmap_propagation.png) _Figura 16. Mapa de calor: propagación de sobretensiones en red 400 kV (Fase 2, 12:32:00–12:33:18 CEST). Fuente: Comité de Análisis del Gobierno / REE._
 
 Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como **"disparos inadecuados"** argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas **actuaron correctamente** ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
+
+El siguiente simulador reproduce el mecanismo de inestabilidad de tensión que desencadenó el 28-A. Arrastra el slider de SCR hacia valores bajos y observa cómo el margen al colapso desaparece.
+
+<PVCurveSimulator />
+
+Una vez que la tensión supera el umbral de las protecciones ANSI 59, el sistema entra en un bucle de retroalimentación positiva. El siguiente simulador reproduce esa cascada.
+
+<ANSI59Cascade />
 
 ## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST) {#fase-3}
 

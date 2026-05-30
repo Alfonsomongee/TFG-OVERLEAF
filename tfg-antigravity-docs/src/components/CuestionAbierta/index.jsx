@@ -24,7 +24,7 @@ export default function CuestionAbierta({ metricKey, children }) {
     >
       <span className={styles.content}>
         {children}
-        <span className={styles.icon}>❓</span>
+        <span className={styles.icon}>?</span>
       </span>
       {showTooltip && (
         <span className={styles.tooltip}>

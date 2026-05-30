@@ -14,6 +14,8 @@ import BlackoutPropagationMap from './BlackoutPropagationMap';
 import IberianGridTopology from './IberianGridTopology';
 import ThermalAdjustmentCostMatrix from './ThermalAdjustmentCostMatrix';
 import CollapseSismograph from './CollapseSismograph';
+import PVCurveSimulator from './PVCurveSimulator';
+import ANSI59Cascade from './ANSI59Cascade';
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
@@ -119,10 +121,26 @@ const getGraphicData = (id, lang) => {
     matrix: {
       es: { title: 'Matriz de Costes de Inacción', desc: 'Análisis comparativo entre el OPEX tóxico diario por inacción y el CAPEX del retrofitting.' },
       en: { title: 'Cost of Inaction Matrix', desc: 'Comparative analysis between daily toxic OPEX from inaction and retrofitting CAPEX.' },
-      pt: { title: 'Matriz de Custos de Inação', desc: 'Análise comparativa entre o OPEX tóxico diário por inação e o CAPEX do retrofitting.' },
+      pt: { title: 'Matriz de Custos de Inação', desc: 'Análise comparativa entre o OPEX tóxico diário por inação e o CAPEX del retrofitting.' },
       fr: { title: 'Matrice des Coûts de l\'Inaction', desc: 'Analyse comparative entre l\'OPEX toxique quotidien dû à l\'inaction et le CAPEX du rétrofitting.' },
       it: { title: 'Matrice dei Costi dell\'Inazione', desc: 'Analisi comparativa tra l\'OPEX tossico giornaliero per inazione e il CAPEX del retrofitting.' },
       de: { title: 'Kosten der Untätigkeit Matrix', desc: 'Vergleichende Analyse zwischen dem täglichen toxischen OPEX durch Untätigkeit und dem Retrofitting-CAPEX.' }
+    },
+    pvcurve: {
+      es: { title: 'Curva Nariz P-V', desc: 'Mecanismo físico de inestabilidad y margen de cargabilidad al colapso de tensión.' },
+      en: { title: 'P-V Nose Curve', desc: 'Physical instability mechanism and reactive power margin to voltage collapse.' },
+      pt: { title: 'Curva de Nariz P-V', desc: 'Mecanismo físico de instabilidade e margem de carregabilidade ao colapso de tensão.' },
+      fr: { title: 'Courbe en Nez P-V', desc: 'Mécanisme physique d\'instabilité et marge de charge face à l\'effondrement de tension.' },
+      it: { title: 'Curva a Naso P-V', desc: 'Meccanismo fisico di instabilità e margine di caricabilità al collasso di tensione.' },
+      de: { title: 'P-V-Nasenkurve', desc: 'Physischer Instabilitätsmechanismus und Belastbarkeitsgrenze bis zum Spannungskollaps.' }
+    },
+    ansi59: {
+      es: { title: 'Bucle Cascada ANSI 59', desc: 'Simulación de retroalimentación positiva por desconexiones masivas de IBR.' },
+      en: { title: 'ANSI 59 Cascade Loop', desc: 'Positive feedback simulation driven by massive IBR trips.' },
+      pt: { title: 'Bucle Cascata ANSI 59', desc: 'Simulação de retroalimentação positiva por desligamentos massivos de IBR.' },
+      fr: { title: 'Boucle en Cascade ANSI 59', desc: 'Simulation de rétroaction positive causée par des déconnexions massives d\'IBR.' },
+      it: { title: 'Loop a Cascata ANSI 59', desc: 'Simulazione di retroazione positiva causata da disconnessioni massive di IBR.' },
+      de: { title: 'ANSI-59-Kaskadenschleife', desc: 'Simulation der positiven Rückkopplung durch massenhafte IBR-Trennungen.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -146,7 +164,9 @@ const graphicsData = [
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot },
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard },
   { id: 'swing', icon: '⚖️', component: SwingEquationSimulator },
-  { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix }
+  { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix },
+  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator },
+  { id: 'ansi59', icon: '⚡', component: ANSI59Cascade }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {

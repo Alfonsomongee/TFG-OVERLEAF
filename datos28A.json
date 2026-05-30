@@ -237,7 +237,7 @@
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "El CollapseSismograph etiqueta '27 segundos' en su título histórico y usa un eje de 87 s. El cero de tensión real sistémico según ENTSO-E ocurrió 30 segundos exactos después del primer disparo."
+      "notaDiscrepancia": "El CollapseSismograph actual etiqueta '27 segundos' en el título y usa un eje de 87 s. Ambos son incorrectos. El título correcto es '30 segundos: 12:32:57 → 12:33:27 CEST'."
     },
     "inicio_cascada_cest": {
       "valor": "12:32:57",
@@ -257,7 +257,7 @@
       "pagina": null,
       "url": null,
       "valorAlternativo": "12:33:29.741",
-      "notaDiscrepancia": "Discrepancia de tiempos: El Comité del Gobierno cita las 12:33:29.741 CEST como el último disparo de un grupo generador asilado. ENTSO-E sitúa el cero funcional a las 12:33:24. Ambas son correctas, pero miden hitos distintos (cero sistémico vs. último grupo)."
+      "notaDiscrepancia": "El Comité del Gobierno cita 12:33:29.741 CEST como el último disparo de grupo generador. ENTSO-E sitúa el cero funcional a las 12:33:24. Ambas son correctas: el valor del Comité es el último disparo individual; el de ENTSO-E es el cero sistémico."
     },
     "perdida_sincronismo_cest": {
       "valor": "12:33:21",
@@ -277,27 +277,27 @@
       "pagina": "108-109",
       "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
       "valorAlternativo": null,
-      "notaDiscrepancia": "Existen tres valores de frecuencia mínima citados en la literatura (48,46 Hz, 48,30 Hz y 47,79 Hz). No son contradictorios, sino que corresponden a instantes sucesivos de la caída del sistema. 48,46 Hz corresponde exactamente a la pérdida de sincronismo."
+      "notaDiscrepancia": "Este es UNO de los tres valores citados en el sitio. Los otros dos (48,30 Hz y 47,79 Hz) corresponden a instantes DISTINTOS: 48,30 Hz es la frecuencia mínima durante la cascada antes de la separación según otras fuentes; 47,79 Hz es el disparo de un grupo generador individual ~1,1 s DESPUÉS del cero sistémico. NO son contradictorios."
     },
     "frecuencia_umbral_deslastre": {
       "valor": 48.0,
       "unidad": "Hz",
-      "contexto": "Umbral de activación del primer escalón de deslastre de demanda (UFLS).",
+      "contexto": "Umbral de activación del primer escalón de deslastre de demanda (UFLS). NOTA: el bombeo se deslastra a 49,5 Hz, la demanda desde 49,0 Hz según P.O. 1.6",
       "fuentePrimaria": "P.O. 1.6 / ENTSO-E",
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "El primer elemento en deslastrar por el relé de baja frecuencia fue el bombeo hidráulico a 49,5 Hz. La demanda industrial ordinaria comenzó a desconectarse posteriormente, al cruzar el umbral de los 49,0 Hz."
+      "notaDiscrepancia": "IMPORTANTE: el primer elemento en deslastrar fue el BOMBEO HIDRÁULICO a 49,5 Hz, no la demanda. La demanda se deslastra desde 49,0 Hz. El JSON publicado en ufls_scheme_iberia.json muestra valores distintos a la tabla MDX (2.690 MW vs 2.050 MW para Stage 1). La diferencia refleja diseño teórico vs PMU real: etiquetar ambas fuentes explícitamente."
     },
     "frecuencia_disparo_grupo_posterior": {
       "valor": 47.79,
       "unidad": "Hz",
-      "contexto": "Frecuencia registrada en el disparo de un grupo generador individual ~1,1 s DESPUÉS del cero sistémico.",
+      "contexto": "Frecuencia registrada en el disparo de un grupo generador individual ~1,1 s DESPUÉS del cero sistémico. NO es el nadir del sistema ibérico durante la cascada.",
       "fuentePrimaria": "Comité de Análisis del Gobierno / REE",
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Este valor no representa el nadir del sistema completo, sino la frecuencia aislada medida en el último grupo generador justo antes de su disparo definitivo."
+      "notaDiscrepancia": "El sitio presenta 47,79 Hz, 48,30 Hz y 48,46 Hz como valores contradictorios del mismo fenómeno. SON INSTANTES DISTINTOS. Ver descripción de frecuencia_perdida_sincronismo para la aclaración completa."
     }
   },
 
@@ -316,7 +316,7 @@
     "disparo_raiz_reactiva_perdida": {
       "valor": 165,
       "unidad": "MVAr",
-      "contexto": "Capacidad de absorción de potencia reactiva inductiva perdida con el disparo raíz.",
+      "contexto": "Capacidad de absorción de potencia reactiva inductiva perdida con el disparo raíz. Este es el dato crítico: no la potencia activa (manejable) sino la reactiva (determinante).",
       "fuentePrimaria": "ENTSO-E Factual Report",
       "pagina": "28",
       "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
@@ -336,17 +336,17 @@
     "perdida_generacion_total_cascada": {
       "valor": 15000,
       "unidad": "MW",
-      "contexto": "Pérdida total de GENERACIÓN durante toda la cascada (~60% de la generación instantánea).",
+      "contexto": "Pérdida total de GENERACIÓN durante toda la cascada (~60% de la generación instantánea). MAGNITUD: generación perdida.",
       "fuentePrimaria": "Estimación consolidada (AI + DR-T)",
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Esta magnitud refleja la cantidad de 'generación perdida' (15 GW). Suele confundirse a nivel mediático con la cantidad de 'demanda que se quedó a oscuras' (25,2 GW) o la carga total ibérica (31 GW). Son parámetros físicamente distintos."
+      "notaDiscrepancia": "DISTINCIÓN CRÍTICA: los '15 GW' son pérdida de GENERACIÓN. Los '25,2 GW' son la DEMANDA peninsular española que quedó sin suministro. Los '~30 GW' son la GENERACIÓN INSTANTÁNEA TOTAL ibérica previa. Los '31 GW' son la CARGA IBÉRICA TOTAL (España + Portugal + bombeo + exportación). NO usar estas cifras de forma intercambiable."
     },
     "demanda_sin_suministro_espana": {
       "valor": 25184,
       "unidad": "MW",
-      "contexto": "Demanda peninsular española que quedó sin suministro.",
+      "contexto": "Demanda peninsular española que quedó sin suministro. MAGNITUD: demanda interrumpida.",
       "fuentePrimaria": "Comité de Análisis del Gobierno de España",
       "pagina": "38",
       "url": null,
@@ -356,7 +356,7 @@
     "carga_iberica_total": {
       "valor": 31000,
       "unidad": "MW",
-      "contexto": "Carga ibérica total: España + Portugal + bombeo + exportación.",
+      "contexto": "Carga ibérica total: España + Portugal + bombeo + exportación. MAGNITUD: carga sistémica total.",
       "fuentePrimaria": "Estimación consolidada ENTSO-E",
       "pagina": null,
       "url": null,
@@ -379,7 +379,7 @@
       "pagina": null,
       "url": null,
       "valorAlternativo": 727,
-      "notaDiscrepancia": "Existe una ligera variación en la literatura: el Comité la cifra en 730 MW, mientras que ENTSO-E/REE estiman 727 MW debido a diferencias de agregación granular."
+      "notaDiscrepancia": "Ligera variación entre Comité (730 MW) y granularidad ENTSO-E/REE (727 MW). Usar 730 MW con nota."
     },
     "desconexiones_SO_sevilla": {
       "valor": 550,
@@ -398,7 +398,7 @@
       "pagina": null,
       "url": null,
       "valorAlternativo": 1916,
-      "notaDiscrepancia": "ENTSO-E/REE con mayor granularidad estiman ~1.916 MW para este bloque. La diferencia radica en las fronteras de agregación geográfica utilizadas por cada entidad."
+      "notaDiscrepancia": "ENTSO-E/REE con mayor granularidad estiman ~1.916 MW. Diferencia por distintas fronteras de agregación. Ambas son correctas en su perímetro."
     },
     "tension_maxima_barras_colectoras": {
       "valor": 440,
@@ -408,22 +408,22 @@
       "pagina": "5",
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Aunque el umbral normativo (LVRT) establecido para soportar huecos de tensión se sitúa en los 435 kV, los registros muestran que los nudos reales superaron los 440 kV físicos durante la cascada."
+      "notaDiscrepancia": "CRÍTICO: el CollapseSismograph actual tope la tensión a 435 kV como si fuera el máximo físico alcanzado. Es INCORRECTO: 435 kV es el UMBRAL NORMATIVO (LVRT), pero los nudos superaron 440 kV. Corregir el dataset del componente para reflejar >440 kV, manteniendo 435 kV como línea de referencia normativa."
     },
     "reactiva_frontera_ac_pico": {
       "valor": null,
       "unidad": "MVAr",
-      "contexto": "Demanda reactiva en frontera AC.",
+      "contexto": "CUESTIÓN ABIERTA: el sitio cita 4.609 MVAr de demanda reactiva en frontera AC. Este valor NO está verificado en fuente primaria disponible.",
       "fuentePrimaria": null,
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Este valor numérico preciso de MVAr no ha podido ser verificado en las tablas maestras de los informes factuales de ENTSO-E. Debe considerarse una estimación secundaria."
+      "notaDiscrepancia": "CUESTIÓN ABIERTA. Lo verificado en ENTSO-E Factual (pp. 108-109) son 3,8 GW de POTENCIA ACTIVA de importación AC a las 12:33:19. El valor 4.609 MVAr no aparece en fuente primaria consultada. ACCIÓN: retirar o etiquetar explícitamente como 'estimación no verificada en fuente primaria'."
     },
     "importacion_ac_pico": {
       "valor": 3800,
       "unidad": "MW",
-      "contexto": "Pico de potencia activa importada por interconexiones AC en el instante 12:33:19 CEST.",
+      "contexto": "Pico de potencia activa importada por interconexiones AC en el instante 12:33:19 CEST. Son las líneas AC, NO el HVDC.",
       "fuentePrimaria": "ENTSO-E Factual Report",
       "pagina": "108-109",
       "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
@@ -433,7 +433,7 @@
   },
 
   "hvdc_inelfe": {
-    "_descripcion": "Comportamiento del enlace HVDC INELFE-1 (Santa Llogaia–Baixas, 2.000 MW nominales) durante el 28-A.",
+    "_descripcion": "Comportamiento del enlace HVDC INELFE-1 (Santa Llogaia–Baixas, 2.000 MW nominales) durante el 28-A. CORRECCIÓN CRÍTICA respecto al sitio actual.",
     "modo_operativo_inicial": {
       "valor": "PMODE3",
       "unidad": null,
@@ -467,12 +467,12 @@
     "flujo_durante_cascada": {
       "valor": 1000,
       "unidad": "MW",
-      "contexto": "El HVDC mantuvo 1.000 MW de exportación ES→FR durante toda la cascada.",
+      "contexto": "El HVDC MANTUVO 1.000 MW de exportación ES→FR durante toda la cascada. NO invirtió el flujo.",
       "fuentePrimaria": "ENTSO-E Factual Report",
       "pagina": "12",
       "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
       "valorAlternativo": null,
-      "notaDiscrepancia": "Contrario a la creencia extendida de que el cable invirtió su flujo de golpe, los registros muestran que al estar bloqueado en PMODE1 mantuvo su extracción exportadora de 1.000 MW."
+      "notaDiscrepancia": "CORRECCIÓN CRÍTICA: el sitio describe de forma ambigua si el HVDC 'continuó extrayendo' o si 'invirtió' el flujo. La realidad verificada: el HVDC en PMODE1 MANTUVO la consigna de 1.000 MW ES→FR y fue el ÚLTIMO elemento en desconectarse (~12:33:24). Los 3,8 GW de importación pico corresponden a las LÍNEAS AC TRANSPIRENAICAS, no al HVDC."
     },
     "hora_desconexion_cest": {
       "valor": "12:33:24",
@@ -487,31 +487,31 @@
   },
 
   "rocof": {
-    "_descripcion": "Rate of Change of Frequency. Ninguno es erróneo por sí solo: dependen de la ventana temporal.",
+    "_descripcion": "Rate of Change of Frequency. TRES VALORES aparecen en el sitio: 1,5 Hz/s, 1,0-1,2 Hz/s y 0,155 Hz/s. Ninguno es erróneo por sí solo: dependen de la ventana temporal y del instante medido.",
     "rocof_hasta_separacion": {
       "valor": 1.0,
       "unidad": "Hz/s",
-      "contexto": "RoCoF del sistema ibérico hasta la pérdida de sincronismo a las 12:33:20.560 CEST.",
+      "contexto": "RoCoF del sistema ibérico hasta la pérdida de sincronismo a las 12:33:20.560 CEST. Ventana: por debajo de ±1 Hz/s.",
       "fuentePrimaria": "ENTSO-E Factual Report",
       "pagina": "12",
       "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
       "valorAlternativo": null,
-      "notaDiscrepancia": "ENTSO-E establece que la derivada de frecuencia se mantuvo controlada por debajo de 1 Hz/s durante casi toda la primera fase del evento, antes del caos final."
+      "notaDiscrepancia": "ENTSO-E afirma que el RoCoF se mantuvo dentro de ±1 Hz/s hasta 12:33:20.560. El valor de 1,5 Hz/s aparece en literatura secundaria. El valor de 0,155 Hz/s es erróneo (confusión con el límite del UK Distribution Code)."
     },
     "rocof_pico": {
       "valor": null,
       "unidad": "Hz/s",
-      "contexto": "Pico estimado de RoCoF en ventanas de medición milisegundo.",
+      "contexto": "CUESTIÓN ABIERTA: el pico exacto de RoCoF en ventanas <100 ms no está cuantificado en la fuente primaria ENTSO-E disponible.",
       "fuentePrimaria": null,
       "pagina": null,
       "url": null,
       "valorAlternativo": 1.5,
-      "notaDiscrepancia": "Este valor es una estimación de pico máximo en ventanas de muestreo extremadamente cortas (100 ms). No figura directamente en el cuerpo principal del informe ENTSO-E."
+      "notaDiscrepancia": "CUESTIÓN ABIERTA. El valor 1,5 Hz/s procede de fuentes secundarias (literatura, no ENTSO-E). El valor 0,155 Hz/s es incorrecto (confusión con el umbral de desconexión del UK Distribution Code 0,125 Hz/s). El sitio debe distinguir RoCoF medio (ventanas 500 ms) vs pico (ventanas 100 ms)."
     },
     "nota_metodologica": {
       "valor": null,
       "unidad": null,
-      "contexto": "La convención ENTSO-E/IEEE mide RoCoF en ventanas de 100 ms, 500 ms y 1 s.",
+      "contexto": "La convención ENTSO-E/IEEE mide RoCoF en ventanas de 100 ms, 500 ms y 1 s. Los valores difieren según la ventana. El sitio debe especificar la ventana en cada cita.",
       "fuentePrimaria": "IEEE C37.117 / ENTSO-E IGD",
       "pagina": null,
       "url": null,
@@ -564,12 +564,12 @@
     "ens_espana_total": {
       "valor": null,
       "unidad": "MWh",
-      "contexto": "Estimación teórica de la Energía No Suministrada agregada.",
+      "contexto": "CUESTIÓN ABIERTA: la ENS total de España/Iberia en MWh no figura en fuente primaria disponible.",
       "fuentePrimaria": null,
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Esta horquilla es un cálculo macroeconómico aproximado. La cifra oficial y exacta de MWh de Energía No Suministrada para el global de la Península no fue publicada unificadamente en el informe primario de ENTSO-E."
+      "notaDiscrepancia": "CUESTIÓN ABIERTA. No verificable en fuente primaria. No usar estimaciones sin declarar su base metodológica."
     }
   },
 
@@ -582,7 +582,7 @@
       "pagina": null,
       "url": null,
       "valorAlternativo": null,
-      "notaDiscrepancia": "Las estimaciones mediáticas (>1.000 M€) incluyen externalidades y lucro cesante, pero los 666 M€ son el coste directo de mercado contabilizado por REE."
+      "notaDiscrepancia": "Estimaciones de consultoras externas (>1.000 M€) no están cuantificadas en fuente primaria. No usar sin declarar que son estimaciones."
     },
     "coste_directo_cnmc": {
       "valor_min": 25.2,

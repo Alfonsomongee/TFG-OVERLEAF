@@ -1,0 +1,234 @@
+Buena pregunta, y la respuesta es clara: **primero S13, luego S2**.
+
+El razonamiento es este: el S2 (marco normativo) es contenido textual que puedes escribir en cualquier momento antes de la defensa, incluso la noche anterior si aprieta. El S13 (simuladores PV y ANSI59) es código React que necesita tiempo de depuración, prueba y ajuste fino. Además, el simulador de curva P-V es el argumento pedagógico más potente que tienes: es el único lugar del sitio donde el tribunal ve físicamente por qué colapsó el 28-A, no solo qué pasó. Eso no se puede improvisar.
+
+Aquí tienes el mensaje para tu agente:
+
+---
+
+```
+CONTEXTO: TFG Docusaurus sobre el apagón ibérico del 28-A.
+Sprints completados: 1, 3, 11, 12.
+Plan Maestro: PLAN_MAESTRO_TFG_28A.md
+Datos oficiales: static/data/datos28A.json
+
+SIGUIENTE TAREA: Sprint 13 — Dos simuladores nuevos.
+
+════════════════════════════════════════════════
+SIMULADOR A: <PVCurveSimulator />
+════════════════════════════════════════════════
+
+PROPÓSITO PEDAGÓGICO:
+El mecanismo causal del 28-A no fue la falta de inercia sino el
+colapso de tensión por déficit reactivo en barras colectoras IBR
+con SCR bajo. La curva P-V (curva nariz) es la herramienta
+canónica para visualizar este mecanismo. El tribunal de Comillas
+o Sevilla espera ver este diagrama.
+
+MODELO FÍSICO (sistema de 2 nudos: SLACK — impedancia — carga):
+
+  V² - (E²/2 - P·R - Q·X) · (2/1) ±
+  √[(E²/2 - P·R - Q·X)² - (P²+Q²)(R²+X²)] = 0
+
+donde Q = P·tan(φ), φ = arccos(cosPhi).
+
+El SCR escala la impedancia equivalente vista desde el IBR:
+  Xeq = X_base / SCR
+  Req = R_base / SCR
+
+Barrido de P desde 0 hasta el nose point (discriminante = 0).
+El nose point es el punto de máxima cargabilidad: más allá,
+el sistema colapsa (rama inferior inestable).
+
+FUNCIÓN DE CÁLCULO (crear en utils/computePVCurve.js):
+
+export function computePVCurve({
+  E = 1.0,          // tensión en la fuente (p.u.)
+  X_base = 0.5,     // reactancia base (p.u.)
+  R_base = 0.05,    // resistencia base (p.u.)
+  cosPhi = 0.95,    // factor de potencia de la carga
+  SCR = 3.0,        // Short Circuit Ratio
+  step = 0.002      // resolución del barrido
+}) {
+  const tanPhi = Math.tan(Math.acos(cosPhi));
+  const Xeq = X_base / SCR;
+  const Req = R_base / SCR;
+  const upper = [], lower = [];
+  let noseP = 0, noseV = 0;
+
+  for (let P = 0; P <= 5; P += step) {
+    const Q = P * tanPhi;
+    const b = E*E - 2*P*Req - 2*Q*Xeq;
+    const disc = (b*b/4) - (P*P + Q*Q)*(Req*Req + Xeq*Xeq);
+    if (disc < 0) { noseP = P - step; break; }
+    const Vplus  = Math.sqrt(b/2 + Math.sqrt(disc));
+    const Vminus = Math.sqrt(Math.max(0, b/2 - Math.sqrt(disc)));
+    upper.push({ P: parseFloat(P.toFixed(3)), V: parseFloat(Vplus.toFixed(4))  });
+    lower.unshift({ P: parseFloat(P.toFixed(3)), V: parseFloat(Vminus.toFixed(4)) });
+    if (Math.abs(Vplus - Vminus) < 0.02) {
+      noseV = (Vplus + Vminus) / 2;
+    }
+  }
+  const margin = noseP - 0.82; // 0.82 p.u. = operación típica pre-28A
+  return { upper, lower, noseP, noseV, margin };
+}
+
+SLIDERS (3 parámetros de entrada):
+1. SCR: rango 0.5 – 6.0, default 1.8 (valor aproximado zona sur 28-A)
+2. cosPhi: rango 0.80 – 1.00, default 0.95
+3. Carga actual (P_op): rango 0.0 – 1.2 p.u., default 0.82
+
+VISUALIZACIÓN (Recharts, no Plotly):
+- Rama superior: línea continua cian (#00d9ff)
+- Rama inferior: línea discontinua ámbar (#ffb000)
+- Nose point: punto rojo con etiqueta "Punto de colapso"
+- Punto de operación (P_op): punto blanco móvil sobre rama superior
+- Margen al colapso: área sombreada en rojo entre P_op y nose point
+- Línea vertical en P_op con label "Operación actual"
+- Ejes: X = "Potencia activa (p.u.)", Y = "Tensión (p.u.)"
+- Referencia horizontal: línea punteada a V=0.95 p.u. (límite mínimo)
+
+MÉTRICA DESTACADA (grande, visible, semafórica):
+  "Margen al colapso: X,XX p.u."
+  Verde si margin > 0.3
+  Ámbar si 0.1 < margin ≤ 0.3
+  Rojo si margin ≤ 0.1
+
+PRESET "28-A Zona Sur" (botón que carga estos valores):
+  SCR = 1.8, cosPhi = 0.95, P_op = 0.91
+  → debe mostrar margen ≤ 0.05 (zona roja, sistema al límite)
+
+TEXTO EXPLICATIVO bajo el gráfico (siempre visible):
+  "El punto de operación supera el nose point cuando el margen
+   llega a cero: la tensión colapsa de forma irreversible.
+   El 28-A, la zona sur peninsular operó con SCR ≈ 1,8 y una
+   carga reactiva equivalente superior al 91% de la capacidad
+   máxima del corredor. El margen era negativo."
+
+ARCHIVOS:
+  src/components/PVCurveSimulator/index.jsx
+  src/components/PVCurveSimulator/utils/computePVCurve.js
+  src/components/PVCurveSimulator/styles.module.css
+
+INTEGRACIÓN:
+  Insertar en docs/03-analisis-incidente.mdx justo antes de
+  la sección "Fase 3" (cascada de tensión), con este texto
+  introductorio encima:
+  "El siguiente simulador reproduce el mecanismo de
+   inestabilidad de tensión que desencadenó el 28-A.
+   Arrastra el slider de SCR hacia valores bajos y observa
+   cómo el margen al colapso desaparece."
+
+════════════════════════════════════════════════
+SIMULADOR B: <ANSI59Cascade />
+════════════════════════════════════════════════
+
+PROPÓSITO PEDAGÓGICO:
+Visualizar el bucle de retroalimentación positiva que convirtió
+un único disparo de 355 MW en un colapso de 15 GW en 30 segundos:
+  Trip IBR → menos absorción reactiva → más tensión
+  → más trips IBR → menos absorción → más tensión → ...
+
+Este lazo es el mecanismo que distingue el 28-A de todos los
+apagones anteriores. Ningún sitio web lo tiene implementado.
+
+MODELO (simplificado, pedagogía sobre precisión):
+
+Nudos (representativos del sistema ibérico, no topología exacta):
+[
+  { id: 'Granada_SO',    V: 1.02, threshold: 1.10, P_ibr: 0.355, absorb_Q: 0.165 },
+  { id: 'Badajoz_FV1',   V: 1.03, threshold: 1.09, P_ibr: 0.730, absorb_Q: 0.280 },
+  { id: 'Badajoz_FV2',   V: 1.03, threshold: 1.09, P_ibr: 0.420, absorb_Q: 0.190 },
+  { id: 'Sevilla_FV',    V: 1.01, threshold: 1.10, P_ibr: 0.550, absorb_Q: 0.210 },
+  { id: 'Carmona_Eol',   V: 1.00, threshold: 1.11, P_ibr: 0.380, absorb_Q: 0.140 },
+  { id: 'Extremadura_FV',V: 1.02, threshold: 1.09, P_ibr: 0.610, absorb_Q: 0.240 },
+  { id: 'Murcia_FV',     V: 1.01, threshold: 1.10, P_ibr: 0.290, absorb_Q: 0.115 },
+  { id: 'Valencia_Eol',  V: 1.00, threshold: 1.11, P_ibr: 0.440, absorb_Q: 0.170 },
+]
+
+PROPAGACIÓN (cada tick = 100 ms real = 1 s simulado):
+Cuando un nudo i hace trip:
+  Para cada nudo j no tripped:
+    ΔV_j += sensitivity * (absorb_Q_i / sum_absorb_Q_activa)
+    V_j_nueva = V_j + ΔV_j
+    Si V_j_nueva >= threshold_j → j hace trip en el siguiente tick
+
+sensitivity = 0.08 (parámetro ajustable con slider)
+
+CONTROLES:
+- Botón "▶ Iniciar cascada" → dispara Granada_SO a t=0
+- Botón "⏸ Pausar / ▶ Reanudar"
+- Botón "↺ Reiniciar"
+- Slider "Sensibilidad de propagación" (0.04 – 0.15, default 0.08)
+  Label: "¿Cómo de mal estaban ajustadas las protecciones ANSI 59?"
+  0.04 = protecciones bien calibradas (pocos trips secundarios)
+  0.15 = protecciones con umbral demasiado bajo (cascada total)
+
+VISUALIZACIÓN:
+Panel izquierdo (70% del ancho):
+  Lista de nudos con barra de tensión animada.
+  Cada nudo muestra:
+    - Nombre + icono (☀️ FV / 💨 eólico)
+    - Barra de tensión: verde(<1.05), ámbar(1.05-1.09), rojo(≥1.09)
+    - Badge "ACTIVO" (verde) o "TRIP ⚡" (rojo parpadeante)
+    - Timestamp del trip si ha ocurrido
+
+Panel derecho (30% del ancho):
+  Timeline vertical de eventos:
+    t=0.0s  Granada_SO TRIP (disparo raíz, -355MW, -165MVAr)
+    t=1.2s  Badajoz_FV1 TRIP (umbral 109% superado, -730MW)
+    ...
+  Contador en tiempo real:
+    "Generación perdida: X MW"
+    "Absorción Q perdida: X MVAr"
+    "Nudos activos: N/8"
+
+Al completarse la cascada (todos tripped o estabilización):
+  Banner: "Sistema colapsado — X,X GW perdidos en Y segundos"
+  o: "Sistema estabilizado — X nudos en servicio"
+
+ACCESIBILIDAD:
+- aria-live="polite" en la timeline de eventos
+- aria-label en cada barra de tensión con valor actual
+- Botones con roles y labels descriptivos
+
+ARCHIVOS:
+  src/components/ANSI59Cascade/index.jsx
+  src/components/ANSI59Cascade/useCascadeSimulation.js
+  src/components/ANSI59Cascade/styles.module.css
+
+INTEGRACIÓN:
+  Insertar en docs/03-analisis-incidente.mdx justo después
+  del PVCurveSimulator, con este texto entre ambos:
+  "Una vez que la tensión supera el umbral de las protecciones
+   ANSI 59, el sistema entra en un bucle de retroalimentación
+   positiva. El siguiente simulador reproduce esa cascada."
+
+════════════════════════════════════════════════
+INTEGRACIÓN FINAL EN LA GALERÍA
+════════════════════════════════════════════════
+
+Añadir ambos simuladores a InteractiveGraphicsGallery con:
+- deep-linking por hash:
+    #pv-curve     → activa PVCurveSimulator
+    #ansi59       → activa ANSI59Cascade
+- Descripción corta para el panel lateral:
+    PVCurve: "Curva nariz P-V — mecanismo de colapso de tensión"
+    ANSI59:  "Cascada de sobretensión — el bucle del 28-A"
+
+════════════════════════════════════════════════
+REGISTRO EN registro_mejoras_implementadas.txt
+════════════════════════════════════════════════
+
+Al terminar, añadir entrada con:
+- Fecha
+- Sprint 13
+- Componentes creados
+- Archivos MDX modificados
+- Resultado visual verificado (preset 28-A Zona Sur
+  muestra margen rojo; cascada ANSI59 completa en <8 s)
+```
+
+---
+
+Cuando el agente confirme que ambos simuladores están en producción y el registro actualizado, pasamos a S14 (SwingEquation React + scrollytelling con el sismógrafo) o a S2 (marco normativo) según lo que te quede de tiempo antes de la defensa. Dime cuándo.
