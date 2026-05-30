@@ -1,30 +1,31 @@
 // ChartViewer.jsx
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import styles from './ForensicGallery2.module.css';
 
 // Lazy-loaded chart components
-import DemandaChart from '@site/src/components/EsiosCharts/DemandaChart';
-import ProgramacionChart from '@site/src/components/EsiosCharts/ProgramacionChart';
-import PrecioEnergiaChart from '@site/src/components/EsiosCharts/PrecioEnergiaChart';
-import PreciosChart from '@site/src/components/EsiosCharts/PreciosChart';
-import PotenciaChart from '@site/src/components/EsiosCharts/PotenciaChart';
-import SubastasChart from '@site/src/components/EsiosCharts/SubastasChart';
-import GenericEsiosChart from '@site/src/components/EsiosCharts/GenericEsiosChart';
-import ForecastTransferChart from '@site/src/components/EntsoeCharts/ForecastTransferChart';
-import CostCongestionChart from '@site/src/components/EntsoeCharts/CostCongestionChart';
-import ActualGenerationChart from '@site/src/components/EntsoeCharts/ActualGenerationChart';
-import HydroReservoirChart from '@site/src/components/EntsoeCharts/HydroReservoirChart';
-import ImbalancePricesChart from '@site/src/components/EntsoeCharts/ImbalancePricesChart';
-import CurrentBalancingStateChart from '@site/src/components/EntsoeCharts/CurrentBalancingStateChart';
-import ScheduledCommercialExchangesChart from '@site/src/components/EntsoeCharts/ScheduledCommercialExchangesChart';
-import FallbacksChart from '@site/src/components/EntsoeCharts/FallbacksChart';
-import InstalledCapacityChart from '@site/src/components/EntsoeCharts/InstalledCapacityChart';
-import TotalLoadChart from '@site/src/components/EntsoeCharts/TotalLoadChart';
-import EnergyPricesChart from '@site/src/components/EntsoeCharts/EnergyPricesChart';
-import CrossBorderFlowsChart from '@site/src/components/EntsoeCharts/CrossBorderFlowsChart';
-import ImbalanceChart from '@site/src/components/EntsoeCharts/ImbalanceChart';
-import FrrCapacityChart from '@site/src/components/EntsoeCharts/FrrCapacityChart';
+const DemandaChart = lazy(() => import(/* webpackChunkName: "esios-DemandaChart" */ '@site/src/components/EsiosCharts/DemandaChart'));
+const ProgramacionChart = lazy(() => import(/* webpackChunkName: "esios-ProgramacionChart" */ '@site/src/components/EsiosCharts/ProgramacionChart'));
+const PrecioEnergiaChart = lazy(() => import(/* webpackChunkName: "esios-PrecioEnergiaChart" */ '@site/src/components/EsiosCharts/PrecioEnergiaChart'));
+const PreciosChart = lazy(() => import(/* webpackChunkName: "esios-PreciosChart" */ '@site/src/components/EsiosCharts/PreciosChart'));
+const PotenciaChart = lazy(() => import(/* webpackChunkName: "esios-PotenciaChart" */ '@site/src/components/EsiosCharts/PotenciaChart'));
+const SubastasChart = lazy(() => import(/* webpackChunkName: "esios-SubastasChart" */ '@site/src/components/EsiosCharts/SubastasChart'));
+const GenericEsiosChart = lazy(() => import(/* webpackChunkName: "esios-GenericEsiosChart" */ '@site/src/components/EsiosCharts/GenericEsiosChart'));
+const ForecastTransferChart = lazy(() => import(/* webpackChunkName: "entsoe-ForecastTransferChart" */ '@site/src/components/EntsoeCharts/ForecastTransferChart'));
+const CostCongestionChart = lazy(() => import(/* webpackChunkName: "entsoe-CostCongestionChart" */ '@site/src/components/EntsoeCharts/CostCongestionChart'));
+const ActualGenerationChart = lazy(() => import(/* webpackChunkName: "entsoe-ActualGenerationChart" */ '@site/src/components/EntsoeCharts/ActualGenerationChart'));
+const HydroReservoirChart = lazy(() => import(/* webpackChunkName: "entsoe-HydroReservoirChart" */ '@site/src/components/EntsoeCharts/HydroReservoirChart'));
+const ImbalancePricesChart = lazy(() => import(/* webpackChunkName: "entsoe-ImbalancePricesChart" */ '@site/src/components/EntsoeCharts/ImbalancePricesChart'));
+const CurrentBalancingStateChart = lazy(() => import(/* webpackChunkName: "entsoe-CurrentBalancingStateChart" */ '@site/src/components/EntsoeCharts/CurrentBalancingStateChart'));
+const ScheduledCommercialExchangesChart = lazy(() => import(/* webpackChunkName: "entsoe-ScheduledCommercialExchangesChart" */ '@site/src/components/EntsoeCharts/ScheduledCommercialExchangesChart'));
+const FallbacksChart = lazy(() => import(/* webpackChunkName: "entsoe-FallbacksChart" */ '@site/src/components/EntsoeCharts/FallbacksChart'));
+const InstalledCapacityChart = lazy(() => import(/* webpackChunkName: "entsoe-InstalledCapacityChart" */ '@site/src/components/EntsoeCharts/InstalledCapacityChart'));
+const TotalLoadChart = lazy(() => import(/* webpackChunkName: "entsoe-TotalLoadChart" */ '@site/src/components/EntsoeCharts/TotalLoadChart'));
+const EnergyPricesChart = lazy(() => import(/* webpackChunkName: "entsoe-EnergyPricesChart" */ '@site/src/components/EntsoeCharts/EnergyPricesChart'));
+const CrossBorderFlowsChart = lazy(() => import(/* webpackChunkName: "entsoe-CrossBorderFlowsChart" */ '@site/src/components/EntsoeCharts/CrossBorderFlowsChart'));
+const ImbalanceChart = lazy(() => import(/* webpackChunkName: "entsoe-ImbalanceChart" */ '@site/src/components/EntsoeCharts/ImbalanceChart'));
+const FrrCapacityChart = lazy(() => import(/* webpackChunkName: "entsoe-FrrCapacityChart" */ '@site/src/components/EntsoeCharts/FrrCapacityChart'));
 
 // Map component names to actual components
 const COMPONENT_MAP = {
@@ -177,7 +178,17 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
         {/* ── CHART ── */}
         <div className={styles.chartContainer}>
           {ChartComponent ? (
-            <ChartComponent />
+            <BrowserOnly>
+              {() => (
+                <Suspense fallback={
+                  <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontFamily: 'monospace', fontSize: '13px' }}>
+                    Inicializando simulador…
+                  </div>
+                }>
+                  <ChartComponent />
+                </Suspense>
+              )}
+            </BrowserOnly>
           ) : (
             <div className={styles.chartLoading}>
               Componente no disponible
