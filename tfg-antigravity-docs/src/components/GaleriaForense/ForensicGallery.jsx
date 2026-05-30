@@ -31,10 +31,8 @@ function ForensicGalleryInner() {
           <div key={category.id} className={styles.categoryWrap}>
             <button
               className={`${styles.categoryButton} ${activeCategory === category.id ? styles.active : ''}`}
-              style={{ '--cat-color': category.color }}
               onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
             >
-              <div className={styles.catIcon}>{category.icon}</div>
               <div className={styles.catTitle}>{category.name}</div>
             </button>
             
