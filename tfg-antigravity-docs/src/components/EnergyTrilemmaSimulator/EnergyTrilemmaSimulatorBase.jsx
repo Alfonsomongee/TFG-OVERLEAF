@@ -113,7 +113,7 @@ function TrilemmaTriangle({ coords, setCoords, pointColor }) {
         {/* Etiquetas de Vértices */}
         <text x={vTop.x} y={vTop.y - 12} textAnchor="middle" fill="#94a3b8" fontSize="12" fontWeight="bold">SEGURIDAD (S)</text>
         <text x={vLeft.x - 10} y={vLeft.y + 15} textAnchor="end" fill="#94a3b8" fontSize="12" fontWeight="bold">EQUIDAD (E)</text>
-        <text x={vRight.x + 10} y={vRight.y + 15} textAnchor="start" fill="#94a3b8" fontSize="12" fontWeight="bold">SOSTENIBILIDAD (A)</text>
+        <text x={vRight.x + 22} y={vRight.y + 28} textAnchor="start" fill="#94a3b8" fontSize="12" fontWeight="bold">SOSTENIBILIDAD (A)</text>
 
         {/* Área de Captura de Eventos (Invisible pero Clickable) */}
         <polygon

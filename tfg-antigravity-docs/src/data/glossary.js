@@ -674,5 +674,53 @@ export const GLOSSARY_TERMS = [
     term: 'LVRT (Low Voltage Ride Through)',
     definition: 'El Low Voltage Ride Through (LVRT) es la capacidad de un inversor para mantener la inyección de energía durante un hueco de tensión en lugar de desconectarse por protección. Los requisitos del LVRT en España están regulados por el P.O. 12.3 e incluyen el parámetro dinámico $k$ (factor de proporcionalidad de corriente reactiva respecto a la profundidad del hueco). El apagón del 28A evidenció que en redes con $SCR < 2$, la inyección masiva de reactiva según los perfiles tradicionales de LVRT puede amplificar la inestabilidad en lugar de contenerla, requiriendo revisión de la coordinación entre el control LVRT y la debilidad de red.',
   },
+  {
+    id: slugify('HVRT (High Voltage Ride Through)'),
+    letter: 'H',
+    term: 'HVRT (High Voltage Ride Through)',
+    definition: 'El High Voltage Ride Through (HVRT) es la capacidad requerida a los inversores IBR para mantenerse conectados y absorber potencia reactiva inductiva cuando la tensión de red supera la nominal (≥1,10 p.u.). Es el complemento simétrico del LVRT. El 28-A demostró su importancia crítica: los inversores fotovoltaicos que dispararon entre las 12:32:57 y 12:33:18 CEST lo hicieron porque la sobretensión en sus redes colectoras superó sus umbrales ANSI 59, en ausencia de un HVRT robusto coordinado con el sistema de transporte.',
+  },
+  {
+    id: slugify('MRSCR (Multiple Renewable Short-Circuit Ratio)'),
+    letter: 'M',
+    term: 'MRSCR (Multiple Renewable Short-Circuit Ratio)',
+    definition: 'Métrica de fortaleza de red que extiende el SCR clásico para capturar las interacciones entre múltiples plantas IBR próximas. Definido como MRSCR_i = S_ac,i / (P_i + Σ MIIF_ji · P_j). El valor crítico obligatorio según los nuevos códigos de red es 1,5. Un MRSCR < 1,5 faculta al TSO para bloquear la conexión de nuevas plantas hasta que se instalen compensadores síncronos en el punto de conexión.',
+  },
+  {
+    id: slugify('MIIF (Multi-Infeed Interaction Factor)'),
+    letter: 'M',
+    term: 'MIIF (Multi-Infeed Interaction Factor)',
+    definition: 'El Multi-Infeed Interaction Factor cuantifica la influencia de la potencia de una planta IBR j sobre la fortaleza de red en el nudo i. Se emplea en el cálculo del MRSCR para capturar la degradación del cortocircuito efectivo cuando múltiples inversores se concentran en la misma área eléctrica. Un MIIF próximo a 1 indica fuerte acoplamiento eléctrico; próximo a 0, independencia. Los nuevos Network Codes europeos (NC RfG 2.0) exigen que los promotores calculen el MIIF con todos los parques IBR en un radio de 200 km antes de obtener permiso de conexión.',
+  },
+  {
+    id: slugify('ANSI 59 (Protección de Sobretensión)'),
+    letter: 'A',
+    term: 'ANSI 59 (Protección de Sobretensión)',
+    definition: 'La función de protección ANSI 59 actúa cuando la tensión en los terminales supera un umbral ajustado. En los inversores IBR, se calibra para desconectar la unidad cuando la tensión en el secundario del transformador elevador supera ~1,10–1,15 p.u. El 28-A evidenció que, mediante el mecanismo Tap-Lag, la tensión en redes colectoras de 220 kV superó 1,10 p.u. mientras el SCADA de REE observaba tensiones aparentemente normales en el primario de 400 kV, disparando una cascada de funciones 59 invisible para el operador.',
+  },
+  {
+    id: slugify('ANSI 78 (Protección de Pérdida de Sincronismo)'),
+    letter: 'A',
+    term: 'ANSI 78 (Protección de Pérdida de Sincronismo)',
+    definition: 'La función ANSI 78 detecta la pérdida de sincronismo entre dos áreas mediante el seguimiento del fasor de impedancia aparente en el plano R-X. Cuando el fasor cruza la característica mho con velocidad característica de oscilación asíncrona, ordena la apertura del interruptor. A las 12:33:21 CEST, las protecciones ANSI 78 de los enlaces transpirenaicos abrieron al detectar la pérdida de sincronismo entre la península ibérica y el sistema continental, aislando definitivamente la red ibérica.',
+  },
+  {
+    id: slugify('Magnetizing Inrush'),
+    letter: 'M',
+    term: 'Magnetizing Inrush',
+    definition: 'Corriente transitoria de alta amplitud (6–10 veces la nominal) que demanda el núcleo ferromagnético de un transformador al energizarse, mientras el flujo magnético se establece desde cero hasta el valor de régimen. Tiene fuerte componente de armónico de 2.º orden. En redes con bajo SCR, el generador de referencia puede no ser capaz de proveer esta ráfaga reactiva. Documentado en el episodio del transformador T4 de Zêzere (Portugal) durante la reposición del 28-A.',
+  },
+  {
+    id: slugify('Sympathetic Inrush'),
+    letter: 'S',
+    term: 'Sympathetic Inrush',
+    definition: 'Fenómeno que ocurre cuando la energización de un transformador nuevo provoca, por interacción magnética a través del bus común, la re-magnetización de un transformador adyacente ya en servicio. Comparte la alta componente de armónico de 2.º orden con el magnetizing inrush, pero involucra dos unidades. Debe distinguirse del magnetizing inrush clásico en el diagnóstico de disparos de protecciones diferenciales durante maniobras de reposición.',
+  },
+  {
+    id: slugify('VoLL (Value of Lost Load)'),
+    letter: 'V',
+    term: 'VoLL (Value of Lost Load)',
+    definition: 'El Value of Lost Load es el coste económico marginal que los consumidores están dispuestos a pagar por evitar un MWh de interrupción de suministro. Para España se estima entre 8.000 y 12.000 €/MWh residencial y 15.000–50.000 €/MWh industrial. Aplicado al 28-A (~25,2 GW × ~8 horas de interrupción media), el VoLL agregado justifica la horquilla de 1.000–1.500 M€ de daño directo estimada por CEOE y ATA.',
+  },
 ];
 

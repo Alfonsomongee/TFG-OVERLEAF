@@ -196,7 +196,7 @@ function RadarVulnerabilidadInner({ lang = 'es' }) {
             />
             <Tooltip content={<RadarTooltip lang={lang} />} />
             <Legend
-              wrapperStyle={{ fontSize: 12, fontFamily: 'monospace', paddingTop: 8 }}
+              wrapperStyle={{ fontSize: 13, fontFamily: 'monospace', paddingTop: 8, color: '#cbd5e1' }}
             />
 
             <Radar

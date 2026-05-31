@@ -114,10 +114,10 @@ export default function GlossaryLink({
           fontFamily: 'inherit',
           fontSize:   'inherit',
           fontWeight: 'inherit',
-          color:      'var(--ifm-color-primary)',
-          textDecoration: compact ? 'none' : 'underline dotted',
-          textUnderlineOffset: '3px',
-          textDecorationColor: 'rgba(0,217,255,0.5)',
+          color:      'rgba(203, 213, 225, 0.85)',
+          textDecoration: 'none',
+          borderBottom: compact ? 'none' : '1px dotted rgba(148, 163, 184, 0.5)',
+          paddingBottom: compact ? 0 : '1px',
           borderRadius: 2,
         }}
         title={isTouch ? undefined : term} // title solo en desktop (ya tiene tooltip)
