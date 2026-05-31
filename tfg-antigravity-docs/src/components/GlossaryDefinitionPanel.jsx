@@ -29,7 +29,6 @@ for (const entry of glossaryTerms) {
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
-  const [seenTerms, setSeenTerms] = useState(new Set());
 
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
@@ -38,31 +37,14 @@ function PanelInner() {
     if (!el) return;
     const key = (el.dataset.term || '').toLowerCase();
     const entry = TERMS_MAP[key];
-
-    // Solo mostrar si no ha sido visto
-    if (entry && !seenTerms.has(key)) {
-      setActive(entry);
-      // Marcar como visto
-      setSeenTerms(prev => new Set([...prev, key]));
-      // Guardar en localStorage para persistencia
-      const stored = JSON.parse(localStorage.getItem('glossarySeenTerms') || '[]');
-      if (!stored.includes(key)) {
-        localStorage.setItem('glossarySeenTerms', JSON.stringify([...stored, key]));
-      }
-    }
-  }, [seenTerms]);
+    if (entry) setActive(entry);
+  }, []);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest
       ? e.target.closest('.glossary-term')
       : null;
     if (el) setActive(null);
-  }, []);
-
-  // Cargar términos vistos del localStorage al montar
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('glossarySeenTerms') || '[]');
-    setSeenTerms(new Set(stored));
   }, []);
 
   useEffect(() => {
