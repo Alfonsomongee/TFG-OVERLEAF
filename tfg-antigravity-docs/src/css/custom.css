@@ -2049,7 +2049,7 @@ html[data-theme='light'] :target {
   border-bottom-color: rgba(174, 210, 255, 0.85);
 }
 
-/* ── Panel flotante lateral (integrado, sin neón) ── */
+/* ── Panel flotante lateral (integrado, sin marco, con iluminación) ── */
 .glossary-definition-panel {
   position: fixed;
   right: 1.5rem;
@@ -2057,28 +2057,34 @@ html[data-theme='light'] :target {
   transform: translateY(-50%);
   width: 280px;
   max-width: calc(100vw - 3rem);
-  background: rgba(15, 30, 60, 0.85);
-  border: 1px solid rgba(100, 180, 255, 0.25);
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(100, 180, 255, 0.08);
-  backdrop-filter: blur(12px);
+  background: rgba(15, 30, 60, 0.70);
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(100, 180, 255, 0.05);
+  backdrop-filter: blur(10px);
   z-index: 1200;
   font-size: 0.82rem;
   line-height: 1.65;
   animation: glossaryPanelIn 0.15s ease;
   pointer-events: none;
-  transition: box-shadow 0.3s ease, background 0.3s ease;
+  transition: box-shadow 3.5s ease-out, background 3.5s ease-out;
 }
 
 .glossary-definition-panel:hover {
-  background: rgba(15, 30, 60, 0.92);
-  box-shadow: 0 8px 32px rgba(100, 180, 255, 0.2), inset 0 0 20px rgba(100, 180, 255, 0.12);
-  border-color: rgba(100, 180, 255, 0.4);
+  background: rgba(15, 30, 60, 0.85);
+  box-shadow: 0 4px 24px rgba(100, 180, 255, 0.15), inset 0 0 25px rgba(100, 180, 255, 0.10);
+  animation: glossaryIlluminate 3.5s ease-out forwards;
 }
 
 @keyframes glossaryPanelIn {
   from { opacity: 0; transform: translateY(-50%) translateX(8px); }
   to   { opacity: 1; transform: translateY(-50%) translateX(0);   }
+}
+
+@keyframes glossaryIlluminate {
+  0%   { box-shadow: 0 4px 24px rgba(100, 180, 255, 0.15), inset 0 0 25px rgba(100, 180, 255, 0.10); }
+  50%  { box-shadow: 0 6px 32px rgba(100, 180, 255, 0.25), inset 0 0 30px rgba(100, 180, 255, 0.15); }
+  100% { box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(100, 180, 255, 0.05); }
 }
 
 .glossary-panel-header {

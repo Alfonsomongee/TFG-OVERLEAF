@@ -152,18 +152,19 @@ const RAW_TERMS = [
 const TERMS = RAW_TERMS.slice().sort((a, b) => b.length - a.length);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Genera el HTML del span para un término
+// Genera el HTML del span para un término (solo la PRIMERA aparición)
 // ─────────────────────────────────────────────────────────────────────────────
-function makeSpan(term) {
-  return `<span class="glossary-term" data-term="${escHtml(term)}">${escHtml(term)}</span>`;
+function makeSpan(term, isFirst = false) {
+  return `<span class="glossary-term${isFirst ? ' glossary-term-first' : ''}" data-term="${escHtml(term)}" data-first="${isFirst}">${escHtml(term)}</span>`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Transforma un string de texto: encuentra la primera ocurrencia del término
 // más largo no solapado y la envuelve en un span. Recursivo para el resto.
 // Devuelve array de nodos AST (text y/o html).
+// Marca con data-first="true" solo la PRIMERA aparición global en el documento.
 // ─────────────────────────────────────────────────────────────────────────────
-function transformText(text, terms) {
+function transformText(text, terms, seenTerms = new Set()) {
   // Buscar el término coincidente más cercano al inicio del texto
   let earliest = null;
   let earliestIdx = Infinity;
@@ -188,11 +189,23 @@ function transformText(text, terms) {
   const before = text.slice(0, earliestIdx);
   const after  = text.slice(earliestIdx + earliest.length);
 
+  const isFirstOccurrence = !seenTerms.has(earliest);
+  if (isFirstOccurrence) {
+    seenTerms.add(earliest);
+  }
+
   const nodes = [];
   if (before) nodes.push({ type: 'text', value: before });
-  // Nodo HTML raw — Docusaurus/MDX lo pasa tal cual al DOM
-  nodes.push({ type: 'html', value: makeSpan(earliest) });
-  if (after) nodes.push(...transformText(after, terms));
+
+  if (isFirstOccurrence) {
+    // Solo la primera aparición: envuelve en span con glossary-term
+    nodes.push({ type: 'html', value: makeSpan(earliest, true) });
+  } else {
+    // Apariciones posteriores: texto plano sin envolver
+    nodes.push({ type: 'text', value: earliest });
+  }
+
+  if (after) nodes.push(...transformText(after, terms, seenTerms));
   return nodes;
 }
 
