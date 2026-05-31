@@ -194,6 +194,11 @@ function transformText(text, terms, seenTerms = new Set()) {
     seenTerms.add(earliest);
   }
 
+  // Debug: log what's happening
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[glossary] term="${earliest}" isFirst=${isFirstOccurrence} seenTerms=[${Array.from(seenTerms).join(', ')}]`);
+  }
+
   const nodes = [];
   if (before) nodes.push({ type: 'text', value: before });
 

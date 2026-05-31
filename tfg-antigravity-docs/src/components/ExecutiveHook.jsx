@@ -281,7 +281,7 @@ export default function ExecutiveHook() {
             {strings.splashSubtitle}
           </h2>
           <p className={styles.splashAuthor} style={{ opacity: authorOpacity }}>
-            ALFONSO MONGE
+            ALFONSO MONGE DÍAZ-ÁNGEL
           </p>
           <div style={{ opacity: clickOpacity }}>
             <p className={styles.splashClick}>{strings.splashClick}</p>
