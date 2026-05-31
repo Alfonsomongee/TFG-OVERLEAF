@@ -75,65 +75,6 @@ Durante la Fase 1, las fluctuaciones y caídas de tensión originadas por las os
 
 Esta incapacidad mecánica creó un **"espejismo" en la sala de control de REE**. El <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> del operador monitorizaba el primario de 400 kV, observando tensiones altas pero teóricamente por debajo del límite excepcional normativo de **435 kV** (P.O. 1.1). Sin embargo, aguas abajo, en las redes de 220 kV y 132 kV, el voltaje escaló por encima de **1,2 p.u.** —umbrales invisibles para el despacho nacional por la inobservabilidad de la red subyacente.
 
-<div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:"0.8rem",overflowX:"auto",margin:"1.5rem 0",background:"rgba(255,170,0,0.03)",border:"1px solid rgba(255,170,0,0.15)",borderRadius:"6px",padding:"1.5rem"}}>
-  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:"0 8px",minWidth:"640px"}}>
-    {/* Headers */}
-    {["Red 400 kV","Transformador OLTC","Red Colectora 220/132 kV","Inversores IBR"].map((h,i)=>(
-      <div key={i} style={{textAlign:"center",background:"rgba(255,170,0,0.12)",border:"1px solid rgba(255,170,0,0.3)",borderRadius:"4px",padding:"6px 4px",color:"#ffd090",fontSize:"0.72rem",fontWeight:"700",letterSpacing:"0.05em"}}>
-        {h}
-      </div>
-    ))}
-    {/* Lifelines */}
-    {[0,1,2,3].map(i=>(
-      <div key={i} style={{display:"flex",justifyContent:"center",paddingTop:"4px"}}>
-        <div style={{width:"2px",height:"320px",background:"rgba(255,170,0,0.2)"}}/>
-      </div>
-    ))}
-  </div>
-  {/* Messages */}
-  <div style={{display:"flex",flexDirection:"column",gap:"10px",marginTop:"-316px",minWidth:"640px",paddingLeft:"0"}}>
-    <div style={{display:"flex",alignItems:"center",gap:"8px",paddingLeft:"10%",marginTop:"4px"}}>
-      <span style={{color:"#ffd090",flex:"none",fontSize:"0.7rem"}}>➔</span>
-      <span style={{borderTop:"1px solid rgba(255,220,80,0.6)",flex:1,height:"1px"}}/>
-      <span style={{color:"#c8a050",fontSize:"0.7rem",flex:"none"}}>Transitorio rápido de sobretensión</span>
-      <span style={{borderTop:"1px solid rgba(255,220,80,0.3)",flex:"0.5",height:"1px"}}/>
-    </div>
-    <div style={{background:"rgba(255,170,0,0.08)",border:"1px dashed rgba(255,170,0,0.25)",borderRadius:"4px",padding:"5px 10px",margin:"2px 24% 2px 26%",color:"#c8a050",fontSize:"0.68rem",textAlign:"center"}}>
-      ⚙ Retardo mecánico intencional — evita oscilaciones efímeras
-    </div>
-    <div style={{display:"flex",alignItems:"center",gap:"8px",paddingLeft:"26%"}}>
-      <span style={{color:"#ff4444",flex:"none",fontSize:"0.7rem"}}>✕</span>
-      <span style={{borderTop:"1px dashed rgba(255,80,80,0.6)",flex:1,height:"1px"}}/>
-      <span style={{color:"#ff8080",fontSize:"0.7rem",flex:"none"}}>Falla ajuste de toma OLTC</span>
-      <span style={{borderTop:"1px dashed rgba(255,80,80,0.3)",flex:"0.3",height:"1px"}}/>
-    </div>
-    <div style={{display:"flex",alignItems:"center",gap:"8px",paddingLeft:"10%"}}>
-      <span style={{color:"#ffd090",flex:"none",fontSize:"0.7rem"}}>➔</span>
-      <span style={{borderTop:"1px solid rgba(255,120,80,0.7)",flex:"1.8",height:"1px"}}/>
-      <span style={{color:"#ff9060",fontSize:"0.7rem",flex:"none"}}>Sobretensión amplificada propagada</span>
-      <span style={{borderTop:"1px solid rgba(255,120,80,0.3)",flex:"0.1",height:"1px"}}/>
-    </div>
-    <div style={{display:"flex",alignItems:"center",gap:"8px",paddingLeft:"52%"}}>
-      <span style={{color:"#ffd090",flex:"none",fontSize:"0.7rem"}}>➔</span>
-      <span style={{borderTop:"1px solid rgba(255,80,80,0.7)",flex:1,height:"1px"}}/>
-      <span style={{color:"#ff6060",fontSize:"0.7rem",flex:"none"}}>Voltaje &gt; 1.2 p.u.</span>
-    </div>
-    <div style={{background:"rgba(255,80,80,0.08)",border:"1px dashed rgba(255,80,80,0.25)",borderRadius:"4px",padding:"5px 10px",margin:"2px 4% 2px 56%",color:"#ff9090",fontSize:"0.68rem",textAlign:"center"}}>
-      ⚡ Activación Función 59 ANSI — protección de sobretensión
-    </div>
-    <div style={{display:"flex",alignItems:"center",gap:"8px",paddingLeft:"52%"}}>
-      <span style={{color:"#ff6060",flex:"none",fontSize:"0.7rem"}}>↩</span>
-      <span style={{borderTop:"1px solid rgba(255,80,80,0.5)",flex:1,height:"1px"}}/>
-      <span style={{color:"#ff9090",fontSize:"0.7rem",flex:"none"}}>Desconexión de plantas</span>
-    </div>
-    <div style={{background:"rgba(255,170,0,0.06)",border:"1px dashed rgba(255,170,0,0.2)",borderRadius:"4px",padding:"5px 10px",margin:"2px 64% 2px 4%",color:"#c8a050",fontSize:"0.68rem",textAlign:"center"}}>
-      📟 SCADA: tensión alta pero bajo 435 kV — punto ciego operacional
-    </div>
-  </div>
-  <p style={{textAlign:"center",color:"rgba(255,170,0,0.5)",fontSize:"0.65rem",marginTop:"1rem",marginBottom:0}}>
-    DIAGRAMA DE SECUENCIA — MECANISMO TAP-LAG (12:32:57–12:33:18 CEST)
-  </p>
-</div>
 
 
 ![Mapa de Calor: Propagación de Sobretensiones](/figuras/heatmap_propagation.png) _Figura 16. Mapa de calor: propagación de sobretensiones en red 400 kV (Fase 2, 12:32:00–12:33:18 CEST). Fuente: Comité de Análisis del Gobierno / REE._
@@ -194,7 +135,7 @@ La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar co
   source="ENTSO-E Factual Report (2025), p.12 y pp.108-109"
 />
 
-En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC intentaron importar una magnitud de reactiva de emergencia superior a los **4.500 MVAr** desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo activa del orden de **1 GW** del sistema ibérico (el desglose preciso por circuito y capacidad puede auditarse en la [**Tabla 14**](./15-galeria-de-tablas.mdx) y en los *Forensic Charts 1-5*, categoría Interconexiones). Esta operación asimétrica contrajo drásticamente la capacidad de soporte neto desde el continente.
+En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC alcanzaron un pico transitorio de importación de ~**3.800 MW** de potencia activa (ENTSO-E Factual, pp.108-109) desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo activa del orden de **1 GW** del sistema ibérico (el desglose preciso por circuito y capacidad puede auditarse en la [**Tabla 14**](./15-galeria-de-tablas.mdx) y en los *Forensic Charts 1-5*, categoría Interconexiones). Esta operación asimétrica contrajo drásticamente la capacidad de soporte neto desde el continente.
 
 ![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Figura 19. Inversión de flujos en enlaces AC/DC en frontera pirenaica (Fase 3): importación de <CuestionAbierta metricKey="potencias_cascada.reactiva_frontera_ac_pico">4.609 MVAr</CuestionAbierta> por líneas AC y extracción simultánea de 1.000 MW por el HVDC hasta la pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._
 
