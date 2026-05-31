@@ -7,10 +7,22 @@ export default function CostCongestionChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/cost_congestion_management.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/cost_congestion_management.json', { signal: controller.signal })
       .then(res => res.json())
-      .then(json => setData(json.data))
-      .catch(err => console.error("Error loading cost congestion:", err));
+      .then(json => {
+        if (!controller.signal.aborted) {
+          setData(json.data);
+        }
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading cost congestion:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (!data || data.length === 0) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;

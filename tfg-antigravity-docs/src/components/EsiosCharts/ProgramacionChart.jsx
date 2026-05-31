@@ -26,28 +26,38 @@ export default function ProgramacionChart() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/esios/programacion-mercado-produccion.json')
+    const controller = new AbortController();
+
+    fetch('/data/esios/programacion-mercado-produccion.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        if (json.length >= 1) {
-          const day1 = json[0];
-          const keys = Object.keys(day1).filter(k => k !== 'datetime');
-          
-          const formattedData = keys.map(k => {
-            return {
-              category: k.replace('Energía horaria', '').replace('comercializadores', 'Comercializ.').trim(),
-              '28 Abril': day1[k] || 0
-            };
-          });
-          formattedData.sort((a, b) => b['28 Abril'] - a['28 Abril']);
-          setData(formattedData);
+        if (!controller.signal.aborted) {
+          if (json.length >= 1) {
+            const day1 = json[0];
+            const keys = Object.keys(day1).filter(k => k !== 'datetime');
+
+            const formattedData = keys.map(k => {
+              return {
+                category: k.replace('Energía horaria', '').replace('comercializadores', 'Comercializ.').trim(),
+                '28 Abril': day1[k] || 0
+              };
+            });
+            formattedData.sort((a, b) => b['28 Abril'] - a['28 Abril']);
+            setData(formattedData);
+          }
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(err => {
-        console.error('Error cargando datos:', err);
-        setLoading(false);
+        if (err.name !== 'AbortError') {
+          console.error('Error cargando datos:', err);
+        }
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
+
+    return () => controller.abort();
   }, []);
 
   if (loading) return <div style={{ color: '#ff4a4a', textAlign: 'center', fontFamily: 'Space Mono' }}>Analizando archivos locales...</div>;

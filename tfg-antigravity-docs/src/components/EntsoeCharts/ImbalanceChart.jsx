@@ -7,35 +7,45 @@ export default function ImbalanceChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/imbalance_spain_28_29_april_2025.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/imbalance_spain_28_29_april_2025.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const processDay = (dayData, offsetHours) => {
-          return dayData.map(d => {
-            const timeStr = d.datetime.slice(11, 16); // "10:30"
-            const [hours, mins] = timeStr.split(':').map(Number);
-            const decimalTime = hours + mins / 60 + offsetHours;
-            
-            // Separamos por deficit y superavit para las áreas
-            const deficit = d.situation === 'Deficit' ? d.imbalance_mwh : 0;
-            const surplus = d.situation === 'Surplus' ? d.imbalance_mwh : 0;
-            
-            return {
-              timeNum: decimalTime,
-              timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
-              imbalance_mwh: d.imbalance_mwh,
-              situation: d.situation,
-              deficit: deficit,
-              surplus: surplus
-            };
-          });
-        };
+        if (!controller.signal.aborted) {
+          const processDay = (dayData, offsetHours) => {
+            return dayData.map(d => {
+              const timeStr = d.datetime.slice(11, 16); // "10:30"
+              const [hours, mins] = timeStr.split(':').map(Number);
+              const decimalTime = hours + mins / 60 + offsetHours;
 
-        const day28 = processDay(json.data['2025-04-28'], 0);
-        const day29 = processDay(json.data['2025-04-29'], 24);
-        setData([...day28, ...day29]);
+              // Separamos por deficit y superavit para las áreas
+              const deficit = d.situation === 'Deficit' ? d.imbalance_mwh : 0;
+              const surplus = d.situation === 'Surplus' ? d.imbalance_mwh : 0;
+
+              return {
+                timeNum: decimalTime,
+                timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
+                imbalance_mwh: d.imbalance_mwh,
+                situation: d.situation,
+                deficit: deficit,
+                surplus: surplus
+              };
+            });
+          };
+
+          const day28 = processDay(json.data['2025-04-28'], 0);
+          const day29 = processDay(json.data['2025-04-29'], 24);
+          setData([...day28, ...day29]);
+        }
       })
-      .catch(err => console.error("Error loading imbalance data:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading imbalance data:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

@@ -7,29 +7,39 @@ export default function TotalLoadChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/total_load_day_ahead_actual_28A.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/total_load_day_ahead_actual_28A.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const processDay = (dayData, offsetHours) => {
-          return dayData.map(d => {
-            const timeStr = d.mtu.split(' - ')[0]; // "10:00"
-            const [hours, mins] = timeStr.split(':').map(Number);
-            const decimalTime = hours + mins / 60 + offsetHours;
-            return {
-              timeNum: decimalTime,
-              timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
-              es_forecast: d.es_forecast,
-              es_actual: d.es_actual,
-              pt_forecast: d.pt_forecast,
-              pt_actual: d.pt_actual
-            };
-          });
-        };
-        const day28 = processDay(json.data['2025-04-28'], 0);
-        const day29 = processDay(json.data['2025-04-29'], 24);
-        setData([...day28, ...day29]);
+        if (!controller.signal.aborted) {
+          const processDay = (dayData, offsetHours) => {
+            return dayData.map(d => {
+              const timeStr = d.mtu.split(' - ')[0]; // "10:00"
+              const [hours, mins] = timeStr.split(':').map(Number);
+              const decimalTime = hours + mins / 60 + offsetHours;
+              return {
+                timeNum: decimalTime,
+                timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
+                es_forecast: d.es_forecast,
+                es_actual: d.es_actual,
+                pt_forecast: d.pt_forecast,
+                pt_actual: d.pt_actual
+              };
+            });
+          };
+          const day28 = processDay(json.data['2025-04-28'], 0);
+          const day29 = processDay(json.data['2025-04-29'], 24);
+          setData([...day28, ...day29]);
+        }
       })
-      .catch(err => console.error("Error loading total load data:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading total load data:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

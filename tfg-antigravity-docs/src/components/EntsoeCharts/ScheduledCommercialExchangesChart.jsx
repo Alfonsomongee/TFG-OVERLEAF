@@ -7,28 +7,38 @@ export default function ScheduledCommercialExchangesChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/scheduled_commercial_exchanges_28A.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/scheduled_commercial_exchanges_28A.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const processDay = (dayData, offsetHours) => {
-          return dayData.map(d => {
-            const timeStr = d.mtu.split(' - ')[0]; // "10:00"
-            const [hours, mins] = timeStr.split(':').map(Number);
-            const decimalTime = hours + mins / 60 + offsetHours;
-            const net_fr = d.es_to_fr_mw - d.fr_to_es_mw;
-            const net_pt = d.es_to_pt_mw - d.pt_to_es_mw;
-            return {
-              timeNum: decimalTime,
-              timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
-              net_fr: net_fr,
-              net_pt: net_pt
-            };
-          });
-        };
-        const day28 = processDay(json.data['2025-04-28'], 0);
-        setData(day28);
+        if (!controller.signal.aborted) {
+          const processDay = (dayData, offsetHours) => {
+            return dayData.map(d => {
+              const timeStr = d.mtu.split(' - ')[0]; // "10:00"
+              const [hours, mins] = timeStr.split(':').map(Number);
+              const decimalTime = hours + mins / 60 + offsetHours;
+              const net_fr = d.es_to_fr_mw - d.fr_to_es_mw;
+              const net_pt = d.es_to_pt_mw - d.pt_to_es_mw;
+              return {
+                timeNum: decimalTime,
+                timeLabel: timeStr + (offsetHours > 0 ? ' (29/04)' : ''),
+                net_fr: net_fr,
+                net_pt: net_pt
+              };
+            });
+          };
+          const day28 = processDay(json.data['2025-04-28'], 0);
+          setData(day28);
+        }
       })
-      .catch(err => console.error("Error loading commercial exchanges:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading commercial exchanges:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

@@ -7,24 +7,34 @@ export default function ImbalancePricesChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/imbalance_prices_28A.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/imbalance_prices_28A.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const formattedData = json.data['2025-04-28'].map(d => {
-          const startTime = d.time_interval.split(' - ')[0]; // Ej: "10:15"
-          return {
-            time: startTime,
-            raw_time: startTime,
-            price_positive: d.positive_imbalance_price_eur_mwh,
-            price_negative: d.negative_imbalance_price_eur_mwh,
-            // Tomamos el mayor de los dos como el precio más representativo de la tensión del sistema
-            price_eur_mwh: Math.max(d.positive_imbalance_price_eur_mwh, d.negative_imbalance_price_eur_mwh),
-            situation: d.situation
-          };
-        });
-        setData(formattedData);
+        if (!controller.signal.aborted) {
+          const formattedData = json.data['2025-04-28'].map(d => {
+            const startTime = d.time_interval.split(' - ')[0]; // Ej: "10:15"
+            return {
+              time: startTime,
+              raw_time: startTime,
+              price_positive: d.positive_imbalance_price_eur_mwh,
+              price_negative: d.negative_imbalance_price_eur_mwh,
+              // Tomamos el mayor de los dos como el precio más representativo de la tensión del sistema
+              price_eur_mwh: Math.max(d.positive_imbalance_price_eur_mwh, d.negative_imbalance_price_eur_mwh),
+              situation: d.situation
+            };
+          });
+          setData(formattedData);
+        }
       })
-      .catch(err => console.error("Error loading imbalance prices:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading imbalance prices:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

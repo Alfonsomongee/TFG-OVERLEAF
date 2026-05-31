@@ -8,23 +8,33 @@ export default function CurrentBalancingStateChart() {
   const [zoomIn, setZoomIn] = useState(true);
 
   useEffect(() => {
-    fetch('/data/entsoe/current_balancing_state_28A.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/current_balancing_state_28A.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        // Formatear los datos: si es Deficit, lo hacemos negativo para que la barra vaya hacia abajo
-        const formattedData = json.data['2025-04-28'].map(d => {
-          const startTime = d.time_interval.split(' - ')[0]; // Ej: "00:00:00"
-          const timeLabel = startTime.substring(0, 5); // Ej: "00:00"
-          return {
-            time: timeLabel,
-            raw_time: startTime,
-            situation: d.situation,
-            error_mw: d.situation === 'Deficit' ? -Math.abs(d.error_mw) : Math.abs(d.error_mw)
-          };
-        });
-        setData(formattedData);
+        if (!controller.signal.aborted) {
+          // Formatear los datos: si es Deficit, lo hacemos negativo para que la barra vaya hacia abajo
+          const formattedData = json.data['2025-04-28'].map(d => {
+            const startTime = d.time_interval.split(' - ')[0]; // Ej: "00:00:00"
+            const timeLabel = startTime.substring(0, 5); // Ej: "00:00"
+            return {
+              time: timeLabel,
+              raw_time: startTime,
+              situation: d.situation,
+              error_mw: d.situation === 'Deficit' ? -Math.abs(d.error_mw) : Math.abs(d.error_mw)
+            };
+          });
+          setData(formattedData);
+        }
       })
-      .catch(err => console.error("Error loading balancing state:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading balancing state:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

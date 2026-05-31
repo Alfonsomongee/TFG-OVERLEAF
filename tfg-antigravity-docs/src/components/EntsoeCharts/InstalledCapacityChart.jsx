@@ -8,21 +8,31 @@ export default function InstalledCapacityChart() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    fetch('/data/entsoe/installed_capacity_2025.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/installed_capacity_2025.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        // Filtrar datos válidos mayores a 0
-        const validData = json.data.filter(d => typeof d.capacity_mw === 'number' && d.capacity_mw > 0);
-        // Ordenar por categoría (IBR vs Síncrona) y luego por capacidad
-        const sorted = validData.sort((a, b) => {
-          if (a.category !== b.category) {
-            return a.category.localeCompare(b.category);
-          }
-          return b.capacity_mw - a.capacity_mw;
-        });
-        setData(sorted);
+        if (!controller.signal.aborted) {
+          // Filtrar datos válidos mayores a 0
+          const validData = json.data.filter(d => typeof d.capacity_mw === 'number' && d.capacity_mw > 0);
+          // Ordenar por categoría (IBR vs Síncrona) y luego por capacidad
+          const sorted = validData.sort((a, b) => {
+            if (a.category !== b.category) {
+              return a.category.localeCompare(b.category);
+            }
+            return b.capacity_mw - a.capacity_mw;
+          });
+          setData(sorted);
+        }
       })
-      .catch(err => console.error("Error loading installed capacity:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading installed capacity:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

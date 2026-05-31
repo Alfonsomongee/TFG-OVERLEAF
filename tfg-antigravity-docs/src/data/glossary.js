@@ -185,7 +185,7 @@ export const GLOSSARY_TERMS = [
     id: slugify('ERS'),
     letter: 'E',
     term: 'ERS',
-    definition: 'Essential Reliability Services.',
+    definition: 'Funciones técnicas indispensables para garantizar la seguridad, resiliencia y amortiguamiento dinámico del sistema eléctrico: inercia, potencia de cortocircuito, regulación primaria de frecuencia (FFR/FCR), y control dinámico de tensión/reactiva. El 28-A demostró que la inercia y la rigidez de red ya no son subproductos gratuitos de la generación síncrona sino servicios que deben remunerarse explícitamente. El RD 997/2025 y la propuesta ENTSO-E NC RfG 2.0 postulan mercados regulados para remunerar inercia sintética, regulación dinámica Q, FFR y potencia de cortocircuito. (Reg. UE 2017/1485 SO GL / NERC ERSWG)',
   },
   {
     id: slugify('Estabilidad de tensión'),
@@ -227,13 +227,13 @@ export const GLOSSARY_TERMS = [
     id: slugify('GFL'),
     letter: 'G',
     term: 'GFL',
-    definition: 'Grid-Following Inverter.',
+    definition: 'Estrategia de control donde el inversor utiliza un Phase-Locked Loop (PLL) para sincronizarse pasivamente con la frecuencia y tensión impuestas por la red externa, operando como fuente de corriente controlada. En red débil (SCR < 2), el PLL entra en inestabilidad con amortiguamiento negativo (ζ_PLL < 0). La hegemonía de GFL en el parque FV ibérico impidió que los generadores actuaran como anclas estabilizadoras; al perder la referencia de fase, los PLLs dispararon los inversores retirando el escaso soporte reactivo remanente. (IEEE Std 2800-2022 / ENTSO-E TG GFC)',
   },
   {
     id: slugify('GFM'),
     letter: 'G',
     term: 'GFM',
-    definition: 'Grid-Forming Inverter.',
+    definition: 'Tecnología de control mediante la cual el inversor actúa como fuente de tensión ideal, generando autónomamente la amplitud y frecuencia de la red local sin necesitar referencia externa, emulando virtualmente el comportamiento de una máquina síncrona. Ventajas sobre GFL: opera en SCR < 1,5, aporta inercia sintética configurable, no requiere PLL. El NC RfG 2.0 de ENTSO-E (noviembre 2025) propone hacer GFM obligatorio para todos los módulos ≥ 1 MW. El RD 997/2025 fija objetivo de 22,5 GW de almacenamiento GFM en 2030. (IEEE Std 2800-2022 / ENTSO-E TG GFC Phase II)',
   },
   {
     id: slugify('Headroom: Reserva de Capacidad del Inversor'),
@@ -251,7 +251,7 @@ export const GLOSSARY_TERMS = [
     id: slugify('IBR'),
     letter: 'I',
     term: 'IBR',
-    definition: 'Inverter-Based Resources.',
+    definition: 'Recursos de generación o almacenamiento que se interconectan a la red de corriente alterna exclusivamente a través de electrónica de potencia, careciendo de acoplamiento electromecánico directo con el sistema. Abarca FV, eólica tipo 3/4, BESS, STATCOM, SVC y HVDC. En el 28-A el 82% de la generación instantánea era IBR (Comité de Análisis, p.38). La concentración de plantas IBR operando sin aportar robustez dinámica facilitó la cascada de desconexiones que apagó la península en 30 segundos. (IEEE Std 2800-2022)',
   },
   {
     id: slugify('IGBT (Insulated Gate Bipolar Transistor)'),
@@ -425,7 +425,7 @@ export const GLOSSARY_TERMS = [
     id: slugify('RoCoF'),
     letter: 'R',
     term: 'RoCoF',
-    definition: 'Rate of Change of Frequency (df/dt).',
+    definition: 'Derivada temporal de la frecuencia (df/dt [Hz/s]) que mide la aceleración o desaceleración de la red eléctrica inmediatamente después de un desequilibrio entre generación y demanda. Se calcula como RoCoF = −f₀·ΔP / (2H·S_base). El RoCoF medio el 28-A fue <±1 Hz/s hasta 12:33:20 CEST; los picos secundarios estimados alcanzaron ~1,5 Hz/s en ventanas de 100 ms. Los relés anti-isla (ANSI 81R) disparan cuando el RoCoF supera umbrales configurados (~0,5 Hz/s). En sistemas de baja inercia, el mismo ΔP produce RoCoF mucho más elevado. (ENTSO-E NC RfG / IEEE C37.117)',
   },
   {
     id: slugify('SCADA'),
@@ -437,7 +437,7 @@ export const GLOSSARY_TERMS = [
     id: slugify('SCR'),
     letter: 'S',
     term: 'SCR',
-    definition: 'Short Circuit Ratio.',
+    definition: 'Relación entre la potencia de cortocircuito disponible en un nodo (S_ac [MVA]) y la potencia nominal del recurso IBR conectado en ese punto (P_i [MW]). SCR = S_ac / P_i. SCR > 3: red fuerte. 2 < SCR < 3: red débil. SCR < 2: red muy débil (inestabilidad probable con GFL). Los nudos del sur peninsular el 28-A operaban con SCR < 2, haciendo inestable el control PLL de los inversores GFL ante variaciones de tensión superiores al 5–10%. (CIGRE / IEEE 1204 / IEEE 519)',
   },
   {
     id: slugify('Servicios Esenciales de Confiabilidad (ERS)'),
@@ -491,7 +491,7 @@ export const GLOSSARY_TERMS = [
     id: slugify('UFLS'),
     letter: 'U',
     term: 'UFLS',
-    definition: 'Under-Frequency Load Shedding.',
+    definition: 'Esquema automático de defensa sistémica que desconecta bloques de demanda cuando la frecuencia cae a umbrales críticos predefinidos (P.O. 1.6: bombeo a 49,5 Hz, demanda industrial desde 49,0 Hz), para restablecer el balance generación-demanda. El UFLS agravó el colapso del 28-A: al deslastar cargas inductivas diseñadas para subfrecuencia, eliminó los últimos sumideros de reactiva en una red que colapsaba por exceso de reactiva capacitiva. Está diseñado para déficit de generación activa, no para inestabilidad de tensión. (ENTSO-E / P.O. 1.6)',
   },
   {
     id: slugify('V2G'),

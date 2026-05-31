@@ -24,11 +24,32 @@ export default function ActualGenerationChart() {
   const [view, setView] = useState('fuel');
 
   useEffect(() => {
-    fetch('/data/entsoe/active_units_top20.json').then(r => r.json()).then(j => setActiveUnits(j.data));
-    fetch('/data/entsoe/generation_by_fuel_type_with_expected.json').then(r => r.json()).then(j => setExpectedGen(j.data));
-    fetch('/data/entsoe/generation_by_fuel_type.json').then(r => r.json()).then(j => setGenByFuel(j.data));
-    fetch('/data/entsoe/technology_status_summary.json').then(r => r.json()).then(j => setStatusSummary(j.data));
-    fetch('/data/entsoe/sync_vs_ibr.json').then(r => r.json()).then(j => setSyncVsIbr(j.data));
+    const controller = new AbortController();
+    const opts = { signal: controller.signal };
+
+    Promise.all([
+      fetch('/data/entsoe/active_units_top20.json', opts).then(r => r.json()),
+      fetch('/data/entsoe/generation_by_fuel_type_with_expected.json', opts).then(r => r.json()),
+      fetch('/data/entsoe/generation_by_fuel_type.json', opts).then(r => r.json()),
+      fetch('/data/entsoe/technology_status_summary.json', opts).then(r => r.json()),
+      fetch('/data/entsoe/sync_vs_ibr.json', opts).then(r => r.json()),
+    ])
+      .then(([d1, d2, d3, d4, d5]) => {
+        if (!controller.signal.aborted) {
+          setActiveUnits(d1.data);
+          setExpectedGen(d2.data);
+          setGenByFuel(d3.data);
+          setStatusSummary(d4.data);
+          setSyncVsIbr(d5.data);
+        }
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error('Error fetching generation data:', err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   const loaded = activeUnits && expectedGen && genByFuel && statusSummary && syncVsIbr;

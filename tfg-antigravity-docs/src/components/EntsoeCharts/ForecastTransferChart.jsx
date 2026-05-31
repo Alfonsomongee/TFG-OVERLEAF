@@ -9,10 +9,22 @@ export default function ForecastTransferChart() {
   const [activeBorder, setActiveBorder] = useState('FR'); // FR or PT
 
   useEffect(() => {
-    fetch('/data/entsoe/forecast_transfer_capacities.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/forecast_transfer_capacities.json', { signal: controller.signal })
       .then(res => res.json())
-      .then(json => setData(json))
-      .catch(err => console.error("Error loading forecast capacities:", err));
+      .then(json => {
+        if (!controller.signal.aborted) {
+          setData(json);
+        }
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading forecast capacities:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (!data) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;

@@ -7,24 +7,34 @@ export default function EnergyPricesChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/energy_prices_day_ahead_28A.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/energy_prices_day_ahead_28A.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const day28 = json.data.Spain['2025-04-28'].map(d => ({
-          time: d.hour.split(' - ')[0],
-          raw_time: d.hour,
-          price: d.price_eur_per_mwh,
-          date: '28/04'
-        }));
-        const day29 = json.data.Spain['2025-04-29'].map(d => ({
-          time: d.hour.split(' - ')[0] + ' (29/04)',
-          raw_time: d.hour,
-          price: d.price_eur_per_mwh,
-          date: '29/04'
-        }));
-        setData([...day28, ...day29]);
+        if (!controller.signal.aborted) {
+          const day28 = json.data.Spain['2025-04-28'].map(d => ({
+            time: d.hour.split(' - ')[0],
+            raw_time: d.hour,
+            price: d.price_eur_per_mwh,
+            date: '28/04'
+          }));
+          const day29 = json.data.Spain['2025-04-29'].map(d => ({
+            time: d.hour.split(' - ')[0] + ' (29/04)',
+            raw_time: d.hour,
+            price: d.price_eur_per_mwh,
+            date: '29/04'
+          }));
+          setData([...day28, ...day29]);
+        }
       })
-      .catch(err => console.error("Error loading energy prices data:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading energy prices data:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

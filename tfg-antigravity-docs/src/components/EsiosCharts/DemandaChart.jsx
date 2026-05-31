@@ -26,24 +26,31 @@ export default function DemandaChart() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cargar los datos procesados (unificando 28 y 29 de abril)
-    fetch('/data/esios/demanda_28_29_abril.json')
+    const controller = new AbortController();
+
+    fetch('/data/esios/demanda_28_29_abril.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        // Formatear las fechas para el eje X
-        const formattedData = json.map(item => ({
-          ...item,
-          // Recharts lee mejor strings o timestamps
-          timeStr: new Date(item.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-          dateStr: new Date(item.datetime).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
-        }));
-        setData(formattedData);
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          const formattedData = json.map(item => ({
+            ...item,
+            timeStr: new Date(item.datetime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+            dateStr: new Date(item.datetime).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }),
+          }));
+          setData(formattedData);
+          setLoading(false);
+        }
       })
       .catch(err => {
-        console.error('Error cargando datos de demanda:', err);
-        setLoading(false);
+        if (err.name !== 'AbortError') {
+          console.error('Error cargando datos de demanda:', err);
+        }
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
+
+    return () => controller.abort();
   }, []);
 
   if (loading) return <div style={{ color: '#ff4a4a', textAlign: 'center', fontFamily: 'Space Mono' }}>Iniciando extracción de datos forenses...</div>;

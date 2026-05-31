@@ -117,6 +117,7 @@ export default function ExecutiveHook() {
 
   useEffect(() => {
     if (!showSplash) return;
+    if (typeof window === 'undefined') return;
 
     document.body.style.overflow = 'hidden';
     const start = Date.now();
@@ -128,10 +129,8 @@ export default function ExecutiveHook() {
       if (ms < 5000) {
         animationFrame = requestAnimationFrame(animate);
       } else if (!isCongreso) {
-        // Auto-dismiss splash after 5s (desactivado en modo congreso)
         handleEnter();
       }
-      // En modo congreso: el splash permanece hasta click del usuario
     };
     animationFrame = requestAnimationFrame(animate);
 
@@ -139,7 +138,7 @@ export default function ExecutiveHook() {
       cancelAnimationFrame(animationFrame);
       document.body.style.overflow = '';
     };
-  }, [showSplash]);
+  }, [showSplash, isCongreso]);
 
   const handleEnter = () => {
     setShowSplash(false);

@@ -26,16 +26,26 @@ export default function PreciosChart() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/esios/precios_28_29_abril.json')
+    const controller = new AbortController();
+
+    fetch('/data/esios/precios_28_29_abril.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        setData(json);
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setData(json);
+          setLoading(false);
+        }
       })
       .catch(err => {
-        console.error('Error cargando datos de precios:', err);
-        setLoading(false);
+        if (err.name !== 'AbortError') {
+          console.error('Error cargando datos de precios:', err);
+        }
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
+
+    return () => controller.abort();
   }, []);
 
   if (loading) return <div style={{ color: '#ff4a4a', textAlign: 'center', fontFamily: 'Space Mono' }}>Iniciando extracción de datos forenses...</div>;

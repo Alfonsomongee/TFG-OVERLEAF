@@ -8,29 +8,39 @@ export default function FallbacksChart() {
   const [summaryData, setSummaryData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/fallbacks.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/fallbacks.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        // Ordenar por fecha reciente
-        const sorted = [...json].sort((a, b) => {
-          const dateA = a.time_period.split(' ')[0].split('/').reverse().join('-');
-          const dateB = b.time_period.split(' ')[0].split('/').reverse().join('-');
-          return dateB.localeCompare(dateA);
-        });
-        setData(sorted);
+        if (!controller.signal.aborted) {
+          // Ordenar por fecha reciente
+          const sorted = [...json].sort((a, b) => {
+            const dateA = a.time_period.split(' ')[0].split('/').reverse().join('-');
+            const dateB = b.time_period.split(' ')[0].split('/').reverse().join('-');
+            return dateB.localeCompare(dateA);
+          });
+          setData(sorted);
 
-        // Agrupar por event_type para el gráfico de torta
-        const counts = {};
-        json.forEach(item => {
-          counts[item.event_type] = (counts[item.event_type] || 0) + 1;
-        });
-        const summary = Object.keys(counts).map(key => ({
-          name: key,
-          value: counts[key]
-        }));
-        setSummaryData(summary);
+          // Agrupar por event_type para el gráfico de torta
+          const counts = {};
+          json.forEach(item => {
+            counts[item.event_type] = (counts[item.event_type] || 0) + 1;
+          });
+          const summary = Object.keys(counts).map(key => ({
+            name: key,
+            value: counts[key]
+          }));
+          setSummaryData(summary);
+        }
       })
-      .catch(err => console.error("Error loading fallbacks:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading fallbacks:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

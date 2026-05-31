@@ -29,45 +29,53 @@ export default function GenericEsiosChart({ dataUrl, title, unit = '', includeKe
   const [keys, setKeys] = useState([]);
 
   useEffect(() => {
-    fetch(dataUrl)
+    const controller = new AbortController();
+
+    fetch(dataUrl, { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        if (json.length > 0) {
-          // Extract all unique keys except 'datetime'
-          const allKeys = new Set();
-          json.forEach(item => {
-            Object.keys(item).forEach(k => {
-              if (k !== 'datetime') {
-                if (!includeKeys || includeKeys.includes(k)) {
-                  allKeys.add(k);
+        if (!controller.signal.aborted) {
+          if (json.length > 0) {
+            const allKeys = new Set();
+            json.forEach(item => {
+              Object.keys(item).forEach(k => {
+                if (k !== 'datetime') {
+                  if (!includeKeys || includeKeys.includes(k)) {
+                    allKeys.add(k);
+                  }
                 }
-              }
+              });
             });
-          });
-          setKeys(Array.from(allKeys));
-          
-          // Filter data to only keep includeKeys if provided, to ensure tooltip is clean
-          if (includeKeys) {
-             const filtered = json.map(item => {
-                const newItem = { datetime: item.datetime };
-                includeKeys.forEach(k => {
-                   if (item[k] !== undefined) newItem[k] = item[k];
-                });
-                return newItem;
-             });
-             setData(filtered);
+            setKeys(Array.from(allKeys));
+
+            if (includeKeys) {
+               const filtered = json.map(item => {
+                  const newItem = { datetime: item.datetime };
+                  includeKeys.forEach(k => {
+                     if (item[k] !== undefined) newItem[k] = item[k];
+                  });
+                  return newItem;
+               });
+               setData(filtered);
+            } else {
+               setData(json);
+            }
           } else {
-             setData(json);
+            setData(json);
           }
-        } else {
-          setData(json);
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(err => {
-        console.error('Error cargando datos:', err);
-        setLoading(false);
+        if (err.name !== 'AbortError') {
+          console.error('Error cargando datos:', err);
+        }
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       });
+
+    return () => controller.abort();
   }, [dataUrl, includeKeys]);
 
   if (loading) return <div style={{ color: '#ff4a4a', textAlign: 'center', fontFamily: 'Space Mono' }}>Analizando archivos locales...</div>;

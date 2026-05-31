@@ -9,21 +9,31 @@ export default function HydroReservoirChart() {
   const [view, setView] = useState('area'); // 'area' or 'variation'
 
   useEffect(() => {
-    fetch('/data/entsoe/water_reservoirs_hydro_2025.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/water_reservoirs_hydro_2025.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const rawData = json.data;
-        setData(rawData);
-        
-        // Calculate weekly variation
-        const variations = rawData.map((d, i) => {
-          if (i === 0) return { ...d, variation: 0, isPositive: true };
-          const diff = d.mwh - rawData[i-1].mwh;
-          return { ...d, variation: diff, isPositive: diff >= 0 };
-        });
-        setVariationData(variations);
+        if (!controller.signal.aborted) {
+          const rawData = json.data;
+          setData(rawData);
+
+          // Calculate weekly variation
+          const variations = rawData.map((d, i) => {
+            if (i === 0) return { ...d, variation: 0, isPositive: true };
+            const diff = d.mwh - rawData[i-1].mwh;
+            return { ...d, variation: diff, isPositive: diff >= 0 };
+          });
+          setVariationData(variations);
+        }
       })
-      .catch(err => console.error("Error loading hydro data:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading hydro data:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {

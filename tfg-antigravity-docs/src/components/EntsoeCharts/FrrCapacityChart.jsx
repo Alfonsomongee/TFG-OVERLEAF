@@ -7,20 +7,30 @@ export default function FrrCapacityChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('/data/entsoe/frr_actual_capacity_2025.json')
+    const controller = new AbortController();
+
+    fetch('/data/entsoe/frr_actual_capacity_2025.json', { signal: controller.signal })
       .then(res => res.json())
       .then(json => {
-        const formattedData = json.data.map(d => ({
-          quarter: d.quarter,
-          up_avg: d.up.actual_capacity_mw.avg,
-          up_min: d.up.actual_capacity_mw.min,
-          down_avg: d.down.actual_capacity_mw.avg,
-          down_min: d.down.actual_capacity_mw.min,
-          outlook: d.up.outlook_mw
-        }));
-        setData(formattedData);
+        if (!controller.signal.aborted) {
+          const formattedData = json.data.map(d => ({
+            quarter: d.quarter,
+            up_avg: d.up.actual_capacity_mw.avg,
+            up_min: d.up.actual_capacity_mw.min,
+            down_avg: d.down.actual_capacity_mw.avg,
+            down_min: d.down.actual_capacity_mw.min,
+            outlook: d.up.outlook_mw
+          }));
+          setData(formattedData);
+        }
       })
-      .catch(err => console.error("Error loading FRR capacity data:", err));
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error("Error loading FRR capacity data:", err);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
 
   if (data.length === 0) {
