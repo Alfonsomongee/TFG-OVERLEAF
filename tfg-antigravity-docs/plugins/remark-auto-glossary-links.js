@@ -223,11 +223,11 @@ const SKIP_TYPES = new Set([
   'math', 'inlineMath',
 ]);
 
-function walkNode(node) {
+function walkNode(node, seenTerms) {
   if (SKIP_TYPES.has(node.type)) return node;
 
   if (node.type === 'text') {
-    const newNodes = transformText(node.value, TERMS);
+    const newNodes = transformText(node.value, TERMS, seenTerms);
     if (newNodes.length === 1 && newNodes[0].type === 'text' && newNodes[0].value === node.value) {
       return node; // sin cambios
     }
@@ -238,7 +238,7 @@ function walkNode(node) {
     let changed = false;
     const newChildren = [];
     for (const child of node.children) {
-      const result = walkNode(child);
+      const result = walkNode(child, seenTerms);
       if (Array.isArray(result)) {
         newChildren.push(...result);
         changed = true;
@@ -260,10 +260,12 @@ function walkNode(node) {
 function remarkAutoGlossaryLinks() {
   return function transformer(tree) {
     if (!tree.children) return;
+    // Un único Set compartido por todo el documento
+    const seenTerms = new Set();
     let changed = false;
     const newChildren = [];
     for (const child of tree.children) {
-      const result = walkNode(child);
+      const result = walkNode(child, seenTerms);
       if (Array.isArray(result)) {
         newChildren.push(...result);
         changed = true;
