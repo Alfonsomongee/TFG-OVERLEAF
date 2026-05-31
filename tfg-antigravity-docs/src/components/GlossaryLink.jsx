@@ -2,7 +2,9 @@
  * GlossaryLink.jsx
  * Enlace con tooltip de glosario técnico.
  *
- * Implementación pura React — sin dependencias externas (@floating-ui eliminado).
+ * Implementación pura React — sin dependencias externas.
+ * Usa position:fixed + getBoundingClientRect para evitar clipping
+ * por contenedores con overflow:hidden o transform.
  *
  * COMPORTAMIENTO:
  *   - Desktop: tooltip al hover
@@ -10,11 +12,6 @@
  *   - Teclado: tooltip al focus
  *   - Escape:  cierra el tooltip
  *   - Click fuera: cierra el tooltip
- *
- * ACCESIBILIDAD:
- *   - role="tooltip" en el panel flotante
- *   - aria-describedby vinculando el término con su definición
- *   - El botón trigger es un <button> nativo (no div)
  *
  * USO EN MDX:
  *   import GlossaryLink from '@site/src/components/GlossaryLink';
@@ -27,7 +24,7 @@
  *     generación inversora
  *   </GlossaryLink>
  *
- * MODO COMPACTO (sin subrayado, para uso en encabezados):
+ * MODO COMPACTO (sin subrayado):
  *   <GlossaryLink term="SCR" definition="..." compact>SCR</GlossaryLink>
  */
 import React, { useState, useRef, useEffect } from 'react';
@@ -39,16 +36,47 @@ export default function GlossaryLink({
   compact = false,
   lang = 'es',
 }) {
-  const [open,     setOpen]    = useState(false);
-  const triggerRef             = useRef(null);
-  const tooltipRef             = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef(null);
+  const tooltipRef = useRef(null);
   const isEs = lang === 'es';
+  const isTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
 
-  // Detect touch device
-  const isTouch = typeof window !== 'undefined' &&
-    'ontouchstart' in window;
+  // Calcular posición relativa al viewport para evitar clipping
+  const updatePosition = () => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const tooltipWidth = 300;
+    const viewportWidth = window.innerWidth;
+    let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+    if (left < 10) left = 10;
+    if (left + tooltipWidth > viewportWidth - 10) left = viewportWidth - tooltipWidth - 10;
 
-  // Close on outside click
+    const tooltipHeight = 120;
+    const spaceAbove = rect.top;
+    let top;
+    if (spaceAbove > tooltipHeight) {
+      top = rect.top - tooltipHeight - 8;
+    } else {
+      top = rect.bottom + 8;
+    }
+    setCoords({ top, left });
+  };
+
+  useEffect(() => {
+    if (open) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+      return () => {
+        window.removeEventListener('resize', updatePosition);
+        window.removeEventListener('scroll', updatePosition, true);
+      };
+    }
+  }, [open]);
+
+  // Cerrar al hacer clic fuera
   useEffect(() => {
     if (!open) return;
     const handler = (e) => {
@@ -67,12 +95,10 @@ export default function GlossaryLink({
     };
   }, [open]);
 
-  // Close on Escape
+  // Cerrar con Escape
   useEffect(() => {
     if (!open) return;
-    const handler = (e) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
+    const handler = (e) => { if (e.key === 'Escape') setOpen(false); };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [open]);
@@ -92,18 +118,17 @@ export default function GlossaryLink({
         onClick={handleClick}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        aria-describedby={open ? `gl-${term}` : undefined}
+        aria-describedby={open ? `glossary-tooltip-${term}` : undefined}
         style={{
           background:     'none',
           border:         'none',
-          padding:        '0 1px',
+          padding:        '0 2px',
           cursor:         'help',
           fontFamily:     'inherit',
           fontSize:       'inherit',
           fontWeight:     'inherit',
-          color:          'rgba(203,213,225,0.85)',
-          borderBottom:   compact ? 'none' : '1px dotted rgba(148,163,184,0.5)',
-          paddingBottom:  compact ? 0 : '1px',
+          color:          'var(--ifm-color-primary)',
+          borderBottom:   compact ? 'none' : '1px dotted var(--ifm-color-primary-light)',
           textDecoration: 'none',
           lineHeight:     'inherit',
         }}
@@ -112,66 +137,67 @@ export default function GlossaryLink({
       </button>
 
       {open && (
-        <span
-          id={`gl-${term}`}
+        <div
+          id={`glossary-tooltip-${term}`}
           ref={tooltipRef}
           role="tooltip"
           style={{
-            position:      'absolute',
-            bottom:        'calc(100% + 8px)',
-            left:          '50%',
-            transform:     'translateX(-50%)',
-            zIndex:        10000,
-            width:         300,
-            padding:       '10px 14px',
-            background:    'rgba(10,15,30,0.98)',
-            border:        '1px solid rgba(0,217,255,0.35)',
-            borderRadius:  8,
-            fontSize:      12,
-            fontFamily:    'monospace',
-            color:         '#e2e8f0',
-            lineHeight:    1.6,
-            boxShadow:     '0 8px 24px rgba(0,0,0,0.6)',
-            whiteSpace:    'normal',
-            pointerEvents: isTouch ? 'auto' : 'none',
+            position:       'fixed',
+            top:            coords.top,
+            left:           coords.left,
+            zIndex:         10000,
+            width:          '300px',
+            padding:        '12px 16px',
+            background:     'var(--ifm-background-surface-color)',
+            border:         '1px solid var(--ifm-color-primary)',
+            borderRadius:   '8px',
+            fontSize:       '0.85rem',
+            fontFamily:     'var(--ifm-font-family-base)',
+            color:          'var(--ifm-font-color-base)',
+            boxShadow:      '0 8px 24px rgba(0,0,0,0.2)',
+            backdropFilter: 'blur(8px)',
+            textAlign:      'left',
+            pointerEvents:  isTouch ? 'auto' : 'none',
+            lineHeight:     1.5,
           }}
         >
           <strong style={{
-            color:         '#00d9ff',
             display:       'block',
-            marginBottom:  5,
-            fontSize:      13,
-            borderBottom:  '1px solid rgba(0,217,255,0.15)',
-            paddingBottom: 5,
+            marginBottom:  6,
+            color:         'var(--ifm-color-primary)',
+            fontSize:      '0.9rem',
+            borderBottom:  '1px solid var(--ifm-color-emphasis-200)',
+            paddingBottom: 4,
           }}>
             {term}
           </strong>
-          {definition || (
-            isEs
-              ? 'Ver definición completa en el Glosario Técnico.'
-              : 'See full definition in the Technical Glossary.'
-          )}
+          <div style={{ lineHeight: 1.5 }}>
+            {definition || (
+              isEs
+                ? 'Ver definición completa en el Glosario Técnico.'
+                : 'See full definition in the Technical Glossary.'
+            )}
+          </div>
           {isTouch && (
             <button
               onClick={() => setOpen(false)}
               style={{
                 display:      'block',
-                marginTop:    8,
+                marginTop:    10,
                 width:        '100%',
-                padding:      '4px 0',
-                background:   'rgba(255,255,255,0.05)',
-                border:       '1px solid rgba(255,255,255,0.1)',
+                padding:      '6px 0',
+                background:   'rgba(0,0,0,0.05)',
+                border:       'none',
                 borderRadius: 4,
-                color:        '#94a3b8',
+                color:        'var(--ifm-color-primary)',
                 cursor:       'pointer',
-                fontFamily:   'monospace',
-                fontSize:     11,
+                fontSize:     '0.75rem',
               }}
             >
               ✕ {isEs ? 'Cerrar' : 'Close'}
             </button>
           )}
-        </span>
+        </div>
       )}
     </span>
   );

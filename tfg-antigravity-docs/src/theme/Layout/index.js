@@ -18,8 +18,6 @@ export default function Layout(props) {
       '/datos-tiempo-real',
       '/glosario',
       '/referencias',
-      'galeria',
-      '/cronologia',
       '/sobre-el-autor'
     ];
     
