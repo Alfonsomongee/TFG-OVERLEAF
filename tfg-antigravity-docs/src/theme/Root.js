@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
 import { useLocation } from '@docusaurus/router';
+import GlossaryDefinitionPanel from '@site/src/components/GlossaryDefinitionPanel';
 
 export default function Root({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true); // true = sidebar visible
@@ -41,6 +42,9 @@ export default function Root({ children }) {
   return (
     <>
       {children}
+
+      {/* Panel lateral de definiciones del glosario técnico */}
+      <GlossaryDefinitionPanel />
 
       {!shouldHideButtons && (
         <>

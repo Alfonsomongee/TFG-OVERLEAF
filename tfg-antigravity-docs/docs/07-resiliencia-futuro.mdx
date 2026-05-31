@@ -4,14 +4,13 @@ hide_title: true
 title: "Resiliencia y Futuro"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
-import GlossaryLink from "@site/src/components/GlossaryLink";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
 
 <GlitchTitle>Resiliencia y Futuro</GlitchTitle>
 
-La lección estructural del 28 de abril no reside en el colapso en sí, sino en la clase de vulnerabilidad que reveló. El análisis forense demostró que el cero de tensión no fue un fallo de reserva de potencia activa ni un error puntual de operación: fue la manifestación terminal de una incompatibilidad de fondo entre la física de un sistema dominado por inversores y un marco técnico-regulatorio diseñado para redes síncronas. El escenario que propició el 28-A —alta penetración de <GlossaryLink term="IBR">IBR</GlossaryLink>, escasez de generación síncrona acoplada y demanda neta deprimida— no fue una anomalía climática, sino el anticipo de condiciones que se reproducirán con frecuencia creciente conforme avance la descarbonización.
+La lección estructural del 28 de abril no reside en el colapso en sí, sino en la clase de vulnerabilidad que reveló. El análisis forense demostró que el cero de tensión no fue un fallo de reserva de potencia activa ni un error puntual de operación: fue la manifestación terminal de una incompatibilidad de fondo entre la física de un sistema dominado por inversores y un marco técnico-regulatorio diseñado para redes síncronas. El escenario que propició el 28-A —alta penetración de IBR, escasez de generación síncrona acoplada y demanda neta deprimida— no fue una anomalía climática, sino el anticipo de condiciones que se reproducirán con frecuencia creciente conforme avance la descarbonización.
 
 ## La física de la fragilidad sistémica
 
@@ -23,11 +22,11 @@ $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
 $$
 
-donde $H$ es la constante de inercia equivalente del sistema (en segundos), $f_0$ la frecuencia nominal (50 Hz), $df/dt$ la <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>, $P_m$ la potencia mecánica total aportada a los rotores síncronos acoplados, $P_e$ la potencia eléctrica generada (potencia de salida del alternador al sistema) y $D$ el coeficiente de amortiguamiento de las cargas dependientes de la frecuencia.
+donde $H$ es la constante de inercia equivalente del sistema (en segundos), $f_0$ la frecuencia nominal (50 Hz), $df/dt$ la RoCoF, $P_m$ la potencia mecánica total aportada a los rotores síncronos acoplados, $P_e$ la potencia eléctrica generada (potencia de salida del alternador al sistema) y $D$ el coeficiente de amortiguamiento de las cargas dependientes de la frecuencia.
 
-El parámetro central es $H$: su reducción implica que cualquier desequilibrio de potencia se traduce en un RoCoF proporcionalmente más agudo, acortando la ventana temporal disponible para la actuación de los sistemas de regulación. Los inversores <GlossaryLink term="GFL (Grid-Following)">grid-following</GlossaryLink> están desacoplados de la frecuencia de red mediante sus enlaces de corriente continua y **no aportan inercia electromecánica inherente** a la ecuación de oscilación.
+El parámetro central es $H$: su reducción implica que cualquier desequilibrio de potencia se traduce en un RoCoF proporcionalmente más agudo, acortando la ventana temporal disponible para la actuación de los sistemas de regulación. Los inversores grid-following están desacoplados de la frecuencia de red mediante sus enlaces de corriente continua y **no aportan inercia electromecánica inherente** a la ecuación de oscilación.
 
-El sistema certificó $H = 2,3$ s en el momento del colapso — por encima del umbral de 2,0 s recomendado por <GlossaryLink term="ENTSO-E">ENTSO-E</GlossaryLink>. El 28-A no fue un colapso de frecuencia por déficit de masa síncrona. Sin embargo, en escenarios de penetración IBR superior al 80 %, la reducción sostenida de $H$ convierte perturbaciones de amplitud moderada en contingencias críticas, porque el tiempo disponible antes de la activación del <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink> se comprime hasta hacerlo inoperable a la velocidad mecánica de apertura de los interruptores.
+El sistema certificó $H = 2,3$ s en el momento del colapso — por encima del umbral de 2,0 s recomendado por ENTSO-E. El 28-A no fue un colapso de frecuencia por déficit de masa síncrona. Sin embargo, en escenarios de penetración IBR superior al 80 %, la reducción sostenida de $H$ convierte perturbaciones de amplitud moderada en contingencias críticas, porque el tiempo disponible antes de la activación del UFLS se comprime hasta hacerlo inoperable a la velocidad mecánica de apertura de los interruptores.
 
 ### Degradación del cortocircuito: la métrica de fortaleza de red
 
@@ -47,7 +46,7 @@ $$
 | Categoría | Umbral SCR | Implicación operativa |
 | --- | --- | --- |
 | **Red fuerte** | SCR > 3 | Los inversores GFL operan con estabilidad de pequeña señal. Protecciones de distancia mantienen selectividad. |
-| **Red débil** | 2 ≤ SCR ≤ 3 | Degradación del margen de estabilidad del <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> ante perturbaciones rápidas. Riesgo de interacción adversa entre lazos de control próximos. |
+| **Red débil** | 2 ≤ SCR ≤ 3 | Degradación del margen de estabilidad del PLL ante perturbaciones rápidas. Riesgo de interacción adversa entre lazos de control próximos. |
 | **Red muy débil** | SCR < 2 | PLL propensos a pérdida de sincronismo ante variaciones de tensión menores. Protecciones de distancia pierden direccionalidad.<br/>*(Nota: En zonas de alta densidad de inversores, esta debilidad estructural se evalúa mediante la métrica MRSCR, discutida en el apartado de Dimensión Europea)* |
 
 </ForensicTable>
@@ -56,7 +55,7 @@ Los umbrales reales de vulnerabilidad frente al SCR pueden evaluarse en el radar
 
 <RadarVulnerabilidad lang="es" />
 
-Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de <GlossaryLink term="Potencia activa">potencia activa</GlossaryLink>: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
+Durante las horas previas al colapso, amplias zonas de la Península operaban como **redes muy débiles** (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de potencia activa: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
 ![Mapas de tensión en la red peninsular de 400 kV en la franja crítica previa al colapso](/figuras/scr_iberia.png) _Figura 37. Mapas de tensión en red 400 kV en franja crítica previa al colapso. Fuente: IIT-ICAI._
 
@@ -68,7 +67,7 @@ $$
 S_{\max} = \sqrt{P^2 + Q^2}
 $$
 
-Cuando una planta fotovoltaica experimenta un aclaramiento brusco de nubosidad, sus algoritmos MPPT ordenan rampas de inyección de potencia activa $P$ de miles de MW/h. Para no superar $S_{\max}$, el controlador debe reducir simultáneamente su margen de <GlossaryLink term="Potencia reactiva">potencia reactiva</GlossaryLink> $Q$. La paradoja: ese es exactamente el instante en que el aumento brusco de $P$ sobre una red con SCR &lt; 2 provoca una sobretensión severa, exigiendo al inversor una absorción masiva de reactiva para contenerla. El inversor se enfrenta a dos obligaciones físicas **simultáneamente incompatibles**: maximizar $P$ por señal de mercado y maximizar $Q$ por necesidad de estabilidad de tensión.
+Cuando una planta fotovoltaica experimenta un aclaramiento brusco de nubosidad, sus algoritmos MPPT ordenan rampas de inyección de potencia activa $P$ de miles de MW/h. Para no superar $S_{\max}$, el controlador debe reducir simultáneamente su margen de potencia reactiva $Q$. La paradoja: ese es exactamente el instante en que el aumento brusco de $P$ sobre una red con SCR &lt; 2 provoca una sobretensión severa, exigiendo al inversor una absorción masiva de reactiva para contenerla. El inversor se enfrenta a dos obligaciones físicas **simultáneamente incompatibles**: maximizar $P$ por señal de mercado y maximizar $Q$ por necesidad de estabilidad de tensión.
 
 Esta contradicción explica por qué el 28-A no fue un colapso de energía sino de control: el sistema disponía de recursos suficientes pero carecía de la arquitectura de control necesaria para movilizarlos coherentemente.
 
@@ -88,7 +87,7 @@ La superación de la vulnerabilidad exige una transición en la arquitectura de 
 
 ### BESS con control grid-forming: velocidad y precisión
 
-A diferencia del inversor GFL, un inversor <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión en magnitud y ángulo ($V\angle\delta$) detrás de una impedancia virtual de acoplamiento. Al imponer este vector de forma instantánea, el inversor GFM inyecta o absorbe corriente activa y reactiva de forma inherente ante cualquier variación de la red, sin depender de mediciones externas de fase ni de retardos de cálculo.
+A diferencia del inversor GFL, un inversor grid-forming (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión en magnitud y ángulo ($V\angle\delta$) detrás de una impedancia virtual de acoplamiento. Al imponer este vector de forma instantánea, el inversor GFM inyecta o absorbe corriente activa y reactiva de forma inherente ante cualquier variación de la red, sin depender de mediciones externas de fase ni de retardos de cálculo.
 
 <PhasePlanePlot lang={frontMatter.locale || 'es'} />
 
@@ -96,8 +95,8 @@ _Figura 39. Diagrama de plano de fase: convergencia de inversores GFM vs GFL vs 
 
 Cuando el inversor GFM está respaldado por un banco de baterías (BESS-GFM), la combinación provee dos servicios adicionales:
 
-- **<GlossaryLink term="Inercia Sintética">Inercia sintética</GlossaryLink>**: el algoritmo mide continuamente $df/dt$ y ajusta la potencia de salida de forma proporcional en el rango de **decenas de milisegundos**, emulando el comportamiento de una masa rotatoria.
-- **<GlossaryLink term="Fast Frequency Response (FFR)">FFR</GlossaryLink>**: ante la superación de un umbral de RoCoF o desviación de frecuencia, el BESS inyecta un bloque de potencia activa predefinido de forma **subcíclica** (≤ 0,25 s), frenando la pendiente de caída antes de que los reguladores de velocidad de los grupos síncronos hayan podido procesar la perturbación.
+- **Inercia sintética**: el algoritmo mide continuamente $df/dt$ y ajusta la potencia de salida de forma proporcional en el rango de **decenas de milisegundos**, emulando el comportamiento de una masa rotatoria.
+- **FFR**: ante la superación de un umbral de RoCoF o desviación de frecuencia, el BESS inyecta un bloque de potencia activa predefinido de forma **subcíclica** (≤ 0,25 s), frenando la pendiente de caída antes de que los reguladores de velocidad de los grupos síncronos hayan podido procesar la perturbación.
 
 La experiencia operativa de ERCOT (Texas) cuantifica el valor de este servicio. El umbral de inercia crítica estructural se sitúa en torno a **100.000 MW·s**: por debajo de este nivel, el RoCoF ante una contingencia de categoría C (~2.750 MW) hunde la frecuencia antes de que los gobernadores mecánicos puedan actuar. El sistema opera con tres zonas de alerta: **verde** (>120.000 MW·s), **amarilla** (110.000–119.999 MW·s) y **roja** (&lt;100.000 MW·s, con despacho forzado de unidades síncronas fuera de orden de mérito).
 
@@ -109,11 +108,11 @@ Sin embargo, los semiconductores IGBT raramente sostienen corrientes superiores 
 
 ### Compensadores síncronos: cortocircuito e inercia rotacional genuina
 
-La limitación de corriente de los inversores justifica el despliegue complementario de <GlossaryLink term="Compensadores Síncronos (SynCons)">compensadores síncronos</GlossaryLink> (SynCons): máquinas rotativas de gran masa acopladas síncronamente pero operadas en vacío, que intercambian libremente potencia reactiva en función del nivel de excitación.
+La limitación de corriente de los inversores justifica el despliegue complementario de compensadores síncronos (SynCons): máquinas rotativas de gran masa acopladas síncronamente pero operadas en vacío, que intercambian libremente potencia reactiva en función del nivel de excitación.
 
 Su aportación es doble: corrientes de cortocircuito del orden del **300–400 %** de su valor nominal durante los primeros ciclos, incrementando el SCR en el nudo de conexión; e inercia rotacional genuina físicamente disponible en el **primer milisegundo** de un transitorio, sin mediación de algoritmo ni latencia de control.
 
-La **<GlossaryLink term="Estrategia Brownfield">estrategia Brownfield</GlossaryLink>** propone una vía de despliegue que minimiza la inversión en nueva obra civil: reconvertir los grandes alternadores de centrales de carbón, ciclo combinado o nuclear en proceso de desmantelamiento en compensadores síncronos, una vez desacoplado el conjunto turbina-generador. Esta reconversión transforma activos varados en recursos de estabilidad sistémica, conservando el valor de los nudos de evacuación de 400 kV ya instalados.
+La **estrategia Brownfield** propone una vía de despliegue que minimiza la inversión en nueva obra civil: reconvertir los grandes alternadores de centrales de carbón, ciclo combinado o nuclear en proceso de desmantelamiento en compensadores síncronos, una vez desacoplado el conjunto turbina-generador. Esta reconversión transforma activos varados en recursos de estabilidad sistémica, conservando el valor de los nudos de evacuación de 400 kV ya instalados.
 
 ### Arquitectura híbrida: la complementariedad como condición de resiliencia
 
@@ -125,7 +124,7 @@ Ninguna de las tres familias tecnológicas, desplegada de forma aislada, es sufi
 
 ![Arquitectura híbrida para la resiliencia sistémica en redes descarbonizadas](/figuras/hitachi_hybrid.png) _Figura 40. Arquitectura híbrida para la resiliencia sistémica (BESS-GFM + SynCons). Fuente: Hitachi Energy / FUTURED._
 
-La minimización del coste total del sistema no coincide con la minimización del <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, sino que exige internalizar en el diseño de mercado los <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Servicios Esenciales de Confiabilidad (ERS</GlossaryLink>) que las máquinas síncronas aportaban de forma implícita.
+La minimización del coste total del sistema no coincide con la minimización del LCOE, sino que exige internalizar en el diseño de mercado los Servicios Esenciales de Confiabilidad (ERS) que las máquinas síncronas aportaban de forma implícita.
 
 ![Optimización tecno-económica de la resiliencia en sistemas dominados por IBR](/figuras/coste_optimo_ers.png) _Figura 41. Optimización tecno-económica de la resiliencia en sistemas dominados por IBR. Fuente: Julia Matevosyan (ESIG) / FUTURED._
 
@@ -191,7 +190,7 @@ Una tensión reveladora emergió durante el proceso: en octubre de 2025, REE sol
 
 ### El marco europeo: NC RfG 2.0 e Informes de Fase I y Fase II de ENTSO-E
 
-El <GlossaryLink term="NC RfG">NC RfG</GlossaryLink> vigente en la última década fue diseñado bajo el paradigma GFL: estandarizaba perfiles de hueco y umbrales de frecuencia, pero no contemplaba la posibilidad de que no quedara ninguna máquina rotatoria pesada a la que seguir. Esta carencia conceptual quedó demostrada en los 8 segundos del colapso ibérico.
+El NC RfG vigente en la última década fue diseñado bajo el paradigma GFL: estandarizaba perfiles de hueco y umbrales de frecuencia, pero no contemplaba la posibilidad de que no quedara ninguna máquina rotatoria pesada a la que seguir. Esta carencia conceptual quedó demostrada en los 8 segundos del colapso ibérico.
 
 El Grupo Técnico de ENTSO-E (TG GFC) cristalizó su trabajo en dos documentos:
 

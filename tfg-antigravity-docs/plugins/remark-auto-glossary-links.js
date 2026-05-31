@@ -1,40 +1,34 @@
 /**
- * remark-auto-glossary-links.js
+ * remark-auto-glossary-links.js  (v2 — panel flotante)
  *
- * Remark plugin (CJS) que enlaza automáticamente la PRIMERA aparición de
- * cada uno de los 119 términos del glosario técnico en cada capítulo MDX.
+ * Remark plugin (CJS) que envuelve TODAS las apariciones de los 119 términos
+ * del glosario técnico en cada capítulo MDX con:
  *
- * - El enlace apunta a /glosario#<slug>
- * - Solo la primera ocurrencia por archivo (el resto se deja como texto plano)
- * - No toca texto que ya esté dentro de un enlace existente
- * - No toca bloques/fragmentos de código (type: 'code' / 'inlineCode')
- * - No necesita unist-util-visit (usa walker propio para evitar problemas ESM)
+ *   <span class="glossary-term" data-term="TÉRMINO">TÉRMINO</span>
  *
- * Integración en docusaurus.config.js:
- *   remarkPlugins: [
- *     [require('remark-math'), { strict: false }],
- *     require('./plugins/remark-auto-glossary-links'),
- *   ],
+ * El GlossaryDefinitionPanel (Root.js) escucha mouseenter sobre estos spans
+ * y muestra el panel lateral con la definición sin sacar al lector del capítulo.
+ *
+ * Diferencias respecto a v1:
+ *   - Emite nodo `html` en lugar de `link` → sin navegación
+ *   - Sin lógica `seen` → todas las apariciones quedan marcadas
+ *   - No añade la clase auto-glossary-link (ya innecesaria)
  */
 
 'use strict';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Función slugify idéntica a la de glossary.js (para mantener coherencia)
-// ─────────────────────────────────────────────────────────────────────────────
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+// ── slugify idéntico a glossary.js (solo necesario para mantener coherencia) ──
+function escHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lista de los 119 términos del glosario (term + id precomputado)
-// Ordenados por longitud DESCENDENTE para que los términos más largos
-// tengan prioridad en la detección (p.ej. "GFM (Grid-Forming)" antes que "GFM")
+// Lista de los 119 términos, ordenados por longitud DESCENDENTE para que los
+// términos más específicos tengan prioridad (p.ej. "GFM (Grid-Forming)" > "GFM")
 // ─────────────────────────────────────────────────────────────────────────────
 const RAW_TERMS = [
   'AELEC',
@@ -154,84 +148,60 @@ const RAW_TERMS = [
   'VoLL (Value of Lost Load)',
 ];
 
-// Deduplicar por slug (algunas entradas del glosario tienen el mismo id)
-const seenSlugs = new Set();
-const TERMS = RAW_TERMS
-  .map(term => ({ term, id: slugify(term) }))
-  .filter(({ id }) => {
-    if (seenSlugs.has(id)) return false;
-    seenSlugs.add(id);
-    return true;
-  })
-  // Más largos primero → evita solapamientos (p.ej. "GFM (Grid-Forming)" > "GFM")
-  .sort((a, b) => b.term.length - a.term.length);
+// Más largos primero → evita sub-matches
+const TERMS = RAW_TERMS.slice().sort((a, b) => b.length - a.length);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Función principal: busca la primera aparición de cada término en el texto,
-// en orden de posición, marcando como vistos los encontrados.
-// Devuelve un array de nodos (text y/o link).
+// Genera el HTML del span para un término
 // ─────────────────────────────────────────────────────────────────────────────
-function transformText(text, terms, seen) {
-  // Encontrar el match no-visto más cercano al inicio del texto
+function makeSpan(term) {
+  return `<span class="glossary-term" data-term="${escHtml(term)}">${escHtml(term)}</span>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Transforma un string de texto: encuentra la primera ocurrencia del término
+// más largo no solapado y la envuelve en un span. Recursivo para el resto.
+// Devuelve array de nodos AST (text y/o html).
+// ─────────────────────────────────────────────────────────────────────────────
+function transformText(text, terms) {
+  // Buscar el término coincidente más cercano al inicio del texto
   let earliest = null;
   let earliestIdx = Infinity;
 
-  for (const t of terms) {
-    if (seen.has(t.term)) continue;
-    const idx = text.indexOf(t.term);
+  for (const term of terms) {
+    const idx = text.indexOf(term);
     if (idx !== -1 && idx < earliestIdx) {
-      // Verificar que no es un sub-match accidental (word-boundary aproximado)
-      // Solo bloqueamos si el carácter anterior/siguiente es alfanumérico Y el
-      // término es puramente alfabético (para evitar casar "GFM" dentro de "BESS-GFM")
-      const before = idx > 0 ? text[idx - 1] : ' ';
-      const after  = idx + t.term.length < text.length ? text[idx + t.term.length] : ' ';
-      const termIsAlnum = /^[a-zA-Z0-9]+$/.test(t.term);
-      if (termIsAlnum) {
-        const prevIsAlnum = /[a-zA-Z0-9]/.test(before);
-        const nextIsAlnum = /[a-zA-Z0-9]/.test(after);
-        if (prevIsAlnum || nextIsAlnum) continue; // sub-match, ignorar
+      // Comprobación de límite de palabra para términos puramente alfanuméricos
+      // (evita casar "GFM" dentro de "BESS-GFM")
+      const prev = idx > 0 ? text[idx - 1] : ' ';
+      const next = idx + term.length < text.length ? text[idx + term.length] : ' ';
+      if (/^[a-zA-Z0-9]+$/.test(term)) {
+        if (/[a-zA-Z0-9]/.test(prev) || /[a-zA-Z0-9]/.test(next)) continue;
       }
-      earliest = t;
+      earliest = term;
       earliestIdx = idx;
     }
   }
 
   if (!earliest) return [{ type: 'text', value: text }];
 
-  seen.add(earliest.term);
-
-  const beforeText = text.slice(0, earliestIdx);
-  const afterText  = text.slice(earliestIdx + earliest.term.length);
+  const before = text.slice(0, earliestIdx);
+  const after  = text.slice(earliestIdx + earliest.length);
 
   const nodes = [];
-  if (beforeText) nodes.push({ type: 'text', value: beforeText });
-
-  nodes.push({
-    type: 'link',
-    url: `/glosario#${earliest.id}`,
-    title: null,
-    children: [{ type: 'text', value: earliest.term }],
-    data: { hProperties: { className: 'auto-glossary-link' } },
-  });
-
-  // Procesar el resto del texto recursivamente (puede contener otros términos)
-  if (afterText) {
-    const rest = transformText(afterText, terms, seen);
-    nodes.push(...rest);
-  }
-
+  if (before) nodes.push({ type: 'text', value: before });
+  // Nodo HTML raw — Docusaurus/MDX lo pasa tal cual al DOM
+  nodes.push({ type: 'html', value: makeSpan(earliest) });
+  if (after) nodes.push(...transformText(after, terms));
   return nodes;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Walker recursivo que transforma el árbol AST.
-// Devuelve el nodo modificado (o array de nodos si un text se expandió).
+// Walker recursivo — devuelve nodo modificado o array de nodos si hubo split
 // ─────────────────────────────────────────────────────────────────────────────
-
-// Tipos de nodos en los que NO se buscan términos
 const SKIP_TYPES = new Set([
   'code', 'inlineCode',
-  'link',          // no re-enlazar texto ya enlazado
+  'link',
   'image',
   'html',
   'mdxjsEsm',
@@ -240,23 +210,22 @@ const SKIP_TYPES = new Set([
   'math', 'inlineMath',
 ]);
 
-function walkNode(node, terms, seen) {
+function walkNode(node) {
   if (SKIP_TYPES.has(node.type)) return node;
 
   if (node.type === 'text') {
-    const newNodes = transformText(node.value, terms, seen);
-    // Si no hubo cambio, devolver el nodo original
+    const newNodes = transformText(node.value, TERMS);
     if (newNodes.length === 1 && newNodes[0].type === 'text' && newNodes[0].value === node.value) {
-      return node;
+      return node; // sin cambios
     }
-    return newNodes; // array
+    return newNodes;
   }
 
   if (node.children && node.children.length > 0) {
-    const newChildren = [];
     let changed = false;
+    const newChildren = [];
     for (const child of node.children) {
-      const result = walkNode(child, terms, seen);
+      const result = walkNode(child);
       if (Array.isArray(result)) {
         newChildren.push(...result);
         changed = true;
@@ -273,27 +242,24 @@ function walkNode(node, terms, seen) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Plugin principal (función que devuelve el transformer)
+// Plugin principal
 // ─────────────────────────────────────────────────────────────────────────────
 function remarkAutoGlossaryLinks() {
   return function transformer(tree) {
-    const seen = new Set(); // términos ya enlazados en este archivo
-
-    if (tree.children) {
-      const newChildren = [];
-      let changed = false;
-      for (const child of tree.children) {
-        const result = walkNode(child, TERMS, seen);
-        if (Array.isArray(result)) {
-          newChildren.push(...result);
-          changed = true;
-        } else {
-          newChildren.push(result);
-          if (result !== child) changed = true;
-        }
+    if (!tree.children) return;
+    let changed = false;
+    const newChildren = [];
+    for (const child of tree.children) {
+      const result = walkNode(child);
+      if (Array.isArray(result)) {
+        newChildren.push(...result);
+        changed = true;
+      } else {
+        newChildren.push(result);
+        if (result !== child) changed = true;
       }
-      if (changed) tree.children = newChildren;
     }
+    if (changed) tree.children = newChildren;
   };
 }
 
