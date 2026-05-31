@@ -4,24 +4,24 @@
 const sidebars = {
   tutorialSidebar: [
 
-    // PREFACIO
+    // ── PREFACIO ──────────────────────────────────────────────────────
     'intro',
 
-    // 1 · INTRODUCCIÓN
+    // ── 1 · INTRODUCCIÓN ─────────────────────────────────────────────
     {
       type: 'doc',
       id: 'introduccion',
       label: '¿Por qué estudiar el 28-A?',
     },
 
-    // 2 · CONTEXTO
+    // ── 2 · CONTEXTO ─────────────────────────────────────────────────
     {
       type: 'doc',
       id: 'contexto',
       label: 'La Red que Ocultaba su Fragilidad',
     },
 
-    // 3 · EL COLAPSO (análisis del incidente + impacto comunicativo)
+    // ── 3 · EL COLAPSO ───────────────────────────────────────────────
     {
       type: 'category',
       label: 'EL COLAPSO',
@@ -31,24 +31,28 @@ const sidebars = {
         {
           type: 'doc',
           id: 'analisis-incidente',
-          label: '27 Segundos: Anatomía del Colapso',
+          // CORRECCIÓN: 30 segundos verificados (12:32:57→12:33:27 CEST)
+          // ENTSO-E Factual, pp.108-109
+          label: '30 Segundos: Anatomía del Colapso',
         },
         {
           type: 'doc',
           id: 'impacto-comunicativo',
-          label: 'El Relato Oficial vs. la Física Real',
+          // Reformulado: descriptivo sin juicio de valor
+          label: 'Los Encuadres Mediáticos del 28-A',
         },
       ],
     },
 
-    // 4 · ANÁLISIS PERICIAL
+    // ── 4 · ANÁLISIS PERICIAL ─────────────────────────────────────────
     {
       type: 'doc',
       id: 'analisis-informes',
-      label: 'Tres Verdades, un Apagón',
+      // CORRECCIÓN: son cuatro informes (Comité Gobierno, REE, ENTSO-E, IIT-ICAI)
+      label: 'Cuatro Informes, un Apagón',
     },
 
-    // 5 · DIMENSIÓN EUROPEA (elevada desde el final al centro del relato)
+    // ── 5 · DIMENSIÓN EUROPEA ─────────────────────────────────────────
     {
       type: 'category',
       label: 'DIMENSIÓN EUROPEA',
@@ -73,28 +77,41 @@ const sidebars = {
       ],
     },
 
-    // 6 · RESTAURACIÓN
+    // ── 6 · RESTAURACIÓN ─────────────────────────────────────────────
     {
       type: 'doc',
       id: 'reaccion-reposicion',
       label: 'El Despertar de la Red',
     },
 
-    // 7 · ECONOMÍA DEL COLAPSO (separada de resiliencia)
+    // ── 7 · ECONOMÍA DEL COLAPSO ──────────────────────────────────────
     {
       type: 'doc',
       id: '07b-consecuencias-financieras',
       label: 'El Precio del Cero Eléctrico',
     },
 
-    // 8 · RESILIENCIA Y PROPUESTAS
+    // ── 8 · RESILIENCIA Y PROPUESTAS ──────────────────────────────────
     {
       type: 'doc',
       id: 'resiliencia-futuro',
       label: 'La Red que Debe Nacer',
     },
 
-    // 9–10 · MÉTODOS Y ACTUALIZACIONES
+    // ── 9 · CONCLUSIONES ──────────────────────────────────────────────
+    // Simplificado: categoría con 1 item → doc directo
+    {
+      type: 'doc',
+      id: 'conclusiones',
+      // Reformulado: descriptivo, sin juicio de valor
+      label: 'El Trilema de la Transición Energética',
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // APÉNDICES — collapsed por defecto para no saturar la vista
+    // ══════════════════════════════════════════════════════════════════
+
+    // ── A · MÉTODOS Y ACTUALIZACIONES ────────────────────────────────
     {
       type: 'category',
       label: 'MÉTODOS Y ACTUALIZACIONES',
@@ -114,31 +131,87 @@ const sidebars = {
       ],
     },
 
-    // 11 · CONCLUSIONES
+    // ── B · CIFRAS Y REFERENCIA ───────────────────────────────────────
     {
       type: 'category',
-      label: 'CONCLUSIONES',
-      collapsed: false,
-      className: 'sidebar-icon-flag',
+      label: 'CIFRAS Y REFERENCIA',
+      collapsed: true,
+      className: 'sidebar-icon-book',
       items: [
         {
           type: 'doc',
-          id: 'conclusiones',
-          label: 'El Trilema que Nadie Quiso Ver',
+          id: 'resumen-de-cifras',
+          label: 'Las Cifras Verificadas del 28-A',
+        },
+        {
+          type: 'doc',
+          id: 'base-datos-maestra',
+          label: 'Base de Datos Maestra',
+        },
+        {
+          type: 'doc',
+          id: 'glosario',
+          label: 'Glosario Técnico',
+        },
+        {
+          type: 'doc',
+          id: 'referencias',
+          label: 'Referencias y Bibliografía',
         },
       ],
     },
 
-    // ── DATOS EN TIEMPO REAL (Opción B) ───────────────────────────────
+    // ── C · VISUALIZACIONES ──────────────────────────────────────────
+    // Consolidadas en 2 hubs claros en lugar de 4 galerías difusas
+    {
+      type: 'category',
+      label: 'VISUALIZACIONES',
+      collapsed: true,
+      className: 'sidebar-icon-trending',
+      items: [
+        {
+          type: 'doc',
+          id: 'cronologia',
+          label: 'Cronología del Colapso',
+        },
+        {
+          // Hub 1: contenido estático (figuras, esquemas, tablas oficiales)
+          type: 'doc',
+          id: 'galeria-imagenes',
+          label: 'Atlas Forense — Figuras y Esquemas',
+        },
+        {
+          // Hub 2: simuladores y gráficas interactivas propias
+          type: 'doc',
+          id: 'galeria-graficas',
+          label: 'Laboratorio Interactivo — Simuladores',
+        },
+        {
+          type: 'doc',
+          id: 'galeria-forense',
+          label: 'Bases de Datos ENTSO-E y ESIOS',
+        },
+        {
+          type: 'doc',
+          id: 'galeria-de-tablas',
+          label: 'Registros Oficiales Verificados',
+        },
+      ],
+    },
+
+    // ── D · DATOS EN TIEMPO REAL ─────────────────────────────────────
+    // Movido a apéndice operativo (Plan Maestro §3.2, hallazgo 2.9)
+    // No interrumpe el flujo narrativo principal
     {
       type: 'category',
       label: 'DATOS EN TIEMPO REAL',
-      collapsed: false,
-      className: 'sidebar-icon-zap',
+      collapsed: true,
+      // Icono diferente al de EL COLAPSO para no confundir
+      className: 'sidebar-icon-activity',
       items: [
         {
           type: 'html',
-          value: '<div style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--ifm-color-primary); letter-spacing: 0.1em; margin-top: 0.5rem; margin-bottom: 0.5rem; padding-left: 0.5rem; text-transform: uppercase; border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding-bottom: 0.3rem;">Telemetría del Incidente</div>',
+          value: '<div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--ifm-color-primary);letter-spacing:0.1em;margin:0.5rem 0;padding:0 0.5rem 0.3rem;text-transform:uppercase;border-bottom:1px solid rgba(6,182,212,0.2);">Telemetría del Incidente</div>',
           defaultStyle: true,
         },
         {
@@ -174,11 +247,11 @@ const sidebars = {
         {
           type: 'doc',
           id: 'datos-tiempo-real/radar-vulnerabilidad',
-          label: 'Mapa de Fragilidad Nodal',
+          label: 'Radar de Fragilidad Sistémica',
         },
         {
           type: 'html',
-          value: '<div style="font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--ifm-color-primary); letter-spacing: 0.1em; margin-top: 1.5rem; margin-bottom: 0.5rem; padding-left: 0.5rem; text-transform: uppercase; border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding-bottom: 0.3rem;">Estructura y Mercado</div>',
+          value: '<div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--ifm-color-primary);letter-spacing:0.1em;margin:1rem 0 0.5rem;padding:0 0.5rem 0.3rem;text-transform:uppercase;border-bottom:1px solid rgba(6,182,212,0.2);">Estructura y Mercado</div>',
           defaultStyle: true,
         },
         {
@@ -209,89 +282,13 @@ const sidebars = {
       ],
     },
 
-    // ── GALERÍAS / APÉNDICES ──────────────────────────────────────────
-
-    // RESUMEN DE CIFRAS
-    {
-      type: 'category',
-      label: 'RESUMEN DE CIFRAS',
-      collapsed: false,
-      className: 'sidebar-icon-bar-chart',
-      items: [
-        {
-          type: 'doc',
-          id: 'resumen-de-cifras',
-          label: 'Las Cifras que No Mienten',
-        },
-      ],
-    },
-
-    // REFERENCIA
-    {
-      type: 'category',
-      label: 'REFERENCIA',
-      collapsed: true,
-      className: 'sidebar-icon-book',
-      items: [
-        {
-          type: 'doc',
-          id: 'glosario',
-          label: 'Glosario Técnico',
-        },
-        {
-          type: 'doc',
-          id: 'referencias',
-          label: 'Referencias y Bibliografía',
-        },
-      ],
-    },
-
-    // VISUALIZACIONES
-    {
-      type: 'category',
-      label: 'VISUALIZACIONES',
-      collapsed: true,
-      className: 'sidebar-icon-trending',
-      items: [
-        {
-          type: 'doc',
-          id: 'base-datos-maestra',
-          label: 'Base de Datos Maestra del 28-A',
-        },
-        {
-          type: 'doc',
-          id: 'cronologia',
-          label: 'Secuencia Temporal del Colapso',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-imagenes',
-          label: 'Atlas Forense y Esquemas',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-graficas',
-          label: 'Laboratorio de Dinámica de Sistemas',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-forense',
-          label: 'Bases de Datos ENTSO-E y ESIOS',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-de-tablas',
-          label: 'Registros de Datos Oficiales',
-        },
-      ],
-    },
-
-    // AUTOR
+    // ── AUTOR ─────────────────────────────────────────────────────────
     {
       type: 'doc',
       id: 'sobre-el-autor',
       label: 'Sobre el Autor',
     },
+
   ],
 };
 
