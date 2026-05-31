@@ -2034,22 +2034,22 @@ html[data-theme='light'] :target {
    Panel montado globalmente en GlossaryDefinitionPanel (Root.js)
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Término marcado: gris sobrio, sin subrayado, cursor help ── */
+/* ── Término marcado: más visible, sin subrayado, cursor help ── */
 .glossary-term {
   cursor: help;
-  color: rgba(203, 213, 225, 0.80);
-  border-bottom: 1px dotted rgba(148, 163, 184, 0.4);
+  color: rgba(174, 210, 255, 0.95);
+  border-bottom: 1px dotted rgba(174, 210, 255, 0.5);
   padding-bottom: 1px;
-  transition: color 0.12s ease, background 0.12s ease;
+  transition: color 0.15s ease, text-shadow 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
 }
 .glossary-term:hover {
-  color: rgba(226, 232, 240, 0.95);
-  background: rgba(0, 217, 255, 0.06);
-  border-radius: 3px;
-  border-bottom-color: rgba(0, 217, 255, 0.35);
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(100, 180, 255, 0.5), 0 0 24px rgba(100, 180, 255, 0.25);
+  border-bottom-color: rgba(174, 210, 255, 0.85);
 }
 
-/* ── Panel flotante lateral ── */
+/* ── Panel flotante lateral (integrado, sin neón) ── */
 .glossary-definition-panel {
   position: fixed;
   right: 1.5rem;
@@ -2057,17 +2057,23 @@ html[data-theme='light'] :target {
   transform: translateY(-50%);
   width: 280px;
   max-width: calc(100vw - 3rem);
-  background: rgba(10, 15, 30, 0.97);
-  border: 1px solid rgba(0, 217, 255, 0.30);
-  border-left: 3px solid var(--ifm-color-primary);
+  background: rgba(15, 30, 60, 0.85);
+  border: 1px solid rgba(100, 180, 255, 0.25);
   border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(100, 180, 255, 0.08);
+  backdrop-filter: blur(12px);
   z-index: 1200;
   font-size: 0.82rem;
-  line-height: 1.6;
+  line-height: 1.65;
   animation: glossaryPanelIn 0.15s ease;
-  pointer-events: none; /* no interfiere con el hover del texto */
+  pointer-events: none;
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.glossary-definition-panel:hover {
+  background: rgba(15, 30, 60, 0.92);
+  box-shadow: 0 8px 32px rgba(100, 180, 255, 0.2), inset 0 0 20px rgba(100, 180, 255, 0.12);
+  border-color: rgba(100, 180, 255, 0.4);
 }
 
 @keyframes glossaryPanelIn {
@@ -2076,37 +2082,39 @@ html[data-theme='light'] :target {
 }
 
 .glossary-panel-header {
-  padding: 0.5rem 0.9rem 0.45rem;
-  border-bottom: 1px solid rgba(0, 217, 255, 0.12);
+  padding: 0.6rem 0.9rem 0.5rem;
+  border-bottom: 1px solid rgba(100, 180, 255, 0.15);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .glossary-panel-label {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(0, 217, 255, 0.55);
-  font-family: monospace;
+  color: rgba(174, 210, 255, 0.65);
+  font-family: var(--font-body);
+  font-weight: 600;
 }
 
 .glossary-panel-term {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: #00d9ff;
-  font-family: monospace;
+  color: #ffffff;
+  font-family: var(--font-body);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .glossary-panel-body {
-  padding: 0.7rem 0.9rem 0.8rem;
-  color: #cbd5e1;
-  font-family: var(--ifm-font-family-base);
+  padding: 0.75rem 0.9rem 0.85rem;
+  color: #ffffff;
+  font-family: var(--font-body);
   max-height: 260px;
   overflow-y: auto;
+  line-height: 1.65;
 }
 
 /* Ocultar en pantallas pequeñas donde el panel taparía el texto */

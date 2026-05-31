@@ -29,6 +29,7 @@ for (const entry of glossaryTerms) {
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
+  const [seenTerms, setSeenTerms] = useState(new Set());
 
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
@@ -37,14 +38,31 @@ function PanelInner() {
     if (!el) return;
     const key = (el.dataset.term || '').toLowerCase();
     const entry = TERMS_MAP[key];
-    if (entry) setActive(entry);
-  }, []);
+
+    // Solo mostrar si no ha sido visto
+    if (entry && !seenTerms.has(key)) {
+      setActive(entry);
+      // Marcar como visto
+      setSeenTerms(prev => new Set([...prev, key]));
+      // Guardar en localStorage para persistencia
+      const stored = JSON.parse(localStorage.getItem('glossarySeenTerms') || '[]');
+      if (!stored.includes(key)) {
+        localStorage.setItem('glossarySeenTerms', JSON.stringify([...stored, key]));
+      }
+    }
+  }, [seenTerms]);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest
       ? e.target.closest('.glossary-term')
       : null;
     if (el) setActive(null);
+  }, []);
+
+  // Cargar términos vistos del localStorage al montar
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('glossarySeenTerms') || '[]');
+    setSeenTerms(new Set(stored));
   }, []);
 
   useEffect(() => {
@@ -64,12 +82,18 @@ function PanelInner() {
       className="glossary-definition-panel"
       aria-live="polite"
       aria-label={`Definición: ${active.term}`}
+      style={{
+        scrollBehavior: 'smooth',
+      }}
     >
       <div className="glossary-panel-header">
         <span className="glossary-panel-label">Glosario Técnico</span>
         <strong className="glossary-panel-term">{active.term}</strong>
       </div>
-      <div className="glossary-panel-body">
+      <div className="glossary-panel-body" style={{
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'rgba(100, 180, 255, 0.3) transparent',
+      }}>
         {active.definition}
       </div>
     </aside>
