@@ -2,12 +2,12 @@
  * GlossaryLink.jsx
  * Enlace con tooltip de glosario técnico.
  *
- * MIGRACIÓN: Tippy.js (en mantenimiento desde abr 2026) → @floating-ui/react
+ * Implementación pura React — sin dependencias externas (@floating-ui eliminado).
  *
  * COMPORTAMIENTO:
- *   - Desktop: tooltip al hover (delay 150 ms apertura, 80 ms cierre)
+ *   - Desktop: tooltip al hover
  *   - Móvil:   tooltip al tap (toggle)
- *   - Teclado: tooltip al focus (Enter/Space para toggle en móvil)
+ *   - Teclado: tooltip al focus
  *   - Escape:  cierra el tooltip
  *   - Click fuera: cierra el tooltip
  *
@@ -15,10 +15,6 @@
  *   - role="tooltip" en el panel flotante
  *   - aria-describedby vinculando el término con su definición
  *   - El botón trigger es un <button> nativo (no div)
- *
- * INSTALACIÓN:
- *   npm install @floating-ui/react
- *   (~6 kB gzip, MIT, SSR-safe con guards de window)
  *
  * USO EN MDX:
  *   import GlossaryLink from '@site/src/components/GlossaryLink';
@@ -34,162 +30,149 @@
  * MODO COMPACTO (sin subrayado, para uso en encabezados):
  *   <GlossaryLink term="SCR" definition="..." compact>SCR</GlossaryLink>
  */
-import React, { useState, useRef } from 'react';
-
-// Polyfill useId para React 17 (useId solo existe en React 18+)
-let _idCounter = 0;
-function useId() {
-  const ref = useRef(null);
-  if (ref.current === null) ref.current = `:r${++_idCounter}:`;
-  return ref.current;
-}
-import {
-  useFloating,
-  useHover,
-  useFocus,
-  useClick,
-  useDismiss,
-  useRole,
-  useInteractions,
-  offset,
-  flip,
-  shift,
-  autoUpdate,
-  FloatingPortal,
-} from '@floating-ui/react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function GlossaryLink({
   term,
   definition,
   children,
   compact = false,
-  lang   = 'es',
+  lang = 'es',
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const tooltipId = useId();
-
-  // Detectar touch device (para usar click en lugar de hover)
-  const isTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
-
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    placement: 'top',
-    middleware: [
-      offset(8),
-      flip({ fallbackAxisSideDirection: 'start' }),
-      shift({ padding: 12 }),
-    ],
-    whileElementsMounted: autoUpdate,
-  });
-
-  // Desktop: hover. Móvil: click/tap
-  const hover = useHover(context, {
-    enabled: !isTouch,
-    delay: { open: 150, close: 80 },
-  });
-  const click   = useClick(context, { enabled: isTouch });
-  const focus   = useFocus(context);
-  const dismiss = useDismiss(context);
-  const role    = useRole(context, { role: 'tooltip' });
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    hover, click, focus, dismiss, role,
-  ]);
-
+  const [open,     setOpen]    = useState(false);
+  const triggerRef             = useRef(null);
+  const tooltipRef             = useRef(null);
   const isEs = lang === 'es';
 
+  // Detect touch device
+  const isTouch = typeof window !== 'undefined' &&
+    'ontouchstart' in window;
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (
+        tooltipRef.current &&
+        !tooltipRef.current.contains(e.target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(e.target)
+      ) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [open]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open]);
+
+  const handleMouseEnter = () => { if (!isTouch) setOpen(true);  };
+  const handleMouseLeave = () => { if (!isTouch) setOpen(false); };
+  const handleClick      = ()  => { if (isTouch)  setOpen(o => !o); };
+  const handleFocus      = ()  => setOpen(true);
+  const handleBlur       = ()  => setTimeout(() => setOpen(false), 150);
+
   return (
-    <>
+    <span style={{ position: 'relative', display: 'inline' }}>
       <button
-        ref={refs.setReference}
-        {...getReferenceProps()}
-        aria-describedby={isOpen ? tooltipId : undefined}
+        ref={triggerRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        aria-describedby={open ? `gl-${term}` : undefined}
         style={{
-          display: 'inline',
-          background: 'none',
-          border: 'none',
-          padding: 0,
-          cursor: 'help',
-          fontFamily: 'inherit',
-          fontSize:   'inherit',
-          fontWeight: 'inherit',
-          color:      'rgba(203, 213, 225, 0.85)',
+          background:     'none',
+          border:         'none',
+          padding:        '0 1px',
+          cursor:         'help',
+          fontFamily:     'inherit',
+          fontSize:       'inherit',
+          fontWeight:     'inherit',
+          color:          'rgba(203,213,225,0.85)',
+          borderBottom:   compact ? 'none' : '1px dotted rgba(148,163,184,0.5)',
+          paddingBottom:  compact ? 0 : '1px',
           textDecoration: 'none',
-          borderBottom: compact ? 'none' : '1px dotted rgba(148, 163, 184, 0.5)',
-          paddingBottom: compact ? 0 : '1px',
-          borderRadius: 2,
+          lineHeight:     'inherit',
         }}
-        title={isTouch ? undefined : term} // title solo en desktop (ya tiene tooltip)
       >
         {children}
       </button>
 
-      {isOpen && (
-        <FloatingPortal>
-          <div
-            ref={refs.setFloating}
-            id={tooltipId}
-            role="tooltip"
-            {...getFloatingProps()}
-            style={{
-              ...floatingStyles,
-              zIndex: 9999,
-              maxWidth: 300,
-              padding: '10px 14px',
-              background: 'rgba(10,15,30,0.98)',
-              border: '1px solid rgba(0,217,255,0.3)',
-              borderRadius: 8,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-              fontFamily: 'monospace',
-              fontSize: 12,
-              lineHeight: 1.6,
-              color: '#e2e8f0',
-              pointerEvents: isTouch ? 'auto' : 'none',
-            }}
-          >
-            {/* Nombre del término */}
-            <p style={{
-              margin: '0 0 6px',
-              fontWeight: 'bold',
-              color: '#00d9ff',
-              fontSize: 13,
-              borderBottom: '1px solid rgba(0,217,255,0.15)',
-              paddingBottom: 6,
-            }}>
-              {term}
-            </p>
-
-            {/* Definición */}
-            <p style={{ margin: 0, color: '#cbd5e1' }}>
-              {definition}
-            </p>
-
-            {/* Cierre en móvil */}
-            {isTouch && (
-              <button
-                onClick={() => setIsOpen(false)}
-                aria-label={isEs ? 'Cerrar definición' : 'Close definition'}
-                style={{
-                  display: 'block',
-                  marginTop: 8,
-                  padding: '4px 10px',
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  borderRadius: 4,
-                  color: '#94a3b8',
-                  cursor: 'pointer',
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  width: '100%',
-                }}
-              >
-                ✕ {isEs ? 'Cerrar' : 'Close'}
-              </button>
-            )}
-          </div>
-        </FloatingPortal>
+      {open && (
+        <span
+          id={`gl-${term}`}
+          ref={tooltipRef}
+          role="tooltip"
+          style={{
+            position:      'absolute',
+            bottom:        'calc(100% + 8px)',
+            left:          '50%',
+            transform:     'translateX(-50%)',
+            zIndex:        10000,
+            width:         300,
+            padding:       '10px 14px',
+            background:    'rgba(10,15,30,0.98)',
+            border:        '1px solid rgba(0,217,255,0.35)',
+            borderRadius:  8,
+            fontSize:      12,
+            fontFamily:    'monospace',
+            color:         '#e2e8f0',
+            lineHeight:    1.6,
+            boxShadow:     '0 8px 24px rgba(0,0,0,0.6)',
+            whiteSpace:    'normal',
+            pointerEvents: isTouch ? 'auto' : 'none',
+          }}
+        >
+          <strong style={{
+            color:         '#00d9ff',
+            display:       'block',
+            marginBottom:  5,
+            fontSize:      13,
+            borderBottom:  '1px solid rgba(0,217,255,0.15)',
+            paddingBottom: 5,
+          }}>
+            {term}
+          </strong>
+          {definition || (
+            isEs
+              ? 'Ver definición completa en el Glosario Técnico.'
+              : 'See full definition in the Technical Glossary.'
+          )}
+          {isTouch && (
+            <button
+              onClick={() => setOpen(false)}
+              style={{
+                display:      'block',
+                marginTop:    8,
+                width:        '100%',
+                padding:      '4px 0',
+                background:   'rgba(255,255,255,0.05)',
+                border:       '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 4,
+                color:        '#94a3b8',
+                cursor:       'pointer',
+                fontFamily:   'monospace',
+                fontSize:     11,
+              }}
+            >
+              ✕ {isEs ? 'Cerrar' : 'Close'}
+            </button>
+          )}
+        </span>
       )}
-    </>
+    </span>
   );
 }
