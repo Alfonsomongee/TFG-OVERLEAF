@@ -91,6 +91,13 @@ const sidebars = {
       label: 'El Precio del Cero Eléctrico',
     },
 
+    // ── 7b · IMPACTO SOCIAL ───────────────────────────────────────────
+    {
+      type: 'doc',
+      id: 'impacto-social',
+      label: 'El Apagón que Paralizó una Sociedad',
+    },
+
     // ── 8 · RESILIENCIA Y PROPUESTAS ──────────────────────────────────
     {
       type: 'doc',
