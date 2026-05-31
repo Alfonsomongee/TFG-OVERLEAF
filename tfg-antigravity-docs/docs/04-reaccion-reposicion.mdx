@@ -5,12 +5,13 @@ title: "Reacción y Reposición"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import ForensicReveal from "@site/src/components/ForensicReveal";
 import AnimatedRestorationMap from "@site/src/components/AnimatedRestorationMap";
 import SectorialResilienceChart from "@site/src/components/SectorialResilienceChart";
 
 <GlitchTitle>Reacción y Reposición</GlitchTitle>
 
-Tras la consumación del cero de tensión a las 12:33:30 CEST, el sistema eléctrico peninsular transitó de una crisis dinámica incontrolable a una fase de gestión de emergencia y reposición estructural. La pérdida de más de 15 GW y la desconexión total del sistema síncrono continental obligaron a REE a abandonar la lógica de operación en régimen permanente para activar los protocolos de emergencia del **Procedimiento de Operación P.O. 1.6**. La recuperación total del suministro requirió casi **19 horas** de maniobras ininterrumpidas.
+Tras la consumación del cero de tensión a las 12:33:30 CEST, el sistema eléctrico peninsular transitó de una crisis dinámica incontrolable a una fase de gestión de emergencia y reposición estructural. La pérdida de más de 15 GW y la desconexión total del sistema síncrono continental obligaron a REE a abandonar la lógica de operación en régimen permanente para activar los protocolos de emergencia del **Procedimiento de Operación P.O. 1.6**. La recuperación total del suministro requirió aproximadamente **18,5 horas** de maniobras ininterrumpidas (hasta las 07:05 del 29-A, cuando se certificó la restitución del 99,95% del suministro).
 
 ## Cronología del colapso y la restauración
 
@@ -61,6 +62,30 @@ Tras la consumación del cero de tensión a las 12:33:30 CEST, el sistema eléct
 
 
 
+<ForensicTable 
+  title="TABLA 14b | RESTORATION MILESTONES"
+  source="Comité de Análisis del Gobierno / REE / ENTSO-E"
+  confidence="HIGH"
+>
+
+| Hora (CEST) | Evento |
+| :--- | :--- |
+| 12:33:30 | Cero de tensión confirmado. REE activa P.O. 1.6 |
+| 12:34 | Confirmación con REN: Portugal sin tensión |
+| 12:36 | Notificación EAS: estado "Restauración" |
+| 12:44 | Suspensión de mercados. Subestación de Hernani recibe tensión de Francia |
+| 12:45 | Black Start: Castelo de Bode (Portugal, 138 MW hidro) |
+| 13:04 | Interconexión Marruecos habilitada: ~900 MW de soporte |
+| 13:07 | Primeros 31 MW alimentados desde Irún |
+| ~16:00 | Black Start: Aldeadávila (España, ~1.100 MW hidro) |
+| 20:22 | Sincronización islas portuguesas con frecuencia continental |
+| 23:32 | 13.039 MW cubiertos (55% demanda) con 21 grupos térmicos |
+| 00:06 (29-A) | REE reactiva controlador aFRR (regulación secundaria) |
+| 01:38 (29-A) | Primeras consignas para reintegrar eólica y cogeneración |
+| 07:05 (29-A) | 99,95% del suministro restituido |
+
+</ForensicTable>
+
 ## Gestión de emergencia: activación del P.O. 1.1 y P.O. 1.6
 
 El P.O. 1.1 establece los criterios de operación en régimen permanente, fundamentados en el cumplimiento del Criterio N−1 y en el mantenimiento de tensiones entre 380 kV y 435 kV en la red de transporte. La cascada del 28-A mostró las limitaciones de la validación estática de estos criterios frente a transitorios dinámicos ultrarrápidos en redes de baja inercia: los límites de seguridad fueron superados en una ventana de once segundos, y los esquemas de defensa automáticos —incluyendo el UFLS— resultaron contraproducentes. REE asumió el control manual bajo estado de Blackout (criterio OB3).
@@ -89,6 +114,16 @@ Las centrales hidroeléctricas —fluyentes y de bombeo— fueron las primeras e
 ![Despliegue temporal y eficacia del Black Start hidroeléctrico](/figuras/black_start_hidroelectrico.png) _Figura 22. Despliegue temporal y eficacia del Black Start hidroeléctrico (intentos fallidos indicados en gris). Fuente: ENTSO-E / REE._
 
 Los fallos fueron significativos: las islas de Cantabria y Levante no se sostuvieron y debieron reiniciarse; la central asignada a Madrid no logró estabilizar sus parámetros tras varios intentos consecutivos; y el arranque autónomo en Andalucía resultó infructuoso, obligando a priorizar el apoyo externo desde Marruecos como referencia de tensión para la zona sur.
+
+Los transitorios de energización de líneas en vacío generaron corrientes de inserción magnetizante (*magnetizing inrush*) de hasta 10 veces la corriente nominal en los autotransformadores de 400 kV, provocando caídas de tensión del 10-20% en las frágiles islas recién formadas. Más problemático aún fue el fenómeno de *sympathetic inrush*: la energización de un transformador nuevo saturó el flujo magnético de los transformadores paralelos ya operativos, generando distorsiones armónicas severas con tiempos de decaimiento superiores a 10 segundos que hicieron colapsar varias islas antes de que pudieran estabilizarse. En al menos tres ocasiones documentadas, los relés diferenciales de transformador interpretaron estos transitorios como cortocircuitos internos y ordenaron la apertura, obligando a reiniciar el proceso de isla desde cero.
+
+<ForensicReveal
+  lang="es"
+  l1="Encender la red es más difícil que apagarla: cada transformador que conectas puede hacer caer a los que ya están funcionando."
+  l2="El 'Black Start' requiere arrancar generadores sin red externa. Al energizar transformadores de 400 kV en una red vacía, se generan corrientes transitorias enormes (inrush) que pueden desestabilizar las frágiles islas eléctricas recién creadas. El fenómeno de sympathetic inrush agrava el problema: un transformador nuevo puede saturar a los ya conectados."
+  l3="Corrientes de inserción de hasta 10× la nominal con contenido armónico de 8-20% de segundo armónico (IEEE C57.91). El sympathetic inrush tiene tiempos de decaimiento >10 s (CIGRE WG A2). En el 28-A, las islas de Cantabria y Levante colapsaron por este mecanismo y debieron reiniciarse. (ENTSO-E Factual / REE)"
+  source="IEEE C57.91 / CIGRE WG A2 / ENTSO-E Factual Report"
+/>
 
 Una vez que las islas hidroeléctricas lograron estabilizar mínimamente sus parámetros, la estrategia viró hacia su consolidación electromecánica mediante los Ciclos Combinados de Gas Natural (CCGT) y los servicios auxiliares de las centrales nucleares. Estas máquinas no se conectaron para satisfacer demanda comercial, sino para conformar el **"andamiaje electromagnético"** del sistema: aportaban la potencia de cortocircuito ($S_{sc}$), la inercia ($H$) y la capacidad de gestión dinámica de potencia reactiva imprescindibles antes de autorizar la reconexión masiva de la demanda.
 

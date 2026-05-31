@@ -7,6 +7,7 @@ import GlitchTitle from "@site/src/components/GlitchTitle";
 import EnergyTransitionStreamgraph from "@site/src/components/EnergyTransitionStreamgraph";
 import MixGeneracion from "@site/src/components/MixGeneracion";
 import CollapseSismograph from "@site/src/components/CollapseSismograph";
+import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator";
 
 <GlitchTitle>Contexto Técnico</GlitchTitle>
 
@@ -28,7 +29,13 @@ Como contrapartida, la generación síncrona convencional ha sido progresivament
 
 Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, inercia física y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante inversores (IBR), que operan en modo estándar como seguidores de red (grid-following): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos PLL y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una RoCoF amplificada ante cualquier desequilibrio de potencia activa ([*ver Radar de Vulnerabilidad Nodal interactivo*](./galeria-graficas.mdx#frequency)).
 
-La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa ([*ver Simulador de Ecuación de Oscilación*](./galeria-graficas.mdx#swing)). Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s — por encima del umbral ENTSO-E — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.
+La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s como promedio ponderado peninsular — por encima del umbral ENTSO-E de 2,0 s. Sin embargo, los valores zonales eran significativamente inferiores: 1,3 s en el sur y 1,84 s en el centro, ambos por debajo del umbral. El colapso se originó en la zona más débil, no en el promedio — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.
+
+<SwingEquationSimulator />
+
+_Figura X. Simulador interactivo de la Ecuación de Oscilación. Modifique los parámetros de inercia y observe el impacto sobre la RoCoF del sistema. Elaboración propia._
+
+(también disponible en la [Galería de Gráficas Interactivas](./galeria-graficas.mdx#swing))
 
 ## Descarbonización e implicaciones operativas
 
@@ -37,6 +44,8 @@ El éxito ambiental de la transición energética ibérica es indiscutible. Las 
 <EnergyTransitionStreamgraph />
 
 La contrapartida operativa es la que esta investigación examina: la sustitución de centrales térmicas por fuentes renovables conectadas a través de inversores conlleva la retirada progresiva de las masas síncronas que aportaban inercia, potencia reactiva dinámica y control de tensión. El sistema ibérico opera habitualmente en regímenes de baja inercia y reducida robustez nodal — condiciones cuya relación con la inestabilidad de tensión del 28-A se analiza en el Capítulo 4.
+
+Esta configuración de baja inercia con alta penetración IBR no es exclusiva de Iberia: los colapsos de South Australia (2016) y Reino Unido (2019) evidenciaron vulnerabilidades análogas cuyas lecciones regulatorias se examinan en el [Capítulo 7](./07-resiliencia-futuro.mdx).
 
 ## Estado operativo previo al incidente: la paradoja de la abundancia
 

@@ -14,6 +14,7 @@ import BlackoutPropagationMap from "@site/src/components/BlackoutPropagationMap"
 import StickyCollapse from "@site/src/components/StickyCollapse";
 import ForensicReveal from "@site/src/components/ForensicReveal";
 import TapLagSequence from "@site/src/components/TapLagSequence";
+import UFLSVisualizer from "@site/src/components/UFLSVisualizer/UFLSVisualizer";
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
@@ -107,7 +108,7 @@ En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo 
 _Figura 17. Cascada de desconexiones IBR — propagación geográfica durante la Fase 3. Simulación interactiva de elaboración propia basada en datos ENTSO-E / Comité de Análisis._
 
 <span id="t6"></span>
-Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz** (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de **Segovia, Sevilla y Huelva**. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación (casi el 60% de la capacidad instantánea ibérica previa), dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda española completamente sin suministro y llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia exactos de cada desconexión, véase la [**Tabla 16 / Línea Temporal**](./16-galeria-forense.mdx) en la Galería Forense).
+Los golpes más severos de la cascada se concentraron inicialmente en **Badajoz** (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de **Segovia, Sevilla y Huelva**. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación (más del 50% de la capacidad instantánea ibérica previa), dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda española completamente sin suministro y llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia exactos de cada desconexión, véase la [**Tabla 16 / Línea Temporal**](./16-galeria-forense.mdx) en la Galería Forense).
 
 
 
@@ -124,6 +125,10 @@ A medida que la cascada destruía la generación remanente, la frecuencia comenz
 />
 
 La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, **reforzando el colapso que el propio UFLS pretendía frenar**. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión ([*simular Retrato de Fases del UFLS*](./galeria-graficas.mdx#phaseplane)).
+
+<UFLSVisualizer />
+
+_Figura X. Retrato de fases del UFLS: evolución acoplada de frecuencia-tensión durante el deslastre. La trayectoria evidencia la paradoja: el deslastre por subfrecuencia agrava la sobretensión. Elaboración propia._
 
 <span id="t2"></span>
 <ForensicReveal

@@ -8,6 +8,7 @@ title: "Actualización 2026: Un Año Después"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import Comparador28A from "@site/src/components/Comparador28A";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>Actualización 2026: Un Año Después</GlitchTitle>
 
@@ -33,7 +34,7 @@ Según la reconstrucción forense, las plantas conectadas mediante inversores Gr
 
 Uno de los puntos más polémicos de la investigación ha sido la actuación del operador del sistema (REE). En julio de 2025, el consorcio independiente (AELEC, INESC TEC, Compass Lexecon) denunció una severa falta de transparencia respecto a los datos de los estimadores de estado y las Unidades de Medición Fasorial (PMU). 
 
-El hallazgo más crítico de las comisiones de investigación revela que, aproximadamente 25 minutos antes del colapso (12:08 CEST), REE modificó el modo de operación del enlace HVDC INELFE entre España y Francia. El enlace pasó de su modo de "emulación de CA" a un control de potencia en CC constante, neutralizando su capacidad para amortiguar la oscilación letal de 0,6 Hz.
+El papel crítico del cambio de modo del HVDC INELFE-1 a PMODE1 y sus consecuencias sobre la capacidad de soporte dinámico se analizan en detalle en los Capítulos [2](./02-contexto.mdx) y [3](./03-analisis-incidente.mdx).
 
 ## 3. Consecuencias Institucionales y Litigios Multimillonarios
 
@@ -43,18 +44,58 @@ El apagón no solo rompió el sistema eléctrico, sino también las relaciones i
 - **Demandas Civiles Masivas**: Al vencer el plazo de prescripción en abril de 2026, gigantes industriales como **Repsol** han formalizado demandas contra el sistema por **125 millones de euros** en concepto de lucro cesante y daños a complejos petroquímicos. Iryo y Moeve también han notificado su intención de demandar.
 - **Audios Clasificados**: Las audiencias de la Comisión de Investigación del Senado han hecho públicos audios de la sala de control de REE. En ellos, los operadores atribuían las severas oscilaciones de las 12:00 a *"la mala gestión"* de los operadores de la planta fotovoltaica. Sin embargo, la CNMC ha aclarado que la oscilación de 0,6 Hz fue originada por un defecto en el lazo de control de la planta fotovoltaica de gran potencia en Badajoz, y no por una "mala gestión" humana. Esto revela que el riesgo era inminente minutos antes del colapso final, aunque el diagnóstico inicial en sala fuera erróneo.
 
+## Estado procesal y regulatorio (mayo 2026)
+
+<ForensicTable 
+  title="TABLA XX | CNMC SANCTIONING PROCEEDINGS (MAY 2026)"
+  source="CNMC / BOE"
+  confidence="HIGH"
+>
+
+| Entidad | Nº expedientes | Tipificación según LSE |
+| :--- | :--- | :--- |
+| Red Eléctrica de España (OS) | 1 | Muy grave (art. 64.25) — hasta 60 M€ |
+| Iberdrola (incl. Almaraz/Cofrentes) | 24 | Graves + Muy graves (nucleares) |
+| Endesa | 19 | Graves (control de tensión en CCGT) |
+| Naturgy | 11 | Graves (ciclos combinados) |
+| Otros (Repsol, TotalEnergies, EDP, Engie, Mercuria) | ~10 | Graves (varios) |
+| Sist. Eléctrico de Conexión Huéneja (Granada) | 1 | Grave (punto cero del colapso) |
+
+</ForensicTable>
+
+### Calendario de implementación del P.O. 7.4
+
+<ForensicTable 
+  title="TABLA XX | P.O. 7.4 IMPLEMENTATION TIMELINE"
+  source="CNMC / BOE-A-2025-13076 / BOE-A-2026-1377"
+  confidence="HIGH"
+>
+
+| Hito | Fecha | Estado |
+| :--- | :--- | :--- |
+| Aprobación resolución CNMC | 12/06/2025 | ✅ Completado |
+| Publicación BOE | 26/06/2025 | ✅ Completado |
+| Expiración medidas transitorias | 19/01/2026 | ✅ Completado |
+| Formato telemetría I90DIA_CSV obligatorio | 09/06/2026 | ⏳ Pendiente |
+| Tolerancia εQ (Anexo II P.O. 7.4): 5% Qmax, mín 0,25 MVAr, máx 5 MVAr | 16/06/2026 | ⏳ Pendiente |
+| Operación normalizada completa | Q3-Q4 2026 | 📋 Estimado |
+
+</ForensicTable>
+
+### Litigio Iberdrola vs Redeia
+
+El 21 de abril de 2026, el Juzgado de lo Mercantil nº 15 de Madrid (magistrado Teodoro Ladrón) rechazó la declinatoria de jurisdicción interpuesta por REE y Redeia, confirmando la competencia de la jurisdicción civil para conocer la demanda de Iberdrola por competencia desleal. El auto delimita que el procedimiento no juzgará las causas técnicas del apagón — competencia exclusiva de la CNMC — sino las conductas corporativas y declaraciones públicas de la dirección de Redeia que, según Iberdrola, dañaron su reputación y valor bursátil.
+
 ## 4. La Respuesta Regulatoria: El Mandato Grid-Forming
 
 Ante la evidencia del fallo estructural, la ENTSO-E publicó en noviembre de 2025 su esperado "Phase II Report", sentando las bases del nuevo código de red europeo (NC RfG 2.0).
 
-:::info [El Nuevo Estándar GFM]
-El borrador regulatorio exige la obligatoriedad de la tecnología Grid-Forming para todas las nuevas plantas no síncronas y sistemas de almacenamiento mayores a **1 MW**. Exige un tiempo de respuesta de corriente < 10 ms, ride-through frente a saltos de ángulo de fase, y la provisión de inercia sintética equivalente a la de una máquina síncrona.
-:::
+Las especificaciones técnicas del NC RfG 2.0 y su mandato de Grid-Forming obligatorio se detallan en el [Capítulo 7](./07-resiliencia-futuro.mdx). Lo relevante para la actualización de 2026 es el estado de implementación:
 
 A pesar del colapso ibérico, la adopción oficial del NC RfG 2.0 por parte de la Comisión Europea ha sido despriorizada hasta finales de 2026. Sin embargo, países como Reino Unido (proyecto Stability Pathfinder) y España han acelerado por su cuenta. 
 
 ### El Boom del Almacenamiento Ibérico
-El coste sistémico de mantener el sistema reforzado con gas tras el apagón ascendió a **666 millones de euros** adicionales en solo diez meses. Como reacción directa, el mercado español de baterías experimentó un "electroshock": la capacidad BESS (Battery Energy Storage Systems) instalada se ha **incrementado en un 589%**, pasando de unos simbólicos 28 MW a aproximadamente 193 MW operativos en un solo año, impulsando una arquitectura de red nativa para servicios de Black Start.
+El coste sistémico de mantener el sistema reforzado con gas tras el apagón ascendió a **666 millones de euros** adicionales en solo diez meses. Como reacción directa, el mercado español de baterías experimentó una aceleración sin precedentes: la capacidad BESS (Battery Energy Storage Systems) instalada se ha **incrementado en un 589%**, pasando de unos simbólicos 28 MW a aproximadamente 193 MW operativos en un solo año, impulsando una arquitectura de red nativa para servicios de Black Start.
 
 ## Conclusión de la Crisis
 
