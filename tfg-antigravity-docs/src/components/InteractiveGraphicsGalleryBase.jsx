@@ -162,6 +162,14 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Radar de Vulnérabilité Systémique', desc: 'Radar à 5 axes: condition d\'effondrement vs opération renforcée vs objectif PNIEC 2030.' },
       it: { title: 'Radar di Vulnerabilità Sistemica', desc: 'Radar a 5 assi: condizione di collasso vs operazione rafforzata vs obiettivo PNIEC 2030.' },
       de: { title: 'Systemisches Verwundbarkeitsradar', desc: '5-Achsen-Radar: Kollaps-Zustand vs verstärkter Betrieb vs PNIEC-2030-Ziel.' }
+    },
+    'tap-lag-sequence': {
+      es: { title: 'Mecanismo Tap-Lag — 5 Pasos', desc: 'Secuencia SVG animada del efecto Tap-Lag: cómo la inercia del OLTC ocultó la sobretensión al SCADA de REE.' },
+      en: { title: 'Tap-Lag Mechanism — 5 Steps', desc: 'Animated SVG sequence of the Tap-Lag effect: how OLTC inertia hid the overvoltage from REE\'s SCADA.' },
+      pt: { title: 'Mecanismo Tap-Lag — 5 Passos', desc: 'Sequência SVG animada do efeito Tap-Lag: como a inércia do OLTC ocultou a sobretensão do SCADA da REE.' },
+      fr: { title: 'Mécanisme Tap-Lag — 5 Étapes', desc: 'Séquence SVG animée de l\'effet Tap-Lag: comment l\'inertie de l\'OLTC a masqué la surtension au SCADA de REE.' },
+      it: { title: 'Meccanismo Tap-Lag — 5 Passi', desc: 'Sequenza SVG animata dell\'effetto Tap-Lag: come l\'inerzia dell\'OLTC ha nascosto la sovratensione al SCADA di REE.' },
+      de: { title: 'Tap-Lag-Mechanismus — 5 Schritte', desc: 'Animierte SVG-Sequenz des Tap-Lag-Effekts: wie die OLTC-Trägheit die Überspannung vor dem SCADA von REE verbarg.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -174,6 +182,7 @@ const SwingEquationSimulator = lazy(() => import(/* webpackChunkName: "chart-swi
 const StickyCollapse = lazy(() => import(/* webpackChunkName: "chart-sticky-collapse" */ './StickyCollapse'));
 const Comparador28A = lazy(() => import(/* webpackChunkName: "chart-comparador28a" */ './Comparador28A'));
 const RadarVulnerabilidad = lazy(() => import(/* webpackChunkName: "chart-radar-vulnerabilidad" */ './RadarVulnerabilidad'));
+const TapLagSequence = lazy(() => import(/* webpackChunkName: "chart-tap-lag-sequence" */ './TapLagSequence'));
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -193,7 +202,8 @@ const graphicsData = [
   { id: 'ansi59', icon: '⚡', component: ANSI59Cascade },
   { id: 'sticky-collapse', icon: '🎬', component: StickyCollapse },
   { id: 'comparador-28a', icon: '📡', component: Comparador28A },
-  { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad }
+  { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad },
+  { id: 'tap-lag-sequence', icon: '⚙️', component: TapLagSequence }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {
