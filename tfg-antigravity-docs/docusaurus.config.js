@@ -76,6 +76,7 @@ const config = {
           routeBasePath: '/',
           remarkPlugins: [
             [require('remark-math'), { strict: false }],
+            require('./plugins/remark-auto-glossary-links'),
           ],
           rehypePlugins: [
             [require('rehype-katex'), { strict: false }],
