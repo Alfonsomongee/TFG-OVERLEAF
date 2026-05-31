@@ -15,14 +15,14 @@ import {
 import datosForenses from '@site/src/data/datosForenses.json';
 import styles from './CollapseSismograph.module.css';
 
-export default function CollapseSismograph() {
+export default function CollapseSismograph({ playbackT = 32.7, lang, isGallery }) {
   const duration = datosForenses.cronologia_cascada.duracion_cascada.valor;
   const t_max = datosForenses.potencias_cascada.tension_maxima_barras_colectoras.valor || 440;
   const p_lost = datosForenses.potencias_cascada.perdida_generacion_total_cascada.valor || 15000;
   const sync_freq = datosForenses.cronologia_cascada.frecuencia_perdida_sincronismo.valor || 48.46;
 
   // Los 11+ puntos sincronizados con la narrativa y la Tabla 16
-  const cascadeData = useMemo(() => [
+  const allCascadeData = useMemo(() => [
     { time: 0, timeLabel: '12:32:57', freq: 50.00, volt: 418, lostMW: 0, event: 'Disparo raíz (Transf. Granada)' },
     { time: 8, timeLabel: '12:33:05', freq: 49.98, volt: 420, lostMW: 317, event: 'Desconexión GDR local' },
     { time: 19, timeLabel: '12:33:16', freq: 49.95, volt: 425, lostMW: 1044, event: 'Cascada en Badajoz' },
@@ -36,6 +36,11 @@ export default function CollapseSismograph() {
     { time: 27, timeLabel: '12:33:24', freq: 47.00, volt: 0, lostMW: p_lost, event: 'Cero funcional del sistema (ENTSO-E)' },
     { time: 32.7, timeLabel: '12:33:29', freq: 0, volt: 0, lostMW: p_lost, event: 'Disparo último grupo (Comité)' }
   ], [t_max, p_lost, sync_freq]);
+
+  const cascadeData = useMemo(
+    () => allCascadeData.filter(d => d.time <= playbackT),
+    [allCascadeData, playbackT]
+  );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {

@@ -37,7 +37,15 @@
  *   - aria-live="polite" en el contenido revelado
  *   - prefers-reduced-motion: elimina la animación de expansión
  */
-import React, { useState, useId } from 'react';
+import React, { useState, useRef } from 'react';
+
+// Polyfill useId para React 17 (useId solo existe en React 18+)
+let _idCounter = 0;
+function useId() {
+  const ref = useRef(null);
+  if (ref.current === null) ref.current = `:r${++_idCounter}:`;
+  return ref.current;
+}
 
 // ─── Botón de expansión ───────────────────────────────────────────────────────
 function ExpandButton({ expanded, onClick, level, lang }) {

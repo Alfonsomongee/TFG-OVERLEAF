@@ -12,6 +12,8 @@ import PVCurveSimulator from "@site/src/components/PVCurveSimulator";
 import ANSI59Cascade from "@site/src/components/ANSI59Cascade";
 import FrequencyChart from "@site/src/components/FrequencyChart";
 import BlackoutPropagationMap from "@site/src/components/BlackoutPropagationMap";
+import StickyCollapse from "@site/src/components/StickyCollapse";
+import ForensicReveal from "@site/src/components/ForensicReveal";
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
@@ -59,6 +61,14 @@ Tras la desconexión de Granada, la tendencia creciente de la tensión en la red
 Durante la Fase 1, las fluctuaciones y caídas de tensión originadas por las oscilaciones de frecuencia habían llevado a los transformadores 400/220 kV y 400/132 kV a ajustar sus <GlossaryLink term="OLTC (On-Load Tap Changer)">OLTC</GlossaryLink> subiendo tomas para elevar el voltaje en los secundarios. Al irrumpir la sobretensión en la red de 400 kV, estos transformadores quedaron atrapados en su propia inercia mecánica: los mecanismos de motor y engranaje de los OLTC están intencionadamente ralentizados mediante retardos temporales para evitar oscilaciones mecánicas ante perturbaciones efímeras. Frente a un transitorio eléctrico ultrarrápido, los cambiadores resultaron excesivamente lentos y no pudieron rebajar a tiempo la relación de transformación.
 
 ![Desacoplamiento Tap-Lag](/figuras/tap_lag_decoupling.png) _Figura 15. Desacoplamiento Tap-Lag (primario 400 kV vs secundario colector). La inercia del OLTC amplificó el transitorio en el lado colector, invisible para el SCADA de REE. Fuente: ENTSO-E._
+
+<ForensicReveal
+  lang="es"
+  l1="La tensión en las redes colectoras de los parques solares subió sin que REE lo detectara."
+  l2="El fenómeno Tap-Lag ocurre porque los transformadores con cambiador de tomas bajo carga (OLTC) tienen inercia mecánica. Mientras el OLTC intentaba compensar la tensión en el secundario (red colectora 220 kV), el SCADA de REE solo monitorizaba el primario (400 kV), que parecía normal. La sobretensión crecía invisible."
+  l3="El secundario colector alcanzó ~242 kV (>1,10 p.u.) mientras el primario de 400 kV permanecía dentro de límites. Esto hizo invisible la sobretensión para el sistema SCADA de REE hasta el disparo del transformador. (ENTSO-E Factual, p.28; IIT-ICAI / Compass Lexecon)"
+  source="ENTSO-E Factual Report (2025), p.28"
+/>
 
 Esta incapacidad mecánica creó un **"espejismo" en la sala de control de REE**. El <GlossaryLink term="SCADA (Supervisory Control and Data Acquisition)">SCADA</GlossaryLink> del operador monitorizaba el primario de 400 kV, observando tensiones altas pero teóricamente por debajo del límite excepcional normativo de **435 kV** (P.O. 1.1). Sin embargo, aguas abajo, en las redes de 220 kV y 132 kV, el voltaje escaló por encima de **1,2 p.u.** —umbrales invisibles para el despacho nacional por la inobservabilidad de la red subyacente.
 
@@ -125,6 +135,14 @@ Esta incapacidad mecánica creó un **"espejismo" en la sala de control de REE**
 
 ![Mapa de Calor: Propagación de Sobretensiones](/figuras/heatmap_propagation.png) _Figura 16. Mapa de calor: propagación de sobretensiones en red 400 kV (Fase 2, 12:32:00–12:33:18 CEST). Fuente: Comité de Análisis del Gobierno / REE._
 
+<ForensicReveal
+  lang="es"
+  l1="Cuando una planta solar se desconectó, las demás también cayeron en cadena."
+  l2="Al disparar el primer transformador (Granada, -165 MVAr de absorción), la tensión subió en los nudos vecinos. Esos nudos también superaron el umbral ANSI 59 de sus inversores, que dispararon a su vez. Cada disparo reducía la capacidad de absorción reactiva, elevando más la tensión: bucle de retroalimentación positiva."
+  l3="Desconexiones en cadena verificadas: Granada −355 MW, Badajoz −730 MW, Sevilla −550 MW = −1.635 MW totales en menos de 30 segundos. (Comité de Análisis del Gobierno, p.38)"
+  source="Comité de Análisis del Gobierno (2025), p.38"
+/>
+
 Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como **"disparos inadecuados"** argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas **actuaron correctamente** ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
 
 El siguiente simulador reproduce el mecanismo de inestabilidad de tensión que desencadenó el 28-A. Arrastra el slider de SCR hacia valores bajos y observa cómo el margen al colapso desaparece.
@@ -137,7 +155,7 @@ Una vez que la tensión supera el umbral de las protecciones ANSI 59, el sistema
 
 ## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST) {#fase-3}
 
-
+<StickyCollapse lang="es" />
 
 En 11 segundos, la red peninsular se destruyó a sí misma mediante un círculo vicioso dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR para autoprotegerse, la red perdía instantáneamente su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de **443 kV** en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
 
@@ -154,9 +172,25 @@ A medida que la cascada destruía la generación remanente, la frecuencia comenz
 
 _Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3 — Ver Figura 11 arriba (Sismógrafo del Colapso)._
 
+<ForensicReveal
+  lang="es"
+  l1="El sistema intentó defenderse cortando consumo, pero eso empeoró el problema de tensión."
+  l2="El UFLS (Under Frequency Load Shedding) desconecta cargas industriales cuando la frecuencia cae por debajo de los umbrales. Muchas de esas cargas son inductivas (motores, bombeo) y absorben potencia reactiva. Al eliminarlas, el sistema perdió capacidad de absorción reactiva adicional, agravando la sobretensión que era la causa raíz."
+  l3="El bombeo hidráulico (~3.000 MW activos) se deslastra a 49,5 Hz según P.O. 1.6. La demanda industrial desde 49,0 Hz. El esquema UFLS está diseñado para proteger contra subfrecuencia, no contra sobretensión — ésta es la paradoja del 28-A. (P.O. 1.6 / datos28A.json)"
+  source="P.O. 1.6 vigente abril 2025 / ENTSO-E Factual"
+/>
+
 La actuación del UFLS reveló la denominada **paradoja del UFLS**: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, **reforzando el colapso que el propio UFLS pretendía frenar**. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión ([*simular Retrato de Fases del UFLS*](./galeria-graficas.mdx#phaseplane)).
 
 <span id="t2"></span>
+<ForensicReveal
+  lang="es"
+  l1="El cable de alta tensión con Francia no ayudó cuando más se necesitaba."
+  l2="El enlace HVDC INELFE-1 había cambiado de PMODE3 (respuesta dinámica) a PMODE1 (potencia constante) a las ~12:08 CEST. En PMODE1, el enlace mantiene la consigna de potencia fija sin responder a cambios de frecuencia ni tensión en la red ibérica."
+  l3="El HVDC mantuvo 1.000 MW de exportación ES→FR durante toda la cascada hasta las 12:33:24 CEST, siendo el último elemento en desconectarse. No invirtió el flujo. Los 3.800 MW de importación documentados corresponden a las líneas AC transpirenaicas. (ENTSO-E Factual, p.12; pp.108-109)"
+  source="ENTSO-E Factual Report (2025), p.12 y pp.108-109"
+/>
+
 En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenáicos: las líneas AC intentaron importar una magnitud de reactiva de emergencia superior a los **4.500 MVAr** desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo activa del orden de **1 GW** del sistema ibérico (el desglose preciso por circuito y capacidad puede auditarse en la [**Tabla 14**](./15-galeria-de-tablas.mdx) y en los *Forensic Charts 1-5*, categoría Interconexiones). Esta operación asimétrica contrajo drásticamente la capacidad de soporte neto desde el continente.
 
 ![Inversión de Flujos en Enlaces AC/DC](/figuras/interconexion_francia_colapso.png) _Figura 19. Inversión de flujos en enlaces AC/DC en frontera pirenaica (Fase 3): importación de <CuestionAbierta metricKey="potencias_cascada.reactiva_frontera_ac_pico">4.609 MVAr</CuestionAbierta> por líneas AC y extracción simultánea de 1.000 MW por el HVDC hasta la pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE._

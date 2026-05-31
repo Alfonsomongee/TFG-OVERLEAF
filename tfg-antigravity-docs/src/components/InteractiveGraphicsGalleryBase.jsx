@@ -138,6 +138,30 @@ const getGraphicData = (id, lang) => {
       fr: { title: 'Boucle en Cascade ANSI 59', desc: 'Simulation de rétroaction positive causée par des déconnexions massives d\'IBR.' },
       it: { title: 'Loop a Cascata ANSI 59', desc: 'Simulazione di retroazione positiva causata da disconnessioni massive di IBR.' },
       de: { title: 'ANSI-59-Kaskadenschleife', desc: 'Simulation der positiven Rückkopplung durch massenhafte IBR-Trennungen.' }
+    },
+    'sticky-collapse': {
+      es: { title: 'Anatomía del Colapso — 30 Segundos', desc: 'Scrollytelling sincronizado: sismógrafo reactivo a cada fase de la cascada.' },
+      en: { title: 'Collapse Anatomy — 30 Seconds', desc: 'Synchronized scrollytelling: sismograph reactive to each cascade phase.' },
+      pt: { title: 'Anatomia do Colapso — 30 Segundos', desc: 'Scrollytelling sincronizado: sismógrafo reativo a cada fase da cascata.' },
+      fr: { title: 'Anatomie de l\'Effondrement — 30 Secondes', desc: 'Scrollytelling synchronisé: sismographe réactif à chaque phase de la cascade.' },
+      it: { title: 'Anatomia del Collasso — 30 Secondi', desc: 'Scrollytelling sincronizzato: sismografo reattivo a ogni fase della cascata.' },
+      de: { title: 'Kollaps-Anatomie — 30 Sekunden', desc: 'Synchronisiertes Scrollytelling: Seismograph reaktiv auf jede Phase der Kaskade.' }
+    },
+    'comparador-28a': {
+      es: { title: 'Sistema Ahora vs 28-A', desc: 'Comparador en tiempo real de las métricas de vulnerabilidad sistémica actuales frente al 28 de abril.' },
+      en: { title: 'System Now vs April 28', desc: 'Real-time comparison of current systemic vulnerability metrics vs. April 28.' },
+      pt: { title: 'Sistema Agora vs 28-A', desc: 'Comparador em tempo real das métricas de vulnerabilidade sistémica atuais face ao 28 de abril.' },
+      fr: { title: 'Système Maintenant vs 28-A', desc: 'Comparateur en temps réel des métriques de vulnérabilité systémique actuelles vs. 28 avril.' },
+      it: { title: 'Sistema Ora vs 28-A', desc: 'Comparatore in tempo reale delle metriche di vulnerabilità sistemica attuali rispetto al 28 aprile.' },
+      de: { title: 'System Jetzt vs 28-A', desc: 'Echtzeit-Vergleich aktueller systemischer Verwundbarkeitsmetriken vs. 28. April.' }
+    },
+    'radar-vulnerabilidad': {
+      es: { title: 'Radar de Vulnerabilidad Sistémica', desc: 'Radar de 5 ejes: condición del colapso vs operación reforzada vs objetivo PNIEC 2030.' },
+      en: { title: 'Systemic Vulnerability Radar', desc: '5-axis radar: collapse condition vs reinforced operation vs PNIEC 2030 target.' },
+      pt: { title: 'Radar de Vulnerabilidade Sistémica', desc: 'Radar de 5 eixos: condição do colapso vs operação reforçada vs objetivo PNIEC 2030.' },
+      fr: { title: 'Radar de Vulnérabilité Systémique', desc: 'Radar à 5 axes: condition d\'effondrement vs opération renforcée vs objectif PNIEC 2030.' },
+      it: { title: 'Radar di Vulnerabilità Sistemica', desc: 'Radar a 5 assi: condizione di collasso vs operazione rafforzata vs obiettivo PNIEC 2030.' },
+      de: { title: 'Systemisches Verwundbarkeitsradar', desc: '5-Achsen-Radar: Kollaps-Zustand vs verstärkter Betrieb vs PNIEC-2030-Ziel.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -147,6 +171,9 @@ const SynchrophasorPlot = lazy(() => import(/* webpackChunkName: "chart-synchrop
 const PhasePlanePlot = lazy(() => import(/* webpackChunkName: "chart-phaseplane" */ './PhasePlanePlot'));
 const InterconnectionDashboard = lazy(() => import(/* webpackChunkName: "chart-interconnection" */ './InterconnectionDashboard'));
 const SwingEquationSimulator = lazy(() => import(/* webpackChunkName: "chart-swing" */ './SwingEquationSimulator/SwingEquationSimulator'));
+const StickyCollapse = lazy(() => import(/* webpackChunkName: "chart-sticky-collapse" */ './StickyCollapse'));
+const Comparador28A = lazy(() => import(/* webpackChunkName: "chart-comparador28a" */ './Comparador28A'));
+const RadarVulnerabilidad = lazy(() => import(/* webpackChunkName: "chart-radar-vulnerabilidad" */ './RadarVulnerabilidad'));
 
 const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart },
@@ -163,7 +190,10 @@ const graphicsData = [
   { id: 'swing', icon: '⚖️', component: SwingEquationSimulator },
   { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix },
   { id: 'pvcurve', icon: '📈', component: PVCurveSimulator },
-  { id: 'ansi59', icon: '⚡', component: ANSI59Cascade }
+  { id: 'ansi59', icon: '⚡', component: ANSI59Cascade },
+  { id: 'sticky-collapse', icon: '🎬', component: StickyCollapse },
+  { id: 'comparador-28a', icon: '📡', component: Comparador28A },
+  { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad }
 ];
 
 export default function InteractiveGraphicsGallery({ lang: propLang }) {

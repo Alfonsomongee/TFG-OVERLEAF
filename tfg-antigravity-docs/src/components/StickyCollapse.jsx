@@ -103,7 +103,7 @@ function LazyCollapseSismograph({ playbackT, lang }) {
   const CollapseSismograph = React.useMemo(
     () => React.lazy(() =>
       import(/* webpackChunkName: "collapse-sismograph" */
-             '../CollapseSismograph')
+             './CollapseSismograph')
     ),
     [],
   );

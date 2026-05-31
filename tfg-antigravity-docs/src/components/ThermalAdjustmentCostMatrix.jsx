@@ -1,144 +1,216 @@
-// src/components/ThermalAdjustmentCostMatrix.jsx
-// Matriz termográfica de costes de servicios de ajuste (REData)
-// Mapa de calor horario de costes de restricciones técnicas, balance, etc.
-// SSR-safe: usa BrowserOnly y carga dinámica de Plotly
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+/**
+ * ThermalAdjustmentCostMatrix.jsx
+ * Matriz termográfica de costes de servicios de ajuste (€/MWh).
+ * Período: 26 abril – 2 mayo 2025 (semana del colapso del 28-A).
+ *
+ * CORRECCIONES respecto a la versión anterior:
+ *
+ * 1. DATOS — fallback determinista:
+ *    La versión anterior usaba Math.random() en el fallback, produciendo
+ *    valores distintos en cada render (rompe hidratación React + engaña
+ *    al lector con datos que cambian solos).
+ *    Sustituido por un generador LCG con semilla (mismo algoritmo que
+ *    SynchrophasorPlot) — los valores son siempre los mismos, reproducibles
+ *    y coherentes con las fuentes primarias disponibles.
+ *
+ * 2. DATOS — valores verificados en fuente primaria:
+ *    Los valores de pico del 28-A (11:00–15:00 CEST) son estimaciones
+ *    marcadas explícitamente como tales. Solo el coste total está verificado:
+ *    - Operación Reforzada 2025: 666 M€ hasta 31 mar 2026 (REE, abr 2026)
+ *    - Costes servicios ajuste 2025: +43% respecto a 2024 (ISE-2025 REE)
+ *    Los valores horarios individuales son CUESTIÓN ABIERTA (no en fuente
+ *    primaria disponible). El footer lo indica explícitamente.
+ *
+ * 3. RENDIMIENTO — Plotly lazy correcto:
+ *    La versión anterior declaraba `let PlotlyChart = null` como variable
+ *    de módulo (anti-patrón). Ahora el import dinámico está dentro del
+ *    componente con useState + useEffect (patrón correcto SSR-safe).
+ *    JUSTIFICACIÓN para mantener Plotly: el heatmap 2D con escala de color
+ *    continua (Magma) no tiene equivalente en Recharts sin D3 completo.
+ *    Para este componente específico, Plotly es la herramienta correcta.
+ *
+ * 4. UX — selector de servicio:
+ *    Botones para mostrar uno o todos los servicios de ajuste.
+ *    Reduce el ruido visual cuando solo interesa un servicio.
+ *
+ * 5. UX — exportación CSV:
+ *    Botón para descargar los datos de la matriz como CSV.
+ *
+ * 6. ACCESIBILIDAD:
+ *    role="img" + aria-label descriptivo en el contenedor del heatmap.
+ *    Skeleton con aria-busy durante la carga.
+ *
+ * DATO CLAVE VERIFICADO (usar en el footer y en el tooltip):
+ *   Coste Operación Reforzada: 666 M€ (REE, informe abril 2026)
+ *   Incremento servicios ajuste 2025 vs 2024: +43% (ISE-2025 REE)
+ *   Restricciones técnicas 2025: 3.351–3.770 M€ (ISE-2025 REE)
+ */
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-const PROXY_URL = '/api/redata-proxy?url=';
-
-// Fechas de interés: 26/04/2025 al 02/05/2025 (semana del colapso)
+const PROXY_URL  = '/api/redata-proxy?url=';
 const START_DATE = '2025-04-26T00:00';
-const END_DATE = '2025-05-02T23:59';
+const END_DATE   = '2025-05-02T23:59';
 
-// Construir URL de REData para costes de servicios de ajuste (hora, peninsular)
-const buildREDataUrl = () => {
-  const base = 'https://apidatos.ree.es/es/datos/mercados/coste-servicios-ajuste';
-  const params = new URLSearchParams({
-    start_date: START_DATE,
-    end_date: END_DATE,
-    time_trunc: 'hour',
-    geo_trunc: 'electric_system',
-    geo_limit: 'peninsular',
-    geo_ids: '8741'
+// ─── LCG determinista (mismo algoritmo que SynchrophasorPlot) ────────────────
+function lcg(seed) {
+  let s = seed;
+  return () => {
+    s = (1664525 * s + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+// ─── Fallback determinista basado en rangos verificados ───────────────────────
+/**
+ * Rangos de referencia (fuente: ISE-2025 REE / REE informes 2025-2026):
+ *   Pre-28A (26-27 abr):  media ~9 €/MWh de coste de ajuste total
+ *   28-A pico (11-15h):   estimado ~50-60 €/MWh restricciones (CUESTIÓN ABIERTA)
+ *   28-A noche:           ~22 €/MWh (inicio Operación Reforzada)
+ *   Post-28A (29 abr-):   ~26,2 €/MWh media de la Operación Reforzada
+ *
+ * Los valores individuales son estimaciones coherentes con los rangos
+ * verificados. No proceden de datos horarios de fuente primaria.
+ */
+function buildFallbackData() {
+  const timePoints = [];
+  const current = new Date('2025-04-26T00:00:00Z');
+  for (let i = 0; i < 168; i++) {
+    timePoints.push(current.toISOString().slice(0, 16).replace('T', ' '));
+    current.setTime(current.getTime() + 3_600_000);
+  }
+
+  const SERVICES = [
+    { name: 'Restricciones Técnicas PBF', baseMultiplier: 1.0 },
+    { name: 'Reserva Secundaria (aFRR)',  baseMultiplier: 0.42 },
+    { name: 'Gestión de Desvíos',        baseMultiplier: 0.18 },
+  ];
+
+  const matrix = SERVICES.map(({ baseMultiplier }, sIdx) => {
+    const rand = lcg(42 + sIdx * 1000); // semilla distinta por servicio
+    return timePoints.map((tp, tIdx) => {
+      const hour = parseInt(tp.slice(11, 13), 10);
+      const day  = tp.slice(0,  10);
+      const r    = rand() * 0.3; // ruido ±15% determinista
+
+      const isPre = day === '2025-04-26' || day === '2025-04-27';
+      const is28A = day === '2025-04-28';
+
+      if (isPre) {
+        // Media ~9 €/MWh repartida por servicio
+        return parseFloat(((9.0 * baseMultiplier) * (1 + r - 0.15)).toFixed(2));
+      }
+      if (is28A) {
+        if (hour >= 12 && hour <= 15) {
+          // Pico del colapso — estimación (CUESTIÓN ABIERTA)
+          return parseFloat(((55.0 * baseMultiplier) * (1 + r - 0.15)).toFixed(2));
+        }
+        if (hour > 15) {
+          // Inicio Operación Reforzada (~22 €/MWh total)
+          return parseFloat(((22.0 * baseMultiplier) * (1 + r - 0.15)).toFixed(2));
+        }
+        return parseFloat(((9.0 * baseMultiplier) * (1 + r - 0.15)).toFixed(2));
+      }
+      // Post-28A: Operación Reforzada (~26 €/MWh total verificado)
+      return parseFloat(((26.2 * baseMultiplier) * (1 + r - 0.15)).toFixed(2));
+    });
   });
-  return `${base}?${params.toString()}`;
-};
 
-// Componente interno (solo cliente)
+  return {
+    z:    matrix,
+    x:    timePoints,
+    y:    SERVICES.map(s => s.name),
+    isFallback: true,
+  };
+}
+
+// ─── Construcción de URL ESIOS ────────────────────────────────────────────────
+function buildREDataUrl() {
+  const base = 'https://apidatos.ree.es/es/datos/mercados/coste-servicios-ajuste';
+  return `${base}?${new URLSearchParams({
+    start_date: START_DATE, end_date: END_DATE,
+    time_trunc: 'hour', geo_trunc: 'electric_system',
+    geo_limit: 'peninsular', geo_ids: '8741',
+  })}`;
+}
+
+// ─── Exportar CSV ─────────────────────────────────────────────────────────────
+function exportCSV(data) {
+  const header = ['Servicio', 'Fecha/Hora', 'Coste (€/MWh)'].join(',');
+  const rows   = [];
+  data.y.forEach((service, si) => {
+    data.x.forEach((time, ti) => {
+      rows.push([`"${service}"`, `"${time}"`, data.z[si][ti]].join(','));
+    });
+  });
+  const csv  = [header, ...rows].join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'costes-ajuste-28A.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─── Componente interno ───────────────────────────────────────────────────────
 function ThermalAdjustmentCostMatrixInner() {
-  const [plotData, setPlotData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const abortControllerRef = useRef(null);
+  const [plotData,     setPlotData]     = useState(null);
+  const [loading,      setLoading]      = useState(true);
+  const [isFallback,   setIsFallback]   = useState(false);
+  const [Plot,         setPlot]         = useState(null);
+  const [activeService, setActiveService] = useState('all'); // 'all' | índice
+  const abortRef = useRef(null);
 
+  // Cargar Plotly dinámicamente (lazy, SSR-safe)
+  useEffect(() => {
+    import(/* webpackChunkName: "plotly-heatmap" */ 'react-plotly.js')
+      .then(mod => setPlot(() => mod.default));
+  }, []);
+
+  // Fetch de datos
   const fetchData = useCallback(async () => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    abortControllerRef.current = new AbortController();
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+    setLoading(true);
 
     try {
-      const redataUrl = buildREDataUrl();
-      const proxyUrl = `${PROXY_URL}${encodeURIComponent(redataUrl)}`;
-      const res = await fetch(proxyUrl, { signal: abortControllerRef.current.signal });
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-      }
-      const json = await res.json();
+      const url   = `${PROXY_URL}${encodeURIComponent(buildREDataUrl())}`;
+      const res   = await fetch(url, { signal: abortRef.current.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json  = await res.json();
 
-      // Procesar la respuesta JSONAPI para extraer matriz de costes
       const included = json.included || [];
-      if (included.length === 0) {
-        throw new Error('No se encontraron datos de costes de ajuste');
-      }
+      if (!included.length) throw new Error('Sin datos ESIOS');
 
-      // Extraer categorías y series temporales
-      const categories = [];       // nombres de los servicios (y axis)
-      const timePoints = [];       // timestamps (x axis)
-      const costMatrix = [];       // matriz 2D: [categoria][timeIndex]
+      const categories = [];
+      const timePoints = [];
+      const matrix     = [];
 
-      included.forEach((indicator, idx) => {
-        const title = indicator.attributes.title;
-        const values = indicator.attributes.values || [];
+      included.forEach((ind, idx) => {
+        const title  = ind.attributes.title;
+        const values = ind.attributes.values || [];
         if (!categories.includes(title)) {
           categories.push(title);
-          // Inicializar fila para esta categoría
-          costMatrix.push(new Array(values.length).fill(null));
+          matrix.push([]);
         }
-        const catIndex = categories.indexOf(title);
-        values.forEach((point, pointIdx) => {
-          const dt = point.datetime.substring(0, 16).replace('T', ' ');
-          if (idx === 0) {
-            timePoints.push(dt);
-          }
-          const cost = point.value !== undefined && point.value !== null ? parseFloat(point.value) : null;
-          // Asegurar que la matriz tenga la misma longitud en todas las filas
-          if (!costMatrix[catIndex]) costMatrix[catIndex] = [];
-          costMatrix[catIndex][pointIdx] = cost;
+        const ci = categories.indexOf(title);
+        values.forEach((pt, pi) => {
+          const dt = pt.datetime.slice(0, 16).replace('T', ' ');
+          if (idx === 0) timePoints.push(dt);
+          matrix[ci][pi] = pt.value != null ? parseFloat(pt.value) : 0;
         });
       });
 
-      // Limpiar valores nulos para el heatmap (sustituir por 0 y mostrar warning)
-      const cleanedMatrix = costMatrix.map(row =>
-        row.map(v => (v === null || isNaN(v) ? 0 : v))
-      );
+      setPlotData({ z: matrix, x: timePoints, y: categories, isFallback: false });
+      setIsFallback(false);
 
-      setPlotData({
-        z: cleanedMatrix,
-        x: timePoints,
-        y: categories
-      });
-      setLastUpdate(new Date());
-      setError(null);
     } catch (err) {
       if (err.name !== 'AbortError') {
-        console.warn('API REData falló, usando fallback de datos reales del TFG (2025)');
-        const timePoints = [];
-        let current = new Date('2025-04-26T00:00:00Z');
-        for (let i = 0; i < 168; i++) {
-          timePoints.push(current.toISOString().substring(0, 16).replace('T', ' '));
-          current.setTime(current.getTime() + 3600000);
-        }
-        
-        const categories = ['Restricciones Técnicas PBF', 'Reserva Secundaria (aFRR)', 'Gestión de Desvíos'];
-        const costMatrix = categories.map((cat, idx) => {
-          return timePoints.map(tp => {
-            const isPre = tp.startsWith('2025-04-26') || tp.startsWith('2025-04-27');
-            const is28A = tp.startsWith('2025-04-28');
-            
-            // Baseline pre-apagón (2024 ref): ~9 €/MWh de coste medio
-            if (isPre) {
-              const base = idx === 0 ? 5.5 : idx === 1 ? 2.5 : 1.0;
-              return base + Math.random() * 2.0;
-            }
-            
-            // Día del colapso (28-A): pico extremo por activación de desvíos y UFLS
-            if (is28A) {
-              const hour = parseInt(tp.substring(11, 13));
-              const base = idx === 0 ? 12.0 : idx === 1 ? 5.0 : 2.0;
-              if (hour >= 11 && hour <= 15) {
-                // Pico en el transitorio electromecánico
-                return idx === 0 ? 55.4 : idx === 1 ? 28.5 : 18.4;
-              }
-              if (hour > 15) {
-                // Comienza Operación Reforzada
-                return idx === 0 ? 22.8 : idx === 1 ? 14.5 : 8.2;
-              }
-              return base + Math.random() * 3.0;
-            }
-            
-            // Post-apagón (29-A a 02-M): Operación Reforzada con gas (Media: ~26.2 €/MWh)
-            const base = idx === 0 ? 16.5 : idx === 1 ? 6.2 : 3.5;
-            return base + Math.random() * 4.0;
-          });
-        });
-
-        setPlotData({ z: costMatrix, x: timePoints, y: categories });
-        setLastUpdate(new Date());
-        setError(null);
+        setPlotData(buildFallbackData());
+        setIsFallback(true);
       }
     } finally {
       setLoading(false);
@@ -147,106 +219,240 @@ function ThermalAdjustmentCostMatrixInner() {
 
   useEffect(() => {
     fetchData();
-    return () => {
-      if (abortControllerRef.current) abortControllerRef.current.abort();
-    };
+    return () => { if (abortRef.current) abortRef.current.abort(); };
   }, [fetchData]);
 
-  if (loading) {
+  // Datos filtrados según servicio activo
+  const displayData = useMemo(() => {
+    if (!plotData) return null;
+    if (activeService === 'all') return plotData;
+    const idx = parseInt(activeService, 10);
+    return {
+      ...plotData,
+      z: [plotData.z[idx]],
+      y: [plotData.y[idx]],
+    };
+  }, [plotData, activeService]);
+
+  // ── Skeleton ──────────────────────────────────────────────────────────────
+  if (loading || !Plot) {
     return (
-      <div className="skeleton-chart" style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span>Cargando matriz de costes de ajuste...</span>
+      <div
+        style={{ height: 500, display: 'flex', alignItems: 'center',
+                 justifyContent: 'center', color: '#64748b',
+                 fontFamily: 'monospace', fontSize: 13 }}
+        aria-busy="true"
+        aria-live="polite"
+      >
+        {loading ? 'Cargando matriz de costes…' : 'Inicializando visualización…'}
       </div>
     );
   }
 
-  if (error) {
+  if (!displayData) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444' }}>
-        ⚠️ Error: {error}
-        <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>
+        No hay datos disponibles.
+        <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.9rem', cursor: 'pointer' }}>
           Reintentar
         </button>
       </div>
     );
   }
 
-  if (!plotData || !plotData.z.length) {
-    return <div style={{ textAlign: 'center', padding: '2rem' }}>No se encontraron datos de costes para el período seleccionado.</div>;
-  }
-
-  // Configuración del heatmap Plotly
+  // ── Configuración Plotly ──────────────────────────────────────────────────
   const heatmapTrace = {
-    z: plotData.z,
-    x: plotData.x,
-    y: plotData.y,
-    type: 'heatmap',
+    z:          displayData.z,
+    x:          displayData.x,
+    y:          displayData.y,
+    type:       'heatmap',
     colorscale: 'Magma',
     reversescale: false,
-    showscale: true,
+    showscale:  true,
     colorbar: {
-      title: 'Coste (€/MWh)',
-      thickness: 20,
-      tickformat: ',.0f'
+      title:       '€/MWh',
+      thickness:   18,
+      tickformat:  ',.0f',
+      titlefont:   { color: '#94a3b8', size: 12 },
+      tickfont:    { color: '#94a3b8' },
     },
-    hoverongaps: false,
-    hovertemplate: '<b>%{y}</b><br>%{x}<br>Coste: %{z:.2f} €/MWh<extra></extra>'
+    hovertemplate: '<b>%{y}</b><br>%{x}<br><b>%{z:.2f} €/MWh</b><extra></extra>',
+    // Anotación visual del 28-A
+    zmin: 0,
+    zmax: 60,
   };
 
   const layout = {
     title: {
-      text: 'Matriz termográfica de costes de servicios de ajuste (€/MWh)',
-      font: { size: 16, color: '#e0ddd5' }
+      text: 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)',
+      font: { size: 15, color: '#e0ddd5' },
     },
     xaxis: {
-      title: 'Fecha y hora',
+      title: 'Fecha y hora (CEST)',
       tickangle: -45,
-      tickformat: '%d/%m %H:%M',
-      gridcolor: 'rgba(255,255,255,0.1)'
+      tickformat: '%d/%m %Hh',
+      gridcolor: 'rgba(255,255,255,0.07)',
+      tickfont: { color: '#64748b', size: 10 },
     },
     yaxis: {
-      title: 'Servicio de ajuste',
       automargin: true,
-      gridcolor: 'rgba(255,255,255,0.1)'
+      gridcolor: 'rgba(255,255,255,0.07)',
+      tickfont: { color: '#94a3b8', size: 11 },
     },
-    plot_bgcolor: 'rgba(0,0,0,0)',
+    // Anotación del 28-A
+    shapes: [{
+      type: 'rect',
+      xref: 'x', yref: 'paper',
+      x0: '2025-04-28 00:00', x1: '2025-04-29 00:00',
+      y0: 0, y1: 1,
+      fillcolor: 'rgba(239,68,68,0.06)',
+      line: { color: 'rgba(239,68,68,0.4)', width: 1.5, dash: 'dot' },
+    }],
+    annotations: [{
+      xref: 'x', yref: 'paper',
+      x: '2025-04-28 13:00', y: 1.04,
+      text: '⚡ 28-A',
+      showarrow: false,
+      font: { color: '#ef4444', size: 11, family: 'monospace' },
+    }],
+    plot_bgcolor:  'rgba(0,0,0,0)',
     paper_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#a0a0b0', family: 'Inter, sans-serif' },
-    height: 600,
-    margin: { l: 220, r: 40, t: 80, b: 120 }
+    font:   { color: '#a0a0b0', family: 'Inter, sans-serif' },
+    height: activeService === 'all' ? 520 : 280,
+    margin: { l: 220, r: 40, t: 72, b: 120 },
   };
 
   return (
-    <div style={{ padding: '1rem 0', background: 'transparent' }}>
-      <DynamicPlotlyWrapper data={[heatmapTrace]} layout={layout} />
-      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
-        <p style={{ margin: '0 0 0.5rem' }}><strong>Métricas anuales de ajuste (ISE-2025 REE):</strong> En el año 2025, el coste total de los servicios de ajuste se disparó hasta los <strong>3.812 M€ (+43% respecto a 2024)</strong>, con las restricciones técnicas acumulando entre <strong>3.351 M€ y 3.770 M€ (+63%)</strong> debido a la baja inercia y al despacho forzoso de ciclos combinados ("Operación Reforzada"). En marzo de 2026, las restricciones llegaron a representar el <strong>28% del término de energía en la factura PVPC</strong>.</p>
-        <p style={{ fontSize: '0.7rem', color: 'rgba(160,155,140,0.5)', margin: 0, display: 'flex', justifyContent: 'space-between' }}>
-          <span>Datos históricos reales · Período del colapso (26/04 a 02/05)</span>
-          <span>Fuente: ESIOS / REE (Indicadores 680, 71-74, 638)</span>
+    <div style={{ padding: '0.5rem 0' }}>
+
+      {/* Banner de fallback */}
+      {isFallback && (
+        <div style={{
+          marginBottom: '0.75rem',
+          padding: '0.5rem 1rem',
+          background: 'rgba(245,158,11,0.08)',
+          border: '1px solid rgba(245,158,11,0.3)',
+          borderRadius: 6,
+          fontSize: 12, fontFamily: 'monospace', color: '#f59e0b',
+        }} aria-live="polite">
+          ⚠ API REData no disponible — datos estimados (fallback determinista).
+          Los valores horarios son estimaciones coherentes con rangos verificados,
+          no medidas directas de ESIOS. Ver nota metodológica.
+        </div>
+      )}
+
+      {/* Controles */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'center', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem',
+      }}>
+        {/* Selector de servicio */}
+        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}
+             role="group" aria-label="Filtrar por servicio de ajuste">
+          {[{ id: 'all', label: 'Todos' }, ...(plotData?.y || []).map((n, i) => ({
+            id: String(i), label: n.split(' ').slice(0, 2).join(' '),
+          }))].map(opt => (
+            <button
+              key={opt.id}
+              onClick={() => setActiveService(opt.id)}
+              aria-pressed={activeService === opt.id}
+              style={{
+                padding: '0.25rem 0.7rem',
+                borderRadius: 20,
+                border: `1px solid ${activeService === opt.id ? '#00d9ff' : 'rgba(255,255,255,0.1)'}`,
+                background: activeService === opt.id ? 'rgba(0,217,255,0.12)' : 'transparent',
+                color:  activeService === opt.id ? '#00d9ff' : '#64748b',
+                cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
+                fontWeight: activeService === opt.id ? 700 : 400,
+                transition: 'all 0.15s ease',
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Exportar CSV */}
+        <button
+          onClick={() => exportCSV(plotData)}
+          aria-label="Descargar datos como CSV"
+          style={{
+            padding: '0.25rem 0.7rem',
+            background: 'transparent',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 6, color: '#64748b',
+            cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
+          }}
+        >
+          ↓ CSV
+        </button>
+      </div>
+
+      {/* Heatmap */}
+      <div
+        role="img"
+        aria-label={`Mapa de calor de costes de servicios de ajuste eléctrico durante la semana del 28-A. El pico de costes se concentra el 28 de abril de 2025 entre las 12:00 y las 15:00 CEST.`}
+      >
+        <Plot
+          data={[heatmapTrace]}
+          layout={layout}
+          config={{
+            responsive:     true,
+            displayModeBar: true,
+            modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+            toImageButtonOptions: {
+              format:   'png',
+              filename: 'costes-ajuste-28A',
+              scale:    2,
+            },
+          }}
+          style={{ width: '100%' }}
+          useResizeHandler
+        />
+      </div>
+
+      {/* Footer metodológico */}
+      <div style={{
+        marginTop: '1rem',
+        fontSize: '0.8rem', color: 'rgba(160,155,140,0.75)',
+        borderLeft: '3px solid rgba(255,170,0,0.35)',
+        padding: '0.5rem 1rem', lineHeight: 1.65,
+        background: 'rgba(255,255,255,0.02)',
+        borderRadius: '0 6px 6px 0',
+      }}>
+        <p style={{ margin: '0 0 0.4rem' }}>
+          <strong>Costes verificados (ISE-2025 REE / REE informe abril 2026):</strong>{' '}
+          El coste total de servicios de ajuste en 2025 se incrementó un{' '}
+          <strong>+43% respecto a 2024</strong>, con restricciones técnicas
+          acumulando entre <strong>3.351 y 3.770 M€</strong> por el despacho
+          forzoso de ciclos combinados ("Operación Reforzada"). El coste
+          acumulado de la Operación Reforzada hasta el 31 de marzo de 2026
+          fue de <strong>666 M€</strong> (REE, informe abril 2026 — dato verificado).
+          En marzo de 2026, las restricciones representaron el{' '}
+          <strong>28% del término de energía en la factura PVPC</strong>.
+        </p>
+        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
+          {isFallback
+            ? '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.'
+            : 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.'}
         </p>
       </div>
     </div>
   );
 }
 
-// Envoltorio con import dinámico de Plotly (SSR-safe)
-let PlotlyChart = null;
-function DynamicPlotlyWrapper({ data, layout }) {
-  const [Plot, setPlot] = useState(null);
-  useEffect(() => {
-    import('react-plotly.js').then(mod => setPlot(() => mod.default));
-  }, []);
-  if (!Plot) return <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando gráfica...</div>;
-  return <Plot data={data} layout={layout} config={{ responsive: true, displayModeBar: true }} style={{ width: '100%', height: '100%' }} useResizeHandler />;
-}
-
 export default function ThermalAdjustmentCostMatrix() {
   return (
-    <BrowserOnly fallback={<div style={{ minHeight: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando componente...</div>}>
-      {() => (
-        <ThermalAdjustmentCostMatrixInner />
-      )}
+    <BrowserOnly fallback={
+      <div style={{
+        minHeight: 500, display: 'flex', alignItems: 'center',
+        justifyContent: 'center', color: '#64748b',
+        fontFamily: 'monospace', fontSize: 13,
+      }}>
+        Inicializando matriz termográfica…
+      </div>
+    }>
+      {() => <ThermalAdjustmentCostMatrixInner />}
     </BrowserOnly>
   );
 }
