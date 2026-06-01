@@ -14,7 +14,7 @@
  *
  * Datos: src/data/glossary-terms.json  →  [{ term, definition }]
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import glossaryTerms from '@site/src/data/glossary-terms.json';
 
@@ -29,22 +29,37 @@ for (const entry of glossaryTerms) {
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
+  const timeoutRef = useRef(null);
 
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
-      ? e.target.closest('.glossary-term')
+      ? e.target.closest('.glossary-term, .glossary-definition-panel')
       : null;
     if (!el) return;
-    const key = (el.dataset.term || '').toLowerCase();
-    const entry = TERMS_MAP[key];
-    if (entry) setActive(entry);
+    
+    // Si entramos en la palabra O en la propia tarjeta, cancelamos el cierre (Hover Bridge)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    // Solo cambiamos la palabra si estamos encima de un término (no de la tarjeta)
+    if (el.classList.contains('glossary-term')) {
+      const key = (el.dataset.term || '').toLowerCase();
+      const entry = TERMS_MAP[key];
+      if (entry) setActive(entry);
+    }
   }, []);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest
-      ? e.target.closest('.glossary-term')
+      ? e.target.closest('.glossary-term, .glossary-definition-panel')
       : null;
-    if (el) setActive(null);
+    
+    // Si salimos de la palabra o de la tarjeta, iniciamos el temporizador de cierre
+    if (el) {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setActive(null);
+      }, 450); // 450ms de gracia
+    }
   }, []);
 
   useEffect(() => {
@@ -54,6 +69,7 @@ function PanelInner() {
     return () => {
       document.removeEventListener('mouseenter', handleEnter, true);
       document.removeEventListener('mouseleave', handleLeave, true);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [handleEnter, handleLeave]);
 
@@ -73,8 +89,8 @@ function PanelInner() {
         <strong className="glossary-panel-term">{active.term}</strong>
       </div>
       <div className="glossary-panel-body" style={{
-        scrollbarWidth: 'thin',
-        scrollbarColor: 'rgba(100, 180, 255, 0.3) transparent',
+        // Quitamos las barras de scroll fijas, el CSS se encargará de que crezca automáticamente
+        scrollbarWidth: 'none',
       }}>
         {active.definition}
       </div>
