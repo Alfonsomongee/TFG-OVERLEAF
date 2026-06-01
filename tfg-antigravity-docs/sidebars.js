@@ -1,302 +1,64 @@
-// @ts-check
-
-/** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
-const sidebars = {
-  tutorialSidebar: [
-
-    // ── PREFACIO ──────────────────────────────────────────────────────
-    'intro',
-
-    // ── 1 · INTRODUCCIÓN ─────────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'introduccion',
-      label: '¿Por qué estudiar el 28-A?',
-    },
-
-    // ── 2 · CONTEXTO ─────────────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'contexto',
-      label: 'La Red que Ocultaba su Fragilidad',
-    },
-
-    // ── 3 · EL COLAPSO ───────────────────────────────────────────────
+// sidebars.js
+module.exports = {
+  docs: [
+    'intro', // landing (slug: /)
     {
       type: 'category',
-      label: 'EL COLAPSO',
+      label: 'I · El incidente',
+      className: 'sidebar-icon-zap', // rayo rojo
       collapsed: false,
-      className: 'sidebar-icon-zap',
-      items: [
-        {
-          type: 'doc',
-          id: 'analisis-incidente',
-          // CORRECCIÓN: 30 segundos verificados (12:32:57→12:33:27 CEST)
-          // ENTSO-E Factual, pp.108-109
-          label: '30 Segundos: Anatomía del Colapso',
-        },
-        {
-          type: 'doc',
-          id: 'impacto-comunicativo',
-          // Reformulado: descriptivo sin juicio de valor
-          label: 'Los Encuadres Mediáticos del 28-A',
-        },
-      ],
+      items: ['01-introduccion', '02-contexto', '03-analisis-incidente', '04-reaccion-reposicion'],
     },
-
-    // ── 4 · ANÁLISIS PERICIAL ─────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'analisis-informes',
-      // CORRECCIÓN: son cuatro informes (Comité Gobierno, REE, ENTSO-E, IIT-ICAI)
-      label: 'Cuatro Informes, un Apagón',
-    },
-
-    // ── 5 · DIMENSIÓN EUROPEA ─────────────────────────────────────────
     {
       type: 'category',
-      label: 'DIMENSIÓN EUROPEA',
-      collapsed: false,
+      label: 'II · Las narrativas',
+      className: 'sidebar-icon-compass',
+      items: ['05-analisis-informes', '06-impacto-comunicativo'],
+    },
+    {
+      type: 'category',
+      label: 'III · Las consecuencias',
+      className: 'sidebar-icon-trending',
+      items: ['07b-consecuencias-financieras', 'impacto-social', '07-resiliencia-futuro'],
+    },
+    {
+      type: 'category',
+      label: 'IV · Dimensión europea',
       className: 'sidebar-icon-globe',
       items: [
-        {
-          type: 'doc',
-          id: 'dimension-europea/francia-portugal',
-          label: 'La Cascada Cruza los Pirineos',
-        },
-        {
-          type: 'doc',
-          id: 'dimension-europea/coordinacion-continental',
-          label: 'Europa Sostuvo la Frecuencia',
-        },
-        {
-          type: 'doc',
-          id: 'dimension-europea/dia-despues',
-          label: 'Un Continente que Aprendió a Tener Miedo',
-        },
+        'dimension-europea/01-francia-portugal',
+        'dimension-europea/02-coordinacion-continental',
+        'dimension-europea/03-dia-despues',
       ],
     },
-
-    // ── 6 · RESTAURACIÓN ─────────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'reaccion-reposicion',
-      label: 'El Despertar de la Red',
-    },
-
-    // ── 7 · ECONOMÍA DEL COLAPSO ──────────────────────────────────────
-    {
-      type: 'doc',
-      id: '07b-consecuencias-financieras',
-      label: 'El Precio del Cero Eléctrico',
-    },
-
-    // ── 7b · IMPACTO SOCIAL ───────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'impacto-social',
-      label: 'El Apagón que Paralizó una Sociedad',
-    },
-
-    // ── 8 · RESILIENCIA Y PROPUESTAS ──────────────────────────────────
-    {
-      type: 'doc',
-      id: 'resiliencia-futuro',
-      label: 'La Red que Debe Nacer',
-    },
-
-    // ── 9 · CONCLUSIONES ──────────────────────────────────────────────
-    // Simplificado: categoría con 1 item → doc directo
-    {
-      type: 'doc',
-      id: 'conclusiones',
-      // Reformulado: descriptivo, sin juicio de valor
-      label: 'El Trilema de la Transición Energética',
-    },
-
-    // ══════════════════════════════════════════════════════════════════
-    // APÉNDICES — collapsed por defecto para no saturar la vista
-    // ══════════════════════════════════════════════════════════════════
-
-    // ── A · MÉTODOS Y ACTUALIZACIONES ────────────────────────────────
     {
       type: 'category',
-      label: 'MÉTODOS Y ACTUALIZACIONES',
-      collapsed: true,
-      className: 'sidebar-icon-tool',
-      items: [
-        {
-          type: 'doc',
-          id: 'uso-ia',
-          label: 'Investigar con IA: Límites y Correcciones',
-        },
-        {
-          type: 'doc',
-          id: '08.5-actualizacion-2026',
-          label: 'Juicios, Reformas y el Boom de las Baterías',
-        },
-      ],
+      label: 'V · Cierre',
+      className: 'sidebar-icon-flag',
+      items: ['09-conclusiones', '08.5-actualizacion-2026', '08-uso-ia'],
     },
-
-    // ── B · CIFRAS Y REFERENCIA ───────────────────────────────────────
     {
       type: 'category',
-      label: 'CIFRAS Y REFERENCIA',
-      collapsed: true,
+      label: 'Datos en tiempo real',
+      className: 'sidebar-icon-activity',
+      items: [{ type: 'autogenerated', dirName: 'datos-tiempo-real' }],
+    },
+    {
+      type: 'category',
+      label: 'Referencia',
       className: 'sidebar-icon-book',
       items: [
-        {
-          type: 'doc',
-          id: 'resumen-de-cifras',
-          label: 'Las Cifras Verificadas del 28-A',
-        },
-        {
-          type: 'doc',
-          id: 'base-datos-maestra',
-          label: 'Base de Datos Maestra',
-        },
-        {
-          type: 'doc',
-          id: 'glosario',
-          label: 'Glosario Técnico',
-        },
-        {
-          type: 'doc',
-          id: 'referencias',
-          label: 'Referencias y Bibliografía',
-        },
+        '10-resumen-de-cifras',
+        '11-cronologia',
+        'galeria-graficas',
+        '10-galeria-imagenes',
+        '15-galeria-de-tablas',
+        '16-galeria-forense',
+        '15-base-datos-maestra',
+        'glosario',
+        'referencias',
       ],
     },
-
-    // ── C · VISUALIZACIONES ──────────────────────────────────────────
-    // Consolidadas en 2 hubs claros en lugar de 4 galerías difusas
-    {
-      type: 'category',
-      label: 'VISUALIZACIONES',
-      collapsed: true,
-      className: 'sidebar-icon-trending',
-      items: [
-        {
-          type: 'doc',
-          id: 'cronologia',
-          label: 'Cronología del Colapso',
-        },
-        {
-          // Hub 1: contenido estático (figuras, esquemas, tablas oficiales)
-          type: 'doc',
-          id: 'galeria-imagenes',
-          label: 'Atlas Forense — Figuras y Esquemas',
-        },
-        {
-          // Hub 2: simuladores y gráficas interactivas propias
-          type: 'doc',
-          id: 'galeria-graficas',
-          label: 'Laboratorio Interactivo — Simuladores',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-forense',
-          label: 'Bases de Datos ENTSO-E y ESIOS',
-        },
-        {
-          type: 'doc',
-          id: 'galeria-de-tablas',
-          label: 'Registros Oficiales Verificados',
-        },
-      ],
-    },
-
-    // ── D · DATOS EN TIEMPO REAL ─────────────────────────────────────
-    // Movido a apéndice operativo (Plan Maestro §3.2, hallazgo 2.9)
-    // No interrumpe el flujo narrativo principal
-    {
-      type: 'category',
-      label: 'DATOS EN TIEMPO REAL',
-      collapsed: true,
-      // Icono diferente al de EL COLAPSO para no confundir
-      className: 'sidebar-icon-activity',
-      items: [
-        {
-          type: 'html',
-          value: '<div class="sidebar-section-divider">Telemetría del Incidente</div>',
-          defaultStyle: true,
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/index',
-          label: 'Centro de Control del 28-A',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/mix-generacion',
-          label: 'Mix de Generación en el Colapso',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/demanda-renovable',
-          label: 'Demanda y Renovable',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/termometro-riesgo',
-          label: 'Pulso de la Red en Tiempo Real',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/balance-intercambios',
-          label: 'Balance de Intercambios',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/precio-spot',
-          label: 'Precio SPOT',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/radar-vulnerabilidad',
-          label: 'Radar de Fragilidad Sistémica',
-        },
-        {
-          type: 'html',
-          value: '<div class="sidebar-section-divider">Estructura y Mercado</div>',
-          defaultStyle: true,
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/costes-ajuste',
-          label: 'Costes de Ajuste',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/waterfall-financiero',
-          label: 'Impacto Económico',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/indisponibilidad',
-          label: 'Indisponibilidad de Red',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/emisiones-renovable',
-          label: 'Emisiones vs Renovable',
-        },
-        {
-          type: 'doc',
-          id: 'datos-tiempo-real/resiliencia-sectorial',
-          label: 'Resiliencia Sectorial',
-        },
-      ],
-    },
-
-    // ── AUTOR ─────────────────────────────────────────────────────────
-    {
-      type: 'doc',
-      id: 'sobre-el-autor',
-      label: 'Sobre el Autor',
-    },
-
+    '13-sobre-el-autor',
   ],
 };
-
-module.exports = sidebars;
