@@ -449,7 +449,7 @@ function TopologyContent({ lang = "es" }) {
 
       {/* ── PANEL DE CONTROL ─────────────────────────────────────────── */}
       <div style={{
-        position: 'absolute', top: 16, right: 16,
+        position: 'absolute', bottom: 16, right: 16,
         background: 'rgba(5,10,20,0.92)',
         border: '1px solid rgba(0,217,255,0.2)',
         borderRadius: 8,

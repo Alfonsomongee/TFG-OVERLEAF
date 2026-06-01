@@ -1,26 +1,53 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-// ─── Proyección (misma que IberianGridTopology) ───────────────────────────────
-function project(lon, lat) {
-  const LON_MIN = -9.5, LON_MAX = 3.4;
-  const LAT_MIN = 35.9, LAT_MAX = 43.9;
-  const W = 800, H = 520;
-  const x = ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W;
-  const y = H - ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
-  return [Math.round(x), Math.round(y)];
+// ============================================================
+// PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
+// ============================================================
+const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
+const VIEWBOX = { width: 1000, height: 800 };
+
+function geoToSvg(lat, lon) {
+  const x = ((lon - GEO_BOUNDS.west) / (GEO_BOUNDS.east - GEO_BOUNDS.west)) * VIEWBOX.width;
+  const y = ((GEO_BOUNDS.north - lat) / (GEO_BOUNDS.north - GEO_BOUNDS.south)) * VIEWBOX.height;
+  return { x: Math.round(x), y: Math.round(y) };
 }
 
-// ─── Contorno ibérico (mismo path que IberianGridTopology) ────────────────────
-const IBERIAN_PATH = `
-  M 95,10 L 155,5 L 220,8 L 290,15 L 360,12 L 430,8 L 490,15 L 550,25
-  L 610,18 L 660,30 L 700,55 L 730,85 L 750,120 L 760,160 L 755,200
-  L 750,240 L 760,275 L 755,310 L 740,340 L 720,365 L 695,385 L 660,400
-  L 625,415 L 590,430 L 550,445 L 510,455 L 470,460 L 430,465 L 390,460
-  L 350,450 L 310,445 L 270,455 L 235,465 L 195,460 L 155,445 L 115,425
-  L 80,400 L 55,370 L 35,340 L 20,305 L 10,270 L 8,230 L 12,190
-  L 20,155 L 30,120 L 45,90 L 65,65 L 95,10 Z
-`;
+function project(lon, lat) {
+  const { x, y } = geoToSvg(lat, lon);
+  return [x, y];
+}
+
+const IBERIA_OUTLINE = [
+  [43.78, -7.86],  [43.47, -8.45],  [42.88, -9.28],  [42.03, -8.87],  [41.87, -8.87],
+  [41.38, -8.73],  [40.64, -8.75],  [39.36, -9.40],  [38.62, -9.50],  [37.01, -8.91],
+  [36.97, -7.85],  [36.01, -5.61],  [36.17, -5.36],  [36.69, -4.41],  [36.72, -3.48],
+  [37.20, -1.90],  [37.64, -0.69],  [38.68,  0.23],  [39.58,  0.34],  [40.72,  0.73],
+  [41.29,  1.83],  [41.42,  2.22],  [42.43,  3.16],  [42.80,  1.72],  [43.37, -1.79],
+  [43.49, -3.80],  [43.57, -5.66],  [43.78, -7.86]
+];
+
+const PORTUGAL_OUTLINE = [
+  [41.87, -8.87],  [41.52, -6.92],  [39.67, -7.06],  [37.43, -7.44],  [36.97, -7.85],
+  [37.01, -8.91],  [38.62, -9.50],  [39.36, -9.40],  [40.64, -8.75],  [41.38, -8.73],
+  [41.87, -8.87]
+];
+
+const MALLORCA_OUTLINE = [
+  [39.96, 3.22],   [39.89, 2.32],   [39.27, 2.84],   [39.25, 3.48],   [39.78, 3.47],
+  [39.96, 3.22]
+];
+
+function pointsToPath(points) {
+  return points.map((p, i) => {
+    const { x, y } = geoToSvg(p[0], p[1]);
+    return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+  }).join(' ') + ' Z';
+}
+
+const IBERIA_PATH = pointsToPath(IBERIA_OUTLINE);
+const PORTUGAL_PATH = pointsToPath(PORTUGAL_OUTLINE);
+const BALEARES_PATH = pointsToPath(MALLORCA_OUTLINE);
 
 // ─── Las 7 islas eléctricas como polígonos aproximados ───────────────────────
 // Cada isla es un conjunto de puntos [lon, lat] que definen su contorno
@@ -157,7 +184,7 @@ function RestorationContent({ lang = 'es' }) {
       overflow: 'hidden',
     }}>
 
-      <svg viewBox="0 0 800 520" style={{ width: '100%', display: 'block' }}>
+      <svg viewBox="0 0 1000 800" style={{ width: '100%', display: 'block' }}>
         <defs>
           <radialGradient id="bgGrad2" cx="50%" cy="50%" r="70%">
             <stop offset="0%"   stopColor="#0a1628" />
@@ -176,14 +203,13 @@ function RestorationContent({ lang = 'es' }) {
           </filter>
         </defs>
 
-        <rect width="800" height="520" fill="url(#bgGrad2)" />
-        <rect width="800" height="520" fill="url(#grid2)" />
+        <rect width="1000" height="800" fill="url(#bgGrad2)" />
+        <rect width="1000" height="800" fill="url(#grid2)" />
 
         {/* Contorno base siempre visible (apagado) */}
-        <path d={IBERIAN_PATH}
-              fill="rgba(8,15,30,0.9)"
-              stroke="rgba(0,217,255,0.1)"
-              strokeWidth="1" />
+        <path d={IBERIA_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" />
+        <path d={PORTUGAL_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" strokeDasharray="4 3" />
+        <path d={BALEARES_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" />
 
         {/* ── ISLAS ELÉCTRICAS ─────────────────────────────────────── */}
         {ISLANDS.map(island => {
@@ -286,7 +312,7 @@ function RestorationContent({ lang = 'es' }) {
         {simTime >= 2 && (
           <g opacity="0.6">
             {/* Flecha Francia → Cataluña (top-down) */}
-            <path d="M 670,30 L 640,120" stroke="#3b82f6"
+            <path d="M 880,100 L 850,220" stroke="#3b82f6"
                   strokeWidth="2" strokeDasharray="6 3"
                   markerEnd="url(#arrowBlue)" />
           </g>
@@ -294,23 +320,23 @@ function RestorationContent({ lang = 'es' }) {
         {simTime >= 3 && (
           <g opacity="0.6">
             {/* Flecha Portugal black-start (bottom-up) */}
-            <path d="M 55,370 L 85,300" stroke="#10b981"
+            <path d="M 120,490 L 150,420" stroke="#10b981"
                   strokeWidth="2" strokeDasharray="6 3" />
           </g>
         )}
 
         {/* Etiquetas de mar */}
-        <text x="25" y="270" fill="rgba(0,217,255,0.18)" fontSize="9"
+        <text x="40" y="400" fill="rgba(0,217,255,0.18)" fontSize="12"
               fontFamily="var(--font-mono, monospace)"
-              transform="rotate(-90, 25, 270)" letterSpacing="2">
+              transform="rotate(-90, 40, 400)" letterSpacing="2">
           OCÉANO ATLÁNTICO
         </text>
-        <text x="570" y="415" fill="rgba(0,217,255,0.18)" fontSize="9"
+        <text x="700" y="600" fill="rgba(0,217,255,0.18)" fontSize="12"
               fontFamily="var(--font-mono, monospace)" letterSpacing="2"
-              transform="rotate(-5, 570, 415)">
+              transform="rotate(-5, 700, 600)">
           MAR MEDITERRÁNEO
         </text>
-        <text x="600" y="22" fill="rgba(59,130,246,0.45)" fontSize="10"
+        <text x="800" y="100" fill="rgba(59,130,246,0.45)" fontSize="14"
               fontFamily="var(--font-mono, monospace)" letterSpacing="3">
           FRANCE
         </text>
@@ -318,11 +344,13 @@ function RestorationContent({ lang = 'es' }) {
 
       {/* ── PANEL LATERAL DERECHO ─────────────────────────────────────── */}
       <div style={{
-        position: 'absolute', top: 16, right: 16,
+        position: 'absolute', bottom: 16, right: 16,
         background: 'rgba(5,10,20,0.93)',
         border: '1px solid rgba(0,217,255,0.2)',
-        borderRadius: 8, padding: '12px 14px', width: 250,
+        borderRadius: 6, padding: '8px 10px', width: 220,
         backdropFilter: 'blur(8px)',
+        transform: 'scale(0.9)',
+        transformOrigin: 'bottom right',
       }}>
         <div style={{ display: 'flex', alignItems: 'center',
                       justifyContent: 'space-between', marginBottom: 8 }}>
