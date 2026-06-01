@@ -1,302 +1,510 @@
-import React, { useState, useEffect } from 'react';
-import DeckGL from '@deck.gl/react';
-import { ScatterplotLayer, ArcLayer, BitmapLayer } from '@deck.gl/layers';
-import { TileLayer } from '@deck.gl/geo-layers';
+import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
+// ─── Proyección geográfica (lon/lat → píxeles en viewBox 800×560) ─────────────
+function project(lon, lat) {
+  const LON_MIN = -9.5, LON_MAX = 3.4;
+  const LAT_MIN = 35.9, LAT_MAX = 43.9;
+  const W = 800, H = 560;
+  const x = ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W;
+  const y = H - ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
+  return [Math.round(x), Math.round(y)];
+}
 
-const INITIAL_VIEW_STATE = {
-  longitude: -4.5,
-  latitude: 39.5,
-  zoom: 5,
-  pitch: 45,
-  bearing: 0
+// ─── Subestaciones con coordenadas reales verificadas ─────────────────────────
+const STATIONS = [
+  {
+    id: 'GRN', lon: -3.5985, lat: 37.1773,
+    name: 'Caparacena (Granada)',
+    type: 'origin',
+    activationTime: 0,
+    desc: 'DISPARO RAÍZ — 12:32:57 CEST\nTransformador 400/220 kV dispara por sobretensión\nen colector 220 kV (242 kV = 1,10 p.u.)\nPérdida: −355 MW, −165 MVAr\n(ENTSO-E Factual, p.28)',
+  },
+  {
+    id: 'BAD', lon: -6.9706, lat: 38.8794,
+    name: 'Guillena / Badajoz',
+    type: 'lost',
+    activationTime: 3,
+    desc: '12:33:16 CEST (t=19s)\nOleas de choque reactiva\nCaída por colapso de tensión\n−730 MW desconectados',
+  },
+  {
+    id: 'SEV', lon: -5.9844, lat: 37.3890,
+    name: 'Alcores (Sevilla)',
+    type: 'lost',
+    activationTime: 4,
+    desc: '12:33:17 CEST (t=20s)\nCascada sur: Sevilla + Huelva\n−550 MW desconectados',
+  },
+  {
+    id: 'SEG', lon: -4.1184, lat: 40.9481,
+    name: 'Segovia',
+    type: 'lost',
+    activationTime: 4,
+    desc: '12:33:17 CEST (t=20s)\nCascada norte-centro\nProtecciones ANSI 59 activas',
+  },
+  {
+    id: 'ALM', lon: -5.6961, lat: 39.8142,
+    name: 'Almaraz (Nuclear)',
+    type: 'stable',
+    activationTime: 0,
+    desc: 'Central nuclear — Inercia síncrona\n2 × 1.066 MW\nResistió hasta el colapso final',
+  },
+  {
+    id: 'MAD', lon: -3.7037, lat: 40.4167,
+    name: 'Madrid Sur / Morata',
+    type: 'stable',
+    activationTime: 0,
+    desc: 'Nudo central\nFrecuencia cayó a 48,7 Hz\nÚltimo punto de contención',
+  },
+  {
+    id: 'ZAR', lon: -0.8877, lat: 41.6497,
+    name: 'Nudo Aragón',
+    type: 'stable',
+    activationTime: 0,
+    desc: 'Puente transpirenaico\nIntentos de importación Francia',
+  },
+  {
+    id: 'BAR', lon: 2.1734, lat: 41.3852,
+    name: 'Rubí (Cataluña)',
+    type: 'stable',
+    activationTime: 0,
+    desc: 'Resistencia este\nConexión AC + HVDC con Francia\nEstable hasta pérdida de sincronismo',
+  },
+  {
+    id: 'LIS', lon: -9.1393, lat: 38.7222,
+    name: 'Lisboa (REN)',
+    type: 'portugal',
+    activationTime: 5,
+    desc: '12:33:10 CEST\nOscilaciones inter-área 0,21 Hz\nPortugal totalmente afectado',
+  },
+  {
+    id: 'POR', lon: -8.6291, lat: 41.1579,
+    name: 'Porto (REN)',
+    type: 'portugal',
+    activationTime: 0,
+    desc: 'Red portuguesa\nSufrió el colapso completo\nBlack Start desde Castelo de Bode',
+  },
+  {
+    id: 'FR', lon: 1.8845, lat: 42.6397,
+    name: 'Francia (RTE/Baixas)',
+    type: 'france',
+    activationTime: 8,
+    desc: '12:33:21 CEST — Pérdida sincronismo\nHVDC INELFE: 1.000 MW PMODE1\nLineas AC: pico 3.800 MW\n(ENTSO-E Factual, pp.12,108)',
+  },
+];
+
+// ─── Arcos de propagación ─────────────────────────────────────────────────────
+const ARCS = [
+  { from: 'GRN', to: 'SEV', activationTime: 2, type: 'cascade', label: 'Sobretensión' },
+  { from: 'GRN', to: 'BAD', activationTime: 2, type: 'cascade', label: 'Cascada' },
+  { from: 'BAD', to: 'LIS', activationTime: 5, type: 'oscillation', label: '0,21 Hz' },
+  { from: 'GRN', to: 'SEG', activationTime: 3, type: 'cascade', label: 'Cascada' },
+  { from: 'MAD', to: 'ZAR', activationTime: 0, type: 'stable', label: '' },
+  { from: 'ZAR', to: 'BAR', activationTime: 0, type: 'stable', label: '' },
+  { from: 'ZAR', to: 'FR',  activationTime: 8, type: 'sync',   label: 'ANSI 78' },
+  { from: 'BAR', to: 'FR',  activationTime: 8, type: 'sync',   label: 'HVDC' },
+];
+
+// ─── Log de eventos ───────────────────────────────────────────────────────────
+const EVENTS = [
+  { t: 0, msg: '12:32:57 CEST — DISPARO RAÍZ: Caparacena (Granada). Trafo 400/220 kV. −355 MW, −165 MVAr. (ENTSO-E p.28)' },
+  { t: 2, msg: '12:33:00 CEST — Cascada: plantas FV Badajoz y Sevilla cruzan umbral ANSI 59 (>435 kV).' },
+  { t: 3, msg: '12:33:05 CEST — Segovia y zona norte-centro afectadas. Tensión >440 kV en barras colectoras.' },
+  { t: 5, msg: '12:33:10 CEST — Oscilaciones inter-área alcanzan Portugal (0,21 Hz). REN alerta.' },
+  { t: 6, msg: '12:33:18 CEST — Frecuencia cae a 48,46 Hz. HVDC INELFE mantiene 1.000 MW PMODE1.' },
+  { t: 8, msg: '12:33:21 CEST — PÉRDIDA DE SINCRONISMO. ANSI 78 abre enlaces AC transpirenaicos.' },
+  { t: 10, msg: '12:33:24 CEST — CERO ELÉCTRICO SISTÉMICO. −15 GW en 30 segundos.' },
+];
+
+// ─── Colores por tipo de nodo ─────────────────────────────────────────────────
+const NODE_COLORS = {
+  origin:    { fill: '#ef4444', stroke: '#fca5a5', label: '#fca5a5' },
+  lost:      { fill: '#f97316', stroke: '#fdba74', label: '#fdba74' },
+  stable:    { fill: '#10b981', stroke: '#6ee7b7', label: '#6ee7b7' },
+  portugal:  { fill: '#f59e0b', stroke: '#fcd34d', label: '#fcd34d' },
+  france:    { fill: '#3b82f6', stroke: '#93c5fd', label: '#93c5fd' },
 };
 
-const getStations = (lang) => {
-  const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
-  return [
-    { name: 'Subestación Caparacena (Granada)', coordinates: [-3.5985, 37.1773], type: 'critical', desc: t('Punto de inicio (12:32:57 CEST). Disparo del transformador 400/220 kV por sobretensión en el colector 220 kV (242 kV). Pérdida de −355 MW y −165 MVAr de absorción reactiva. (ENTSO-E Factual, p.28)', 'Starting point (12:32:57 CEST). Trip of 400/220 kV transformer due to overvoltage in the 220 kV collector busbar (242 kV). Loss of −355 MW active and −165 MVAr reactive absorption. (ENTSO-E Factual, p.28)', 'Ponto de início (12:32:57 CEST). Disparo do transformador 400/220 kV por sobretensão no coletor 220 kV (242 kV). Perda de −355 MW e −165 MVAr de absorção reativa. (ENTSO-E Factual, p.28)', 'Point de départ (12:32:57 CEST). Déclenchement du transformateur 400/220 kV par surtension sur le collecteur 220 kV (242 kV). Perte de −355 MW et −165 MVAr d\'absorption réactive. (ENTSO-E Factual, p.28)', 'Punto di partenza (12:32:57 CEST). Scatto del trasformatore 400/220 kV per sovratensione sul collettore 220 kV (242 kV). Perdita di −355 MW e −165 MVAr di assorbimento reattivo. (ENTSO-E Factual, p.28)', 'Startpunkt (12:32:57 CEST). Auslösung des 400/220-kV-Transformators durch Überspannung am 220-kV-Sammelschienenkollektors (242 kV). Verlust von −355 MW und −165 MVAr Blindleistungsaufnahme. (ENTSO-E Factual, S.28)') },
-    { name: 'Nudo Alcores (Sevilla)', coordinates: [-5.9844, 37.3890], type: 'lost', desc: t('Desconectada por protecciones para intentar aislar el incendio eléctrico del sur.', 'Disconnected by protections trying to isolate the electrical fire from the south.', 'Desconectada por proteções para tentar isolar o incêndio elétrico do sul.', 'Déconnecté par les protections pour tenter d\'isoler l\'incendie électrique du sud.', 'Scollegata dalle protezioni per tentare di isolare l\'incendio elettrico del sud.', 'Durch Schutzvorrichtungen getrennt, um das elektrische Feuer im Süden zu isolieren.') },
-    { name: 'Nudo Guillena (Badajoz)', coordinates: [-6.9706, 38.8794], type: 'lost', desc: t('Sufre la onda de choque de reactiva. Cae por colapso de tensión (Voltage Collapse).', 'Suffers the reactive shockwave. Falls due to Voltage Collapse.', 'Sofre a onda de choque reativa. Cai por colapso de tensão.', 'Subit l\'onde de choc réactive. Tombe par effondrement de tension.', 'Subisce l\'onda d\'urto reattiva. Cade per collasso di tensione.', 'Erleidet die Blindleistungs-Schockwelle. Fällt aufgrund eines Spannungskollapses.') },
-    { name: 'C.N. Almaraz (Cáceres)', coordinates: [-5.6961, 39.8142], type: 'active', desc: t('Soporta el transitorio gracias a la inercia pesada de sus alternadores síncronos.', 'Withstands the transient thanks to the heavy inertia of its synchronous alternators.', 'Suporta o transitório graças à inércia pesada de seus alternadores síncronos.', 'Supporte le transitoire grâce à la lourde inertie de ses alternateurs synchrones.', 'Sopporta il transitorio grazie alla pesante inerzia dei suoi alternatori sincroni.', 'Übersteht den Transienten dank der schweren Trägheit seiner Synchrongeneratoren.') },
-    { name: 'Madrid Sur / Morata', coordinates: [-3.7037, 40.4167], type: 'active', desc: t('Absorbe los desequilibrios pero sufre caídas de frecuencia hasta 48.7 Hz.', 'Absorbs imbalances but suffers frequency drops down to 48.7 Hz.', 'Absorve os desequilíbrios, mas sofre quedas de frequência até 48,7 Hz.', 'Absorbe les déséquilibres mais subit des chutes de fréquence jusqu\'à 48,7 Hz.', 'Assorbe gli squilibri ma subisce cali di frequenza fino a 48,7 Hz.', 'Absorbiert Ungleichgewichte, leidet jedoch unter Frequenzabfällen bis auf 48,7 Hz.') },
-    { name: 'Nudo Aragón (Zaragoza)', coordinates: [-0.8877, 41.6497], type: 'active', desc: t('Actúa como puente crítico para intentar importar energía de emergencia desde Francia.', 'Acts as a critical bridge trying to import emergency power from France.', 'Atua como ponte crítica tentando importar energia de emergência da França.', 'Agit comme un pont critique pour tenter d\'importer de l\'énergie d\'urgence depuis la France.', 'Funziona come ponte critico per tentare di importare energia di emergenza dalla Francia.', 'Fungiert als kritische Brücke, um Notstrom aus Frankreich zu importieren.') },
-    { name: 'Nudo Rubí (Barcelona)', coordinates: [2.1734, 41.3852], type: 'active', desc: t('Se mantiene estable pero al límite operativo, exportando inercia al resto del país.', 'Remains stable but at its operational limit, exporting inertia to the rest of the country.', 'Mantém-se estável, mas no limite operacional, exportando inércia para o resto do país.', 'Reste stable mais à la limite opérationnelle, exportant de l\'inertie vers le reste du pays.', 'Rimane stabile ma al limite operativo, esportando inerzia nel resto del paese.', 'Bleibt stabil, aber am Betriebslimit, und exportiert Trägheit in den Rest des Landes.') },
-    { name: 'Lisboa (Rede Eléctrica Nacional)', coordinates: [-9.1393, 38.7222], type: 'active', desc: t('La desconexión súbita de Andalucía genera oscilaciones letales hacia la red portuguesa.', 'The sudden disconnection of Andalusia generates lethal oscillations towards the Portuguese grid.', 'A desconexão súbita da Andaluzia gera oscilações letais para a rede portuguesa.', 'La déconnexion soudaine de l\'Andalousie génère des oscillations mortelles vers le réseau portugais.', 'L\'improvvisa disconnessione dell\'Andalusia genera oscillazioni letali verso la rete portoghese.', 'Die plötzliche Trennung von Andalusien erzeugt tödliche Schwingungen in Richtung des portugiesischen Netzes.') },
-    { name: 'Porto (REN)', coordinates: [-8.6291, 41.1579], type: 'active', desc: t('Compensa la falta de generación del sur bombeando energía a la desesperada.', 'Compensates for the lack of southern generation by pumping energy desperately.', 'Compensa a falta de geração do sul bombeando energia desesperadamente.', 'Compense le manque de production du sud en pompant de l\'énergie désespérément.', 'Compensa la mancanza di generazione del sud pompando energia disperatamente.', 'Kompensiert den Mangel an Erzeugung im Süden, indem verzweifelt Energie gepumpt wird.') },
-    { name: 'Interconexión Francia (RTE)', coordinates: [1.8845, 42.6397], type: 'border', desc: t('Interconexión europea. El HVDC INELFE mantuvo 1.000 MW de exportación ES→FR en PMODE1 durante toda la cascada. Las líneas AC alcanzaron un pico transitorio de 3.800 MW a las 12:33:19 CEST. (ENTSO-E Factual, pp.12,108)', 'European interconnection. HVDC INELFE maintained 1,000 MW of ES→FR export in PMODE1 throughout the cascade. AC lines reached a transient peak of 3,800 MW at 12:33:19 CEST. (ENTSO-E Factual, pp.12,108)', 'Interconexão europeia. O HVDC INELFE manteve 1.000 MW de exportação ES→FR em PMODE1 durante toda a cascata. As linhas AC atingiram um pico transitório de 3.800 MW às 12:33:19 CEST. (ENTSO-E Factual, pp.12,108)', 'Interconnexion européenne. L\'HVDC INELFE a maintenu 1 000 MW d\'exportation ES→FR en PMODE1 pendant toute la cascade. Les lignes AC ont atteint un pic transitoire de 3 800 MW à 12:33:19 CEST. (ENTSO-E Factual, pp.12,108)', 'Interconnessione europea. L\'HVDC INELFE ha mantenuto 1.000 MW di esportazione ES→FR in PMODE1 durante tutta la cascata. Le linee AC hanno raggiunto un picco transitorio di 3.800 MW alle 12:33:19 CEST. (ENTSO-E Factual, pp.12,108)', 'Europäische Verbindung. HVDC INELFE hielt 1.000 MW ES→FR-Export in PMODE1 während der gesamten Kaskade. AC-Leitungen erreichten einen transienten Spitzenwert von 3.800 MW um 12:33:19 CEST. (ENTSO-E Factual, S.12,108)') }
-  ];
-};
-
-const getArcs = (lang) => {
-  const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
-  return [
-    { source: [-3.5985, 37.1773], target: [-5.9844, 37.3890], flow: t('Sobretensión en cascada', 'Cascading overvoltage', 'Sobretensão em cascata', 'Surtension en cascade', 'Sovratensione a cascata', 'Kaskadierende Überspannung') },
-    { source: [-5.9844, 37.3890], target: [-6.9706, 38.8794], flow: t('Pérdida de sincronismo', 'Loss of synchronism', 'Perda de sincronismo', 'Perte de synchronisme', 'Perdita di sincronismo', 'Synchronisationsverlust') },
-    { source: [-6.9706, 38.8794], target: [-9.1393, 38.7222], flow: t('Oscilaciones interárea a Portugal', 'Inter-area oscillations to Portugal', 'Oscilações interárea para Portugal', 'Oscillations inter-zones vers le Portugal', 'Oscillazioni inter-area verso il Portogallo', 'Inter-Area-Schwingungen nach Portugal') },
-    { source: [-3.7037, 40.4167], target: [1.8845, 42.6397], flow: t('Intento de estabilización desde Europa', 'Stabilization attempt from Europe', 'Tentativa de estabilização da Europa', 'Tentative de stabilisation depuis l\'Europe', 'Tentativo di stabilizzazione dall\'Europa', 'Stabilisierungsversuch aus Europa') },
-    { source: [-0.8877, 41.6497], target: [1.8845, 42.6397], flow: t('Sobrecarga de AC', 'AC Overload', 'Sobrecarga AC', 'Surcharge CA', 'Sovraccarico CA', 'AC-Überlastung') }
-  ];
+const ARC_COLORS = {
+  cascade:     '#ef4444',
+  oscillation: '#f59e0b',
+  sync:        '#3b82f6',
+  stable:      'rgba(0,217,255,0.2)',
 };
 
 function BlackoutMapContent({ lang = 'es' }) {
-  const [time, setTime] = useState(0);
-  const [clickedObject, setClickedObject] = useState(null);
+  const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const MAX_TIME = 12;
 
   useEffect(() => {
-    const handleResize = () => {
-      const isMobile = window.innerWidth < 768;
-      setViewState(prev => ({
-        ...prev,
-        zoom: isMobile ? 4.2 : 5,
-        longitude: isMobile ? -3.0 : -4.5,
-      }));
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const STATIONS = getStations(lang);
-  const ARCS = getArcs(lang);
-  
-  const getStrings = (l) => {
-    switch (l) {
-      case 'en': return { title: 'Collapse Propagation', desc1: 'This 3D model physically projects the blackout. The <strong>arcs</strong> are massive power flows. The <strong>pulsing spheres</strong> represent overvoltages at nodes.', desc2: 'The progressive geographical dimming simulates the voltage collapse over the 11 seconds.', replay: 'Replay', pause: 'Pause', play: 'Play', prog: 'Progress: ', int_title: 'Interaction:', int_desc: ' Drag to rotate the 3D camera. Click on spheres to view the forensic report.', leg_title: 'Legend:', leg_1: 'Trigger (Overvoltage)', leg_2: 'Disconnected Nodes', leg_3: 'Active Nodes', leg_4: 'European Interconnection', fallback: 'Critical Power Flow' };
-      case 'pt': return { title: 'Propagação do Colapso', desc1: 'Este modelo 3D projeta fisicamente o apagão. Os <strong>arcos</strong> são fluxos massivos de energia. As <strong>esferas pulsantes</strong> representam sobretensões nos nós.', desc2: 'O escurecimento geográfico progressivo simula o colapso de tensão ao longo dos 11 segundos.', replay: 'Repetir', pause: 'Pausar', play: 'Iniciar', prog: 'Progresso: ', int_title: 'Interação:', int_desc: ' Arraste para rotacionar a câmera 3D. Clique nas esferas para ver o relatório forense.', leg_title: 'Legenda:', leg_1: 'Gatilho (Sobretensão)', leg_2: 'Nós Desconectados', leg_3: 'Nós Ativos', leg_4: 'Interconexão Europeia', fallback: 'Fluxo de Energia Crítico' };
-      case 'fr': return { title: 'Propagation de l\'Effondrement', desc1: 'Ce modèle 3D projette physiquement la panne. Les <strong>arcs</strong> sont des flux massifs d\'énergie. Les <strong>sphères pulsantes</strong> représentent les surtensions aux nœuds.', desc2: 'L\'assombrissement géographique progressif simule l\'effondrement de la tension sur les 11 secondes.', replay: 'Rejouer', pause: 'Pause', play: 'Lecture', prog: 'Progression : ', int_title: 'Interaction :', int_desc: ' Faites glisser pour faire pivoter la caméra 3D. Cliquez sur les sphères pour voir le rapport médico-légal.', leg_title: 'Légende :', leg_1: 'Déclencheur (Surtension)', leg_2: 'Nœuds Déconnectés', leg_3: 'Nœuds Actifs', leg_4: 'Interconnexion Européenne', fallback: 'Flux de Puissance Critique' };
-      case 'it': return { title: 'Propagazione del Collasso', desc1: 'Questo modello 3D proietta fisicamente il blackout. Gli <strong>archi</strong> sono flussi massicci di energia. Le <strong>sfere pulsanti</strong> rappresentano sovratensioni nei nodi.', desc2: 'L\'oscuramento geografico progressivo simula il collasso di tensione nel corso degli 11 secondi.', replay: 'Riproduci', pause: 'Pausa', play: 'Play', prog: 'Progresso: ', int_title: 'Interazione:', int_desc: ' Trascina per ruotare la telecamera 3D. Fai clic sulle sfere per visualizzare il rapporto forense.', leg_title: 'Leggenda:', leg_1: 'Innesco (Sovratensione)', leg_2: 'Nodi Disconnessi', leg_3: 'Nodi Attivi', leg_4: 'Interconnessione Europea', fallback: 'Flusso di Potenza Critico' };
-      case 'de': return { title: 'Kollapsausbreitung', desc1: 'Dieses 3D-Modell projiziert den Stromausfall physisch. Die <strong>Bögen</strong> sind massive Energieflüsse. Die <strong>pulsierenden Kugeln</strong> stellen Überspannungen an Knoten dar.', desc2: 'Die fortschreitende geografische Verdunkelung simuliert den Spannungskollaps über die 11 Sekunden.', replay: 'Wiederholen', pause: 'Pause', play: 'Abspielen', prog: 'Fortschritt: ', int_title: 'Interaktion:', int_desc: ' Ziehen, um die 3D-Kamera zu drehen. Klicken Sie auf Kugeln, um den forensischen Bericht anzuzeigen.', leg_title: 'Legende:', leg_1: 'Auslöser (Überspannung)', leg_2: 'Getrennte Knoten', leg_3: 'Aktive Knoten', leg_4: 'Europäische Verbindung', fallback: 'Kritischer Energiefluss' };
-      default: return { title: 'Propagación del Colapso', desc1: 'Este modelo 3D proyecta físicamente el apagón. Los <strong>arcos</strong> son flujos masivos de energía. Las <strong>esferas pulsantes</strong> representan sobretensiones en los nudos.', desc2: 'El oscurecimiento geográfico progresivo simula el hundimiento de tensión a lo largo de los 11 segundos.', replay: 'Replay', pause: 'Pausa', play: 'Play', prog: 'Progreso: ', int_title: 'Interacción:', int_desc: ' Arrastra para rotar la cámara en 3D. Haz clic en las esferas para ver el informe forense.', leg_title: 'Leyenda:', leg_1: 'Detonante (Sobretensión)', leg_2: 'Nudos Desconectados', leg_3: 'Nudos Activos', leg_4: 'Interconexión Europea', fallback: 'Flujo de Energía Crítico' };
+    if (!isPlaying || simTime >= MAX_TIME) {
+      if (simTime >= MAX_TIME) setIsPlaying(false);
+      return;
     }
+    const id = setInterval(() => setSimTime(t => t + 1), 800);
+    return () => clearInterval(id);
+  }, [isPlaying, simTime]);
+
+  const handlePlayPause = () => {
+    if (simTime >= MAX_TIME) { setSimTime(0); setIsPlaying(true); }
+    else setIsPlaying(p => !p);
   };
-  const strings = getStrings(lang);
 
-  useEffect(() => {
-    let animation;
-    if (isPlaying && time < 110) {
-      animation = setInterval(() => {
-        setTime(t => t + 1);
-      }, 100);
-    } else if (time >= 110) {
-      setIsPlaying(false);
-    }
-    return () => clearInterval(animation);
-  }, [isPlaying, time]);
+  // Nodos con coordenadas proyectadas
+  const nodes = useMemo(() => STATIONS.map(s => {
+    const [x, y] = project(s.lon, s.lat);
+    const isActive = simTime >= s.activationTime;
+    const isCollapsing = (s.type === 'lost' || s.type === 'origin') && isActive;
+    return { ...s, x, y, isActive, isCollapsing };
+  }), [simTime]);
 
-  const INERTIA_ARCS = [
-    { source: [-5.6961, 39.8142], target: [-5.9844, 37.3890], flow: 'Transferencia de Inercia Síncrona (Almaraz -> Sur)' },
-    { source: [2.1734, 41.3852], target: [-0.8877, 41.6497], flow: 'Soporte Reactivo (Rubí -> Aragón)' }
-  ];
+  const nodeMap = useMemo(() =>
+    Object.fromEntries(nodes.map(n => [n.id, n])), [nodes]);
 
-  const layers = [
-    new TileLayer({
-      id: 'google-satellite',
-      data: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-      minZoom: 0,
-      maxZoom: 19,
-      tileSize: 256,
-      opacity: Math.max(0.3, 1 - (time / 100))
-    }),
-    // Nodos con deformación 3D (Voltage Sag)
-    new ScatterplotLayer({
-      id: 'stations-layer',
-      data: STATIONS,
-      pickable: true,
-      opacity: 0.8,
-      stroked: true,
-      filled: true,
-      radiusScale: 600,
-      radiusMinPixels: 5,
-      radiusMaxPixels: 20,
-      lineWidthMinPixels: 2,
-      getPosition: d => {
-        // Deformación Z (Voltage Sag) para nudos del sur a partir de T=20
-        let z = 0;
-        if (d.coordinates[1] < 39 && time > 20) {
-          z = -150000 * Math.min(1, (time - 20) / 40); // Se hunde 150km visuales
-        }
-        return [d.coordinates[0], d.coordinates[1], z];
-      },
-      getRadius: d => (d.type === 'critical' ? (60 + Math.sin(time / 5) * 20) : 50),
-      getFillColor: d => {
-        if (d.type === 'critical') return [255, 0, 0];
-        if (d.type === 'lost') return [255, 165, 0];
-        if (d.type === 'border') return [0, 150, 255];
-        return [0, 255, 100];
-      },
-      getLineColor: d => [0, 0, 0]
-    }),
-    // Arcos de cortocircuito en cascada
-    new ArcLayer({
-      id: 'power-flows-layer',
-      data: ARCS,
-      pickable: true,
-      getWidth: 3,
-      getSourcePosition: d => d.source,
-      getTargetPosition: d => {
-        // El objetivo se hunde con el Voltage Sag
-        let z = 0;
-        if (d.target[1] < 39 && time > 20) {
-          z = -150000 * Math.min(1, (time - 20) / 40);
-        }
-        return [d.target[0], d.target[1], z];
-      },
-      getSourceColor: [255, 0, 0, 200],
-      getTargetColor: [255, 165, 0, 200],
-      getTilt: d => (time / 100) * 15 - 7.5
-    }),
-    // Arcos de Inercia Síncrona que colapsan
-    new ArcLayer({
-      id: 'inertia-arcs-layer',
-      data: INERTIA_ARCS,
-      pickable: true,
-      getWidth: 4,
-      getHeight: 0.8, // Arcos muy altos
-      visible: time < 60, // Colapsan y desaparecen en T=60
-      getSourcePosition: d => d.source,
-      getTargetPosition: d => {
-        let z = 0;
-        if (d.target[1] < 39 && time > 20) {
-          z = -150000 * Math.min(1, (time - 20) / 40);
-        }
-        return [d.target[0], d.target[1], z];
-      },
-      getSourceColor: [0, 255, 255, 255 - Math.max(0, (time - 40) * 12)], // Se desvanecen
-      getTargetColor: [0, 150, 255, 255 - Math.max(0, (time - 40) * 12)]
-    })
-  ];
+  const visibleEvents = EVENTS.filter(e => e.t <= simTime).reverse().slice(0, 4);
+
+  // Porcentaje de generación perdida
+  const gwLost = useMemo(() => {
+    if (simTime >= 10) return 15.0;
+    if (simTime >= 8)  return 12.0;
+    if (simTime >= 6)  return 8.0;
+    if (simTime >= 4)  return 3.5;
+    if (simTime >= 2)  return 1.2;
+    return 0;
+  }, [simTime]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '100vw', height: '500px', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#050505' }} className="blackout-map-container">
-      <DeckGL
-        viewState={viewState}
-        onViewStateChange={({ viewState }) => setViewState(viewState)}
-        controller={true}
-        layers={layers}
-        getTooltip={({object}) => object && (object.name || object.flow)}
-        onClick={({object}) => {
-          if (object) setClickedObject(object);
-          else setClickedObject(null);
-        }}
-      />
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      background: '#050a14',
+      borderRadius: 12,
+      border: '1px solid rgba(0,217,255,0.15)',
+      overflow: 'hidden',
+      fontFamily: 'var(--font-body, sans-serif)',
+    }}>
+      <svg
+        viewBox="0 0 800 560"
+        style={{ width: '100%', display: 'block' }}
+        aria-label="Mapa de cascada de desconexiones IBR durante el 28-A"
+      >
+        <defs>
+          <filter id="bp-glow-red">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="bp-glow-cyan">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="bp-bg" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#0a1628"/>
+            <stop offset="100%" stopColor="#050a14"/>
+          </radialGradient>
+          <pattern id="bp-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none"
+                  stroke="rgba(0,217,255,0.04)" strokeWidth="0.5"/>
+          </pattern>
+        </defs>
+
+        {/* Fondo */}
+        <rect width="800" height="560" fill="url(#bp-bg)"/>
+        <rect width="800" height="560" fill="url(#bp-grid)"/>
+
+        {/* PNG de España como fondo geográfico */}
+        <image
+          href="/img/iberian_satellite.png"
+          x="0" y="0" width="800" height="560"
+          preserveAspectRatio="xMidYMid meet"
+          opacity={simTime >= 8 ? 0.15 : 0.28}
+          style={{ transition: 'opacity 1s ease' }}
+        />
+
+        {/* Overlay oscuro para contraste */}
+        <rect width="800" height="560"
+              fill="rgba(5,10,20,0.55)"/>
+
+        {/* Etiquetas geográficas */}
+        <text x="30" y="265" fill="rgba(0,217,255,0.18)" fontSize="9"
+              fontFamily="var(--font-mono,monospace)"
+              transform="rotate(-90,30,265)" letterSpacing="2">
+          OCÉANO ATLÁNTICO
+        </text>
+        <text x="570" y="420" fill="rgba(0,217,255,0.18)" fontSize="9"
+              fontFamily="var(--font-mono,monospace)" letterSpacing="2"
+              transform="rotate(-5,570,420)">
+          MAR MEDITERRÁNEO
+        </text>
+        <text x="620" y="22" fill="rgba(59,130,246,0.45)" fontSize="10"
+              fontFamily="var(--font-mono,monospace)" letterSpacing="3">
+          FRANCE
+        </text>
+        <text x="35" y="395" fill="rgba(96,165,250,0.4)" fontSize="9"
+              fontFamily="var(--font-mono,monospace)" letterSpacing="2">
+          PORTUGAL
+        </text>
+
+        {/* ── ARCOS ── */}
+        {ARCS.map((arc, i) => {
+          const src = nodeMap[arc.from];
+          const tgt = nodeMap[arc.to];
+          if (!src || !tgt) return null;
+          const isActive = simTime >= arc.activationTime;
+          if (!isActive && arc.type === 'stable') return null;
+
+          const color = ARC_COLORS[arc.type] || 'rgba(0,217,255,0.2)';
+          const mx = (src.x + tgt.x) / 2;
+          const my = (src.y + tgt.y) / 2 - 30;
+
+          return (
+            <g key={i}>
+              <path
+                d={`M${src.x},${src.y} Q${mx},${my} ${tgt.x},${tgt.y}`}
+                fill="none"
+                stroke={isActive ? color : 'rgba(0,217,255,0.06)'}
+                strokeWidth={arc.type === 'stable' ? 1 : (isActive ? 2.5 : 1)}
+                strokeDasharray={arc.type === 'stable' ? '4 3' : 'none'}
+                opacity={isActive ? 1 : 0.3}
+              />
+              {arc.label && isActive && (
+                <text x={mx} y={my - 5}
+                      fill={color} fontSize="9"
+                      fontFamily="var(--font-mono,monospace)"
+                      textAnchor="middle" opacity="0.9">
+                  {arc.label}
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        {/* ── NODOS ── */}
+        {nodes.map(node => {
+          const colors = NODE_COLORS[node.type] || NODE_COLORS.stable;
+          const isHovered = hoveredNode === node.id;
+          const r = node.type === 'france' ? 13 : node.type === 'origin' ? 14 : 10;
+
+          return (
+            <g key={node.id}
+               style={{ cursor: 'pointer' }}
+               onMouseEnter={() => setHoveredNode(node.id)}
+               onMouseLeave={() => setHoveredNode(null)}>
+
+              {/* Pulso para nodos activos críticos */}
+              {node.isCollapsing && (
+                <circle cx={node.x} cy={node.y} r={r}>
+                  <animate attributeName="r"
+                           values={`${r};${r+12};${r}`}
+                           dur="1s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity"
+                           values="0.6;0;0.6"
+                           dur="1s" repeatCount="indefinite"/>
+                  <animate attributeName="fill"
+                           values={colors.stroke}/>
+                </circle>
+              )}
+
+              {/* Nodo */}
+              <circle
+                cx={node.x} cy={node.y} r={r}
+                fill={node.isActive ? colors.fill : 'rgba(15,30,55,0.8)'}
+                stroke={node.isActive ? colors.stroke : 'rgba(0,217,255,0.1)'}
+                strokeWidth={isHovered ? 2.5 : 1.5}
+                filter={node.isCollapsing ? 'url(#bp-glow-red)' : 'none'}
+              />
+
+              {/* Signo de exclamación en nodos en colapso */}
+              {node.isCollapsing && (
+                <text x={node.x} y={node.y + 4}
+                      textAnchor="middle" fontSize="10"
+                      fill="#fff" fontWeight="900">!</text>
+              )}
+
+              {/* Etiqueta */}
+              <text
+                x={node.x} y={node.y + r + 13}
+                textAnchor="middle" fontSize="9.5"
+                fontFamily="var(--font-mono,monospace)"
+                fill={node.isActive ? colors.label : '#374151'}
+                fontWeight="600"
+              >
+                {node.name.split('\n')[0]}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* ── TOOLTIP ── */}
+        {hoveredNode && (() => {
+          const node = nodeMap[hoveredNode];
+          if (!node) return null;
+          const lines = node.desc.split('\n');
+          const tw = 200;
+          let tx = node.x + 18;
+          if (tx + tw > 780) tx = node.x - tw - 18;
+          let ty = node.y - 20;
+          if (ty < 10) ty = 10;
+
+          return (
+            <g>
+              <rect x={tx-6} y={ty-14}
+                    width={tw+12} height={lines.length*14+18}
+                    rx="4"
+                    fill="rgba(5,10,20,0.96)"
+                    stroke="rgba(0,217,255,0.3)" strokeWidth="1"/>
+              {lines.map((line, li) => (
+                <text key={li} x={tx} y={ty + li*14}
+                      fontSize={li===0 ? 10 : 9}
+                      fill={li===0 ? '#00d9ff' : '#94a3b8'}
+                      fontFamily="var(--font-mono,monospace)"
+                      fontWeight={li===0 ? '700' : '400'}>
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })()}
+
+        {/* ── OVERLAY COLAPSO TOTAL (paso final) ── */}
+        {simTime >= 10 && (
+          <g>
+            <rect width="800" height="560" fill="rgba(239,68,68,0.06)"/>
+            <text x="400" y="290" textAnchor="middle"
+                  fontSize="22" fontFamily="var(--font-mono,monospace)"
+                  fontWeight="900" fill="#ef4444"
+                  filter="url(#bp-glow-red)" opacity="0.85">
+              CERO ELÉCTRICO SISTÉMICO
+            </text>
+            <text x="400" y="315" textAnchor="middle"
+                  fontSize="12" fontFamily="var(--font-mono,monospace)"
+                  fill="#fca5a5" opacity="0.7">
+              12:33:24 CEST · −15 GW · 60 millones de personas
+            </text>
+          </g>
+        )}
+      </svg>
+
+      {/* ── PANEL DE CONTROL ── */}
       <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        backgroundColor: 'rgba(0,0,0,0.85)',
-        padding: '20px',
-        borderRadius: '8px',
-        color: 'white',
-        maxWidth: '350px',
-        border: '1px solid #30363d',
-        zIndex: 10
+        position: 'absolute', top: 16, right: 16,
+        background: 'rgba(5,10,20,0.93)',
+        border: '1px solid rgba(0,217,255,0.2)',
+        borderRadius: 8, padding: '12px 14px', width: 260,
+        backdropFilter: 'blur(8px)',
       }}>
-        <h3 style={{ margin: '0 0 10px 0', color: '#ef4444' }}>{strings.title}</h3>
-        <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#d1d5db' }} dangerouslySetInnerHTML={{__html: strings.desc1}} />
-        <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#d1d5db', marginBottom: '15px' }}>
-          {strings.desc2}
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button 
-            onClick={() => {
-              if (time >= 110) setTime(0);
-              setIsPlaying(!isPlaying);
-            }}
-            style={{
-              background: 'var(--ifm-color-primary)',
-              color: 'white',
-              border: 'none',
-              padding: '6px 12px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 'bold'
-            }}
-          >
-            {time >= 110 ? strings.replay : (isPlaying ? strings.pause : strings.play)}
+        {/* Header + play */}
+        <div style={{ display:'flex', alignItems:'center',
+                      justifyContent:'space-between', marginBottom: 10 }}>
+          <span style={{
+            fontFamily: 'var(--font-mono,monospace)', fontSize: 10,
+            letterSpacing: '0.1em', color: '#ef4444', fontWeight: 700,
+          }}>
+            CASCADA IBR 28-A
+          </span>
+          <button onClick={handlePlayPause} style={{
+            background: isPlaying ? 'rgba(239,68,68,0.15)' : 'rgba(0,217,255,0.12)',
+            border: `1px solid ${isPlaying ? '#ef4444' : '#00d9ff'}`,
+            color: isPlaying ? '#ef4444' : '#00d9ff',
+            padding: '3px 10px', borderRadius: 4,
+            cursor: 'pointer', fontSize: 11,
+            fontFamily: 'var(--font-mono,monospace)', fontWeight: 700,
+          }}>
+            {simTime >= MAX_TIME ? '↺' : (isPlaying ? '⏸' : '▶')}
           </button>
-          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '6px 10px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold' }}>
-            {strings.prog} {(time / 10).toFixed(1)}s
+        </div>
+
+        {/* Barra temporal */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ display:'flex', justifyContent:'space-between',
+                        fontSize: 9, color: '#374151',
+                        fontFamily: 'var(--font-mono,monospace)', marginBottom: 3 }}>
+            <span>12:32:57</span><span>12:33:27 CEST</span>
+          </div>
+          <div style={{ height:3, background:'rgba(239,68,68,0.1)',
+                        borderRadius:2, overflow:'hidden' }}>
+            <div style={{
+              height:'100%', borderRadius:2,
+              width: `${(simTime/MAX_TIME)*100}%`,
+              background: 'linear-gradient(90deg,#f59e0b,#ef4444)',
+              transition: 'width 0.8s ease',
+            }}/>
           </div>
         </div>
-        <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '15px', fontStyle: 'italic', margin: '15px 0 0 0' }}>
-          <span style={{color: '#fff'}}>{strings.int_title}</span>{strings.int_desc}
-        </p>
-      </div>
-      <div style={{
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        zIndex: 5,
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        padding: '10px 15px',
-        borderRadius: '8px',
-        color: 'white',
-        fontSize: '0.85rem'
-      }}>
-        <strong>{strings.leg_title}</strong><br/>
-        <span style={{color: '#ff0000'}}>●</span> {strings.leg_1}<br/>
-        <span style={{color: '#ffa500'}}>●</span> {strings.leg_2}<br/>
-        <span style={{color: '#00ff64'}}>●</span> {strings.leg_3}<br/>
-        <span style={{color: '#0096ff'}}>●</span> {strings.leg_4}
-      </div>
-      <div style={{
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        zIndex: 10,
-        backgroundColor: 'rgba(0,0,0,0.75)',
-        padding: '8px 12px',
-        borderRadius: '6px',
-        color: '#9ca3af',
-        fontSize: '0.75rem',
-        maxWidth: '260px',
-        border: '1px solid #374151'
-      }}>
-        ⚠️ Este mapa requiere WebGL. Si no carga en el congreso, usar el simulador ANSI 59 como alternativa.
-      </div>
-      {clickedObject && (
+
+        {/* Contador GW perdidos */}
         <div style={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-          backgroundColor: 'rgba(0,0,0,0.9)',
-          padding: '15px',
-          borderRadius: '8px',
-          color: 'white',
-          maxWidth: '250px',
-          border: '1px solid var(--ifm-color-primary)'
+          background: 'rgba(239,68,68,0.07)',
+          border: '1px solid rgba(239,68,68,0.2)',
+          borderRadius: 6, padding: '6px 10px',
+          marginBottom: 10, textAlign: 'center',
         }}>
-          <h4 style={{margin: '0 0 10px 0', fontSize: '1rem', color: '#60a5fa'}}>{clickedObject.name || strings.fallback}</h4>
-          {clickedObject.flow ? (
-            <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.4'}}>{clickedObject.flow}</p>
-          ) : (
-            <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.4'}}>{clickedObject.desc}</p>
-          )}
+          <div style={{
+            fontSize: 26, fontWeight: 700, lineHeight: 1,
+            color: gwLost >= 10 ? '#ef4444' : gwLost >= 5 ? '#f97316' : '#f59e0b',
+            fontFamily: 'var(--font-mono,monospace)',
+            transition: 'color 0.3s ease',
+          }}>
+            {gwLost.toFixed(1)}
+            <span style={{ fontSize: '0.6rem', color: '#4b5563', marginLeft: 4 }}>GW perdidos</span>
+          </div>
         </div>
-      )}
+
+        {/* Leyenda */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr',
+                      gap:'3px 8px', marginBottom:8, fontSize:9,
+                      fontFamily:'var(--font-mono,monospace)' }}>
+          {[
+            { color:'#ef4444', label:'Origen colapso' },
+            { color:'#f97316', label:'Nodo perdido' },
+            { color:'#10b981', label:'Nodo estable' },
+            { color:'#3b82f6', label:'Francia (RTE)' },
+          ].map(({ color, label }) => (
+            <div key={label} style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <div style={{ width:8, height:8, borderRadius:'50%',
+                            background:color, flexShrink:0 }}/>
+              <span style={{ color:'#6b7280' }}>{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Log de eventos */}
+        <div style={{ borderTop:'1px solid rgba(0,217,255,0.1)',
+                      paddingTop:8, maxHeight:150, overflowY:'auto' }}>
+          {visibleEvents.length === 0 ? (
+            <p style={{ color:'#374151', fontSize:9,
+                        fontFamily:'var(--font-mono,monospace)', margin:0 }}>
+              Pulsa ▶ para iniciar la simulación
+            </p>
+          ) : visibleEvents.map((ev, i) => (
+            <div key={i} style={{
+              fontSize:9.5, fontFamily:'var(--font-mono,monospace)',
+              color: i===0 ? '#e2e8f0' : '#374151',
+              borderLeft: `2px solid ${i===0 ? '#ef4444' : 'transparent'}`,
+              paddingLeft:5, marginBottom:5,
+              transition:'all 0.3s ease',
+            }}>
+              {ev.msg}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default function BlackoutPropagationMap({ lang = 'es' }) {
-  const getLoadingText = (l) => {
-    switch(l) {
-      case 'en': return 'Loading interactive 3D map...';
-      case 'pt': return 'Carregando mapa 3D interativo...';
-      case 'fr': return 'Chargement de la carte 3D interactive...';
-      case 'it': return 'Caricamento mappa 3D interattiva...';
-      case 'de': return 'Interaktive 3D-Karte wird geladen...';
-      default: return 'Cargando mapa 3D interactivo...';
-    }
-  };
-
+export default function BlackoutPropagationMapBase({ lang = 'es' }) {
   return (
-    <BrowserOnly fallback={<div>{getLoadingText(lang)}</div>}>
-      {() => <BlackoutMapContent lang={lang} />}
+    <BrowserOnly fallback={
+      <div style={{
+        height: 480, background:'#050a14', borderRadius:12,
+        display:'flex', alignItems:'center', justifyContent:'center',
+        color:'#ef4444', fontFamily:'monospace', fontSize:12,
+      }}>
+        Cargando mapa de cascada IBR…
+      </div>
+    }>
+      {() => <BlackoutMapContent lang={lang}/>}
     </BrowserOnly>
   );
 }
