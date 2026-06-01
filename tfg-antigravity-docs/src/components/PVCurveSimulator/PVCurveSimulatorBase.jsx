@@ -45,9 +45,10 @@ function CustomTooltip({ active, payload }) {
 function NoseLabel({ viewBox, noseP, noseV }) {
   if (!viewBox) return null;
   const { x, y } = viewBox;
+  const alignLeft = noseP > 1.5;
   return (
     <g>
-      <text x={x + 8} y={y - 10} fill="#ef4444" fontSize={11} fontFamily="monospace">
+      <text x={alignLeft ? x - 10 : x + 8} y={y - 10} fill="#ef4444" fontSize={11} fontFamily="monospace" textAnchor={alignLeft ? 'end' : 'start'}>
         Nose point ({noseP.toFixed(2)}, {noseV.toFixed(3)})
       </text>
     </g>
@@ -115,7 +116,7 @@ export default function PVCurveSimulator() {
       <div className={styles.chartContainer}>
         {isMounted ? (
           <ResponsiveContainer width="100%" height={340}>
-            <ComposedChart margin={{ top: 24, right: 32, left: 16, bottom: 32 }}>
+            <ComposedChart margin={{ top: 24, right: 120, left: 16, bottom: 32 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
 
               <XAxis
@@ -140,7 +141,7 @@ export default function PVCurveSimulator() {
                        offset={8} fill="#94a3b8" fontSize={12} />
               </YAxis>
 
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: false }} />
 
               {/* Leyenda: imprescindible para que el tribunal identifique las ramas */}
               <Legend
