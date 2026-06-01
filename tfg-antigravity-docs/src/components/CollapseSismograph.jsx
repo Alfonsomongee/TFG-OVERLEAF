@@ -242,7 +242,7 @@ export default function CollapseSismograph({ playbackT = 32.7, lang, isGallery }
         </div>
         <div style={{
           fontSize: '0.78rem',
-          color: '#94a3b8',
+          color: 'var(--ifm-color-emphasis-600)',
           lineHeight: 1.4,
         }}>
           {current.event}
