@@ -1,5 +1,5 @@
 // src/components/IberianGridMap.jsx
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 
 // ============================================================
@@ -97,6 +97,15 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
     gridLine: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
   };
 
+  // FIX 3 — IDs únicos por instancia (React 17 compatible)
+  const uid = useRef(`igm-${Math.random().toString(36).slice(2, 7)}`).current;
+  const ids = {
+    landGrad:   `${uid}-landGrad`,
+    relief:     `${uid}-relief`,
+    nodeGlow:   `${uid}-nodeGlow`,
+    clipIberia: `${uid}-clipIberia`,
+  };
+
   const typeColors = {
     trigger: isDark ? '#ef4444' : '#dc2626',
     cascade: isDark ? '#f59e0b' : '#d97706',
@@ -151,17 +160,29 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>
-          <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
+          {/* FIX 1+3 — gradientUnits userSpaceOnUse + coordenadas absolutas viewBox */}
+          <linearGradient id={ids.landGrad}
+            x1="0" y1="0" x2="0" y2="800"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor={palette.landGradientStart} />
             <stop offset="100%" stopColor={palette.landGradientEnd} />
           </linearGradient>
 
-          <filter id="relief" x="-10%" y="-10%" width="120%" height="120%">
+          {/* FIX 2+3 — filterUnits userSpaceOnUse + coordenadas absolutas */}
+          <filter id={ids.relief}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feDropShadow dx="-2" dy="-3" stdDeviation="4" floodColor={palette.reliefLight} />
             <feDropShadow dx="3" dy="5" stdDeviation="6" floodColor={palette.reliefDark} />
           </filter>
 
-          <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
+          {/* FIX 2+3 — nodeGlow con unidades absolutas */}
+          <filter id={ids.nodeGlow}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feGaussianBlur stdDeviation="2.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
@@ -169,14 +190,14 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
             </feMerge>
           </filter>
 
-          <clipPath id="clipIberia">
+          <clipPath id={ids.clipIberia}>
             <path d={IBERIA_PATH} />
             <path d={BALEARES_PATH} />
           </clipPath>
         </defs>
 
         {/* Cuadrícula de fondo (recortada) */}
-        <g clipPath="url(#clipIberia)" opacity="0.6">
+        <g clipPath={`url(#${ids.clipIberia})`} opacity="0.6">
           {Array.from({ length: 12 }, (_, i) => (
             <line
               key={`h-${i}`}
@@ -202,9 +223,9 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
         </g>
 
         {/* Masa terrestre con relieve */}
-        <g filter="url(#relief)">
-          <path d={IBERIA_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
-          <path d={BALEARES_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
+        <g filter={`url(#${ids.relief})`}>
+          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
+          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
         </g>
 
         {/* Arcos de conexión */}
@@ -262,7 +283,7 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
                 fill={color}
                 stroke={palette.nodeStroke}
                 strokeWidth="1.5"
-                filter="url(#nodeGlow)"
+                filter={`url(#${ids.nodeGlow})`}
               />
 
               {/* Etiqueta */}

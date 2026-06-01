@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 // ─── Proyección geográfica simplificada ──────────────────────────────────────
@@ -136,6 +136,16 @@ function TopologyContent({ lang = "es" }) {
     reliefDark: 'rgba(0, 0, 0, 0.2)',
   };
 
+  // FIX 3 — IDs únicos por instancia (React 17 compatible)
+  const uid = useRef(`topo-${Math.random().toString(36).slice(2, 7)}`).current;
+  const ids = {
+    landGrad:   `${uid}-landGrad`,
+    relief:     `${uid}-relief`,
+    glow:       `${uid}-glow`,
+    glowRed:    `${uid}-glowRed`,
+    clipIberia: `${uid}-clipIberia`,
+  };
+
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hoveredNode, setHoveredNode] = useState(null);
@@ -185,24 +195,39 @@ function TopologyContent({ lang = "es" }) {
       >
         
         <defs>
-          <filter id="glow">
+          {/* FIX 2+3 — filters con unidades absolutas e IDs únicos */}
+          <filter id={ids.glow}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
             <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-          <filter id="glowRed">
+          <filter id={ids.glowRed}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
             <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-          
-          <clipPath id="clip-iberia">
+
+          <clipPath id={ids.clipIberia}>
             <path d={IBERIA_PATH} />
             <path d={BALEARES_PATH} />
           </clipPath>
-          <radialGradient id="landGrad" cx="45%" cy="45%" r="65%">
+          {/* FIX 1+3 — gradientUnits userSpaceOnUse + coordenadas absolutas viewBox */}
+          <radialGradient id={ids.landGrad}
+            cx="450" cy="360" r="520"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor={palette.landGradientStart} />
             <stop offset="100%" stopColor={palette.landGradientEnd} />
           </radialGradient>
-          <filter id="relief" x="-5%" y="-5%" width="110%" height="110%">
+          {/* FIX 2+3 — filterUnits userSpaceOnUse + coordenadas absolutas */}
+          <filter id={ids.relief}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feDropShadow dx="1.5" dy="2" stdDeviation="2.5" floodColor={palette.reliefDark} floodOpacity="0.6" />
           </filter>
         </defs>
@@ -211,18 +236,18 @@ function TopologyContent({ lang = "es" }) {
         <rect width="1000" height="800" fill="var(--bg-0, #050a14)" />
         <rect width="1000" height="800" fill="rgba(0,40,80,0.15)" />
 
-        <g filter="url(#relief)">
-          <path d={IBERIA_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
-          <path d={BALEARES_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
+        <g filter={`url(#${ids.relief})`}>
+          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
+          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
         </g>
-        
-        <g clipPath="url(#clip-iberia)" opacity="0.5">
+
+        <g clipPath={`url(#${ids.clipIberia})`} opacity="0.5">
           {Array.from({ length: 18 }, (_, i) => (
             <path key={`rel-${i}`} d={`M ${80 + i * 40} ${60 + i * 25} C ${400 + i * 15} ${100 + i * 10}, ${600 - i * 20} ${500 - i * 15}, ${200 + i * 30} ${600 - i * 20}`} fill="none" stroke={palette.reliefLight} strokeWidth="1.8" strokeDasharray="8 6" />
           ))}
         </g>
-        
-        <g clipPath="url(#clip-iberia)" opacity="0.6">
+
+        <g clipPath={`url(#${ids.clipIberia})`} opacity="0.6">
           {Array.from({ length: 12 }, (_, i) => (
             <line key={`grid-h-${i}`} x1={0} y1={(VIEWBOX.height / 12) * i} x2={VIEWBOX.width} y2={(VIEWBOX.height / 12) * i} stroke={palette.gridLine} strokeWidth="0.8" />
           ))}
@@ -321,7 +346,7 @@ function TopologyContent({ lang = "es" }) {
                 fill={node.isActive ? colors.fill : 'rgba(15,30,55,0.9)'}
                 stroke={node.isActive ? colors.stroke : 'rgba(0,217,255,0.15)'}
                 strokeWidth={isHovered ? 2.5 : 1.5}
-                filter={node.isCollapsing ? 'url(#glowRed)' : (node.isActive ? 'url(#glow)' : 'none')}
+                filter={node.isCollapsing ? `url(#${ids.glowRed})` : (node.isActive ? `url(#${ids.glow})` : 'none')}
               />
 
               {/* Icono de advertencia para nodos en colapso */}

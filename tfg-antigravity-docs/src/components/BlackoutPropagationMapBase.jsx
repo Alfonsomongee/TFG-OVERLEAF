@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { useColorMode } from '@docusaurus/theme-common';
@@ -88,6 +88,15 @@ function BlackoutMapContent({ lang = 'es' }) {
     reliefDark: isDark ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.06)',
   };
 
+  // FIX 3 — IDs únicos por instancia (React 17 compatible)
+  const uid = useRef(`bpm-${Math.random().toString(36).slice(2, 7)}`).current;
+  const ids = {
+    landGrad:   `${uid}-landGrad`,
+    relief:     `${uid}-relief`,
+    glowRed:    `${uid}-glowRed`,
+    clipIberia: `${uid}-clipIberia`,
+  };
+
   
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -145,35 +154,47 @@ function BlackoutMapContent({ lang = 'es' }) {
       >
         
         <defs>
-          <filter id="bp-glow-red">
+          {/* FIX 2+3 — filter con unidades absolutas e ID único */}
+          <filter id={ids.glowRed}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feGaussianBlur stdDeviation="4" result="blur"/>
             <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-          <clipPath id="clip-iberia">
+          <clipPath id={ids.clipIberia}>
             <path d={IBERIA_PATH} />
             <path d={BALEARES_PATH} />
           </clipPath>
-          <radialGradient id="landGrad" cx="45%" cy="45%" r="65%">
+          {/* FIX 1+3 — gradientUnits userSpaceOnUse + coordenadas absolutas viewBox */}
+          <radialGradient id={ids.landGrad}
+            cx="450" cy="360" r="520"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor={palette.landGradientStart} />
             <stop offset="100%" stopColor={palette.landGradientEnd} />
           </radialGradient>
-          <filter id="relief" x="-5%" y="-5%" width="110%" height="110%">
+          {/* FIX 2+3 — filterUnits userSpaceOnUse + coordenadas absolutas */}
+          <filter id={ids.relief}
+            x="-50" y="-50" width="1100" height="900"
+            filterUnits="userSpaceOnUse"
+          >
             <feDropShadow dx="1.5" dy="2" stdDeviation="2.5" floodColor={palette.reliefDark} floodOpacity="0.6" />
           </filter>
         </defs>
 
-        <g filter="url(#relief)" opacity={simTime >= 8 ? 0.4 : 1} style={{ transition: 'opacity 1s ease' }}>
-          <path d={IBERIA_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
-          <path d={BALEARES_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
+        <g filter={`url(#${ids.relief})`} opacity={simTime >= 8 ? 0.4 : 1} style={{ transition: 'opacity 1s ease' }}>
+          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
+          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
         </g>
-        
-        <g clipPath="url(#clip-iberia)" opacity={simTime >= 8 ? 0.2 : 0.5} style={{ transition: 'opacity 1s ease' }}>
+
+        <g clipPath={`url(#${ids.clipIberia})`} opacity={simTime >= 8 ? 0.2 : 0.5} style={{ transition: 'opacity 1s ease' }}>
           {Array.from({ length: 18 }, (_, i) => (
             <path key={`rel-${i}`} d={`M ${80 + i * 40} ${60 + i * 25} C ${400 + i * 15} ${100 + i * 10}, ${600 - i * 20} ${500 - i * 15}, ${200 + i * 30} ${600 - i * 20}`} fill="none" stroke={palette.reliefLight} strokeWidth="1.8" strokeDasharray="8 6" />
           ))}
         </g>
         
-        <g clipPath="url(#clip-iberia)" opacity={simTime >= 8 ? 0.2 : 0.6} style={{ transition: 'opacity 1s ease' }}>
+        <g clipPath={`url(#${ids.clipIberia})`} opacity={simTime >= 8 ? 0.2 : 0.6} style={{ transition: 'opacity 1s ease' }}>
           {Array.from({ length: 12 }, (_, i) => (
             <line key={`grid-h-${i}`} x1={0} y1={(VIEWBOX.height / 12) * i} x2={VIEWBOX.width} y2={(VIEWBOX.height / 12) * i} stroke={palette.gridLine} strokeWidth="0.8" />
           ))}
@@ -249,7 +270,7 @@ function BlackoutMapContent({ lang = 'es' }) {
                 fill={node.isActive ? colors.fill : 'rgba(15,30,55,0.8)'}
                 stroke={node.isActive ? colors.stroke : 'rgba(0,217,255,0.1)'}
                 strokeWidth={isHovered ? 2.5 : 1.5}
-                filter={node.isCollapsing ? 'url(#bp-glow-red)' : 'none'}
+                filter={node.isCollapsing ? `url(#${ids.glowRed})` : 'none'}
               />
 
               {/* Signo de exclamación en nodos en colapso */}
@@ -311,7 +332,7 @@ function BlackoutMapContent({ lang = 'es' }) {
             <text x="500" y="390" textAnchor="middle"
                   fontSize="22" fontFamily="var(--font-mono,monospace)"
                   fontWeight="900" fill="#ef4444"
-                  filter="url(#bp-glow-red)" opacity="0.85">
+                  filter={`url(#${ids.glowRed})`} opacity="0.85">
               CERO ELÉCTRICO SISTÉMICO
             </text>
             <text x="500" y="415" textAnchor="middle"
