@@ -7,6 +7,7 @@ import ForensicReveal from '@site/src/components/ForensicReveal';
 import GlossaryLink from '@site/src/components/GlossaryLink';
 import ForensicNarrative from '@site/src/components/GaleriaForense/ForensicNarrative';
 import { ForensicTable } from '@site/src/components/ForensicUI/Primitives';
+import Collapsible from '@site/src/components/Collapsible';
 
 export default {
   // Re-use the default mapping
@@ -18,4 +19,5 @@ export default {
   GlossaryLink,
   ForensicNarrative,
   ForensicTable,
+  Collapsible,
 };
