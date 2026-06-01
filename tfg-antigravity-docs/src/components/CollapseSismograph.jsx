@@ -86,6 +86,202 @@ export default function CollapseSismograph({ playbackT = 32.7, lang, isGallery }
         </h3>
       </div>
 
+      {/* ── CONTADOR EN TIEMPO REAL ─────────────────────────────────────── */}
+{(() => {
+  const current = cascadeData[cascadeData.length - 1];
+  if (!current) return null;
+  const isCollapsing = current.freq < 49.5;
+  const isVoltCritical = current.volt > 435;
+
+  return (
+    <div style={{
+      display: 'flex',
+      gap: '1px',
+      marginBottom: '1rem',
+      fontFamily: 'var(--font-mono, JetBrains Mono, monospace)',
+      borderRadius: '6px',
+      overflow: 'hidden',
+      border: '1px solid rgba(0,217,255,0.12)',
+    }}>
+      {/* Frecuencia */}
+      <div style={{
+        flex: 1,
+        padding: '10px 14px',
+        background: isCollapsing
+          ? 'rgba(239,68,68,0.08)'
+          : 'rgba(6,182,212,0.06)',
+        borderRight: '1px solid rgba(0,217,255,0.1)',
+      }}>
+        <div style={{
+          fontSize: '9px',
+          letterSpacing: '0.12em',
+          color: '#4b5563',
+          marginBottom: '4px',
+          textTransform: 'uppercase',
+        }}>
+          Frecuencia
+        </div>
+        <div style={{
+          fontSize: '1.6rem',
+          fontWeight: 700,
+          lineHeight: 1,
+          color: isCollapsing ? '#ef4444' : '#06b6d4',
+          transition: 'color 0.3s ease',
+        }}>
+          {current.freq.toFixed(2)}
+          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+            Hz
+          </span>
+        </div>
+        <div style={{
+          fontSize: '9px',
+          marginTop: '4px',
+          color: isCollapsing ? '#ef444480' : '#06b6d440',
+        }}>
+          {isCollapsing
+            ? `▼ ${(50 - current.freq).toFixed(2)} Hz bajo nominal`
+            : 'Nominal 50 Hz'}
+        </div>
+      </div>
+
+      {/* Tensión */}
+      <div style={{
+        flex: 1,
+        padding: '10px 14px',
+        background: isVoltCritical
+          ? 'rgba(239,68,68,0.08)'
+          : 'rgba(239,68,68,0.04)',
+        borderRight: '1px solid rgba(0,217,255,0.1)',
+      }}>
+        <div style={{
+          fontSize: '9px',
+          letterSpacing: '0.12em',
+          color: '#4b5563',
+          marginBottom: '4px',
+          textTransform: 'uppercase',
+        }}>
+          Tensión 400 kV
+        </div>
+        <div style={{
+          fontSize: '1.6rem',
+          fontWeight: 700,
+          lineHeight: 1,
+          color: isVoltCritical ? '#ef4444' : '#f87171',
+          transition: 'color 0.3s ease',
+        }}>
+          {current.volt > 0 ? current.volt.toFixed(0) : '—'}
+          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+            kV
+          </span>
+        </div>
+        <div style={{
+          fontSize: '9px',
+          marginTop: '4px',
+          color: isVoltCritical ? '#ef444480' : '#ef444430',
+        }}>
+          {isVoltCritical
+            ? `▲ ${(current.volt - 420).toFixed(0)} kV sobre nominal`
+            : 'Nominal 420 kV'}
+        </div>
+      </div>
+
+      {/* Potencia perdida */}
+      <div style={{
+        flex: 1,
+        padding: '10px 14px',
+        background: 'rgba(245,158,11,0.05)',
+      }}>
+        <div style={{
+          fontSize: '9px',
+          letterSpacing: '0.12em',
+          color: '#4b5563',
+          marginBottom: '4px',
+          textTransform: 'uppercase',
+        }}>
+          Generación perdida
+        </div>
+        <div style={{
+          fontSize: '1.6rem',
+          fontWeight: 700,
+          lineHeight: 1,
+          color: current.lostMW > 10000 ? '#ef4444'
+               : current.lostMW > 3000  ? '#f59e0b'
+               : '#fbbf24',
+          transition: 'color 0.3s ease',
+        }}>
+          {(current.lostMW / 1000).toFixed(1)}
+          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+            GW
+          </span>
+        </div>
+        <div style={{
+          fontSize: '9px',
+          marginTop: '4px',
+          color: '#f59e0b40',
+        }}>
+          {current.lostMW > 0
+            ? `${((current.lostMW / 29600) * 100).toFixed(0)}% cap. peninsular`
+            : 'Sistema estable'}
+        </div>
+      </div>
+
+      {/* Evento actual */}
+      <div style={{
+        flex: 2,
+        padding: '10px 14px',
+        background: 'rgba(0,0,0,0.2)',
+      }}>
+        <div style={{
+          fontSize: '9px',
+          letterSpacing: '0.12em',
+          color: '#4b5563',
+          marginBottom: '4px',
+          textTransform: 'uppercase',
+        }}>
+          Evento — {current.timeLabel}
+        </div>
+        <div style={{
+          fontSize: '0.78rem',
+          color: '#94a3b8',
+          lineHeight: 1.4,
+        }}>
+          {current.event}
+        </div>
+        <div style={{
+          marginTop: '6px',
+          display: 'flex',
+          gap: '6px',
+          alignItems: 'center',
+        }}>
+          <div style={{
+            width: 6, height: 6,
+            borderRadius: '50%',
+            background: isCollapsing ? '#ef4444' : '#10b981',
+            boxShadow: isCollapsing ? '0 0 6px #ef4444' : '0 0 6px #10b981',
+          }}>
+            {isCollapsing && (
+              <style>{`
+                @keyframes pulse-red {
+                  0%, 100% { opacity: 1; }
+                  50% { opacity: 0.3; }
+                }
+              `}</style>
+            )}
+          </div>
+          <span style={{
+            fontSize: '9px',
+            fontFamily: 'var(--font-mono, monospace)',
+            color: isCollapsing ? '#ef4444' : '#10b981',
+            letterSpacing: '0.08em',
+          }}>
+            {isCollapsing ? 'COLAPSO EN CURSO' : 'SISTEMA OPERATIVO'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+})()}
+
       <div className={styles.chartWrapper}>
         <BrowserOnly fallback={<div className={styles.loading}>Activando telemetría forense...</div>}>
           {() => (

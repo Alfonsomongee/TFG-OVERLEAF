@@ -57,7 +57,7 @@ export default function CuestionAbierta({
           fontSize:       'inherit',
           fontWeight:     'inherit',
           color:          '#f59e0b',
-          borderBottom:   '2px dotted rgba(245,158,11,0.7)',
+          borderBottom:   'none',
           textDecoration: 'none',
           lineHeight:     'inherit',
         }}

@@ -1,233 +1,528 @@
-import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-const getGridData = (lang) => {
-  const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
-  return {
-    nodes: [
-      { id: 'GRN', name: t('Caparacena (Fallo Inicial)', 'Caparacena (Initial Failure)', 'Caparacena (Falha Inicial)', 'Caparacena (Défaillance Initiale)', 'Caparacena (Guasto Iniziale)', 'Caparacena (Anfänglicher Fehler)'), group: 1, val: 25, activeColor: '#ef4444', defaultColor: '#10b981', activationTime: 2, fx: 10, fy: 100 },
-      { id: 'SEV', name: t('Alcores (Efecto Dominó Sur)', 'Alcores (South Domino Effect)', 'Alcores (Efeito Dominó Sul)', 'Alcores (Effet Domino Sud)', 'Alcores (Effetto Domino Sud)', 'Alcores (Südlicher Dominoeffekt)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4, fx: -40, fy: 80 },
-      { id: 'BAD', name: t('Guillena (Colapso Tensión)', 'Guillena (Voltage Collapse)', 'Guillena (Colapso de Tensão)', 'Guillena (Effondrement de Tension)', 'Guillena (Collasso di Tensione)', 'Guillena (Spannungskollaps)'), group: 1, val: 15, activeColor: '#f97316', defaultColor: '#10b981', activationTime: 4, fx: -60, fy: 40 },
-      { id: 'MAD', name: t('Madrid Morata (Contención)', 'Madrid Morata (Containment)', 'Madrid Morata (Contenção)', 'Madrid Morata (Confinement)', 'Madrid Morata (Contenimento)', 'Madrid Morata (Eindämmung)'), group: 2, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 0, fy: 0 },
-      { id: 'ALM', name: t('C.N. Almaraz (Inercia Base)', 'C.N. Almaraz (Base Inertia)', 'C.N. Almaraz (Inércia Base)', 'C.N. Almaraz (Inertie de Base)', 'C.N. Almaraz (Inerzia di Base)', 'C.N. Almaraz (Basisträgheit)'), group: 2, val: 25, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: -50, fy: 0 },
-      { id: 'ZAR', name: t('Aragón (Puente Norte)', 'Aragon (North Bridge)', 'Aragão (Ponte Norte)', 'Aragon (Pont Nord)', 'Aragona (Ponte Nord)', 'Aragonien (Nordbrücke)'), group: 3, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 50, fy: -50 },
-      { id: 'BAR', name: t('Rubí (Resistencia Este)', 'Rubí (East Resistance)', 'Rubí (Resistência Leste)', 'Rubí (Résistance Est)', 'Rubí (Resistenza Est)', 'Rubí (Ost-Widerstand)'), group: 3, val: 20, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: 120, fy: -60 },
-      { id: 'LIS', name: t('Lisboa (Desequilibrio)', 'Lisbon (Imbalance)', 'Lisboa (Desequilíbrio)', 'Lisbonne (Déséquilibre)', 'Lisbona (Squilibrio)', 'Lissabon (Ungleichgewicht)'), group: 4, val: 20, activeColor: '#f59e0b', defaultColor: '#10b981', activationTime: 6, fx: -120, fy: 30 },
-      { id: 'POR', name: t('Porto (Compensación)', 'Porto (Compensation)', 'Porto (Compensação)', 'Porto (Compensation)', 'Porto (Compensazione)', 'Porto (Kompensation)'), group: 4, val: 15, activeColor: '#10b981', defaultColor: '#10b981', activationTime: 0, fx: -110, fy: -30 },
-      { id: 'FR', name: t('Francia (Rescate Externo)', 'France (External Rescue)', 'França (Resgate Externo)', 'France (Sauvetage Externe)', 'Francia (Salvataggio Esterno)', 'Frankreich (Externe Rettung)'), group: 5, val: 30, activeColor: '#3b82f6', defaultColor: '#3b82f6', activationTime: 10, fx: 100, fy: -120 }
-    ],
-    links: [
-      { source: 'GRN', target: 'SEV', isCritical: true, flow: t('Sobrecarga masiva', 'Massive overload', 'Sobrecarga massiva', 'Surcharge massive', 'Sovraccarico massiccio', 'Massive Überlastung'), activationTime: 2 },
-      { source: 'SEV', target: 'BAD', isCritical: true, flow: t('Sobrecarga masiva', 'Massive overload', 'Sobrecarga massiva', 'Surcharge massive', 'Sovraccarico massiccio', 'Massive Überlastung'), activationTime: 4 },
-      { source: 'BAD', target: 'LIS', isCritical: true, flow: t('Oscilaciones Inter-área (0.8Hz)', 'Inter-area oscillations (0.8Hz)', 'Oscilações interárea (0.8Hz)', 'Oscillations inter-zones (0.8Hz)', 'Oscillazioni inter-area (0.8Hz)', 'Inter-Area-Schwingungen (0.8Hz)'), activationTime: 6 },
-      { source: 'LIS', target: 'POR', isCritical: false, activationTime: 0 },
-      { source: 'BAD', target: 'ALM', isCritical: false, activationTime: 0 },
-      { source: 'ALM', target: 'MAD', isCritical: false, activationTime: 0 },
-      { source: 'MAD', target: 'ZAR', isCritical: false, activationTime: 0 },
-      { source: 'ZAR', target: 'BAR', isCritical: false, activationTime: 0 },
-      { source: 'ZAR', target: 'FR', isCritical: true, flow: t('Importación de emergencia (Subfrecuencia)', 'Emergency import (Underfrequency)', 'Importação de emergência (Subfrequência)', 'Importation d\'urgence (Sous-fréquence)', 'Importazione di emergenza (Sottofrequenza)', 'Notimport (Unterfrequenz)'), activationTime: 10 },
-      { source: 'BAR', target: 'FR', isCritical: true, flow: t('Importación de emergencia (Subfrecuencia)', 'Emergency import (Underfrequency)', 'Importação de emergência (Subfrequência)', 'Importation d\'urgence (Sous-fréquence)', 'Importazione di emergenza (Sottofrequenza)', 'Notimport (Unterfrequenz)'), activationTime: 10 }
-    ]
-  };
+// ─── Proyección geográfica simplificada ──────────────────────────────────────
+// Convierte coordenadas lon/lat reales a píxeles en un viewBox 800×560
+// Bounds ibéricos: lon [-9.5, 3.4], lat [35.9, 43.9]
+function project(lon, lat) {
+  const LON_MIN = -9.5, LON_MAX = 3.4;
+  const LAT_MIN = 35.9, LAT_MAX = 43.9;
+  const W = 800, H = 560;
+  const x = ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W;
+  const y = H - ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
+  return [Math.round(x), Math.round(y)];
+}
+
+// ─── Contorno simplificado de la Península Ibérica (SVG path) ─────────────────
+// Path derivado de coordenadas geográficas reales, proyectadas al viewBox 800×560
+const IBERIAN_PATH = `
+  M 95,10 L 155,5 L 220,8 L 290,15 L 360,12 L 430,8 L 490,15 L 550,25
+  L 610,18 L 660,30 L 700,55 L 730,85 L 750,120 L 760,160 L 755,200
+  L 750,240 L 760,275 L 755,310 L 740,340 L 720,365 L 695,385 L 660,400
+  L 625,415 L 590,430 L 550,445 L 510,455 L 470,460 L 430,465 L 390,460
+  L 350,450 L 310,445 L 270,455 L 235,465 L 195,460 L 155,445 L 115,425
+  L 80,400 L 55,370 L 35,340 L 20,305 L 10,270 L 8,230 L 12,190
+  L 20,155 L 30,120 L 45,90 L 65,65 L 95,10 Z
+`;
+
+// Portugal aproximado (parte oeste)
+const PORTUGAL_PATH = `
+  M 95,10 L 65,65 L 45,90 L 30,120 L 20,155 L 12,190 L 8,230
+  L 10,270 L 20,305 L 35,340 L 55,370 L 80,400 L 115,425
+  L 130,415 L 140,390 L 135,350 L 140,310 L 145,270 L 140,230
+  L 145,190 L 150,150 L 145,110 L 130,75 L 110,40 L 95,10 Z
+`;
+
+// ─── Nodos con coordenadas reales verificadas ────────────────────────────────
+const NODES_ES = [
+  {
+    id: 'GRN', lon: -3.60, lat: 37.25,
+    name: 'Granada\n(Caparacena)',
+    desc: 'DISPARO RAÍZ\n−355 MW · −165 MVAr\n(ENTSO-E p.28)',
+    activationTime: 0, group: 'collapse',
+  },
+  {
+    id: 'SEV', lon: -5.95, lat: 37.40,
+    name: 'Sevilla\n(Alcores)',
+    desc: 'Efecto dominó sur\nSobrecarga masiva',
+    activationTime: 3, group: 'collapse',
+  },
+  {
+    id: 'BAD', lon: -6.97, lat: 38.88,
+    name: 'Badajoz\n(Guillena)',
+    desc: 'Colapso de tensión\nNúñez de Balboa',
+    activationTime: 5, group: 'collapse',
+  },
+  {
+    id: 'MAD', lon: -3.70, lat: 40.42,
+    name: 'Madrid\n(Morata)',
+    desc: 'Contención central\nÚltima resistencia',
+    activationTime: 0, group: 'stable',
+  },
+  {
+    id: 'ALM', lon: -5.87, lat: 39.75,
+    name: 'Almaraz\n(Nuclear)',
+    desc: 'Inercia base\n2 × 1.066 MW',
+    activationTime: 0, group: 'stable',
+  },
+  {
+    id: 'ZAR', lon: -0.88, lat: 41.65,
+    name: 'Aragón\n(Puente)',
+    desc: 'Corredor norte\nPuente transpirenaico',
+    activationTime: 0, group: 'stable',
+  },
+  {
+    id: 'BAR', lon: 2.02, lat: 41.47,
+    name: 'Cataluña\n(Rubí)',
+    desc: 'Resistencia este\nConexión AC Francia',
+    activationTime: 0, group: 'stable',
+  },
+  {
+    id: 'LIS', lon: -9.14, lat: 38.72,
+    name: 'Lisboa\n(Rele)',
+    desc: 'Desequilibrio\nOscilaciones 0.21 Hz',
+    activationTime: 6, group: 'portugal',
+  },
+  {
+    id: 'POR', lon: -8.61, lat: 41.15,
+    name: 'Porto\n(Norte)',
+    desc: 'Compensación\nCorrector de tensión',
+    activationTime: 0, group: 'portugal',
+  },
+  {
+    id: 'FR', lon: 2.81, lat: 42.72,
+    name: 'Francia\n(Baixas)',
+    desc: 'Rescate externo\nInterconexión AC + HVDC',
+    activationTime: 10, group: 'france',
+  },
+];
+
+// ─── Links con coordenadas derivadas de los nodos ────────────────────────────
+const LINKS = [
+  { source: 'GRN', target: 'SEV', isCritical: true,  activationTime: 2,  label: 'Sobrecarga' },
+  { source: 'SEV', target: 'BAD', isCritical: true,  activationTime: 4,  label: 'Cascada' },
+  { source: 'BAD', target: 'LIS', isCritical: true,  activationTime: 6,  label: '0.8 Hz' },
+  { source: 'LIS', target: 'POR', isCritical: false, activationTime: 0,  label: '' },
+  { source: 'BAD', target: 'ALM', isCritical: false, activationTime: 0,  label: '' },
+  { source: 'ALM', target: 'MAD', isCritical: false, activationTime: 0,  label: '' },
+  { source: 'MAD', target: 'ZAR', isCritical: false, activationTime: 0,  label: '' },
+  { source: 'ZAR', target: 'BAR', isCritical: false, activationTime: 0,  label: '' },
+  { source: 'ZAR', target: 'FR',  isCritical: true,  activationTime: 10, label: 'HVDC' },
+  { source: 'BAR', target: 'FR',  isCritical: true,  activationTime: 10, label: 'AC' },
+];
+
+// ─── Log de eventos ───────────────────────────────────────────────────────────
+const EVENT_LOG = [
+  { t: 0,  msg: '12:32:57 — Sistema operativo. Penetración renovable ≈82%. H_eq ≈ 2,4 s.' },
+  { t: 2,  msg: '12:32:57 — DISPARO RAÍZ: Trafo 400/220 kV Granada. −355 MW, −165 MVAr. (ENTSO-E p.28)' },
+  { t: 4,  msg: '12:33:00-10 — Tensión >440 kV. Protecciones ANSI 59 disparan plantas FV en cascada.' },
+  { t: 6,  msg: '12:33:10 — Oscilaciones inter-área alcanzan Portugal (0,21 Hz). Isla ibérica se debilita.' },
+  { t: 8,  msg: '12:33:18 — Frecuencia cae a 48,46 Hz. HVDC INELFE exporta 1.000 MW (PMODE1).' },
+  { t: 10, msg: '12:33:21 — PÉRDIDA DE SINCRONISMO. Apertura enlaces AC transpirenaicos (ANSI 78).' },
+  { t: 12, msg: '12:33:24 — CERO DE TENSIÓN SISTÉMICO. 15 GW perdidos en 30 segundos.' },
+];
+
+// ─── Colores por grupo ────────────────────────────────────────────────────────
+const GROUP_COLORS = {
+  collapse:  { fill: '#ef4444', stroke: '#fca5a5', pulse: true },
+  stable:    { fill: '#10b981', stroke: '#6ee7b7', pulse: false },
+  portugal:  { fill: '#f59e0b', stroke: '#fcd34d', pulse: false },
+  france:    { fill: '#3b82f6', stroke: '#93c5fd', pulse: false },
 };
 
-const getEventLog = (lang) => {
-  const t = (es, en, pt, fr, it, de) => ({es, en, pt, fr, it, de}[lang] || es);
-  return [
-    { t: 0, msg: t("12:32:57 CEST — Sistema ibérico en estado operativo. Alta penetración renovable (≈82%). H_eq ≈ 2,4 s.", "12:32:57 CEST — Iberian system in operational state. High renewable penetration (≈82%). H_eq ≈ 2.4 s.", "12:32:57 CEST — Sistema ibérico em estado operacional. Alta penetração renovável (≈82%). H_eq ≈ 2,4 s.", "12:32:57 CEST — Système ibérique en état opérationnel. Forte pénétration renouvelable (≈82%). H_eq ≈ 2,4 s.", "12:32:57 CEST — Sistema iberico in stato operativo. Alta penetrazione rinnovabile (≈82%). H_eq ≈ 2,4 s.", "12:32:57 CEST — Iberisches System in Betriebszustand. Hoher Anteil erneuerbarer Energien (≈82%). H_eq ≈ 2,4 s.") },
-    { t: 2, msg: t("12:32:57 CEST — DISPARO RAÍZ: Transformador 400/220 kV en Granada (Caparacena). Pérdida de −355 MW y −165 MVAr de absorción reactiva. (ENTSO-E Factual, p.28)", "12:32:57 CEST — ROOT TRIP: 400/220 kV transformer in Granada (Caparacena). Loss of −355 MW and −165 MVAr reactive absorption. (ENTSO-E Factual, p.28)", "12:32:57 CEST — DISPARO RAIZ: Transformador 400/220 kV em Granada (Caparacena). Perda de −355 MW e −165 MVAr de absorção reativa. (ENTSO-E Factual, p.28)", "12:32:57 CEST — DÉCLENCHEMENT RACINE : Transformateur 400/220 kV à Grenade (Caparacena). Perte de −355 MW et −165 MVAr d'absorption réactive. (ENTSO-E Factual, p.28)", "12:32:57 CEST — SCATTO RADICE: Trasformatore 400/220 kV a Granada (Caparacena). Perdita di −355 MW e −165 MVAr di assorbimento reattivo. (ENTSO-E Factual, p.28)", "12:32:57 CEST — WURZEL-AUSLÖSUNG: 400/220-kV-Transformator in Granada (Caparacena). Verlust von −355 MW und −165 MVAr Blindleistungsaufnahme. (ENTSO-E Factual, S.28)") },
-    { t: 4, msg: t("12:33:00–10 CEST — La tensión supera 440 kV en barras colectoras. Protecciones ANSI 59 disparan plantas FV en cascada en el sur.", "12:33:00–10 CEST — Voltage exceeds 440 kV at collector busbars. ANSI 59 protections trip PV plants in cascade across the south.", "12:33:00–10 CEST — A tensão supera 440 kV nas barras coletoras. Proteções ANSI 59 disparam plantas FV em cascata no sul.", "12:33:00–10 CEST — La tension dépasse 440 kV sur les jeux de barres collecteurs. Les protections ANSI 59 déclenchent les centrales PV en cascade dans le sud.", "12:33:00–10 CEST — La tensione supera 440 kV sulle barre collettori. Le protezioni ANSI 59 scattano sugli impianti FV a cascata nel sud.", "12:33:00–10 CEST — Spannung überschreitet 440 kV an Sammelschienen. ANSI-59-Schutz löst PV-Anlagen kaskadenartig im Süden aus.") },
-    { t: 6, msg: t("12:33:10 CEST — Oscilaciones inter-área alcanzan Portugal (0,21 Hz). La isla ibérica se debilita.", "12:33:10 CEST — Inter-area oscillations reach Portugal (0.21 Hz). The Iberian island weakens.", "12:33:10 CEST — Oscilações inter-área atingem Portugal (0,21 Hz). A ilha ibérica enfraquece.", "12:33:10 CEST — Les oscillations inter-zones atteignent le Portugal (0,21 Hz). L'île ibérique s'affaiblit.", "12:33:10 CEST — Le oscillazioni inter-area raggiungono il Portogallo (0,21 Hz). L'isola iberica si indebolisce.", "12:33:10 CEST — Inter-Area-Schwingungen erreichen Portugal (0,21 Hz). Die iberische Insel schwächt sich ab.") },
-    { t: 8, msg: t("12:33:18 CEST — Frecuencia cae a 48,46 Hz. El HVDC INELFE mantiene 1.000 MW de exportación a Francia (PMODE1).", "12:33:18 CEST — Frequency drops to 48.46 Hz. HVDC INELFE maintains 1,000 MW of export to France (PMODE1).", "12:33:18 CEST — Frequência cai para 48,46 Hz. O HVDC INELFE mantém 1.000 MW de exportação para a França (PMODE1).", "12:33:18 CEST — La fréquence chute à 48,46 Hz. L'HVDC INELFE maintient 1 000 MW d'exportation vers la France (PMODE1).", "12:33:18 CEST — La frequenza scende a 48,46 Hz. L'HVDC INELFE mantiene 1.000 MW di esportazione verso la Francia (PMODE1).", "12:33:18 CEST — Frequenz fällt auf 48,46 Hz. HVDC INELFE hält 1.000 MW Export nach Frankreich aufrecht (PMODE1).") },
-    { t: 10, msg: t("12:33:21 CEST — Pérdida de sincronismo. Apertura de enlaces AC transpirenaicos (ANSI 78 out-of-step).", "12:33:21 CEST — Loss of synchronism. Opening of trans-Pyrenean AC links (ANSI 78 out-of-step).", "12:33:21 CEST — Perda de sincronismo. Abertura dos elos AC transpirenáicos (ANSI 78 out-of-step).", "12:33:21 CEST — Perte de synchronisme. Ouverture des liaisons CA transpyrénéennes (ANSI 78 out-of-step).", "12:33:21 CEST — Perdita di sincronismo. Apertura dei collegamenti AC transpirenáici (ANSI 78 out-of-step).", "12:33:21 CEST — Synchronisationsverlust. Öffnung der transpyrenäischen AC-Verbindungen (ANSI 78 out-of-step).") },
-    { t: 12, msg: t("12:33:24 CEST — Cero de tensión sistémico. 15 GW de generación perdida en 30 segundos.", "12:33:24 CEST — Systemic voltage zero. 15 GW of generation lost in 30 seconds.", "12:33:24 CEST — Zero de tensão sistémico. 15 GW de geração perdida em 30 segundos.", "12:33:24 CEST — Zéro de tension systémique. 15 GW de production perdus en 30 secondes.", "12:33:24 CEST — Zero di tensione sistemico. 15 GW di generazione persi in 30 secondi.", "12:33:24 CEST — Systemischer Spannungsnullpunkt. 15 GW Erzeugung in 30 Sekunden verloren.") }
-  ];
-};
-
-function TopologyMapContent({ lang = 'es' }) {
-  const GRID_DATA = useMemo(() => getGridData(lang), [lang]);
-  const EVENT_LOG = useMemo(() => getEventLog(lang), [lang]);
-  const getStrings = (l) => {
-    switch (l) {
-      case 'en': return { title: 'Topological Simulator', play: 'Play', pause: 'Pause', replay: 'Replay', desc: 'This force-directed graph visualises the topological dependencies of the Iberian transmission grid. Hit <strong>Play</strong> to see the causal propagation of the collapse according to impedance flow.', zoomNote: '💡 Scroll mouse wheel to zoom in/out', loading: 'Loading Graph...' };
-      case 'pt': return { title: 'Simulador Topológico', play: 'Iniciar', pause: 'Pausar', replay: 'Repetir', desc: 'Este grafo de força dirigida visualiza as dependências topológicas da rede de transmissão ibérica. Clique em <strong>Iniciar</strong> para ver a propagação causal do colapso segundo o fluxo de impedâncias.', zoomNote: '💡 Deslize a roda do rato para ampliar/reduzir', loading: 'Carregando Grafo...' };
-      case 'fr': return { title: 'Simulateur Topologique', play: 'Lecture', pause: 'Pause', replay: 'Rejouer', desc: 'Ce graphe de force dirigée visualise les dépendances topologiques du réseau de transport ibérique. Appuyez sur <strong>Lecture</strong> pour voir la propagation causale de l\'effondrement selon le flux d\'impédance.', zoomNote: '💡 Utilisez la molette de la souris pour zoomer', loading: 'Chargement du Graphe...' };
-      case 'it': return { title: 'Simulatore Topologico', play: 'Play', pause: 'Pausa', replay: 'Riproduci', desc: 'Questo grafo a forza diretta visualizza le dipendenze topologiche della rete di trasmissione iberica. Premi <strong>Play</strong> per vedere la propagazione causale del collasso secondo il flusso di impedenza.', zoomNote: '💡 Usa la rotellina del mouse per ingrandire/ridurre', loading: 'Caricamento Grafo...' };
-      case 'de': return { title: 'Topologischer Simulator', play: 'Abspielen', pause: 'Pause', replay: 'Wiederholen', desc: 'Dieser kraftgesteuerte Graph visualisiert die topologischen Abhängigkeiten des iberischen Übertragungsnetzes. Drücken Sie <strong>Abspielen</strong>, um die kausale Ausbreitung des Kollapses gemäß dem Impedanzfluss zu sehen.', zoomNote: '💡 Mausrad drehen, um zu zoomen', loading: 'Graph wird geladen...' };
-      default: return { title: 'Simulador Topológico', play: 'Play', pause: 'Pausa', replay: 'Replay', desc: 'Este grafo de fuerza dirigida visualiza las dependencias topológicas de la red de transporte ibérica. Dale al <strong>Play</strong> para ver la propagación causal del colapso según el flujo de impedancias.', zoomNote: '💡 Desliza la rueda del ratón para ampliar o desampliar el mapa', loading: 'Cargando Grafo...' };
-    }
-  };
-  const strings = getStrings(lang);
-
-  const [ForceGraph2D, setForceGraph2D] = useState(null);
-  const fgRef = useRef();
-  
-  // Dynamic import para evitar problemas de SSR
-  useEffect(() => {
-    import(/* webpackChunkName: "force-graph-topology" */ 'react-force-graph-2d').then(module => {
-      setForceGraph2D(() => module.default);
-    });
-  }, []);
-
-  const [highlightNodes, setHighlightNodes] = useState(new Set());
-  const [highlightLinks, setHighlightLinks] = useState(new Set());
-  const [hoverNode, setHoverNode] = useState(null);
-  
+// ─── Componente principal ─────────────────────────────────────────────────────
+function TopologyContent({ lang = 'es' }) {
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const MAX_TIME = 14;
 
   useEffect(() => {
-    let interval;
-    if (isPlaying && simTime < 14) {
-      interval = setInterval(() => {
-        setSimTime(t => t + 1);
-      }, 1000);
-    } else if (simTime >= 14) {
-      setIsPlaying(false);
+    if (!isPlaying || simTime >= MAX_TIME) {
+      if (simTime >= MAX_TIME) setIsPlaying(false);
+      return;
     }
-    return () => clearInterval(interval);
+    const id = setInterval(() => setSimTime(t => t + 1), 900);
+    return () => clearInterval(id);
   }, [isPlaying, simTime]);
 
-  // Filtramos los eventos del log
-  const visibleLogs = EVENT_LOG.filter(log => log.t <= simTime).reverse();
+  const handlePlayPause = () => {
+    if (simTime >= MAX_TIME) { setSimTime(0); setIsPlaying(true); }
+    else setIsPlaying(p => !p);
+  };
 
-  // Pre-calcular vecinos para hover rápido
-  const neighbors = useRef(new Map());
-  useEffect(() => {
-    GRID_DATA.links.forEach(link => {
-      const a = typeof link.source === 'object' ? link.source.id : link.source;
-      const b = typeof link.target === 'object' ? link.target.id : link.target;
-      if (!neighbors.current.has(a)) neighbors.current.set(a, []);
-      if (!neighbors.current.has(b)) neighbors.current.set(b, []);
-      neighbors.current.get(a).push(b);
-      neighbors.current.get(b).push(a);
-    });
-  }, []);
+  // Nodos con coordenadas proyectadas precalculadas
+  const nodes = useMemo(() => NODES_ES.map(n => {
+    const [x, y] = project(n.lon, n.lat);
+    const isActive = simTime >= n.activationTime;
+    const isCollapsing = n.group === 'collapse' && isActive;
+    return { ...n, x, y, isActive, isCollapsing };
+  }), [simTime]);
 
-  const handleNodeHover = useCallback(node => {
-    setHighlightNodes(new Set());
-    setHighlightLinks(new Set());
-    if (node) {
-      const newHighlightNodes = new Set([node.id]);
-      if (neighbors.current.has(node.id)) {
-        neighbors.current.get(node.id).forEach(neighbor => newHighlightNodes.add(neighbor));
-      }
-      
-      const newHighlightLinks = new Set();
-      GRID_DATA.links.forEach(link => {
-        const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
-        const targetId = typeof link.target === 'object' ? link.target.id : link.target;
-        if (sourceId === node.id || targetId === node.id) {
-          newHighlightLinks.add(link);
-        }
-      });
-      
-      setHighlightNodes(newHighlightNodes);
-      setHighlightLinks(newHighlightLinks);
-    }
-    setHoverNode(node || null);
-  }, []);
+  const nodeMap = useMemo(() => Object.fromEntries(nodes.map(n => [n.id, n])), [nodes]);
 
-  if (!ForceGraph2D) return <div style={{height: 680}}>{strings.loading}</div>;
+  const visibleLogs = EVENT_LOG.filter(e => e.time <= simTime || e.t <= simTime).reverse().slice(0, 4);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '680px', backgroundColor: '#0d1117', borderRadius: '12px', overflow: 'hidden', border: '1px solid #30363d' }}>
-      <ForceGraph2D
-        ref={fgRef}
-        height={680}
-        graphData={GRID_DATA}
-        nodeColor={node => highlightNodes.size === 0 || highlightNodes.has(node.id) ? node.color : 'rgba(255,255,255,0.1)'}
-        nodeRelSize={6}
-        nodeVal={node => node.val}
-        linkColor={link => {
-          if (highlightLinks.has(link)) return '#fff';
-          if (link.isCritical && simTime >= link.activationTime) return '#ef4444';
-          return 'rgba(255,255,255,0.2)';
-        }}
-        linkWidth={link => highlightLinks.has(link) ? 3 : (link.isCritical && simTime >= link.activationTime ? 2 : 1)}
-        linkDirectionalParticles={link => (link.isCritical && simTime >= link.activationTime) ? 4 : 0}
-        linkDirectionalParticleSpeed={0.01}
-        linkDirectionalParticleWidth={2}
-        onNodeHover={handleNodeHover}
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const currentNodeColor = (simTime >= node.activationTime) ? node.activeColor : node.defaultColor;
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      background: 'var(--bg-0, #050a14)',
+      borderRadius: 12,
+      border: '1px solid rgba(0,217,255,0.15)',
+      overflow: 'hidden',
+      fontFamily: 'var(--font-body, sans-serif)',
+    }}>
 
-          const label = node.name;
-          const fontSize = 12/globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
-          const textWidth = ctx.measureText(label).width;
-          const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2);
+      {/* ── SVG MAPA ─────────────────────────────────────────────────── */}
+      <svg
+        viewBox="0 0 800 560"
+        style={{ width: '100%', display: 'block' }}
+        aria-label="Mapa topológico de la red ibérica durante el colapso del 28-A"
+      >
+        <defs>
+          {/* Gradiente de fondo tipo "pantalla de radar" */}
+          <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+            <stop offset="0%"   stopColor="#0a1628" />
+            <stop offset="100%" stopColor="#050a14" />
+          </radialGradient>
 
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-          ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2 - 10, ...bckgDimensions);
+          {/* Grid de referencia */}
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,217,255,0.04)" strokeWidth="0.5"/>
+          </pattern>
 
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? currentNodeColor : 'rgba(255,255,255,0.2)';
-          ctx.fillText(label, node.x, node.y - 10);
+          {/* Filtro glow para nodos activos */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
 
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.val / 3, 0, 2 * Math.PI, false);
-          ctx.fillStyle = highlightNodes.size === 0 || highlightNodes.has(node.id) ? currentNodeColor : 'rgba(255,255,255,0.1)';
-          ctx.fill();
-        }}
-        nodeCanvasObjectMode={() => 'replace'}
-        cooldownTicks={0}
-        onEngineStop={() => {}}
-      />
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        pointerEvents: 'none',
-        backgroundColor: 'rgba(0,0,0,0.85)',
-        padding: '15px',
-        borderRadius: '8px',
-        border: '1px solid #30363d',
-        width: '320px',
-        color: '#fff',
-        display: 'flex',
-        flexDirection: 'column',
-        maxHeight: '400px'
-      }}>
-        <div style={{ pointerEvents: 'auto', marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h4 style={{ margin: 0, color: '#60a5fa' }}>{strings.title}</h4>
-          <div>
-            <button 
-              onClick={() => {
-                if (simTime >= 14) setSimTime(0);
-                setIsPlaying(!isPlaying);
-              }}
-              style={{
-                background: 'var(--ifm-color-primary)',
-                color: 'white',
-                border: 'none',
-                padding: '5px 12px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
+          {/* Filtro glow rojo intenso para colapso */}
+          <filter id="glowRed">
+            <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Fondo */}
+        <rect width="800" height="560" fill="url(#bgGrad)" />
+        <rect width="800" height="560" fill="url(#grid)" />
+
+        {/* Mar — tono ligeramente distinto al fondo */}
+        <rect width="800" height="560" fill="rgba(0,40,80,0.15)" />
+
+        {/* Contorno de Portugal (color diferente) */}
+        <path
+          d={PORTUGAL_PATH}
+          fill="rgba(15,30,60,0.6)"
+          stroke="rgba(0,217,255,0.12)"
+          strokeWidth="1"
+        />
+
+        {/* Contorno Península Ibérica */}
+        <path
+          d={IBERIAN_PATH}
+          fill="rgba(10,22,45,0.75)"
+          stroke="rgba(0,217,255,0.25)"
+          strokeWidth="1.5"
+        />
+
+        {/* Etiqueta "FRANCE" */}
+        <text x="620" y="25" fill="rgba(59,130,246,0.5)" fontSize="11"
+              fontFamily="var(--font-mono, monospace)" letterSpacing="3">
+          FRANCE
+        </text>
+
+        {/* Etiqueta "MAR MEDITERRÁNEO" */}
+        <text x="560" y="420" fill="rgba(0,217,255,0.2)" fontSize="10"
+              fontFamily="var(--font-mono, monospace)" letterSpacing="2"
+              transform="rotate(-5, 560, 420)">
+          MAR MEDITERRÁNEO
+        </text>
+
+        {/* Etiqueta "OCÉANO ATLÁNTICO" */}
+        <text x="20" y="280" fill="rgba(0,217,255,0.2)" fontSize="10"
+              fontFamily="var(--font-mono, monospace)" letterSpacing="1"
+              transform="rotate(-90, 20, 280)">
+          OCÉANO ATLÁNTICO
+        </text>
+
+        {/* ── LINKS ─────────────────────────────────────────────────── */}
+        {LINKS.map((link, i) => {
+          const src = nodeMap[link.source];
+          const tgt = nodeMap[link.target];
+          if (!src || !tgt) return null;
+
+          const isActive = simTime >= link.activationTime;
+          const isCollapsing = link.isCritical && isActive && simTime < 12;
+          const isLost = link.isCritical && simTime >= 10 && link.target === 'FR';
+
+          let stroke = 'rgba(0,217,255,0.08)';
+          let strokeWidth = 1;
+          let dashArray = '4 4';
+
+          if (isActive && !isLost) {
+            stroke = link.isCritical
+              ? (isCollapsing ? '#ef4444' : 'rgba(0,217,255,0.35)')
+              : 'rgba(0,217,255,0.25)';
+            strokeWidth = link.isCritical ? 2.5 : 1.5;
+            dashArray = link.isCritical ? 'none' : '4 3';
+          }
+
+          // Flecha de dirección
+          const dx = tgt.x - src.x;
+          const dy = tgt.y - src.y;
+          const len = Math.sqrt(dx*dx + dy*dy);
+          const mx = src.x + dx * 0.5;
+          const my = src.y + dy * 0.5;
+
+          return (
+            <g key={i}>
+              <line
+                x1={src.x} y1={src.y} x2={tgt.x} y2={tgt.y}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+                strokeDasharray={dashArray}
+                opacity={isLost ? 0.15 : 1}
+              />
+              {/* Label de la línea si tiene */}
+              {link.label && isActive && (
+                <text
+                  x={mx} y={my - 6}
+                  fill={link.isCritical ? '#f59e0b' : 'rgba(0,217,255,0.5)'}
+                  fontSize="9"
+                  fontFamily="var(--font-mono, monospace)"
+                  textAnchor="middle"
+                >
+                  {link.label}
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        {/* ── NODOS ─────────────────────────────────────────────────── */}
+        {nodes.map(node => {
+          const colors = GROUP_COLORS[node.group] || GROUP_COLORS.stable;
+          const isHovered = hoveredNode === node.id;
+          const r = node.group === 'france' ? 14 : (node.group === 'collapse' && node.isActive ? 13 : 10);
+
+          return (
+            <g
+              key={node.id}
+              style={{ cursor: 'pointer' }}
+              onMouseEnter={() => setHoveredNode(node.id)}
+              onMouseLeave={() => setHoveredNode(null)}
             >
-              {simTime >= 14 ? strings.replay : (isPlaying ? strings.pause : strings.play)}
-            </button>
+              {/* Halo pulsante para nodos en colapso */}
+              {node.isCollapsing && (
+                <circle
+                  cx={node.x} cy={node.y} r={r + 8}
+                  fill="none"
+                  stroke={colors.stroke}
+                  strokeWidth="1"
+                  opacity="0.4"
+                >
+                  <animate attributeName="r" values={`${r+4};${r+14};${r+4}`}
+                           dur="1.2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.5;0;0.5"
+                           dur="1.2s" repeatCount="indefinite" />
+                </circle>
+              )}
+
+              {/* Nodo principal */}
+              <circle
+                cx={node.x} cy={node.y} r={r}
+                fill={node.isActive ? colors.fill : 'rgba(15,30,55,0.9)'}
+                stroke={node.isActive ? colors.stroke : 'rgba(0,217,255,0.15)'}
+                strokeWidth={isHovered ? 2.5 : 1.5}
+                filter={node.isCollapsing ? 'url(#glowRed)' : (node.isActive ? 'url(#glow)' : 'none')}
+              />
+
+              {/* Icono de advertencia para nodos en colapso */}
+              {node.isCollapsing && (
+                <text
+                  x={node.x} y={node.y + 4}
+                  textAnchor="middle" fontSize="10"
+                  fill="#fff" fontWeight="bold"
+                >
+                  !</text>
+              )}
+
+              {/* Etiqueta del nodo */}
+              {node.name.split('\n').map((line, li) => (
+                <text
+                  key={li}
+                  x={node.x}
+                  y={node.y + r + 13 + li * 12}
+                  textAnchor="middle"
+                  fontSize={li === 0 ? 10 : 8.5}
+                  fontFamily="var(--font-mono, monospace)"
+                  fill={node.isActive ? '#e2e8f0' : '#475569'}
+                  fontWeight={li === 0 ? '600' : '400'}
+                >
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })}
+
+        {/* ── TOOLTIP DE NODO ───────────────────────────────────────── */}
+        {hoveredNode && (() => {
+          const node = nodeMap[hoveredNode];
+          if (!node) return null;
+          const lines = node.desc.split('\n');
+          const tw = 160;
+          // Ajuste para no salir del viewBox
+          let tx = node.x + 18;
+          if (tx + tw > 790) tx = node.x - tw - 18;
+          let ty = node.y - 20;
+
+          return (
+            <g>
+              <rect
+                x={tx - 6} y={ty - 14}
+                width={tw + 12}
+                height={lines.length * 15 + 18}
+                rx="4"
+                fill="rgba(5,10,20,0.95)"
+                stroke="rgba(0,217,255,0.3)"
+                strokeWidth="1"
+              />
+              {lines.map((line, li) => (
+                <text
+                  key={li}
+                  x={tx} y={ty + li * 15}
+                  fontSize={li === 0 ? 10 : 9}
+                  fill={li === 0 ? '#00d9ff' : '#94a3b8'}
+                  fontFamily="var(--font-mono, monospace)"
+                  fontWeight={li === 0 ? '700' : '400'}
+                >
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })()}
+      </svg>
+
+      {/* ── PANEL DE CONTROL ─────────────────────────────────────────── */}
+      <div style={{
+        position: 'absolute', top: 16, right: 16,
+        background: 'rgba(5,10,20,0.92)',
+        border: '1px solid rgba(0,217,255,0.2)',
+        borderRadius: 8,
+        padding: '12px 14px',
+        width: 260,
+        backdropFilter: 'blur(8px)',
+      }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center',
+                      justifyContent: 'space-between', marginBottom: 10 }}>
+          <span style={{
+            fontFamily: 'var(--font-mono, monospace)',
+            fontSize: 11, letterSpacing: '0.1em',
+            color: '#00d9ff', fontWeight: 700,
+          }}>
+            TOPOLOGÍA RED IBÉRICA
+          </span>
+          <button
+            onClick={handlePlayPause}
+            style={{
+              background: simTime >= MAX_TIME ? '#10b981' :
+                          (isPlaying ? 'rgba(239,68,68,0.2)' : 'rgba(0,217,255,0.15)'),
+              border: `1px solid ${simTime >= MAX_TIME ? '#10b981' :
+                       (isPlaying ? '#ef4444' : '#00d9ff')}`,
+              color: simTime >= MAX_TIME ? '#fff' :
+                     (isPlaying ? '#ef4444' : '#00d9ff'),
+              padding: '4px 12px', borderRadius: 4,
+              cursor: 'pointer', fontSize: 11,
+              fontFamily: 'var(--font-mono, monospace)',
+              fontWeight: 700, letterSpacing: '0.05em',
+            }}
+          >
+            {simTime >= MAX_TIME ? '↺ REPLAY' : (isPlaying ? '⏸ PAUSA' : '▶ PLAY')}
+          </button>
+        </div>
+
+        {/* Barra de progreso temporal */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{
+            display: 'flex', justifyContent: 'space-between',
+            fontSize: 9, color: '#475569',
+            fontFamily: 'var(--font-mono, monospace)', marginBottom: 4,
+          }}>
+            <span>12:32:57</span>
+            <span>12:33:27 CEST</span>
+          </div>
+          <div style={{
+            height: 4, background: 'rgba(0,217,255,0.1)',
+            borderRadius: 2, overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${(simTime / MAX_TIME) * 100}%`,
+              background: simTime >= 10
+                ? 'linear-gradient(90deg, #f59e0b, #ef4444)'
+                : 'linear-gradient(90deg, #00d9ff, #10b981)',
+              borderRadius: 2,
+              transition: 'width 0.9s ease, background 0.3s ease',
+            }} />
           </div>
         </div>
-        
-        <p style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: '#9ca3af' }} dangerouslySetInnerHTML={{__html: strings.desc}} />
-        <p style={{ margin: '0 0 10px 0', fontSize: '0.75rem', color: '#60a5fa', fontStyle: 'italic' }}>{strings.zoomNote}</p>
-        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {visibleLogs.map((log, idx) => (
-            <div key={idx} style={{
-              fontSize: '0.85rem',
-              padding: '8px',
-              backgroundColor: idx === 0 ? 'rgba(96, 165, 250, 0.15)' : 'transparent',
-              borderLeft: idx === 0 ? '3px solid #60a5fa' : '3px solid transparent',
-              color: idx === 0 ? '#fff' : '#9ca3af',
-              transition: 'all 0.3s ease'
-            }}>
-              {log.msg}
+
+        {/* Leyenda */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr',
+          gap: '4px 8px', marginBottom: 10, fontSize: 9,
+          fontFamily: 'var(--font-mono, monospace)',
+        }}>
+          {[
+            { color: '#ef4444', label: 'Nodo en colapso' },
+            { color: '#10b981', label: 'Nodo estable' },
+            { color: '#f59e0b', label: 'Portugal' },
+            { color: '#3b82f6', label: 'Francia' },
+          ].map(({ color, label }) => (
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%',
+                            background: color, flexShrink: 0 }} />
+              <span style={{ color: '#94a3b8' }}>{label}</span>
             </div>
           ))}
+        </div>
+
+        {/* Log de eventos */}
+        <div style={{
+          borderTop: '1px solid rgba(0,217,255,0.1)',
+          paddingTop: 8, maxHeight: 150, overflowY: 'auto',
+        }}>
+          {visibleLogs.length === 0 ? (
+            <p style={{ color: '#475569', fontSize: 9,
+                        fontFamily: 'var(--font-mono, monospace)', margin: 0 }}>
+              Pulsa PLAY para iniciar la simulación
+            </p>
+          ) : (
+            visibleLogs.map((log, i) => (
+              <div key={i} style={{
+                fontSize: 9.5,
+                fontFamily: 'var(--font-mono, monospace)',
+                color: i === 0 ? '#e2e8f0' : '#475569',
+                borderLeft: `2px solid ${i === 0 ? '#00d9ff' : 'transparent'}`,
+                paddingLeft: 6, marginBottom: 6,
+                transition: 'all 0.3s ease',
+              }}>
+                {log.msg}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -235,20 +530,17 @@ function TopologyMapContent({ lang = 'es' }) {
 }
 
 export default function IberianGridTopology({ lang = 'es' }) {
-  const getLoadingText = (l) => {
-    switch(l) {
-      case 'en': return 'Loading grid topology...';
-      case 'pt': return 'Carregando topologia de rede...';
-      case 'fr': return 'Chargement de la topologie du réseau...';
-      case 'it': return 'Caricamento della topologia di rete...';
-      case 'de': return 'Netztopologie wird geladen...';
-      default: return 'Cargando topología de red...';
-    }
-  };
-
   return (
-    <BrowserOnly fallback={<div>{getLoadingText(lang)}</div>}>
-      {() => <TopologyMapContent lang={lang} />}
+    <BrowserOnly fallback={
+      <div style={{
+        height: 480, background: '#050a14', borderRadius: 12,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: '#00d9ff', fontFamily: 'monospace', fontSize: 12,
+      }}>
+        Cargando topología de red ibérica…
+      </div>
+    }>
+      {() => <TopologyContent lang={lang} />}
     </BrowserOnly>
   );
 }

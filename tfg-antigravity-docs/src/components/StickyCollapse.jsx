@@ -221,7 +221,7 @@ function ScrollyMode({ steps, lang }) {
             return (
               <Step key={i} data={i}>
                 <div style={{
-                  margin: '45vh 0',
+                  margin: i === steps.length - 1 ? '45vh 0 0 0' : '45vh 0',
                   padding: '1.25rem',
                   background: 'var(--ifm-background-surface-color)',
                   border: isActive

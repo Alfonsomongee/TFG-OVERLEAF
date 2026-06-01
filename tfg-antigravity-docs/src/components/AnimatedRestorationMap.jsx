@@ -1,106 +1,130 @@
-/**
- * AnimatedRestorationMap.jsx
- * Mapa animado de secuencias de reposición del sistema ibérico.
- *
- * CORRECCIONES respecto a la versión anterior:
- *
- * 1. RENDIMIENTO — isEnergized cacheado:
- *    La versión anterior recorría TODOS los links en cada frame del canvas
- *    (60 fps × n_nodos × n_links = miles de iteraciones/segundo).
- *    Ahora se precalcula un Set de nudos energizados que solo se actualiza
- *    cuando cambia simTime, no en cada frame.
- *
- * 2. BUNDLE — webpackChunkName:
- *    El import dinámico de react-force-graph-2d ahora tiene un nombre de
- *    chunk explícito para que aparezca identificado en el bundle analyzer.
- *    Esto facilita diagnosticar su peso (~800 KB–1,2 MB con D3+Three.js).
- *
- * 3. DATOS — hora de inicio corregida:
- *    El blackout fue a las 12:33 CEST (no 16:35). Los eventos del log
- *    ahora usan horarios coherentes con datos28A.json.
- *    - t=0  → 12:33 CEST: blackout sistémico
- *    - t=2  → ~12:50 CEST: inicio reposición Francia → Cataluña
- *    - t=11 → ~19:50 CEST: sincronización final (coherente con ENTSO-E)
- *
- * 4. ACCESIBILIDAD:
- *    Botón de play/pause con aria-label dinámico.
- *    Región del log con aria-live="polite".
- *
- * NOTA: react-force-graph-2d carga D3 completo + Three.js.
- * Es el chunk más pesado del proyecto. Considerar sustituir
- * por un grafo SVG estático+animado con CSS para el congreso
- * si el LCP sigue siendo crítico después del lazy load general.
- */
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-// ─── Datos del grafo ──────────────────────────────────────────────────────────
-const getGridData = (lang) => {
-  const t = (...args) => ({ es: args[0], en: args[1], pt: args[2], fr: args[3], it: args[4], de: args[5] }[lang] || args[0]);
-  return {
-    nodes: [
-      { id: 'FRA', name: t('Francia', 'France', 'França', 'France', 'Francia', 'Frankreich'),          group: 0, val: 30, fx: 100,  fy: -110 },
-      { id: 'CAT', name: t('Cataluña', 'Catalonia', 'Catalunha', 'Catalogne', 'Catalogna', 'Katalonien'), group: 1, val: 20, fx: 75,   fy: -55  },
-      { id: 'ARA', name: t('Aragón', 'Aragon', 'Aragão', 'Aragon', 'Aragona', 'Aragonien'),            group: 1, val: 15, fx: 35,   fy: -35  },
-      { id: 'CEN', name: t('Madrid (Centro)', 'Madrid (Central)', 'Madrid', 'Madrid', 'Madrid', 'Madrid'), group: 2, val: 25, fx: 0,    fy: 0    },
-      { id: 'POR', name: t('Portugal', 'Portugal', 'Portugal', 'Portugal', 'Portogallo', 'Portugal'),   group: 0, val: 25, fx: -105, fy: -5   },
-      { id: 'GAL', name: t('Galicia/León', 'Galicia/León', 'Galiza/Leão', 'Galice/León', 'Galizia/León', 'Galicien/León'), group: 3, val: 15, fx: -80, fy: -65 },
-      { id: 'SUR', name: t('Andalucía', 'Andalusia', 'Andaluzia', 'Andalousie', 'Andalusia', 'Andalusien'), group: 4, val: 20, fx: -25, fy: 85  },
-      { id: 'LEV', name: t('Levante', 'Levante', 'Levante', 'Levante', 'Levante', 'Levante'),          group: 5, val: 15, fx: 65,   fy: 50   },
-    ],
-    links: [
-      { source: 'FRA', target: 'CAT', activationTime: 2,  isTopDown: true  },
-      { source: 'CAT', target: 'ARA', activationTime: 4,  isTopDown: true  },
-      { source: 'ARA', target: 'CEN', activationTime: 6,  isTopDown: true  },
-      { source: 'POR', target: 'GAL', activationTime: 3,  isTopDown: true  },
-      { source: 'POR', target: 'CEN', activationTime: 7,  isTopDown: true  },
-      { source: 'SUR', target: 'LEV', activationTime: 5,  isBottomUp: true },
-      { source: 'SUR', target: 'CEN', activationTime: 9,  isBottomUp: true },
-      { source: 'LEV', target: 'CAT', activationTime: 11, isBottomUp: true },
-    ],
-  };
-};
+// ─── Proyección (misma que IberianGridTopology) ───────────────────────────────
+function project(lon, lat) {
+  const LON_MIN = -9.5, LON_MAX = 3.4;
+  const LAT_MIN = 35.9, LAT_MAX = 43.9;
+  const W = 800, H = 520;
+  const x = ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W;
+  const y = H - ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
+  return [Math.round(x), Math.round(y)];
+}
 
-// ─── Log de eventos con horas verificadas (datos28A.json) ────────────────────
-const getEventLog = (lang) => {
-  const t = (...args) => ({ es: args[0], en: args[1] }[lang] || args[0]);
-  return [
-    { time: 0,  msg: t('12:33 CEST — Blackout sistémico. 7 islas desenergizadas. Proceso de restitución activado.', '12:33 CEST — Systemic blackout. 7 de-energized islands. Restoration begins.') },
-    { time: 2,  msg: t('~12:50 CEST — TOP-DOWN: Francia energiza la interconexión transpirenaica. Cataluña recupera tensión.', '~12:50 CEST — TOP-DOWN: France energizes interconnection. Catalonia recovers voltage.') },
-    { time: 3,  msg: t('~13:15 CEST — TOP-DOWN: Portugal inyecta potencia hacia Galicia y León.', '~13:15 CEST — TOP-DOWN: Portugal injects power towards Galicia/León.') },
-    { time: 4,  msg: t('~13:40 CEST — Malla Nordeste: Aragón se sincroniza con Cataluña.', '~13:40 CEST — Northeast mesh: Aragon syncs with Catalonia.') },
-    { time: 5,  msg: t('~14:10 CEST — BOTTOM-UP: Arranque autónomo hidráulico en Andalucía (black-start).', '~14:10 CEST — BOTTOM-UP: Black-start hydro in Andalusia. Live island created.') },
-    { time: 6,  msg: t('~14:30 CEST — Top-Down avanza: tensión llega a la isla central (Madrid).', '~14:30 CEST — Top-Down expansion: voltage reaches Central island (Madrid).') },
-    { time: 7,  msg: t('~14:45 CEST — Portugal sincroniza su corredor este con la isla central.', '~14:45 CEST — Portugal syncs east corridor with Central island.') },
-    { time: 9,  msg: t('~15:20 CEST — Cierre Sur-Centro: isla andaluza se acopla al esqueleto principal.', '~15:20 CEST — South-Center closure: Andalusian island couples to main skeleton.') },
-    { time: 11, msg: t('~19:50 CEST — Sincronización final: Levante cierra el anillo mediterráneo. Reposición completa del transporte ibérico.', '~19:50 CEST — Final sync: Levante closes Mediterranean ring. Full transport restoration.') },
-  ];
-};
+// ─── Contorno ibérico (mismo path que IberianGridTopology) ────────────────────
+const IBERIAN_PATH = `
+  M 95,10 L 155,5 L 220,8 L 290,15 L 360,12 L 430,8 L 490,15 L 550,25
+  L 610,18 L 660,30 L 700,55 L 730,85 L 750,120 L 760,160 L 755,200
+  L 750,240 L 760,275 L 755,310 L 740,340 L 720,365 L 695,385 L 660,400
+  L 625,415 L 590,430 L 550,445 L 510,455 L 470,460 L 430,465 L 390,460
+  L 350,450 L 310,445 L 270,455 L 235,465 L 195,460 L 155,445 L 115,425
+  L 80,400 L 55,370 L 35,340 L 20,305 L 10,270 L 8,230 L 12,190
+  L 20,155 L 30,120 L 45,90 L 65,65 L 95,10 Z
+`;
 
-// ─── Strings de UI ────────────────────────────────────────────────────────────
-const UI = {
-  es: { title: 'Secuencias de Reposición', play: 'Iniciar', pause: 'Pausar', replay: 'Repetir', desc: 'Restitución simultánea Top-Down (interconexiones) y Bottom-Up (hidráulica en arranque autónomo).' },
-  en: { title: 'Restoration Sequences',    play: 'Play',    pause: 'Pause',  replay: 'Replay', desc: 'Simultaneous Top-Down (interconnections) and Bottom-Up (black-start hydro) grid restoration.' },
-};
+// ─── Las 7 islas eléctricas como polígonos aproximados ───────────────────────
+// Cada isla es un conjunto de puntos [lon, lat] que definen su contorno
+const ISLANDS = [
+  {
+    id: 'SUR',
+    name: 'Sur\n(Andalucía)',
+    color: '#f59e0b',
+    restoreTime: 5,
+    blackStartTime: 5,
+    blackStartType: 'bottom-up',
+    anchor: { lon: -4.5, lat: 37.5 },
+    restorePercent: 18,
+    points: [[-9.5,36.0],[-5.5,35.9],[-1.8,36.8],[-1.5,38.5],[-3.0,39.5],[-5.5,39.0],[-7.5,38.5],[-9.5,37.5]],
+  },
+  {
+    id: 'CEN',
+    name: 'Centro\n(Madrid)',
+    color: '#00d9ff',
+    restoreTime: 6,
+    blackStartType: 'top-down',
+    anchor: { lon: -3.5, lat: 40.4 },
+    restorePercent: 22,
+    points: [[-5.5,39.0],[-3.0,39.5],[-1.5,38.5],[0.5,39.0],[1.0,41.0],[-0.5,42.0],[-2.5,42.5],[-5.0,42.0],[-6.0,41.0],[-5.5,39.0]],
+  },
+  {
+    id: 'LEV',
+    name: 'Levante\n(Valencia)',
+    color: '#10b981',
+    restoreTime: 7,
+    blackStartType: 'bottom-up',
+    anchor: { lon: 0.0, lat: 39.5 },
+    restorePercent: 12,
+    points: [[-1.5,38.5],[0.8,37.5],[3.4,39.5],[2.5,41.5],[1.0,41.0],[0.5,39.0],[-1.5,38.5]],
+  },
+  {
+    id: 'CAT',
+    name: 'Cataluña\n(NE)',
+    color: '#a78bfa',
+    restoreTime: 3,
+    blackStartType: 'top-down',
+    anchor: { lon: 1.8, lat: 41.8 },
+    restorePercent: 10,
+    points: [[1.0,41.0],[2.5,41.5],[3.4,42.8],[1.5,43.5],[0.0,43.0],[-0.5,42.0],[1.0,41.0]],
+  },
+  {
+    id: 'NOR',
+    name: 'Norte\n(Euskadi)',
+    color: '#f472b6',
+    restoreTime: 4,
+    blackStartType: 'top-down',
+    anchor: { lon: -2.5, lat: 43.0 },
+    restorePercent: 8,
+    points: [[-5.0,42.0],[-2.5,42.5],[-0.5,42.0],[0.0,43.0],[-0.5,43.8],[-2.0,43.5],[-4.5,43.8],[-6.0,43.5],[-5.5,42.5],[-5.0,42.0]],
+  },
+  {
+    id: 'GAL',
+    name: 'Galicia\nLeón',
+    color: '#34d399',
+    restoreTime: 3,
+    blackStartType: 'top-down',
+    anchor: { lon: -7.5, lat: 42.5 },
+    restorePercent: 8,
+    points: [[-9.5,42.0],[-6.0,41.0],[-5.0,42.0],[-5.5,42.5],[-6.0,43.5],[-7.5,43.8],[-9.0,43.8],[-9.5,43.0],[-9.5,42.0]],
+  },
+  {
+    id: 'POR',
+    name: 'Portugal',
+    color: '#60a5fa',
+    restoreTime: 3,
+    blackStartType: 'bottom-up',
+    anchor: { lon: -8.0, lat: 39.5 },
+    restorePercent: 10,
+    points: [[-9.5,37.5],[-7.5,38.5],[-6.0,41.0],[-9.5,42.0],[-9.5,37.5]],
+  },
+];
 
-// ─── Contenido principal ──────────────────────────────────────────────────────
-function AnimatedRestorationMapContent({ lang = 'es' }) {
-  const GRID_DATA  = useMemo(() => getGridData(lang), [lang]);
-  const EVENT_LOG  = useMemo(() => getEventLog(lang), [lang]);
-  const strings    = UI[lang] || UI.es;
+// ─── Puntos de Black Start verificados ───────────────────────────────────────
+const BLACK_START_POINTS = [
+  { id: 'CastBode',   lon: -8.27, lat: 39.48, name: 'Castelo de Bode\n(138 MW hidro)', time: 3, type: 'hydro' },
+  { id: 'TapOuteiro', lon: -8.42, lat: 41.22, name: 'Tapada do Outeiro\n(CCGT REN)',    time: 3, type: 'ccgt'  },
+  { id: 'Aldea',      lon: -6.49, lat: 41.20, name: 'Aldeadávila\n(1.100 MW hidro)',    time: 5, type: 'hydro' },
+  { id: 'Hernani',    lon: -1.97, lat: 43.27, name: 'Hernani\n(Conexión Francia)',      time: 2, type: 'france'},
+  { id: 'Baixas',     lon:  2.81, lat: 42.72, name: 'Baixas\n(Francia → Cataluña)',     time: 2, type: 'france'},
+];
 
-  const [ForceGraph2D, setForceGraph2D] = useState(null);
-  const fgRef = useRef();
+// ─── Log de eventos ────────────────────────────────────────────────────────────
+const EVENT_LOG = [
+  { time: 0,  msg: '12:33 CEST — Blackout sistémico. 7 islas desenergizadas.' },
+  { time: 2,  msg: '~12:44 CEST — TOP-DOWN: Hernani recibe tensión de Francia (31 MW iniciales).' },
+  { time: 3,  msg: '~12:45 CEST — BOTTOM-UP: Black Start Castelo de Bode (PT). Tapada do Outeiro activo.' },
+  { time: 4,  msg: '~13:04 CEST — Interconexión Marruecos: +900 MW. Norte y Galicia se estabilizan.' },
+  { time: 5,  msg: '~16:00 CEST — Aldeadávila (España) inicia Black Start. Isla Sur activa.' },
+  { time: 6,  msg: '~14:30 CEST — Madrid Central recupera tensión. Corredor centro conectado.' },
+  { time: 7,  msg: '~17:00 CEST — Levante sincroniza con el esqueleto principal.' },
+  { time: 8,  msg: '20:22 CEST — Portugal sincroniza frecuencia con continental europeo.' },
+  { time: 11, msg: '07:05 (29-A) — 99,95% suministro restituido. Reposición certificada.' },
+];
 
-  useEffect(() => {
-    // webpackChunkName para identificar este chunk en el bundle analyzer
-    import(/* webpackChunkName: "force-graph" */ 'react-force-graph-2d')
-      .then(mod => setForceGraph2D(() => mod.default));
-  }, []);
-
-  const [simTime, setSimTime]   = useState(0);
+function RestorationContent({ lang = 'es' }) {
+  const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const MAX_TIME = 13;
+  const [hoveredIsland, setHoveredIsland] = useState(null);
+  const MAX_TIME = 12;
 
   useEffect(() => {
     if (!isPlaying || simTime >= MAX_TIME) {
@@ -111,157 +135,282 @@ function AnimatedRestorationMapContent({ lang = 'es' }) {
     return () => clearInterval(id);
   }, [isPlaying, simTime]);
 
-  // Precalcular Set de nudos energizados: solo recalcula cuando cambia simTime
-  const energizedIds = useMemo(() => {
-    const set = new Set(['FRA', 'POR']); // siempre energizadas
-    GRID_DATA.links.forEach(link => {
-      if (simTime >= link.activationTime) {
-        const src = typeof link.source === 'object' ? link.source.id : link.source;
-        const tgt = typeof link.target === 'object' ? link.target.id : link.target;
-        set.add(src);
-        set.add(tgt);
-      }
-    });
-    return set;
-  }, [simTime, GRID_DATA.links]);
-
-  const visibleLogs = EVENT_LOG.filter(e => e.time <= simTime).reverse();
-
   const handlePlayPause = () => {
-    if (simTime >= MAX_TIME) {
-      setSimTime(0);
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(prev => !prev);
-    }
+    if (simTime >= MAX_TIME) { setSimTime(0); setIsPlaying(true); }
+    else setIsPlaying(p => !p);
   };
 
-  const playLabel = simTime >= MAX_TIME ? strings.replay : (isPlaying ? strings.pause : strings.play);
+  // Calcular demanda restituida total
+  const demandaRestituida = useMemo(() => {
+    return ISLANDS.filter(i => simTime >= i.restoreTime)
+      .reduce((sum, i) => sum + i.restorePercent, 0);
+  }, [simTime]);
 
-  if (!ForceGraph2D) {
-    return (
-      <div style={{ height: 680, backgroundColor: '#0d1117', borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#60a5fa', fontFamily: 'monospace', fontSize: 13 }}>
-        Cargando mapa de reposición…
-      </div>
-    );
-  }
+  const visibleLogs = EVENT_LOG.filter(e => e.time <= simTime).reverse().slice(0, 4);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: 680,
-                  backgroundColor: '#0d1117', borderRadius: 12,
-                  overflow: 'hidden', border: '1px solid #30363d' }}>
+    <div style={{
+      position: 'relative', width: '100%',
+      background: 'var(--bg-0, #050a14)',
+      borderRadius: 12,
+      border: '1px solid rgba(0,217,255,0.15)',
+      overflow: 'hidden',
+    }}>
 
-      <ForceGraph2D
-        ref={fgRef}
-        height={680}
-        graphData={GRID_DATA}
-        nodeRelSize={6}
-        nodeVal={node => node.val}
-        cooldownTicks={0}
-        linkColor={link =>
-          simTime >= link.activationTime
-            ? (link.isTopDown ? '#3b82f6' : '#10b981')
-            : 'rgba(255,255,255,0.05)'
-        }
-        linkWidth={link => simTime >= link.activationTime ? 3 : 1}
-        linkDirectionalParticles={link => simTime >= link.activationTime ? 3 : 0}
-        linkDirectionalParticleSpeed={0.015}
-        linkDirectionalParticleColor={link =>
-          link.isTopDown ? '#60a5fa' : '#34d399'
-        }
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const isEnergized = energizedIds.has(node.id);
-          const isExternal   = node.id === 'FRA' || node.id === 'POR';
+      <svg viewBox="0 0 800 520" style={{ width: '100%', display: 'block' }}>
+        <defs>
+          <radialGradient id="bgGrad2" cx="50%" cy="50%" r="70%">
+            <stop offset="0%"   stopColor="#0a1628" />
+            <stop offset="100%" stopColor="#050a14" />
+          </radialGradient>
+          <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none"
+                  stroke="rgba(0,217,255,0.04)" strokeWidth="0.5"/>
+          </pattern>
+          <filter id="glow2">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
 
-          const fontSize = 12 / globalScale;
-          ctx.font = `${fontSize}px monospace`;
-          const tw = ctx.measureText(node.name).width;
-          const bh = fontSize + fontSize * 0.2;
+        <rect width="800" height="520" fill="url(#bgGrad2)" />
+        <rect width="800" height="520" fill="url(#grid2)" />
 
-          // Fondo del label
-          ctx.fillStyle = 'rgba(0,0,0,0.82)';
-          ctx.fillRect(node.x - tw / 2, node.y - bh / 2 - 11, tw + 4, bh);
+        {/* Contorno base siempre visible (apagado) */}
+        <path d={IBERIAN_PATH}
+              fill="rgba(8,15,30,0.9)"
+              stroke="rgba(0,217,255,0.1)"
+              strokeWidth="1" />
 
-          // Texto del label
-          ctx.textAlign    = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle    = isEnergized ? '#e2e8f0' : '#475569';
-          ctx.fillText(node.name, node.x, node.y - 10);
+        {/* ── ISLAS ELÉCTRICAS ─────────────────────────────────────── */}
+        {ISLANDS.map(island => {
+          const isRestored = simTime >= island.restoreTime;
+          const isHovered  = hoveredIsland === island.id;
+          const pts = island.points.map(([lon, lat]) => project(lon, lat).join(',')).join(' ');
+          const anchorPx = project(island.anchor.lon, island.anchor.lat);
 
-          // Círculo del nudo
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.val / 3, 0, 2 * Math.PI);
-          ctx.fillStyle = isEnergized
-            ? (isExternal ? '#3b82f6' : '#10b981')
-            : '#1e293b';
-          ctx.fill();
+          return (
+            <g key={island.id}
+               onMouseEnter={() => setHoveredIsland(island.id)}
+               onMouseLeave={() => setHoveredIsland(null)}
+               style={{ cursor: 'default' }}>
 
-          if (isEnergized) {
-            ctx.strokeStyle = isExternal ? '#60a5fa' : '#34d399';
-            ctx.lineWidth   = 1.5;
-            ctx.stroke();
-          }
-        }}
-        nodeCanvasObjectMode={() => 'replace'}
-      />
+              {/* Polígono de isla */}
+              <polygon
+                points={pts}
+                fill={isRestored
+                  ? `${island.color}28`
+                  : 'rgba(239,68,68,0.04)'}
+                stroke={isRestored
+                  ? island.color
+                  : 'rgba(239,68,68,0.2)'}
+                strokeWidth={isHovered ? 2 : 1}
+                strokeDasharray={isRestored ? 'none' : '4 3'}
+                style={{ transition: 'all 0.6s ease' }}
+              />
 
-      {/* Panel de control superpuesto */}
+              {/* Pulso de activación */}
+              {isRestored && (
+                <polygon
+                  points={pts}
+                  fill="none"
+                  stroke={island.color}
+                  strokeWidth="2"
+                  opacity="0"
+                >
+                  <animate attributeName="opacity"
+                           values="0.6;0" dur="1.5s"
+                           begin="0s" repeatCount="1" />
+                </polygon>
+              )}
+
+              {/* Etiqueta de la isla */}
+              {island.name.split('\n').map((line, li) => (
+                <text
+                  key={li}
+                  x={anchorPx[0]} y={anchorPx[1] + (li - 0.5) * 13}
+                  textAnchor="middle"
+                  fontSize={li === 0 ? 10 : 8.5}
+                  fontFamily="var(--font-mono, monospace)"
+                  fill={isRestored ? island.color : '#374151'}
+                  fontWeight={li === 0 ? '700' : '400'}
+                  style={{ transition: 'fill 0.5s ease' }}
+                >
+                  {line}
+                </text>
+              ))}
+
+              {/* Porcentaje restituido */}
+              {isRestored && (
+                <text
+                  x={anchorPx[0]} y={anchorPx[1] + 22}
+                  textAnchor="middle" fontSize={8}
+                  fontFamily="var(--font-mono, monospace)"
+                  fill="rgba(255,255,255,0.5)"
+                >
+                  +{island.restorePercent}%
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        {/* ── PUNTOS DE BLACK START ─────────────────────────────────── */}
+        {BLACK_START_POINTS.map(pt => {
+          const isActive = simTime >= pt.time;
+          if (!isActive) return null;
+          const [px, py] = project(pt.lon, pt.lat);
+          const color = pt.type === 'france' ? '#3b82f6'
+                      : pt.type === 'hydro'  ? '#10b981'
+                      : '#f59e0b';
+          return (
+            <g key={pt.id}>
+              {/* Punto con pulso */}
+              <circle cx={px} cy={py} r={5}
+                      fill={color} filter="url(#glow2)" />
+              <circle cx={px} cy={py} r={5}
+                      fill="none" stroke={color} strokeWidth="1.5">
+                <animate attributeName="r" values="5;14;5"
+                         dur="2s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.8;0;0.8"
+                         dur="2s" repeatCount="indefinite" />
+              </circle>
+            </g>
+          );
+        })}
+
+        {/* ── FLECHAS TOP-DOWN / BOTTOM-UP ─────────────────────────── */}
+        {simTime >= 2 && (
+          <g opacity="0.6">
+            {/* Flecha Francia → Cataluña (top-down) */}
+            <path d="M 670,30 L 640,120" stroke="#3b82f6"
+                  strokeWidth="2" strokeDasharray="6 3"
+                  markerEnd="url(#arrowBlue)" />
+          </g>
+        )}
+        {simTime >= 3 && (
+          <g opacity="0.6">
+            {/* Flecha Portugal black-start (bottom-up) */}
+            <path d="M 55,370 L 85,300" stroke="#10b981"
+                  strokeWidth="2" strokeDasharray="6 3" />
+          </g>
+        )}
+
+        {/* Etiquetas de mar */}
+        <text x="25" y="270" fill="rgba(0,217,255,0.18)" fontSize="9"
+              fontFamily="var(--font-mono, monospace)"
+              transform="rotate(-90, 25, 270)" letterSpacing="2">
+          OCÉANO ATLÁNTICO
+        </text>
+        <text x="570" y="415" fill="rgba(0,217,255,0.18)" fontSize="9"
+              fontFamily="var(--font-mono, monospace)" letterSpacing="2"
+              transform="rotate(-5, 570, 415)">
+          MAR MEDITERRÁNEO
+        </text>
+        <text x="600" y="22" fill="rgba(59,130,246,0.45)" fontSize="10"
+              fontFamily="var(--font-mono, monospace)" letterSpacing="3">
+          FRANCE
+        </text>
+      </svg>
+
+      {/* ── PANEL LATERAL DERECHO ─────────────────────────────────────── */}
       <div style={{
-        position: 'absolute', top: 20, left: 20,
-        pointerEvents: 'none',
-        backgroundColor: 'rgba(0,0,0,0.88)',
-        padding: 15, borderRadius: 8,
-        border: '1px solid #30363d',
-        width: 320, color: '#fff',
-        display: 'flex', flexDirection: 'column',
-        maxHeight: 400,
+        position: 'absolute', top: 16, right: 16,
+        background: 'rgba(5,10,20,0.93)',
+        border: '1px solid rgba(0,217,255,0.2)',
+        borderRadius: 8, padding: '12px 14px', width: 250,
+        backdropFilter: 'blur(8px)',
       }}>
-        <div style={{ pointerEvents: 'auto', marginBottom: 12,
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h4 style={{ margin: 0, color: '#34d399', fontSize: 14 }}>{strings.title}</h4>
-          <button
-            onClick={handlePlayPause}
-            aria-label={playLabel}
-            style={{
-              background: 'var(--ifm-color-primary, #3b82f6)',
-              color: '#fff', border: 'none',
-              padding: '5px 14px', borderRadius: 4,
-              cursor: 'pointer', fontWeight: 'bold', fontSize: 13,
-            }}
-          >
-            {playLabel}
+        <div style={{ display: 'flex', alignItems: 'center',
+                      justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{
+            fontFamily: 'var(--font-mono, monospace)', fontSize: 10,
+            letterSpacing: '0.1em', color: '#10b981', fontWeight: 700,
+          }}>
+            REPOSICIÓN IBÉRICA
+          </span>
+          <button onClick={handlePlayPause} style={{
+            background: isPlaying ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)',
+            border: `1px solid ${isPlaying ? '#ef4444' : '#10b981'}`,
+            color: isPlaying ? '#ef4444' : '#10b981',
+            padding: '3px 10px', borderRadius: 4,
+            cursor: 'pointer', fontSize: 10,
+            fontFamily: 'var(--font-mono, monospace)', fontWeight: 700,
+          }}>
+            {simTime >= MAX_TIME ? '↺' : (isPlaying ? '⏸' : '▶')}
           </button>
         </div>
 
-        <p style={{ margin: '0 0 10px', fontSize: '0.82rem', color: '#9ca3af' }}>
-          {strings.desc}
-        </p>
-
-        {/* Leyenda */}
-        <div style={{ display: 'flex', gap: 12, marginBottom: 10, fontSize: '0.78rem' }}>
-          <span><span style={{ color: '#60a5fa' }}>●</span> Top-Down</span>
-          <span><span style={{ color: '#34d399' }}>●</span> Bottom-Up</span>
+        {/* Contador de demanda restituida */}
+        <div style={{
+          background: 'rgba(16,185,129,0.08)',
+          border: '1px solid rgba(16,185,129,0.2)',
+          borderRadius: 6, padding: '8px 10px', marginBottom: 10,
+          textAlign: 'center',
+        }}>
+          <div style={{
+            fontFamily: 'var(--font-mono, monospace)',
+            fontSize: 28, fontWeight: 700,
+            color: demandaRestituida >= 90 ? '#10b981'
+                 : demandaRestituida >= 50 ? '#f59e0b' : '#ef4444',
+            lineHeight: 1,
+            transition: 'color 0.5s ease',
+          }}>
+            {demandaRestituida}%
+          </div>
+          <div style={{
+            fontSize: 9, color: '#475569',
+            fontFamily: 'var(--font-mono, monospace)',
+            marginTop: 3,
+          }}>
+            demanda restituida
+          </div>
+          <div style={{
+            height: 3, background: 'rgba(16,185,129,0.1)',
+            borderRadius: 2, marginTop: 6, overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%', borderRadius: 2,
+              width: `${demandaRestituida}%`,
+              background: 'linear-gradient(90deg, #10b981, #00d9ff)',
+              transition: 'width 0.8s ease',
+            }} />
+          </div>
         </div>
 
-        {/* Log de eventos */}
-        <div
-          role="log"
-          aria-live="polite"
-          aria-label="Registro de eventos de reposición"
-          style={{ flex: 1, overflowY: 'auto', display: 'flex',
-                   flexDirection: 'column', gap: 7 }}
-        >
+        {/* Leyenda Top-Down / Bottom-Up */}
+        <div style={{
+          display: 'flex', gap: 8, marginBottom: 8,
+          fontSize: 9, fontFamily: 'var(--font-mono, monospace)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 16, height: 2, background: '#3b82f6',
+                          borderRadius: 1 }} />
+            <span style={{ color: '#6b7280' }}>Top-Down (FR)</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ width: 16, height: 2, background: '#10b981',
+                          borderRadius: 1 }} />
+            <span style={{ color: '#6b7280' }}>Bottom-Up (Black Start)</span>
+          </div>
+        </div>
+
+        {/* Log */}
+        <div style={{
+          borderTop: '1px solid rgba(0,217,255,0.1)',
+          paddingTop: 8, maxHeight: 160, overflowY: 'auto',
+        }}>
           {visibleLogs.map((log, i) => (
             <div key={i} style={{
-              fontSize: '0.82rem',
-              padding: '7px 8px',
-              backgroundColor: i === 0 ? 'rgba(52,211,153,0.12)' : 'transparent',
-              borderLeft: i === 0 ? '3px solid #34d399' : '3px solid transparent',
-              color: i === 0 ? '#fff' : '#9ca3af',
-              transition: 'all 0.25s ease',
-              borderRadius: '0 4px 4px 0',
+              fontSize: 9,
+              fontFamily: 'var(--font-mono, monospace)',
+              color: i === 0 ? '#e2e8f0' : '#374151',
+              borderLeft: `2px solid ${i === 0 ? '#10b981' : 'transparent'}`,
+              paddingLeft: 5, marginBottom: 5,
+              transition: 'all 0.3s ease',
             }}>
               {log.msg}
             </div>
@@ -275,13 +424,15 @@ function AnimatedRestorationMapContent({ lang = 'es' }) {
 export default function AnimatedRestorationMap({ lang = 'es' }) {
   return (
     <BrowserOnly fallback={
-      <div style={{ height: 680, backgroundColor: '#0d1117', borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#60a5fa', fontFamily: 'monospace', fontSize: 13 }}>
-        Inicializando mapa de reposición…
+      <div style={{
+        height: 480, background: '#050a14', borderRadius: 12,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: '#10b981', fontFamily: 'monospace', fontSize: 12,
+      }}>
+        Cargando mapa de reposición…
       </div>
     }>
-      {() => <AnimatedRestorationMapContent lang={lang} />}
+      {() => <RestorationContent lang={lang} />}
     </BrowserOnly>
   );
 }
