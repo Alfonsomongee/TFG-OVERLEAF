@@ -3,13 +3,9 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { useColorMode } from '@docusaurus/theme-common';
 
-// ─── Proyección geográfica (lon/lat → píxeles en viewBox 800×560) ─────────────
 // ============================================================
-// CONTORNO DE LA PENÍNSULA IBÉRICA (ALTA RESOLUCIÓN)
+// PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
 // ============================================================
-const IBERIA_PATH = 'M 120,90 C 125,82 135,75 148,72 C 162,68 178,66 192,65 C 210,63 230,62 250,62 C 272,62 290,60 308,56 C 326,52 342,48 356,45 C 370,42 380,40 388,40 C 396,42 402,46 406,52 C 408,58 408,64 406,70 C 404,74 400,78 396,80 C 392,78 388,76 384,78 C 380,82 378,88 378,94 C 380,102 384,112 390,120 C 396,128 400,136 402,144 C 400,152 396,158 390,162 C 384,166 378,172 372,178 C 366,186 360,194 356,202 C 352,212 348,222 342,232 C 336,242 330,250 324,256 C 318,260 310,262 302,264 C 294,266 286,264 280,260 C 274,256 268,250 264,244 C 260,238 256,234 250,232 C 244,232 238,234 232,238 C 226,242 220,244 214,244 C 208,244 202,242 198,238 C 192,234 186,230 180,226 C 174,220 168,214 162,208 C 156,202 150,196 144,190 C 138,182 132,174 126,166 C 120,158 114,150 108,142 C 102,134 96,126 92,118 C 88,110 84,102 80,94 C 88,88 98,84 108,86 C 112,88 116,90 120,90 Z';
-const BALEARES_PATH = 'M 520,220 C 530,215 540,212 548,214 C 556,218 560,226 558,234 C 556,242 548,248 538,248 C 528,248 518,244 512,238 C 508,232 508,224 512,218 C 514,216 518,218 520,220 Z M 570,200 C 578,198 584,200 586,206 C 584,214 576,218 570,216 C 564,212 562,204 566,200 C 568,199 569,199 570,200 Z M 490,260 C 496,256 504,256 508,262 C 506,270 498,274 492,272 C 486,268 484,262 490,260 Z M 486,278 C 490,276 494,278 494,282 C 492,286 488,286 486,284 C 484,282 484,280 486,278 Z';
-
 const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
 const VIEWBOX = { width: 1000, height: 800 };
 
@@ -18,6 +14,37 @@ function geoToSvg(lat, lon) {
   const y = ((GEO_BOUNDS.north - lat) / (GEO_BOUNDS.north - GEO_BOUNDS.south)) * VIEWBOX.height;
   return { x: Math.round(x), y: Math.round(y) };
 }
+
+const IBERIA_OUTLINE = [
+  [43.78, -7.86],  [43.47, -8.45],  [42.88, -9.28],  [42.03, -8.87],  [41.87, -8.87],
+  [41.38, -8.73],  [40.64, -8.75],  [39.36, -9.40],  [38.62, -9.50],  [37.01, -8.91],
+  [36.97, -7.85],  [36.01, -5.61],  [36.17, -5.36],  [36.69, -4.41],  [36.72, -3.48],
+  [37.20, -1.90],  [37.64, -0.69],  [38.68,  0.23],  [39.58,  0.34],  [40.72,  0.73],
+  [41.29,  1.83],  [41.42,  2.22],  [42.43,  3.16],  [42.80,  1.72],  [43.37, -1.79],
+  [43.49, -3.80],  [43.57, -5.66],  [43.78, -7.86]
+];
+
+const PORTUGAL_OUTLINE = [
+  [41.87, -8.87],  [41.52, -6.92],  [39.67, -7.06],  [37.43, -7.44],  [36.97, -7.85],
+  [37.01, -8.91],  [38.62, -9.50],  [39.36, -9.40],  [40.64, -8.75],  [41.38, -8.73],
+  [41.87, -8.87]
+];
+
+const MALLORCA_OUTLINE = [
+  [39.96, 3.22],   [39.89, 2.32],   [39.27, 2.84],   [39.25, 3.48],   [39.78, 3.47],
+  [39.96, 3.22]
+];
+
+function pointsToPath(points) {
+  return points.map((p, i) => {
+    const { x, y } = geoToSvg(p[0], p[1]);
+    return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
+  }).join(' ') + ' Z';
+}
+
+const IBERIA_PATH = pointsToPath(IBERIA_OUTLINE);
+const PORTUGAL_PATH = pointsToPath(PORTUGAL_OUTLINE);
+const BALEARES_PATH = pointsToPath(MALLORCA_OUTLINE);
 
 // ─── Subestaciones con coordenadas reales verificadas ───────────────
 
@@ -164,6 +191,7 @@ function BlackoutMapContent({ lang = 'es' }) {
           </filter>
           <clipPath id={ids.clipIberia}>
             <path d={IBERIA_PATH} />
+            <path d={PORTUGAL_PATH} />
             <path d={BALEARES_PATH} />
           </clipPath>
           {/* FIX 1+3 — gradientUnits userSpaceOnUse + coordenadas absolutas viewBox */}
@@ -184,8 +212,9 @@ function BlackoutMapContent({ lang = 'es' }) {
         </defs>
 
         <g filter={`url(#${ids.relief})`} opacity={simTime >= 8 ? 0.4 : 1} style={{ transition: 'opacity 1s ease' }}>
-          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
-          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" />
+          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
+          <path d={PORTUGAL_PATH} fill={isDark ? 'rgba(255,170,0,0.08)' : 'rgba(200,140,0,0.08)'} stroke={isDark ? 'rgba(255,170,0,0.4)' : 'rgba(180,120,0,0.4)'} strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
+          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
         </g>
 
         <g clipPath={`url(#${ids.clipIberia})`} opacity={simTime >= 8 ? 0.2 : 0.5} style={{ transition: 'opacity 1s ease' }}>
