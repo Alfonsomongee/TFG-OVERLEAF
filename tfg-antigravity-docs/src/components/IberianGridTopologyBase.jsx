@@ -207,19 +207,14 @@ function TopologyContent({ lang = "es" }) {
 
   return (
     <div style={{
-      position: 'relative',
       width: '100%',
       background: 'var(--bg-0, #050a14)',
       borderRadius: 12,
       border: '1px solid rgba(0,217,255,0.15)',
       overflow: 'hidden',
-      fontFamily: 'var(--font-body, sans-serif)',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
-
-      {/* ── SVG MAPA ─────────────────────────────────────────────────── */}
-      <svg viewBox="0 0 1000 800"
-        style={{ width: '100%', display: 'block' }}
-        aria-label="Mapa topológico de la red ibérica durante el colapso del 28-A"
       >
         
         <defs>
@@ -445,111 +440,125 @@ function TopologyContent({ lang = "es" }) {
             </g>
           );
         })()}
-      </svg>
+        </svg>
+      </div>
 
-      {/* ── PANEL DE CONTROL ─────────────────────────────────────────── */}
+      {/* ── PANEL INFERIOR ─────────────────────────────────────────── */}
       <div style={{
-        position: 'absolute', bottom: 16, right: 16,
-        background: 'rgba(5,10,20,0.92)',
-        border: '1px solid rgba(0,217,255,0.2)',
-        borderRadius: 8,
-        padding: '12px 14px',
-        width: 260,
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(5,10,20,0.95)',
+        borderTop: '1px solid rgba(0,217,255,0.2)',
+        padding: '16px 20px',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1.5fr',
+        gap: '24px',
+        alignItems: 'start',
       }}>
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center',
-                      justifyContent: 'space-between', marginBottom: 10 }}>
-          <span style={{
-            fontFamily: 'var(--font-mono, monospace)',
-            fontSize: 11, letterSpacing: '0.1em',
-            color: '#00d9ff', fontWeight: 700,
-          }}>
-            TOPOLOGÍA RED IBÉRICA
-          </span>
-          <button
-            onClick={handlePlayPause}
-            style={{
-              background: simTime >= MAX_TIME ? '#10b981' :
-                          (isPlaying ? 'rgba(239,68,68,0.2)' : 'rgba(0,217,255,0.15)'),
-              border: `1px solid ${simTime >= MAX_TIME ? '#10b981' :
-                       (isPlaying ? '#ef4444' : '#00d9ff')}`,
-              color: simTime >= MAX_TIME ? '#fff' :
-                     (isPlaying ? '#ef4444' : '#00d9ff'),
-              padding: '4px 12px', borderRadius: 4,
-              cursor: 'pointer', fontSize: 11,
+        
+        {/* COLUMNA IZQUIERDA: Controles y Métricas */}
+        <div>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center',
+                        justifyContent: 'space-between', marginBottom: 12 }}>
+            <span style={{
               fontFamily: 'var(--font-mono, monospace)',
-              fontWeight: 700, letterSpacing: '0.05em',
-            }}
-          >
-            {simTime >= MAX_TIME ? '↺ REPLAY' : (isPlaying ? '⏸ PAUSA' : '▶ PLAY')}
-          </button>
-        </div>
-
-        {/* Barra de progreso temporal */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{
-            display: 'flex', justifyContent: 'space-between',
-            fontSize: 9, color: '#475569',
-            fontFamily: 'var(--font-mono, monospace)', marginBottom: 4,
-          }}>
-            <span>12:32:57</span>
-            <span>12:33:27 CEST</span>
+              fontSize: 12, letterSpacing: '0.1em',
+              color: '#00d9ff', fontWeight: 700,
+            }}>
+              TOPOLOGÍA RED IBÉRICA
+            </span>
+            <button
+              onClick={handlePlayPause}
+              style={{
+                background: simTime >= MAX_TIME ? '#10b981' :
+                            (isPlaying ? 'rgba(239,68,68,0.2)' : 'rgba(0,217,255,0.15)'),
+                border: `1px solid ${simTime >= MAX_TIME ? '#10b981' :
+                         (isPlaying ? '#ef4444' : '#00d9ff')}`,
+                color: simTime >= MAX_TIME ? '#fff' :
+                       (isPlaying ? '#ef4444' : '#00d9ff'),
+                padding: '4px 12px', borderRadius: 4,
+                cursor: 'pointer', fontSize: 12,
+                fontFamily: 'var(--font-mono, monospace)',
+                fontWeight: 700, letterSpacing: '0.05em',
+              }}
+            >
+              {simTime >= MAX_TIME ? '↺ REINICIAR' : (isPlaying ? '⏸ PAUSA' : '▶ REPRODUCIR')}
+            </button>
           </div>
-          <div style={{
-            height: 4, background: 'rgba(0,217,255,0.1)',
-            borderRadius: 2, overflow: 'hidden',
-          }}>
+
+          {/* Barra de progreso temporal */}
+          <div style={{ marginBottom: 12 }}>
             <div style={{
-              height: '100%',
-              width: `${(simTime / MAX_TIME) * 100}%`,
-              background: simTime >= 10
-                ? 'linear-gradient(90deg, #f59e0b, #ef4444)'
-                : 'linear-gradient(90deg, #00d9ff, #10b981)',
-              borderRadius: 2,
-              transition: 'width 0.9s ease, background 0.3s ease',
-            }} />
+              display: 'flex', justifyContent: 'space-between',
+              fontSize: 10, color: '#4b5563',
+              fontFamily: 'var(--font-mono, monospace)', marginBottom: 4,
+            }}>
+              <span>12:32:57</span>
+              <span>12:33:27 CEST</span>
+            </div>
+            <div style={{
+              height: 4, background: 'rgba(0,217,255,0.1)',
+              borderRadius: 2, overflow: 'hidden',
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${(simTime / MAX_TIME) * 100}%`,
+                background: simTime >= 10
+                  ? 'linear-gradient(90deg, #f59e0b, #ef4444)'
+                  : 'linear-gradient(90deg, #00d9ff, #10b981)',
+                borderRadius: 2,
+                transition: 'width 0.9s ease, background 0.3s ease',
+              }} />
+            </div>
+          </div>
+
+          {/* Leyenda */}
+          <div style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr',
+            gap: '6px 12px', marginBottom: 12, fontSize: 10,
+            fontFamily: 'var(--font-mono, monospace)',
+          }}>
+            {[
+              { color: '#ef4444', label: 'Nodo en colapso' },
+              { color: '#10b981', label: 'Nodo estable' },
+              { color: '#f59e0b', label: 'Portugal' },
+              { color: '#3b82f6', label: 'Francia' },
+            ].map(({ color, label }) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%',
+                              background: color, flexShrink: 0 }} />
+                <span style={{ color: '#6b7280' }}>{label}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Leyenda */}
+        {/* COLUMNA DERECHA: Log de eventos */}
         <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr',
-          gap: '4px 8px', marginBottom: 10, fontSize: 9,
-          fontFamily: 'var(--font-mono, monospace)',
-        }}>
-          {[
-            { color: '#ef4444', label: 'Nodo en colapso' },
-            { color: '#10b981', label: 'Nodo estable' },
-            { color: '#f59e0b', label: 'Portugal' },
-            { color: '#3b82f6', label: 'Francia' },
-          ].map(({ color, label }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%',
-                            background: color, flexShrink: 0 }} />
-              <span style={{ color: '#94a3b8' }}>{label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Log de eventos */}
-        <div style={{
-          borderTop: '1px solid rgba(0,217,255,0.1)',
-          paddingTop: 8, maxHeight: 150, overflowY: 'auto',
+          background: 'rgba(0,0,0,0.2)',
+          border: '1px solid rgba(0,217,255,0.05)',
+          borderRadius: 6,
+          padding: '10px 12px',
+          height: '100%',
+          minHeight: 140,
+          maxHeight: 160,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
         }}>
           {visibleLogs.length === 0 ? (
-            <p style={{ color: '#475569', fontSize: 9,
+            <p style={{ color: '#4b5563', fontSize: 11,
                         fontFamily: 'var(--font-mono, monospace)', margin: 0 }}>
-              Pulsa PLAY para iniciar la simulación
+              Pulsa ▶ para iniciar la simulación
             </p>
           ) : (
             visibleLogs.map((log, i) => (
               <div key={i} style={{
-                fontSize: 9.5,
+                fontSize: 11,
                 fontFamily: 'var(--font-mono, monospace)',
-                color: i === 0 ? '#e2e8f0' : '#475569',
+                color: i === 0 ? '#e2e8f0' : '#4b5563',
                 borderLeft: `2px solid ${i === 0 ? '#00d9ff' : 'transparent'}`,
-                paddingLeft: 6, marginBottom: 6,
+                paddingLeft: 8, marginBottom: 8,
                 transition: 'all 0.3s ease',
               }}>
                 {log.msg}

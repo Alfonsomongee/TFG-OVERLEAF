@@ -169,19 +169,17 @@ function BlackoutMapContent({ lang = 'es' }) {
 
   return (
     <div style={{
-      position: 'relative',
       width: '100%',
-      background: 'transparent',
+      background: 'var(--bg-0, #050a14)',
       borderRadius: 12,
-      fontFamily: 'var(--font-body, sans-serif)',
+      border: '1px solid rgba(0,217,255,0.15)',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
-      <svg viewBox="0 0 1000 800"
-        style={{ width: '100%', display: 'block' }}
-        aria-label="Mapa de cascada de desconexiones IBR durante el 28-A"
-      >
-        
+      <div style={{ position: 'relative', width: '100%' }}>
+        <svg viewBox="0 0 1000 800" style={{ width: '100%', display: 'block' }} aria-label="Mapa de cascada de desconexiones IBR durante el 28-A">
         <defs>
-          {/* FIX 2+3 — filter con unidades absolutas e ID único */}
           <filter id={ids.glowRed}
             x="-50" y="-50" width="1100" height="900"
             filterUnits="userSpaceOnUse"
@@ -371,105 +369,123 @@ function BlackoutMapContent({ lang = 'es' }) {
             </text>
           </g>
         )}
-      </svg>
+        </svg>
+      </div>
 
-      {/* ── PANEL DE CONTROL ── */}
+      {/* ── PANEL INFERIOR ── */}
       <div style={{
-        position: 'absolute', bottom: 16, right: 16,
-        background: 'rgba(5,10,20,0.93)',
-        border: '1px solid rgba(0,217,255,0.2)',
-        borderRadius: 8, padding: '12px 14px', width: 260,
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(5,10,20,0.95)',
+        borderTop: '1px solid rgba(0,217,255,0.2)',
+        padding: '16px 20px',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1.5fr',
+        gap: '24px',
+        alignItems: 'start',
       }}>
-        {/* Header + play */}
-        <div style={{ display:'flex', alignItems:'center',
-                      justifyContent:'space-between', marginBottom: 10 }}>
-          <span style={{
-            fontFamily: 'var(--font-mono,monospace)', fontSize: 10,
-            letterSpacing: '0.1em', color: '#ef4444', fontWeight: 700,
-          }}>
-            CASCADA IBR 28-A
-          </span>
-          <button onClick={handlePlayPause} style={{
-            background: isPlaying ? 'rgba(239,68,68,0.15)' : 'rgba(0,217,255,0.12)',
-            border: `1px solid ${isPlaying ? '#ef4444' : '#00d9ff'}`,
-            color: isPlaying ? '#ef4444' : '#00d9ff',
-            padding: '3px 10px', borderRadius: 4,
-            cursor: 'pointer', fontSize: 11,
-            fontFamily: 'var(--font-mono,monospace)', fontWeight: 700,
-          }}>
-            {simTime >= MAX_TIME ? '↺' : (isPlaying ? '⏸' : '▶')}
-          </button>
-        </div>
-
-        {/* Barra temporal */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ display:'flex', justifyContent:'space-between',
-                        fontSize: 9, color: '#374151',
-                        fontFamily: 'var(--font-mono,monospace)', marginBottom: 3 }}>
-            <span>12:32:57</span><span>12:33:27 CEST</span>
+        
+        {/* COLUMNA IZQUIERDA: Controles y Métricas */}
+        <div>
+          {/* Header + play */}
+          <div style={{ display:'flex', alignItems:'center',
+                        justifyContent:'space-between', marginBottom: 12 }}>
+            <span style={{
+              fontFamily: 'var(--font-mono,monospace)', fontSize: 12,
+              letterSpacing: '0.1em', color: '#ef4444', fontWeight: 700,
+            }}>
+              CASCADA IBR 28-A
+            </span>
+            <button onClick={handlePlayPause} style={{
+              background: isPlaying ? 'rgba(239,68,68,0.15)' : 'rgba(0,217,255,0.12)',
+              border: `1px solid ${isPlaying ? '#ef4444' : '#00d9ff'}`,
+              color: isPlaying ? '#ef4444' : '#00d9ff',
+              padding: '4px 12px', borderRadius: 4,
+              cursor: 'pointer', fontSize: 12,
+              fontFamily: 'var(--font-mono,monospace)', fontWeight: 700,
+            }}>
+              {simTime >= MAX_TIME ? '↺ REINICIAR' : (isPlaying ? '⏸ PAUSA' : '▶ REPRODUCIR')}
+            </button>
           </div>
-          <div style={{ height:3, background:'rgba(239,68,68,0.1)',
-                        borderRadius:2, overflow:'hidden' }}>
-            <div style={{
-              height:'100%', borderRadius:2,
-              width: `${(simTime/MAX_TIME)*100}%`,
-              background: 'linear-gradient(90deg,#f59e0b,#ef4444)',
-              transition: 'width 0.8s ease',
-            }}/>
-          </div>
-        </div>
 
-        {/* Contador GW perdidos */}
-        <div style={{
-          background: 'rgba(239,68,68,0.07)',
-          border: '1px solid rgba(239,68,68,0.2)',
-          borderRadius: 6, padding: '6px 10px',
-          marginBottom: 10, textAlign: 'center',
-        }}>
-          <div style={{
-            fontSize: 26, fontWeight: 700, lineHeight: 1,
-            color: gwLost >= 10 ? '#ef4444' : gwLost >= 5 ? '#f97316' : '#f59e0b',
-            fontFamily: 'var(--font-mono,monospace)',
-            transition: 'color 0.3s ease',
-          }}>
-            {gwLost.toFixed(1)}
-            <span style={{ fontSize: '0.6rem', color: '#4b5563', marginLeft: 4 }}>GW perdidos</span>
-          </div>
-        </div>
-
-        {/* Leyenda */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr',
-                      gap:'3px 8px', marginBottom:8, fontSize:9,
-                      fontFamily:'var(--font-mono,monospace)' }}>
-          {[
-            { color:'#ef4444', label:'Origen colapso' },
-            { color:'#f97316', label:'Nodo perdido' },
-            { color:'#10b981', label:'Nodo estable' },
-            { color:'#3b82f6', label:'Francia (RTE)' },
-          ].map(({ color, label }) => (
-            <div key={label} style={{ display:'flex', alignItems:'center', gap:5 }}>
-              <div style={{ width:8, height:8, borderRadius:'50%',
-                            background:color, flexShrink:0 }}/>
-              <span style={{ color:'#6b7280' }}>{label}</span>
+          {/* Barra temporal */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ display:'flex', justifyContent:'space-between',
+                          fontSize: 10, color: '#4b5563',
+                          fontFamily: 'var(--font-mono,monospace)', marginBottom: 4 }}>
+              <span>12:32:57</span><span>12:33:27 CEST</span>
             </div>
-          ))}
+            <div style={{ height:4, background:'rgba(239,68,68,0.1)',
+                          borderRadius:2, overflow:'hidden' }}>
+              <div style={{
+                height:'100%', borderRadius:2,
+                width: `${(simTime/MAX_TIME)*100}%`,
+                background: 'linear-gradient(90deg,#f59e0b,#ef4444)',
+                transition: 'width 0.8s ease',
+              }}/>
+            </div>
+          </div>
+
+          {/* Contador GW perdidos */}
+          <div style={{
+            background: 'rgba(239,68,68,0.07)',
+            border: '1px solid rgba(239,68,68,0.2)',
+            borderRadius: 6, padding: '10px 14px',
+            marginBottom: 12, textAlign: 'center',
+          }}>
+            <div style={{
+              fontSize: 32, fontWeight: 700, lineHeight: 1,
+              color: gwLost >= 10 ? '#ef4444' : gwLost >= 5 ? '#f97316' : '#f59e0b',
+              fontFamily: 'var(--font-mono,monospace)',
+              transition: 'color 0.3s ease',
+            }}>
+              {gwLost.toFixed(1)}
+              <span style={{ fontSize: '0.7rem', color: '#6b7280', marginLeft: 6 }}>GW perdidos</span>
+            </div>
+          </div>
+
+          {/* Leyenda */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr',
+                        gap:'6px 12px', fontSize:10,
+                        fontFamily:'var(--font-mono,monospace)' }}>
+            {[
+              { color:'#ef4444', label:'Origen colapso' },
+              { color:'#f97316', label:'Nodo perdido' },
+              { color:'#10b981', label:'Nodo estable' },
+              { color:'#3b82f6', label:'Francia (RTE)' },
+            ].map(({ color, label }) => (
+              <div key={label} style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <div style={{ width:10, height:10, borderRadius:'50%',
+                              background:color, flexShrink:0 }}/>
+                <span style={{ color:'#6b7280' }}>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Log de eventos */}
-        <div style={{ borderTop:'1px solid rgba(0,217,255,0.1)',
-                      paddingTop:8, maxHeight:150, overflowY:'auto' }}>
+        {/* COLUMNA DERECHA: Log de eventos */}
+        <div style={{
+          background: 'rgba(0,0,0,0.2)',
+          border: '1px solid rgba(0,217,255,0.05)',
+          borderRadius: 6,
+          padding: '10px 12px',
+          height: '100%',
+          minHeight: 140,
+          maxHeight: 160,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+        }}>
           {visibleEvents.length === 0 ? (
-            <p style={{ color:'#374151', fontSize:9,
+            <p style={{ color:'#4b5563', fontSize:11,
                         fontFamily:'var(--font-mono,monospace)', margin:0 }}>
               Pulsa ▶ para iniciar la simulación
             </p>
           ) : visibleEvents.map((ev, i) => (
             <div key={i} style={{
-              fontSize:9.5, fontFamily:'var(--font-mono,monospace)',
-              color: i===0 ? '#e2e8f0' : '#374151',
+              fontSize:11, fontFamily:'var(--font-mono,monospace)',
+              color: i===0 ? '#e2e8f0' : '#4b5563',
               borderLeft: `2px solid ${i===0 ? '#ef4444' : 'transparent'}`,
-              paddingLeft:5, marginBottom:5,
+              paddingLeft:8, marginBottom:8,
               transition:'all 0.3s ease',
             }}>
               {ev.msg}
