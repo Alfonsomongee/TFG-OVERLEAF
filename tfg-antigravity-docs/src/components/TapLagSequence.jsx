@@ -49,8 +49,8 @@ const C = {
   critical: '#ef4444',   // tensión crítica / disparo
   scada:    '#10b981',   // lo que ve el SCADA (400 kV)
   hidden:   '#a78bfa',   // lo que NO ve el SCADA (220 kV colector)
-  text:     '#e2e8f0',
-  dim:      '#475569',
+  text:     'var(--ifm-font-color-base)',
+  dim:      'var(--ifm-color-emphasis-400)',
   border:   'rgba(0,217,255,0.15)',
 };
 
@@ -148,7 +148,7 @@ function getSteps(lang) {
 
 // ─── SVG principal ────────────────────────────────────────────────────────────
 function DiagramSVG({ step, prefersReduced }) {
-  const W = 760, H = 480;
+  const W = 780, H = 460;
   const isLast = step.cascade;
 
   // Tensiones normalizadas para la barra visual
@@ -199,7 +199,7 @@ function DiagramSVG({ step, prefersReduced }) {
       <rect width={W} height={H} fill="url(#grid)" />
 
       {/* ── SECCIÓN IZQUIERDA: Red de Transporte 400 kV (lo que ve REE) ── */}
-      <text x="20" y="22" fill={C.scada} fontSize="11" fontFamily="monospace"
+      <text x="20" y="22" fill={C.scada} fontSize="13" fontFamily="monospace"
             fontWeight="700" letterSpacing="0.1em">
         RED 400 kV — VISIBLE PARA SCADA REE
       </text>
@@ -225,7 +225,7 @@ function DiagramSVG({ step, prefersReduced }) {
             stroke={step.scadaAlert ? C.warning : C.scada}
             strokeWidth="3" strokeDasharray={step.scadaAlert ? '8 4' : 'none'}
             filter={step.scadaAlert ? 'url(#glow-amber)' : 'url(#glow-cyan)'} />
-      <text x="100" y="75" fill={C.dim} fontSize="9" fontFamily="monospace"
+      <text x="100" y="75" fill={C.dim} fontSize="15" fontFamily="monospace"
             textAnchor="middle">Línea 400 kV</text>
 
       {/* ── TRANSFORMADOR OLTC (centro) ── */}
@@ -237,18 +237,18 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* Etiqueta TR */}
       <text x="310" y="120" fill={step.ansi59 ? C.critical : C.dim}
-            fontSize="9" fontFamily="monospace" textAnchor="middle" fontWeight="700">
+            fontSize="15" fontFamily="monospace" textAnchor="middle" fontWeight="700">
         TR 400/220kV
       </text>
       <text x="310" y="133" fill={step.ansi59 ? C.critical : C.dim}
-            fontSize="8" fontFamily="monospace" textAnchor="middle">
+            fontSize="13" fontFamily="monospace" textAnchor="middle">
         OLTC
       </text>
 
       {/* Indicador de posición OLTC */}
       <rect x="285" y="140" width="40" height="50" rx="2"
             fill="rgba(255,255,255,0.03)" stroke={C.border} strokeWidth="1" />
-      <text x="310" y="153" fill={C.dim} fontSize="7" fontFamily="monospace"
+      <text x="310" y="153" fill={C.dim} fontSize="13" fontFamily="monospace"
             textAnchor="middle">Toma</text>
       {/* Aguja de posición */}
       <line x1="310" y1="185" x2="310" y2={oltcY + 30}
@@ -265,10 +265,10 @@ function DiagramSVG({ step, prefersReduced }) {
                 filter="url(#glow-red)">
             {!prefersReduced && (
               <animate attributeName="opacity"
-                values="0.9;0.4;0.9" dur="1.8s" repeatCount="indefinite" />
+                values="1;0.2;1" dur="0.35s" repeatCount="indefinite" />
             )}
           </rect>
-          <text x="310" y="209" fill="#fff" fontSize="9"
+          <text x="310" y="209" fill="#fff" fontSize="15"
                 fontFamily="monospace" textAnchor="middle" fontWeight="bold">
             ⚡ ANSI 59
           </text>
@@ -276,7 +276,7 @@ function DiagramSVG({ step, prefersReduced }) {
       )}
 
       {/* ── SECCIÓN DERECHA: Red Colectora 220 kV (oculta para REE) ── */}
-      <text x="390" y="22" fill={C.hidden} fontSize="11" fontFamily="monospace"
+      <text x="390" y="22" fill={C.hidden} fontSize="13" fontFamily="monospace"
             fontWeight="700" letterSpacing="0.05em">
         RED 220 kV — INVISIBLE PARA SCADA
       </text>
@@ -316,12 +316,12 @@ function DiagramSVG({ step, prefersReduced }) {
                     stroke={fallen ? C.dim : C.hidden} strokeWidth="0.5" opacity="0.5" />
             ))}
             <text x={x + 12} y="118" fill={fallen ? C.dim : C.hidden}
-                  fontSize="7" fontFamily="monospace" textAnchor="middle">
+                  fontSize="13" fontFamily="monospace" textAnchor="middle">
               {fallen ? 'TRIP' : 'FV'}
             </text>
             {/* Potencia */}
             <text x={x + 12} y="128" fill={fallen ? C.critical : C.hidden}
-                  fontSize="7" fontFamily="monospace" textAnchor="middle">
+                  fontSize="13" fontFamily="monospace" textAnchor="middle">
               {fallen ? '0 MW' : (i === 0 ? '355MW' : i === 1 ? '730MW' : '550MW')}
             </text>
           </g>
@@ -341,11 +341,11 @@ function DiagramSVG({ step, prefersReduced }) {
                 from="0" to="1" dur="1.2s" fill="freeze" />
             )}
           </rect>
-          <text x="440" y="68" fill={C.warning} fontSize="8"
+          <text x="440" y="68" fill={C.warning} fontSize="13"
                 fontFamily="monospace" textAnchor="middle" fontWeight="700">
             ZONA CIEGA SCADA
           </text>
-          <text x="440" y="80" fill={C.warning} fontSize="7"
+          <text x="440" y="80" fill={C.warning} fontSize="13"
                 fontFamily="monospace" textAnchor="middle" opacity="0.8">
             REE no observa la red colectora
           </text>
@@ -354,7 +354,7 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* ── BARRA DE TENSIÓN VISUAL (gauge) ── */}
       {/* 400 kV gauge */}
-      <text x="20" y="165" fill={C.dim} fontSize="8" fontFamily="monospace">
+      <text x="20" y="165" fill={C.dim} fontSize="13" fontFamily="monospace">
         V₄₀₀ (p.u.)
       </text>
       <rect x="20" y="180" width="14" height="110" rx="2"
@@ -370,13 +370,13 @@ function DiagramSVG({ step, prefersReduced }) {
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
             <text x="38" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
-                  fontSize="8" fontFamily="monospace">{v.toFixed(2)}</text>
+                  fontSize="13" fontFamily="monospace">{v.toFixed(2)}</text>
           </g>
         );
       })}
 
       {/* 220 kV gauge */}
-      <text x="710" y="165" fill={C.dim} fontSize="8" fontFamily="monospace"
+      <text x="710" y="165" fill={C.dim} fontSize="13" fontFamily="monospace"
             textAnchor="end">V₂₂₀ (p.u.)</text>
       <rect x="726" y="180" width="14" height="110" rx="2"
             fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
@@ -391,7 +391,7 @@ function DiagramSVG({ step, prefersReduced }) {
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
             <text x="720" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
-                  fontSize="7" fontFamily="monospace" textAnchor="end">
+                  fontSize="13" fontFamily="monospace" textAnchor="end">
               {v.toFixed(2)}
             </text>
           </g>
@@ -404,7 +404,7 @@ function DiagramSVG({ step, prefersReduced }) {
       <line x1="722" y1={290 - Math.round(1.10 * 100)} x2="738" y2={290 - Math.round(1.10 * 100)}
             stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
       <text x="58" y={290 - Math.round(1.10 * 100) + 3} fill={C.critical}
-            fontSize="8" fontFamily="monospace">ANSI 59</text>
+            fontSize="13" fontFamily="monospace">ANSI 59</text>
 
       {/* ── CASCADA VISUAL (paso 5) ── */}
       {isLast && (
@@ -418,11 +418,11 @@ function DiagramSVG({ step, prefersReduced }) {
                 filter="url(#glow-red)">
             CERO ELÉCTRICO SISTÉMICO
           </text>
-          <text x="380" y="200" fill={C.critical} fontSize="12"
+          <text x="380" y="200" fill={C.critical} fontSize="15"
                 fontFamily="monospace" textAnchor="middle">
             −15 GW en 30 segundos · 25.184 MW de demanda sin suministro
           </text>
-          <text x="380" y="217" fill="#f87171" fontSize="11"
+          <text x="380" y="217" fill="#f87171" fontSize="13"
                 fontFamily="monospace" textAnchor="middle" opacity="0.8">
             ~60 millones de personas · primer colapso por sobretensión en Europa Continental
           </text>
@@ -433,10 +433,10 @@ function DiagramSVG({ step, prefersReduced }) {
       <rect x="20" y="360" width="720" height="44" rx="3"
             fill="rgba(255,255,255,0.02)" stroke={C.border} strokeWidth="1" />
       <text x="36" y="378" fill={step.ansi59 ? C.critical : C.dim}
-            fontSize="10" fontFamily="monospace">
+            fontSize="13" fontFamily="monospace">
         {step.note}
       </text>
-      <text x="36" y="394" fill={C.dim} fontSize="9" fontFamily="monospace">
+      <text x="36" y="394" fill={C.dim} fontSize="15" fontFamily="monospace">
         {step.time}
       </text>
     </svg>
@@ -480,7 +480,7 @@ function TapLagSequenceInner({ lang = 'es' }) {
           <h4 style={{ margin: '4px 0 0', fontSize: 15, color: phaseColor }}>
             {step.title}
           </h4>
-          <p style={{ margin: '3px 0 0', fontSize: 12, color: '#94a3b8', lineHeight: 1.5 }}>
+          <p style={{ margin: '3px 0 0', fontSize: 12, color: 'var(--ifm-color-emphasis-600)', lineHeight: 1.5 }}>
             {step.subtitle}
           </p>
         </div>
@@ -604,7 +604,7 @@ export default function TapLagSequence({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 380, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#475569',
+        justifyContent: 'center', color: 'var(--ifm-color-emphasis-400)',
         fontFamily: 'monospace', fontSize: 13,
         background: '#060d1a', borderRadius: 10,
       }}>
