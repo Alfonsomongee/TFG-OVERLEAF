@@ -342,15 +342,15 @@ function RestorationContent({ lang = 'es' }) {
         </text>
       </svg>
 
-      {/* ── PANEL LATERAL DERECHO ─────────────────────────────────────── */}
+      {/* ── PANEL LATERAL ─────────────────────────────────────── */}
       <div style={{
-        position: 'absolute', bottom: 16, right: 16,
+        position: 'absolute', bottom: 16, left: 16,
         background: 'rgba(5,10,20,0.93)',
         border: '1px solid rgba(0,217,255,0.2)',
         borderRadius: 6, padding: '8px 10px', width: 220,
         backdropFilter: 'blur(8px)',
         transform: 'scale(0.9)',
-        transformOrigin: 'bottom right',
+        transformOrigin: 'bottom left',
       }}>
         <div style={{ display: 'flex', alignItems: 'center',
                       justifyContent: 'space-between', marginBottom: 8 }}>
