@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
@@ -152,7 +153,8 @@ const GROUP_COLORS = {
 };
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-function TopologyContent({ lang = "es" }) {
+function TopologyContent({}) {
+  const lang = useDocLang();
 
   const isDark = true; // Topology is always dark-themed
   const palette = {
@@ -572,7 +574,8 @@ function TopologyContent({ lang = "es" }) {
   );
 }
 
-export default function IberianGridTopology({ lang = 'es' }) {
+export default function IberianGridTopology({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -583,7 +586,7 @@ export default function IberianGridTopology({ lang = 'es' }) {
         Cargando topología de red ibérica…
       </div>
     }>
-      {() => <TopologyContent lang={lang} />}
+      {() => <TopologyContent />}
     </BrowserOnly>
   );
 }

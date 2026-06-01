@@ -37,6 +37,7 @@
  *   - role="img" + aria-label descriptivo por paso.
  *   - Prop `lang` para ES/EN.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useCallback, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
@@ -444,7 +445,8 @@ function DiagramSVG({ step, prefersReduced }) {
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-function TapLagSequenceInner({ lang = 'es' }) {
+function TapLagSequenceInner({}) {
+  const lang = useDocLang();
   const [activeStep, setActiveStep] = useState(0);
   const steps = useMemo(() => getSteps(lang), [lang]);
   const step  = steps[activeStep];
@@ -599,7 +601,8 @@ function TapLagSequenceInner({ lang = 'es' }) {
   );
 }
 
-export default function TapLagSequence({ lang = 'es' }) {
+export default function TapLagSequence({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -611,7 +614,7 @@ export default function TapLagSequence({ lang = 'es' }) {
         {lang === 'es' ? 'Inicializando diagrama Tap-Lag…' : 'Initializing Tap-Lag diagram…'}
       </div>
     }>
-      {() => <TapLagSequenceInner lang={lang} />}
+      {() => <TapLagSequenceInner />}
     </BrowserOnly>
   );
 }

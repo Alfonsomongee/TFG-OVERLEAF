@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
@@ -206,7 +207,8 @@ const graphicsData = [
   { id: 'tap-lag-sequence', icon: '⚙️', component: TapLagSequence }
 ];
 
-export default function InteractiveGraphicsGallery({ lang: propLang }) {
+export default function InteractiveGraphicsGallery({}) {
+  const lang = useDocLang();
   const { i18n } = useDocusaurusContext();
   const locale = propLang || i18n.currentLocale;
   const [activeGraphicId, setActiveGraphicId] = useState(graphicsData[0].id);

@@ -27,6 +27,7 @@
  * - t8: 12:33:27 CEST, 25,2 GW demanda peninsular
  * - t10: cita ENTSO-E Factual pp.12-13
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useMemo } from 'react';
 import styles from './VerticalTimeline.module.css';
 import { timelineEvents } from '../data/timelineData';
@@ -194,11 +195,10 @@ function getLocalizedEvent(event, l) {
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 export default function VerticalTimeline({
-  lang           = 'es',
-  activeEventId  = null,
-  onEventClick   = null,
-  compact        = false,
-}) {
+  activeEventId  = null, 
+  onEventClick   = null, 
+  compact        = false}) {
+  const lang = useDocLang();
   const [activeFilter, setActiveFilter] = useState('todos');
   const isEs = lang === 'es' || !['en','pt','fr','it','de'].includes(lang);
 

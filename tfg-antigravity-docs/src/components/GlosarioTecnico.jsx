@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useMemo, useEffect } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useLocation } from '@docusaurus/router';
@@ -46,7 +47,8 @@ function TermItem({ term }) {
   );
 }
 
-export default function GlosarioTecnico({ lang: propLang }) {
+export default function GlosarioTecnico({}) {
+  const lang = useDocLang();
   const { i18n } = useDocusaurusContext();
   const lang = propLang || i18n.currentLocale || 'es';
   

@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import {
@@ -15,7 +16,8 @@ import {
 import datosForenses from '@site/src/data/datosForenses.json';
 import styles from './CollapseSismograph.module.css';
 
-export default function CollapseSismograph({ playbackT = 32.7, lang, isGallery }) {
+export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
+  const lang = useDocLang();
   const duration = datosForenses.cronologia_cascada.duracion_cascada.valor;
   const t_max = datosForenses.potencias_cascada.tension_maxima_barras_colectoras.valor || 440;
   const p_lost = datosForenses.potencias_cascada.perdida_generacion_total_cascada.valor || 15000;

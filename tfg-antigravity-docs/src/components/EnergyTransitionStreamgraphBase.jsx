@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState } from 'react';
 import {
   ComposedChart,
@@ -60,7 +61,8 @@ const CustomTooltip = ({ active, payload, label, strings }) => {
   return null;
 };
 
-export default function EnergyTransitionStreamgraph({ lang = 'es' }) {
+export default function EnergyTransitionStreamgraph({}) {
+  const lang = useDocLang();
   const [activeSeries, setActiveSeries] = useState({
     carbon: true,
     cicloCombinado: true,

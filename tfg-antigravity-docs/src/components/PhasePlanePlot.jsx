@@ -32,6 +32,7 @@
  *    Botones con aria-label y aria-pressed. Slider con aria-valuetext.
  *    prefers-reduced-motion respetado.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import {
@@ -110,7 +111,8 @@ function PhaseTooltip({ active, payload }) {
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-function PhasePlanePlotInner({ lang = 'es' }) {
+function PhasePlanePlotInner({}) {
+  const lang = useDocLang();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -348,7 +350,8 @@ function PhasePlanePlotInner({ lang = 'es' }) {
   );
 }
 
-export default function PhasePlanePlot({ lang = 'es' }) {
+export default function PhasePlanePlot({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -359,7 +362,7 @@ export default function PhasePlanePlot({ lang = 'es' }) {
         {lang === 'es' ? 'Inicializando diagrama de fase…' : 'Initializing phase diagram…'}
       </div>
     }>
-      {() => <PhasePlanePlotInner lang={lang} />}
+      {() => <PhasePlanePlotInner />}
     </BrowserOnly>
   );
 }

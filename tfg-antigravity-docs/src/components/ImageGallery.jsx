@@ -1,10 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './ImageGallery.module.css';
 import { imageGalleryData } from '../data/imageGalleryData';
 
-export default function ImageGallery({ lang: propLang }) {
+export default function ImageGallery({}) {
+  const lang = useDocLang();
   const { i18n } = useDocusaurusContext();
   const lang = propLang || i18n.currentLocale || 'es';
   const [selectedImage, setSelectedImage] = useState(null);

@@ -24,6 +24,7 @@
  *   🔴 contradiccion — contradicción directa con datos ENTSO-E/REE
  *   ⚫ null          — sin valoración técnica (humor, anécdota)
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -60,7 +61,8 @@ function PlatformIcon({ platform }) {
 }
 
 // ─── Tarjeta individual ───────────────────────────────────────────────────────
-function FactCheckCard({ item, lang }) {
+function FactCheckCard({ item}) {
+  const lang = useDocLang();
   const [expanded, setExpanded] = useState(false);
   const v       = getV(item.veracidad);
   const isEs    = lang === 'es';
@@ -215,7 +217,8 @@ const RACE_DATA = [
   },
 ];
 
-function AsimetriaBarra({ lang }) {
+function AsimetriaBarra({}) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
   const maxVal = RACE_DATA[0].impresiones;
   return (
@@ -278,7 +281,8 @@ function AsimetriaBarra({ lang }) {
 }
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-function MediaCardGalleryInner({ lang = 'es' }) {
+function MediaCardGalleryInner({}) {
+  const lang = useDocLang();
   const [activeCategory, setActiveCategory] = useState('todas');
   const [activeVeracidad, setActiveVeracidad] = useState('todas');
   const [search,          setSearch]          = useState('');
@@ -329,7 +333,7 @@ function MediaCardGalleryInner({ lang = 'es' }) {
   return (
     <div>
       {/* Barra de asimetría algorítmica */}
-      <AsimetriaBarra lang={lang} />
+      <AsimetriaBarra />
 
       {/* Búsqueda */}
       <div style={{ position: 'relative', marginBottom: '1rem' }}>
@@ -447,7 +451,7 @@ function MediaCardGalleryInner({ lang = 'es' }) {
         </p>
       ) : (
         filtered.map(item => (
-          <FactCheckCard key={item.id} item={item} lang={lang} />
+          <FactCheckCard key={item.id} item={item} />
         ))
       )}
 
@@ -485,7 +489,8 @@ function chipStyle(isActive, color) {
 }
 
 // ─── Export con BrowserOnly ───────────────────────────────────────────────────
-export default function MediaCardGallery({ lang = 'es' }) {
+export default function MediaCardGallery({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -496,7 +501,7 @@ export default function MediaCardGallery({ lang = 'es' }) {
         {lang === 'es' ? 'Cargando galería mediática…' : 'Loading media gallery…'}
       </div>
     }>
-      {() => <MediaCardGalleryInner lang={lang} />}
+      {() => <MediaCardGalleryInner />}
     </BrowserOnly>
   );
 }

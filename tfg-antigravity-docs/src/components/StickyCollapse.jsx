@@ -25,6 +25,7 @@
  *   npm install react-scrollama
  *   (Scrollama usa IntersectionObserver, SSR-safe con BrowserOnly)
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
@@ -99,7 +100,8 @@ const PHASE_COLORS = {
 // ─── Sismógrafo lazy (importado dinámicamente) ────────────────────────────────
 // CollapseSismograph ya existe y acepta prop playbackT para mostrar
 // solo los datos hasta ese instante.
-function LazyCollapseSismograph({ playbackT, lang }) {
+function LazyCollapseSismograph({ playbackT}) {
+  const lang = useDocLang();
   const CollapseSismograph = React.useMemo(
     () => React.lazy(() =>
       import(/* webpackChunkName: "collapse-sismograph" */
@@ -117,20 +119,21 @@ function LazyCollapseSismograph({ playbackT, lang }) {
         {lang === 'es' ? 'Cargando sismógrafo…' : 'Loading seismograph…'}
       </div>
     }>
-      <CollapseSismograph playbackT={playbackT} controls={false} lang={lang} />
+      <CollapseSismograph playbackT={playbackT} controls={false} />
     </React.Suspense>
   );
 }
 
 // ─── Modo galería (sin scroll, con botones) ───────────────────────────────────
-function GalleryMode({ steps, lang }) {
+function GalleryMode({ steps}) {
+  const lang = useDocLang();
   const [activeIdx, setActiveIdx] = useState(0);
   const active = steps[activeIdx];
   const color  = PHASE_COLORS[active.phase] || 'var(--ifm-color-emphasis-600)';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <LazyCollapseSismograph playbackT={active.t} lang={lang} />
+      <LazyCollapseSismograph playbackT={active.t} />
 
       {/* Botones de paso */}
       <div style={{
@@ -184,7 +187,8 @@ function GalleryMode({ steps, lang }) {
 }
 
 // ─── Modo scrollytelling ──────────────────────────────────────────────────────
-function ScrollyMode({ steps, lang }) {
+function ScrollyMode({ steps}) {
+  const lang = useDocLang();
   const [activeIdx, setActiveIdx] = useState(0);
   const active = steps[activeIdx];
   const color  = PHASE_COLORS[active.phase] || 'var(--ifm-color-emphasis-600)';
@@ -201,7 +205,7 @@ function ScrollyMode({ steps, lang }) {
   }, []);
 
   if (!Scrollama || !Step) {
-    return <GalleryMode steps={steps} lang={lang} />;
+    return <GalleryMode steps={steps} />;
   }
 
   const isEs = lang === 'es';
@@ -285,7 +289,7 @@ function ScrollyMode({ steps, lang }) {
           border: `1px solid ${color}40`,
           transition: 'border-color 0.3s ease',
         }}>
-          <LazyCollapseSismograph playbackT={active.t} lang={lang} />
+          <LazyCollapseSismograph playbackT={active.t} />
         </div>
 
         {/* Indicador de progreso */}
@@ -311,16 +315,18 @@ function ScrollyMode({ steps, lang }) {
 }
 
 // ─── Componente exportado ─────────────────────────────────────────────────────
-function StickyCollapseInner({ lang = 'es', isGallery = false }) {
+function StickyCollapseInner({ isGallery = false }) {
+  const lang = useDocLang();
   const steps = useMemo(() => getSteps(lang), [lang]);
 
   if (isGallery) {
-    return <GalleryMode steps={steps} lang={lang} />;
+    return <GalleryMode steps={steps} />;
   }
-  return <ScrollyMode steps={steps} lang={lang} />;
+  return <ScrollyMode steps={steps} />;
 }
 
-export default function StickyCollapse({ lang = 'es', isGallery = false }) {
+export default function StickyCollapse({ isGallery = false }) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -331,7 +337,7 @@ export default function StickyCollapse({ lang = 'es', isGallery = false }) {
         {lang === 'es' ? 'Cargando narrativa del colapso…' : 'Loading collapse narrative…'}
       </div>
     }>
-      {() => <StickyCollapseInner lang={lang} isGallery={isGallery} />}
+      {() => <StickyCollapseInner isGallery={isGallery} />}
     </BrowserOnly>
   );
 }

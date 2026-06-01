@@ -1,7 +1,9 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
-function MediaCoverageContent({ lang = 'es' }) {
+function MediaCoverageContent({}) {
+  const lang = useDocLang();
   const [activeTab, setActiveTab] = useState('critica');
 
   const getStrings = (l) => {
@@ -117,10 +119,11 @@ function MediaCoverageContent({ lang = 'es' }) {
   );
 }
 
-export default function MediaCoverageDashboard({ lang = 'es' }) {
+export default function MediaCoverageDashboard({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={<div style={{height: 400, backgroundColor: '#0d1117', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa'}}>Cargando...</div>}>
-      {() => <MediaCoverageContent lang={lang} />}
+      {() => <MediaCoverageContent />}
     </BrowserOnly>
   );
 }

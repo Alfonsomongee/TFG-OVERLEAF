@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -102,7 +103,8 @@ const ARC_COLORS = {
   stable:      'rgba(0,217,255,0.2)',
 };
 
-function BlackoutMapContent({ lang = 'es' }) {
+function BlackoutMapContent({}) {
+  const lang = useDocLang();
   const { colorMode } = useColorMode();
 
   const isDark = colorMode === 'dark';
@@ -497,7 +499,8 @@ function BlackoutMapContent({ lang = 'es' }) {
   );
 }
 
-export default function BlackoutPropagationMapBase({ lang = 'es' }) {
+export default function BlackoutPropagationMapBase({}) {
+  const lang = useDocLang();
 
   return (
     <BrowserOnly fallback={
@@ -509,7 +512,7 @@ export default function BlackoutPropagationMapBase({ lang = 'es' }) {
         Cargando mapa de cascada IBR…
       </div>
     }>
-      {() => <BlackoutMapContent lang={lang}/>}
+      {() => <BlackoutMapContent/>}
     </BrowserOnly>
   );
 }

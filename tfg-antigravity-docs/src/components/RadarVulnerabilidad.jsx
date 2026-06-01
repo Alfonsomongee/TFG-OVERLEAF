@@ -22,6 +22,7 @@
  *   - Interconexión:0 → 0%, 100 → ratio 15% (objetivo UE)
  *   - Reserva:      0 → 0 MW, 100 → 3.000 MW
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import {
@@ -105,7 +106,8 @@ function buildRadarData(lang) {
 }
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
-function RadarTooltip({ active, payload, lang }) {
+function RadarTooltip({ active,  payload}) {
+  const lang = useDocLang();
   if (!active || !payload?.length) return null;
   const subject = payload[0]?.payload?.axis;
   const note    = payload[0]?.payload?.note;
@@ -148,7 +150,8 @@ function exportCSV(data, lang) {
 }
 
 // ─── Componente interno ───────────────────────────────────────────────────────
-function RadarVulnerabilidadInner({ lang = 'es' }) {
+function RadarVulnerabilidadInner({}) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
   const data = useMemo(() => buildRadarData(lang), [lang]);
 
@@ -194,7 +197,7 @@ function RadarVulnerabilidadInner({ lang = 'es' }) {
               tick={{ fill: '#475569', fontSize: 10 }}
               tickCount={4}
             />
-            <Tooltip content={<RadarTooltip lang={lang} />} />
+            <Tooltip content={<RadarTooltip />} />
             <Legend
               wrapperStyle={{ fontSize: 13, fontFamily: 'monospace', paddingTop: 8, color: '#cbd5e1' }}
             />
@@ -248,7 +251,8 @@ function RadarVulnerabilidadInner({ lang = 'es' }) {
   );
 }
 
-export default function RadarVulnerabilidad({ lang = 'es' }) {
+export default function RadarVulnerabilidad({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -259,7 +263,7 @@ export default function RadarVulnerabilidad({ lang = 'es' }) {
         {lang === 'es' ? 'Cargando radar de vulnerabilidad…' : 'Loading vulnerability radar…'}
       </div>
     }>
-      {() => <RadarVulnerabilidadInner lang={lang} />}
+      {() => <RadarVulnerabilidadInner />}
     </BrowserOnly>
   );
 }

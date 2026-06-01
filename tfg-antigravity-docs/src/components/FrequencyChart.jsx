@@ -13,6 +13,7 @@
  *    NOTA: el bombeo se deslastra a 49,5 Hz (ya representado), la demanda
  *    a 49,0 Hz (añadido). Fuente: P.O. 1.6 / datos28A.json.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useMemo } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Scrollama, Step } from 'react-scrollama';
@@ -285,7 +286,8 @@ const getStrings = (l) => {
 };
 
 // ─── Exportación principal ────────────────────────────────────────────────────
-export default function FrequencyChartScrolly({ isGallery = false, lang }) {
+export default function FrequencyChartScrolly({ isGallery = false}) {
+  const lang = useDocLang();
   const { i18n } = useDocusaurusContext();
   const currentLang = lang || i18n.currentLocale || 'es';
 
@@ -309,7 +311,8 @@ export default function FrequencyChartScrolly({ isGallery = false, lang }) {
   );
 }
 
-function FrequencyChartScrollyContent({ isGallery, lang }) {
+function FrequencyChartScrollyContent({ isGallery}) {
+  const lang = useDocLang();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const STEPS = useMemo(() => getSteps(lang), [lang]);

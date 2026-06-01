@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
@@ -147,7 +148,8 @@ const EVENT_LOG = [
   { time: 11, msg: '07:05 (29-A) — 99,95% suministro restituido. Reposición certificada.' },
 ];
 
-function RestorationContent({ lang = 'es' }) {
+function RestorationContent({}) {
+  const lang = useDocLang();
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hoveredIsland, setHoveredIsland] = useState(null);
@@ -466,7 +468,8 @@ function RestorationContent({ lang = 'es' }) {
   );
 }
 
-export default function AnimatedRestorationMap({ lang = 'es' }) {
+export default function AnimatedRestorationMap({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -477,7 +480,7 @@ export default function AnimatedRestorationMap({ lang = 'es' }) {
         Cargando mapa de reposición…
       </div>
     }>
-      {() => <RestorationContent lang={lang} />}
+      {() => <RestorationContent />}
     </BrowserOnly>
   );
 }

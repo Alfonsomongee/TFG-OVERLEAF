@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import styles from './AnimatedMap.module.css';
 
@@ -16,7 +17,8 @@ const getNodes = (lang) => {
   ];
 };
 
-export default function AnimatedMap({ lang = 'es' }) {
+export default function AnimatedMap({}) {
+  const lang = useDocLang();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const nodes = getNodes(lang);

@@ -21,6 +21,7 @@
  *    Botón "Capturar" que descarga el canvas actual como PNG.
  *    Útil para incluir en slides de la ponencia.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
@@ -101,7 +102,8 @@ function getPhaseLabel(progress, lang) {
 }
 
 // ─── Componente interno ───────────────────────────────────────────────────────
-function SynchrophasorPlotInner({ lang = 'es', presentationMode = false }) {
+function SynchrophasorPlotInner({ presentationMode = false }) {
+  const lang = useDocLang();
   const chartRef = useRef(null);
   const [isPlaying, setIsPlaying]     = useState(false);
   const [progress,  setProgress]      = useState(0);
@@ -463,7 +465,8 @@ function SynchrophasorPlotInner({ lang = 'es', presentationMode = false }) {
   );
 }
 
-export default function SynchrophasorPlot({ lang = 'es', presentationMode = false }) {
+export default function SynchrophasorPlot({ presentationMode = false }) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -474,7 +477,7 @@ export default function SynchrophasorPlot({ lang = 'es', presentationMode = fals
         {lang === 'es' ? 'Inicializando diagrama fasorial…' : 'Initializing phasor diagram…'}
       </div>
     }>
-      {() => <SynchrophasorPlotInner lang={lang} presentationMode={presentationMode} />}
+      {() => <SynchrophasorPlotInner presentationMode={presentationMode} />}
     </BrowserOnly>
   );
 }

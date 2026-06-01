@@ -28,6 +28,7 @@
  *   IBR% = 82% (Comité de Análisis, p.38)
  *   SCR estimado zona sur = 1,8 (estimación literatura)
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useSWR from 'swr';
@@ -76,7 +77,8 @@ const RISK_LABELS = {
 };
 
 // ─── RiskGauge ────────────────────────────────────────────────────────────────
-function RiskGauge({ label, value, unit, metricKey, lang = 'es', source, readonly = false }) {
+function RiskGauge({ label,  value,  unit,  metricKey,  source,  readonly = false }) {
+  const lang = useDocLang();
   const level = getRiskLevel(metricKey, value);
   const color = RISK_COLORS[level];
   const riskLabel = (RISK_LABELS[lang] || RISK_LABELS.es)[level];
@@ -133,7 +135,8 @@ const fetcher = (url) =>
   });
 
 // ─── Indicador de frescura ────────────────────────────────────────────────────
-function FreshnessIndicator({ timestamp, lang }) {
+function FreshnessIndicator({ timestamp}) {
+  const lang = useDocLang();
   if (!timestamp) return null;
   const d = new Date(timestamp);
   const ageMin = Math.round((Date.now() - d) / 60000);
@@ -154,7 +157,8 @@ function FreshnessIndicator({ timestamp, lang }) {
 }
 
 // ─── Columna de datos ─────────────────────────────────────────────────────────
-function DataColumn({ title, data, lang, isBlackout = false, source }) {
+function DataColumn({ title,  data,  isBlackout = false,  source }) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
   return (
     <div style={{
@@ -179,7 +183,6 @@ function DataColumn({ title, data, lang, isBlackout = false, source }) {
         value={data?.H_eq}
         unit="s"
         metricKey="H_eq"
-        lang={lang}
         source={isBlackout ? 'ENTSO-E Factual, Tabla 2-4, p.36' : source}
       />
       <RiskGauge
@@ -187,7 +190,6 @@ function DataColumn({ title, data, lang, isBlackout = false, source }) {
         value={data?.ibr_pct}
         unit="%"
         metricKey="ibr_pct"
-        lang={lang}
         source={isBlackout ? 'Comité de Análisis, p.38' : source}
       />
       <RiskGauge
@@ -195,7 +197,6 @@ function DataColumn({ title, data, lang, isBlackout = false, source }) {
         value={data?.scr_est}
         unit=""
         metricKey="scr_est"
-        lang={lang}
         source={isBlackout ? 'Estimación literatura (zona sur)' : source}
       />
     </div>
@@ -203,7 +204,8 @@ function DataColumn({ title, data, lang, isBlackout = false, source }) {
 }
 
 // ─── Componente interno ───────────────────────────────────────────────────────
-function Comparador28AInner({ lang = 'es' }) {
+function Comparador28AInner({}) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
 
   const { data, error, isLoading } = useSWR(
@@ -262,7 +264,6 @@ function Comparador28AInner({ lang = 'es' }) {
           <DataColumn
             title={isEs ? 'Sistema ahora' : 'System now'}
             data={isApiDown ? BLACKOUT_SNAPSHOT : (data || BLACKOUT_SNAPSHOT)}
-            lang={lang}
             isBlackout={false}
             source={isApiDown
               ? (isEs ? 'Sin datos en tiempo real' : 'No real-time data')
@@ -273,13 +274,12 @@ function Comparador28AInner({ lang = 'es' }) {
               ? BLACKOUT_SNAPSHOT.label
               : BLACKOUT_SNAPSHOT.labelEn}
             data={BLACKOUT_SNAPSHOT}
-            lang={lang}
             isBlackout={true}
           />
         </div>
       )}
 
-      {data && <FreshnessIndicator timestamp={data.timestamp} lang={lang} />}
+      {data && <FreshnessIndicator timestamp={data.timestamp} />}
 
       {/* Footer metodológico */}
       <div style={{
@@ -297,7 +297,8 @@ function Comparador28AInner({ lang = 'es' }) {
   );
 }
 
-export default function Comparador28A({ lang = 'es' }) {
+export default function Comparador28A({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -308,7 +309,7 @@ export default function Comparador28A({ lang = 'es' }) {
         {lang === 'es' ? 'Cargando comparador…' : 'Loading comparator…'}
       </div>
     }>
-      {() => <Comparador28AInner lang={lang} />}
+      {() => <Comparador28AInner />}
     </BrowserOnly>
   );
 }

@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './DocumentLibrary.module.css';
@@ -32,7 +33,8 @@ const documents = [
   }
 ];
 
-export default function DocumentLibrary({ lang = 'es' }) {
+export default function DocumentLibrary({}) {
+  const lang = useDocLang();
   const isEn = lang === 'en';
 
   return (

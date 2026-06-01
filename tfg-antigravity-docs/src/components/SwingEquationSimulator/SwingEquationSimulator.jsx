@@ -38,6 +38,7 @@
  *    Componente 100% autónomo. No depende de assets externos.
  *    Funciona en PWA sin conexión.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import {
@@ -127,7 +128,8 @@ function AccessibleSlider({ label, value, onChange, min, max, step, valueText })
 }
 
 // ─── Componente interno ───────────────────────────────────────────────────────
-function SwingEquationSimulatorInner({ lang = 'es' }) {
+function SwingEquationSimulatorInner({}) {
+  const lang = useDocLang();
   const [H,   setH]   = useState(2.4);   // s — ENTSO-E Factual media ibérica
   const [dP,  setDP]  = useState(0.03);  // p.u. sobre demanda total
   const [FFR, setFFR] = useState(0.0);   // p.u. de respuesta rápida
@@ -362,7 +364,8 @@ function SwingEquationSimulatorInner({ lang = 'es' }) {
   );
 }
 
-export default function SwingEquationSimulator({ lang = 'es' }) {
+export default function SwingEquationSimulator({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -373,7 +376,7 @@ export default function SwingEquationSimulator({ lang = 'es' }) {
         {lang === 'es' ? 'Inicializando simulador de inercia…' : 'Initializing inertia simulator…'}
       </div>
     }>
-      {() => <SwingEquationSimulatorInner lang={lang} />}
+      {() => <SwingEquationSimulatorInner />}
     </BrowserOnly>
   );
 }

@@ -26,6 +26,7 @@
  *      por debajo del 6% (objetivo mínimo UE: 10%).
  *    - Línea horizontal en el gráfico de ratio marcando el 10% UE.
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { lazy, Suspense, useState } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InterconnectionDashboard.module.css';
@@ -84,7 +85,8 @@ function CustomTooltip({ active, payload, label, isEs }) {
 }
 
 // ─── Componente interno (evita SSR issues) ────────────────────────────────────
-function InterconnectionDashboardInner({ lang }) {
+function InterconnectionDashboardInner({}) {
+  const lang = useDocLang();
   const isEs = lang === 'es' || !['en','pt','fr','it','de'].includes(lang);
 
   // Último año con ratio de interconexión disponible
@@ -280,7 +282,8 @@ function InterconnectionDashboardInner({ lang }) {
 }
 
 // ─── Exportación con BrowserOnly ──────────────────────────────────────────────
-export default function InterconnectionDashboard({ lang }) {
+export default function InterconnectionDashboard({}) {
+  const lang = useDocLang();
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -291,7 +294,7 @@ export default function InterconnectionDashboard({ lang }) {
         {lang === 'es' ? 'Cargando dashboard de interconexiones…' : 'Loading interconnection dashboard…'}
       </div>
     }>
-      {() => <InterconnectionDashboardInner lang={lang} />}
+      {() => <InterconnectionDashboardInner />}
     </BrowserOnly>
   );
 }

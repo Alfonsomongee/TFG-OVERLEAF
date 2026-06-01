@@ -37,6 +37,7 @@
  *   - aria-live="polite" en el contenido revelado
  *   - prefers-reduced-motion: elimina la animación de expansión
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useRef } from 'react';
 
 // Polyfill useId para React 17 (useId solo existe en React 18+)
@@ -48,7 +49,8 @@ function useId() {
 }
 
 // ─── Botón de expansión ───────────────────────────────────────────────────────
-function ExpandButton({ expanded, onClick, level, lang }) {
+function ExpandButton({ expanded,  onClick,  level}) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
   const labels = {
     es: {
@@ -129,7 +131,8 @@ function RevealPanel({ children, level, id }) {
 }
 
 // ─── Etiqueta de nivel ────────────────────────────────────────────────────────
-function LevelBadge({ level, lang }) {
+function LevelBadge({ level}) {
+  const lang = useDocLang();
   const isEs = lang === 'es';
   const badges = {
     1: { label: isEs ? 'Síntesis'  : 'Summary',   color: '#94a3b8' },
@@ -160,12 +163,11 @@ function LevelBadge({ level, lang }) {
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 export default function ForensicReveal({
-  l1,
-  l2,
-  l3,
-  source,
-  lang = 'es',
-}) {
+  l1, 
+  l2, 
+  l3, 
+  source}) {
+  const lang = useDocLang();
   const [showL2, setShowL2] = useState(false);
   const [showL3, setShowL3] = useState(false);
   const id2 = useId();
@@ -185,7 +187,7 @@ export default function ForensicReveal({
 
       {/* L1 — siempre visible */}
       <div>
-        <LevelBadge level={1} lang={lang} />
+        <LevelBadge level={1} />
         <span style={{ fontSize: '1rem', lineHeight: 1.65, color: 'var(--text-0, #f1f5f9)' }}>
           {l1}
         </span>
@@ -197,14 +199,13 @@ export default function ForensicReveal({
           expanded={showL2}
           onClick={() => setShowL2(v => !v)}
           level={2}
-          lang={lang}
         />
       )}
 
       {/* L2 — mecanismo técnico */}
       {hasL2 && showL2 && (
         <RevealPanel level={2} id={id2}>
-          <LevelBadge level={2} lang={lang} />
+          <LevelBadge level={2} />
           {l2}
 
           {/* Botón L3 dentro del panel L2 */}
@@ -214,7 +215,6 @@ export default function ForensicReveal({
                 expanded={showL3}
                 onClick={() => setShowL3(v => !v)}
                 level={3}
-                lang={lang}
               />
             </div>
           )}
@@ -222,7 +222,7 @@ export default function ForensicReveal({
           {/* L3 — dato verificado */}
           {hasL3 && showL3 && (
             <RevealPanel level={3} id={id3}>
-              <LevelBadge level={3} lang={lang} />
+              <LevelBadge level={3} />
               {l3}
             </RevealPanel>
           )}

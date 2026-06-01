@@ -12,16 +12,16 @@
  *   <GlossaryLink term="IBR">generación inversora</GlossaryLink>
  *   <GlossaryLink term="SCR" compact>SCR</GlossaryLink>
  */
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useRef, useEffect } from 'react';
 import { GLOSSARY_TERMS } from '@site/src/data/glossary';
 
 export default function GlossaryLink({
-  term,
-  definition,
-  children,
-  compact = false,
-  lang = 'es',
-}) {
+  term, 
+  definition, 
+  children, 
+  compact = false}) {
+  const lang = useDocLang();
   const [open, setOpen] = useState(false);
   const wrapRef         = useRef(null);
   const isEs            = lang === 'es';
