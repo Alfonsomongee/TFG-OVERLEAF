@@ -148,12 +148,12 @@ function getSteps(lang) {
 
 // ─── SVG principal ────────────────────────────────────────────────────────────
 function DiagramSVG({ step, prefersReduced }) {
-  const W = 640, H = 340;
+  const W = 760, H = 480;
   const isLast = step.cascade;
 
   // Tensiones normalizadas para la barra visual
-  const bar400H = Math.round(step.v400 * 80);
-  const bar220H = Math.round(step.v220 * 80);
+  const bar400H = Math.round(step.v400 * 100);
+  const bar220H = Math.round(step.v220 * 100);
 
   // Color de la barra según nivel
   const colorBar = (v) => {
@@ -164,7 +164,7 @@ function DiagramSVG({ step, prefersReduced }) {
   };
 
   // Posición OLTC visual (0=neutro, 1=máximo ajuste)
-  const oltcY = 155 - Math.round(step.oltcPos * 30);
+  const oltcY = 170 - Math.round(step.oltcPos * 35);
 
   return (
     <svg
@@ -199,7 +199,7 @@ function DiagramSVG({ step, prefersReduced }) {
       <rect width={W} height={H} fill="url(#grid)" />
 
       {/* ── SECCIÓN IZQUIERDA: Red de Transporte 400 kV (lo que ve REE) ── */}
-      <text x="20" y="22" fill={C.scada} fontSize="10" fontFamily="monospace"
+      <text x="20" y="22" fill={C.scada} fontSize="11" fontFamily="monospace"
             fontWeight="700" letterSpacing="0.1em">
         RED 400 kV — VISIBLE PARA SCADA REE
       </text>
@@ -215,7 +215,7 @@ function DiagramSVG({ step, prefersReduced }) {
             dur="1.2s" fill="freeze" />
         )}
       </rect>
-      <text x="210" y="43" fill={colorBar(step.v400)} fontSize="12"
+      <text x="210" y="43" fill={colorBar(step.v400)} fontSize="13"
             fontFamily="monospace" fontWeight="bold">
         {step.v400 === 0 ? '0' : step.v400.toFixed(2)} p.u.
       </text>
@@ -230,37 +230,37 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* ── TRANSFORMADOR OLTC (centro) ── */}
       {/* Cuerpo del transformador */}
-      <rect x="215" y="100" width="80" height="100" rx="4"
+      <rect x="265" y="100" width="90" height="100" rx="4"
             fill="rgba(0,217,255,0.04)" stroke={step.ansi59 ? C.critical : C.border}
             strokeWidth={step.ansi59 ? 2 : 1}
             filter={step.ansi59 ? 'url(#glow-red)' : 'none'} />
 
       {/* Etiqueta TR */}
-      <text x="255" y="120" fill={step.ansi59 ? C.critical : C.dim}
+      <text x="310" y="120" fill={step.ansi59 ? C.critical : C.dim}
             fontSize="9" fontFamily="monospace" textAnchor="middle" fontWeight="700">
         TR 400/220kV
       </text>
-      <text x="255" y="133" fill={step.ansi59 ? C.critical : C.dim}
+      <text x="310" y="133" fill={step.ansi59 ? C.critical : C.dim}
             fontSize="8" fontFamily="monospace" textAnchor="middle">
         OLTC
       </text>
 
       {/* Indicador de posición OLTC */}
-      <rect x="235" y="140" width="40" height="50" rx="2"
+      <rect x="285" y="140" width="40" height="50" rx="2"
             fill="rgba(255,255,255,0.03)" stroke={C.border} strokeWidth="1" />
-      <text x="255" y="153" fill={C.dim} fontSize="7" fontFamily="monospace"
+      <text x="310" y="153" fill={C.dim} fontSize="7" fontFamily="monospace"
             textAnchor="middle">Toma</text>
       {/* Aguja de posición */}
-      <line x1="255" y1="185" x2="255" y2={oltcY + 30}
+      <line x1="310" y1="185" x2="310" y2={oltcY + 30}
             stroke={step.oltcPos > 0.8 ? C.warning : C.dim}
             strokeWidth="2" />
-      <circle cx="255" cy={oltcY + 30} r="3"
+      <circle cx="310" cy={oltcY + 30} r="3"
               fill={step.oltcPos > 0.8 ? C.warning : C.dim} />
 
       {/* Símbolo ANSI 59 si disparado */}
       {step.ansi59 && (
         <>
-          <rect x="220" y="196" width="70" height="18" rx="3"
+          <rect x="270" y="196" width="80" height="18" rx="3"
                 fill={C.critical} opacity="0.9"
                 filter="url(#glow-red)">
             {!prefersReduced && (
@@ -268,7 +268,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 values="0.9;0.4;0.9" dur="1.8s" repeatCount="indefinite" />
             )}
           </rect>
-          <text x="255" y="209" fill="#fff" fontSize="9"
+          <text x="310" y="209" fill="#fff" fontSize="9"
                 fontFamily="monospace" textAnchor="middle" fontWeight="bold">
             ⚡ ANSI 59
           </text>
@@ -276,15 +276,15 @@ function DiagramSVG({ step, prefersReduced }) {
       )}
 
       {/* ── SECCIÓN DERECHA: Red Colectora 220 kV (oculta para REE) ── */}
-      <text x="320" y="22" fill={C.hidden} fontSize="10" fontFamily="monospace"
+      <text x="390" y="22" fill={C.hidden} fontSize="11" fontFamily="monospace"
             fontWeight="700" letterSpacing="0.05em">
         RED 220 kV — INVISIBLE PARA SCADA
       </text>
 
       {/* Barra 220 kV colector */}
-      <rect x="320" y="35" width="180" height="8" rx="2"
+      <rect x="390" y="35" width="180" height="8" rx="2"
             fill="rgba(167,139,250,0.1)" stroke={C.hidden} strokeWidth="1" />
-      <rect x="320" y="35" width={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))} height="8" rx="2"
+      <rect x="390" y="35" width={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))} height="8" rx="2"
             fill={colorBar(step.v220)} opacity="0.9">
         {!prefersReduced && (
           <animate attributeName="width"
@@ -292,14 +292,14 @@ function DiagramSVG({ step, prefersReduced }) {
             dur="1.2s" fill="freeze" />
         )}
       </rect>
-      <text x="508" y="43" fill={colorBar(step.v220)} fontSize="12"
+      <text x="578" y="43" fill={colorBar(step.v220)} fontSize="13"
             fontFamily="monospace" fontWeight="bold">
         {isLast ? '—' : `${step.v220.toFixed(2)} p.u.`}
       </text>
 
       {/* Plantas FV (colector) */}
       {[0, 1, 2].map(i => {
-        const x = 325 + i * 58;
+        const x = 400 + i * 60;
         const fallen = isLast || (step.ansi59 && i === 0);
         return (
           <g key={i}>
@@ -332,7 +332,7 @@ function DiagramSVG({ step, prefersReduced }) {
       {step.id >= 3 && (
         <>
           {/* Zona ciega */}
-          <rect x="215" y="55" width="290" height="35" rx="3"
+          <rect x="265" y="55" width="350" height="35" rx="3"
                 fill="rgba(245,158,11,0.07)"
                 stroke={C.warning} strokeWidth="1" strokeDasharray="5 3"
                 opacity={step.id >= 3 ? 1 : 0}>
@@ -341,11 +341,11 @@ function DiagramSVG({ step, prefersReduced }) {
                 from="0" to="1" dur="1.2s" fill="freeze" />
             )}
           </rect>
-          <text x="360" y="68" fill={C.warning} fontSize="8"
+          <text x="440" y="68" fill={C.warning} fontSize="8"
                 fontFamily="monospace" textAnchor="middle" fontWeight="700">
             ZONA CIEGA SCADA
           </text>
-          <text x="360" y="80" fill={C.warning} fontSize="7"
+          <text x="440" y="80" fill={C.warning} fontSize="7"
                 fontFamily="monospace" textAnchor="middle" opacity="0.8">
             REE no observa la red colectora
           </text>
@@ -357,40 +357,40 @@ function DiagramSVG({ step, prefersReduced }) {
       <text x="20" y="165" fill={C.dim} fontSize="8" fontFamily="monospace">
         V₄₀₀ (p.u.)
       </text>
-      <rect x="20" y="170" width="12" height="100" rx="2"
+      <rect x="20" y="180" width="14" height="110" rx="2"
             fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
-      <rect x="20" y={170 + 100 - bar400H} width="12" height={bar400H} rx="2"
+      <rect x="20" y={180 + 110 - bar400H} width="14" height={bar400H} rx="2"
             fill={colorBar(step.v400)} />
       {/* Marcas */}
       {[0.9, 1.0, 1.05, 1.1].map(v => {
-        const y = 270 - Math.round(v * 80);
+        const y = 290 - Math.round(v * 100);
         return (
           <g key={v}>
             <line x1="32" y1={y} x2="36" y2={y}
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
             <text x="38" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
-                  fontSize="7" fontFamily="monospace">{v.toFixed(2)}</text>
+                  fontSize="8" fontFamily="monospace">{v.toFixed(2)}</text>
           </g>
         );
       })}
 
       {/* 220 kV gauge */}
-      <text x="590" y="165" fill={C.dim} fontSize="8" fontFamily="monospace"
+      <text x="710" y="165" fill={C.dim} fontSize="8" fontFamily="monospace"
             textAnchor="end">V₂₂₀ (p.u.)</text>
-      <rect x="612" y="170" width="12" height="100" rx="2"
+      <rect x="726" y="180" width="14" height="110" rx="2"
             fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
-      <rect x="612" y={isLast ? 270 : 170 + 100 - bar220H} width="12"
+      <rect x="726" y={isLast ? 290 : 180 + 110 - bar220H} width="14"
             height={isLast ? 0 : bar220H} rx="2"
             fill={colorBar(step.v220)} />
       {[0.9, 1.0, 1.05, 1.1].map(v => {
-        const y = 270 - Math.round(v * 80);
+        const y = 290 - Math.round(v * 100);
         return (
           <g key={v}>
-            <line x1="608" y1={y} x2="612" y2={y}
+            <line x1="722" y1={y} x2="726" y2={y}
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
-            <text x="606" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
+            <text x="720" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
                   fontSize="7" fontFamily="monospace" textAnchor="end">
               {v.toFixed(2)}
             </text>
@@ -399,30 +399,30 @@ function DiagramSVG({ step, prefersReduced }) {
       })}
 
       {/* Umbral ANSI 59 (línea roja en ambos gauges) */}
-      <line x1="20" y1={270 - Math.round(1.10 * 80)} x2="56" y2={270 - Math.round(1.10 * 80)}
+      <line x1="20" y1={290 - Math.round(1.10 * 100)} x2="56" y2={290 - Math.round(1.10 * 100)}
             stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
-      <line x1="608" y1={270 - Math.round(1.10 * 80)} x2="624" y2={270 - Math.round(1.10 * 80)}
+      <line x1="722" y1={290 - Math.round(1.10 * 100)} x2="738" y2={290 - Math.round(1.10 * 100)}
             stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
-      <text x="58" y={270 - Math.round(1.10 * 80) + 3} fill={C.critical}
-            fontSize="7" fontFamily="monospace">ANSI 59</text>
+      <text x="58" y={290 - Math.round(1.10 * 100) + 3} fill={C.critical}
+            fontSize="8" fontFamily="monospace">ANSI 59</text>
 
       {/* ── CASCADA VISUAL (paso 5) ── */}
       {isLast && (
         <>
-          <rect x="60" y="145" width="530" height="85" rx="4"
+          <rect x="40" y="145" width="680" height="95" rx="4"
                 fill="rgba(239,68,68,0.08)"
                 stroke={C.critical} strokeWidth="1.5"
                 filter="url(#glow-red)" />
-          <text x="325" y="175" fill={C.critical} fontSize="16"
+          <text x="380" y="178" fill={C.critical} fontSize="18"
                 fontFamily="monospace" textAnchor="middle" fontWeight="bold"
                 filter="url(#glow-red)">
             CERO ELÉCTRICO SISTÉMICO
           </text>
-          <text x="325" y="195" fill={C.critical} fontSize="11"
+          <text x="380" y="200" fill={C.critical} fontSize="12"
                 fontFamily="monospace" textAnchor="middle">
             −15 GW en 30 segundos · 25.184 MW de demanda sin suministro
           </text>
-          <text x="325" y="213" fill="#f87171" fontSize="10"
+          <text x="380" y="217" fill="#f87171" fontSize="11"
                 fontFamily="monospace" textAnchor="middle" opacity="0.8">
             ~60 millones de personas · primer colapso por sobretensión en Europa Continental
           </text>
@@ -430,13 +430,13 @@ function DiagramSVG({ step, prefersReduced }) {
       )}
 
       {/* ── NOTA INFERIOR ── */}
-      <rect x="60" y="295" width="530" height="36" rx="3"
+      <rect x="20" y="360" width="720" height="44" rx="3"
             fill="rgba(255,255,255,0.02)" stroke={C.border} strokeWidth="1" />
-      <text x="75" y="311" fill={step.ansi59 ? C.critical : C.dim}
-            fontSize="9" fontFamily="monospace">
+      <text x="36" y="378" fill={step.ansi59 ? C.critical : C.dim}
+            fontSize="10" fontFamily="monospace">
         {step.note}
       </text>
-      <text x="75" y="325" fill={C.dim} fontSize="8" fontFamily="monospace">
+      <text x="36" y="394" fill={C.dim} fontSize="9" fontFamily="monospace">
         {step.time}
       </text>
     </svg>
