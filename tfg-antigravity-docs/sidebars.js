@@ -218,7 +218,7 @@ const sidebars = {
       items: [
         {
           type: 'html',
-          value: '<div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--ifm-color-primary);letter-spacing:0.1em;margin:0.5rem 0;padding:0 0.5rem 0.3rem;text-transform:uppercase;border-bottom:1px solid rgba(6,182,212,0.2);">Telemetría del Incidente</div>',
+          value: '<div class="sidebar-section-divider">Telemetría del Incidente</div>',
           defaultStyle: true,
         },
         {
@@ -229,7 +229,7 @@ const sidebars = {
         {
           type: 'doc',
           id: 'datos-tiempo-real/mix-generacion',
-          label: '¿Quién Generaba cuando Cayó la Red?',
+          label: 'Mix de Generación en el Colapso',
         },
         {
           type: 'doc',
@@ -258,7 +258,7 @@ const sidebars = {
         },
         {
           type: 'html',
-          value: '<div style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--ifm-color-primary);letter-spacing:0.1em;margin:1rem 0 0.5rem;padding:0 0.5rem 0.3rem;text-transform:uppercase;border-bottom:1px solid rgba(6,182,212,0.2);">Estructura y Mercado</div>',
+          value: '<div class="sidebar-section-divider">Estructura y Mercado</div>',
           defaultStyle: true,
         },
         {
