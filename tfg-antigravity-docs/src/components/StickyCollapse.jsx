@@ -207,7 +207,13 @@ function ScrollyMode({ steps, lang }) {
   const isEs = lang === 'es';
 
   return (
-    <div style={{ position: 'relative', display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+    <div style={{
+      position: 'relative',
+      display: 'flex',
+      gap: '2rem',
+      alignItems: 'flex-start',
+      paddingBottom: '2rem',
+    }}>
 
       {/* Pasos (izquierda, scrolleable) */}
       <div style={{ width: '42%', flexShrink: 0, position: 'relative', zIndex: 5 }}>
@@ -221,7 +227,7 @@ function ScrollyMode({ steps, lang }) {
             return (
               <Step key={i} data={i}>
                 <div style={{
-                  margin: i === steps.length - 1 ? '45vh 0 0 0' : '45vh 0',
+                  margin: i === steps.length - 1 ? '45vh 0 80vh 0' : '45vh 0',
                   padding: '1.25rem',
                   background: 'var(--ifm-background-surface-color)',
                   border: isActive
@@ -251,8 +257,10 @@ function ScrollyMode({ steps, lang }) {
         flex: 1,
         position: 'sticky',
         top: '80px',
-        height: '65vh',
+        height: '60vh',
+        maxHeight: '520px',
         zIndex: 10,
+        alignSelf: 'flex-start',
       }}>
         {/* Header del gráfico sticky */}
         <div style={{ marginBottom: '0.5rem' }}>
