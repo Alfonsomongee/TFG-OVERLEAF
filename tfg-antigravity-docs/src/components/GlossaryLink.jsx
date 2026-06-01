@@ -1,20 +1,15 @@
 /**
  * GlossaryLink.jsx
- * Enlace académico con tooltip de glosario técnico.
+ * Enlace académico con definición expandible del glosario técnico.
  *
- * ESTILO: gris punteado sobrio (no cian/primary) — tono académico.
  * COMPORTAMIENTO:
- *   - Desktop: tooltip al hover Y al click (toggle)
- *   - Móvil:   tooltip al tap (toggle)
- *   - Teclado: tooltip al focus
- *   - Escape:  cierra el tooltip
- *   - Click fuera: cierra el tooltip
- * DEFINICIÓN: auto-lookup desde GLOSSARY_TERMS (glossary.js).
- *   Si se pasa prop `definition` explícita, tiene prioridad.
+ *   - Click / Enter / Space: abre o cierra la definición
+ *   - La tarjeta NO se cierra al mover el ratón (solo clic fuera o Escape)
+ *   - Posicionamiento absoluto — no necesita cálculos de viewport
+ *   - Altura automática — muestra siempre la definición completa
  *
  * USO EN MDX:
  *   <GlossaryLink term="IBR">generación inversora</GlossaryLink>
- *   <GlossaryLink term="IBR" definition="Texto propio">IBR</GlossaryLink>
  *   <GlossaryLink term="SCR" compact>SCR</GlossaryLink>
  */
 import React, { useState, useRef, useEffect } from 'react';
@@ -27,171 +22,146 @@ export default function GlossaryLink({
   compact = false,
   lang = 'es',
 }) {
-  const [open,   setOpen]   = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
-  const triggerRef          = useRef(null);
-  const tooltipRef          = useRef(null);
-  const isEs                = lang === 'es';
+  const [open, setOpen] = useState(false);
+  const wrapRef         = useRef(null);
+  const isEs            = lang === 'es';
 
-  // Auto-lookup en 4 pasos: exacto → case-insensitive → el term del MDX empieza
-  // por la clave del glosario → la clave empieza por el term del MDX.
-  // Esto resuelve casos como "OLTC (On-Load Tap Changer)" → "OLTC",
-  // "GFM (Grid-Forming)" → "GFM", etc.
+  // Auto-lookup: exacto → case-insensitive → prefijo en term → prefijo en clave
   const tLow = (term || '').toLowerCase();
   const entry = GLOSSARY_TERMS
-    ? GLOSSARY_TERMS.find(t => t.term === term) ||
-      GLOSSARY_TERMS.find(t => t.term.toLowerCase() === tLow) ||
-      GLOSSARY_TERMS.find(t => tLow.startsWith(t.term.toLowerCase())) ||
+    ? GLOSSARY_TERMS.find(t => t.term === term)                              ||
+      GLOSSARY_TERMS.find(t => t.term.toLowerCase() === tLow)               ||
+      GLOSSARY_TERMS.find(t => tLow.startsWith(t.term.toLowerCase()))       ||
       GLOSSARY_TERMS.find(t => t.term.toLowerCase().startsWith(tLow))
     : null;
 
   const resolvedDef = definition || entry?.definition || null;
 
-  // Calcular posición fixed (evita clipping por overflow:hidden / transform)
-  const updatePosition = () => {
-    if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    const W = 300;
-    const vw = window.innerWidth;
-    let left = rect.left + rect.width / 2 - W / 2;
-    if (left < 10)          left = 10;
-    if (left + W > vw - 10) left = vw - W - 10;
-    const top = rect.top > 140 ? rect.top - 148 : rect.bottom + 8;
-    setCoords({ top, left });
-  };
-
+  // Cerrar al hacer clic fuera del componente
   useEffect(() => {
     if (!open) return;
-    updatePosition();
-    window.addEventListener('resize',  updatePosition);
-    window.addEventListener('scroll',  updatePosition, true);
+    const handleOutside = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown',  handleOutside);
+    document.addEventListener('touchstart', handleOutside);
     return () => {
-      window.removeEventListener('resize',  updatePosition);
-      window.removeEventListener('scroll',  updatePosition, true);
+      document.removeEventListener('mousedown',  handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
     };
   }, [open]);
 
-  // Cerrar al click fuera
+  // Cerrar con Escape
   useEffect(() => {
     if (!open) return;
-    const h = (e) => {
-      if (
-        tooltipRef.current && !tooltipRef.current.contains(e.target) &&
-        triggerRef.current && !triggerRef.current.contains(e.target)
-      ) setOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    document.addEventListener('touchstart', h);
-    return () => {
-      document.removeEventListener('mousedown', h);
-      document.removeEventListener('touchstart', h);
-    };
+    const handleKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
   }, [open]);
-
-  // Escape
-  useEffect(() => {
-    if (!open) return;
-    const h = (e) => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('keydown', h);
-    return () => document.removeEventListener('keydown', h);
-  }, [open]);
-
-  const isTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
 
   return (
-    <span style={{ position: 'relative', display: 'inline' }}>
+    <span
+      ref={wrapRef}
+      style={{ position: 'relative', display: 'inline' }}
+    >
+      {/* ── Palabra del glosario — clase para override CSS por tema ── */}
       <button
-        ref={triggerRef}
-        onMouseEnter={() => { if (!isTouch) setOpen(true);  }}
-        onMouseLeave={() => { if (!isTouch) setOpen(false); }}
+        className="glossary-link-trigger"
         onClick={() => setOpen(o => !o)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
-        aria-describedby={open ? `gl-${term}` : undefined}
+        aria-expanded={open}
+        title={open ? undefined : `Ver definición: ${term}`}
         style={{
           background:     'none',
           border:         'none',
           padding:        '0 1px',
+          paddingBottom:  compact ? 0 : '1px',
           cursor:         'help',
           fontFamily:     'inherit',
           fontSize:       'inherit',
           fontWeight:     'inherit',
           lineHeight:     'inherit',
+          color:          'var(--ifm-color-primary)',
+          borderBottom:   compact ? 'none' : '1px dotted currentColor',
           textDecoration: 'none',
-          // ── estilo académico gris sobrio ──
-          color:          'rgba(203, 213, 225, 0.85)',
-          borderBottom:   compact ? 'none' : '1px dotted rgba(148, 163, 184, 0.5)',
-          paddingBottom:  compact ? 0 : '1px',
         }}
       >
         {children}
       </button>
 
+      {/* ── Tarjeta de definición ── */}
       {open && (
-        <div
+        <span
           id={`gl-${term}`}
-          ref={tooltipRef}
           role="tooltip"
           style={{
-            position:       'fixed',
-            top:            coords.top,
-            left:           coords.left,
-            zIndex:         10000,
-            width:          300,
-            padding:        '10px 14px',
-            background:     'rgba(10,15,30,0.98)',
-            border:         '1px solid rgba(0,217,255,0.35)',
-            borderRadius:   8,
-            fontSize:       12,
-            fontFamily:     'monospace',
-            color:          '#e2e8f0',
-            lineHeight:     1.6,
-            boxShadow:      '0 8px 24px rgba(0,0,0,0.6)',
-            backdropFilter: 'blur(8px)',
-            whiteSpace:     'normal',
-            pointerEvents:  isTouch ? 'auto' : 'none',
-            textAlign:      'left',
+            position:      'absolute',
+            top:           'calc(100% + 6px)',
+            left:          '50%',
+            transform:     'translateX(-50%)',
+            zIndex:        10000,
+            display:       'block',
+            width:         290,
+            padding:       '10px 14px',
+            borderRadius:  6,
+            fontSize:      12,
+            fontFamily:    'var(--ifm-font-family-base)',
+            lineHeight:    1.65,
+            whiteSpace:    'normal',
+            textAlign:     'left',
+            pointerEvents: 'auto',
+            background:    'var(--ifm-background-surface-color, #fff)',
+            border:        '1px solid var(--ifm-color-emphasis-300, #d1d5db)',
+            color:         'var(--ifm-font-color-base, #111827)',
+            boxShadow:     '0 4px 20px rgba(0,0,0,0.14)',
           }}
         >
           <strong style={{
-            color:         '#00d9ff',
             display:       'block',
-            marginBottom:  5,
-            fontSize:      13,
-            borderBottom:  '1px solid rgba(0,217,255,0.15)',
+            marginBottom:  6,
             paddingBottom: 5,
-            fontFamily:    'monospace',
+            fontSize:      13,
+            fontWeight:    600,
+            fontFamily:    'var(--ifm-font-family-base)',
+            borderBottom:  '1px solid var(--ifm-color-emphasis-200, #e5e7eb)',
+            color:         'var(--ifm-font-color-base, #111827)',
           }}>
             {term}
           </strong>
-          <span style={{ color: '#cbd5e1', fontSize: 12, lineHeight: 1.6 }}>
+
+          <span style={{
+            display:    'block',
+            color:      'var(--ifm-color-emphasis-800, #374151)',
+            fontSize:   12,
+            lineHeight: 1.65,
+          }}>
             {resolvedDef || (
               isEs
                 ? 'Ver definición completa en el Glosario Técnico.'
                 : 'See full definition in the Technical Glossary.'
             )}
           </span>
-          {isTouch && (
-            <button
-              onClick={() => setOpen(false)}
-              style={{
-                display:      'block',
-                marginTop:    8,
-                width:        '100%',
-                padding:      '4px 0',
-                background:   'rgba(255,255,255,0.05)',
-                border:       '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 4,
-                color:        '#94a3b8',
-                cursor:       'pointer',
-                fontFamily:   'monospace',
-                fontSize:     11,
-              }}
-            >
-              ✕ {isEs ? 'Cerrar' : 'Close'}
-            </button>
-          )}
-        </div>
+
+          <button
+            onClick={() => setOpen(false)}
+            style={{
+              display:      'block',
+              marginTop:    8,
+              width:        '100%',
+              padding:      '4px 0',
+              background:   'var(--ifm-color-emphasis-100, #f3f4f6)',
+              border:       '1px solid var(--ifm-color-emphasis-200, #e5e7eb)',
+              borderRadius: 4,
+              color:        'var(--ifm-color-emphasis-600, #6b7280)',
+              cursor:       'pointer',
+              fontFamily:   'var(--ifm-font-family-base)',
+              fontSize:     11,
+            }}
+          >
+            ✕ {isEs ? 'Cerrar' : 'Close'}
+          </button>
+        </span>
       )}
     </span>
   );

@@ -83,6 +83,7 @@ export default function ChatWidget() {
     <>
       {/* Botón flotante */}
       <button
+        className="chat-fab"
         onClick={() => setOpen(!open)}
         aria-label={open ? 'Cerrar chat' : 'Abrir chat del TFG'}
         title="Pregunta al TFG"

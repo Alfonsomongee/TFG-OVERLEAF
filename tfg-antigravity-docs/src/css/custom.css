@@ -2066,3 +2066,214 @@ html[data-theme='light'] :target {
 html {
   scroll-behavior: smooth;
 }
+
+/* ============================================================
+   LIGHT MODE — SIDEBAR COLORES + BOTONES + GLOSARIO
+   Todos estos cambios aplican SOLO a html[data-theme='light']
+   ============================================================
+
+   Paleta usada:
+     #636E4F  — PANTONE 18-0312 TCX (fondo sidebar)
+     #2C2620  — PANTONE 19-0503 TCX Bitumen (subapartados sidebar)
+     #7EAD85  — PANTONE 17-6212 TCX Sea Spray (palabras glosario)
+     #fcfcfc  — fondo actual de la web en modo claro
+   ============================================================ */
+
+/* ── Sidebar: fondo principal ───────────────────────────── */
+html[data-theme='light'] .theme-doc-sidebar-container {
+  background-color: #636E4F !important;
+  border-right: 1px solid rgba(0,0,0,0.10) !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu {
+  background-color: #636E4F !important;
+}
+
+/* ── Sidebar: primer nivel (nombres de capítulos/categorías) ── */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item > a,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible .menu__link {
+  color: #fcfcfc !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link:hover {
+  background-color: rgba(255,255,255,0.12) !important;
+  color: #ffffff !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link--active {
+  background-color: rgba(255,255,255,0.18) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* ── Sidebar: subapartados (segundo nivel) → Bitumen ─────── */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list .menu__list .menu__link {
+  color: #2C2620 !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list .menu__list .menu__link:hover {
+  background-color: rgba(255,255,255,0.15) !important;
+  color: #1a1814 !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list .menu__list .menu__link--active {
+  color: #1a1814 !important;
+  background-color: rgba(255,255,255,0.20) !important;
+  font-weight: 600;
+}
+
+/* ── Sidebar: flecha caret ───────────────────────────────── */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__caret::before {
+  border-color: #fcfcfc transparent transparent transparent !important;
+}
+
+/* ── Sidebar: botón colapsar ─────────────────────────────── */
+html[data-theme='light'] .theme-doc-sidebar-collapse-btn {
+  background-color: #636E4F !important;
+  border-left: 1px solid rgba(255,255,255,0.18) !important;
+  color: #fcfcfc !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-collapse-btn:hover {
+  background-color: #566044 !important;
+}
+
+/* ── Botón "Mostrar índice" → sin borde, fondo web, texto sidebar ── */
+html[data-theme='light'] .global-toc-btn {
+  background: #fcfcfc !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #636E4F !important;
+  text-shadow: none !important;
+}
+html[data-theme='light'] .global-toc-btn:hover,
+html[data-theme='light'] .global-toc-btn.active {
+  background: #f0f0ee !important;
+  border: none !important;
+  color: #4d5640 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Botón "Mostrar índice": sin glow global ─────────────── */
+html[data-theme='light'] .global-sidebar-btn {
+  color: #636E4F !important;
+  text-shadow: none !important;
+}
+html[data-theme='light'] .global-sidebar-btn:hover {
+  color: #4d5640 !important;
+  text-shadow: none !important;
+}
+
+/* ── Modo Cine → texto sidebar, sin brillo ───────────────── */
+html[data-theme='light'] .cine-fab {
+  color: #636E4F !important;
+  text-shadow: none !important;
+}
+html[data-theme='light'] .cine-fab:hover {
+  color: #4d5640 !important;
+  text-shadow: none !important;
+  transform: translateY(-1px);
+}
+
+/* ── Botón IA (ChatWidget) → sin neón, texto sidebar ─────── */
+html[data-theme='light'] .chat-fab {
+  color: #636E4F !important;
+  filter: none !important;
+  animation: none !important;
+}
+html[data-theme='light'] .chat-fab:hover {
+  color: #4d5640 !important;
+  filter: none !important;
+}
+
+/* ── Palabras del Glosario Técnico → Sea Spray ───────────── */
+/* Sistema remark (spans automáticos) */
+html[data-theme='light'] .glossary-term {
+  color: #7EAD85 !important;
+  border-bottom-color: #7EAD85 !important;
+}
+/* GlossaryLink component (botón trigger) */
+html[data-theme='light'] .glossary-link-trigger {
+  color: #7EAD85 !important;
+  border-bottom-color: #7EAD85 !important;
+}
+
+/* ── Tooltip del glosario en modo claro ──────────────────── */
+html[data-theme='light'] [role="tooltip"] {
+  background: #ffffff !important;
+  border-color: #d1d5db !important;
+  color: #111827 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+}
+html[data-theme='light'] [role="tooltip"] strong {
+  color: #111827 !important;
+  border-bottom-color: #e5e7eb !important;
+}
+html[data-theme='light'] [role="tooltip"] span {
+  color: #374151 !important;
+}
+
+/* ============================================================
+   SIDEBAR — MODO CLARO
+   Fondo: PANTONE 18-0312 TCX (#636E4F, olive musgo oscuro)
+   Texto: #fcfcfc (color de fondo de la web en modo claro)
+   ============================================================ */
+
+/* Contenedor principal */
+html[data-theme='light'] .theme-doc-sidebar-container {
+  background-color: #636E4F !important;
+  border-right: 1px solid rgba(0,0,0,0.10) !important;
+}
+
+/* Fondo del área de menú interno */
+html[data-theme='light'] .theme-doc-sidebar-container .menu {
+  background-color: #636E4F !important;
+}
+
+/* Todos los enlaces de la sidebar */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item > a {
+  color: #fcfcfc !important;
+}
+
+/* Hover y link activo */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link:hover {
+  background-color: rgba(255,255,255,0.12) !important;
+  color: #ffffff !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__link--active {
+  background-color: rgba(255,255,255,0.18) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Categorías (botones de grupo colapsables) */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible button,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible .menu__link {
+  color: #fcfcfc !important;
+  background-color: transparent !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible:hover,
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list-item-collapsible button:hover {
+  background-color: rgba(255,255,255,0.10) !important;
+}
+
+/* Flecha del caret */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__caret::before {
+  border-color: #fcfcfc transparent transparent transparent !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-container .menu__caret:hover::before {
+  border-color: #ffffff transparent transparent transparent !important;
+}
+
+/* Botón de colapsar sidebar (la flechita lateral) */
+html[data-theme='light'] .theme-doc-sidebar-collapse-btn {
+  background-color: #636E4F !important;
+  border-left: 1px solid rgba(255,255,255,0.18) !important;
+  color: #fcfcfc !important;
+}
+html[data-theme='light'] .theme-doc-sidebar-collapse-btn:hover {
+  background-color: #566044 !important;
+}
+
+/* Separadores / líneas de la sidebar */
+html[data-theme='light'] .theme-doc-sidebar-container .menu__list {
+  border-color: rgba(255,255,255,0.12) !important;
+}
