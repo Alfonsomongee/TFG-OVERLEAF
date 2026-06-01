@@ -209,9 +209,10 @@ function ScrollyMode({ steps, lang }) {
   return (
     <div style={{
       position: 'relative',
-      display: 'flex',
+      display: 'grid',
+      gridTemplateColumns: '42% 1fr',
       gap: '2rem',
-      alignItems: 'flex-start',
+      alignItems: 'start',
       paddingBottom: '2rem',
     }}>
 
@@ -254,13 +255,11 @@ function ScrollyMode({ steps, lang }) {
 
       {/* Sismógrafo sticky (derecha) */}
       <div style={{
-        flex: 1,
         position: 'sticky',
         top: '80px',
-        height: '60vh',
-        maxHeight: '520px',
+        height: 'fit-content',
         zIndex: 10,
-        alignSelf: 'flex-start',
+        alignSelf: 'start',
       }}>
         {/* Header del gráfico sticky */}
         <div style={{ marginBottom: '0.5rem' }}>
@@ -280,8 +279,6 @@ function ScrollyMode({ steps, lang }) {
 
         <div style={{
           height: 'auto',
-  maxHeight: 'calc(70vh - 60px)',
-  overflow: 'hidden',
           background: 'var(--ifm-background-surface-color)',
           borderRadius: 10,
           padding: '0.75rem',
