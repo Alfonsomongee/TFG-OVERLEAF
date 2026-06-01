@@ -215,8 +215,9 @@ function TopologyContent({ lang = "es" }) {
       display: 'flex',
       flexDirection: 'column',
     }}>
-      >
-        
+      <div style={{ position: 'relative', width: '100%' }}>
+        <svg viewBox="0 0 1000 800" style={{ width: '100%', display: 'block' }}>
+          
         <defs>
           {/* FIX 2+3 — filters con unidades absolutas e IDs únicos */}
           <filter id={ids.glow}
