@@ -95,6 +95,7 @@ export default function GlossaryLink({
         <span
           id={`gl-${term}`}
           role="tooltip"
+          className="glossary-tooltip"
           style={{
             position:      'absolute',
             top:           'calc(100% + 6px)',
@@ -111,28 +112,22 @@ export default function GlossaryLink({
             whiteSpace:    'normal',
             textAlign:     'left',
             pointerEvents: 'auto',
-            background:    'var(--ifm-background-surface-color, #fff)',
-            border:        '1px solid var(--ifm-color-emphasis-300, #d1d5db)',
-            color:         'var(--ifm-font-color-base, #111827)',
-            boxShadow:     '0 4px 20px rgba(0,0,0,0.14)',
+            boxShadow:     '0 4px 20px rgba(0,0,0,0.18)',
           }}
         >
-          <strong style={{
+          <strong className="glossary-tooltip__term" style={{
             display:       'block',
             marginBottom:  6,
             paddingBottom: 5,
             fontSize:      13,
             fontWeight:    600,
             fontFamily:    'var(--ifm-font-family-base)',
-            borderBottom:  '1px solid var(--ifm-color-emphasis-200, #e5e7eb)',
-            color:         'var(--ifm-font-color-base, #111827)',
           }}>
             {term}
           </strong>
 
-          <span style={{
+          <span className="glossary-tooltip__def" style={{
             display:    'block',
-            color:      'var(--ifm-color-emphasis-800, #374151)',
             fontSize:   12,
             lineHeight: 1.65,
           }}>
@@ -144,16 +139,14 @@ export default function GlossaryLink({
           </span>
 
           <button
+            className="glossary-tooltip__close"
             onClick={() => setOpen(false)}
             style={{
               display:      'block',
               marginTop:    8,
               width:        '100%',
               padding:      '4px 0',
-              background:   'var(--ifm-color-emphasis-100, #f3f4f6)',
-              border:       '1px solid var(--ifm-color-emphasis-200, #e5e7eb)',
               borderRadius: 4,
-              color:        'var(--ifm-color-emphasis-600, #6b7280)',
               cursor:       'pointer',
               fontFamily:   'var(--ifm-font-family-base)',
               fontSize:     11,
