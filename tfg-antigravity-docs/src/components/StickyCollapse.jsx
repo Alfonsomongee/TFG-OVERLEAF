@@ -111,7 +111,7 @@ function LazyCollapseSismograph({ playbackT, lang }) {
     <React.Suspense fallback={
       <div style={{
         height: 360, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--ifm-color-emphasis-500)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando sismógrafo…' : 'Loading seismograph…'}
@@ -126,7 +126,7 @@ function LazyCollapseSismograph({ playbackT, lang }) {
 function GalleryMode({ steps, lang }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = steps[activeIdx];
-  const color  = PHASE_COLORS[active.phase] || '#94a3b8';
+  const color  = PHASE_COLORS[active.phase] || 'var(--ifm-color-emphasis-600)';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -151,7 +151,7 @@ function GalleryMode({ steps, lang }) {
                 borderRadius: 20,
                 border: `1px solid ${isActive ? c : 'rgba(255,255,255,0.1)'}`,
                 background: isActive ? `${c}22` : 'transparent',
-                color: isActive ? c : '#64748b',
+                color: isActive ? c : 'var(--ifm-color-emphasis-500)',
                 cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
                 fontWeight: isActive ? 700 : 400,
                 transition: 'all 0.2s ease',
@@ -175,7 +175,7 @@ function GalleryMode({ steps, lang }) {
           {active.time}
         </p>
         <h4 style={{ margin: '0 0 0.6rem', color, fontSize: 15 }}>{active.title}</h4>
-        <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, color: '#e2e8f0' }}>
+        <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.65, color: 'var(--ifm-font-color-base)' }}>
           {active.text}
         </p>
       </div>
@@ -187,7 +187,7 @@ function GalleryMode({ steps, lang }) {
 function ScrollyMode({ steps, lang }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = steps[activeIdx];
-  const color  = PHASE_COLORS[active.phase] || '#94a3b8';
+  const color  = PHASE_COLORS[active.phase] || 'var(--ifm-color-emphasis-600)';
 
   // Importar Scrollama dinámicamente (usa window)
   const [Scrollama, setScrollama] = useState(null);
@@ -279,7 +279,9 @@ function ScrollyMode({ steps, lang }) {
         </div>
 
         <div style={{
-          height: 'calc(100% - 44px)',
+          height: 'auto',
+  maxHeight: 'calc(70vh - 60px)',
+  overflow: 'hidden',
           background: 'var(--ifm-background-surface-color)',
           borderRadius: 10,
           padding: '0.75rem',
@@ -326,7 +328,7 @@ export default function StickyCollapse({ lang = 'es', isGallery = false }) {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--ifm-color-emphasis-500)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando narrativa del colapso…' : 'Loading collapse narrative…'}
