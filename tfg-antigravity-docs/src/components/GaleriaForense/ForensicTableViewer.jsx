@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import styles from './ForensicTableViewer.module.css';
 
-// Extract HSL values from strings like "hsl(190 100% 60%)" to raw numbers "190, 100%, 60%" for use in hsla()
+// Extract HSL values from strings like "var(--chart-cyan)" to raw numbers "190, 100%, 60%" for use in hsla()
 const extractHSL = (hslString) => {
   if (!hslString) return { h: 190, s: '100%', l: '60%' }; // Default cyan
   const matches = hslString.match(/hsl\(([\d.]+)(?:deg)?[\s,]+([\d.]+)%[\s,]+([\d.]+)%\)/);
@@ -57,7 +57,7 @@ export default function ForensicTableViewer() {
 
   // Find the active table and its category
   let activeTable = null;
-  let activeCategoryColor = "hsl(190 100% 60%)";
+  let activeCategoryColor = "var(--chart-cyan)";
   let activeHSL = { h: 190, s: '100%', l: '60%' };
 
   for (const cat of data.categories) {

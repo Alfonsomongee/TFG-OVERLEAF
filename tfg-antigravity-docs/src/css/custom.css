@@ -10,6 +10,11 @@
   --accent-amber: var(--forensic-amber-primary); /* ámbar — alarma / transición */
   --accent-magenta: hsl(322 100% 62%);   /* glitch / dato anómalo */
 
+  /* ── Gráficos (Variables inyectadas en .jsx) ────────── */
+  --chart-cyan: hsl(190 100% 60%);
+  --chart-red: hsl(0 75% 56%);
+  --chart-amber: hsl(38 100% 56%);
+
   /* ── Backgrounds (dark, base) ─────────────────────────── */
   --bg-0: #0a1128;              /* azul oscuro forense */
   --bg-1: #0f1830;              /* cards base */
@@ -105,31 +110,68 @@ html[data-theme='dark'] {
   --ifm-navbar-background-color: var(--bg-0);
 }
 
-/* ── LIGHT THEME — variables explícitas ──────────────────────────── */
+/* ── LIGHT THEME — Paleta Analógica Oficial ─────────────────────── */
 html[data-theme='light'] {
-  --bg-0: #fcfcfc;
-  --bg-1: #f5f2eb;
-  --bg-2: #ece8df;
-  --bg-3: #e0dbd0;
-  --text-0: #1a1a1a;
-  --text-1: #1a1a1a;
-  --text-2: #374151;
-  --text-3: #4b5563;
+  /* Fondos (papel cálido) */
+  --bg-0: #F4F1EA;
+  --bg-1: #EBE6DD;
+  --bg-2: #E2E5DE;
+  --bg-3: #E0D8CD;
+  
+  /* Textos (tinta) */
+  --text-0: #2B2B2B;
+  --text-1: #5C5C5C;
+  --text-2: #827E7A;
+  --text-3: #827E7A;
 
-  --ifm-background-color: #fcfcfc;
-  --ifm-background-surface-color: #f5f2eb;
-  --ifm-font-color-base: #1a1a1a;
-  --ifm-navbar-background-color: #fcfcfc;
-  --ifm-color-primary: hsl(190 80% 38%);
-  --ifm-color-primary-dark: hsl(190 80% 32%);
-  --ifm-color-primary-darker: hsl(190 80% 28%);
-  --ifm-color-primary-darkest: hsl(190 80% 22%);
-  --ifm-color-primary-light: hsl(190 80% 48%);
-  --ifm-color-primary-lighter: hsl(190 80% 55%);
-  --ifm-color-primary-lightest: hsl(190 80% 65%);
-  --ifm-menu-color: #374151;
-  --ifm-menu-color-active: #1a1a1a;
-  --accent-electric: hsl(190 80% 38%);
+  /* Acentos (sellos y gráficas) */
+  --primary: #8B2635;
+  --primary-hover: #6B1C2A;
+  --secondary: #4A6B5D;
+  --secondary-hover: #3A5549;
+  --link: #1D3557;
+  --link-hover: #0F2338;
+  --warning: #D4A373;
+  --danger: #8B2635;
+  --success: #4A6B5D;
+  --terracotta: #B85C38;
+  
+  /* Gráficos (Variables inyectadas en .jsx) */
+  --chart-cyan: var(--secondary); /* Verde bosque */
+  --chart-red: var(--primary); /* Burdeos */
+  --chart-amber: var(--warning); /* Mostaza */
+
+  /* Neutros adicionales */
+  --border-light: #D1CCC5;
+  --shadow-light: rgba(0,0,0,0.06);
+  --card-elevated: #F0EDE6;
+
+  /* Compatibilidad con el diseño base de la aplicación */
+  --accent-electric: var(--link);
+  --accent-amber: var(--warning);
+
+  /* Override Docusaurus */
+  --ifm-background-color: var(--bg-0);
+  --ifm-background-surface-color: var(--bg-1);
+  --ifm-font-color-base: var(--text-0);
+  --ifm-navbar-background-color: transparent;
+  
+  --ifm-color-primary: var(--primary);
+  --ifm-color-primary-dark: var(--primary-hover);
+  --ifm-color-primary-darker: var(--primary-hover);
+  --ifm-color-primary-darkest: #4a141c;
+  --ifm-color-primary-light: #a63142;
+  --ifm-color-primary-lighter: #b3394a;
+  --ifm-color-primary-lightest: #cc495b;
+  
+  --ifm-color-success: var(--success);
+  --ifm-color-warning: var(--warning);
+  --ifm-color-danger: var(--danger);
+  
+  --ifm-menu-color: var(--text-1);
+  --ifm-menu-color-active: var(--primary);
+  --ifm-link-color: var(--link);
+  --ifm-link-hover-color: var(--link-hover);
 }
 
 /* Glassmorphism Navbar */
@@ -2301,4 +2343,123 @@ html[data-theme='light'] .theme-doc-sidebar-collapse-btn:hover {
 /* Separadores / líneas de la sidebar */
 html[data-theme='light'] .theme-doc-sidebar-container .menu__list {
   border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ================================================
+ * ANIMACIÓN PREMIUM DE LA BARRA LATERAL (CON SWIZZLE)
+ * ================================================ */
+
+.theme-doc-sidebar-container {
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  transform: translateX(0);
+  will-change: transform;
+}
+
+.theme-doc-sidebar-container.sidebar-collapsed {
+  transform: translateX(-100%) !important;
+}
+
+/* ============================================================
+   PALETA ANALÓGICA - OVERRIDES DE COMPONENTES (LIGHT MODE)
+   ============================================================ */
+
+/* Navbar */
+html[data-theme='light'] .navbar {
+  background: color-mix(in srgb, var(--bg-0) 85%, transparent) !important;
+  border-bottom: 1px solid var(--border-light);
+}
+html[data-theme='light'] .navbar__title {
+  color: var(--text-0) !important;
+}
+
+/* Sidebar */
+html[data-theme='light'] .theme-doc-sidebar-container {
+  background-color: var(--bg-0) !important;
+  border-right: 1px solid var(--border-light) !important;
+}
+html[data-theme='light'] .menu__link:hover,
+html[data-theme='light'] .menu__list-item-collapsible:hover {
+  background-color: var(--bg-1) !important;
+}
+html[data-theme='light'] .menu__link--active {
+  color: var(--primary) !important;
+}
+
+/* Admonitions */
+html[data-theme='light'] .theme-admonition {
+  background-color: var(--bg-1) !important;
+  border: 1px solid var(--border-light) !important;
+  border-left: 4px solid var(--link) !important; /* Azul tinta default */
+  color: var(--text-0) !important;
+}
+html[data-theme='light'] .theme-admonition-danger {
+  border-left-color: var(--danger) !important;
+}
+html[data-theme='light'] .theme-admonition-warning {
+  border-left-color: var(--warning) !important;
+}
+
+/* Tablas Forenses */
+html[data-theme='light'] .telemetry-table-container table,
+html[data-theme='light'] .forensic-table table,
+html[data-theme='light'] .theme-doc-markdown table {
+  background-color: transparent !important;
+}
+html[data-theme='light'] .telemetry-table-container table th,
+html[data-theme='light'] .forensic-table table th,
+html[data-theme='light'] .theme-doc-markdown table th {
+  background-color: var(--bg-2) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-0) !important;
+}
+html[data-theme='light'] .telemetry-table-container table tr:nth-child(even),
+html[data-theme='light'] .forensic-table table tr:nth-child(even),
+html[data-theme='light'] .theme-doc-markdown table tr:nth-child(even) {
+  background-color: var(--card-elevated) !important;
+}
+html[data-theme='light'] .telemetry-table-container table tr:nth-child(odd),
+html[data-theme='light'] .forensic-table table tr:nth-child(odd),
+html[data-theme='light'] .theme-doc-markdown table tr:nth-child(odd) {
+  background-color: var(--bg-0) !important;
+}
+html[data-theme='light'] .telemetry-table-container table td,
+html[data-theme='light'] .forensic-table table td,
+html[data-theme='light'] .theme-doc-markdown table td {
+  border-color: var(--border-light) !important;
+  color: var(--text-0) !important;
+}
+
+/* Cards / Simuladores */
+html[data-theme='light'] .card,
+html[data-theme='light'] .simulator-card,
+html[data-theme='light'] .incident-card {
+  background-color: var(--bg-1) !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: 0 4px 24px var(--shadow-light) !important;
+}
+html[data-theme='light'] .card h2,
+html[data-theme='light'] .card h3 {
+  color: var(--primary) !important;
+}
+
+/* Incident Boxes */
+html[data-theme='light'] .incident-box {
+  background-color: color-mix(in srgb, var(--danger) 8%, transparent) !important;
+  border: 1px solid var(--danger) !important;
+  color: var(--text-0) !important;
+}
+html[data-theme='light'] .incident-box::before {
+  color: var(--danger) !important;
+}
+
+/* Botones Principales */
+html[data-theme='light'] .button.primary {
+  background-color: var(--primary) !important;
+  color: var(--bg-0) !important;
+  border-color: var(--primary) !important;
+}
+html[data-theme='light'] .button.secondary {
+  background-color: var(--secondary) !important;
+  color: var(--bg-0) !important;
+  border-color: var(--secondary) !important;
 }

@@ -129,8 +129,8 @@ function GenerationPanel() {
               <AreaChart data={series} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="genGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="hsl(190 100% 60%)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(190 100% 60%)" stopOpacity={0.02} />
+                    <stop offset="5%"  stopColor="var(--chart-cyan)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="var(--chart-cyan)" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
@@ -139,16 +139,16 @@ function GenerationPanel() {
                 <Tooltip content={<ForensicTooltip unit="MW" />} />
                 <ReferenceLine
                   y={ref28A}
-                  stroke="hsl(38 100% 56%)"
+                  stroke="var(--chart-amber)"
                   strokeDasharray="6 3"
                   strokeWidth={1.5}
-                  label={{ value: '28-A', fill: 'hsl(38 100% 56%)', fontSize: 9 }}
+                  label={{ value: '28-A', fill: 'var(--chart-amber)', fontSize: 9 }}
                 />
                 <Area
                   type="monotone"
                   dataKey="value"
                   name="Generación"
-                  stroke="hsl(190 100% 60%)"
+                  stroke="var(--chart-cyan)"
                   strokeWidth={2}
                   fill="url(#genGrad)"
                   dot={false}
@@ -202,16 +202,16 @@ function DemandPanel() {
                 <Tooltip content={<ForensicTooltip unit="MW" />} />
                 <ReferenceLine
                   y={ref28A}
-                  stroke="hsl(38 100% 56%)"
+                  stroke="var(--chart-amber)"
                   strokeDasharray="6 3"
                   strokeWidth={1.5}
-                  label={{ value: '28-A', fill: 'hsl(38 100% 56%)', fontSize: 9 }}
+                  label={{ value: '28-A', fill: 'var(--chart-amber)', fontSize: 9 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="value"
                   name="Demanda"
-                  stroke="hsl(38 100% 56%)"
+                  stroke="var(--chart-amber)"
                   strokeWidth={2}
                   dot={false}
                 />
@@ -278,9 +278,9 @@ function ComparisonPanel() {
         </div>
 
         <div className={styles.compLegend}>
-          <span className={styles.legendDot} style={{ background: 'hsl(190 100% 60%)' }} />
+          <span className={styles.legendDot} style={{ background: 'var(--chart-cyan)' }} />
           <span>Ahora (en vivo)</span>
-          <span className={styles.legendDot} style={{ background: 'hsl(38 100% 56%)' }} />
+          <span className={styles.legendDot} style={{ background: 'var(--chart-amber)' }} />
           <span>28-A · 12:30 CEST (Informe Factual ENTSO-E)</span>
         </div>
 
@@ -321,7 +321,7 @@ function CompRow({ metric, now, refValue, unit, loading, isPercent }) {
                 className={styles.compBarFill}
                 style={{
                   width: `${Math.min(pct, 100)}%`,
-                  background: pct > 110 ? 'hsl(0 75% 56%)' : pct > 90 ? 'hsl(38 100% 56%)' : 'hsl(190 100% 60%)',
+                  background: pct > 110 ? 'var(--chart-red)' : pct > 90 ? 'var(--chart-amber)' : 'var(--chart-cyan)',
                 }}
               />
               <span className={styles.compBarLabel}>{nowFmt} {unit}</span>

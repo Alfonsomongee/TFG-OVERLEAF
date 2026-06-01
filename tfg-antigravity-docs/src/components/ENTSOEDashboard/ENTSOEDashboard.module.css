@@ -3,7 +3,7 @@
 /* ─── Dashboard wrapper ─────────────────────────────────────────────────── */
 .dashboard {
   background: var(--bg-1, hsl(220 40% 7%));
-  border: var(--border-subtle, 1px solid hsl(190 100% 60% / 0.12));
+  border: var(--border-subtle, 1px solid color-mix(in srgb, var(--chart-cyan) 12%, transparent));
   border-radius: var(--radius-lg, 20px);
   overflow: hidden;
   margin-block: 2.5rem;
@@ -13,7 +13,7 @@
 /* ─── Header ────────────────────────────────────────────────────────────── */
 .dashHeader {
   padding: 1.5rem 1.75rem 0;
-  border-bottom: var(--border-subtle, 1px solid hsl(190 100% 60% / 0.12));
+  border-bottom: var(--border-subtle, 1px solid color-mix(in srgb, var(--chart-cyan) 12%, transparent));
 }
 
 .dashTitleRow {
@@ -69,8 +69,8 @@
 }
 .tab:hover { color: var(--text-1, hsl(220 15% 88%)); }
 .tabActive {
-  color: var(--color-data, hsl(190 100% 60%));
-  border-bottom-color: var(--color-data, hsl(190 100% 60%));
+  color: var(--color-data, var(--chart-cyan));
+  border-bottom-color: var(--color-data, var(--chart-cyan));
 }
 
 /* ─── Content ───────────────────────────────────────────────────────────── */
@@ -89,7 +89,7 @@
 /* ─── Panel ─────────────────────────────────────────────────────────────── */
 .panel {
   background: var(--bg-2, hsl(220 30% 11%));
-  border: var(--border-subtle, 1px solid hsl(190 100% 60% / 0.12));
+  border: var(--border-subtle, 1px solid color-mix(in srgb, var(--chart-cyan) 12%, transparent));
   border-radius: var(--radius-md, 12px);
   overflow: hidden;
 }
@@ -101,8 +101,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.875rem 1.25rem;
-  border-bottom: 1px solid hsl(190 100% 60% / 0.08);
-  background: hsl(190 100% 60% / 0.03);
+  border-bottom: 1px solid color-mix(in srgb, var(--chart-cyan) 8%, transparent);
+  background: color-mix(in srgb, var(--chart-cyan) 3%, transparent);
 }
 
 .panelTitle {
@@ -144,9 +144,9 @@
   letter-spacing: -0.03em;
 }
 
-.kpi--cyan   .kpiValue { color: var(--color-data,  hsl(190 100% 60%)); }
-.kpi--amber  .kpiValue { color: var(--color-alert, hsl(38 100% 56%));  }
-.kpi--red    .kpiValue { color: var(--color-danger, hsl(0 75% 56%));   }
+.kpi--cyan   .kpiValue { color: var(--color-data,  var(--chart-cyan)); }
+.kpi--amber  .kpiValue { color: var(--color-alert, var(--chart-amber));  }
+.kpi--red    .kpiValue { color: var(--color-danger, var(--chart-red));   }
 
 .kpiUnit {
   font-size: var(--fs-meta, 0.85rem);
@@ -203,9 +203,9 @@
   border-radius: 50%;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-.pulse--cyan  { background: hsl(190 100% 60%);  box-shadow: 0 0 0 0 hsl(190 100% 60% / 0.5); }
-.pulse--amber { background: hsl(38 100% 56%);   box-shadow: 0 0 0 0 hsl(38 100% 56% / 0.5);  }
-.pulse--red   { background: hsl(0 75% 56%);     box-shadow: 0 0 0 0 hsl(0 75% 56% / 0.5);    }
+.pulse--cyan  { background: var(--chart-cyan);  box-shadow: 0 0 0 0 color-mix(in srgb, var(--chart-cyan) 50%, transparent); }
+.pulse--amber { background: var(--chart-amber);   box-shadow: 0 0 0 0 hsl(38 100% 56% / 0.5);  }
+.pulse--red   { background: var(--chart-red);     box-shadow: 0 0 0 0 hsl(0 75% 56% / 0.5);    }
 
 @keyframes pulse {
   0%, 100% { transform: scale(1);    opacity: 1; }
@@ -225,7 +225,7 @@
 /* ─── Tooltip ───────────────────────────────────────────────────────────── */
 .tooltip {
   background: var(--bg-1, hsl(220 40% 7%));
-  border: var(--border-data, 1px solid hsl(190 100% 60% / 0.3));
+  border: var(--border-data, 1px solid color-mix(in srgb, var(--chart-cyan) 30%, transparent));
   border-radius: var(--radius-sm, 6px);
   padding: 0.5rem 0.75rem;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
@@ -249,7 +249,7 @@
   border-radius: var(--radius-pill, 999px);
   font-weight: 500;
 }
-.badgeLive    { background: hsl(190 100% 60% / 0.12); color: hsl(190 100% 65%); }
+.badgeLive    { background: color-mix(in srgb, var(--chart-cyan) 12%, transparent); color: var(--chart-cyan); }
 .badgeLoading { background: hsl(38 100% 56% / 0.12);  color: hsl(38 100% 65%);  }
 .badgeError   { background: hsl(0 75% 56% / 0.12);    color: hsl(0 75% 65%);    }
 .badgeTime    { color: var(--text-3, hsl(220 10% 48%)); }
@@ -351,14 +351,14 @@
   margin: 0;
   padding: 0.75rem;
   background: hsl(220 30% 8%);
-  border-left: var(--border-data, 2px solid hsl(190 100% 60% / 0.3));
+  border-left: var(--border-data, 2px solid color-mix(in srgb, var(--chart-cyan) 30%, transparent));
   border-radius: 0 4px 4px 0;
 }
 
 /* ─── Footer ────────────────────────────────────────────────────────────── */
 .dashFooter {
   padding: 0.875rem 1.75rem;
-  border-top: 1px solid hsl(190 100% 60% / 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--chart-cyan) 8%, transparent);
   font-size: 0.7rem;
   color: var(--text-3, hsl(220 10% 48%));
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
