@@ -212,7 +212,7 @@ function DiagramSVG({ step, prefersReduced }) {
         {!prefersReduced && (
           <animate attributeName="width"
             from="0" to={Math.min(180, Math.round(step.v400 * 180))}
-            dur="0.4s" fill="freeze" />
+            dur="1.2s" fill="freeze" />
         )}
       </rect>
       <text x="210" y="43" fill={colorBar(step.v400)} fontSize="12"
@@ -265,7 +265,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 filter="url(#glow-red)">
             {!prefersReduced && (
               <animate attributeName="opacity"
-                values="0.9;0.4;0.9" dur="0.8s" repeatCount="indefinite" />
+                values="0.9;0.4;0.9" dur="1.8s" repeatCount="indefinite" />
             )}
           </rect>
           <text x="255" y="209" fill="#fff" fontSize="9"
@@ -289,7 +289,7 @@ function DiagramSVG({ step, prefersReduced }) {
         {!prefersReduced && (
           <animate attributeName="width"
             from="0" to={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))}
-            dur="0.4s" fill="freeze" />
+            dur="1.2s" fill="freeze" />
         )}
       </rect>
       <text x="508" y="43" fill={colorBar(step.v220)} fontSize="12"
@@ -338,7 +338,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 opacity={step.id >= 3 ? 1 : 0}>
             {!prefersReduced && (
               <animate attributeName="opacity"
-                from="0" to="1" dur="0.5s" fill="freeze" />
+                from="0" to="1" dur="1.2s" fill="freeze" />
             )}
           </rect>
           <text x="360" y="68" fill={C.warning} fontSize="8"
