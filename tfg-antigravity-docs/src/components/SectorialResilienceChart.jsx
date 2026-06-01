@@ -165,7 +165,7 @@ function SectorialResilienceChartInner() {
     return (
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}
         aria-busy="true" aria-live="polite"
@@ -200,15 +200,15 @@ function SectorialResilienceChartInner() {
             <XAxis
               dataKey="date"
               stroke="#475569"
-              tick={{ fill: '#64748b', fontSize: 11 }}
-              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: '#64748b', fontSize: 11 }}
+              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
             />
             <YAxis
               domain={[0, 110]}
               stroke="#475569"
-              tick={{ fill: '#64748b', fontSize: 11 }}
+              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
               tickFormatter={v => `${v}%`}
-              label={{ value: 'Índice (base 100 = 28-A)', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 10 }}
+              label={{ value: 'Índice (base 100 = 28-A)', angle: -90, position: 'insideLeft', fill: 'var(--text-1, #64748b)', fontSize: 10 }}
             />
             <Tooltip content={<ResilienceTooltip />} />
             <Legend
@@ -221,7 +221,7 @@ function SectorialResilienceChartInner() {
               y={100}
               stroke="rgba(255,255,255,0.2)"
               strokeDasharray="4 4"
-              label={{ value: 'Nivel pre-colapso', position: 'insideTopRight', fill: '#64748b', fontSize: 10 }}
+              label={{ value: 'Nivel pre-colapso', position: 'insideTopRight', fill: 'var(--text-1, #64748b)', fontSize: 10 }}
             />
             {/* 50% a las 22:00 del 28-A — verificado RDL 7/2025 */}
             <ReferenceDot
@@ -293,7 +293,7 @@ export default function SectorialResilienceChart() {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando gráfico de resiliencia…

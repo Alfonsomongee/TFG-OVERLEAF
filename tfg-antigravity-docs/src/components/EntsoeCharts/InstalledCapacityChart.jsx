@@ -42,7 +42,7 @@ export default function InstalledCapacityChart() {
   const COLORS = {
     'Wind Onshore': '#10b981',
     'Solar': '#f59e0b',
-    'Fossil Gas': '#64748b',
+    'Fossil Gas': 'var(--text-1, #64748b)',
     'Hydro Water Reservoir': '#3b82f6',
     'Nuclear': '#8b5cf6',
     'Hydro Pumped Storage': '#2563eb',

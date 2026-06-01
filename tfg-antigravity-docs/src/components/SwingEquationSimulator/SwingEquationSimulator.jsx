@@ -188,9 +188,9 @@ function SwingEquationSimulatorInner({ lang = 'es' }) {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
             <XAxis dataKey="t" stroke="#475569" tick={{ fontSize: 11 }}
                    label={{ value: isEs ? 'Tiempo (s)' : 'Time (s)', position: 'insideBottom',
-                            offset: -16, fill: '#64748b', fontSize: 11 }} />
+                            offset: -16, fill: 'var(--text-1, #64748b)', fontSize: 11 }} />
             <YAxis stroke="#475569" tick={{ fontSize: 11 }} domain={['dataMin - 0.5', 50.2]}
-                   label={{ value: 'f (Hz)', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
+                   label={{ value: 'f (Hz)', angle: -90, position: 'insideLeft', fill: 'var(--text-1, #64748b)', fontSize: 11 }} />
             <Tooltip content={<SwingTooltip />} />
 
             {/* Umbrales normativos */}
@@ -245,7 +245,7 @@ function SwingEquationSimulatorInner({ lang = 'es' }) {
             <p style={{ margin: '0 0 2px', fontSize: 18, fontWeight: 'bold', color: m.color }}>
               {m.value}
             </p>
-            <p style={{ margin: 0, fontSize: 10, color: '#64748b' }}>{m.sub}</p>
+            <p style={{ margin: 0, fontSize: 10, color: 'var(--text-1, #64748b)' }}>{m.sub}</p>
           </div>
         ))}
       </div>
@@ -322,7 +322,7 @@ function SwingEquationSimulatorInner({ lang = 'es' }) {
             padding: '0.5rem 0.75rem',
             background: 'rgba(255,255,255,0.02)',
             border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: 6, fontSize: 10, color: '#64748b',
+            borderRadius: 6, fontSize: 10, color: 'var(--text-1, #64748b)',
           }}>
             {isEs
               ? 'Modelo: ecuación del swing monofásica (RK4, dt=10 ms). H ibérica verificada: 2,17–2,71 s (ENTSO-E Factual, Tabla 2-4, p.36).'
@@ -367,7 +367,7 @@ export default function SwingEquationSimulator({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Inicializando simulador de inercia…' : 'Initializing inertia simulator…'}

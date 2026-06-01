@@ -35,7 +35,7 @@ const VERACIDAD = {
   parcial:       { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)',  border: 'rgba(245,158,11,0.3)',  label: '◑ Verdad parcial',    labelEn: '◑ Partial truth'       },
   imprecision:   { color: '#f97316', bg: 'rgba(249,115,22,0.08)',  border: 'rgba(249,115,22,0.3)',  label: '⚠ Imprecisión grave', labelEn: '⚠ Serious imprecision' },
   contradiccion: { color: '#ef4444', bg: 'rgba(239,68,68,0.08)',   border: 'rgba(239,68,68,0.3)',   label: '✗ Contradicción',     labelEn: '✗ Contradiction'       },
-  null:          { color: '#64748b', bg: 'rgba(100,116,139,0.06)', border: 'rgba(100,116,139,0.2)', label: '○ Sin valoración',    labelEn: '○ No rating'           },
+  null:          { color: 'var(--text-1, #64748b)', bg: 'rgba(100,116,139,0.06)', border: 'rgba(100,116,139,0.2)', label: '○ Sin valoración',    labelEn: '○ No rating'           },
 };
 
 const getV = (v) => VERACIDAD[v] || VERACIDAD.null;
@@ -107,7 +107,7 @@ function FactCheckCard({ item, lang }) {
             marginBottom: 4, flexWrap: 'wrap',
           }}>
             <PlatformIcon platform={item.plataforma} />
-            <span style={{ fontSize: 11, color: '#64748b', fontFamily: 'monospace' }}>
+            <span style={{ fontSize: 11, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
               {item.autor}
             </span>
             <span style={{ fontSize: 10, color: '#374151', fontFamily: 'monospace' }}>
@@ -160,17 +160,17 @@ function FactCheckCard({ item, lang }) {
               marginBottom: '0.6rem',
             }}>
               {item.metricas.impresiones && (
-                <span style={{ fontSize: 10, color: '#64748b', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: 10, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
                   👁 {item.metricas.impresiones.toLocaleString('es-ES')} imp.
                 </span>
               )}
               {item.metricas.retweets && (
-                <span style={{ fontSize: 10, color: '#64748b', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: 10, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
                   🔁 {item.metricas.retweets.toLocaleString('es-ES')}
                 </span>
               )}
               {item.metricas.likes && (
-                <span style={{ fontSize: 10, color: '#64748b', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: 10, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
                   ♥ {item.metricas.likes.toLocaleString('es-ES')}
                 </span>
               )}
@@ -229,7 +229,7 @@ function AsimetriaBarra({ lang }) {
       <h4 style={{ margin: '0 0 0.4rem', color: '#e2e8f0', fontSize: 14 }}>
         {isEs ? 'Asimetría algorítmica: la carrera de los retuits' : 'Algorithmic asymmetry: the retweet race'}
       </h4>
-      <p style={{ margin: '0 0 1rem', fontSize: 12, color: '#64748b' }}>
+      <p style={{ margin: '0 0 1rem', fontSize: 12, color: 'var(--text-1, #64748b)' }}>
         {isEs
           ? 'La desinformación viajó 10× más rápido que la corrección técnica oficial.'
           : 'Disinformation traveled 10× faster than the official technical correction.'}
@@ -422,7 +422,7 @@ function MediaCardGalleryInner({ lang = 'es' }) {
         {dist.map(d => (
           <div key={d.v} style={{
             width: `${d.pct}%`,
-            background: VERACIDAD[d.v]?.color || '#64748b',
+            background: VERACIDAD[d.v]?.color || 'var(--text-1, #64748b)',
             transition: 'width 0.3s ease',
           }} title={`${d.v}: ${d.count}`} />
         ))}
@@ -476,7 +476,7 @@ function chipStyle(isActive, color) {
     borderRadius: 20,
     border: `1px solid ${isActive ? color : 'rgba(255,255,255,0.1)'}`,
     background: isActive ? `${color}18` : 'transparent',
-    color: isActive ? color : '#64748b',
+    color: isActive ? color : 'var(--text-1, #64748b)',
     cursor: 'pointer',
     fontFamily: 'monospace', fontSize: 11,
     fontWeight: isActive ? 700 : 400,
@@ -490,7 +490,7 @@ export default function MediaCardGallery({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 300, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando galería mediática…' : 'Loading media gallery…'}

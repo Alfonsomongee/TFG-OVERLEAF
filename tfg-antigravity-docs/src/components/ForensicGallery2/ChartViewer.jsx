@@ -181,7 +181,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
             <BrowserOnly>
               {() => (
                 <Suspense fallback={
-                  <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontFamily: 'monospace', fontSize: '13px' }}>
+                  <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: '13px' }}>
                     Inicializando simulador…
                   </div>
                 }>

@@ -13,7 +13,7 @@ export default function ANSI59Cascade(props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#64748b',
+            color: 'var(--text-1, #64748b)',
             fontFamily: 'monospace',
             fontSize: '13px'
           }}>

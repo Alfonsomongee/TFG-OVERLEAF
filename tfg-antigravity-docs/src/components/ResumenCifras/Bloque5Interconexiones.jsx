@@ -84,7 +84,7 @@ function CustomTooltip({ active, payload }) {
     }}>
       <p style={{ fontWeight: 'bold', marginBottom: 4, color: '#e2e8f0' }}>{d.name}</p>
       <p style={{ color: '#378ADD', marginBottom: 2 }}>Flujo: {fmt(d.flowReal)} MW</p>
-      <p style={{ color: '#64748b' }}>Capacidad: {fmt(d.capacityMax)} MW</p>
+      <p style={{ color: 'var(--text-1, #64748b)' }}>Capacidad: {fmt(d.capacityMax)} MW</p>
     </div>
   );
 }

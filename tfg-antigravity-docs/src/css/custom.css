@@ -2463,3 +2463,65 @@ html[data-theme='light'] .button.secondary {
   color: var(--bg-0) !important;
   border-color: var(--secondary) !important;
 }
+
+
+/* ============================================================
+   AJUSTES DE CONTRASTE Y ANIMACIÓN (A PETICIÓN DEL USUARIO)
+   ============================================================ */
+
+/* 1. Oscurecer textos de síntesis, mecanismos, y admonitions */
+html[data-theme='light'] details summary,
+html[data-theme='light'] details summary span,
+html[data-theme='light'] details summary strong,
+html[data-theme='light'] .theme-admonition .admonition-heading,
+html[data-theme='light'] .theme-admonition .admonition-heading *,
+html[data-theme='light'] .theme-admonition-title,
+html[data-theme='light'] .theme-admonition-title * {
+  color: #1a1a1a !important; /* Más oscuro (text-0) */
+  font-weight: 700 !important;
+}
+
+/* Oscurecer contenido dentro de los details */
+html[data-theme='light'] details {
+  color: #1a1a1a !important;
+}
+
+/* 2. Glitch Animation en Verde Barra Lateral (#636E4F) */
+html[data-theme='light'] [class*="glitch"].run::before,
+html[data-theme='light'] [class*="glitch"].run::after {
+  color: #636E4F !important;
+  text-shadow: 1px 0 #636E4F !important;
+  mix-blend-mode: normal !important; /* Screen no funciona bien en fondos claros */
+}
+html[data-theme='light'] [class*="glitch"].run::after {
+  text-shadow: -1px 0 #636E4F !important;
+}
+
+
+/* ============================================================
+   SEGUNDO AJUSTE DE CONTRASTE: FORZAR COLOR EN HIJOS
+   ============================================================ */
+
+/* Forzar contenido de details y admonitions a oscuro */
+html[data-theme='light'] details,
+html[data-theme='light'] details *,
+html[data-theme='light'] details p,
+html[data-theme='light'] details div,
+html[data-theme='light'] details span,
+html[data-theme='light'] details summary,
+html[data-theme='light'] details summary *,
+html[data-theme='light'] .theme-admonition,
+html[data-theme='light'] .theme-admonition *,
+html[data-theme='light'] .theme-admonition p,
+html[data-theme='light'] .theme-admonition div,
+html[data-theme='light'] .theme-admonition span {
+  color: #1a1a1a !important;
+}
+
+/* Excepción explícita para captions de figuras/tablas por si estuvieran dentro de un details */
+html[data-theme='light'] table caption,
+html[data-theme='light'] figure figcaption,
+html[data-theme='light'] table caption *,
+html[data-theme='light'] figure figcaption * {
+  color: #4b5563 !important;
+}

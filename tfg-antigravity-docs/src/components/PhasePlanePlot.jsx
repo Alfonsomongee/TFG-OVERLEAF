@@ -188,8 +188,8 @@ function PhasePlanePlotInner({ lang = 'es' }) {
               domain={[-4, 4]}
               name="δ"
               stroke="#475569"
-              tick={{ fill: '#64748b', fontSize: 11 }}
-              label={{ value: texts.xaxis, position: 'insideBottom', offset: -20, fill: '#64748b', fontSize: 11 }}
+              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              label={{ value: texts.xaxis, position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
             />
             <YAxis
               type="number"
@@ -197,8 +197,8 @@ function PhasePlanePlotInner({ lang = 'es' }) {
               domain={[-4, 4]}
               name="ω"
               stroke="#475569"
-              tick={{ fill: '#64748b', fontSize: 11 }}
-              label={{ value: texts.yaxis, angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }}
+              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              label={{ value: texts.yaxis, angle: -90, position: 'insideLeft', fill: 'var(--text-1, #64748b)', fontSize: 11 }}
             />
             <Tooltip content={<PhaseTooltip />} cursor={false} />
             <Legend
@@ -338,7 +338,7 @@ function PhasePlanePlotInner({ lang = 'es' }) {
               : 'Grid-Following inverter in weak grid (SCR < 2). PLL loses phase tracking — trajectory diverges. This is the mechanism behind April 28.'}
           </li>
         </ul>
-        <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', color: '#64748b' }}>
+        <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', color: 'var(--text-1, #64748b)' }}>
           {isEs
             ? 'Modelo: oscilador no lineal amortiguado (RK4, dt=10 ms). Referencia: Rocabert et al. (2012), IEEE Trans. Power Electron. ζ_GFL = -0.12 (red débil), ζ_GFM = +0.85, ζ_SG = +0.35.'
             : 'Model: nonlinear damped oscillator (RK4, dt=10 ms). Reference: Rocabert et al. (2012), IEEE Trans. Power Electron. ζ_GFL = -0.12 (weak grid), ζ_GFM = +0.85, ζ_SG = +0.35.'}
@@ -353,7 +353,7 @@ export default function PhasePlanePlot({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 500, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Inicializando diagrama de fase…' : 'Initializing phase diagram…'}

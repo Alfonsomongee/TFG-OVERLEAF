@@ -239,7 +239,7 @@ function ThermalAdjustmentCostMatrixInner() {
     return (
       <div
         style={{ height: 500, display: 'flex', alignItems: 'center',
-                 justifyContent: 'center', color: '#64748b',
+                 justifyContent: 'center', color: 'var(--text-1, #64748b)',
                  fontFamily: 'monospace', fontSize: 13 }}
         aria-busy="true"
         aria-live="polite"
@@ -292,7 +292,7 @@ function ThermalAdjustmentCostMatrixInner() {
       tickangle: -45,
       tickformat: '%d/%m %Hh',
       gridcolor: 'rgba(255,255,255,0.07)',
-      tickfont: { color: '#64748b', size: 10 },
+      tickfont: { color: 'var(--text-1, #64748b)', size: 10 },
     },
     yaxis: {
       automargin: true,
@@ -361,7 +361,7 @@ function ThermalAdjustmentCostMatrixInner() {
                 borderRadius: 20,
                 border: `1px solid ${activeService === opt.id ? '#00d9ff' : 'rgba(255,255,255,0.1)'}`,
                 background: activeService === opt.id ? 'rgba(0,217,255,0.12)' : 'transparent',
-                color:  activeService === opt.id ? '#00d9ff' : '#64748b',
+                color:  activeService === opt.id ? '#00d9ff' : 'var(--text-1, #64748b)',
                 cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
                 fontWeight: activeService === opt.id ? 700 : 400,
                 transition: 'all 0.15s ease',
@@ -380,7 +380,7 @@ function ThermalAdjustmentCostMatrixInner() {
             padding: '0.25rem 0.7rem',
             background: 'transparent',
             border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 6, color: '#64748b',
+            borderRadius: 6, color: 'var(--text-1, #64748b)',
             cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
           }}
         >
@@ -446,7 +446,7 @@ export default function ThermalAdjustmentCostMatrix() {
     <BrowserOnly fallback={
       <div style={{
         minHeight: 500, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando matriz termográfica…

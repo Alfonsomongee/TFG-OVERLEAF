@@ -70,7 +70,7 @@ function SentimentAnalyzerInner() {
       <h4 style={{ margin: '0 0 0.25rem', color: '#e2e8f0', fontSize: 14 }}>
         Evolución del sentimiento en X — primeras 24 horas del 28-A
       </h4>
-      <p style={{ margin: '0 0 1rem', fontSize: 11, color: '#64748b', fontFamily: 'monospace' }}>
+      <p style={{ margin: '0 0 1rem', fontSize: 11, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
         Volumen relativo estimado (%) · Basado en análisis cualitativo de hashtags virales y comunicados oficiales
       </p>
 
@@ -95,13 +95,13 @@ function SentimentAnalyzerInner() {
 
           <XAxis
             dataKey="hora"
-            tick={{ fontSize: 10, fontFamily: 'monospace', fill: '#64748b' }}
+            tick={{ fontSize: 10, fontFamily: 'monospace', fill: 'var(--text-1, #64748b)' }}
             angle={-35}
             textAnchor="end"
             height={55}
           />
           <YAxis
-            tick={{ fontSize: 10, fontFamily: 'monospace', fill: '#64748b' }}
+            tick={{ fontSize: 10, fontFamily: 'monospace', fill: 'var(--text-1, #64748b)' }}
             tickFormatter={v => `${v}%`}
             domain={[0, 100]}
           />
@@ -162,7 +162,7 @@ export default function SentimentAnalyzer() {
   return (
     <BrowserOnly fallback={
       <div style={{ height: 200, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', color: '#64748b',
+                    justifyContent: 'center', color: 'var(--text-1, #64748b)',
                     fontFamily: 'monospace', fontSize: 13 }}>
         Cargando análisis de sentimiento…
       </div>

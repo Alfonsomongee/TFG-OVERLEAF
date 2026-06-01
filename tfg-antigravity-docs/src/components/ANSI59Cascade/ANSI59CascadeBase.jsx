@@ -102,7 +102,7 @@ export default function ANSI59Cascade() {
             className={styles.rangeInput}
             aria-label="Sensibilidad de propagación (ANSI 59)"
           />
-          <span style={{ fontSize: '0.62rem', color: '#64748b', marginTop: '0.1rem' }}>
+          <span style={{ fontSize: '0.62rem', color: 'var(--text-1, #64748b)', marginTop: '0.1rem' }}>
             {sensitivity <= 0.05 
               ? '🛡️ Calibración óptima (Cascada contenida)' 
               : sensitivity <= 0.09 

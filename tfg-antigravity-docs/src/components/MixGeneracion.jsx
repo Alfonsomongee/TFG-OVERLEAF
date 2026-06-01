@@ -398,7 +398,7 @@ export default function MixGeneracion() {
       <div style={{
         minHeight: 300,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#64748b', fontFamily: 'monospace', fontSize: 13,
+        color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando mix de generación…
       </div>

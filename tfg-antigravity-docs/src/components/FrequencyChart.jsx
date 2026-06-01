@@ -167,19 +167,19 @@ function FrequencyLineChart({ data, strings, animated = false }) {
           domain={[0, 30]}
           type="number"
           stroke="#475569"
-          tick={{ fill: '#64748b', fontSize: 11 }}
+          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
           label={{
             value: strings.xaxis,
             position: 'insideBottom',
             offset: -12,
-            fill: '#64748b',
+            fill: 'var(--text-1, #64748b)',
             fontSize: 11,
           }}
         />
         <YAxis
           domain={[46, 50.2]}
           stroke="#475569"
-          tick={{ fill: '#64748b', fontSize: 11 }}
+          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
           unit=" Hz"
         />
         <Tooltip content={<FrequencyTooltip strings={strings} />} />
@@ -300,7 +300,7 @@ export default function FrequencyChartScrolly({ isGallery = false, lang }) {
 
   return (
     <BrowserOnly fallback={
-      <div style={{ color: '#64748b', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
+      <div style={{ color: 'var(--text-1, #64748b)', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
         {loadingText}
       </div>
     }>

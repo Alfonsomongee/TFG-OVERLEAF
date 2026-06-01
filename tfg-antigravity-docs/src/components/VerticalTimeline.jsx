@@ -270,7 +270,7 @@ export default function VerticalTimeline({
               transition: 'width 0.3s ease',
             }} />
           </div>
-          <span style={{ fontSize: 11, color: '#64748b', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
             {filteredEvents.length}/{timelineEvents.length}
           </span>
         </div>
@@ -351,7 +351,7 @@ export default function VerticalTimeline({
       </div>
 
       {filteredEvents.length === 0 && (
-        <p style={{ textAlign: 'center', color: '#64748b', fontFamily: 'monospace', fontSize: 13 }}>
+        <p style={{ textAlign: 'center', color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: 13 }}>
           {isEs ? 'No hay eventos en esta categoría.' : 'No events in this category.'}
         </p>
       )}

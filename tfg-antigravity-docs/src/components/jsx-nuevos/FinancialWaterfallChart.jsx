@@ -186,7 +186,7 @@ function FinancialWaterfallInner() {
               value: 'Millones de €',
               angle: -90,
               position: 'insideLeft',
-              fill: '#64748b',
+              fill: 'var(--text-1, #64748b)',
               fontSize: 11,
               offset: -4,
             }}
@@ -261,7 +261,7 @@ export default function FinancialWaterfallChart() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#64748b',
+          color: 'var(--text-1, #64748b)',
           fontFamily: 'monospace',
           fontSize: 13,
         }}>

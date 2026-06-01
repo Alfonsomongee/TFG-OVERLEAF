@@ -13,7 +13,7 @@ export default function PVCurveSimulator(props) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#64748b',
+            color: 'var(--text-1, #64748b)',
             fontFamily: 'monospace',
             fontSize: '13px'
           }}>

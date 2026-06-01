@@ -222,7 +222,7 @@ export default function Bloque3Cascada() {
           ← ANTERIOR
         </button>
         <span style={{
-          fontFamily: 'monospace', fontSize: 11, color: '#64748b',
+          fontFamily: 'monospace', fontSize: 11, color: 'var(--text-1, #64748b)',
           alignSelf: 'center',
         }}>
           {activeIndex + 1} / {TIMELINE_EVENTS.length}

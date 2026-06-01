@@ -67,7 +67,7 @@ const RISK_COLORS = {
   critical: '#ef4444',
   warning:  '#f59e0b',
   safe:     '#10b981',
-  unknown:  '#64748b',
+  unknown:  'var(--text-1, #64748b)',
 };
 
 const RISK_LABELS = {
@@ -302,7 +302,7 @@ export default function Comparador28A({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 280, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando comparador…' : 'Loading comparator…'}

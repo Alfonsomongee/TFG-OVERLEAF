@@ -124,8 +124,8 @@ export default function PVCurveSimulator() {
                 dataKey="P"
                 domain={[0, Math.max(1.8, noseP + 0.3)]}
                 allowDataOverflow
-                stroke="#64748b"
-                tick={{ fill: '#64748b', fontSize: 11 }}
+                stroke='var(--text-1, #64748b)'
+                tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
               >
                 <Label value="Potencia activa P (p.u.)" position="bottom" offset={16}
                        fill="#94a3b8" fontSize={12} />
@@ -134,8 +134,8 @@ export default function PVCurveSimulator() {
               <YAxis
                 type="number"
                 domain={[0, 1.2]}
-                stroke="#64748b"
-                tick={{ fill: '#64748b', fontSize: 11 }}
+                stroke='var(--text-1, #64748b)'
+                tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
               >
                 <Label value="Tensión V (p.u.)" angle={-90} position="insideLeft"
                        offset={8} fill="#94a3b8" fontSize={12} />
@@ -343,7 +343,7 @@ export default function PVCurveSimulator() {
         equivalente al 91% de la capacidad máxima del corredor reactivo,
         dejando un margen negativo antes del primer disparo.
         <br />
-        <small style={{ color: '#64748b' }}>
+        <small style={{ color: 'var(--text-1, #64748b)' }}>
           Modelo: sistema de 2 nudos (Van Cutsem &amp; Vournas, 1998).
           Parámetros anclados a ENTSO-E Factual Report, Tabla 2-4, p. 36.
         </small>

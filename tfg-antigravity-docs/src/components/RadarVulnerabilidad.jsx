@@ -165,7 +165,7 @@ function RadarVulnerabilidadInner({ lang = 'es' }) {
             padding: '0.3rem 0.8rem',
             background: 'transparent',
             border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 6, color: '#64748b',
+            borderRadius: 6, color: 'var(--text-1, #64748b)',
             cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
           }}
         >
@@ -229,7 +229,7 @@ function RadarVulnerabilidadInner({ lang = 'es' }) {
       {/* Interpretación */}
       <div style={{
         marginTop: '0.75rem',
-        fontSize: 12, color: '#64748b',
+        fontSize: 12, color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', lineHeight: 1.6,
         borderTop: '1px solid rgba(255,255,255,0.06)',
         paddingTop: '0.75rem',
@@ -253,7 +253,7 @@ export default function RadarVulnerabilidad({ lang = 'es' }) {
     <BrowserOnly fallback={
       <div style={{
         height: 380, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando radar de vulnerabilidad…' : 'Loading vulnerability radar…'}

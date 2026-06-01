@@ -110,7 +110,7 @@ function RevealPanel({ children, level, id }) {
         borderRadius: '0 6px 6px 0',
         fontSize: '0.9rem',
         lineHeight: 1.7,
-        color: '#e2e8f0',
+        color: 'var(--text-1, #e2e8f0)',
         animation: 'forensicReveal 0.2s ease',
       }}
     >
@@ -186,7 +186,7 @@ export default function ForensicReveal({
       {/* L1 — siempre visible */}
       <div>
         <LevelBadge level={1} lang={lang} />
-        <span style={{ fontSize: '1rem', lineHeight: 1.65, color: '#f1f5f9' }}>
+        <span style={{ fontSize: '1rem', lineHeight: 1.65, color: 'var(--text-0, #f1f5f9)' }}>
           {l1}
         </span>
       </div>
@@ -234,7 +234,7 @@ export default function ForensicReveal({
         <div style={{
           marginTop: '0.6rem',
           fontSize: 10,
-          color: '#475569',
+          color: 'var(--text-1, #475569)',
           fontFamily: 'monospace',
           fontStyle: 'italic',
         }}>

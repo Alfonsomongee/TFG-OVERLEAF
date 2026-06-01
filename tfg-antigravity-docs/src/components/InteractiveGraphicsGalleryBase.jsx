@@ -303,7 +303,7 @@ export default function InteractiveGraphicsGallery({ lang: propLang }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#64748b',
+                  color: 'var(--text-1, #64748b)',
                   fontFamily: 'monospace',
                   fontSize: 13
                 }}>

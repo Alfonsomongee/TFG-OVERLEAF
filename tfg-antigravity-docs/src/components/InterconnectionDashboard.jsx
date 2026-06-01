@@ -285,7 +285,7 @@ export default function InterconnectionDashboard({ lang }) {
     <BrowserOnly fallback={
       <div style={{
         minHeight: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando dashboard de interconexiones…' : 'Loading interconnection dashboard…'}

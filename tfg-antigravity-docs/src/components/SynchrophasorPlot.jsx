@@ -354,7 +354,7 @@ function SynchrophasorPlotInner({ lang = 'es', presentationMode = false }) {
                 borderRadius: 4,
                 border: `1px solid ${speed === s ? 'var(--ifm-color-primary)' : 'rgba(255,255,255,0.12)'}`,
                 background: speed === s ? 'rgba(0,217,255,0.12)' : 'transparent',
-                color: speed === s ? 'var(--ifm-color-primary)' : '#64748b',
+                color: speed === s ? 'var(--ifm-color-primary)' : 'var(--text-1, #64748b)',
                 cursor: 'pointer', fontSize: 11, fontFamily: 'monospace',
               }}
             >
@@ -388,7 +388,7 @@ function SynchrophasorPlotInner({ lang = 'es', presentationMode = false }) {
           title={isEs ? 'Descargar frame actual como PNG' : 'Download current frame as PNG'}
           aria-label={isEs ? 'Capturar frame actual' : 'Capture current frame'}
           style={{
-            background: 'transparent', color: '#64748b',
+            background: 'transparent', color: 'var(--text-1, #64748b)',
             border: '1px solid rgba(255,255,255,0.1)',
             borderRadius: 4, padding: '0.45rem 0.6rem',
             cursor: 'pointer', fontSize: 14,
@@ -416,7 +416,7 @@ function SynchrophasorPlotInner({ lang = 'es', presentationMode = false }) {
       >
         {phaseLabel}
         {presentationMode && (
-          <span style={{ marginLeft: '0.75rem', fontSize: 11, color: '#64748b' }}>
+          <span style={{ marginLeft: '0.75rem', fontSize: 11, color: 'var(--text-1, #64748b)' }}>
             {isEs ? '(modo presentación — pausa automática en hitos)' : '(presentation mode — auto-pause at milestones)'}
           </span>
         )}
@@ -468,7 +468,7 @@ export default function SynchrophasorPlot({ lang = 'es', presentationMode = fals
     <BrowserOnly fallback={
       <div style={{
         height: 650, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Inicializando diagrama fasorial…' : 'Initializing phasor diagram…'}

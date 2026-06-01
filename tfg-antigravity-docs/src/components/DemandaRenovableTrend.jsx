@@ -197,7 +197,7 @@ function DemandaRenovableTrendInner() {
               stroke="#404040"
               tickFormatter={v => `${(v/1000).toFixed(0)}k`}
               label={{ value: 'MW', angle: -90, position: 'insideLeft',
-                       fill: '#64748b', fontSize: 11 }}
+                       fill: 'var(--text-1, #64748b)', fontSize: 11 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend

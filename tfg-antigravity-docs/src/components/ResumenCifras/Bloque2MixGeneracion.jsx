@@ -87,7 +87,7 @@ const GENERATION_DATA = [
     // ~4% restante
     mw: 1008,
     percentage: 4.0,
-    color: '#64748b',
+    color: 'var(--text-1, #64748b)',
     aportaInercia: true,
   },
 ];

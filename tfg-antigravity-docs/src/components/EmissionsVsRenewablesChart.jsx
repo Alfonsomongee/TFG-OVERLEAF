@@ -152,7 +152,7 @@ function EmissionsVsRenewablesChartInner() {
     return (
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}
         aria-busy="true" aria-live="polite"
@@ -190,8 +190,8 @@ function EmissionsVsRenewablesChartInner() {
             <XAxis
               dataKey="date"
               stroke="#475569"
-              tick={{ fill: '#64748b', fontSize: 11 }}
-              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: '#64748b', fontSize: 11 }}
+              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
             />
 
             {/* Eje izquierdo — Emisiones */}
@@ -321,7 +321,7 @@ export default function EmissionsVsRenewablesChart() {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: '#64748b',
+        justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando gráfico de emisiones…

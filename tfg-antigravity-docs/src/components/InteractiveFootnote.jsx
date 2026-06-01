@@ -132,7 +132,7 @@ export default function InteractiveFootnote({
               paddingTop:  6,
               borderTop:   '1px solid rgba(255,255,255,0.08)',
               fontSize:    '0.72rem',
-              color:       '#64748b',
+              color:       'var(--text-1, #64748b)',
               fontFamily:  'monospace',
               fontStyle:   'italic',
             }}>

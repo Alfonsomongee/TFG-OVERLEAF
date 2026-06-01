@@ -153,7 +153,7 @@ function TimelineCrisisInner() {
                 </div>
                 {/* Subtítulo */}
                 <div style={{
-                  fontSize: 11, color: '#64748b', fontFamily: 'monospace',
+                  fontSize: 11, color: 'var(--text-1, #64748b)', fontFamily: 'monospace',
                 }}>
                   {item.subtitle}
                 </div>
@@ -219,7 +219,7 @@ export default function TimelineCrisis() {
   return (
     <BrowserOnly fallback={
       <div style={{ height: 200, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', color: '#64748b',
+                    justifyContent: 'center', color: 'var(--text-1, #64748b)',
                     fontFamily: 'monospace', fontSize: 13 }}>
         Cargando línea de tiempo…
       </div>
