@@ -7,8 +7,6 @@ import { imageGalleryData } from '../data/imageGalleryData';
 
 export default function ImageGallery({}) {
   const lang = useDocLang();
-  const { i18n } = useDocusaurusContext();
-  const lang = propLang || i18n.currentLocale || 'es';
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Prevent body scrolling when lightbox is open

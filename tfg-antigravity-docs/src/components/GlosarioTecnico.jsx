@@ -49,8 +49,6 @@ function TermItem({ term }) {
 
 export default function GlosarioTecnico({}) {
   const lang = useDocLang();
-  const { i18n } = useDocusaurusContext();
-  const lang = propLang || i18n.currentLocale || 'es';
   
   let GLOSSARY_TERMS = esTerms;
   if (lang === 'en') GLOSSARY_TERMS = enTerms;
