@@ -217,7 +217,7 @@ function ScrollyMode({ steps, lang }) {
     }}>
 
       {/* Pasos (izquierda, scrolleable) */}
-      <div style={{ width: '42%', flexShrink: 0, position: 'relative', zIndex: 5 }}>
+      <div style={{ width: '100%', position: 'relative', zIndex: 5 }}>
         <Scrollama
           onStepEnter={({ data }) => setActiveIdx(data)}
           offset={0.55}

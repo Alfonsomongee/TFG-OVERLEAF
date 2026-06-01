@@ -4,34 +4,27 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 // ─── Proyección geográfica simplificada ──────────────────────────────────────
 // Convierte coordenadas lon/lat reales a píxeles en un viewBox 800×560
 // Bounds ibéricos: lon [-9.5, 3.4], lat [35.9, 43.9]
-function project(lon, lat) {
-  const LON_MIN = -9.5, LON_MAX = 3.4;
-  const LAT_MIN = 35.9, LAT_MAX = 43.9;
-  const W = 800, H = 560;
-  const x = ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * W;
-  const y = H - ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
-  return [Math.round(x), Math.round(y)];
+// ============================================================
+// CONTORNO DE LA PENÍNSULA IBÉRICA (ALTA RESOLUCIÓN)
+// ============================================================
+const IBERIA_PATH = 'M 120,90 C 125,82 135,75 148,72 C 162,68 178,66 192,65 C 210,63 230,62 250,62 C 272,62 290,60 308,56 C 326,52 342,48 356,45 C 370,42 380,40 388,40 C 396,42 402,46 406,52 C 408,58 408,64 406,70 C 404,74 400,78 396,80 C 392,78 388,76 384,78 C 380,82 378,88 378,94 C 380,102 384,112 390,120 C 396,128 400,136 402,144 C 400,152 396,158 390,162 C 384,166 378,172 372,178 C 366,186 360,194 356,202 C 352,212 348,222 342,232 C 336,242 330,250 324,256 C 318,260 310,262 302,264 C 294,266 286,264 280,260 C 274,256 268,250 264,244 C 260,238 256,234 250,232 C 244,232 238,234 232,238 C 226,242 220,244 214,244 C 208,244 202,242 198,238 C 192,234 186,230 180,226 C 174,220 168,214 162,208 C 156,202 150,196 144,190 C 138,182 132,174 126,166 C 120,158 114,150 108,142 C 102,134 96,126 92,118 C 88,110 84,102 80,94 C 88,88 98,84 108,86 C 112,88 116,90 120,90 Z';
+const BALEARES_PATH = 'M 520,220 C 530,215 540,212 548,214 C 556,218 560,226 558,234 C 556,242 548,248 538,248 C 528,248 518,244 512,238 C 508,232 508,224 512,218 C 514,216 518,218 520,220 Z M 570,200 C 578,198 584,200 586,206 C 584,214 576,218 570,216 C 564,212 562,204 566,200 C 568,199 569,199 570,200 Z M 490,260 C 496,256 504,256 508,262 C 506,270 498,274 492,272 C 486,268 484,262 490,260 Z M 486,278 C 490,276 494,278 494,282 C 492,286 488,286 486,284 C 484,282 484,280 486,278 Z';
+
+const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
+const VIEWBOX = { width: 1000, height: 800 };
+
+function geoToSvg(lat, lon) {
+  const x = ((lon - GEO_BOUNDS.west) / (GEO_BOUNDS.east - GEO_BOUNDS.west)) * VIEWBOX.width;
+  const y = ((GEO_BOUNDS.north - lat) / (GEO_BOUNDS.north - GEO_BOUNDS.south)) * VIEWBOX.height;
+  return { x: Math.round(x), y: Math.round(y) };
 }
 
 // ─── Contorno simplificado de la Península Ibérica (SVG path) ─────────────────
 // Path derivado de coordenadas geográficas reales, proyectadas al viewBox 800×560
-const IBERIAN_PATH = `
-  M 95,10 L 155,5 L 220,8 L 290,15 L 360,12 L 430,8 L 490,15 L 550,25
-  L 610,18 L 660,30 L 700,55 L 730,85 L 750,120 L 760,160 L 755,200
-  L 750,240 L 760,275 L 755,310 L 740,340 L 720,365 L 695,385 L 660,400
-  L 625,415 L 590,430 L 550,445 L 510,455 L 470,460 L 430,465 L 390,460
-  L 350,450 L 310,445 L 270,455 L 235,465 L 195,460 L 155,445 L 115,425
-  L 80,400 L 55,370 L 35,340 L 20,305 L 10,270 L 8,230 L 12,190
-  L 20,155 L 30,120 L 45,90 L 65,65 L 95,10 Z
-`;
+
 
 // Portugal aproximado (parte oeste)
-const PORTUGAL_PATH = `
-  M 95,10 L 65,65 L 45,90 L 30,120 L 20,155 L 12,190 L 8,230
-  L 10,270 L 20,305 L 35,340 L 55,370 L 80,400 L 115,425
-  L 130,415 L 140,390 L 135,350 L 140,310 L 145,270 L 140,230
-  L 145,190 L 150,150 L 145,110 L 130,75 L 110,40 L 95,10 Z
-`;
+
 
 // ─── Nodos con coordenadas reales verificadas ────────────────────────────────
 const NODES_ES = [
@@ -131,7 +124,18 @@ const GROUP_COLORS = {
 };
 
 // ─── Componente principal ─────────────────────────────────────────────────────
-function TopologyContent({ lang = 'es' }) {
+function TopologyContent({ lang = "es" }) {
+
+  const isDark = true; // Topology is always dark-themed
+  const palette = {
+    landGradientStart: '#142c4a',
+    landGradientEnd: '#0b1827',
+    landStroke: 'rgba(56, 189, 248, 0.25)',
+    gridLine: 'rgba(255, 255, 255, 0.03)',
+    reliefLight: 'rgba(255, 255, 255, 0.04)',
+    reliefDark: 'rgba(0, 0, 0, 0.2)',
+  };
+
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hoveredNode, setHoveredNode] = useState(null);
@@ -153,7 +157,7 @@ function TopologyContent({ lang = 'es' }) {
 
   // Nodos con coordenadas proyectadas precalculadas
   const nodes = useMemo(() => NODES_ES.map(n => {
-    const [x, y] = project(n.lon, n.lat);
+    const {x, y} = geoToSvg(n.lat, n.lon);
     const isActive = simTime >= n.activationTime;
     const isCollapsing = n.group === 'collapse' && isActive;
     return { ...n, x, y, isActive, isCollapsing };
@@ -175,84 +179,58 @@ function TopologyContent({ lang = 'es' }) {
     }}>
 
       {/* ── SVG MAPA ─────────────────────────────────────────────────── */}
-      <svg
-        viewBox="0 0 800 560"
+      <svg viewBox="0 0 1000 800"
         style={{ width: '100%', display: 'block' }}
         aria-label="Mapa topológico de la red ibérica durante el colapso del 28-A"
       >
+        
         <defs>
-          {/* Gradiente de fondo tipo "pantalla de radar" */}
-          <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
-            <stop offset="0%"   stopColor="#0a1628" />
-            <stop offset="100%" stopColor="#050a14" />
-          </radialGradient>
-
-          {/* Grid de referencia */}
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,217,255,0.04)" strokeWidth="0.5"/>
-          </pattern>
-
-          {/* Filtro glow para nodos activos */}
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
-
-          {/* Filtro glow rojo intenso para colapso */}
           <filter id="glowRed">
             <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          
+          <clipPath id="clip-iberia">
+            <path d={IBERIA_PATH} />
+            <path d={BALEARES_PATH} />
+          </clipPath>
+          <radialGradient id="landGrad" cx="45%" cy="45%" r="65%">
+            <stop offset="0%" stopColor={palette.landGradientStart} />
+            <stop offset="100%" stopColor={palette.landGradientEnd} />
+          </radialGradient>
+          <filter id="relief" x="-5%" y="-5%" width="110%" height="110%">
+            <feDropShadow dx="1.5" dy="2" stdDeviation="2.5" floodColor={palette.reliefDark} floodOpacity="0.6" />
           </filter>
         </defs>
 
-        {/* Fondo */}
-        <rect width="800" height="560" fill="url(#bgGrad)" />
-        <rect width="800" height="560" fill="url(#grid)" />
+        {/* Mar de fondo */}
+        <rect width="1000" height="800" fill="var(--bg-0, #050a14)" />
+        <rect width="1000" height="800" fill="rgba(0,40,80,0.15)" />
 
-        {/* Mar — tono ligeramente distinto al fondo */}
-        <rect width="800" height="560" fill="rgba(0,40,80,0.15)" />
+        <g filter="url(#relief)">
+          <path d={IBERIA_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
+          <path d={BALEARES_PATH} fill="url(#landGrad)" stroke={palette.landStroke} strokeWidth="1.2" />
+        </g>
+        
+        <g clipPath="url(#clip-iberia)" opacity="0.5">
+          {Array.from({ length: 18 }, (_, i) => (
+            <path key={`rel-${i}`} d={`M ${80 + i * 40} ${60 + i * 25} C ${400 + i * 15} ${100 + i * 10}, ${600 - i * 20} ${500 - i * 15}, ${200 + i * 30} ${600 - i * 20}`} fill="none" stroke={palette.reliefLight} strokeWidth="1.8" strokeDasharray="8 6" />
+          ))}
+        </g>
+        
+        <g clipPath="url(#clip-iberia)" opacity="0.6">
+          {Array.from({ length: 12 }, (_, i) => (
+            <line key={`grid-h-${i}`} x1={0} y1={(VIEWBOX.height / 12) * i} x2={VIEWBOX.width} y2={(VIEWBOX.height / 12) * i} stroke={palette.gridLine} strokeWidth="0.8" />
+          ))}
+          {Array.from({ length: 14 }, (_, i) => (
+            <line key={`grid-v-${i}`} x1={(VIEWBOX.width / 14) * i} y1={0} x2={(VIEWBOX.width / 14) * i} y2={VIEWBOX.height} stroke={palette.gridLine} strokeWidth="0.8" />
+          ))}
+        </g>
 
-        {/* Contorno de Portugal (color diferente) */}
-        <path
-          d={PORTUGAL_PATH}
-          fill="rgba(15,30,60,0.6)"
-          stroke="rgba(0,217,255,0.12)"
-          strokeWidth="1"
-        />
-
-        {/* Contorno Península Ibérica */}
-        <path
-          d={IBERIAN_PATH}
-          fill="rgba(10,22,45,0.75)"
-          stroke="rgba(0,217,255,0.25)"
-          strokeWidth="1.5"
-        />
-
-        {/* Etiqueta "FRANCE" */}
-        <text x="620" y="25" fill="rgba(59,130,246,0.5)" fontSize="11"
-              fontFamily="var(--font-mono, monospace)" letterSpacing="3">
-          FRANCE
-        </text>
-
-        {/* Etiqueta "MAR MEDITERRÁNEO" */}
-        <text x="560" y="420" fill="rgba(0,217,255,0.2)" fontSize="10"
-              fontFamily="var(--font-mono, monospace)" letterSpacing="2"
-              transform="rotate(-5, 560, 420)">
-          MAR MEDITERRÁNEO
-        </text>
-
-        {/* Etiqueta "OCÉANO ATLÁNTICO" */}
-        <text x="20" y="280" fill="rgba(0,217,255,0.2)" fontSize="10"
-              fontFamily="var(--font-mono, monospace)" letterSpacing="1"
-              transform="rotate(-90, 20, 280)">
-          OCÉANO ATLÁNTICO
-        </text>
 
         {/* ── LINKS ─────────────────────────────────────────────────── */}
         {LINKS.map((link, i) => {
@@ -383,7 +361,7 @@ function TopologyContent({ lang = 'es' }) {
           const tw = 160;
           // Ajuste para no salir del viewBox
           let tx = node.x + 18;
-          if (tx + tw > 790) tx = node.x - tw - 18;
+          if (tx + tw > 990) tx = node.x - tw - 18;
           let ty = node.y - 20;
 
           return (

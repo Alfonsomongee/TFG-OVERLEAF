@@ -20,6 +20,26 @@ import UFLSVisualizer from "@site/src/components/UFLSVisualizer/UFLSVisualizer";
 
 El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culminación de una degradación progresiva y mensurable de la estabilidad estática y dinámica de la red. La reconstrucción forense de las cuatro fases del colapso —desde las oscilaciones de la mañana hasta el aislamiento definitivo de la península a las 12:33:29 CEST— permite identificar con precisión los mecanismos físicos que ningún automatismo de protección convencional pudo detener.
 
+<div style={{overflowX:'auto', marginBottom:'2rem'}}>
+
+| t (CEST) | Δt | Evento | Fase |
+| :--- | :---: | :--- | :---: |
+| 12:03:00 | — | Oscilación forzada 0,6 Hz (amplitud 70 mHz) en Badajoz. Amortiguamiento ~1%. | 0 |
+| 12:08:00 | — | HVDC INELFE-1 cambia PMODE3 → PMODE1. Pierde capacidad de respuesta dinámica. | 0 |
+| 12:19:00 | — | Modo inter-área 0,2 Hz Este-Centro-Oeste. Península oscila en contrafase con Europa. | 0 |
+| 12:30:00 | — | 82% del mix instantáneo no síncrono. Inercia zonal sur: 1,3 s. Demanda: 25.184 MW. | 1 |
+| **12:32:57** | **t = 0 s** | **Disparo raíz: transformador 400/220 kV en Granada. −355 MW activos, −165 MVAr reactiva.** | **2** |
+| 12:33:00 | t = 3 s | Tap-Lag activo: secundario 220 kV alcanza ~244 kV (>1,10 p.u.), invisible para SCADA REE. | 2 |
+| 12:33:16 | t = 19 s | Cascada IBR: Badajoz −730 MW. Inicio Fase 3. | 3 |
+| 12:33:18 | t = 21 s | Segovia, Sevilla, Huelva. UFLS activa a 49,5 Hz → agrava sobretensión (paradoja). | 3 |
+| 12:33:20 | t = 23 s | −15.000 MW totales en cascada. >25,2 GW demanda sin suministro. | 3 |
+| 12:33:21 | t = 24 s | Protecciones OST abren enlaces AC transpirenaicos. Península aislada del sistema europeo. | 3 |
+| **12:33:29.741** | **t = 32 s** | **Cero de tensión definitivo. Último grupo generador dispara.** | **3** |
+
+</div>
+
+> **Fuentes:** Comité de Análisis del Gobierno (2025), ENTSO-E Factual Report (2025), IIT-ICAI / Compass Lexecon (2025), NREL PMU analysis (2025). Los mecanismos físicos de cada fila se desarrollan en las secciones siguientes.
+
 ## Fase 0: la red debilitada y la maniobra de mallado {#fase-0}
 
 <span id="t1"></span>
@@ -114,7 +134,7 @@ Los golpes más severos de la cascada se concentraron inicialmente en Badajoz (a
 
 A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una RoCoF extrema (con picos secundarios estimados de <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>), activando los esquemas de UFLS. Al cruzar el umbral de 49,5 Hz a las 12:33:20 CEST, se desconectaron automáticamente más de 2.000 MW de bombeo hidráulico, y al caer la red por debajo de <CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta>, se deslastraron los primeros escalones de demanda industrial.
 
-<p style={{fontSize:'0.8rem', color:'var(--ifm-color-emphasis-600)', fontStyle:'italic', marginTop:'0.5rem'}}>Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3 — Ver Figura 11 arriba (Sismógrafo del Colapso).</p>
+<p style={{fontSize:'0.8rem', color:'var(--ifm-color-emphasis-600)', fontStyle:'italic', marginTop:'0.5rem'}}>Figura 18. Evolución acoplada de tensión y frecuencia durante la Fase 3. Ver <a href="./02-contexto.mdx#eas-falsa-normalidad">Figura 11 — Sismógrafo del Colapso (Capítulo 2)</a> para la evolución dinámica completa.</p>
 
 <ForensicReveal
   lang="es"
@@ -126,9 +146,18 @@ A medida que la cascada destruía la generación remanente, la frecuencia comenz
 
 La actuación del UFLS reveló la denominada paradoja del UFLS: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, reforzando el colapso que el propio UFLS pretendía frenar. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión ([*simular Retrato de Fases del UFLS*](./galeria-graficas.mdx#phaseplane)).
 
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Simulador interactivo — Retrato de Fases del UFLS (paradoja de la subfrecuencia vs sobretensión)</span>
+</summary>
+
+<div style={{marginTop:'1rem'}}>
 <UFLSVisualizer />
 
-_Figura X. Retrato de fases del UFLS: evolución acoplada de frecuencia-tensión durante el deslastre. La trayectoria evidencia la paradoja: el deslastre por subfrecuencia agrava la sobretensión. Elaboración propia._
+_Figura 18b. Retrato de fases del UFLS: evolución acoplada de frecuencia-tensión durante el deslastre. La trayectoria evidencia la paradoja: el deslastre por subfrecuencia agrava la sobretensión. Elaboración propia. También disponible en la [Galería de Gráficas Interactivas](./galeria-graficas.mdx#phaseplane)._
+</div>
+
+</details>
 
 <span id="t2"></span>
 <ForensicReveal

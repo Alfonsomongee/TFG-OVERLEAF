@@ -265,7 +265,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 filter="url(#glow-red)">
             {!prefersReduced && (
               <animate attributeName="opacity"
-                values="1;0.2;1" dur="0.35s" repeatCount="indefinite" />
+                values="1;0.2;1" dur="0.75s" repeatCount="indefinite" />
             )}
           </rect>
           <text x="310" y="209" fill="#fff" fontSize="15"
@@ -362,15 +362,15 @@ function DiagramSVG({ step, prefersReduced }) {
       <rect x="20" y={180 + 110 - bar400H} width="14" height={bar400H} rx="2"
             fill={colorBar(step.v400)} />
       {/* Marcas */}
-      {[0.9, 1.0, 1.05, 1.1].map(v => {
-        const y = 290 - Math.round(v * 100);
+      {[0.9, 1.1].map(v => {
+        const y = 290 - Math.round(v * 90);
         return (
           <g key={v}>
             <line x1="32" y1={y} x2="36" y2={y}
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
             <text x="38" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
-                  fontSize="13" fontFamily="monospace">{v.toFixed(2)}</text>
+                  fontSize="11" fontFamily="monospace">{v.toFixed(2)}</text>
           </g>
         );
       })}
@@ -383,15 +383,15 @@ function DiagramSVG({ step, prefersReduced }) {
       <rect x="726" y={isLast ? 290 : 180 + 110 - bar220H} width="14"
             height={isLast ? 0 : bar220H} rx="2"
             fill={colorBar(step.v220)} />
-      {[0.9, 1.0, 1.05, 1.1].map(v => {
-        const y = 290 - Math.round(v * 100);
+      {[0.9, 1.1].map(v => {
+        const y = 290 - Math.round(v * 90);
         return (
           <g key={v}>
             <line x1="722" y1={y} x2="726" y2={y}
                   stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
                   strokeWidth="1" />
             <text x="720" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
-                  fontSize="13" fontFamily="monospace" textAnchor="end">
+                  fontSize="11" fontFamily="monospace" textAnchor="end">
               {v.toFixed(2)}
             </text>
           </g>
@@ -399,11 +399,11 @@ function DiagramSVG({ step, prefersReduced }) {
       })}
 
       {/* Umbral ANSI 59 (línea roja en ambos gauges) */}
-      <line x1="20" y1={290 - Math.round(1.10 * 100)} x2="56" y2={290 - Math.round(1.10 * 100)}
+      <line x1="20" y1={290 - Math.round(1.10 * 90)} x2="68" y2={290 - Math.round(1.10 * 90)}
             stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
-      <line x1="722" y1={290 - Math.round(1.10 * 100)} x2="738" y2={290 - Math.round(1.10 * 100)}
+      <line x1="722" y1={290 - Math.round(1.10 * 90)} x2="738" y2={290 - Math.round(1.10 * 90)}
             stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
-      <text x="58" y={290 - Math.round(1.10 * 100) + 3} fill={C.critical}
+      <text x="72" y={290 - Math.round(1.10 * 90) + 3} fill={C.critical}
             fontSize="13" fontFamily="monospace">ANSI 59</text>
 
       {/* ── CASCADA VISUAL (paso 5) ── */}

@@ -53,7 +53,16 @@ $$
 
 Los umbrales reales de vulnerabilidad frente al SCR pueden evaluarse en el radar siguiente:
 
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Ver radar de vulnerabilidad interactivo</span>
+</summary>
+
+<div style={{marginTop:'1rem'}}>
 <RadarVulnerabilidad lang="es" />
+</div>
+
+</details>
 
 Durante las horas previas al colapso, amplias zonas de la Península operaban como redes muy débiles (SCR < 2): la producción masiva de solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó precisamente las fuentes de $S_{sc}$ que dan rigidez a los nudos de la red de transporte. En estas condiciones, con $X/R$ elevado pero $\mathrm{SCR} \ll 2$, la impedancia global hace que la tensión se vuelva sensible también a variaciones de potencia activa: las rampas de inyección solar adquieren un poder de perturbación de tensión que en redes síncronas convencionales resultaría inofensivo.
 
@@ -86,7 +95,7 @@ Un factor adicional identificado como relevante fue el autoconsumo fotovoltaico 
 La revisión de los cinco apagones de gran escala que precedieron cronológicamente al 28-A revela un patrón recurrente: los mecanismos físicos del colapso ibérico —OLTC sin bloqueo jerárquico, inversores sin control dinámico, ausencia de inercia mínima obligatoria— estaban documentados y parcialmente resueltos en otras jurisdicciones antes de abril de 2025.
 
 <ForensicTable 
-  title="TABLA XX | INTERNATIONAL BLACKOUT REGULATORY RESPONSE TIMELINE"
+  title="TABLA 5 | INTERNATIONAL BLACKOUT REGULATORY RESPONSE TIMELINE"
   source="Elaboración propia (fuentes: UCTE, NERC/FERC, ENTSO-E, AEMO, NGESO)"
 >
 
@@ -112,9 +121,18 @@ La superación de la vulnerabilidad exige una transición en la arquitectura de 
 
 A diferencia del inversor GFL, un inversor grid-forming (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión en magnitud y ángulo ($V\angle\delta$) detrás de una impedancia virtual de acoplamiento. Al imponer este vector de forma instantánea, el inversor GFM inyecta o absorbe corriente activa y reactiva de forma inherente ante cualquier variación de la red, sin depender de mediciones externas de fase ni de retardos de cálculo.
 
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Ver diagrama de plano de fase interactivo (GFM vs GFL vs Generador Síncrono)</span>
+</summary>
+
+<div style={{marginTop:'1rem'}}>
 <PhasePlanePlot lang={frontMatter.locale || 'es'} />
 
 _Figura 39. Diagrama de plano de fase: convergencia de inversores GFM vs GFL vs generador síncrono. Modelo: oscilador no lineal amortiguado (RK4). Visualización interactiva de elaboración propia._
+</div>
+
+</details>
 
 Cuando el inversor GFM está respaldado por un banco de baterías (BESS-GFM), la combinación provee dos servicios adicionales:
 
@@ -205,7 +223,7 @@ Los sistemas BESS reciben adicionalmente un pago de disponibilidad de 2,7 €/MW
 
 </ForensicTable>
 
-La diferencia de velocidad de actuación entre el marco original y la nueva regulación puede comprobarse en el [*Simulador de Respuesta Droop Automática*](./galeria-graficas.mdx#sismograph).
+La diferencia de velocidad de actuación entre el marco original y la nueva regulación puede comprobarse en el [*Simulador de Respuesta Droop Automática*](./galeria-graficas.mdx#droop-response).
 
 El Real Decreto 997/2025 complementó la reforma con cuatro medidas de urgencia: redefinición jurídica de los BESS como activos de servicio de estabilidad sistémica; saneamiento del registro de permisos de conexión obsoletos; obligatoriedad de telemedida con resolución &lt; 4 s para todo el parque IBR significativo; y obligatoriedad del módulo PSS/POD en todos los inversores GFM de nueva instalación con potencia > 10 MW.
 
@@ -237,7 +255,7 @@ Las obligaciones del NC RfG 2.0 se aplican con un enfoque tecnológicamente agn�
 
 </ForensicTable>
 
-El efecto del despliegue del Grid-Forming sobre la inercia del sistema puede evaluarse en la [*Simulación del Impacto del Grid-Forming*](./galeria-graficas.mdx#frequency).
+El efecto del despliegue del Grid-Forming sobre la inercia del sistema puede evaluarse en la [*Simulación del Impacto del Grid-Forming*](./galeria-graficas.mdx#gridforming-impact).
 
 A la fecha de redacción, la adopción formal del NC RfG 2.0 por la Comisión Europea se encuentra despriorizada y sin calendario oficial, generando una ventana de incertidumbre regulatoria que los operadores nacionales están gestionando mediante medidas preventivas al margen del código.
 
