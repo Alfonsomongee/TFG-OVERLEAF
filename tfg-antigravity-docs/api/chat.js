@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const topChunks = results.slice(0, 5).map(r => chunks[r.id]);
+    const topChunks = results.slice(0, 7).map(r => chunks[r.id]);
     const context = topChunks
       .map(c => `## ${c.title} – ${c.heading} (Enlace: ${c.slug})\n${c.text}`)
       .join('\n\n');
@@ -114,13 +114,13 @@ RESPUESTA NATURAL Y DIRECTA:`;
         'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.' },
+          { role: 'system', content: 'Eres el asistente del TFG "Anatomía de un Colapso Sistémico", un análisis forense del apagón ibérico del 28 de abril de 2025. Tienes acceso al contenido completo del trabajo. Respondes con precisión técnica, citando fuentes cuando el contexto las menciona, y diriges al lector a los capítulos o gráficas relevantes.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.2,
-        max_tokens: 500
+        max_tokens: 800
       })
     });
 

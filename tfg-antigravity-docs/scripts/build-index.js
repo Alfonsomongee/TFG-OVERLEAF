@@ -23,6 +23,24 @@ const allChunks = [];
 
 function extractChunks(filePath, content) {
   const { data, content: body } = matter(content);
+
+  // Eliminar imports de React/Docusaurus
+  let cleanBody = body
+    .replace(/^import\s+.*?from\s+['"].*?['"];?\s*$/gm, '')
+    .replace(/^import\s+\{[^}]+\}\s+from\s+['"].*?['"];?\s*$/gm, '')
+    // Eliminar tags JSX de componentes (líneas que son solo <Componente ... />)
+    .replace(/^<[A-Z][^>]*\/>\s*$/gm, '')
+    .replace(/^<[A-Z][^>]*>\s*$/gm, '')
+    .replace(/^<\/[A-Z][^>]*>\s*$/gm, '')
+    // Eliminar bloques de frontmatter que se cuelen
+    .replace(/^---[\s\S]*?---/m, '')
+    // Eliminar directivas de admonition
+    .replace(/^:::[a-z]+.*$/gm, '')
+    .replace(/^:::$/gm, '')
+    // Limpiar líneas vacías múltiples
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
   const title = data.title || path.basename(filePath, '.mdx');
   const slug = filePath
     .replace(DOCS_DIR, '')
@@ -30,14 +48,14 @@ function extractChunks(filePath, content) {
     .replace(/\/index$/, '') || '/';
 
   // Divide el contenido por encabezados de nivel 2 (##)
-  const sections = body.split(/^## /m).filter(Boolean);
+  const sections = cleanBody.split(/^## /m).filter(Boolean);
   if (sections.length === 0) {
     // Si no hay encabezados, todo el contenido es un único fragmento
     allChunks.push({
       id: docId++,
       title,
       heading: title,
-      text: body.replace(/\n/g, ' ').substring(0, 2000),
+      text: cleanBody.replace(/\n/g, ' ').substring(0, 2000),
       slug,
     });
     return;
@@ -96,7 +114,7 @@ function injectMasterData() {
 - Pérdida de generación en la cascada: ${data.colapso_y_reposicion.perdida_generacion_cascada_MW} MW.
 - Desconexiones de demanda (SO): ${data.colapso_y_reposicion.desconexiones_SO_MW} MW.
 - Coste de operación reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} millones de euros.`,
-      slug: '/docs/galeria-de-tablas', // Enlazamos a la galería de tablas
+      slug: '/anexo-tablas', // Enlazamos a la galería de tablas
     });
   }
 }
