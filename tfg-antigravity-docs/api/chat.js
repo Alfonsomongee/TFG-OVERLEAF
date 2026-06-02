@@ -14,8 +14,8 @@ let miniSearch = null;
 function getSearch() {
   if (!miniSearch) {
     try {
-      searchIndexData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'search-index.json'), 'utf8'));
-      chunks = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'chunks.json'), 'utf8'));
+      searchIndexData = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'static', 'search-index.json'), 'utf8'));
+      chunks = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'static', 'chunks.json'), 'utf8'));
       miniSearch = MiniSearch.loadJSON(
         JSON.stringify(searchIndexData),
         {
