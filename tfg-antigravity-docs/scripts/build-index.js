@@ -158,11 +158,39 @@ function injectGlossary() {
   }
 }
 
+function injectGraphics() {
+  const graphicsPath = path.join(
+    __dirname, '..', 'static', 'data', 
+    'graphics-metadata.json'
+  );
+  if (!fs.existsSync(graphicsPath)) {
+    console.warn('  ⚠ No se encontró graphics-metadata.json');
+    return;
+  }
+  const graphics = JSON.parse(
+    fs.readFileSync(graphicsPath, 'utf-8')
+  );
+  graphics.forEach(g => {
+    allChunks.push({
+      id: docId++,
+      title: 'Herramientas Interactivas — Anexo C',
+      heading: g.title,
+      text: `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`,
+      slug: g.slug,
+      chapterOrder: 1,
+      isGlossary: false,
+      isGraphic: true,
+    });
+  });
+  console.log(`  → ${graphics.length} gráficas interactivas indexadas.`);
+}
+
 function buildIndex() {
   console.log('🔍 Construyendo índice de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
   injectMasterData();
   injectGlossary();
+  injectGraphics();
 
   miniSearch.addAll(allChunks);
 
