@@ -90,6 +90,19 @@ const config = {
         'standalone',
         'queryString',
       ],
+      workboxOptions: {
+        navigateFallback: null,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/tfg-overleaf\.vercel\.app\/(en|de)\//,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'i18n-pages',
+              networkTimeoutSeconds: 3,
+            },
+          },
+        ],
+      },
       pwaHead: [
         {
           tagName: 'link',
