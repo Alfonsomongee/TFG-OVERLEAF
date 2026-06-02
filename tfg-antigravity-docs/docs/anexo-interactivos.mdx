@@ -9,30 +9,13 @@ pagination_prev: null
 pagination_next: null
 ---
 
-import { useState } from 'react';
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import InteractiveGraphicsGallery from '@site/src/components/InteractiveGraphicsGallery';
-import ForensicGallery2 from '@site/src/components/ForensicGallery2';
-import TabSelector from '@site/src/components/TabSelector';
 
 <GlitchTitle>Anexo C — Herramientas Interactivas</GlitchTitle>
 
-41 visualizaciones interactivas: 18 simuladores de elaboración propia 
-y 23 gráficas construidas sobre datos oficiales de ENTSO-E Transparency 
-Platform y ESIOS (REE). Selecciona una pestaña para navegar.
+18 simuladores interactivos de elaboración propia para el análisis técnico del incidente.
 
-export const AnexoC = () => {
-  const [tab, setTab] = useState(0);
-  return (
-    <>
-      <TabSelector active={tab} onSelect={setTab} labels={['Simuladores (18)', 'Datos ENTSO-E / ESIOS (23)']} />
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', 
-                     maxWidth: '100%', overflow: 'hidden' }}>
-        {tab === 0 && <InteractiveGraphicsGallery lang="es" />}
-        {tab === 1 && <ForensicGallery2 />}
-      </div>
-    </>
-  );
-};
-
-<AnexoC />
+<div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '100%', overflow: 'hidden', marginTop: '2rem' }}>
+  <InteractiveGraphicsGallery lang="es" />
+</div>
