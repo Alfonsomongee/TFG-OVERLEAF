@@ -10,6 +10,7 @@ import { ForensicTable } from '@site/src/components/ForensicUI/Primitives';
 import Collapsible from '@site/src/components/Collapsible';
 
 import KeyFact from '@site/src/components/KeyFact';
+import NavigationGuide from '@site/src/components/NavigationGuide';
 
 export default {
   // Re-use the default mapping
@@ -23,4 +24,5 @@ export default {
   ForensicTable,
   Collapsible,
   KeyFact,
+  NavigationGuide,
 };

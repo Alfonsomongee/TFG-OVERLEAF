@@ -118,7 +118,27 @@ export default function ChatWidget() {
           e.currentTarget.style.filter = open ? 'drop-shadow(0 0 8px rgba(255,75,75,0.6))' : 'drop-shadow(0 0 8px rgba(59,130,246,0.6))';
         }}
       >
-        {open ? <X size={28} /> : <Sparkles size={28} />}
+        {open ? (
+          <X size={28} />
+        ) : (
+          <span style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+          }}>
+            <Sparkles size={22} />
+            <span style={{
+              fontSize: '9px',
+              fontFamily: 'var(--font-mono, monospace)',
+              letterSpacing: '0.05em',
+              lineHeight: 1,
+              opacity: 0.85,
+            }}>
+              ASK AI
+            </span>
+          </span>
+        )}
       </button>
 
       {/* Panel del chat */}
