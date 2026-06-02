@@ -91,6 +91,14 @@
   /* Code highlight */
   --docusaurus-highlighted-code-line-bg: hsl(190 100% 60% / 0.1);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  /* Sistema de transiciones */
+  --tr-fast:   150ms;
+  --tr-base:   200ms;
+  --tr-slow:   300ms;
+  --tr-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+  --tr-spring: cubic-bezier(0.25, 1, 0.5, 1);
+
 }
 
 /* ── DARK THEME — variables explícitas (no depender solo de :root) ── */
@@ -598,7 +606,7 @@ html.zen-mode .theme-doc-markdown {
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100%;
-  transition: all 0.3s ease;
+  transition: all var(--tr-slow) var(--tr-ease);
 }
 
 @media (max-width: 768px) {
@@ -613,7 +621,7 @@ html.zen-mode .theme-doc-markdown {
   background: transparent;
   border: 1px solid transparent;
   color: var(--ifm-navbar-link-color);
-  transition: all 0.2s ease;
+  transition: all var(--tr-base) var(--tr-ease);
 }
 
 #zen-mode-toggle:hover {
@@ -800,7 +808,7 @@ html.zen-mode .theme-doc-markdown {
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100%;
-  transition: all 0.3s ease;
+  transition: all var(--tr-slow) var(--tr-ease);
 }
 
 @media (max-width: 768px) {
@@ -815,7 +823,7 @@ html.zen-mode .theme-doc-markdown {
   background: transparent;
   border: 1px solid transparent;
   color: var(--ifm-navbar-link-color);
-  transition: all 0.2s ease;
+  transition: all var(--tr-base) var(--tr-ease);
 }
 
 #zen-mode-toggle:hover {
@@ -955,7 +963,7 @@ html[data-theme='light'] .menu__list-item .menu__list-item .menu__link { color: 
 .menu__list-item {
   margin: 0;
   padding: 0;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--tr-slow) var(--tr-ease);
 }
 
 /* Links default state */
@@ -966,7 +974,7 @@ html[data-theme='light'] .menu__list-item .menu__list-item .menu__link { color: 
   letter-spacing: 0.02em;
   padding: 8px 12px;
   border-radius: 0px;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--tr-slow) var(--tr-ease);
   position: relative;
   background: transparent;
 }
@@ -1056,7 +1064,7 @@ html[data-theme='light'] .menu__list-item .menu__list-item .menu__link { color: 
 /* PART 5 - Accordion & Iconography */
 .menu__caret {
   opacity: 0.4;
-  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 400ms var(--tr-spring);
 }
 
 .menu__list-item-collapsible.menu__list-item--collapsed .menu__caret {
@@ -1116,7 +1124,7 @@ html[data-theme="dark"] .table-of-contents {
 }
 .table-of-contents__link {
   color: var(--text-2);
-  transition: all 0.2s ease;
+  transition: all var(--tr-base) var(--tr-ease);
   padding: 4px 0;
 }
 .table-of-contents__link:hover, .table-of-contents__link--active {
@@ -1228,15 +1236,7 @@ body::before {
 }
 
 /* FULL WIDTH TABLE UTILITY */
-.table-full-width {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  position: relative;
-  left: 50%;
-  width: 2px;
-  background: linear-gradient(to bottom, rgba(255,170,0,0.4) 0%, rgba(255,170,0,0.1) 100%);
-  opacity: 0.3;
-}
+
 
 /* Internal Chapter Items (Tighter spacing) */
 .menu__list-item .menu__list-item {
@@ -1268,7 +1268,7 @@ body::before {
 /* PART 5 - Accordion & Iconography */
 .menu__caret {
   opacity: 0.4;
-  transition: transform 400ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 400ms var(--tr-spring);
 }
 
 .menu__list-item-collapsible.menu__list-item--collapsed .menu__caret {
@@ -1328,7 +1328,7 @@ html[data-theme="dark"] .table-of-contents {
 }
 .table-of-contents__link {
   color: var(--text-2);
-  transition: all 0.2s ease;
+  transition: all var(--tr-base) var(--tr-ease);
   padding: 4px 0;
 }
 .table-of-contents__link:hover, .table-of-contents__link--active {
@@ -1401,34 +1401,19 @@ html[data-theme="dark"] .navbar__item {
   padding: 0 5vw;
 }
 /* BREAKOUT MAESTRO PARA LA PÁGINA DE GALERÍA FORENSE Y DEMÁS GALERÍAS */
-.docs-doc-id-galeria-forense main[class*='docMainContainer'] > div.container,
-.docs-doc-id-galeria-forense main[class*='docMainContainer'] .row,
-.docs-doc-id-galeria-forense main[class*='docMainContainer'] article,
-.docs-doc-id-galeria-forense main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-14-galeria-graficas main[class*='docMainContainer'] > div.container,
-.docs-doc-id-14-galeria-graficas main[class*='docMainContainer'] .row,
-.docs-doc-id-14-galeria-graficas main[class*='docMainContainer'] article,
-.docs-doc-id-14-galeria-graficas main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-15-galeria-de-tablas main[class*='docMainContainer'] > div.container,
-.docs-doc-id-15-galeria-de-tablas main[class*='docMainContainer'] .row,
-.docs-doc-id-15-galeria-de-tablas main[class*='docMainContainer'] article,
-.docs-doc-id-15-galeria-de-tablas main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-10-galeria-imagenes main[class*='docMainContainer'] > div.container,
-.docs-doc-id-10-galeria-imagenes main[class*='docMainContainer'] .row,
-.docs-doc-id-10-galeria-imagenes main[class*='docMainContainer'] article,
-.docs-doc-id-10-galeria-imagenes main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-galeria-graficas main[class*='docMainContainer'] > div.container,
-.docs-doc-id-galeria-graficas main[class*='docMainContainer'] .row,
-.docs-doc-id-galeria-graficas main[class*='docMainContainer'] article,
-.docs-doc-id-galeria-graficas main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-galeria-de-tablas main[class*='docMainContainer'] > div.container,
-.docs-doc-id-galeria-de-tablas main[class*='docMainContainer'] .row,
-.docs-doc-id-galeria-de-tablas main[class*='docMainContainer'] article,
-.docs-doc-id-galeria-de-tablas main[class*='docMainContainer'] .theme-doc-markdown,
-.docs-doc-id-galeria-imagenes main[class*='docMainContainer'] > div.container,
-.docs-doc-id-galeria-imagenes main[class*='docMainContainer'] .row,
-.docs-doc-id-galeria-imagenes main[class*='docMainContainer'] article,
-.docs-doc-id-galeria-imagenes main[class*='docMainContainer'] .theme-doc-markdown {
+.docs-doc-id-anexo-figuras main[class*='docMainContainer'] > div.container,
+.docs-doc-id-anexo-figuras main[class*='docMainContainer'] .row,
+.docs-doc-id-anexo-figuras main[class*='docMainContainer'] article,
+.docs-doc-id-anexo-figuras main[class*='docMainContainer'] .theme-doc-markdown,
+.docs-doc-id-anexo-tablas main[class*='docMainContainer'] > div.container,
+.docs-doc-id-anexo-tablas main[class*='docMainContainer'] .row,
+.docs-doc-id-anexo-tablas main[class*='docMainContainer'] article,
+.docs-doc-id-anexo-tablas main[class*='docMainContainer'] .theme-doc-markdown,
+.docs-doc-id-anexo-interactivos main[class*='docMainContainer'] > div.container,
+.docs-doc-id-anexo-interactivos main[class*='docMainContainer'] .row,
+.docs-doc-id-anexo-interactivos main[class*='docMainContainer'] article,
+.docs-doc-id-anexo-interactivos main[class*='docMainContainer'] .theme-doc-markdown {
+
   max-width: 100% !important;
   width: 100% !important;
   padding: 0 !important;
@@ -1446,10 +1431,7 @@ html[data-theme="dark"] .navbar__item {
 
   /* Intro page: override the mobile navbar background so no black bar appears */
   html[data-intro-page='true'] .navbar,
-  body.intro-page .navbar {
-    background-color: transparent !important;
-    background: transparent !important;
-  }
+
 
   /* Forzar que el botón hamburguesa se muestre en móvil */
   .navbar__toggle {
@@ -1502,7 +1484,7 @@ html[data-theme="dark"] .navbar__item {
   border-radius: 20px !important;
   padding: 4px 14px !important;
   margin-right: 6px !important;
-  transition: all 0.2s ease !important;
+  transition: all var(--tr-base) var(--tr-ease) !important;
 }
 
 .navbar__primer-capitulo:hover {
@@ -1531,21 +1513,11 @@ html[data-intro-page='true'] .navbar,
 body.intro-page .navbar,
 html[data-theme='light'] body.intro-page .navbar,
 html[data-theme='dark'] body.intro-page .navbar,
-html[data-theme='light'][data-intro-page='true'] .navbar {
-  background: transparent !important;
-  background-color: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
+
 
 /* Safety net: no child of .navbar should carry a background in intro */
 html[data-theme='light'] body.intro-page .navbar > *,
-html[data-theme='light'][data-intro-page='true'] .navbar > * {
-  background: transparent !important;
-  background-color: transparent !important;
-}
+
 
 /* Hide dark/light mode toggle on intro page */
 body.intro-page [class*='colorModeToggle'],
@@ -1554,9 +1526,7 @@ body.intro-page button[title*="Cambiar"],
 body.intro-page button[aria-label*="dark"],
 body.intro-page button[aria-label*="light"],
 body.intro-page button[aria-label*="oscuro"],
-body.intro-page button[aria-label*="claro"] {
-  display: none !important;
-}
+
 
 /* Hide navbar brand text and logo everywhere (clean minimal nav) */
 .navbar__title,
@@ -1565,23 +1535,15 @@ body.intro-page button[aria-label*="claro"] {
 }
 
 /* Hide the thin gray border/shadow Docusaurus adds around the page wrapper */
-body.intro-page #__docusaurus {
-  border: none !important;
-  outline: none !important;
-}
+
 
 /* Eliminate any residual hairline on intro */
 body.intro-page .main-wrapper,
-body.intro-page [class*='mainWrapper'] {
-  border: none !important;
-  box-shadow: none !important;
-}
+
 
 /* Remove any extra padding on the intro page container */
 body.intro-page main .container,
-body.intro-page .container {
-  padding-top: 0 !important;
-}
+
 
 /* ============================================================
    INTRO PAGE LAYOUT OVERRIDES
@@ -1591,27 +1553,14 @@ body.intro-page .container {
 body.intro-page .theme-doc-sidebar-container,
 body.intro-page .theme-doc-toc-desktop,
 body.intro-page .theme-doc-toc-mobile,
-body.intro-page footer {
-  display: none !important;
-}
+
 
 /* Full-width main container on intro page */
 body.intro-page main,
-body.intro-page main[class*='docMainContainer'] {
-  width: 100vw !important;
-  margin-left: calc(-50vw + 50%) !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-  max-width: 100vw !important;
-}
+
 
 /* Full-width container elements on intro page */
-body.intro-page .container {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+
 
 /* ============================================================
    INTRO PAGE — BACKGROUND + CURSOR FIXES
@@ -1623,25 +1572,14 @@ html[data-intro-page='true'],
 html[data-intro-page='true'] body,
 body.intro-page,
 html[data-theme='light'] body.intro-page,
-html[data-theme='dark'] body.intro-page {
-  background-color: #03060c !important;
-  background: #03060c !important;
-}
+
 
 /* Prevent I-beam text cursor when hovering over titles/stats/subtitle */
-body.intro-page #executive-hook {
-  cursor: default !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-}
+
 
 /* Restore pointer cursor on interactive elements inside the hook */
 body.intro-page #executive-hook a,
-body.intro-page #executive-hook button {
-  cursor: pointer !important;
-  user-select: auto !important;
-  -webkit-user-select: auto !important;
-}
+
 
 /* ── Force all Docusaurus wrappers to the intro background colour ──
    Prevents any wrapper div from leaking a slightly different dark shade
@@ -1655,10 +1593,7 @@ html[data-intro-page='true'] header,
 body.intro-page #__docusaurus,
 body.intro-page .main-wrapper,
 body.intro-page [class*='mainWrapper'],
-body.intro-page header {
-  background-color: #03060c !important;
-  background: #03060c !important;
-}
+
 
 /* ============================================================
    FIGURE CAPTIONS — visual hierarchy, proximity & exaggerated italic
@@ -1723,48 +1658,7 @@ html[data-theme='dark'] .footer {
   border-top-color: rgba(255, 255, 255, 0.05);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   CINE FAB — Floating Action Button → /cine
-   ══════════════════════════════════════════════════════════════ */
-.cine-fab {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  gap: 0;                       /* sin icono, no necesita gap */
-  padding: 0.5rem 1.2rem;
-  background: transparent;      /* sin caja */
-  border: none;                 /* sin borde */
-  border-radius: 0;
-  color: var(--text-0, rgba(220, 215, 200, 0.7));
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: none;
-  backdrop-filter: none;
-  box-shadow: none;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  user-select: none;
-  white-space: nowrap;
-}
 
-.cine-fab:hover {
-  color: var(--text-0, rgba(255, 255, 255, 0.95));
-  text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-
-.cine-fab:active { transform: translateY(0); }
-
-body.cine-mode-active .cine-fab {
-  display: none !important;
-}
 
 /* ══════════════════════════════════════════════════════════════
    GLOBAL SIDEBAR & TOC FLOATING BUTTONS
@@ -1905,9 +1799,7 @@ html[data-theme='light'] .global-sidebar-close-btn:hover {
 body.intro-page .cine-fab,
 body.intro-page .global-sidebar-btn,
 body.intro-page .global-sidebar-close-btn,
-body.intro-page .global-toc-btn {
-  display: none !important;
-}
+
 
 
 /* ============================================================
@@ -2203,15 +2095,8 @@ html[data-theme='light'] .global-sidebar-btn:hover {
 }
 
 /* ── Modo Cine → texto sidebar, sin brillo ───────────────── */
-html[data-theme='light'] .cine-fab {
-  color: #636E4F !important;
-  text-shadow: none !important;
-}
-html[data-theme='light'] .cine-fab:hover {
-  color: #4d5640 !important;
-  text-shadow: none !important;
-  transform: translateY(-1px);
-}
+
+
 
 /* ── Botón IA (ChatWidget) → sin neón, texto sidebar ─────── */
 html[data-theme='light'] .chat-fab {
@@ -2657,9 +2542,39 @@ h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
   gap: 0.5rem;
   outline: none;
 }
+
+  /* Ocultar triángulo nativo en todos los navegadores */
+  details > summary {
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Transición suave del contenido */
+  details[open] > summary {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Modo claro: asegurar que el ▶ del label sea visible */
+  html[data-theme='light'] details > summary {
+    color: var(--text-1);
+    opacity: 1;
+  }
+
+  html[data-theme='light'] details[open] > summary {
+    color: var(--text-0);
+  }
+
 .collapsible > summary::-webkit-details-marker {
   display: none;
 }
 .collapsibleBody { 
   margin-top: 1rem; 
+}
+
+/* Footer text color in light mode: PANTONE 19-0840 TCX */
+html[data-theme='light'] .footer__title,
+html[data-theme='light'] .footer__link-item {
+  color: #4A4138 !important;
 }

@@ -1,7 +1,6 @@
 // sidebars.js
 module.exports = {
   docs: [
-    'intro', // landing (slug: /)
     {
       type: 'category',
       label: 'I · El incidente',
@@ -50,11 +49,9 @@ module.exports = {
       items: [
         'resumen-de-cifras',
         'cronologia',
-        'galeria-graficas',
-        'galeria-imagenes',
-        'galeria-de-tablas',
-        'galeria-forense',
-        'base-datos-maestra',
+        'anexo-figuras',
+        'anexo-tablas',
+        'anexo-interactivos',
         'glosario',
         'referencias',
       ],

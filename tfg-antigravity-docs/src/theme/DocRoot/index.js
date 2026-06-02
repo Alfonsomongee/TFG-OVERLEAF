@@ -5,11 +5,10 @@ import DocRoot from '@theme-original/DocRoot';
 import styles from './styles.module.css';
 
 const variants = {
-  initial: { opacity: 0, filter: 'blur(6px)' },
+  initial: { opacity: 0 },
   animate: {
     opacity: 1,
-    filter: 'blur(0px)',
-    transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }
+    transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }
   },
   exit: {
     opacity: 0,

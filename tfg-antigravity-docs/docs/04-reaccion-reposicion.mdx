@@ -11,56 +11,11 @@ import SectorialResilienceChart from "@site/src/components/SectorialResilienceCh
 
 <GlitchTitle>Reacción y Reposición</GlitchTitle>
 
-Tras la consumación del cero de tensión a las 12:33:30 CEST, el sistema eléctrico peninsular transitó de una crisis dinámica incontrolable a una fase de gestión de emergencia y reposición estructural. La pérdida de más de 15 GW y la desconexión total del sistema síncrono continental obligaron a REE a abandonar la lógica de operación en régimen permanente para activar los protocolos de emergencia del Procedimiento de Operación P.O. 1.6. La recuperación total del suministro requirió aproximadamente 18,5 horas de maniobras ininterrumpidas (hasta las 07:05 del 29-A, cuando se certificó la restitución del 99,95% del suministro).
+Tras la consumación del cero de tensión a las 12:33:30 CEST<KeyFact id="granada-disparo" mode="callback">secuencia del disparo raíz — Capítulo 3</KeyFact>, el sistema eléctrico peninsular transitó de una crisis dinámica incontrolable a una fase de gestión de emergencia y reposición estructural. La pérdida de más de 15 GW y la desconexión total del sistema síncrono continental obligaron a REE a abandonar la lógica de operación en régimen permanente para activar los protocolos de emergencia del Procedimiento de Operación P.O. 1.6. La recuperación total del suministro requirió aproximadamente 18,5 horas de maniobras ininterrumpidas (hasta las 07:05 del 29-A, cuando se certificó la restitución del 99,95% del suministro).
 
-## Cronología del colapso y la restauración
+## Cronología de la restauración
 
-<ForensicTable 
-  title="TABLA 6 | INCIDENT CHRONOLOGY — RECOVERY PHASES"
-  source="Comité de Análisis del Gobierno"
-  confidence="HIGH"
->
-
-  <table>
-    <thead>
-      <tr>
-        <th>Fase</th>
-        <th>Ventana temporal</th>
-        <th>Descripción</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr className="state-normal">
-        <td><strong>Fase 0</strong></td>
-        <td>Días previos y mañana del 28-A</td>
-        <td className="narrative-cell">Inestabilidad latente de tensiones</td>
-      </tr>
-      <tr className="state-warning">
-        <td><strong>Fase 1</strong></td>
-        <td>12:00–12:30 CEST</td>
-        <td className="narrative-cell">Oscilaciones electromecánicas</td>
-      </tr>
-      <tr className="state-critical">
-        <td><strong>Fase 2</strong></td>
-        <td>12:32:00–12:33:18 CEST</td>
-        <td className="narrative-cell">Pérdidas de generación por sobretensión</td>
-      </tr>
-      <tr className="state-blackout">
-        <td><strong>Fase 3</strong></td>
-        <td>12:33:18–12:33:30 CEST</td>
-        <td className="narrative-cell">Cascada hasta cero de tensión</td>
-      </tr>
-      <tr className="state-warning">
-        <td><strong>Fase 4</strong></td>
-        <td>12:33:30 CEST – 14:36 del 29-A</td>
-        <td className="narrative-cell">Reposición progresiva del suministro</td>
-      </tr>
-    </tbody>
-  </table>
-</ForensicTable>
-
-
-
+La secuencia técnica del colapso —desde las oscilaciones precursoras de la mañana hasta el cero de tensión a las 12:33:29 CEST— está documentada en la [cronología del Capítulo 3](./03-analisis-incidente.mdx). Este capítulo se ocupa exclusivamente de la Fase 4: la reposición del suministro.
 
 <ForensicTable 
   title="TABLA 14b | RESTORATION MILESTONES"
@@ -99,11 +54,11 @@ La reacción institucional fue inmediata y simultánea en varios frentes:
 
 La estrategia de recuperación dictaminó la fragmentación controlada de la península ibérica en siete áreas operativas independientes —Zona Sur, Tajo-Centro, Levante y otras— durante la re-energización progresiva.
 
-<AnimatedRestorationMap />
+<AnimatedRestorationMap lang={frontMatter.locale || 'es'} />
 
 _Figuras 20-21. Fragmentación en 7 islas eléctricas y estrategia dual de re-energización Top-Down/Bottom-Up. Simulación interactiva de elaboración propia basada en ENTSO-E / REE._
 
-La maniobra combinó dos frentes simultáneos: una estrategia Top-Down (soporte externo desde Francia y Marruecos como referencia de tensión) y una estrategia Bottom-Up (arranque autónomo de centrales hidroeléctricas internas en Galicia, Asturias y la cuenca del Duero) ([*ver Mapa de Reposición interactivo*](./galeria-graficas.mdx#map)).
+La maniobra combinó dos frentes simultáneos: una estrategia Top-Down (soporte externo desde Francia y Marruecos como referencia de tensión) y una estrategia Bottom-Up (arranque autónomo de centrales hidroeléctricas internas en Galicia, Asturias y la cuenca del Duero) ([*ver Mapa de Reposición interactivo*](./anexo-interactivos#map)).
 
 ## Estrategia Black Start: hidroeléctricas y ciclos combinados
 
@@ -118,6 +73,7 @@ Los fallos fueron significativos: las islas de Cantabria y Levante no se sostuvi
 Los transitorios de energización de líneas en vacío generaron corrientes de inserción magnetizante (*magnetizing inrush*) de hasta 10 veces la corriente nominal en los autotransformadores de 400 kV, provocando caídas de tensión del 10-20% en las frágiles islas recién formadas. Más problemático aún fue el fenómeno de *sympathetic inrush*: la energización de un transformador nuevo saturó el flujo magnético de los transformadores paralelos ya operativos, generando distorsiones armónicas severas con tiempos de decaimiento superiores a 10 segundos que hicieron colapsar varias islas antes de que pudieran estabilizarse. En al menos tres ocasiones documentadas, los relés diferenciales de transformador interpretaron estos transitorios como cortocircuitos internos y ordenaron la apertura, obligando a reiniciar el proceso de isla desde cero.
 
 <ForensicReveal
+  lang="es"
   l1="Encender la red es más difícil que apagarla: cada transformador que conectas puede hacer caer a los que ya están funcionando."
   l2="El 'Black Start' requiere arrancar generadores sin red externa. Al energizar transformadores de 400 kV en una red vacía, se generan corrientes transitorias enormes (inrush) que pueden desestabilizar las frágiles islas eléctricas recién creadas. El fenómeno de sympathetic inrush agrava el problema: un transformador nuevo puede saturar a los ya conectados."
   l3="Corrientes de inserción de hasta 10× la nominal con contenido armónico de 8-20% de segundo armónico (IEEE C57.91). El sympathetic inrush tiene tiempos de decaimiento >10 s (CIGRE WG A2). En el 28-A, las islas de Cantabria y Levante colapsaron por este mecanismo y debieron reiniciarse. (ENTSO-E Factual / REE)"
@@ -166,4 +122,4 @@ La carga se reconectó en bloques discretos cuidadosamente calculados:
 
 _Figura 21. Desplome y recuperación de la demanda eléctrica peninsular. Datos: REData (REE) / RDL 7/2025. Visualización interactiva de elaboración propia._
 
-La secuencia de la reposición constituye una constatación empírica del argumento técnico central de este trabajo, enmarcado en el vértice técnico del Trilema Energético: la generación síncrona —ausente en cantidades suficientes durante la operación previa al colapso— demostró ser el único sustento electromecánico capaz de sostener la recuperación. Su papel como "andamiaje" de la re-energización no es un artefacto operativo, sino una consecuencia directa de las propiedades físicas fundamentales que los IBR en modo grid-following no pueden replicar.
+La secuencia de la reposición constituye una constatación empírica del argumento técnico central de este trabajo: la generación síncrona —ausente en cantidades suficientes durante la operación previa al colapso— demostró ser el único sustento electromecánico capaz de sostener la recuperación. Su papel como "andamiaje" de la re-energización no es un artefacto operativo, sino una consecuencia directa de las propiedades físicas fundamentales que los IBR en modo grid-following no pueden replicar.

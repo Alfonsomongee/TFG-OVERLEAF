@@ -1,16 +1,11 @@
 // slides/Slide12.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styles from '../styles/Slide12.module.css';
 import DigitalClock from '../DigitalClock';
 import StatusIndicator from '../StatusIndicator';
 
 export default function Slide12({ slideProgress }) {
-  const [stage, setStage] = useState(0);
-  useEffect(() => {
-    if (slideProgress >= 0.2) setStage(1);
-    if (slideProgress >= 0.5) setStage(2);
-    if (slideProgress >= 0.8) setStage(3);
-  }, [slideProgress]);
+  const stage = slideProgress >= 0.8 ? 3 : slideProgress >= 0.5 ? 2 : slideProgress >= 0.2 ? 1 : 0;
 
   const years = [2020, 2021, 2022, 2023, 2024, 2025];
   const inertia = [3.2, 2.8, 2.3, 1.9, 1.6, 1.5];

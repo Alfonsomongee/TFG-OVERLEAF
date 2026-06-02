@@ -207,10 +207,10 @@ const graphicsData = [
   { id: 'tap-lag-sequence', icon: '⚙️', component: TapLagSequence }
 ];
 
-export default function InteractiveGraphicsGallery({}) {
+export default function InteractiveGraphicsGallery({ propLang }) {
   const lang = useDocLang();
   const { i18n } = useDocusaurusContext();
-  const locale = propLang || i18n.currentLocale;
+  const locale = propLang || lang || i18n.currentLocale;
   const [activeGraphicId, setActiveGraphicId] = useState(graphicsData[0].id);
 
   useEffect(() => {

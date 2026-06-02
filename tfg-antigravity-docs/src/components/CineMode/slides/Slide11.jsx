@@ -1,19 +1,11 @@
 // slides/Slide11.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styles from '../styles/Slide11.module.css';
 import DigitalClock from '../DigitalClock';
 import StatusIndicator from '../StatusIndicator';
 
 export default function Slide11({ slideProgress }) {
-  const [stage, setStage] = useState(0);
-
-  useEffect(() => {
-    if (slideProgress >= 0.1) setStage(1);
-    if (slideProgress >= 0.25) setStage(2);
-    if (slideProgress >= 0.45) setStage(3);
-    if (slideProgress >= 0.65) setStage(4);
-    if (slideProgress >= 0.85) setStage(5);
-  }, [slideProgress]);
+  const stage = slideProgress >= 0.8 ? 3 : slideProgress >= 0.5 ? 2 : slideProgress >= 0.2 ? 1 : 0;
 
   // Opacidades y transformaciones suaves
   const titleOpacity = Math.min(1, Math.max(0, (slideProgress - 0.05) / 0.2));

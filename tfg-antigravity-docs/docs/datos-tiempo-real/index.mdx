@@ -5,6 +5,7 @@ hide_title: true
 ---
 
 import Link from '@docusaurus/Link';
+import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
 
 <div className="custom-hero" style={{ textAlign: 'center', marginBottom: '3rem', marginTop: '1rem' }}>
   <div style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ifm-color-primary)', marginBottom: '0.75rem' }}>
@@ -33,145 +34,30 @@ import Link from '@docusaurus/Link';
 
 Visualizaciones dinámicas construidas sobre telemedidas procedentes del Operador del Sistema (REE), destinadas a evaluar la vulnerabilidad instantánea del mix de generación.
 
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', margin: '2rem 0' }}>
-  <Link to="/datos-tiempo-real/mix-generacion" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Mix de Generación</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Comparativa sectorial de la generación neta de energía por tecnología frente al instante de inestabilidad sistémica (82% renovable).
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
+export const items1 = [
+  {title: 'Mix de Generación', description: 'Comparativa sectorial de la generación neta de energía por tecnología frente al instante de inestabilidad sistémica (82% renovable).', href: '/datos-tiempo-real/mix-generacion'},
+  {title: 'Demanda y Renovable', description: 'Análisis de la trayectoria de demanda total agregada y aportación eólica y solar fotovoltaica.', href: '/datos-tiempo-real/demanda-renovable'},
+  {title: 'Termómetro de Riesgo', description: 'Estimador del margen de inercia y del nivel de vulnerabilidad sistémica instantánea.', href: '/datos-tiempo-real/termometro-riesgo'},
+  {title: 'Balance de Intercambios', description: 'Flujos de exportación e importación transfronteriza a través de las interconexiones con Francia y Portugal.', href: '/datos-tiempo-real/balance-intercambios'},
+  {title: 'Precio SPOT vs Demanda', description: 'Correlación en tiempo real entre el precio del mercado diario mayorista de electricidad y la carga del sistema.', href: '/datos-tiempo-real/precio-spot'},
+  {title: 'Radar de Vulnerabilidad', description: 'Análisis geométrico multidimensional sobre la similitud con el estado crítico del 28-A.', href: '/datos-tiempo-real/radar-vulnerabilidad'}
+];
 
-  <Link to="/datos-tiempo-real/demanda-renovable" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Demanda y Renovable</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Análisis de la trayectoria de demanda total agregada y aportación eólica y solar fotovoltaica.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/termometro-riesgo" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Termómetro de Riesgo</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Estimador del margen de inercia y del nivel de vulnerabilidad sistémica instantánea.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/balance-intercambios" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Balance de Intercambios</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Flujos de exportación e importación transfronteriza a través de las interconexiones con Francia y Portugal.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/precio-spot" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Precio SPOT vs Demanda</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Correlación en tiempo real entre el precio del mercado diario mayorista de electricidad y la carga del sistema.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/radar-vulnerabilidad" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Radar de Vulnerabilidad</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Análisis geométrico multidimensional sobre la similitud con el estado crítico del 28-A.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-</div>
+<DatosTiempoRealGrid items={items1} />
 
 ## Contexto Histórico y Forense
 
 Indicadores forenses y económicos derivados del análisis pericial y de los informes de auditoría del incidente del 28 de abril.
 
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', margin: '2rem 0' }}>
-  <Link to="/datos-tiempo-real/costes-ajuste" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Costes de Ajuste</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Matriz térmica de los costes extraordinarios asociados a los servicios de ajuste y resolución de restricciones técnicas durante la crisis.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
+export const items2 = [
+  {title: 'Costes de Ajuste', description: 'Matriz térmica de los costes extraordinarios asociados a los servicios de ajuste y resolución de restricciones técnicas durante la crisis.', href: '/datos-tiempo-real/costes-ajuste'},
+  {title: 'Impacto Económico', description: 'Diagrama de cascada que detalla el coste total imputado a pérdidas de servicio (VoLL), operaciones reforzadas de gas y daños físicos de infraestructura.', href: '/datos-tiempo-real/waterfall-financiero'},
+  {title: 'Indisponibilidad de Red', description: 'Medida del porcentaje de indisponibilidad de la red de transporte de alta tensión (400 kV) afectada por los disparos en cascada.', href: '/datos-tiempo-real/indisponibilidad'},
+  {title: 'Emisiones vs Renovable', description: 'Curva de correlación entre la intensidad de emisiones específicas de CO₂ y los niveles de penetración renovable durante el colapso.', href: '/datos-tiempo-real/emisiones-renovable'},
+  {title: 'Resiliencia Sectorial', description: 'Trayectoria temporal de la recuperación del consumo de energía desagregado por sectores (Industrial frente a Servicios).', href: '/datos-tiempo-real/resiliencia-sectorial'}
+];
 
-  <Link to="/datos-tiempo-real/waterfall-financiero" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Impacto Económico</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Diagrama de cascada que detalla el coste total imputado a pérdidas de servicio (VoLL), operaciones reforzadas de gas y daños físicos de infraestructura.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/indisponibilidad" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Indisponibilidad de Red</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Medida del porcentaje de indisponibilidad de la red de transporte de alta tensión (400 kV) afectada por los disparos en cascada.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/emisiones-renovable" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Emisiones vs Renovable</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Curva de correlación entre la intensidad de emisiones específicas de CO₂ y los niveles de penetración renovable durante el colapso.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/resiliencia-sectorial" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Resiliencia Sectorial</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Trayectoria temporal de la recuperación del consumo de energía desagregado por sectores (Industrial frente a Servicios).
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Consultar métrica →</div>
-    </div>
-  </Link>
-</div>
+<DatosTiempoRealGrid items={items2} />
 
 <div style={{ fontSize: '0.8rem', color: 'var(--ifm-color-emphasis-500)', borderTop: '1px solid var(--ifm-color-emphasis-200)', paddingTop: '1rem', marginTop: '3rem', fontFamily: 'var(--ifm-font-family-monospace)', lineHeight: 1.5 }}>
   Nota de seguridad metodológica: Las credenciales de acceso a la interfaz de programación de aplicaciones (API) se encuentran custodiadas en el entorno seguro del servidor (Serverless Variables). La agregación y saneamiento de los vectores dinámicos se delega en el endpoint '/api/esios-multi', garantizando la protección de los tokens.

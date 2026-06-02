@@ -11,15 +11,6 @@ import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator"
 
 <GlitchTitle>Contexto Técnico</GlitchTitle>
 
-```mermaid
-timeline
-    title Fases del Incidente (Clasificación del CSN)
-    Fase 0 : Inestabilidad latente (Mañana)
-    Fase 1 : Oscilaciones previas (12:00–12:30)
-    Fase 2 : Pérdidas de generación (12:32:00)
-    Fase 3 : Cascada y colapso (12:33:18)
-    Fase 4 : Reposición (12:33:30 en adelante)
-```
 
 ## Evolución del parque generador: de la generación síncrona al mix dominado por IBR
 
@@ -33,22 +24,25 @@ En el primer cuatrimestre de 2025, el sistema peninsular consolidó este escenar
 
 Como contrapartida, la generación síncrona convencional ha sido progresivamente desplazada: el carbón ocupa un papel residual (1,6 %) de la capacidad instalada, el nuclear (5,5 %) afronta un calendario de cierre progresivo, y los más de 26 GW de ciclo combinado de gas (*20,4 %*) operan con factores de utilización inferiores al 15 % anuales.
 
-Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, inercia física y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante inversores (IBR), que operan en modo estándar como seguidores de red (grid-following): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos PLL y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una RoCoF amplificada ante cualquier desequilibrio de potencia activa ([*ver Radar de Vulnerabilidad Nodal interactivo*](./galeria-graficas.mdx#frequency)).
+Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, inercia física y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante inversores (IBR), que operan en modo estándar como seguidores de red (grid-following): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos PLL y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una RoCoF amplificada ante cualquier desequilibrio de potencia activa ([*ver Radar de Vulnerabilidad Nodal interactivo*](./anexo-interactivos#frequency)).
+
+<KeyFact id="inercia-28a">
 
 La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s como promedio ponderado peninsular — por encima del umbral ENTSO-E de 2,0 s. Sin embargo, los valores zonales eran significativamente inferiores: 1,3 s en el sur y 1,84 s en el centro, ambos por debajo del umbral. El colapso se originó en la zona más débil, no en el promedio — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.
 
-:::tip Simulador interactivo — Ecuación de Oscilación
-Explora cómo varía la RoCoF al modificar la constante de inercia *H* del sistema.
-[**→ Abrir simulador en la Galería de Gráficas Interactivas**](./galeria-graficas.mdx#swing)
+</KeyFact>
 
-<Collapsible label="Ver simulador embebido aquí">
-
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Simulador interactivo — Ecuación de Oscilación (RoCoF vs. inercia H)</span>
+</summary>
 <div style={{marginTop:'1rem'}}>
 <SwingEquationSimulator />
+<p style={{fontSize:'0.8rem', color:'var(--ifm-color-emphasis-600)', marginTop:'0.75rem'}}>
+  También disponible en la <a href="./anexo-interactivos#swing">Galería de Gráficas Interactivas</a>.
+</p>
 </div>
-
-</Collapsible>
-:::
+</details>
 
 ## Descarbonización e implicaciones operativas
 

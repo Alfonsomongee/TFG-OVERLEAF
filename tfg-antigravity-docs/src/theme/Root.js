@@ -12,10 +12,9 @@ export default function Root({ children }) {
 
   const rawPath = location.pathname.toLowerCase();
   const path = rawPath.endsWith('/') && rawPath !== '/' ? rawPath.slice(0, -1) : rawPath;
-  const isHomePage = path === '/' || path.match(/^\/[a-z]{2}$/);
   // 'galeria' y '/cronologia' eliminados: esas páginas necesitan los botones de sidebar
   const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor'];
-  const shouldHideButtons = isHomePage || hideButtonsPaths.some(keyword => path.includes(keyword));
+  const shouldHideButtons = hideButtonsPaths.some(keyword => path.includes(keyword));
 
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
@@ -48,10 +47,7 @@ export default function Root({ children }) {
 
       {!shouldHideButtons && (
         <>
-          {/* FAB Modo Cine */}
-          <Link to="/cine" className="cine-fab" aria-label={translate({id: 'theme.cine.open', message: 'Abrir Modo Cine'})}>
-            <Translate id="theme.cine.button">Modo Cine</Translate>
-          </Link>
+
 
           {/* ☰ solo si el sidebar está cerrado */}
           {!sidebarOpen && (
@@ -78,17 +74,19 @@ export default function Root({ children }) {
           )}
 
           {/* Mostrar / Ocultar índice */}
-          <button
-            className={`global-toc-btn${tocVisible ? ' active' : ''}`}
-            onClick={toggleToc}
-            aria-label={tocVisible 
-              ? translate({id: 'theme.toc.hide', message: 'Ocultar índice'}) 
-              : translate({id: 'theme.toc.show', message: 'Mostrar índice'})}
-          >
-            {tocVisible 
-              ? <Translate id="theme.toc.hide">Ocultar índice</Translate> 
-              : <Translate id="theme.toc.show">Mostrar índice</Translate>}
-          </button>
+          {!path.includes('/anexo') && (
+            <button
+              className={`global-toc-btn${tocVisible ? ' active' : ''}`}
+              onClick={toggleToc}
+              aria-label={tocVisible 
+                ? translate({id: 'theme.toc.hide', message: 'Ocultar índice'}) 
+                : translate({id: 'theme.toc.show', message: 'Mostrar índice'})}
+            >
+              {tocVisible 
+                ? <Translate id="theme.toc.hide">Ocultar índice</Translate> 
+                : <Translate id="theme.toc.show">Mostrar índice</Translate>}
+            </button>
+          )}
         </>
       )}
     </>

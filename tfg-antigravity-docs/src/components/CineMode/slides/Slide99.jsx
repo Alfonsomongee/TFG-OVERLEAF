@@ -1,15 +1,11 @@
 // slides/Slide99.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styles from '../styles/Slide99.module.css';
 import DigitalClock from '../DigitalClock';
 import StatusIndicator from '../StatusIndicator';
 
 export default function Slide99({ slideProgress }) {
-  const [stage, setStage] = useState(0);
-  useEffect(() => {
-    if (slideProgress >= 0.2) setStage(1);
-    if (slideProgress >= 0.6) setStage(2);
-  }, [slideProgress]);
+  const stage = slideProgress >= 0.8 ? 3 : slideProgress >= 0.5 ? 2 : slideProgress >= 0.2 ? 1 : 0;
 
   const trilemaOpacity = Math.min(1, Math.max(0, (slideProgress - 0.2) / 0.4));
   const leccionOpacity = Math.min(1, Math.max(0, (slideProgress - 0.6) / 0.3));

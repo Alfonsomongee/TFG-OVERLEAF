@@ -11,9 +11,6 @@ export default function Layout(props) {
 
     const path = location.pathname.toLowerCase();
     
-    // Rutas donde NO queremos los botones flotantes (incluida la intro/homepage en cualquier idioma)
-    const isHomePage = path === '/' || path.match(/^\/[a-z]{2}\/$/);
-    
     const hideButtonsPaths = [
       '/datos-tiempo-real',
       '/glosario',
@@ -21,7 +18,7 @@ export default function Layout(props) {
       '/sobre-el-autor'
     ];
     
-    const shouldHideButtons = isHomePage || hideButtonsPaths.some(keyword => path.includes(keyword));
+    const shouldHideButtons = hideButtonsPaths.some(keyword => path.includes(keyword));
 
     if (shouldHideButtons) {
       document.body.classList.add('hide-floating-buttons');
@@ -34,13 +31,10 @@ export default function Layout(props) {
     };
   }, [location.pathname]);
 
-  const path = location.pathname.toLowerCase();
-  const isHomePage = path === '/' || path.match(/^\/[a-z]{2}\/$/);
-
   return (
     <>
       <OriginalLayout {...props} />
-      {!isHomePage && <ChatWidget />}
+      <ChatWidget />
     </>
   );
 }

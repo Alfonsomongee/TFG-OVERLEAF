@@ -1,0 +1,33 @@
+---
+id: anexo-tablas
+title: "Anexo B — Índice de Tablas y Registros Documentales"
+sidebar_label: "Anexo B · Tablas y Registros"
+sidebar_position: 31
+hide_title: true
+pagination_prev: null
+pagination_next: null
+---
+
+import { useState } from 'react';
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
+import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
+import TabSelector from '@site/src/components/TabSelector';
+
+<GlitchTitle>Anexo B — Tablas y Registros Documentales</GlitchTitle>
+
+Todas las tablas numeradas del trabajo (TABLA 1 – TABLA 27) y la base de datos 
+maestra con los registros técnicos completos del incidente del 28 de abril.
+
+export const AnexoB = () => {
+  const [tab, setTab] = useState(0);
+  return (
+    <>
+      <TabSelector active={tab} onSelect={setTab} labels={['Tablas numeradas', 'Base de datos maestra']} />
+      {tab === 0 && <ForensicGallery />}
+      {tab === 1 && <TablaMaestra28A />}
+    </>
+  );
+};
+
+<AnexoB />

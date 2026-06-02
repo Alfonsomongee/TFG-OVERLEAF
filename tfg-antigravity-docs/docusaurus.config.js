@@ -249,7 +249,7 @@ const config = {
     {
       tagName: 'script',
       attributes: { type: 'text/javascript' },
-      innerHTML: `(function(){var p=window.location.pathname;if(p==='/'||p===''||p==='/index.html'){document.documentElement.setAttribute('data-intro-page','true');}document.addEventListener('DOMContentLoaded',function(){if(p==='/'||p===''||p==='/index.html'){document.body.classList.add('intro-page');}});})();(function(){var z=localStorage.getItem('zen-mode');if(z===null||z==='true'){document.documentElement.classList.add('zen-mode');}})();`,
+      innerHTML: `(function(){var z=localStorage.getItem('zen-mode');if(z===null||z==='true'){document.documentElement.classList.add('zen-mode');}})();`,
     },
   ],
 };

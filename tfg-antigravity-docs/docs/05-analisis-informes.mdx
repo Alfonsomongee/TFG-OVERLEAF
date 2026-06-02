@@ -16,7 +16,7 @@ El análisis cruzado de los cuatro informes sobre el apagón del 28-A revela una
 La narrativa oficial tipifica el apagón no como un error de diseño operativo ni como consecuencia directa de las maniobras del despacho, sino como un evento de naturaleza multifactorial: la convergencia de demanda valle, penetración masiva de IBR y comportamiento técnico inadecuado de los agentes privados que, actuando simultáneamente, superó los umbrales del Criterio N−1.
 
 <ForensicTable 
-  title="TABLA 7 | MULTI-FACTOR CAUSALITY MODEL"
+  title="TABLA 4 | MULTI-FACTOR CAUSALITY MODEL"
   source="Comité de Análisis del Gobierno / REE"
 >
 
@@ -32,20 +32,26 @@ La narrativa oficial tipifica el apagón no como un error de diseño operativo n
 
 La defensa técnica de REE sobre la maniobra de mallado merece examen preciso. El informe subraya un aspecto frecuentemente omitido en las críticas: las oscilaciones iniciales no provocaron sobretensiones sino caídas de tensión en los nudos de la red de transporte. Ante este riesgo, el Centro de Control ejecutó acciones estrictamente protocolizadas —reconexión de circuitos, acoplamiento de reactancias, coordinación con RTE para conmutar el HVDC a PMODE1—, reconociendo que estas maniobras "contribuyeron al alza en las tensiones", pero calificándolas como necesarias. REE defiende que cualquier incremento tensional posterior habría sido absorbible si los agentes hubiesen cumplido sus obligaciones normativas.
 
-![Mapas térmicos de tensión en la red de 400 kV en los instantes previos al disparo raíz](/figuras/mapas_termicos_tension_ree.png) _Figura 22. Mapas térmicos de tensión en red 400 kV (12:30–12:32:57 CEST). Fuente: Red Eléctrica (REE)._
-
 El argumento central traslada la responsabilidad al parque generador: el análisis de las 850 instalaciones de mayor generación documenta que aproximadamente el 22 % no cumplían el criterio de factor de potencia exigible conforme al RD 413/2014, aunque el propio informe matiza que parte de este incumplimiento podría atribuirse al efecto capacitivo de las infraestructuras de evacuación con baja generación. De forma particular, una central térmica en la zona sur no solo no absorbió potencia reactiva inductiva, sino que inyectó reactiva capacitiva adicional. Para REE, la inhibición colectiva del parque privado privó al sistema del margen dinámico necesario para contener el transitorio.
 
-Sobre la inercia, REE descarta explícitamente que fuese la causa material: el sistema operaba con $H = 2,3$ s, por encima del umbral de 2 s recomendado por ENTSO-E, y "la ola de sobretensión hubiera provocado el efecto cascada en todo caso", puesto que las condiciones de sobretensión persistieron hasta las 12:33:23 CEST con independencia de la frecuencia.
+Sobre la inercia, REE descarta explícitamente que fuese la causa material: el sistema operaba con $H = 2,3$ s, por encima del umbral de 2 s<KeyFact id="inercia-28a" mode="callback">H = 2,3 s media / 1,3 s zona sur — Capítulo 2</KeyFact> recomendado por ENTSO-E, y "la ola de sobretensión hubiera provocado el efecto cascada en todo caso", puesto que las condiciones de sobretensión persistieron hasta las 12:33:23 CEST con independencia de la frecuencia.
 
 La narrativa gubernamental presenta coherencia interna apreciable e identifica incumplimientos normativos documentados. Sin embargo, no responde a dos argumentos del peritaje ICAI: la magnitud de la reactiva capacitiva inyectada por el mallado y la inobservabilidad del operador en la red de 220 kV por el fenómeno de Tap-Lag — dos elementos que, según el ICAI, habrían hecho inevitable el colapso con independencia del nivel de cumplimiento de los generadores.
 
 La tabla completa de la secuencia oficial de 18 eventos desencadenantes según REE, y sus propuestas regulatorias en cuatro áreas (control de tensión, operación, observabilidad y monitorización), se recogen a continuación:
 
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Dossier REE: evidencia fotométrica, secuencia de 18 eventos y propuestas regulatorias (Tablas 5–6)</span>
+</summary>
+<div style={{marginTop:'1rem'}}>
+
+![Mapas térmicos de tensión en la red de 400 kV en los instantes previos al disparo raíz](/figuras/mapas_termicos_tension_ree.png) _Figura 22. Mapas térmicos de tensión en red 400 kV (12:30–12:32:57 CEST). Fuente: Red Eléctrica (REE)._
+
 ### Secuencia oficial de eventos desencadenantes (REE)
 
 <ForensicTable 
-  title="TABLA 8 | OFFICIAL EVENT SEQUENCE LOG"
+  title="TABLA 5 | OFFICIAL EVENT SEQUENCE LOG"
   source="Red Eléctrica (REE)"
   timeBase="UTC+2 (CEST)"
 >
@@ -136,7 +142,7 @@ La tabla completa de la secuencia oficial de 18 eventos desencadenantes según R
 ### Propuestas regulatorias de REE
 
 <ForensicTable 
-  title="TABLA 9 | PROPOSED REGULATORY AMENDMENTS"
+  title="TABLA 6 | PROPOSED REGULATORY AMENDMENTS"
   source="Redeia / REE"
 >
 
@@ -149,17 +155,22 @@ La tabla completa de la secuencia oficial de 18 eventos desencadenantes según R
 
 </ForensicTable>
 
+</div>
+</details>
+
 ## La visión del sector generador (ICAI / AELEC): mallado excesivo y colapso inevitable
 
 Frente a la narrativa gubernamental, el dictamen pericial del IIT-ICAI junto a Compass Lexecon e INESC TEC diagnostica formalmente el evento como un colapso por sobretensión: un fenómeno de inestabilidad de tensión impulsado por el agotamiento de la capacidad de absorción de potencia reactiva, en el que las propias acciones preventivas de REE actuaron como vector primario de la cascada.
 
-El núcleo de la crítica es cuantitativo. Ante las oscilaciones a partir de las 12:03 CEST, REE acopló 11 circuitos de 400 kV en vacío. Por el Efecto Ferranti, estas líneas se comportaron como grandes bancos de condensadores, inyectando entre 1,05 y 2,4 GVAr de reactiva capacitiva en una red que ya carecía de margen de absorción. Las simulaciones estiman que el margen al colapso en el nudo de Carmona 400 kV se contrajo de 2.964 MW a 1.268 MW — una reducción del 57 % que llevó al sistema al umbral de saturación capacitiva.
+El núcleo de la crítica es cuantitativo: las simulaciones ICAI estiman que el mallado contrajo el margen al colapso en el nudo de Carmona de 2.964 MW a 1.268 MW — una reducción del 57 %. <KeyFact id="mallado-ferranti" mode="callback">física del mallado y efecto Ferranti — Capítulo 3, §Fase 0</KeyFact>
 
 ![Curvas Q-V en el nudo de Carmona 400 kV según el análisis pericial ICAI](/figuras/fluctuaciones_tension_previas.png) _Figura 23. Curvas Q-V de estabilidad de tensión en Carmona 400 kV (análisis ICAI). Las maniobras de mallado contrajeron el margen al colapso un 57 %. Fuente: IIT-ICAI / Compass Lexecon._
 
 La discrepancia entre las cifras de ICAI (2,4 GVAr) y el análisis independiente del NREL (1,05 GVAr) no altera la conclusión compartida: en ambos casos, la inyección capacitiva superó la capacidad de absorción residual del sistema, estimada en apenas 3,3 GVAr frente a los 5,8 GVAr habituales.
 
-Sobre los disparos en cascada, el sector generador refuta la calificación de "disparos inadecuados" señalando la limitación de observabilidad del operador. Mientras el SCADA de REE mostraba 418 kV en la red de 400 kV —dentro de límites normativos—, el fenómeno del Tap-Lag generaba un punto ciego en las redes colectoras: la inercia mecánica de los OLTC amplificó el transitorio hacia las redes de 220 kV, donde se alcanzaron *244 kV* (>110 % de la tensión nominal). El titular de la infraestructura de Granada confirmó que su protección "estaba correctamente ajustada y funcionó adecuadamente".
+Sobre los disparos en cascada, el sector generador refuta la calificación de "disparos inadecuados" señalando la limitación de observabilidad del operador. El fenómeno del **Tap-Lag** amplificó la sobretensión hacia las redes de 220 kV, invisibles para el SCADA de REE. <KeyFact id="fase-2-taplag" mode="callback">mecanismo físico completo del Tap-Lag — Capítulo 3, §Fase 2</KeyFact> El titular de la infraestructura de Granada confirmó que su protección "estaba correctamente ajustada y funcionó adecuadamente" ante las tensiones reales experimentadas en su punto de conexión.<KeyFact id="granada-disparo" mode="callback">disparo raíz Granada — Capítulo 3</KeyFact>
+
+Este punto ciego es el que hace técnicamente incompatibles las narrativas de REE y del sector generador: sin observabilidad sobre la red subyacente, el operador no podía corregir lo que no veía, y los generadores no podían dejar de disparar ante lo que sí veían. La discrepancia no es, por tanto, sobre los hechos — es sobre la imputación de responsabilidad ante una limitación instrumental que ambas partes reconocen.
 
 ![Registro oscilográfico del disparo raíz en Granada a las 12:32:56.993 CEST](/figuras/aluvion_alertas_sobretension_sur.png) _Figura 24. Registro oscilográfico del disparo raíz en Granada (12:32:56.993 CEST). Tensión en secundario colector fase A ≈ 145 kV (>1,10 p.u.), invisible para el SCADA por efecto Tap-Lag. Fuente: IIT-ICAI / AELEC._
 
@@ -180,7 +191,7 @@ El análisis identifica una tensión técnica fundamental: la mayoría de las in
 Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actualización del NC RfG 2.0, que prevé imponer el grid-forming como requisito obligatorio para todos los módulos no síncronos ≥ 1 MW:
 
 <ForensicTable 
-  title="TABLA 10 | NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
+  title="TABLA 7 | NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
   source="ENTSO-E (Phase II Report)"
 >
 
@@ -197,7 +208,7 @@ Como respuesta directa, ENTSO-E ha consolidado en su Informe de Fase II la actua
 
 Sobre la topología del incidente, ENTSO-E analiza la pérdida de sincronismo a las 12:33:19 CEST: el sistema pasó de exportar 469 MW (12:32:57) a importar un máximo de 3.807 MW (12:33:19), momento de la pérdida de sincronismo. La divergencia de polos angular se volvió insostenible y las protecciones Out-of-Step (OST) actuaron a las 12:33:21 CEST, ordenando la apertura de los circuitos transpirenaicos (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
-<IberianGridTopology />
+<IberianGridTopology lang={frontMatter.locale || 'es'} />
 
 _Figura 26. Topología de la red ibérica y propagación del colapso hasta la pérdida de sincronismo con Francia (12:33:21 CEST). Simulación interactiva de elaboración propia basada en ENTSO-E._
 
@@ -212,7 +223,7 @@ La advertencia final de ENTSO-E es estructural: los análisis de seguridad coord
 A pesar de la polarización del debate, los cuatro informes convergen en un conjunto de conclusiones técnicas que matizan o desmienten las narrativas mediáticas más extendidas:
 
 <ForensicTable 
-  title="TABLA 11 | TECHNICAL CONSENSUS MATRIX"
+  title="TABLA 8 | TECHNICAL CONSENSUS MATRIX"
   source="Elaboración propia"
 >
 
@@ -221,7 +232,7 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 | La inercia no fue la causa raíz | El sistema operaba con H = 2,3 s (> umbral 2,0 s). Mayor inercia habría retardado la caída de frecuencia décimas de segundo, sin evitar el colapso por sobretensión. | ✓ | ✓ | ✓ | ✓ |
 | Colapso por sobretensión, no por déficit de frecuencia | La causa material fue la inestabilidad capacitiva (desequilibrio Q), no una pérdida de P activa ni una caída primaria de frecuencia. | ✓ | ✓ | ✓ | ✓ |
 | Reservas de potencia activa eran suficientes | La reserva terciaria a subir superaba los 7.000 MW. No hubo crisis de capacidad de generación. | ✓ | ✓ | ✓ | ✓ |
-| El UFLS agravó el colapso de tensión | El deslastre eliminó los últimos sumideros de reactiva inductiva, acelerando la escalada de tensión que destruía la red. | ✓ | ✓ | ✓ | ✓ |
+| El UFLS agravó el colapso de tensión | El deslastre eliminó los últimos sumideros de reactiva inductiva, acelerando la escalada de tensión que destruía la red.<KeyFact id="paradoja-ufls" mode="callback">paradoja del UFLS — Capítulo 3</KeyFact> | ✓ | ✓ | ✓ | ✓ |
 | Las protecciones de sincronismo actuaron correctamente | La apertura de los circuitos transpirenaicos a las 12:33:21 fue técnica y normativamente correcta. | ✓ | ✓ | ✓ | ✓ |
 | La normativa IBR era insuficiente | El P.O. 7.4 y el RD 413/2014 impedían a los IBR participar en el control dinámico de tensión pese a disponer de capacidad tecnológica. | ✓ | ✓ | ✓ | ✓ |
 | El Criterio N−1 estático es insuficiente | Las herramientas de análisis estático evaluaron el sistema como seguro horas antes del colapso, sin capacidad para anticipar la dinámica ultrarrápida de inestabilidad capacitiva. | ✓ | ✓ | ✓ | ✓ |
@@ -231,7 +242,7 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 ### Divergencias técnicas irreconciliables
 
 <ForensicTable 
-  title="TABLA 12 | TECHNICAL DIVERGENCE MATRIX"
+  title="TABLA 9 | TECHNICAL DIVERGENCE MATRIX"
   source="Elaboración propia"
 >
 
@@ -245,7 +256,7 @@ A pesar de la polarización del debate, los cuatro informes convergen en un conj
 
 </ForensicTable>
 
-Las simulaciones periciales del aporte capacitivo del mallado frente a la potencia de cortocircuito en nudos como Granada pueden explorarse en el [*Mapa Topológico Interactivo*](./galeria-graficas.mdx#topology).
+Las simulaciones periciales del aporte capacitivo del mallado frente a la potencia de cortocircuito en nudos como Granada pueden explorarse en el [*Mapa Topológico Interactivo*](./anexo-interactivos#topology).
 
 ## Síntesis interpretativa: tres fracturas de gobernanza
 

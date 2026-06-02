@@ -9,6 +9,8 @@ import ForensicNarrative from '@site/src/components/GaleriaForense/ForensicNarra
 import { ForensicTable } from '@site/src/components/ForensicUI/Primitives';
 import Collapsible from '@site/src/components/Collapsible';
 
+import KeyFact from '@site/src/components/KeyFact';
+
 export default {
   // Re-use the default mapping
   ...MDXComponents,
@@ -20,4 +22,5 @@ export default {
   ForensicNarrative,
   ForensicTable,
   Collapsible,
+  KeyFact,
 };

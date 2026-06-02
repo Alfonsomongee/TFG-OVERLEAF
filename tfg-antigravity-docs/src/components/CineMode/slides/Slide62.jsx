@@ -1,16 +1,11 @@
 // slides/Slide62.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styles from '../styles/Slide62.module.css';
 import DigitalClock from '../DigitalClock';
 import StatusIndicator from '../StatusIndicator';
 
 export default function Slide62({ slideProgress }) {
-  const [stage, setStage] = useState(0);
-  useEffect(() => {
-    if (slideProgress >= 0.2) setStage(1);
-    if (slideProgress >= 0.5) setStage(2);
-    if (slideProgress >= 0.8) setStage(3);
-  }, [slideProgress]);
+  const stage = slideProgress >= 0.8 ? 3 : slideProgress >= 0.5 ? 2 : slideProgress >= 0.2 ? 1 : 0;
 
   const criticsOpacity = Math.min(1, Math.max(0, (slideProgress - 0.2) / 0.3));
   const favorableOpacity = Math.min(1, Math.max(0, (slideProgress - 0.5) / 0.3));

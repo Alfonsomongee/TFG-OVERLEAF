@@ -9,12 +9,17 @@ export default function ForensicReveal({ children, className }) {
   const text = React.Children.toArray(children).join('');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.4 });
-  const [displayText, setDisplayText] = useState('');
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const [displayText, setDisplayText] = useState(
+    prefersReduced ? text : ''
+  );
   const [started, setStarted] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
+  const [isFinished, setIsFinished] = useState(prefersReduced);
 
   useEffect(() => {
-    if (!isInView || started || !text) return;
+    if (!isInView || started || !text || prefersReduced) return;
     setStarted(true);
 
     const finalChars = text.split('');
@@ -84,6 +89,7 @@ export default function ForensicReveal({ children, className }) {
   return (
     <motion.span
       ref={ref}
+      aria-label={text}
       className={`${styles.forensicText} ${isFinished ? styles.finished : styles.scrambling} ${className || ''}`}
       animate={isFinished ? { opacity: 1 } : {}}
     >

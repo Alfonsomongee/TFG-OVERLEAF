@@ -1,14 +1,11 @@
 // slides/Slide93.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import styles from '../styles/Slide93.module.css';
 import DigitalClock from '../DigitalClock';
 import StatusIndicator from '../StatusIndicator';
 
 export default function Slide93({ slideProgress }) {
-  const [stage, setStage] = useState(0);
-  useEffect(() => {
-    if (slideProgress >= 0.3) setStage(1);
-  }, [slideProgress]);
+  const stage = slideProgress >= 0.8 ? 3 : slideProgress >= 0.5 ? 2 : slideProgress >= 0.2 ? 1 : 0;
 
   const opacity = Math.min(1, Math.max(0, (slideProgress - 0.3) / 0.5));
 
