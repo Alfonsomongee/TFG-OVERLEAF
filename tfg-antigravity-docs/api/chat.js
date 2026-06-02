@@ -114,7 +114,7 @@ RESPUESTA NATURAL Y DIRECTA:`;
         'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: 'llama-3.1-8b-instant',
         messages: [
           { role: 'system', content: 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.' },
           { role: 'user', content: prompt }
