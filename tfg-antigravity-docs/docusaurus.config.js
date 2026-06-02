@@ -83,26 +83,7 @@ const config = {
         languages: ['es', 'en', 'de'],
       },
     ],
-    ['@docusaurus/plugin-pwa', {
-      debug: false,
-      offlineModeActivationStrategies: [
-        'appInstalled',
-        'standalone',
-        'queryString',
-      ],
-      pwaHead: [
-        {
-          tagName: 'link',
-          rel: 'manifest',
-          href: '/manifest.json',
-        },
-        {
-          tagName: 'meta',
-          name: 'theme-color',
-          content: '#0a0a0a',
-        },
-      ],
-    }],
+
   ],
 
   clientModules: [
