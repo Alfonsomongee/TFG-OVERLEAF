@@ -82,9 +82,9 @@ export default async function handler(req, res) {
       .map(c => `## ${c.title} – ${c.heading} (Enlace: ${c.slug})\n${c.text}`)
       .join('\n\n');
 
-    const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-    if (!DEEPSEEK_API_KEY) {
-      return res.status(500).json({ error: 'API Key de DeepSeek no configurada.' });
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) {
+      return res.status(500).json({ error: 'API Key de Groq no configurada.' });
     }
 
     const prompt = `Eres un asistente especializado en el análisis del apagón ibérico del 28 de abril de 2025. Responde ÚNICAMENTE con la información contenida en el CONTEXTO proporcionado a continuación. Si la información no está en el contexto, di: "Este detalle no aparece en el TFG; te recomiendo consultar el glosario o los capítulos técnicos."
@@ -107,14 +107,14 @@ ${question}
 
 RESPUESTA NATURAL Y DIRECTA:`;
 
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+        'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: 'llama3-8b-8192',
         messages: [
           { role: 'system', content: 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.' },
           { role: 'user', content: prompt }
