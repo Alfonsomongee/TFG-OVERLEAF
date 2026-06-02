@@ -24,7 +24,7 @@ export default function NavigationGuide() {
     {
       label: 'Leer el análisis',
       desc: '9 capítulos — del colapso físico a las consecuencias regulatorias',
-      href: '/01-introduccion',
+      href: '/',
     },
     {
       label: 'Explorar los simuladores',
