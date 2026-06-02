@@ -75,11 +75,11 @@ module.exports = async function handler(req, res) {
       const aChunk = chunks[a.id];
       const bChunk = chunks[b.id];
       if (!aChunk || !bChunk) return 0;
-      const aGloss = aChunk.isGlossary ? 1 : 0;
-      const bGloss = bChunk.isGlossary ? 1 : 0;
-      return (bGloss - aGloss) ||
-             ((aChunk.chapterOrder || 999) - 
-              (bChunk.chapterOrder || 999));
+      // Las gráficas y el glosario tienen el mismo peso
+      // El score BM25 original decide entre ellos
+      const aBoost = (aChunk.isGlossary || aChunk.isGraphic) ? 0.5 : 0;
+      const bBoost = (bChunk.isGlossary || bChunk.isGraphic) ? 0.5 : 0;
+      return (b.score + bBoost) - (a.score + aBoost);
     });
 
     if (results.length === 0) {

@@ -4,6 +4,8 @@ const path = require('path');
 const matter = require('gray-matter');
 const MiniSearch = require('minisearch');
 
+process.stdout.setEncoding('utf-8');
+
 const DOCS_DIR = path.join(__dirname, '..', 'docs');
 const OUTPUT_DIR = path.join(__dirname, '..', 'static');
 
@@ -39,6 +41,7 @@ function extractChunks(filePath, content) {
     .replace(/^:::$/gm, '')
     // Limpiar líneas vacías múltiples
     .replace(/\n{3,}/g, '\n\n')
+    .normalize('NFC')
     .trim();
 
   const title = data.title || path.basename(filePath, '.mdx');
@@ -65,7 +68,7 @@ function extractChunks(filePath, content) {
   for (const section of sections) {
     const lines = section.split('\n');
     const heading = lines[0].trim();
-    const cleanHeading = heading.replace(/<[^>]+>/g, '').trim();
+    const cleanHeading = heading.replace(/<[^>]+>/g, '').normalize('NFC').trim();
     // Elimina la primera línea (el encabezado) y une el resto
     const text = lines
       .slice(1)
@@ -145,7 +148,7 @@ function injectGlossary() {
         id: docId++,
         title: 'Glosario Técnico',
         heading: term,
-        text: `${term}: ${definition}`,
+        text: `${term}: ${definition}`.normalize('NFC'),
         slug: `/glosario#${term.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
         chapterOrder: 0,
         isGlossary: true,
@@ -175,7 +178,7 @@ function injectGraphics() {
       id: docId++,
       title: 'Herramientas Interactivas — Anexo C',
       heading: g.title,
-      text: `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`,
+      text: `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`.normalize('NFC'),
       slug: g.slug,
       chapterOrder: 1,
       isGlossary: false,
