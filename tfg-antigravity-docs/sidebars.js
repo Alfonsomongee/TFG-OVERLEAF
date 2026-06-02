@@ -52,6 +52,7 @@ module.exports = {
         'anexo-figuras',
         'anexo-tablas',
         'anexo-interactivos',
+        'anexo-entsoe',
         'glosario',
         'referencias',
       ],
