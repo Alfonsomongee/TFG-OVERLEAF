@@ -45,14 +45,9 @@ export default function LeftPanel({ activeChartId, activeCategoryId, onSelectCha
                 onClick={() => handleCategoryHeaderClick(cat)}
                 style={isActiveCategory ? { background: cat.colorLight } : {}}
               >
-                <div
-                  className={styles.categoryColorBar}
-                  style={{ background: cat.color }}
-                />
-                <span className={styles.categoryIcon}>{cat.icon}</span>
                 <span
                   className={styles.categoryName}
-                  style={isActiveCategory ? { color: cat.color } : {}}
+                  style={{ color: '#636E4F' }}
                 >
                   {cat.name}
                 </span>
