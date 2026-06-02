@@ -210,7 +210,9 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
             {mobileDescOpen ? '▲' : '▼'} {l.whatShows}
           </button>
           <div data-mobile-collapsible="desc">
-            <div className={styles.descTitle}>{l.whatShows}</div>
+            <div className={styles.descTitle} style={{ color: '#636E4F' }}>
+              &#123;{l.whatShows}&#125;
+            </div>
             <div className={styles.descText}>
               {desc.split('\n\n').map((para, i) => (
                 <p key={i} className={i === 0 ? styles.firstParagraph : ''}>{para}</p>

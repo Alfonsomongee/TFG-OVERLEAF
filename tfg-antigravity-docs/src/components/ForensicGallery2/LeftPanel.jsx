@@ -79,7 +79,7 @@ export default function LeftPanel({ activeChartId, activeCategoryId, onSelectCha
                         onClick={() => onSelectChart(chart.id)}
                       >
                         <span className={styles.chartListItemNumber}>{globalNum}</span>
-                        {chart.title}
+                        <span style={{ color: '#41424A' }}>{chart.title}</span>
 
                       </div>
                     );
