@@ -31,7 +31,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'es',
-    locales: ['es', 'en', 'pt', 'fr', 'it', 'de'],
+    locales: ['es', 'en', 'de'],
     localeConfigs: {
       es: {
         label: 'Español',
@@ -43,21 +43,7 @@ const config = {
         direction: 'ltr',
         htmlLang: 'en-US',
       },
-      pt: {
-        label: 'Português',
-        direction: 'ltr',
-        htmlLang: 'pt-PT',
-      },
-      fr: {
-        label: 'Français',
-        direction: 'ltr',
-        htmlLang: 'fr-FR',
-      },
-      it: {
-        label: 'Italiano',
-        direction: 'ltr',
-        htmlLang: 'it-IT',
-      },
+
       de: {
         label: 'Deutsch',
         direction: 'ltr',
@@ -94,7 +80,7 @@ const config = {
     [
       require.resolve('docusaurus-lunr-search'),
       {
-        languages: ['es', 'en', 'pt', 'fr', 'it', 'de'],
+        languages: ['es', 'en', 'de'],
       },
     ],
     ['@docusaurus/plugin-pwa', {
