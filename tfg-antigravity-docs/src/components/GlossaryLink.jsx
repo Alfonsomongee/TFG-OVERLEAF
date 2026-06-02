@@ -82,7 +82,6 @@ export default function GlossaryLink({
           fontSize:       'inherit',
           fontWeight:     'inherit',
           lineHeight:     'inherit',
-          color:          'var(--ifm-color-primary)',
           borderBottom:   compact ? 'none' : '1px dotted currentColor',
           textDecoration: 'none',
         }}
