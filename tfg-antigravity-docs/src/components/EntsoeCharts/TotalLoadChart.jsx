@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label
 } from 'recharts';
 
 export default function TotalLoadChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function TotalLoadChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatTime = (decimalTime) => {
@@ -65,8 +68,8 @@ export default function TotalLoadChart() {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} width={80} label={{ value: 'Demanda (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} width={80} label={{ value: isEs ? 'Demanda (MW)' : 'Demand (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={tooltipStyle} 
               formatter={(value, name) => [`${value?.toLocaleString() || 'N/A'} MW`, name]}
@@ -79,12 +82,12 @@ export default function TotalLoadChart() {
             </ReferenceLine>
 
             {/* Spain */}
-            <Line type="monotone" dataKey="es_forecast" name="ES Previsión (Day-Ahead)" stroke="#9ca3af" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-            <Line connectNulls={false} type="monotone" dataKey="es_actual" name="ES Real (Actual)" stroke="#f59e0b" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
+            <Line type="monotone" dataKey="es_forecast" name={isEs ? "ES Previsión (Day-Ahead)" : "ES Forecast (Day-Ahead)"} stroke="#9ca3af" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+            <Line connectNulls={false} type="monotone" dataKey="es_actual" name={isEs ? "ES Real (Actual)" : "ES Actual"} stroke="#f59e0b" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
             
             {/* Portugal */}
-            <Line type="monotone" dataKey="pt_forecast" name="PT Previsión (Day-Ahead)" stroke="#d1d5db" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-            <Line connectNulls={false} type="monotone" dataKey="pt_actual" name="PT Real (Actual)" stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
+            <Line type="monotone" dataKey="pt_forecast" name={isEs ? "PT Previsión (Day-Ahead)" : "PT Forecast (Day-Ahead)"} stroke="#d1d5db" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+            <Line connectNulls={false} type="monotone" dataKey="pt_actual" name={isEs ? "PT Real (Actual)" : "PT Actual"} stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

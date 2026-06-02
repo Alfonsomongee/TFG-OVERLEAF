@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
 
 export default function CostCongestionChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -25,7 +28,7 @@ export default function CostCongestionChart() {
     return () => controller.abort();
   }, []);
 
-  if (!data || data.length === 0) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+  if (!data || data.length === 0) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
 
   // Format tooltip currency
   const formatCurrency = (value) => {
@@ -49,9 +52,9 @@ export default function CostCongestionChart() {
             />
             <Legend wrapperStyle={{ paddingTop: '20px' }} />
             
-            <Bar dataKey="countertrading_costs_eur" name="Costes de Countertrading" stackId="a" fill="#3b82f6" />
-            <Bar dataKey="redispatching_costs_eur" name="Costes de Redespacho" stackId="a" fill="#ef4444" />
-            <Bar dataKey="other_costs_eur" name="Otros Costes" stackId="a" fill="#10b981" />
+            <Bar dataKey="countertrading_costs_eur" name={isEs ? "Costes de Countertrading" : "Countertrading Costs"} stackId="a" fill="#3b82f6" />
+            <Bar dataKey="redispatching_costs_eur" name={isEs ? "Costes de Redespacho" : "Redispatching Costs"} stackId="a" fill="#ef4444" />
+            <Bar dataKey="other_costs_eur" name={isEs ? "Otros Costes" : "Other Costs"} stackId="a" fill="#10b981" />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -14,22 +14,28 @@
  *
  * Datos: src/data/glossary-terms.json  →  [{ term, definition }]
  */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import glossaryTerms from '@site/src/data/glossary-terms.json';
-
-// ── Construir mapa term.toLowerCase() → { term, definition } ──────────────
-// "First wins": las entradas principales (más detalladas) van primero en el JSON
-const TERMS_MAP = {};
-for (const entry of glossaryTerms) {
-  const key = entry.term.toLowerCase();
-  if (!TERMS_MAP[key]) TERMS_MAP[key] = entry;
-}
+import { useDocLang } from '@site/src/hooks/useDocLang';
+import { GLOSSARY_TERMS as GLOSSARY_ES } from '@site/src/data/glossary';
+import { GLOSSARY_TERMS as GLOSSARY_EN } from '@site/src/data/glossary_en';
+import { GLOSSARY_TERMS as GLOSSARY_DE } from '@site/src/data/glossary_de';
 
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
   const timeoutRef = useRef(null);
+  const lang = useDocLang();
+
+  const termsMap = useMemo(() => {
+    const glossaryTerms = lang === 'en' ? GLOSSARY_EN : lang === 'de' ? GLOSSARY_DE : GLOSSARY_ES;
+    const map = {};
+    for (const entry of glossaryTerms) {
+      const key = entry.term.toLowerCase();
+      if (!map[key]) map[key] = entry;
+    }
+    return map;
+  }, [lang]);
 
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
@@ -42,11 +48,12 @@ function PanelInner() {
 
     // Solo cambiamos la palabra si estamos encima de un término (no de la tarjeta)
     if (el.classList.contains('glossary-term')) {
-      const key = (el.dataset.term || '').toLowerCase();
-      const entry = TERMS_MAP[key];
+      const termRaw = el.dataset.term || '';
+      const key = termRaw.toLowerCase();
+      const entry = termsMap[key] || Object.values(termsMap).find(t => t.term === termRaw || t.term.toLowerCase().startsWith(key));
       if (entry) setActive(entry);
     }
-  }, []);
+  }, [termsMap]);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest
@@ -85,7 +92,7 @@ function PanelInner() {
       }}
     >
       <div className="glossary-panel-header">
-        <span className="glossary-panel-label">Glosario Técnico</span>
+        <span className="glossary-panel-label">{lang === 'es' ? 'Glosario Técnico' : lang === 'de' ? 'Technisches Glossar' : 'Technical Glossary'}</span>
         <strong className="glossary-panel-term">{active.term}</strong>
       </div>
       <div className="glossary-panel-body" style={{

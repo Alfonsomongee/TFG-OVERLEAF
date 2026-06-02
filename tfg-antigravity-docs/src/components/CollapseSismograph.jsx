@@ -1,6 +1,5 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo } from 'react';
-import Translate, { translate } from '@docusaurus/Translate';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import {
   LineChart,
@@ -19,6 +18,7 @@ import styles from './CollapseSismograph.module.css';
 
 export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
   const lang = useDocLang();
+  const isEs = lang === 'es';
   const duration = datosForenses.cronologia_cascada.duracion_cascada.valor;
   const t_max = datosForenses.potencias_cascada.tension_maxima_barras_colectoras.valor || 440;
   const p_lost = datosForenses.potencias_cascada.perdida_generacion_total_cascada.valor || 15000;
@@ -26,19 +26,19 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
 
   // Los 11+ puntos sincronizados con la narrativa y la Tabla 16
   const allCascadeData = useMemo(() => [
-    { time: 0, timeLabel: '12:32:57', freq: 50.00, volt: 418, lostMW: 0, event: translate({id: 'sismo.event1', message: 'Disparo raíz (Transf. Granada)'}) },
-    { time: 8, timeLabel: '12:33:05', freq: 49.98, volt: 420, lostMW: 317, event: translate({id: 'sismo.event2', message: 'Desconexión GDR local'}) },
-    { time: 19, timeLabel: '12:33:16', freq: 49.95, volt: 425, lostMW: 1044, event: translate({id: 'sismo.event3', message: 'Cascada en Badajoz'}) },
-    { time: 20, timeLabel: '12:33:17', freq: 49.90, volt: 428, lostMW: 1594, event: translate({id: 'sismo.event4', message: 'Cascada Segovia/Sevilla'}) },
-    { time: 21, timeLabel: '12:33:18', freq: 49.80, volt: 432, lostMW: 3000, event: translate({id: 'sismo.event5', message: 'Aceleración del colapso (Tap-Lag)'}) },
-    { time: 22, timeLabel: '12:33:19', freq: 49.70, volt: 435, lostMW: 5000, event: translate({id: 'sismo.event6', message: 'Superación umbral LVRT normativo'}) },
-    { time: 23, timeLabel: '12:33:20', freq: 49.50, volt: 438, lostMW: 8000, event: translate({id: 'sismo.event7', message: '1er escalón UFLS: Deslastre Bombeo'}) },
-    { time: 24, timeLabel: '12:33:21', freq: sync_freq, volt: t_max, lostMW: 12000, event: translate({id: 'sismo.event8', message: 'Pérdida de Sincronismo Transpirenaico'}) },
-    { time: 25, timeLabel: '12:33:22', freq: 48.00, volt: 442, lostMW: 14000, event: translate({id: 'sismo.event9', message: 'Aislamiento y sobretensiones pico'}) },
-    { time: 26, timeLabel: '12:33:23', freq: 47.50, volt: 443, lostMW: 14500, event: translate({id: 'sismo.event10', message: 'Caída libre de frecuencia'}) },
-    { time: 27, timeLabel: '12:33:24', freq: 47.00, volt: 0, lostMW: p_lost, event: translate({id: 'sismo.event11', message: 'Cero funcional del sistema (ENTSO-E)'}) },
-    { time: 32.7, timeLabel: '12:33:29', freq: 0, volt: 0, lostMW: p_lost, event: translate({id: 'sismo.event12', message: 'Disparo último grupo (Comité)'}) }
-  ], [t_max, p_lost, sync_freq]);
+    { time: 0, timeLabel: '12:32:57', freq: 50.00, volt: 418, lostMW: 0, event: isEs ? 'Disparo raíz (Transf. Granada)' : 'Root trip (Granada Transf.)' },
+    { time: 8, timeLabel: '12:33:05', freq: 49.98, volt: 420, lostMW: 317, event: isEs ? 'Desconexión GDR local' : 'Local DER disconnection' },
+    { time: 19, timeLabel: '12:33:16', freq: 49.95, volt: 425, lostMW: 1044, event: isEs ? 'Cascada en Badajoz' : 'Cascade in Badajoz' },
+    { time: 20, timeLabel: '12:33:17', freq: 49.90, volt: 428, lostMW: 1594, event: isEs ? 'Cascada Segovia/Sevilla' : 'Cascade Segovia/Sevilla' },
+    { time: 21, timeLabel: '12:33:18', freq: 49.80, volt: 432, lostMW: 3000, event: isEs ? 'Aceleración del colapso (Tap-Lag)' : 'Collapse acceleration (Tap-Lag)' },
+    { time: 22, timeLabel: '12:33:19', freq: 49.70, volt: 435, lostMW: 5000, event: isEs ? 'Superación umbral LVRT normativo' : 'LVRT threshold exceeded' },
+    { time: 23, timeLabel: '12:33:20', freq: 49.50, volt: 438, lostMW: 8000, event: isEs ? '1er escalón UFLS: Deslastre Bombeo' : '1st UFLS step: Pumping load shed' },
+    { time: 24, timeLabel: '12:33:21', freq: sync_freq, volt: t_max, lostMW: 12000, event: isEs ? 'Pérdida de Sincronismo Transpirenaico' : 'Loss of Trans-Pyrenean Synchronism' },
+    { time: 25, timeLabel: '12:33:22', freq: 48.00, volt: 442, lostMW: 14000, event: isEs ? 'Aislamiento y sobretensiones pico' : 'Isolation and peak overvoltages' },
+    { time: 26, timeLabel: '12:33:23', freq: 47.50, volt: 443, lostMW: 14500, event: isEs ? 'Caída libre de frecuencia' : 'Frequency freefall' },
+    { time: 27, timeLabel: '12:33:24', freq: 47.00, volt: 0, lostMW: p_lost, event: isEs ? 'Cero funcional del sistema (ENTSO-E)' : 'System functional zero (ENTSO-E)' },
+    { time: 32.7, timeLabel: '12:33:29', freq: 0, volt: 0, lostMW: p_lost, event: isEs ? 'Disparo último grupo (Comité)' : 'Last unit trip (Committee)' }
+  ], [t_max, p_lost, sync_freq, isEs]);
 
   const cascadeData = useMemo(
     () => allCascadeData.filter(d => d.time <= playbackT),
@@ -55,21 +55,21 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
             <span className={styles.tooltipSec}>(t = {data.time} s)</span>
           </div>
           <div className={styles.tooltipBody}>
-            <p className={styles.tooltipEvent}><strong>{translate({id: 'sismo.ttFault', message: 'Falla:'})}</strong> {data.event}</p>
+            <p className={styles.tooltipEvent}><strong>{isEs ? 'Falla:' : 'Fault:'}</strong> {data.event}</p>
             <div className={styles.metricsGrid}>
               <div className={styles.metricRow}>
                 <span className={styles.dot} style={{background: '#06b6d4'}}></span>
-                <span className={styles.metricLabel}>{translate({id: 'sismo.ttFreq', message: 'Frecuencia:'})}</span>
+                <span className={styles.metricLabel}>{isEs ? 'Frecuencia:' : 'Frequency:'}</span>
                 <span className={styles.metricValue}>{data.freq.toFixed(2)} Hz</span>
               </div>
               <div className={styles.metricRow}>
                 <span className={styles.dot} style={{background: '#ef4444'}}></span>
-                <span className={styles.metricLabel}>{translate({id: 'sismo.ttVolt', message: 'Tensión 400kV:'})}</span>
+                <span className={styles.metricLabel}>{isEs ? 'Tensión 400kV:' : 'Voltage 400kV:'}</span>
                 <span className={styles.metricValue}>{data.volt.toFixed(0)} kV</span>
               </div>
               <div className={styles.metricRow}>
                 <span className={styles.dot} style={{background: '#f59e0b'}}></span>
-                <span className={styles.metricLabel}>{translate({id: 'sismo.ttLost', message: 'Pot. Perdida:'})}</span>
+                <span className={styles.metricLabel}>{isEs ? 'Pot. Perdida:' : 'Lost Gen.:'}</span>
                 <span className={styles.metricValue}>{data.lostMW} MW</span>
               </div>
             </div>
@@ -85,7 +85,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
       <div className={styles.header}>
         <h3 className={styles.title}>
           <span className={styles.indicator}></span>
-          <Translate id="sismo.title" values={{ duration }}>{`Sismógrafo del Colapso ({duration} segundos: 12:32:57 → 12:33:27 CEST)`}</Translate>
+          {isEs ? `Sismógrafo del Colapso (${duration} segundos: 12:32:57 → 12:33:27 CEST)` : `Collapse Seismograph (${duration} seconds: 12:32:57 → 12:33:27 CEST)`}
         </h3>
       </div>
 
@@ -122,7 +122,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
-          <Translate id="sismo.lblFreq">Frecuencia</Translate>
+          {isEs ? 'Frecuencia' : 'Frequency'}
         </div>
         <div style={{
           fontSize: '1.6rem',
@@ -142,8 +142,8 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           color: isCollapsing ? '#ef444480' : '#06b6d440',
         }}>
           {isCollapsing
-            ? translate({id: 'sismo.lblFreqUnder', message: '▼ {diff} Hz bajo nominal'}, {diff: (50 - current.freq).toFixed(2)})
-            : translate({id: 'sismo.lblFreqNominal', message: 'Nominal 50 Hz'})}
+            ? (isEs ? `▼ ${(50 - current.freq).toFixed(2)} Hz bajo nominal` : `▼ ${(50 - current.freq).toFixed(2)} Hz under nominal`)
+            : (isEs ? 'Nominal 50 Hz' : 'Nominal 50 Hz')}
         </div>
       </div>
 
@@ -163,7 +163,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
-          <Translate id="sismo.lblVolt">Tensión 400 kV</Translate>
+          {isEs ? 'Tensión 400 kV' : 'Voltage 400 kV'}
         </div>
         <div style={{
           fontSize: '1.6rem',
@@ -183,8 +183,8 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           color: isVoltCritical ? '#ef444480' : '#ef444430',
         }}>
           {isVoltCritical
-            ? translate({id: 'sismo.lblVoltOver', message: '▲ {diff} kV sobre nominal'}, {diff: (current.volt - 420).toFixed(0)})
-            : translate({id: 'sismo.lblVoltNominal', message: 'Nominal 420 kV'})}
+            ? (isEs ? `▲ ${(current.volt - 420).toFixed(0)} kV sobre nominal` : `▲ ${(current.volt - 420).toFixed(0)} kV over nominal`)
+            : (isEs ? 'Nominal 420 kV' : 'Nominal 420 kV')}
         </div>
       </div>
 
@@ -201,7 +201,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
-          <Translate id="sismo.lblLost">Generación perdida</Translate>
+          {isEs ? 'Generación perdida' : 'Lost Generation'}
         </div>
         <div style={{
           fontSize: '1.6rem',
@@ -223,8 +223,8 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           color: '#f59e0b40',
         }}>
           {current.lostMW > 0
-            ? translate({id: 'sismo.lblLostPct', message: '{pct}% cap. peninsular'}, {pct: ((current.lostMW / 29600) * 100).toFixed(0)})
-            : translate({id: 'sismo.lblStable', message: 'Sistema estable'})}
+            ? (isEs ? `${((current.lostMW / 29600) * 100).toFixed(0)}% cap. peninsular` : `${((current.lostMW / 29600) * 100).toFixed(0)}% peninsular cap.`)
+            : (isEs ? 'Sistema estable' : 'Stable system')}
         </div>
       </div>
 
@@ -241,7 +241,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
-          {translate({id: 'sismo.lblEvent', message: 'Evento'})} — {current.timeLabel}
+          {isEs ? 'Evento' : 'Event'} — {current.timeLabel}
         </div>
         <div style={{
           fontSize: '0.78rem',
@@ -277,7 +277,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
             color: isCollapsing ? '#ef4444' : '#10b981',
             letterSpacing: '0.08em',
           }}>
-            {isCollapsing ? translate({id: 'sismo.statusCollapse', message: 'COLAPSO EN CURSO'}) : translate({id: 'sismo.statusStable', message: 'SISTEMA OPERATIVO'})}
+            {isCollapsing ? (isEs ? 'COLAPSO EN CURSO' : 'COLLAPSE IN PROGRESS') : (isEs ? 'SISTEMA OPERATIVO' : 'SYSTEM OPERATIONAL')}
           </span>
         </div>
       </div>
@@ -286,7 +286,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
 })()}
 
       <div className={styles.chartWrapper}>
-        <BrowserOnly fallback={<div className={styles.loading}>{translate({id: 'sismo.loading', message: 'Activando telemetría forense...'})}</div>}>
+        <BrowserOnly fallback={<div className={styles.loading}>{isEs ? 'Activando telemetría forense...' : 'Activating forensic telemetry...'}</div>}>
           {() => (
             <ResponsiveContainer width="100%" height={480}>
               <ComposedChart data={cascadeData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
@@ -314,7 +314,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
                   tick={{ fill: '#06b6d4', fontSize: 12, fontFamily: 'var(--font-mono)' }}
                   stroke="rgba(6, 182, 212, 0.3)"
                   orientation="left"
-                  label={{ value: translate({id: 'sismo.yAxisFreq', message: 'Frecuencia (Hz)'}), angle: -90, position: 'insideLeft', fill: '#06b6d4', style: {textAnchor: 'middle'} }}
+                  label={{ value: isEs ? 'Frecuencia (Hz)' : 'Frequency (Hz)', angle: -90, position: 'insideLeft', fill: '#06b6d4', style: {textAnchor: 'middle'} }}
                 />
                 
                 <YAxis 
@@ -323,7 +323,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
                   tick={{ fill: '#ef4444', fontSize: 12, fontFamily: 'var(--font-mono)' }}
                   stroke="rgba(239, 68, 68, 0.3)"
                   orientation="right"
-                  label={{ value: translate({id: 'sismo.yAxisVolt', message: 'Tensión (kV)'}), angle: 90, position: 'insideRight', fill: '#ef4444', style: {textAnchor: 'middle'} }}
+                  label={{ value: isEs ? 'Tensión (kV)' : 'Voltage (kV)', angle: 90, position: 'insideRight', fill: '#ef4444', style: {textAnchor: 'middle'} }}
                 />
 
                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }} />
@@ -334,7 +334,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
                   y={49.0} 
                   stroke="rgba(245, 158, 11, 0.6)" 
                   strokeDasharray="4 4"
-                  label={{ position: 'insideBottomLeft', value: translate({id: 'sismo.uflsUmbral', message: 'Umbral UFLS Demanda (49.0 Hz)'}), fill: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}
+                  label={{ position: 'insideBottomLeft', value: isEs ? 'Umbral UFLS Demanda (49.0 Hz)' : 'Load UFLS Threshold (49.0 Hz)', fill: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}
                 />
 
                 {/* Área Fantasma (Generación Perdida escalada en background) */}

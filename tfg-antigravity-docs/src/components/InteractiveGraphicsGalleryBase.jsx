@@ -198,7 +198,6 @@ export default function InteractiveGraphicsGallery({ propLang }) {
                 className={`${styles.graphicButton} ${activeGraphicId === graphic.id ? styles.activeButton : ''}`}
                 onClick={() => setActiveGraphicId(graphic.id)}
               >
-                <span className={styles.icon}>{graphic.icon}</span>
                 <div className={styles.buttonText}>
                   <span className={styles.buttonTitle}>
                     {content.title}
@@ -213,7 +212,9 @@ export default function InteractiveGraphicsGallery({ propLang }) {
       <div className={styles.mainContent}>
         <div className={styles.graphicHeader}>
           <h2>{activeGraphicContent.title}</h2>
-          <p>{activeGraphicContent.desc}</p>
+          <p style={{ color: '#41424A' }}>
+            <span style={{ color: '#636E4F' }}>&#123;</span> {activeGraphicContent.desc} <span style={{ color: '#636E4F' }}>&#125;</span>
+          </p>
         </div>
         <div
           className={styles.graphicStage}

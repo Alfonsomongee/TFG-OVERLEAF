@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -22,6 +23,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ProgramacionChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,7 +68,7 @@ export default function ProgramacionChart() {
 
   return (
     <div className={styles.chartContainer} style={{ height: '500px' }}>
-      <h3 className={styles.chartTitle}>Programación Mercado Producción (28 Abril)</h3>
+      <h3 className={styles.chartTitle}>{isEs ? 'Programación Mercado Producción (28 Abril)' : 'Production Market Schedule (Apr 28)'}</h3>
       <ResponsiveContainer width="100%" height="90%">
         <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 200, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" horizontal={true} vertical={true} />

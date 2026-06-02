@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label, Cell
 } from 'recharts';
 
 export default function HydroReservoirChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [variationData, setVariationData] = useState([]);
   const [view, setView] = useState('area'); // 'area' or 'variation'
@@ -37,7 +40,7 @@ export default function HydroReservoirChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatMWh = (value) => {
@@ -79,27 +82,27 @@ export default function HydroReservoirChart() {
           {view === 'area' ? (
             <AreaChart data={data} margin={{ top: 20, right: 30, left: 40, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="week" label={{ value: 'Semana del año', position: 'bottom', offset: 15, fill: 'var(--ifm-font-color-base)' }} tickFormatter={(w) => `S${w}`} tick={tickStyle} />
-              <YAxis tickFormatter={formatMWh} label={{ value: 'Almacenamiento', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} domain={[0, 16000000]} tick={tickStyle} />
+              <XAxis dataKey="week" label={{ value: isEs ? 'Semana del año' : 'Week of the year', position: 'bottom', offset: 15, fill: 'var(--ifm-font-color-base)' }} tickFormatter={(w) => `S${w}`} tick={tickStyle} />
+              <YAxis tickFormatter={formatMWh} label={{ value: isEs ? 'Almacenamiento' : 'Storage', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} domain={[0, 16000000]} tick={tickStyle} />
               <Tooltip formatter={(value) => formatMWh(value)} labelFormatter={(w) => `Semana ${w}`} contentStyle={tooltipStyle} />
-              <Area type="monotone" dataKey="mwh" name="Almacenamiento" stroke="#1abc9c" fill="#1abc9c" fillOpacity={0.3} strokeWidth={2} />
+              <Area type="monotone" dataKey="mwh" name={isEs ? "Almacenamiento" : "Storage"} stroke="#1abc9c" fill="#1abc9c" fillOpacity={0.3} strokeWidth={2} />
               {blackoutWeek && (
-                <ReferenceLine x={blackoutWeek.week} stroke="#ef4444" strokeWidth={2} strokeDasharray="6 6" label={<Label value="⚡ Apagón 28-A" position="top" fill="#ef4444" fontSize={12} fontWeight="bold" />} />
+                <ReferenceLine x={blackoutWeek.week} stroke="#ef4444" strokeWidth={2} strokeDasharray="6 6" label={<Label value={isEs ? "⚡ Apagón 28-A" : "⚡ 28-A Blackout"} position="top" fill="#ef4444" fontSize={12} fontWeight="bold" />} />
               )}
             </AreaChart>
           ) : (
             <BarChart data={variationData} margin={{ top: 20, right: 30, left: 40, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-              <XAxis dataKey="week" label={{ value: 'Semana del año', position: 'bottom', offset: 15, fill: 'var(--ifm-font-color-base)' }} tickFormatter={(w) => `S${w}`} tick={tickStyle} />
-              <YAxis tickFormatter={formatMWh} label={{ value: 'Variación', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} tick={tickStyle} />
+              <XAxis dataKey="week" label={{ value: isEs ? 'Semana del año' : 'Week of the year', position: 'bottom', offset: 15, fill: 'var(--ifm-font-color-base)' }} tickFormatter={(w) => `S${w}`} tick={tickStyle} />
+              <YAxis tickFormatter={formatMWh} label={{ value: isEs ? 'Variación' : 'Variation', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} tick={tickStyle} />
               <Tooltip formatter={(value) => formatMWh(value)} labelFormatter={(w) => `Semana ${w}`} contentStyle={tooltipStyle} />
-              <Bar dataKey="variation" name="Variación Semanal">
+              <Bar dataKey="variation" name={isEs ? "Variación Semanal" : "Weekly Variation"}>
                 {variationData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.isPositive ? '#3b82f6' : '#ef4444'} />
                 ))}
               </Bar>
               {blackoutWeek && (
-                <ReferenceLine x={blackoutWeek.week} stroke="#f59e0b" strokeWidth={2} strokeDasharray="6 6" label={<Label value="⚡ Apagón 28-A" position="top" fill="#f59e0b" fontSize={12} fontWeight="bold" />} />
+                <ReferenceLine x={blackoutWeek.week} stroke="#f59e0b" strokeWidth={2} strokeDasharray="6 6" label={<Label value={isEs ? "⚡ Apagón 28-A" : "⚡ 28-A Blackout"} position="top" fill="#f59e0b" fontSize={12} fontWeight="bold" />} />
               )}
             </BarChart>
           )}

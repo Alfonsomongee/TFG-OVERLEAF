@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 export default function FallbacksChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [summaryData, setSummaryData] = useState([]);
 
@@ -44,7 +47,7 @@ export default function FallbacksChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'];

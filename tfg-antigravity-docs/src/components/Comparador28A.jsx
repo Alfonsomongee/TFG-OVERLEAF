@@ -164,15 +164,15 @@ function DataColumn({ title,  data,  isBlackout = false,  source }) {
     <div style={{
       flex: 1,
       padding: '1rem',
-      background: isBlackout ? 'rgba(239,68,68,0.04)' : 'rgba(16,185,129,0.04)',
-      border: `1px solid ${isBlackout ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`,
+      background: isBlackout ? 'rgba(100,36,46,0.04)' : 'rgba(99,110,79,0.04)',
+      border: `1px solid ${isBlackout ? 'rgba(100,36,46,0.2)' : 'rgba(99,110,79,0.2)'}`,
       borderRadius: 10,
     }}>
       <h4 style={{
         margin: '0 0 1rem',
         fontSize: 13, fontFamily: 'monospace',
-        color: isBlackout ? '#ef4444' : '#10b981',
-        borderBottom: `1px solid ${isBlackout ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`,
+        color: isBlackout ? '#64242E' : '#41424A',
+        borderBottom: `1px solid ${isBlackout ? 'rgba(100,36,46,0.2)' : 'rgba(99,110,79,0.2)'}`,
         paddingBottom: '0.5rem',
       }}>
         {isBlackout ? '⚡ ' : '📡 '}{title}

@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label, ReferenceArea
 } from 'recharts';
 
 export default function ImbalancePricesChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function ImbalancePricesChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatCurrency = (value) => {
@@ -58,8 +61,8 @@ export default function ImbalancePricesChart() {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tickFormatter={(val) => `${val} €`} tick={tickStyle} width={80} domain={['auto', 'auto']} allowDataOverflow label={{ value: 'Precio Imbalance (€/MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tickFormatter={(val) => `${val} €`} tick={tickStyle} width={80} domain={['auto', 'auto']} allowDataOverflow label={{ value: isEs ? 'Precio Imbalance (€/MWh)' : 'Imbalance Price (€/MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip formatter={(value) => formatCurrency(value)} labelFormatter={(t) => `Hora UTC: ${t}`} contentStyle={tooltipStyle} />
             <Legend wrapperStyle={{ paddingTop: '10px' }} />
             
@@ -68,9 +71,9 @@ export default function ImbalancePricesChart() {
             <ReferenceArea y1={100} y2={500} fill="#f59e0b" fillOpacity={0.05} />
             <ReferenceArea y1={500} fill="#ef4444" fillOpacity={0.05} />
 
-            <Line type="stepAfter" dataKey="price_eur_mwh" name="Precio Imbalance (Máx)" stroke="#ef4444" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
-            <Line type="stepAfter" dataKey="price_positive" name="Precio (+) Surplus" stroke="#3b82f6" strokeWidth={1} dot={false} strokeDasharray="3 3" />
-            <Line type="stepAfter" dataKey="price_negative" name="Precio (-) Deficit" stroke="#f59e0b" strokeWidth={1} dot={false} strokeDasharray="3 3" />
+            <Line type="stepAfter" dataKey="price_eur_mwh" name={isEs ? "Precio Imbalance (Máx)" : "Imbalance Price (Max)"} stroke="#ef4444" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
+            <Line type="stepAfter" dataKey="price_positive" name={isEs ? "Precio (+) Surplus" : "Price (+) Surplus"} stroke="#3b82f6" strokeWidth={1} dot={false} strokeDasharray="3 3" />
+            <Line type="stepAfter" dataKey="price_negative" name={isEs ? "Precio (-) Deficit" : "Price (-) Deficit"} stroke="#f59e0b" strokeWidth={1} dot={false} strokeDasharray="3 3" />
             
             <ReferenceLine x="10:30" stroke="#ef4444" strokeWidth={2} strokeDasharray="6 6">
               <Label value="⚡ Colapso (12:33 CEST)" position="insideTopLeft" fill="#ef4444" fontSize={12} fontWeight="bold" />

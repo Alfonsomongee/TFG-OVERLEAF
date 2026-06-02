@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label
 } from 'recharts';
 
 export default function CrossBorderFlowsChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function CrossBorderFlowsChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatTime = (decimalTime) => {
@@ -62,11 +65,11 @@ export default function CrossBorderFlowsChart() {
 
   const customTooltipFormatter = (value, name) => {
     const valStr = Math.abs(value).toLocaleString(undefined, { maximumFractionDigits: 0 }) + ' MW';
-    if (name === "Flujo Francia") {
-      return [valStr, value >= 0 ? "Exportación a FR" : "Importación de FR"];
+    if (name === (isEs ? "Flujo Francia" : "France Flow")) {
+      return [valStr, value >= 0 ? (isEs ? "Exportación a FR" : "Export to FR") : (isEs ? "Importación de FR" : "Import from FR")];
     }
-    if (name === "Flujo Portugal") {
-      return [valStr, value >= 0 ? "Exportación a PT" : "Importación de PT"];
+    if (name === (isEs ? "Flujo Portugal" : "Portugal Flow")) {
+      return [valStr, value >= 0 ? (isEs ? "Exportación a PT" : "Export to PT") : (isEs ? "Importación de PT" : "Import from PT")];
     }
     return [valStr, name];
   };
@@ -77,30 +80,32 @@ export default function CrossBorderFlowsChart() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} width={80} label={{ value: 'Flujo Físico Neto (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} width={80} label={{ value: isEs ? 'Flujo Físico Neto (MW)' : 'Net Physical Flow (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={tooltipStyle} 
               formatter={customTooltipFormatter}
-              labelFormatter={(t) => `Hora UTC: ${formatTime(t)}`} 
+              labelFormatter={(t) => (isEs ? 'Hora UTC: ' : 'Time UTC: ') + formatTime(t)} 
             />
             <Legend wrapperStyle={{ paddingTop: '10px' }} />
             
             <ReferenceLine y={0} stroke="var(--ifm-color-emphasis-600)" />
             
             <ReferenceLine x={10.55} stroke="#ef4444" strokeWidth={2} strokeDasharray="6 6">
-              <Label value="⚡ Apagón (12:33 CEST)" position="insideTopLeft" fill="#ef4444" fontSize={12} fontWeight="bold" />
+              <Label value={isEs ? "⚡ Apagón (12:33 CEST)" : "⚡ Blackout (12:33 CEST)"} position="insideTopLeft" fill="#ef4444" fontSize={12} fontWeight="bold" />
             </ReferenceLine>
 
             {/* Utilizamos Area para los flujos físicos para mostrar el "volumen" de energía */}
-            <Area type="monotone" dataKey="net_fr" name="Flujo Francia" fill="#3b82f6" stroke="#2563eb" fillOpacity={0.5} />
-            <Area type="monotone" dataKey="net_pt" name="Flujo Portugal" fill="#10b981" stroke="#059669" fillOpacity={0.5} />
+            <Area type="monotone" dataKey="net_fr" name={isEs ? "Flujo Francia" : "France Flow"} fill="#3b82f6" stroke="#2563eb" fillOpacity={0.5} />
+            <Area type="monotone" dataKey="net_pt" name={isEs ? "Flujo Portugal" : "Portugal Flow"} fill="#10b981" stroke="#059669" fillOpacity={0.5} />
 
           </AreaChart>
         </ResponsiveContainer>
       </div>
       <div style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-600)', marginTop: '0.5rem' }}>
-        * Flujos físicos netos. Valores positivos indican exportación desde España. Se aprecia el cero absoluto (0 MW) al entrar en "isla eléctrica".
+        {isEs 
+          ? '* Flujos físicos netos. Valores positivos indican exportación desde España. Se aprecia el cero absoluto (0 MW) al entrar en "isla eléctrica".'
+          : '* Net physical flows. Positive values indicate exports from Spain. The absolute zero (0 MW) is visible upon entering "electrical island" mode.'}
       </div>
     </div>
   );

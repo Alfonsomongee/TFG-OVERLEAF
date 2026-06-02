@@ -2,9 +2,9 @@
 // Balance de intercambios internacionales España ↔ Francia / Portugal
 // SSR-safe: BrowserOnly + dynamic Plotly import
 
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import Translate, { translate } from '@docusaurus/Translate';
 import datos28A from '@site/static/data/datos28A.json';
 
 // Valores del 28-A en el instante del colapso (positivo = exportación desde España)
@@ -14,6 +14,9 @@ const SNAPSHOT_28A = {
 };
 
 function BalanceIntercambiosInner() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
+
   const [Plot, setPlot]   = useState(null);
   const [data, setData]   = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,7 +41,7 @@ function BalanceIntercambiosInner() {
     return () => clearInterval(id);
   }, [fetchData]);
 
-  if (!Plot || loading) return <div style={S.loading}>{translate({id: 'balance.cargando', message: 'Cargando intercambios...'})}</div>;
+  if (!Plot || loading) return <div style={S.loading}>{isEs ? 'Cargando intercambios...' : 'Loading exchanges...'}</div>;
 
   // ESIOS devuelve export_francia negativo cuando España exporta (convención de flujos)
   const franciaHoy  = data ? -(data.export_francia ?? 0)  : 0;
@@ -46,18 +49,18 @@ function BalanceIntercambiosInner() {
 
   const traces = [
     {
-      x: [translate({id: 'chart.francia', message: 'Francia'}), translate({id: 'chart.portugal', message: 'Portugal'})],
+      x: [isEs ? 'Francia' : 'France', isEs ? 'Portugal' : 'Portugal'],
       y: [SNAPSHOT_28A.Francia, SNAPSHOT_28A.Portugal],
-      type: 'bar', name: translate({id: 'chart.28A', message: '28-A (colapso)'}),
+      type: 'bar', name: isEs ? '28-A (colapso)' : '28-A (collapse)',
       marker: { color: '#ef4444', opacity: 0.75, line: { color: '#ef4444', width: 1 } },
       hovertemplate: '<b>%{x}</b><br>28-A: %{y:.0f} MW<extra></extra>',
     },
     {
-      x: [translate({id: 'chart.francia', message: 'Francia'}), translate({id: 'chart.portugal', message: 'Portugal'})],
+      x: [isEs ? 'Francia' : 'France', isEs ? 'Portugal' : 'Portugal'],
       y: [franciaHoy, portugalHoy],
-      type: 'bar', name: translate({id: 'chart.ahora', message: 'Ahora'}),
+      type: 'bar', name: isEs ? 'Ahora' : 'Now',
       marker: { color: '#06b6d4', opacity: 0.85, line: { color: '#06b6d4', width: 1 } },
-      hovertemplate: '<b>%{x}</b><br>' + translate({id: 'chart.ahora', message: 'Ahora'}) + ': %{y:.0f} MW<extra></extra>',
+      hovertemplate: '<b>%{x}</b><br>' + (isEs ? 'Ahora' : 'Now') + ': %{y:.0f} MW<extra></extra>',
     },
   ];
 
@@ -66,7 +69,7 @@ function BalanceIntercambiosInner() {
     plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: 'rgba(0,0,0,0)',
     xaxis: { gridcolor: 'rgba(255,255,255,0.06)', color: '#a0a0b0' },
     yaxis: {
-      title: translate({id: 'chart.mwPosExport', message: 'MW (positivo = exportación desde España)'}),
+      title: isEs ? 'MW (positivo = exportación desde España)' : 'MW (positive = export from Spain)',
       gridcolor: 'rgba(255,255,255,0.06)', color: '#a0a0b0',
       zeroline: true, zerolinecolor: 'rgba(255,255,255,0.15)',
     },
@@ -93,44 +96,39 @@ function BalanceIntercambiosInner() {
 
       {/* Métricas */}
       <div style={S.row}>
-        <FlowChip country="Francia" value={franciaHoy} ref28A={SNAPSHOT_28A.Francia} />
-        <FlowChip country="Portugal" value={portugalHoy} ref28A={SNAPSHOT_28A.Portugal} />
+        <FlowChip country={isEs ? "Francia" : "France"} value={franciaHoy} ref28A={SNAPSHOT_28A.Francia} isEs={isEs} />
+        <FlowChip country={isEs ? "Portugal" : "Portugal"} value={portugalHoy} ref28A={SNAPSHOT_28A.Portugal} isEs={isEs} />
         {neto !== null && (
           <div style={{ ...S.chip, borderColor: 'rgba(255,170,0,0.2)' }}>
-            <span style={S.chipLabel}><Translate id="balance.saldoNetoTotal">Saldo neto total</Translate></span>
+            <span style={S.chipLabel}>{isEs ? 'Saldo neto total' : 'Total net balance'}</span>
             <span style={{ ...S.chipVal, color: neto < 0 ? '#10b981' : '#ef4444' }}>
               {neto > 0 ? '+' : ''}{neto.toFixed(0)} MW
             </span>
-            <span style={S.chipSub}>{neto < 0 ? translate({id: 'balance.exportadorNeto', message: 'Exportador neto'}) : translate({id: 'balance.importadorNeto', message: 'Importador neto'})}</span>
+            <span style={S.chipSub}>{neto < 0 ? (isEs ? 'Exportador neto' : 'Net exporter') : (isEs ? 'Importador neto' : 'Net importer')}</span>
           </div>
         )}
       </div>
 
-      <p style={S.note}>
-        <Translate id="balance.notaExportador"
-          values={{
-            b: (chunks) => <strong>{chunks}</strong>,
-          }}
-        >
-          {`El 28-A España era <b>exportador neto</b> hacia Francia y Portugal con 870 + 2.600 MW, vaciando sus propias reservas mientras el sistema oscilaba. Valores negativos = importación.`}
-        </Translate>
-      </p>
+      <p style={S.note} dangerouslySetInnerHTML={{ __html: isEs 
+        ? `El 28-A España era <b>exportador neto</b> hacia Francia y Portugal con 870 + 2.600 MW, vaciando sus propias reservas mientras el sistema oscilaba. Valores negativos = importación.`
+        : `On 28-A Spain was a <b>net exporter</b> to France and Portugal with 870 + 2,600 MW, emptying its own reserves while the system oscillated. Negative values = import.` 
+      }} />
 
       <p style={S.caption}>
         {lastUpdate
-          ? translate({id: 'balance.actualizado', message: 'Actualizado:'}) + ` ${lastUpdate.toLocaleTimeString()} · ` + translate({id: 'balance.fuente', message: 'Fuente: ESIOS (REE) · Refresco cada 5 min'})
-          : translate({id: 'balance.sinDatos', message: 'Sin datos en tiempo real'})}
+          ? (isEs ? 'Actualizado:' : 'Updated:') + ` ${lastUpdate.toLocaleTimeString()} · ` + (isEs ? 'Fuente: ESIOS (REE) · Refresco cada 5 min' : 'Source: ESIOS (REE) · Refreshed every 5 min')
+          : (isEs ? 'Sin datos en tiempo real' : 'No real-time data')}
       </p>
     </div>
   );
 }
 
-function FlowChip({ country, value, ref28A }) {
+function FlowChip({ country, value, ref28A, isEs }) {
   const isExport = value > 0;
   const color = isExport ? '#f59e0b' : '#10b981';
   return (
     <div style={{ ...S.chip, borderColor: color + '44' }}>
-      <span style={S.chipLabel}>{country} {translate({id: 'balance.ahora', message: 'ahora'})}</span>
+      <span style={S.chipLabel}>{country} {isEs ? 'ahora' : 'now'}</span>
       <span style={{ ...S.chipVal, color }}>{value > 0 ? '+' : ''}{value.toFixed(0)} MW</span>
       <span style={S.chipSub}>28-A: +{ref28A} MW</span>
     </div>
@@ -150,8 +148,10 @@ const S = {
 };
 
 export default function BalanceIntercambios() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   return (
-    <BrowserOnly fallback={<div style={S.loading}>{translate({id: 'balance.cargandoCorto', message: 'Cargando...'})}</div>}>
+    <BrowserOnly fallback={<div style={S.loading}>{isEs ? 'Cargando...' : 'Loading...'}</div>}>
       {() => <BalanceIntercambiosInner />}
     </BrowserOnly>
   );

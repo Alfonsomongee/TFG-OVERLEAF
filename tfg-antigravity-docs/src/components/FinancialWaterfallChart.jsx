@@ -32,7 +32,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import Translate, { translate } from '@docusaurus/Translate';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import {
   BarChart,
   Bar,
@@ -82,7 +82,7 @@ function CustomTooltip({ active, payload }) {
         <strong>{d.isTotal ? 'TOTAL: ' : ''}{d.value.toFixed(1)} M€</strong>
       </p>
       <p style={{ margin: '0 0 2px', color: '#94a3b8', fontSize: 11 }}>
-        {translate({id: 'waterfall.fuente', message: 'Fuente:'})} {d.fuente}
+        {payload[0].payload.isEs ? 'Fuente:' : 'Source:'} {d.fuente}
       </p>
       {d.nota && (
         <p style={{ margin: 0, color: '#f59e0b', fontSize: 10 }}>
@@ -95,48 +95,51 @@ function CustomTooltip({ active, payload }) {
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function FinancialWaterfallInner() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
+
   const STATIC_ITEMS = useMemo(() => [
     {
-      label: translate({id: 'waterfall.item1.label', message: 'VoLL — ENS Iberia'}),
+      label: isEs ? 'VoLL — ENS Iberia' : 'VoLL — ENS Iberia',
       shortLabel: 'VoLL',
       value: parseFloat(((ENS_PORTUGAL_MWH + ENS_ESPANA_MWH) * VOLL_EUR_MWH / 1e6).toFixed(1)),
       color: '#ef4444',
-      fuente: translate({id: 'waterfall.item1.fuente', message: 'CEER 2023 (VoLL) + ERSE/REN (ENS PT) + estimación ENS ES'}),
-      nota: translate({id: 'waterfall.item1.nota', message: 'ENS España es estimación — cuestión abierta (ver datos28A.json)'}),
+      fuente: isEs ? 'CEER 2023 (VoLL) + ERSE/REN (ENS PT) + estimación ENS ES' : 'CEER 2023 (VoLL) + ERSE/REN (ENS PT) + ENS ES estimation',
+      nota: isEs ? 'ENS España es estimación — cuestión abierta (ver datos28A.json)' : 'ENS Spain is estimation — open question (see datos28A.json)',
     },
     {
-      label: translate({id: 'waterfall.item2.label', message: 'Operación Reforzada (Gas)'}),
-      shortLabel: translate({id: 'waterfall.item2.short', message: 'Op. Reforzada'}),
+      label: isEs ? 'Operación Reforzada (Gas)' : 'Reinforced Operation (Gas)',
+      shortLabel: isEs ? 'Op. Reforzada' : 'Reinf. Operation',
       value: 666.0,
       color: '#f59e0b',
-      fuente: translate({id: 'waterfall.item2.fuente', message: 'REE, informe abril 2026'}),
-      nota: translate({id: 'waterfall.item2.nota', message: 'Dato verificado en fuente primaria'}),
+      fuente: isEs ? 'REE, informe abril 2026' : 'REE, April 2026 report',
+      nota: isEs ? 'Dato verificado en fuente primaria' : 'Data verified in primary source',
     },
     {
-      label: translate({id: 'waterfall.item3.label', message: 'Pérdidas Consumo/Comercio'}),
-      shortLabel: translate({id: 'waterfall.item3.short', message: 'Consumo'}),
+      label: isEs ? 'Pérdidas Consumo/Comercio' : 'Consumption/Commerce Losses',
+      shortLabel: isEs ? 'Consumo' : 'Consumption',
       value: 400.0,
       color: '#f97316',
-      fuente: translate({id: 'waterfall.item3.fuente', message: 'CaixaBank Research, julio 2025'}),
-      nota: translate({id: 'waterfall.item3.nota', message: 'Estimación econométrica'}),
+      fuente: isEs ? 'CaixaBank Research, julio 2025' : 'CaixaBank Research, July 2025',
+      nota: isEs ? 'Estimación econométrica' : 'Econometric estimation',
     },
     {
-      label: translate({id: 'waterfall.item4.label', message: 'Exposición Sanciones CNMC'}),
-      shortLabel: translate({id: 'waterfall.item4.short', message: 'Sanciones'}),
+      label: isEs ? 'Exposición Sanciones CNMC' : 'CNMC Sanctions Exposure',
+      shortLabel: isEs ? 'Sanciones' : 'Sanctions',
       value: 240.0,
       color: '#8b5cf6',
-      fuente: translate({id: 'waterfall.item4.fuente', message: 'CNMC, expedientes abril 2026'}),
-      nota: translate({id: 'waterfall.item4.nota', message: 'Exposición máxima estimada; litigios en curso'}),
+      fuente: isEs ? 'CNMC, expedientes abril 2026' : 'CNMC, April 2026 files',
+      nota: isEs ? 'Exposición máxima estimada; litigios en curso' : 'Estimated maximum exposure; ongoing litigation',
     },
     {
-      label: translate({id: 'waterfall.item5.label', message: 'Daños Directos en Red'}),
-      shortLabel: translate({id: 'waterfall.item5.short', message: 'Daños Red'}),
+      label: isEs ? 'Daños Directos en Red' : 'Direct Grid Damages',
+      shortLabel: isEs ? 'Daños Red' : 'Grid Damages',
       value: 120.0,
       color: '#eab308',
-      fuente: translate({id: 'waterfall.item5.fuente', message: 'REE / estimación sectorial'}),
-      nota: translate({id: 'waterfall.item5.nota', message: 'Estimación'}),
+      fuente: isEs ? 'REE / estimación sectorial' : 'REE / sector estimation',
+      nota: isEs ? 'Estimación' : 'Estimation',
     },
-  ], []);
+  ], [isEs]);
 
   // Los datos base son estáticos y verificados; la API es mejora opcional
   const total = STATIC_ITEMS.reduce((s, d) => s + d.value, 0);
@@ -144,13 +147,13 @@ function FinancialWaterfallInner() {
   const chartData = [
     ...STATIC_ITEMS,
     {
-      label: translate({id: 'waterfall.total.label', message: 'IMPACTO TOTAL ESTIMADO'}),
+      label: isEs ? 'IMPACTO TOTAL ESTIMADO' : 'TOTAL ESTIMATED IMPACT',
       shortLabel: 'TOTAL',
       value: total,
       color: '#dc2626',
       isTotal: true,
-      fuente: translate({id: 'waterfall.total.fuente', message: 'Suma de conceptos anteriores'}),
-      nota: translate({id: 'waterfall.total.nota', message: 'Incluye estimaciones no verificadas (ENS España)'}),
+      fuente: isEs ? 'Suma de conceptos anteriores' : 'Sum of previous items',
+      nota: isEs ? 'Incluye estimaciones no verificadas (ENS España)' : 'Includes unverified estimates (ENS Spain)',
     },
   ];
 
@@ -159,7 +162,7 @@ function FinancialWaterfallInner() {
   const enriched = chartData.map((d, i) => {
     const base = d.isTotal ? 0 : running;
     if (!d.isTotal) running += d.value;
-    return { ...d, base, display: d.value };
+    return { ...d, base, display: d.value, isEs };
   });
 
   return (
@@ -186,7 +189,7 @@ function FinancialWaterfallInner() {
             tick={{ fill: '#94a3b8', fontSize: 11 }}
             tickFormatter={v => `${v.toFixed(0)} M€`}
             label={{
-              value: translate({id: 'waterfall.yAxis', message: 'Millones de €'}),
+              value: isEs ? 'Millones de €' : 'Millions of €',
               angle: -90,
               position: 'insideLeft',
               fill: 'var(--text-1, #64748b)',
@@ -233,27 +236,26 @@ function FinancialWaterfallInner() {
         background: 'rgba(255,255,255,0.02)',
         borderRadius: '0 6px 6px 0',
       }}>
-        <p style={{ margin: '0 0 0.4rem' }}>
-          <Translate id="waterfall.footerText1" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
-            {`<b>Metodología VoLL:</b> El coste de la energía no suministrada se calcula a 11.000 €/MWh (media ponderada residencial/industrial para España, CEER 2023, Appendix B), sobre una ENS estimada de ~255.490 MWh (55.489 MWh verificados en Portugal — ERSE/REN; ~200.000 MWh estimados para España — dato no verificado en fuente primaria).`}
-          </Translate>
-        </p>
-        <p style={{ margin: '0 0 0.4rem' }}>
-          <Translate id="waterfall.footerText2" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
-            {`<b>Operación Reforzada (666 M€):</b> dato verificado en fuente primaria (REE, informe abril 2026).`}
-          </Translate>
-        </p>
-        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.55)' }}>
-          <Translate id="waterfall.footerFallback" values={{ b: (chunks) => <strong>{chunks}</strong>, code: (chunks) => <code>{chunks}</code>, total: total.toFixed(1) }}>
-            {`⚠ Este análisis incluye estimaciones no verificadas en fuente primaria. Ver <code>datos28A.json</code> § reposicion.ens_espana_total para la declaración de cuestión abierta. Total estimado: <b>{total} M€</b>.`}
-          </Translate>
-        </p>
+        <p style={{ margin: '0 0 0.4rem' }} dangerouslySetInnerHTML={{ __html: isEs 
+          ? `<b>Metodología VoLL:</b> El coste de la energía no suministrada se calcula a 11.000 €/MWh (media ponderada residencial/industrial para España, CEER 2023, Appendix B), sobre una ENS estimada de ~255.490 MWh (55.489 MWh verificados en Portugal — ERSE/REN; ~200.000 MWh estimados para España — dato no verificado en fuente primaria).`
+          : `<b>VoLL Methodology:</b> The cost of energy not supplied is calculated at 11,000 €/MWh (weighted average residential/industrial for Spain, CEER 2023, Appendix B), based on an estimated ENS of ~255,490 MWh (55,489 MWh verified in Portugal — ERSE/REN; ~200,000 MWh estimated for Spain — data not verified in primary source).`
+        }} />
+        <p style={{ margin: '0 0 0.4rem' }} dangerouslySetInnerHTML={{ __html: isEs
+          ? `<b>Operación Reforzada (666 M€):</b> dato verificado en fuente primaria (REE, informe abril 2026).`
+          : `<b>Reinforced Operation (666 M€):</b> data verified in primary source (REE, April 2026 report).`
+        }} />
+        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.55)' }} dangerouslySetInnerHTML={{ __html: isEs
+          ? `⚠ Este análisis incluye estimaciones no verificadas en fuente primaria. Ver <code>datos28A.json</code> § reposicion.ens_espana_total para la declaración de cuestión abierta. Total estimado: <b>${total.toFixed(1)} M€</b>.`
+          : `⚠ This analysis includes unverified estimates in primary source. See <code>datos28A.json</code> § reposicion.ens_espana_total for open question statement. Total estimated: <b>${total.toFixed(1)} M€</b>.`
+        }} />
       </div>
     </div>
   );
 }
 
 export default function FinancialWaterfallChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   return (
     <BrowserOnly
       fallback={
@@ -266,7 +268,7 @@ export default function FinancialWaterfallChart() {
           fontFamily: 'monospace',
           fontSize: 13,
         }}>
-          {translate({id: 'waterfall.init', message: 'Inicializando análisis financiero…'})}
+          {isEs ? 'Inicializando análisis financiero…' : 'Initializing financial analysis…'}
         </div>
       }
     >

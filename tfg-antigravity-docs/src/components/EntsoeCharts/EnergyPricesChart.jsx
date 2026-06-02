@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Label, ReferenceArea
 } from 'recharts';
 
 export default function EnergyPricesChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function EnergyPricesChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const tooltipStyle = {
@@ -70,8 +73,8 @@ export default function EnergyPricesChart() {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: 'Hora', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tickFormatter={(val) => `${val} €`} tick={tickStyle} width={60} label={{ value: 'Precio Diario OMIE (€/MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: isEs ? 'Hora' : 'Time', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tickFormatter={(val) => `${val} €`} tick={tickStyle} width={60} label={{ value: isEs ? 'Precio Diario OMIE (€/MWh)' : 'Daily OMIE Price (€/MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             
             <Tooltip 
               contentStyle={tooltipStyle} 
@@ -91,7 +94,7 @@ export default function EnergyPricesChart() {
             <Line 
               type="monotone" 
               dataKey="price" 
-              name="Precio Diario (€/MWh)" 
+              name={isEs ? "Precio Diario (€/MWh)" : "Daily Price (€/MWh)"} 
               stroke="url(#colorPrice)" 
               strokeWidth={3} 
               dot={false} 

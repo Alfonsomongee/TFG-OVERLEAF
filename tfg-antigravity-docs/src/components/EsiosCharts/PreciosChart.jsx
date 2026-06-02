@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea, Legend
@@ -22,6 +23,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function PreciosChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +59,7 @@ export default function PreciosChart() {
   
   return (
     <div className={styles.chartContainer}>
-      <h3 className={styles.chartTitle}>Impacto en Mercados y Precios (28-29 Abril)</h3>
+      <h3 className={styles.chartTitle}>{isEs ? 'Impacto en Mercados y Precios (28-29 Abril)' : 'Market & Price Impact (Apr 28-29)'}</h3>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={data}
@@ -98,7 +101,7 @@ export default function PreciosChart() {
             dataKey="PVPC T. 2.0TD" 
             stroke="#00ffcc" 
             strokeWidth={2}
-            name="Precio PVPC (Minorista)"
+            name={isEs ? "Precio PVPC (Minorista)" : "PVPC Price (Retail)"}
             dot={{ r: 3, fill: '#00ffcc' }}
             activeDot={{ r: 6, fill: '#00ffcc', stroke: '#fff', strokeWidth: 2 }}
             isAnimationActive={true}
@@ -108,7 +111,7 @@ export default function PreciosChart() {
             dataKey="Mercado SPOT" 
             stroke="#e2a04a" 
             strokeWidth={2}
-            name="Mercado Mayorista (SPOT)"
+            name={isEs ? "Mercado Mayorista (SPOT)" : "Wholesale Market (SPOT)"}
             dot={{ r: 3, fill: '#e2a04a' }}
             activeDot={{ r: 6, fill: '#e2a04a', stroke: '#fff', strokeWidth: 2 }}
             isAnimationActive={true}

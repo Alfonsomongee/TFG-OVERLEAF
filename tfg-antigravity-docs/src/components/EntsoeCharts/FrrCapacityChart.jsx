@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 
 export default function FrrCapacityChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export default function FrrCapacityChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const tooltipStyle = {
@@ -63,18 +66,18 @@ export default function FrrCapacityChart() {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
-            <XAxis dataKey="quarter" tick={tickStyle} label={{ value: 'Trimestre', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} width={60} domain={[0, 1800]} label={{ value: 'Capacidad FRR (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="quarter" tick={tickStyle} label={{ value: isEs ? 'Trimestre' : 'Quarter', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} width={60} domain={[0, 1800]} label={{ value: isEs ? 'Capacidad FRR (MW)' : 'FRR Capacity (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip contentStyle={tooltipStyle} formatter={customTooltipFormatter} />
             <Legend wrapperStyle={{ paddingTop: '10px' }} />
             
             <ReferenceLine y={1600} stroke="#f59e0b" strokeDasharray="5 5" label={{ position: 'top', value: 'Previsión / Outlook (1600 MW)', fill: '#f59e0b', fontSize: 12 }} />
 
-            <Bar dataKey="up_avg" name="Capacidad Media (Subida)" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
-            <Bar dataKey="down_avg" name="Capacidad Media (Bajada)" fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
+            <Bar dataKey="up_avg" name={isEs ? "Capacidad Media (Subida)" : "Avg Capacity (Up)"} fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
+            <Bar dataKey="down_avg" name={isEs ? "Capacidad Media (Bajada)" : "Avg Capacity (Down)"} fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
             
-            <Line type="monotone" dataKey="up_min" name="Mínimo Registrado (Subida)" stroke="#1d4ed8" strokeWidth={3} dot={{ r: 6, fill: '#1d4ed8' }} activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="down_min" name="Mínimo Registrado (Bajada)" stroke="#047857" strokeWidth={3} dot={{ r: 6, fill: '#047857' }} activeDot={{ r: 8 }} />
+            <Line type="monotone" dataKey="up_min" name={isEs ? "Mínimo Registrado (Subida)" : "Min Registered (Up)"} stroke="#1d4ed8" strokeWidth={3} dot={{ r: 6, fill: '#1d4ed8' }} activeDot={{ r: 8 }} />
+            <Line type="monotone" dataKey="down_min" name={isEs ? "Mínimo Registrado (Bajada)" : "Min Registered (Down)"} stroke="#047857" strokeWidth={3} dot={{ r: 6, fill: '#047857' }} activeDot={{ r: 8 }} />
             
           </ComposedChart>
         </ResponsiveContainer>

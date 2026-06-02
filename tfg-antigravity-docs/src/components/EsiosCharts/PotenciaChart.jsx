@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -22,6 +23,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function PotenciaChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +72,7 @@ export default function PotenciaChart() {
 
   return (
     <div className={styles.chartContainer} style={{ height: '700px' }}>
-      <h3 className={styles.chartTitle}>Comparativa de Potencia por Tecnología (28 vs 29 Abril)</h3>
+      <h3 className={styles.chartTitle}>{isEs ? 'Comparativa de Potencia por Tecnología (28 vs 29 Abril)' : 'Power Comparison by Technology (Apr 28 vs 29)'}</h3>
       <ResponsiveContainer width="100%" height="90%">
         <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" horizontal={true} vertical={true} />

@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell,
@@ -16,6 +17,8 @@ const FUEL_COLORS = {
 const SYNC_COLORS = ['#8b5cf6', '#f43f5e'];
 
 export default function ActualGenerationChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [activeUnits, setActiveUnits] = useState(null);
   const [expectedGen, setExpectedGen] = useState(null);
   const [genByFuel, setGenByFuel] = useState(null);
@@ -104,7 +107,7 @@ export default function ActualGenerationChart() {
               <YAxis type="category" dataKey="fuel_type" tick={{ ...tickStyle, fontSize: 12 }} width={130} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Bar dataKey="total_mw" name="Potencia Real Agregada (MW)">
+              <Bar dataKey="total_mw" name={isEs ? "Potencia Real Agregada (MW)" : "Aggregated Actual Power (MW)"}>
                 {genByFuel.map((entry, i) => <Cell key={i} fill={FUEL_COLORS[entry.fuel_type] || '#8884d8'} />)}
               </Bar>
             </BarChart>
@@ -122,7 +125,7 @@ export default function ActualGenerationChart() {
               <YAxis type="category" dataKey="name" tick={{ ...tickStyle, fontSize: 11 }} width={90} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Bar dataKey="power_mw" name="Potencia Real (MW)">
+              <Bar dataKey="power_mw" name={isEs ? "Potencia Real (MW)" : "Actual Power (MW)"}>
                 {activeUnits.map((entry, i) => <Cell key={i} fill={FUEL_COLORS[entry.fuel_type] || '#8884d8'} />)}
               </Bar>
             </BarChart>
@@ -140,8 +143,8 @@ export default function ActualGenerationChart() {
               <YAxis type="category" dataKey="fuel_type" tick={{ ...tickStyle, fontSize: 12 }} width={130} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Bar dataKey="active_units" stackId="a" name="Activas (>0 MW)" fill="#10b981" />
-              <Bar dataKey="zero_units" stackId="a" name="Caídas (0 MW)" fill="#ef4444" />
+              <Bar dataKey="active_units" stackId="a" name={isEs ? "Activas (>0 MW)" : "Active (>0 MW)"} fill="#10b981" />
+              <Bar dataKey="zero_units" stackId="a" name={isEs ? "Caídas (0 MW)" : "Tripped (0 MW)"} fill="#ef4444" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -178,8 +181,8 @@ export default function ActualGenerationChart() {
               <YAxis tick={tickStyle} />
               <Tooltip contentStyle={tooltipStyle} />
               <Legend />
-              <Bar dataKey="real_mw" name="Real (MW)" fill="#ef4444" />
-              <Bar dataKey="expected_mw" name="Previsto (MW)" fill="#3b82f6" />
+              <Bar dataKey="real_mw" name={isEs ? "Real (MW)" : "Actual (MW)"} fill="#ef4444" />
+              <Bar dataKey="expected_mw" name={isEs ? "Previsto (MW)" : "Forecast (MW)"} fill="#3b82f6" />
             </BarChart>
           </ResponsiveContainer>
         </div>

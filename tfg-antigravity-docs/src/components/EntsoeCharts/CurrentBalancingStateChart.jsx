@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell, Label
 } from 'recharts';
 
 export default function CurrentBalancingStateChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [zoomIn, setZoomIn] = useState(true);
 
@@ -38,7 +41,7 @@ export default function CurrentBalancingStateChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   // Filtrar los datos para mostrar solo las horas críticas (por ej. 08:00 a 10:30 UTC = 10:00 a 12:30 CEST)
@@ -74,8 +77,8 @@ export default function CurrentBalancingStateChart() {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={displayData} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
-            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} label={{ value: 'Error de Balance (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="time" tick={tickStyle} minTickGap={30} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} label={{ value: isEs ? 'Error de Balance (MW)' : 'Balancing Error (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             
             <Tooltip 
               contentStyle={tooltipStyle} 

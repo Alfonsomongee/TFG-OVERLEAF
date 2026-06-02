@@ -20,6 +20,7 @@ import {
   SNAPSHOT_28A,
 } from '@site/src/hooks/useENTSOE';
 import styles from './ENTSOEDashboard.module.css';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 
 // ─── Componentes internos ───────────────────────────────────────────────
 
@@ -51,7 +52,6 @@ function KpiCard({ label, value, unit, sub, variant = 'cyan', loading, delta, no
         )}
       </div>
       {sub && <div className={styles.kpiSub}>{sub}</div>}
-      {delta !== null && (
         <div className={styles.kpiDelta} style={{ color: deltaColor }}>
           {delta.absolute >= 0 ? '▲' : '▼'} {Math.abs(delta.absolute).toLocaleString('es-ES', { maximumFractionDigits: 0 })} {unit}
           {' '}({delta.percent >= 0 ? '+' : ''}{delta.percent.toFixed(1)}% vs 28-A)
@@ -62,12 +62,12 @@ function KpiCard({ label, value, unit, sub, variant = 'cyan', loading, delta, no
   );
 }
 
-function StatusBadge({ loading, error, lastUpdate, label }) {
+function StatusBadge({ loading, error, lastUpdate, label, isEs }) {
   if (error)   return <span className={`${styles.badge} ${styles.badgeError}`}>⚠ {error}</span>;
-  if (loading) return <span className={`${styles.badge} ${styles.badgeLoading}`}>⟳ Cargando…</span>;
+  if (loading) return <span className={`${styles.badge} ${styles.badgeLoading}`}>⟳ {isEs ? 'Cargando…' : 'Loading…'}</span>;
   return (
     <span className={`${styles.badge} ${styles.badgeLive}`}>
-      ● EN VIVO · {label}
+      ● {isEs ? 'EN VIVO' : 'LIVE'} · {label}
       {lastUpdate && (
         <span className={styles.badgeTime}>
           {lastUpdate.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })} UTC
@@ -98,7 +98,7 @@ function ForensicTooltip({ active, payload, label, unit }) {
 
 // ─── Panel 1: Generación España ─────────────────────────────────────────
 
-function GenerationPanel() {
+function GenerationPanel({ isEs }) {
   // ENTSO-E indicador A65 — generación actual por tipo
   const { data, loading, error, lastUpdate } = useENTSOEData('generation', 'ES', 300_000, 24);
 
@@ -110,12 +110,12 @@ function GenerationPanel() {
   return (
     <div className={styles.panel}>
       <div className={styles.panelHeader}>
-        <span className={styles.panelTitle}>GENERACIÓN ESPAÑA</span>
-        <StatusBadge loading={loading} error={error} lastUpdate={lastUpdate} label="ENTSO-E A65" />
+        <span className={styles.panelTitle}>{isEs ? 'GENERACIÓN ESPAÑA' : 'SPAIN GENERATION'}</span>
+        <StatusBadge loading={loading} error={error} lastUpdate={lastUpdate} label="ENTSO-E A65" isEs={isEs} />
       </div>
       <div className={styles.panelBody}>
         <KpiCard
-          label="Generación total"
+          label={isEs ? "Generación total" : "Total generation"}
           value={currentMW}
           unit="MW"
           variant="cyan"
@@ -147,7 +147,7 @@ function GenerationPanel() {
                 <Area
                   type="monotone"
                   dataKey="value"
-                  name="Generación"
+                  name={isEs ? "Generación" : "Generation"}
                   stroke="var(--chart-cyan)"
                   strokeWidth={2}
                   fill="url(#genGrad)"
@@ -156,7 +156,9 @@ function GenerationPanel() {
               </AreaChart>
             </ResponsiveContainer>
             <p className={styles.chartCaption}>
-              Generación total (MW) en España. Línea ámbar: valor al momento del 28-A (29,6 GW).
+              {isEs 
+                ? 'Generación total (MW) en España. Línea ámbar: valor al momento del 28-A (29,6 GW).'
+                : 'Total generation (MW) in Spain. Amber line: value at the time of 28-A (29.6 GW).'}
             </p>
           </div>
         )}
@@ -167,7 +169,7 @@ function GenerationPanel() {
 
 // ─── Panel 2: Demanda España ────────────────────────────────────────────
 
-function DemandPanel() {
+function DemandPanel({ isEs }) {
   // ENTSO-E indicador A71 — demanda actual
   const { data, loading, error, lastUpdate } = useENTSOEData('demand', 'ES', 300_000, 24);
 
@@ -179,12 +181,12 @@ function DemandPanel() {
   return (
     <div className={styles.panel}>
       <div className={styles.panelHeader}>
-        <span className={styles.panelTitle}>DEMANDA ESPAÑA</span>
-        <StatusBadge loading={loading} error={error} lastUpdate={lastUpdate} label="ENTSO-E A71" />
+        <span className={styles.panelTitle}>{isEs ? 'DEMANDA ESPAÑA' : 'SPAIN DEMAND'}</span>
+        <StatusBadge loading={loading} error={error} lastUpdate={lastUpdate} label="ENTSO-E A71" isEs={isEs} />
       </div>
       <div className={styles.panelBody}>
         <KpiCard
-          label="Demanda actual"
+          label={isEs ? "Demanda actual" : "Current demand"}
           value={currentMW}
           unit="MW"
           variant="amber"
@@ -210,7 +212,7 @@ function DemandPanel() {
                 <Line
                   type="monotone"
                   dataKey="value"
-                  name="Demanda"
+                  name={isEs ? "Demanda" : "Demand"}
                   stroke="var(--chart-amber)"
                   strokeWidth={2}
                   dot={false}
@@ -218,7 +220,9 @@ function DemandPanel() {
               </LineChart>
             </ResponsiveContainer>
             <p className={styles.chartCaption}>
-              Demanda total (MW) en España. Línea ámbar: valor al momento del 28-A (25,8 GW).
+              {isEs 
+                ? 'Demanda total (MW) en España. Línea ámbar: valor al momento del 28-A (25,8 GW).'
+                : 'Total demand (MW) in Spain. Amber line: value at the time of 28-A (25.8 GW).'}
             </p>
           </div>
         )}
@@ -229,7 +233,7 @@ function DemandPanel() {
 
 // ─── Panel 3: Comparativa Ahora vs. 28-A ────────────────────────────────
 
-function ComparisonPanel() {
+function ComparisonPanel({ isEs }) {
   const { data: genData, loading: genLoading } = useENTSOEData('generation', 'ES', 300_000, 24);
   const { data: demandData, loading: demandLoading } = useENTSOEData('demand', 'ES', 300_000, 24);
 
@@ -248,57 +252,59 @@ function ComparisonPanel() {
   return (
     <div className={`${styles.panel} ${styles.panelWide}`}>
       <div className={styles.panelHeader}>
-        <span className={styles.panelTitle}>AHORA vs. 28-A (12:30 CEST)</span>
-        {!loading && <span className={`${styles.badge} ${styles.badgeLive}`}>● TIEMPO REAL</span>}
+        <span className={styles.panelTitle}>{isEs ? 'AHORA vs. 28-A (12:30 CEST)' : 'NOW vs. 28-A (12:30 CEST)'}</span>
+        {!loading && <span className={`${styles.badge} ${styles.badgeLive}`}>● {isEs ? 'TIEMPO REAL' : 'REAL TIME'}</span>}
       </div>
       <div className={styles.panelBody}>
         <div className={styles.compGrid}>
           <CompRow
-            metric="Generación"
+            metric={isEs ? "Generación" : "Generation"}
             now={genNow}
             refValue={gen28A}
             unit="MW"
             loading={genLoading}
+            isEs={isEs}
           />
           <CompRow
-            metric="Demanda"
+            metric={isEs ? "Demanda" : "Demand"}
             now={demandNow}
             refValue={demand28A}
             unit="MW"
             loading={demandLoading}
+            isEs={isEs}
           />
           <CompRow
-            metric="Ratio demanda/generación"
+            metric={isEs ? "Ratio demanda/generación" : "Demand/generation ratio"}
             now={ratioNow}
             refValue={ratio28A}
             unit="—"
             loading={loading}
             isPercent={true}
+            isEs={isEs}
           />
         </div>
 
         <div className={styles.compLegend}>
           <span className={styles.legendDot} style={{ background: 'var(--chart-cyan)' }} />
-          <span>Ahora (en vivo)</span>
+          <span>{isEs ? 'Ahora (en vivo)' : 'Now (live)'}</span>
           <span className={styles.legendDot} style={{ background: 'var(--chart-amber)' }} />
-          <span>28-A · 12:30 CEST (Informe Factual ENTSO-E)</span>
+          <span>{isEs ? '28-A · 12:30 CEST (Informe Factual ENTSO-E)' : '28-A · 12:30 CEST (ENTSO-E Factual Report)'}</span>
         </div>
 
-        <p className={styles.compNote}>
-          El ratio demanda/generación indica la carga relativa del sistema.
-          Un ratio cercano a 0,9+ indica operación en "red ligera" — condición que precede a inestabilidad de tensión.
-          El 28-A operaba a ratio 0,87 en un escenario de muy baja inercia (H=2,3s) y SCR degradado.
-        </p>
+        <p className={styles.compNote} dangerouslySetInnerHTML={{ __html: isEs 
+          ? 'El ratio demanda/generación indica la carga relativa del sistema. Un ratio cercano a 0,9+ indica operación en "red ligera" — condición que precede a inestabilidad de tensión. El 28-A operaba a ratio 0,87 en un escenario de muy baja inercia (H=2,3s) y SCR degradado.'
+          : 'The demand/generation ratio indicates the relative load of the system. A ratio close to 0.9+ indicates operation in a "light grid" — a condition preceding voltage instability. 28-A operated at a 0.87 ratio in a very low inertia scenario (H=2.3s) and degraded SCR.'
+        }} />
       </div>
     </div>
   );
 }
 
-function CompRow({ metric, now, refValue, unit, loading, isPercent }) {
+function CompRow({ metric, now, refValue, unit, loading, isPercent, isEs }) {
   const nowFmt = now !== null && !loading
     ? isPercent
       ? (now * 100).toFixed(2) + '%'
-      : now.toLocaleString('es-ES', { maximumFractionDigits: 0 })
+      : now.toLocaleString(isEs ? 'es-ES' : 'en-US', { maximumFractionDigits: 0 })
     : '—';
   const refFmt = isPercent ? (refValue * 100).toFixed(2) + '%' : refValue.toLocaleString('es-ES', { maximumFractionDigits: 0 });
   const pct = now !== null ? Math.min((now / refValue) * 100, 200) : 0;
@@ -341,6 +347,8 @@ function CompRow({ metric, now, refValue, unit, loading, isPercent }) {
 // ─── Componente principal ───────────────────────────────────────────────
 
 function ENTSOEDashboardInner() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
@@ -350,19 +358,19 @@ function ENTSOEDashboardInner() {
         <div className={styles.dashTitleRow}>
           <span className={styles.dashIcon}>⚡</span>
           <div>
-            <h3 className={styles.dashTitle}>ENTSO-E Transparency Platform — Sistema Ibérico en Vivo</h3>
+            <h3 className={styles.dashTitle}>{isEs ? 'ENTSO-E Transparency Platform — Sistema Ibérico en Vivo' : 'ENTSO-E Transparency Platform — Iberian System Live'}</h3>
             <p className={styles.dashSub}>
               European Network of Transmission System Operators for Electricity ·
-              Datos España + Portugal · Indicadores A65 (generación) · A71 (demanda)
+              {isEs ? 'Datos España + Portugal' : 'Spain + Portugal Data'} · {isEs ? 'Indicadores A65 (generación) · A71 (demanda)' : 'Indicators A65 (generation) · A71 (demand)'}
             </p>
           </div>
         </div>
         <div className={styles.tabs}>
           {[
-            { id: 'overview',   label: 'Vista general' },
-            { id: 'generation', label: 'Generación' },
-            { id: 'demand',     label: 'Demanda' },
-            { id: 'comparison', label: 'Ahora vs. 28-A' },
+            { id: 'overview',   label: isEs ? 'Vista general' : 'Overview' },
+            { id: 'generation', label: isEs ? 'Generación' : 'Generation' },
+            { id: 'demand',     label: isEs ? 'Demanda' : 'Demand' },
+            { id: 'comparison', label: isEs ? 'Ahora vs. 28-A' : 'Now vs. 28-A' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -379,27 +387,29 @@ function ENTSOEDashboardInner() {
       <div className={styles.dashContent}>
         {activeTab === 'overview' && (
           <div className={styles.overviewGrid}>
-            <GenerationPanel />
-            <DemandPanel />
-            <ComparisonPanel />
+            <GenerationPanel isEs={isEs} />
+            <DemandPanel isEs={isEs} />
+            <ComparisonPanel isEs={isEs} />
           </div>
         )}
-        {activeTab === 'generation'  && <GenerationPanel />}
-        {activeTab === 'demand'      && <DemandPanel />}
-        {activeTab === 'comparison'  && <ComparisonPanel />}
+        {activeTab === 'generation'  && <GenerationPanel isEs={isEs} />}
+        {activeTab === 'demand'      && <DemandPanel isEs={isEs} />}
+        {activeTab === 'comparison'  && <ComparisonPanel isEs={isEs} />}
       </div>
 
       {/* Footer */}
       <div className={styles.dashFooter}>
-        Fuente: ENTSO-E Transparency Platform · 
-        Red Eléctrica de España (REE) · REN Portugal ·
-        Datos del 28-A: Informe Factual ENTSO-E · Período 28 de abril de 2025
+        {isEs 
+          ? 'Fuente: ENTSO-E Transparency Platform · Red Eléctrica de España (REE) · REN Portugal · Datos del 28-A: Informe Factual ENTSO-E · Período 28 de abril de 2025'
+          : 'Source: ENTSO-E Transparency Platform · Red Eléctrica de España (REE) · REN Portugal · 28-A Data: ENTSO-E Factual Report · April 28, 2025 Period'}
       </div>
     </div>
   );
 }
 
 export default function ENTSOEDashboard() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -411,7 +421,7 @@ export default function ENTSOEDashboard() {
         fontFamily: 'monospace',
         fontSize: '0.85rem',
       }}>
-        Cargando datos en vivo de ENTSO-E…
+        {isEs ? 'Cargando datos en vivo de ENTSO-E…' : 'Loading live ENTSO-E data…'}
       </div>
     }>
       {() => <ENTSOEDashboardInner />}

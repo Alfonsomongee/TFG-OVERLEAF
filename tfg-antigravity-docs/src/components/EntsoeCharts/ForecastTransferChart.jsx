@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 
 export default function ForecastTransferChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState(null);
   const [activeDay, setActiveDay] = useState('dataset_1'); // dataset_1 = 28 Abril, dataset_2 = 29 Abril
   const [activeBorder, setActiveBorder] = useState('FR'); // FR or PT
@@ -27,7 +30,7 @@ export default function ForecastTransferChart() {
     return () => controller.abort();
   }, []);
 
-  if (!data) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+  if (!data) return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
 
   const dataset = data.datasets.find(d => d.id === activeDay);
   if (!dataset) return null;
@@ -80,7 +83,7 @@ export default function ForecastTransferChart() {
           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
             <XAxis dataKey="hour" tick={{fill: 'var(--ifm-font-color-base)'}} />
-            <YAxis tick={{fill: 'var(--ifm-font-color-base)'}} label={{ value: 'Capacidad (MW)', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={{fill: 'var(--ifm-font-color-base)'}} label={{ value: isEs ? 'Capacidad (MW)' : 'Capacity (MW)', angle: -90, position: 'insideLeft', dx: -30, fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={{ backgroundColor: 'var(--ifm-background-surface-color)', borderColor: 'var(--ifm-color-emphasis-300)', color: 'var(--ifm-font-color-base)' }}
             />
@@ -88,13 +91,13 @@ export default function ForecastTransferChart() {
             
             {activeBorder === 'FR' ? (
               <>
-                <Line type="stepAfter" dataKey="es_to_fr" stroke="#ef4444" strokeWidth={3} dot={false} name="ES → FR (Exportación)" />
-                <Line type="stepAfter" dataKey="fr_to_es" stroke="#3b82f6" strokeWidth={3} dot={false} name="FR → ES (Importación)" />
+                <Line type="stepAfter" dataKey="es_to_fr" stroke="#ef4444" strokeWidth={3} dot={false} name={isEs ? "ES ➝ FR (Exportación)" : "ES ➝ FR (Export)"} />
+                <Line type="stepAfter" dataKey="fr_to_es" stroke="#3b82f6" strokeWidth={3} dot={false} name={isEs ? "FR ➝ ES (Importación)" : "FR ➝ ES (Import)"} />
               </>
             ) : (
               <>
-                <Line type="stepAfter" dataKey="es_to_pt" stroke="#ef4444" strokeWidth={3} dot={false} name="ES → PT (Exportación)" />
-                <Line type="stepAfter" dataKey="pt_to_es" stroke="#10b981" strokeWidth={3} dot={false} name="PT → ES (Importación)" />
+                <Line type="stepAfter" dataKey="es_to_pt" stroke="#ef4444" strokeWidth={3} dot={false} name={isEs ? "ES ➝ PT (Exportación)" : "ES ➝ PT (Export)"} />
+                <Line type="stepAfter" dataKey="pt_to_es" stroke="#10b981" strokeWidth={3} dot={false} name={isEs ? "PT ➝ ES (Importación)" : "PT ➝ ES (Import)"} />
               </>
             )}
 
@@ -103,7 +106,7 @@ export default function ForecastTransferChart() {
                 x={chartData[blackoutIndex]?.hour} 
                 stroke="#ef4444" 
                 strokeDasharray="3 3" 
-                label={{ position: 'top', value: '⚡ Apagón', fill: '#ef4444' }} 
+                label={{ position: 'top', value: isEs ? '⚡ Apagón' : '⚡ Blackout', fill: '#ef4444' }} 
               />
             )}
           </LineChart>

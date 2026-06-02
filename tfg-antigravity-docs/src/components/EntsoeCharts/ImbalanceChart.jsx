@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label
 } from 'recharts';
 
 export default function ImbalanceChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function ImbalanceChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatTime = (decimalTime) => {
@@ -77,8 +80,8 @@ export default function ImbalanceChart() {
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} width={60} domain={[0, 1800]} label={{ value: 'Imbalance (MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} width={60} domain={[0, 1800]} label={{ value: isEs ? 'Imbalance (MWh)' : 'Imbalance (MWh)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={tooltipStyle} 
               formatter={customTooltipFormatter}
@@ -91,8 +94,8 @@ export default function ImbalanceChart() {
             </ReferenceLine>
 
             {/* We map deficit to red and surplus to green */}
-            <Area type="step" dataKey="deficit" name="Déficit (Falta Generación)" fill="#ef4444" stroke="#dc2626" fillOpacity={0.6} />
-            <Area type="step" dataKey="surplus" name="Superávit (Exceso Generación)" fill="#10b981" stroke="#059669" fillOpacity={0.6} />
+            <Area type="step" dataKey="deficit" name={isEs ? "Déficit (Falta Generación)" : "Deficit (Lack of Generation)"} fill="#ef4444" stroke="#dc2626" fillOpacity={0.6} />
+            <Area type="step" dataKey="surplus" name={isEs ? "Superávit (Exceso Generación)" : "Surplus (Excess Generation)"} fill="#10b981" stroke="#059669" fillOpacity={0.6} />
             
           </ComposedChart>
         </ResponsiveContainer>

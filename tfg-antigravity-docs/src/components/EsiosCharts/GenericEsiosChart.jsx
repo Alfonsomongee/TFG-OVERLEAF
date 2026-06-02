@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -24,6 +25,8 @@ const CustomTooltip = ({ active, payload, label, unit }) => {
 };
 
 export default function GenericEsiosChart({ dataUrl, title, unit = '', includeKeys = null }) {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [keys, setKeys] = useState([]);

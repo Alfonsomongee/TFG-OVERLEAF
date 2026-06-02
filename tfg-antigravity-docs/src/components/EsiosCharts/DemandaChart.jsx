@@ -1,3 +1,4 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea, Legend
@@ -22,6 +23,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function DemandaChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,7 +64,7 @@ export default function DemandaChart() {
   
   return (
     <div className={styles.chartContainer}>
-      <h3 className={styles.chartTitle}>Evolución de la Demanda (28-29 Abril)</h3>
+      <h3 className={styles.chartTitle}>{isEs ? 'Evolución de la Demanda (28-29 Abril)' : 'Demand Evolution (Apr 28-29)'}</h3>
       <ResponsiveContainer width="100%" height="90%">
         <AreaChart
           data={data}
@@ -114,7 +117,7 @@ export default function DemandaChart() {
             strokeDasharray="5 5"
             fillOpacity={0} 
             strokeWidth={2}
-            name="Demanda Prevista"
+            name={isEs ? "Demanda Prevista" : "Forecast Demand"}
             isAnimationActive={true}
           />
           <Area 
@@ -124,7 +127,7 @@ export default function DemandaChart() {
             fillOpacity={1} 
             fill="url(#colorDemandaProg)" 
             strokeWidth={2}
-            name="Demanda Programada"
+            name={isEs ? "Demanda Programada" : "Scheduled Demand"}
             isAnimationActive={true}
           />
           <Area 
@@ -134,7 +137,7 @@ export default function DemandaChart() {
             fillOpacity={1} 
             fill="url(#colorDemandaReal)" 
             strokeWidth={3}
-            name="Demanda Real"
+            name={isEs ? "Demanda Real" : "Actual Demand"}
             isAnimationActive={true}
             activeDot={{ r: 6, fill: '#ffaa00', stroke: '#fff', strokeWidth: 2 }}
           />

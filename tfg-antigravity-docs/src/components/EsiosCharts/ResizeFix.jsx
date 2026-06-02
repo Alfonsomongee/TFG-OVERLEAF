@@ -1,6 +1,9 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useEffect } from 'react';
 
 export default function ResizeFix() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Prevent Webpack Dev Server overlay for ResizeObserver errors

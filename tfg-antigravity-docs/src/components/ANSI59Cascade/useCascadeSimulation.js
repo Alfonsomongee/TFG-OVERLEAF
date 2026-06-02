@@ -24,7 +24,6 @@
  *   4. `executeStep` se define DENTRO del useEffect para evitar re-renders innecesarios.
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { translate } from '@docusaurus/Translate';
 
 // Nodos representativos del sistema ibérico (pedagogía, no topología exacta).
 // Valores de P_ibr y absorb_Q anclados a ENTSO-E Factual Report / Comité de Análisis.
@@ -124,7 +123,7 @@ const INITIAL_NODES = [
 // En red fuerte (SCR > 5) este valor sería ≈ 1.5 y la cascada no se completaría.
 const COUPLING_WEAK_GRID = 7.5;
 
-export function useCascadeSimulation(sensitivity = 0.08) {
+export function useCascadeSimulation(sensitivity = 0.08, isEs = true) {
   const [nodes, setNodes]       = useState(() => INITIAL_NODES.map(n => ({ ...n })));
   const [time, setTime]         = useState(0.0);
   const [isRunning, setIsRunning] = useState(false);
@@ -186,8 +185,8 @@ export function useCascadeSimulation(sensitivity = 0.08) {
       setHistory([{
         time: '0.0s',
         node: 'Granada SO',
-        msg:  translate({id: 'ansi59.rootTripMsg', message: '⚡ DISPARO RAÍZ (ANSI 59): Transformador 400/220 kV por sobretensión.'}),
-        detail: translate({id: 'ansi59.rootTripDetail', message: '−{mw} MW activos · −{mvar} MVAr de absorción. (ENTSO-E Factual, p.28)'}, {mw: (currentNodes[granadaIdx].P_ibr * 1000).toFixed(0), mvar: (absorb_Q_lost * 1000).toFixed(0)}),
+        msg:  isEs ? '⚡ DISPARO RAÍZ (ANSI 59): Transformador 400/220 kV por sobretensión.' : '⚡ ROOT TRIP (ANSI 59): 400/220 kV transformer due to overvoltage.',
+        detail: isEs ? `−${(currentNodes[granadaIdx].P_ibr * 1000).toFixed(0)} MW activos · −${(absorb_Q_lost * 1000).toFixed(0)} MVAr de absorción. (ENTSO-E Factual, p.28)` : `−${(currentNodes[granadaIdx].P_ibr * 1000).toFixed(0)} active MW · −${(absorb_Q_lost * 1000).toFixed(0)} MVAr absorption. (ENTSO-E Factual, p.28)`,
         MW:   currentNodes[granadaIdx].P_ibr,
         MVAr: absorb_Q_lost,
       }]);
@@ -215,8 +214,8 @@ export function useCascadeSimulation(sensitivity = 0.08) {
     const newEntries = nodesToTrip.map(n => ({
       time: formattedTime,
       node: n.name,
-      msg:  translate({id: 'ansi59.secondaryTripMsg', message: '⚡ DISPARO SECUNDARIO (Sobretensión > {uv}%UV)'}, {uv: (n.threshold * 100).toFixed(0)}),
-      detail: translate({id: 'ansi59.secondaryTripDetail', message: '−{mw} MW activos · −{mvar} MVAr de absorción.'}, {mw: (n.P_ibr * 1000).toFixed(0), mvar: (n.absorb_Q * 1000).toFixed(0)}),
+      msg:  isEs ? `⚡ DISPARO SECUNDARIO (Sobretensión > ${(n.threshold * 100).toFixed(0)}%UV)` : `⚡ SECONDARY TRIP (Overvoltage > ${(n.threshold * 100).toFixed(0)}%UV)`,
+      detail: isEs ? `−${(n.P_ibr * 1000).toFixed(0)} MW activos · −${(n.absorb_Q * 1000).toFixed(0)} MVAr de absorción.` : `−${(n.P_ibr * 1000).toFixed(0)} active MW · −${(n.absorb_Q * 1000).toFixed(0)} MVAr absorption.`,
       MW:   n.P_ibr,
       MVAr: n.absorb_Q,
     }));

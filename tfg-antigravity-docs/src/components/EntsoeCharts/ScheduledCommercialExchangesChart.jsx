@@ -1,9 +1,12 @@
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Label
 } from 'recharts';
 
 export default function ScheduledCommercialExchangesChart() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function ScheduledCommercialExchangesChart() {
   }, []);
 
   if (data.length === 0) {
-    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cargando datos...</div>;
+    return <div style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{isEs ? 'Cargando datos...' : 'Loading data...'}</div>;
   }
 
   const formatTime = (decimalTime) => {
@@ -75,8 +78,8 @@ export default function ScheduledCommercialExchangesChart() {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: 'Hora (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
-            <YAxis tick={tickStyle} width={80} label={{ value: 'Intercambio Neto Programado (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
+            <XAxis dataKey="timeNum" type="number" domain={['dataMin', 'dataMax']} tickFormatter={formatTime} tick={tickStyle} tickCount={12} label={{ value: isEs ? 'Hora (UTC)' : 'Time (UTC)', position: 'insideBottom', offset: -10, fill: 'var(--ifm-font-color-base)' }} />
+            <YAxis tick={tickStyle} width={80} label={{ value: isEs ? 'Intercambio Neto Programado (MW)' : 'Scheduled Net Exchange (MW)', angle: -90, position: 'insideLeft', fill: 'var(--ifm-font-color-base)' }} />
             <Tooltip 
               contentStyle={tooltipStyle} 
               formatter={customTooltipFormatter}
@@ -87,11 +90,11 @@ export default function ScheduledCommercialExchangesChart() {
             <ReferenceLine y={0} stroke="var(--ifm-font-color-base)" opacity={0.5} />
             
             <ReferenceLine x={10.55} stroke="#ef4444" strokeWidth={2} strokeDasharray="6 6">
-              <Label value="⚡ Apagón (12:33 CEST)" position="insideTopLeft" fill="#ef4444" fontSize={12} fontWeight="bold" />
+              <Label value={isEs ? "⚡ Apagón (12:33 CEST)" : "⚡ Blackout (12:33 CEST)"} position="insideTopLeft" fill="#ef4444" fontSize={12} fontWeight="bold" />
             </ReferenceLine>
 
-            <Bar dataKey="net_fr" stackId="a" name="Saldo Francia (ES -> FR)" fill="#3b82f6" />
-            <Bar dataKey="net_pt" stackId="a" name="Saldo Portugal (ES -> PT)" fill="#10b981" />
+            <Bar dataKey="net_fr" stackId="a" name={isEs ? "Saldo Francia (ES -> FR)" : "France Balance (ES -> FR)"} fill="#3b82f6" />
+            <Bar dataKey="net_pt" stackId="a" name={isEs ? "Saldo Portugal (ES -> PT)" : "Portugal Balance (ES -> PT)"} fill="#10b981" />
           </BarChart>
         </ResponsiveContainer>
       </div>

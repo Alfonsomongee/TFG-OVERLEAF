@@ -47,7 +47,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import Translate, { translate } from '@docusaurus/Translate';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 
 const PROXY_URL  = '/api/redata-proxy?url=';
 const START_DATE = '2025-04-26T00:00';
@@ -73,7 +73,7 @@ function lcg(seed) {
  * Los valores individuales son estimaciones coherentes con los rangos
  * verificados. No proceden de datos horarios de fuente primaria.
  */
-function buildFallbackData() {
+function buildFallbackData(isEs) {
   const timePoints = [];
   const current = new Date('2025-04-26T00:00:00Z');
   for (let i = 0; i < 168; i++) {
@@ -82,9 +82,9 @@ function buildFallbackData() {
   }
 
   const SERVICES = [
-    { name: 'Restricciones Técnicas PBF', baseMultiplier: 1.0 },
-    { name: 'Reserva Secundaria (aFRR)',  baseMultiplier: 0.42 },
-    { name: 'Gestión de Desvíos',        baseMultiplier: 0.18 },
+    { name: isEs ? 'Restricciones Técnicas PBF' : 'PBF Technical Constraints', baseMultiplier: 1.0 },
+    { name: isEs ? 'Reserva Secundaria (aFRR)' : 'Secondary Reserve (aFRR)',  baseMultiplier: 0.42 },
+    { name: isEs ? 'Gestión de Desvíos' : 'Imbalance Management',        baseMultiplier: 0.18 },
   ];
 
   const matrix = SERVICES.map(({ baseMultiplier }, sIdx) => {
@@ -136,8 +136,12 @@ function buildREDataUrl() {
 }
 
 // ─── Exportar CSV ─────────────────────────────────────────────────────────────
-function exportCSV(data) {
-  const header = ['Servicio', 'Fecha/Hora', 'Coste (€/MWh)'].join(',');
+function exportCSV(data, isEs) {
+  const header = [
+    isEs ? 'Servicio' : 'Service', 
+    isEs ? 'Fecha/Hora' : 'Date/Time', 
+    isEs ? 'Coste (€/MWh)' : 'Cost (€/MWh)'
+  ].join(',');
   const rows   = [];
   data.y.forEach((service, si) => {
     data.x.forEach((time, ti) => {
@@ -158,6 +162,9 @@ function exportCSV(data) {
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function ThermalAdjustmentCostMatrixInner() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
+
   const [plotData,     setPlotData]     = useState(null);
   const [loading,      setLoading]      = useState(true);
   const [isFallback,   setIsFallback]   = useState(false);
@@ -210,7 +217,7 @@ function ThermalAdjustmentCostMatrixInner() {
 
     } catch (err) {
       if (err.name !== 'AbortError') {
-        setPlotData(buildFallbackData());
+        setPlotData(buildFallbackData(isEs));
         setIsFallback(true);
       }
     } finally {
@@ -245,7 +252,9 @@ function ThermalAdjustmentCostMatrixInner() {
         aria-busy="true"
         aria-live="polite"
       >
-        {loading ? translate({id: 'thermal.loading', message: 'Cargando matriz de costes…'}) : translate({id: 'thermal.init', message: 'Inicializando visualización…'})}
+        {loading 
+          ? (isEs ? 'Cargando matriz de costes…' : 'Loading cost matrix…') 
+          : (isEs ? 'Inicializando visualización…' : 'Initializing visualization…')}
       </div>
     );
   }
@@ -253,9 +262,9 @@ function ThermalAdjustmentCostMatrixInner() {
   if (!displayData) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444' }}>
-        {translate({id: 'thermal.noData', message: 'No hay datos disponibles.'})}
+        {isEs ? 'No hay datos disponibles.' : 'No data available.'}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.9rem', cursor: 'pointer' }}>
-          {translate({id: 'thermal.retry', message: 'Reintentar'})}
+          {isEs ? 'Reintentar' : 'Retry'}
         </button>
       </div>
     );
@@ -285,11 +294,11 @@ function ThermalAdjustmentCostMatrixInner() {
 
   const layout = {
     title: {
-      text: translate({id: 'thermal.title', message: 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)'}),
+      text: isEs ? 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)' : 'Adjustment Services Costs — April 28 Week (€/MWh)',
       font: { size: 15, color: '#e0ddd5' },
     },
     xaxis: {
-      title: translate({id: 'thermal.xaxis', message: 'Fecha y hora (CEST)'}),
+      title: isEs ? 'Fecha y hora (CEST)' : 'Date and time (CEST)',
       tickangle: -45,
       tickformat: '%d/%m %Hh',
       gridcolor: 'rgba(255,255,255,0.07)',
@@ -336,9 +345,9 @@ function ThermalAdjustmentCostMatrixInner() {
           borderRadius: 6,
           fontSize: 12, fontFamily: 'monospace', color: '#f59e0b',
         }} aria-live="polite">
-          <Translate id="thermal.fallbackBanner">
-            ⚠ API REData no disponible — datos estimados (fallback determinista). Los valores horarios son estimaciones coherentes con rangos verificados, no medidas directas de ESIOS. Ver nota metodológica.
-          </Translate>
+          {isEs 
+            ? "⚠ API REData no disponible — datos estimados (fallback determinista). Los valores horarios son estimaciones coherentes con rangos verificados, no medidas directas de ESIOS. Ver nota metodológica."
+            : "⚠ REData API unavailable — estimated data (deterministic fallback). Hourly values are estimates consistent with verified ranges, not direct ESIOS measurements. See methodological note."}
         </div>
       )}
 
@@ -349,8 +358,8 @@ function ThermalAdjustmentCostMatrixInner() {
       }}>
         {/* Selector de servicio */}
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}
-             role="group" aria-label={translate({id: 'thermal.filterService', message: 'Filtrar por servicio de ajuste'})}>
-          {[{ id: 'all', label: translate({id: 'thermal.all', message: 'Todos'}) }, ...(plotData?.y || []).map((n, i) => ({
+             role="group" aria-label={isEs ? 'Filtrar por servicio de ajuste' : 'Filter by adjustment service'}>
+          {[{ id: 'all', label: isEs ? 'Todos' : 'All' }, ...(plotData?.y || []).map((n, i) => ({
             id: String(i), label: n.split(' ').slice(0, 2).join(' '),
           }))].map(opt => (
             <button
@@ -375,8 +384,8 @@ function ThermalAdjustmentCostMatrixInner() {
 
         {/* Exportar CSV */}
         <button
-          onClick={() => exportCSV(plotData)}
-          aria-label={translate({id: 'thermal.downloadCSV', message: 'Descargar datos como CSV'})}
+          onClick={() => exportCSV(plotData, isEs)}
+          aria-label={isEs ? 'Descargar datos como CSV' : 'Download data as CSV'}
           style={{
             padding: '0.25rem 0.7rem',
             background: 'transparent',
@@ -392,7 +401,7 @@ function ThermalAdjustmentCostMatrixInner() {
       {/* Heatmap */}
       <div
         role="img"
-        aria-label={translate({id: 'thermal.heatmapAria', message: 'Mapa de calor de costes de servicios de ajuste eléctrico durante la semana del 28-A. El pico de costes se concentra el 28 de abril de 2025 entre las 12:00 y las 15:00 CEST.'})}
+        aria-label={isEs ? 'Mapa de calor de costes de servicios de ajuste eléctrico durante la semana del 28-A. El pico de costes se concentra el 28 de abril de 2025 entre las 12:00 y las 15:00 CEST.' : 'Heatmap of electrical adjustment service costs during the week of April 28. The cost peak is concentrated on April 28, 2025 between 12:00 and 15:00 CEST.'}
       >
         <Plot
           data={[heatmapTrace]}
@@ -421,15 +430,14 @@ function ThermalAdjustmentCostMatrixInner() {
         background: 'rgba(255,255,255,0.02)',
         borderRadius: '0 6px 6px 0',
       }}>
-        <p style={{ margin: '0 0 0.4rem' }}>
-          <Translate id="thermal.footerText" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
-            {`<b>Costes verificados (ISE-2025 REE / REE informe abril 2026):</b> El coste total de servicios de ajuste en 2025 se incrementó un <b>+43% respecto a 2024</b>, con restricciones técnicas acumulando entre <b>3.351 y 3.770 M€</b> por el despacho forzoso de ciclos combinados (\"Operación Reforzada\"). El coste acumulado de la Operación Reforzada hasta el 31 de marzo de 2026 fue de <b>666 M€</b> (REE, informe abril 2026 — dato verificado). En marzo de 2026, las restricciones representaron el <b>28% del término de energía en la factura PVPC</b>.`}
-          </Translate>
-        </p>
+        <p style={{ margin: '0 0 0.4rem' }} dangerouslySetInnerHTML={{ __html: isEs 
+          ? `<b>Costes verificados (ISE-2025 REE / REE informe abril 2026):</b> El coste total de servicios de ajuste en 2025 se incrementó un <b>+43% respecto a 2024</b>, con restricciones técnicas acumulando entre <b>3.351 y 3.770 M€</b> por el despacho forzoso de ciclos combinados ("Operación Reforzada"). El coste acumulado de la Operación Reforzada hasta el 31 de marzo de 2026 fue de <b>666 M€</b> (REE, informe abril 2026 — dato verificado). En marzo de 2026, las restricciones representaron el <b>28% del término de energía en la factura PVPC</b>.`
+          : `<b>Verified costs (ISE-2025 REE / REE April 2026 report):</b> Total adjustment service costs in 2025 increased by <b>+43% compared to 2024</b>, with technical constraints accumulating between <b>3,351 and 3,770 M€</b> due to the forced dispatch of combined cycles ("Reinforced Operation"). The cumulative cost of the Reinforced Operation up to March 31, 2026 was <b>666 M€</b> (REE, April 2026 report — verified data). In March 2026, constraints represented <b>28% of the energy term in the PVPC bill</b>.`
+        }} />
         <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
           {isFallback
-            ? translate({id: 'thermal.footerFallback', message: '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.'})
-            : translate({id: 'thermal.footerSource', message: 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.'})}
+            ? (isEs ? '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.' : '⚠ Hourly data: deterministic estimates consistent with ISE-2025 REE ranges. Not from direct ESIOS measurements — individual values are an OPEN QUESTION.')
+            : (isEs ? 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.' : 'Source: ESIOS / REE (Indicators 680, 71-74, 638) · Period: Apr 26 – May 02, 2025.')}
         </p>
       </div>
     </div>
@@ -437,6 +445,8 @@ function ThermalAdjustmentCostMatrixInner() {
 }
 
 export default function ThermalAdjustmentCostMatrix() {
+  const lang = useDocLang();
+  const isEs = lang === 'es';
   return (
     <BrowserOnly fallback={
       <div style={{
@@ -444,7 +454,7 @@ export default function ThermalAdjustmentCostMatrix() {
         justifyContent: 'center', color: 'var(--text-1, #64748b)',
         fontFamily: 'monospace', fontSize: 13,
       }}>
-        Inicializando matriz termográfica…
+        {isEs ? 'Inicializando matriz termográfica…' : 'Initializing thermographic matrix…'}
       </div>
     }>
       {() => <ThermalAdjustmentCostMatrixInner />}
