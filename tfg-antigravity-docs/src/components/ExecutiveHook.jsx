@@ -61,20 +61,10 @@ export default function ExecutiveHook() {
         splashSubtitle: 'FORENSIC ANALYSIS OF THE IBERIAN BLACKOUT',
         splashClick: 'CLICK TO ENTER',
       };
-      case 'pt': return {
-        splashTitle: 'ANATOMIA DE UM\nCOLAPSO SISTÉMICO',
-        splashSubtitle: 'ANÁLISE FORENSE DO APAGÃO IBÉRICO',
-        splashClick: 'CLIQUE PARA ENTRAR',
-      };
       case 'fr': return {
         splashTitle: 'ANATOMIE D\'UN\nEFFONDREMENT SYSTÉMIQUE',
         splashSubtitle: 'ANALYSE FORENSIQUE DU BLACK-OUT IBÉRIQUE',
         splashClick: 'CLIQUEZ POUR ENTRER',
-      };
-      case 'it': return {
-        splashTitle: 'ANATOMIA DI UN\nCOLLASSO SISTEMICO',
-        splashSubtitle: 'ANALISI FORENSE DEL BLACKOUT IBERICO',
-        splashClick: 'CLICCA PER ENTRARE',
       };
       case 'de': return {
         splashTitle: 'ANATOMIE EINES\nSYSTEMKOLLAPSES',

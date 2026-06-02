@@ -47,6 +47,39 @@ export default function NavigationGuide() {
     },
   ];
 
+  const pistachioGlow = `
+    @keyframes pistachioPulse {
+      0% { box-shadow: 0 0 4px rgba(99, 110, 79, 0.2), inset 0 0 2px rgba(99, 110, 79, 0.1); border-color: rgba(99, 110, 79, 0.3); }
+      50% { box-shadow: 0 0 12px rgba(99, 110, 79, 0.6), inset 0 0 4px rgba(99, 110, 79, 0.3); border-color: rgba(99, 110, 79, 0.8); }
+      100% { box-shadow: 0 0 4px rgba(99, 110, 79, 0.2), inset 0 0 2px rgba(99, 110, 79, 0.1); border-color: rgba(99, 110, 79, 0.3); }
+    }
+    .nav-guide-btn {
+      animation: pistachioPulse 3s infinite alternate;
+    }
+    .nav-guide-btn:hover {
+      animation: none !important;
+      box-shadow: 0 0 20px rgba(99, 110, 79, 0.9), inset 0 0 8px rgba(99, 110, 79, 0.5) !important;
+      border-color: #636e4f !important;
+      background: rgba(99, 110, 79, 0.15) !important;
+      transform: translateY(-2px);
+    }
+    .nav-guide-grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 768px) {
+      .nav-guide-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .nav-guide-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  `;
+
   return (
     <div style={{
       margin: '2rem 0',
@@ -56,6 +89,7 @@ export default function NavigationGuide() {
       background: 'var(--ifm-background-color)',
       position: 'relative',
     }}>
+      <style>{pistachioGlow}</style>
       <button
         onClick={dismiss}
         aria-label="Cerrar guía de navegación"
@@ -79,21 +113,19 @@ export default function NavigationGuide() {
         fontFamily: 'var(--ifm-font-family-base)',
         fontSize: '1.6rem',
         fontWeight: '700',
-        color: 'var(--ifm-menu-color)',
+        color: '#636e4f',
+        textShadow: '0 0 10px rgba(99, 110, 79, 0.3)',
         textAlign: 'center',
         margin: '0 0 1.5rem 0',
       }}>
         ¿Por dónde empezar?
       </p>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '0.75rem',
-      }}>
+      <div className="nav-guide-grid">
         {routes.map((r, i) => (
           <a
             key={i}
+            className="nav-guide-btn"
             href={r.action ? undefined : r.href}
             onClick={r.action ? (e) => { e.preventDefault(); r.action(); } : dismiss}
             style={{
@@ -101,20 +133,12 @@ export default function NavigationGuide() {
               flexDirection: 'column',
               gap: '0.4rem',
               padding: '1rem',
-              border: '1px solid var(--ifm-color-emphasis-200)',
+              border: '1px solid rgba(99, 110, 79, 0.3)',
               borderRadius: '8px',
               textDecoration: 'none',
               color: 'inherit',
-              transition: 'border-color 0.15s ease, background 0.15s ease',
+              transition: 'all 0.2s ease',
               cursor: 'pointer',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'var(--ifm-menu-color-active)';
-              e.currentTarget.style.background = 'var(--ifm-color-emphasis-100)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'var(--ifm-color-emphasis-200)';
-              e.currentTarget.style.background = 'transparent';
             }}
           >
             <span style={{
@@ -127,7 +151,7 @@ export default function NavigationGuide() {
             </span>
             <span style={{
               fontSize: '0.85rem',
-              color: 'var(--ifm-color-emphasis-600)',
+              color: 'var(--ifm-color-emphasis-800)',
               lineHeight: 1.4,
               fontFamily: 'var(--ifm-font-family-base)',
             }}>

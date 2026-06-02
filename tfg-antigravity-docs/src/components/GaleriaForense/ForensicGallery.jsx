@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import Translate, { translate } from '@docusaurus/Translate';
 import styles from './ForensicGallery.module.css';
 
 function ForensicGalleryInner() {
@@ -36,7 +37,7 @@ function ForensicGalleryInner() {
   }, []);
 
   if (loading) {
-    return <div className={styles.loading}>Descargando registros de incidencias...</div>;
+    return <div className={styles.loading}>{translate({id: 'forensic.loading', message: 'Descargando registros de incidencias...'})}</div>;
   }
 
   return (
@@ -48,7 +49,9 @@ function ForensicGalleryInner() {
               className={`${styles.categoryButton} ${activeCategory === category.id ? styles.active : ''}`}
               onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
             >
-              <div className={styles.catTitle}>{category.name}</div>
+              <div className={styles.catTitle}>
+                {translate({id: `forensic.category.${category.id}`, message: category.name})}
+              </div>
             </button>
             
             {activeCategory === category.id && (
@@ -56,17 +59,17 @@ function ForensicGalleryInner() {
                 {category.tables.map((table) => (
                   <div key={table.id} id={table.id} className={styles.tableItem} style={{ '--cat-color': category.color }}>
                     <div className={styles.tableHeader}>
-                      <span className={styles.tableTitle}>{table.name}</span>
+                      <span className={styles.tableTitle}>{translate({id: `forensic.table.${table.id}`, message: table.name})}</span>
                       <span className={styles.tableSource}>{table.source}</span>
                     </div>
-                    {table.note && <div className={styles.tableNote}>{table.note}</div>}
+                    {table.note && <div className={styles.tableNote}>{translate({id: `forensic.note.${table.id}`, message: table.note})}</div>}
                     
                     <div className={styles.tableWrapper}>
                       <table className={styles.dataTable}>
                         <thead>
                           <tr>
                             {table.columns.map((col, idx) => (
-                              <th key={idx}>{col.label}</th>
+                              <th key={idx}>{translate({id: `forensic.col.${col.key}`, message: col.label})}</th>
                             ))}
                           </tr>
                         </thead>
@@ -94,7 +97,7 @@ function ForensicGalleryInner() {
 
 export default function ForensicGallery() {
   return (
-    <BrowserOnly fallback={<div className={styles.loading}>Iniciando enlace de datos...</div>}>
+    <BrowserOnly fallback={<div className={styles.loading}>{translate({id: 'forensic.init', message: 'Iniciando enlace de datos...'})}</div>}>
       {() => <ForensicGalleryInner />}
     </BrowserOnly>
   );

@@ -47,6 +47,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import Translate, { translate } from '@docusaurus/Translate';
 
 const PROXY_URL  = '/api/redata-proxy?url=';
 const START_DATE = '2025-04-26T00:00';
@@ -244,7 +245,7 @@ function ThermalAdjustmentCostMatrixInner() {
         aria-busy="true"
         aria-live="polite"
       >
-        {loading ? 'Cargando matriz de costes…' : 'Inicializando visualización…'}
+        {loading ? translate({id: 'thermal.loading', message: 'Cargando matriz de costes…'}) : translate({id: 'thermal.init', message: 'Inicializando visualización…'})}
       </div>
     );
   }
@@ -252,9 +253,9 @@ function ThermalAdjustmentCostMatrixInner() {
   if (!displayData) {
     return (
       <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444' }}>
-        No hay datos disponibles.
+        {translate({id: 'thermal.noData', message: 'No hay datos disponibles.'})}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.9rem', cursor: 'pointer' }}>
-          Reintentar
+          {translate({id: 'thermal.retry', message: 'Reintentar'})}
         </button>
       </div>
     );
@@ -284,11 +285,11 @@ function ThermalAdjustmentCostMatrixInner() {
 
   const layout = {
     title: {
-      text: 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)',
+      text: translate({id: 'thermal.title', message: 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)'}),
       font: { size: 15, color: '#e0ddd5' },
     },
     xaxis: {
-      title: 'Fecha y hora (CEST)',
+      title: translate({id: 'thermal.xaxis', message: 'Fecha y hora (CEST)'}),
       tickangle: -45,
       tickformat: '%d/%m %Hh',
       gridcolor: 'rgba(255,255,255,0.07)',
@@ -335,9 +336,9 @@ function ThermalAdjustmentCostMatrixInner() {
           borderRadius: 6,
           fontSize: 12, fontFamily: 'monospace', color: '#f59e0b',
         }} aria-live="polite">
-          ⚠ API REData no disponible — datos estimados (fallback determinista).
-          Los valores horarios son estimaciones coherentes con rangos verificados,
-          no medidas directas de ESIOS. Ver nota metodológica.
+          <Translate id="thermal.fallbackBanner">
+            ⚠ API REData no disponible — datos estimados (fallback determinista). Los valores horarios son estimaciones coherentes con rangos verificados, no medidas directas de ESIOS. Ver nota metodológica.
+          </Translate>
         </div>
       )}
 
@@ -348,8 +349,8 @@ function ThermalAdjustmentCostMatrixInner() {
       }}>
         {/* Selector de servicio */}
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}
-             role="group" aria-label="Filtrar por servicio de ajuste">
-          {[{ id: 'all', label: 'Todos' }, ...(plotData?.y || []).map((n, i) => ({
+             role="group" aria-label={translate({id: 'thermal.filterService', message: 'Filtrar por servicio de ajuste'})}>
+          {[{ id: 'all', label: translate({id: 'thermal.all', message: 'Todos'}) }, ...(plotData?.y || []).map((n, i) => ({
             id: String(i), label: n.split(' ').slice(0, 2).join(' '),
           }))].map(opt => (
             <button
@@ -375,7 +376,7 @@ function ThermalAdjustmentCostMatrixInner() {
         {/* Exportar CSV */}
         <button
           onClick={() => exportCSV(plotData)}
-          aria-label="Descargar datos como CSV"
+          aria-label={translate({id: 'thermal.downloadCSV', message: 'Descargar datos como CSV'})}
           style={{
             padding: '0.25rem 0.7rem',
             background: 'transparent',
@@ -391,7 +392,7 @@ function ThermalAdjustmentCostMatrixInner() {
       {/* Heatmap */}
       <div
         role="img"
-        aria-label={`Mapa de calor de costes de servicios de ajuste eléctrico durante la semana del 28-A. El pico de costes se concentra el 28 de abril de 2025 entre las 12:00 y las 15:00 CEST.`}
+        aria-label={translate({id: 'thermal.heatmapAria', message: 'Mapa de calor de costes de servicios de ajuste eléctrico durante la semana del 28-A. El pico de costes se concentra el 28 de abril de 2025 entre las 12:00 y las 15:00 CEST.'})}
       >
         <Plot
           data={[heatmapTrace]}
@@ -421,20 +422,14 @@ function ThermalAdjustmentCostMatrixInner() {
         borderRadius: '0 6px 6px 0',
       }}>
         <p style={{ margin: '0 0 0.4rem' }}>
-          <strong>Costes verificados (ISE-2025 REE / REE informe abril 2026):</strong>{' '}
-          El coste total de servicios de ajuste en 2025 se incrementó un{' '}
-          <strong>+43% respecto a 2024</strong>, con restricciones técnicas
-          acumulando entre <strong>3.351 y 3.770 M€</strong> por el despacho
-          forzoso de ciclos combinados ("Operación Reforzada"). El coste
-          acumulado de la Operación Reforzada hasta el 31 de marzo de 2026
-          fue de <strong>666 M€</strong> (REE, informe abril 2026 — dato verificado).
-          En marzo de 2026, las restricciones representaron el{' '}
-          <strong>28% del término de energía en la factura PVPC</strong>.
+          <Translate id="thermal.footerText" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
+            {`<b>Costes verificados (ISE-2025 REE / REE informe abril 2026):</b> El coste total de servicios de ajuste en 2025 se incrementó un <b>+43% respecto a 2024</b>, con restricciones técnicas acumulando entre <b>3.351 y 3.770 M€</b> por el despacho forzoso de ciclos combinados (\"Operación Reforzada\"). El coste acumulado de la Operación Reforzada hasta el 31 de marzo de 2026 fue de <b>666 M€</b> (REE, informe abril 2026 — dato verificado). En marzo de 2026, las restricciones representaron el <b>28% del término de energía en la factura PVPC</b>.`}
+          </Translate>
         </p>
         <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
           {isFallback
-            ? '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.'
-            : 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.'}
+            ? translate({id: 'thermal.footerFallback', message: '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.'})
+            : translate({id: 'thermal.footerSource', message: 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.'})}
         </p>
       </div>
     </div>

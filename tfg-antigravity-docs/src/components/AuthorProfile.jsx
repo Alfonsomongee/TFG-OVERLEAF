@@ -30,14 +30,14 @@ export default function AuthorProfile() {
           .author-header {
             text-align: left;
             margin-bottom: 2.5rem;
-            border-bottom: 1px solid rgba(255,170,0,0.15);
+            border-bottom: 1px solid rgba(65, 66, 74, 0.3);
             padding-bottom: 1.5rem;
           }
 
           .author-subtitle {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: rgba(255,170,0,0.8);
+            color: #41424a;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-top: 0.75rem;
@@ -53,7 +53,7 @@ export default function AuthorProfile() {
           .author-text p {
             font-size: 0.95rem;
             line-height: 1.65;
-            color: rgba(200,195,185,0.9);
+            color: #636E4F;
             margin-bottom: 1.2rem;
             text-align: justify;
           }
@@ -61,11 +61,11 @@ export default function AuthorProfile() {
           .author-section-title {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: rgba(255,255,255,0.5);
+            color: #41424a;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-bottom: 1.2rem;
-            border-left: 2px solid rgba(255,170,0,0.5);
+            border-left: 2px solid #41424a;
             padding-left: 0.75rem;
           }
 
@@ -77,9 +77,9 @@ export default function AuthorProfile() {
           }
 
           .author-skill-tag {
-            background: rgba(255,170,0,0.05);
-            border: 1px solid rgba(255,170,0,0.2);
-            color: rgba(255,170,0,0.9);
+            background: rgba(65, 66, 74, 0.1);
+            border: 1px solid #41424a;
+            color: #41424a;
             padding: 0.4rem 0.8rem;
             border-radius: 4px;
             font-size: 0.8rem;
@@ -87,13 +87,13 @@ export default function AuthorProfile() {
           }
 
           .author-blockquote {
-            background: rgba(255,255,255,0.02);
-            border-left: 3px solid rgba(6,182,212,0.5);
+            background: rgba(65, 66, 74, 0.05);
+            border-left: 3px solid #41424a;
             padding: 1.2rem 1.5rem;
             font-style: italic;
             font-size: 0.95rem;
             line-height: 1.6;
-            color: rgba(200,195,185,0.85);
+            color: #41424a;
           }
 
           .author-cta {
@@ -105,9 +105,9 @@ export default function AuthorProfile() {
           }
 
           .btn-primary {
-            background: rgba(255,170,0,0.1);
-            border: 1px solid rgba(255,170,0,0.4);
-            color: #ffaa00;
+            background: #41424a;
+            border: 1px solid #41424a;
+            color: #ffffff;
             padding: 0.7rem 1.4rem;
             text-decoration: none;
             border-radius: 6px;
@@ -116,15 +116,15 @@ export default function AuthorProfile() {
             transition: all 0.2s;
           }
           .btn-primary:hover {
-            background: rgba(255,170,0,0.2);
+            background: #2a2b30;
             text-decoration: none;
-            color: #ffaa00;
+            color: #ffffff;
           }
 
           .btn-secondary {
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.8);
+            border: 1px solid #41424a;
+            color: #41424a;
             padding: 0.7rem 1.4rem;
             text-decoration: none;
             border-radius: 6px;
@@ -132,9 +132,9 @@ export default function AuthorProfile() {
             transition: all 0.2s;
           }
           .btn-secondary:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.4);
-            color: #fff;
+            background: rgba(65, 66, 74, 0.1);
+            border-color: #41424a;
+            color: #41424a;
             text-decoration: none;
           }
 

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Translate, { translate } from '@docusaurus/Translate';
 import datosForenses from '@site/src/data/datosForenses.json';
 import styles from './styles.module.css';
 
@@ -44,12 +45,12 @@ export default function TablaMaestra28A() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3>Base de Datos Maestra 28-A</h3>
-        <p>Datos validados y triangulados desde las fuentes primarias de la investigación.</p>
+        <h3><Translate id="tablaMaestra.title">Base de Datos Maestra 28-A</Translate></h3>
+        <p><Translate id="tablaMaestra.desc">Datos validados y triangulados desde las fuentes primarias de la investigación.</Translate></p>
       </div>
 
       <div className={styles.filterSection}>
-        <span className={styles.filterLabel}>Filtrar por Fuente Primaria:</span>
+        <span className={styles.filterLabel}><Translate id="tablaMaestra.filtrarPor">Filtrar por Fuente Primaria:</Translate></span>
         <div className={styles.badges}>
           {allSources.map(source => (
             <button
@@ -62,7 +63,7 @@ export default function TablaMaestra28A() {
           ))}
           {selectedSources.length > 0 && (
             <button className={styles.badgeClear} onClick={() => setSelectedSources([])}>
-              ✖ Borrar filtros
+              ✖ <Translate id="tablaMaestra.borrarFiltros">Borrar filtros</Translate>
             </button>
           )}
         </div>
@@ -72,11 +73,11 @@ export default function TablaMaestra28A() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Magnitud</th>
-              <th>Valor</th>
-              <th>Fuente Oficial</th>
-              <th>Pág.</th>
-              <th>Auditoría</th>
+              <th><Translate id="tablaMaestra.magnitud">Magnitud</Translate></th>
+              <th><Translate id="tablaMaestra.valor">Valor</Translate></th>
+              <th><Translate id="tablaMaestra.fuenteOficial">Fuente Oficial</Translate></th>
+              <th><Translate id="tablaMaestra.pag">Pág.</Translate></th>
+              <th><Translate id="tablaMaestra.auditoria">Auditoría</Translate></th>
             </tr>
           </thead>
           <tbody>
@@ -95,7 +96,7 @@ export default function TablaMaestra28A() {
                   <td>{row.pagina || '-'}</td>
                   <td>
                     <button className={styles.expandBtn}>
-                      {expandedRow === row.id ? 'Ocultar info' : 'Ver contexto'}
+                      {expandedRow === row.id ? translate({id: 'tablaMaestra.ocultar', message: 'Ocultar info'}) : translate({id: 'tablaMaestra.verContexto', message: 'Ver contexto'})}
                     </button>
                   </td>
                 </tr>
@@ -103,20 +104,20 @@ export default function TablaMaestra28A() {
                   <tr className={styles.expandedDetail}>
                     <td colSpan="5">
                       <div className={styles.detailBox}>
-                        {row.contexto && <p><strong>Contexto:</strong> {row.contexto}</p>}
+                        {row.contexto && <p><strong><Translate id="tablaMaestra.contexto">Contexto:</Translate></strong> {row.contexto}</p>}
                         {row.notaDiscrepancia && (
                           <div className={styles.discrepancyBox}>
-                            <strong>⚠️ Nota de Discrepancia:</strong> {row.notaDiscrepancia}
+                            <strong>⚠️ <Translate id="tablaMaestra.notaDiscrepancia">Nota de Discrepancia:</Translate></strong> {row.notaDiscrepancia}
                             {row.valorAlternativo && (
                               <p className={styles.altVal}>
-                                Valor alternativo registrado: {row.valorAlternativo} {row.unidad}
+                                {translate({id: 'tablaMaestra.valorAlt', message: 'Valor alternativo registrado:'})} {row.valorAlternativo} {row.unidad}
                               </p>
                             )}
                           </div>
                         )}
                         {row.url && (
                           <a href={row.url} target="_blank" rel="noopener noreferrer" className={styles.sourceLink}>
-                            🔗 Consultar documento original
+                            🔗 <Translate id="tablaMaestra.consultarOriginal">Consultar documento original</Translate>
                           </a>
                         )}
                       </div>

@@ -1,0 +1,32 @@
+---
+id: anexo-tablas
+title: "Annex B — Index of Tables and Documentary Records"
+sidebar_label: "Annex B · Tables and Records"
+sidebar_position: 31
+hide_title: true
+pagination_prev: null
+pagination_next: null
+---
+
+import { useState } from 'react';
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
+import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
+import TabSelector from '@site/src/components/TabSelector';
+
+<GlitchTitle>Annex B — Tables and Documentary Records</GlitchTitle>
+
+All numbered tables in the work (TABLE 1 – TABLE 27) and the master database with the complete technical records of the incident of April 28.
+
+export const AnexoB = () => {
+  const [tab, setTab] = useState(0);
+  return (
+    <>
+      <TabSelector active={tab} onSelect={setTab} labels={['Numbered tables', 'Master database']} />
+      {tab === 0 && <ForensicGallery />}
+      {tab === 1 && <TablaMaestra28A />}
+    </>
+  );
+};
+
+<AnexoB />

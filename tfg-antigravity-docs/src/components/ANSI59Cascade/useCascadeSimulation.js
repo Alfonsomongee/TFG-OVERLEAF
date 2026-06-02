@@ -24,6 +24,7 @@
  *   4. `executeStep` se define DENTRO del useEffect para evitar re-renders innecesarios.
  */
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { translate } from '@docusaurus/Translate';
 
 // Nodos representativos del sistema ibérico (pedagogía, no topología exacta).
 // Valores de P_ibr y absorb_Q anclados a ENTSO-E Factual Report / Comité de Análisis.
@@ -185,8 +186,8 @@ export function useCascadeSimulation(sensitivity = 0.08) {
       setHistory([{
         time: '0.0s',
         node: 'Granada SO',
-        msg:  '⚡ DISPARO RAÍZ (ANSI 59): Transformador 400/220 kV por sobretensión.',
-        detail: `−${(currentNodes[granadaIdx].P_ibr * 1000).toFixed(0)} MW activos · −${(absorb_Q_lost * 1000).toFixed(0)} MVAr de absorción. (ENTSO-E Factual, p.28)`,
+        msg:  translate({id: 'ansi59.rootTripMsg', message: '⚡ DISPARO RAÍZ (ANSI 59): Transformador 400/220 kV por sobretensión.'}),
+        detail: translate({id: 'ansi59.rootTripDetail', message: '−{mw} MW activos · −{mvar} MVAr de absorción. (ENTSO-E Factual, p.28)'}, {mw: (currentNodes[granadaIdx].P_ibr * 1000).toFixed(0), mvar: (absorb_Q_lost * 1000).toFixed(0)}),
         MW:   currentNodes[granadaIdx].P_ibr,
         MVAr: absorb_Q_lost,
       }]);
@@ -214,8 +215,8 @@ export function useCascadeSimulation(sensitivity = 0.08) {
     const newEntries = nodesToTrip.map(n => ({
       time: formattedTime,
       node: n.name,
-      msg:  `⚡ DISPARO SECUNDARIO (Sobretensión > ${(n.threshold * 100).toFixed(0)}%UV)`,
-      detail: `−${(n.P_ibr * 1000).toFixed(0)} MW activos · −${(n.absorb_Q * 1000).toFixed(0)} MVAr de absorción.`,
+      msg:  translate({id: 'ansi59.secondaryTripMsg', message: '⚡ DISPARO SECUNDARIO (Sobretensión > {uv}%UV)'}, {uv: (n.threshold * 100).toFixed(0)}),
+      detail: translate({id: 'ansi59.secondaryTripDetail', message: '−{mw} MW activos · −{mvar} MVAr de absorción.'}, {mw: (n.P_ibr * 1000).toFixed(0), mvar: (n.absorb_Q * 1000).toFixed(0)}),
       MW:   n.P_ibr,
       MVAr: n.absorb_Q,
     }));

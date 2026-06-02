@@ -10,6 +10,7 @@
  *   5. El preset 28-A carga SCR=1.8 / cosPhi=0.95 / P_op=0.91 → margen negativo (rojo).
  */
 import React, { useState, useEffect } from 'react';
+import Translate, { translate } from '@docusaurus/Translate';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -34,7 +35,7 @@ function CustomTooltip({ active, payload }) {
   if (!d) return null;
   return (
     <div className={styles.tooltipCustom}>
-      <p className={styles.tooltipLabel}>Curva P-V</p>
+      <p className={styles.tooltipLabel}><Translate id="pvcurve.tooltipTitle">Curva P-V</Translate></p>
       <p>P: <span className={styles.tooltipValue}>{d.P} p.u.</span></p>
       <p>V: <span className={styles.tooltipValue}>{d.V} p.u.</span></p>
     </div>
@@ -74,16 +75,16 @@ export default function PVCurveSimulator() {
   const isCollapsed = P_op > noseP;
   let marginLabel, marginColor;
   if (isCollapsed || margin <= 0) {
-    marginLabel = '💥 COLAPSO DE TENSIÓN — Sistema sin solución estable';
+    marginLabel = translate({id: 'pvcurve.marginCollapse', message: '💥 COLAPSO DE TENSIÓN — Sistema sin solución estable'});
     marginColor = 'red';
   } else if (margin <= 0.1) {
-    marginLabel = '🛑 RIESGO CRÍTICO — Margen insuficiente';
+    marginLabel = translate({id: 'pvcurve.marginCritical', message: '🛑 RIESGO CRÍTICO — Margen insuficiente'});
     marginColor = 'red';
   } else if (margin <= 0.3) {
-    marginLabel = '⚠️ ALERTA — Margen reducido';
+    marginLabel = translate({id: 'pvcurve.marginWarning', message: '⚠️ ALERTA — Margen reducido'});
     marginColor = 'amber';
   } else {
-    marginLabel = '✅ SISTEMA ESTABLE — Operación segura';
+    marginLabel = translate({id: 'pvcurve.marginStable', message: '✅ SISTEMA ESTABLE — Operación segura'});
     marginColor = 'green';
   }
 
@@ -127,7 +128,7 @@ export default function PVCurveSimulator() {
                 stroke='var(--text-1, #64748b)'
                 tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
               >
-                <Label value="Potencia activa P (p.u.)" position="bottom" offset={16}
+                <Label value={translate({id: 'pvcurve.xAxis', message: 'Potencia activa P (p.u.)'})} position="bottom" offset={16}
                        fill="#94a3b8" fontSize={12} />
               </XAxis>
 
@@ -137,7 +138,7 @@ export default function PVCurveSimulator() {
                 stroke='var(--text-1, #64748b)'
                 tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
               >
-                <Label value="Tensión V (p.u.)" angle={-90} position="insideLeft"
+                <Label value={translate({id: 'pvcurve.yAxis', message: 'Tensión V (p.u.)'})} angle={-90} position="insideLeft"
                        offset={8} fill="#94a3b8" fontSize={12} />
               </YAxis>
 
@@ -168,7 +169,7 @@ export default function PVCurveSimulator() {
                 y={0.95}
                 stroke="rgba(239,68,68,0.45)"
                 strokeDasharray="4 4"
-                label={{ value: 'Mínimo operativo (0.95 p.u.)',
+                label={{ value: translate({id: 'pvcurve.minOp', message: 'Mínimo operativo (0.95 p.u.)'}),
                          fill: '#f87171', position: 'insideTopRight', fontSize: 10 }}
               />
 
@@ -190,7 +191,7 @@ export default function PVCurveSimulator() {
                 strokeWidth={2.5}
                 dot={false}
                 activeDot={false}
-                name="Rama estable (operación normal)"
+                name={translate({id: 'pvcurve.stableBranch', message: 'Rama estable (operación normal)'})}
                 legendType="line"
               />
 
@@ -204,7 +205,7 @@ export default function PVCurveSimulator() {
                 strokeDasharray="5 4"
                 dot={false}
                 activeDot={false}
-                name="Rama inestable (post-colapso)"
+                name={translate({id: 'pvcurve.unstableBranch', message: 'Rama inestable (post-colapso)'})}
                 legendType="line"
               />
 
@@ -234,7 +235,7 @@ export default function PVCurveSimulator() {
           </ResponsiveContainer>
         ) : (
           <div className={styles.loadingPlaceholder}>
-            Inicializando simulador P-V…
+            {translate({id: 'pvcurve.init', message: 'Inicializando simulador P-V…'})}
           </div>
         )}
       </div>
@@ -244,7 +245,7 @@ export default function PVCurveSimulator() {
 
         {/* Métrica semafórica */}
         <div className={cardClass} role="status" aria-live="polite">
-          <span className={styles.metricLabel}>Margen al Colapso</span>
+          <span className={styles.metricLabel}><Translate id="pvcurve.marginCollapseLabel">Margen al Colapso</Translate></span>
           <span className={styles.metricValue}>
             {isCollapsed ? '−∞' : margin.toFixed(3)} p.u.
           </span>
@@ -256,7 +257,7 @@ export default function PVCurveSimulator() {
 
           <div className={styles.sliderRow}>
             <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Short Circuit Ratio (SCR)</span>
+              <span className={styles.sliderLabel}><Translate id="pvcurve.scr">Short Circuit Ratio (SCR)</Translate></span>
               <span className={styles.sliderValue}>{SCR.toFixed(1)}</span>
             </div>
             <input
@@ -270,16 +271,16 @@ export default function PVCurveSimulator() {
             />
             <div className={styles.sliderHint}>
               {SCR < 2
-                ? '⚠ Red débil — alta vulnerabilidad de tensión (condición 28-A)'
+                ? translate({id: 'pvcurve.scrHintWeak', message: '⚠ Red débil — alta vulnerabilidad de tensión (condición 28-A)'})
                 : SCR < 3
-                  ? '— Red marginal'
-                  : '✓ Red robusta'}
+                  ? translate({id: 'pvcurve.scrHintMarginal', message: '— Red marginal'})
+                  : translate({id: 'pvcurve.scrHintStrong', message: '✓ Red robusta'})}
             </div>
           </div>
 
           <div className={styles.sliderRow}>
             <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Factor de Potencia (cos φ)</span>
+              <span className={styles.sliderLabel}><Translate id="pvcurve.cosPhi">Factor de Potencia (cos φ)</Translate></span>
               <span className={styles.sliderValue}>{cosPhi.toFixed(2)}</span>
             </div>
             <input
@@ -295,7 +296,7 @@ export default function PVCurveSimulator() {
 
           <div className={styles.sliderRow}>
             <div className={styles.sliderHeader}>
-              <span className={styles.sliderLabel}>Carga Activa P_op</span>
+              <span className={styles.sliderLabel}><Translate id="pvcurve.pop">Carga Activa P_op</Translate></span>
               <span className={styles.sliderValue}>{P_op.toFixed(2)} p.u.</span>
             </div>
             <input
@@ -312,21 +313,21 @@ export default function PVCurveSimulator() {
 
         {/* Presets */}
         <div className={styles.presetsSection}>
-          <span className={styles.presetsLabel}>Escenarios</span>
+          <span className={styles.presetsLabel}><Translate id="pvcurve.presets">Escenarios</Translate></span>
           <div className={styles.presets}>
             <button
               className={`${styles.presetBtn} ${styles.presetDanger}`}
               onClick={handlePreset28A}
               title="SCR=1.8 · cos φ=0.95 · P_op=0.91 → margen negativo"
             >
-              ⚠️ 28-A Zona Sur
+              ⚠️ <Translate id="pvcurve.preset28A">28-A Zona Sur</Translate>
             </button>
             <button
               className={styles.presetBtn}
               onClick={handlePresetNormal}
               title="SCR=3.0 · cos φ=0.95 · P_op=0.70 → sistema estable"
             >
-              ✅ Sistema Normal
+              ✅ <Translate id="pvcurve.presetNormal">Sistema Normal</Translate>
             </button>
           </div>
         </div>
@@ -335,18 +336,9 @@ export default function PVCurveSimulator() {
 
       {/* ── EXPLICACIÓN TÉCNICA ───────────────────────────────────────────── */}
       <div className={styles.footer}>
-        <strong>Mecanismo de colapso de tensión (curva nariz P-V):</strong>{' '}
-        La rama estable (azul) representa la operación normal del sistema. El{' '}
-        <em>nose point</em> (punto rojo) es la máxima cargabilidad: más allá,
-        no existe solución estable para la ecuación de flujo de potencia reactiva.
-        El 28-A, la zona sur peninsular operó con SCR ≈ 1,8 y una carga
-        equivalente al 91% de la capacidad máxima del corredor reactivo,
-        dejando un margen negativo antes del primer disparo.
-        <br />
-        <small style={{ color: 'var(--text-1, #64748b)' }}>
-          Modelo: sistema de 2 nudos (Van Cutsem &amp; Vournas, 1998).
-          Parámetros anclados a ENTSO-E Factual Report, Tabla 2-4, p. 36.
-        </small>
+        <Translate id="pvcurve.footer" values={{ b: (chunks) => <strong>{chunks}</strong>, em: (chunks) => <em>{chunks}</em>, br: <br/>, small: (chunks) => <small style={{ color: 'var(--text-1, #64748b)' }}>{chunks}</small> }}>
+          {`<b>Mecanismo de colapso de tensión (curva nariz P-V):</b> La rama estable (azul) representa la operación normal del sistema. El <em>nose point</em> (punto rojo) es la máxima cargabilidad: más allá, no existe solución estable para la ecuación de flujo de potencia reactiva. El 28-A, la zona sur peninsular operó con SCR ≈ 1,8 y una carga equivalente al 91% de la capacidad máxima del corredor reactivo, dejando un margen negativo antes del primer disparo.<br/><small>Modelo: sistema de 2 nudos (Van Cutsem & Vournas, 1998). Parámetros anclados a ENTSO-E Factual Report, Tabla 2-4, p. 36.</small>`}
+        </Translate>
       </div>
 
     </div>

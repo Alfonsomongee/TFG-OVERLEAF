@@ -1,0 +1,33 @@
+---
+id: anexo-tablas
+title: "Anhang B — Verzeichnis der Tabellen und Dokumentationsaufzeichnungen"
+sidebar_label: "Anhang B · Tabellen und Aufzeichnungen"
+sidebar_position: 31
+hide_title: true
+pagination_prev: null
+pagination_next: null
+---
+
+import { useState } from 'react';
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
+import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
+import TabSelector from '@site/src/components/TabSelector';
+
+<GlitchTitle>Anhang B — Tabellen und Dokumentationsaufzeichnungen</GlitchTitle>
+
+Alle nummerierten Tabellen der Arbeit (TABELLE 1 – TABELLE 27) und die 
+Master-Datenbank mit den vollständigen technischen Aufzeichnungen des Vorfalls vom 28. April.
+
+export const AnexoB = () => {
+  const [tab, setTab] = useState(0);
+  return (
+    <>
+      <TabSelector active={tab} onSelect={setTab} labels={['Nummerierte Tabellen', 'Master-Datenbank']} />
+      {tab === 0 && <ForensicGallery />}
+      {tab === 1 && <TablaMaestra28A />}
+    </>
+  );
+};
+
+<AnexoB />

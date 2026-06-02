@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Translate, { translate } from '@docusaurus/Translate';
 import { useCascadeSimulation } from './useCascadeSimulation';
 import styles from './styles.module.css';
 
@@ -36,7 +37,7 @@ export default function ANSI59Cascade() {
   if (!isMounted) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', color: '#94a3b8' }}>
-        Cargando simulador de cascada...
+        {translate({id: 'ansi59.loading', message: 'Cargando simulador de cascada...'})}
       </div>
     );
   }
@@ -68,27 +69,27 @@ export default function ANSI59Cascade() {
         <div className={styles.btnGroup}>
           {!isRunning && !isFinished ? (
             <button className={`${styles.controlBtn} ${styles.primary}`} onClick={startSimulation}>
-              ▶ Iniciar Cascada
+              ▶ {translate({id: 'ansi59.start', message: 'Iniciar Cascada'})}
             </button>
           ) : isRunning ? (
             <button className={styles.controlBtn} onClick={pauseSimulation}>
-              ⏸ Pausar
+              ⏸ {translate({id: 'ansi59.pause', message: 'Pausar'})}
             </button>
           ) : (
             <button className={`${styles.controlBtn} ${styles.primary}`} onClick={startSimulation}>
-              ▶ Reanudar
+              ▶ {translate({id: 'ansi59.resume', message: 'Reanudar'})}
             </button>
           )}
 
           <button className={styles.controlBtn} onClick={resetSimulation}>
-            ↺ Reiniciar
+            ↺ {translate({id: 'ansi59.reset', message: 'Reiniciar'})}
           </button>
         </div>
 
         {/* Sensitivity slider */}
         <div className={styles.sliderRow}>
           <div className={styles.sliderHeader}>
-            <span className={styles.sliderLabel}>Protecciones ANSI 59 (Sensibilidad)</span>
+            <span className={styles.sliderLabel}><Translate id="ansi59.sliderSensitivity">Protecciones ANSI 59 (Sensibilidad)</Translate></span>
             <span className={styles.sliderValue}>{sensitivity.toFixed(2)}</span>
           </div>
           <input
@@ -104,10 +105,10 @@ export default function ANSI59Cascade() {
           />
           <span style={{ fontSize: '0.62rem', color: 'var(--text-1, #64748b)', marginTop: '0.1rem' }}>
             {sensitivity <= 0.05 
-              ? '🛡️ Calibración óptima (Cascada contenida)' 
+              ? translate({id: 'ansi59.hintOptimal', message: '🛡️ Calibración óptima (Cascada contenida)'}) 
               : sensitivity <= 0.09 
-                ? '⚠️ Calibración real 28-A (Riesgo alto de propagación)' 
-                : '💥 Calibración crítica (Cascada explosiva)'}
+                ? translate({id: 'ansi59.hintReal', message: '⚠️ Calibración real 28-A (Riesgo alto de propagación)'}) 
+                : translate({id: 'ansi59.hintCritical', message: '💥 Calibración crítica (Cascada explosiva)'})}
           </span>
         </div>
       </div>
@@ -128,12 +129,12 @@ export default function ANSI59Cascade() {
                   {getNodeIcon(node.type)} {node.name}
                 </span>
                 <span className={`${styles.badge} ${isNodeTripped ? styles.tripped : styles.active}`}>
-                  {isNodeTripped ? '⚡ TRIP' : 'ACTIVO'}
+                  {isNodeTripped ? translate({id: 'ansi59.badgeTrip', message: '⚡ TRIP'}) : translate({id: 'ansi59.badgeActive', message: 'ACTIVO'})}
                 </span>
               </div>
 
               <div className={styles.voltageMetricRow}>
-                <span className={styles.voltageLabel}>Tensión en barra</span>
+                <span className={styles.voltageLabel}><Translate id="ansi59.voltageLabel">Tensión en barra</Translate></span>
                 <span className={`${styles.voltageValue} ${vClass}`}>
                   {node.V.toFixed(3)} p.u.
                 </span>
@@ -154,11 +155,11 @@ export default function ANSI59Cascade() {
 
               <div className={styles.nodeMeta}>
                 <span>
-                  {node.type === 'solar' ? 'Generación FV' : 'Generación Eólica'}: {(node.P_ibr * 1000).toFixed(0)} MW
+                  {node.type === 'solar' ? translate({id: 'ansi59.solar', message: 'Generación FV'}) : translate({id: 'ansi59.wind', message: 'Generación Eólica'})}: {(node.P_ibr * 1000).toFixed(0)} MW
                 </span>
                 {isNodeTripped && (
                   <span className={styles.metaTripTime}>
-                    Disparado a {node.tripTime}
+                    {translate({id: 'ansi59.trippedAt', message: 'Disparado a'})} {node.tripTime}
                   </span>
                 )}
               </div>
@@ -171,27 +172,27 @@ export default function ANSI59Cascade() {
       <div className={styles.dashboardSidebar}>
         {/* Stats card */}
         <div className={styles.statsCard}>
-          <h4 className={styles.statsTitle}>Monitoreo del Sistema</h4>
+          <h4 className={styles.statsTitle}><Translate id="ansi59.statsTitle">Monitoreo del Sistema</Translate></h4>
           
           <div className={styles.statRow}>
-            <span className={styles.statLabel}>Cronómetro:</span>
+            <span className={styles.statLabel}><Translate id="ansi59.timerLabel">Cronómetro:</Translate></span>
             <span className={styles.statValue}>{time.toFixed(1)}s</span>
           </div>
 
           <div className={styles.statRow}>
-            <span className={styles.statLabel}>Nudos activos:</span>
+            <span className={styles.statLabel}><Translate id="ansi59.activeNodesLabel">Nudos activos:</Translate></span>
             <span className={styles.statValue}>{activeNodesCount} / 8</span>
           </div>
 
           <div className={styles.statRow}>
-            <span className={styles.statLabel}>Gen. Perdida:</span>
+            <span className={styles.statLabel}><Translate id="ansi59.lostMWLabel">Gen. Perdida:</Translate></span>
             <span className={`${styles.statValue} ${totalLostMW > 0 ? styles.warning : ''}`}>
               {(totalLostMW * 1000).toFixed(0)} MW
             </span>
           </div>
 
           <div className={styles.statRow}>
-            <span className={styles.statLabel}>Reactiva Perdida:</span>
+            <span className={styles.statLabel}><Translate id="ansi59.lostMVArLabel">Reactiva Perdida:</Translate></span>
             <span className={`${styles.statValue} ${totalLostMVAr > 0 ? styles.warning : ''}`}>
               {(totalLostMVAr * 1000).toFixed(0)} MVAr
             </span>
@@ -207,7 +208,7 @@ export default function ANSI59Cascade() {
           
           <div className={styles.consoleBody} aria-live="polite">
             {history.length === 0 ? (
-              <span className={styles.emptyLog}>Esperando disparo raíz para iniciar cascada...</span>
+              <span className={styles.emptyLog}>{translate({id: 'ansi59.logEmpty', message: 'Esperando disparo raíz para iniciar cascada...'})}</span>
             ) : (
               history.map((log, idx) => (
                 <div key={idx} className={styles.logEntry}>
@@ -226,11 +227,15 @@ export default function ANSI59Cascade() {
         <div className={`${styles.banner} ${activeNodesCount === 0 ? styles.collapsed : styles.stabilized}`}>
           {activeNodesCount === 0 ? (
             <span>
-              💥 <strong>COLAPSO TOTAL DEL CORREDOR:</strong> Pérdida completa de estabilidad de tensión. Se perdieron {(totalLostMW * 1000).toFixed(0)} MW y {(totalLostMVAr * 1000).toFixed(0)} MVAr de absorción reactiva en {time.toFixed(1)} segundos.
+              <Translate id="ansi59.bannerCollapse" values={{ mw: (totalLostMW * 1000).toFixed(0), mvar: (totalLostMVAr * 1000).toFixed(0), time: time.toFixed(1), strong: (chunks) => <strong>{chunks}</strong> }}>
+                {`💥 <strong>COLAPSO TOTAL DEL CORREDOR:</strong> Pérdida completa de estabilidad de tensión. Se perdieron {mw} MW y {mvar} MVAr de absorción reactiva en {time} segundos.`}
+              </Translate>
             </span>
           ) : (
             <span>
-              🛡️ <strong>SISTEMA ESTABILIZADO:</strong> La cascada se detuvo. Permanecen activos {activeNodesCount} de 8 nudos tras {time.toFixed(1)} segundos.
+              <Translate id="ansi59.bannerStable" values={{ nodes: activeNodesCount, time: time.toFixed(1), strong: (chunks) => <strong>{chunks}</strong> }}>
+                {`🛡️ <strong>SISTEMA ESTABILIZADO:</strong> La cascada se detuvo. Permanecen activos {nodes} de 8 nudos tras {time} segundos.`}
+              </Translate>
             </span>
           )}
         </div>

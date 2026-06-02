@@ -30,8 +30,9 @@
  *    estáticos verificados. Si la API falla (Wi-Fi de congreso),
  *    el componente sigue funcionando.
  */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import Translate, { translate } from '@docusaurus/Translate';
 import {
   BarChart,
   Bar,
@@ -56,48 +57,7 @@ const ENS_PORTUGAL_MWH  = 55489.4;   // ERSE/REN — verificado
 const ENS_ESPANA_MWH    = 200000;    // Estimación — Cuestión abierta
 const VOLL_EUR_MWH      = 11000;     // CEER 2023 media ponderada España
 
-const STATIC_ITEMS = [
-  {
-    label: 'VoLL — ENS Iberia',
-    shortLabel: 'VoLL',
-    value: parseFloat(((ENS_PORTUGAL_MWH + ENS_ESPANA_MWH) * VOLL_EUR_MWH / 1e6).toFixed(1)),
-    color: '#ef4444',
-    fuente: 'CEER 2023 (VoLL) + ERSE/REN (ENS PT) + estimación ENS ES',
-    nota: 'ENS España es estimación — cuestión abierta (ver datos28A.json)',
-  },
-  {
-    label: 'Operación Reforzada (Gas)',
-    shortLabel: 'Op. Reforzada',
-    value: 666.0,
-    color: '#f59e0b',
-    fuente: 'REE, informe abril 2026',
-    nota: 'Dato verificado en fuente primaria',
-  },
-  {
-    label: 'Pérdidas Consumo/Comercio',
-    shortLabel: 'Consumo',
-    value: 400.0,
-    color: '#f97316',
-    fuente: 'CaixaBank Research, julio 2025',
-    nota: 'Estimación econométrica',
-  },
-  {
-    label: 'Exposición Sanciones CNMC',
-    shortLabel: 'Sanciones',
-    value: 240.0,
-    color: '#8b5cf6',
-    fuente: 'CNMC, expedientes abril 2026',
-    nota: 'Exposición máxima estimada; litigios en curso',
-  },
-  {
-    label: 'Daños Directos en Red',
-    shortLabel: 'Daños Red',
-    value: 120.0,
-    color: '#eab308',
-    fuente: 'REE / estimación sectorial',
-    nota: 'Estimación',
-  },
-];
+// STATIC_ITEMS was moved inside the component to support i18n
 
 // ─── Tooltip personalizado ────────────────────────────────────────────────────
 function CustomTooltip({ active, payload }) {
@@ -122,7 +82,7 @@ function CustomTooltip({ active, payload }) {
         <strong>{d.isTotal ? 'TOTAL: ' : ''}{d.value.toFixed(1)} M€</strong>
       </p>
       <p style={{ margin: '0 0 2px', color: '#94a3b8', fontSize: 11 }}>
-        Fuente: {d.fuente}
+        {translate({id: 'waterfall.fuente', message: 'Fuente:'})} {d.fuente}
       </p>
       {d.nota && (
         <p style={{ margin: 0, color: '#f59e0b', fontSize: 10 }}>
@@ -135,19 +95,62 @@ function CustomTooltip({ active, payload }) {
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function FinancialWaterfallInner() {
+  const STATIC_ITEMS = useMemo(() => [
+    {
+      label: translate({id: 'waterfall.item1.label', message: 'VoLL — ENS Iberia'}),
+      shortLabel: 'VoLL',
+      value: parseFloat(((ENS_PORTUGAL_MWH + ENS_ESPANA_MWH) * VOLL_EUR_MWH / 1e6).toFixed(1)),
+      color: '#ef4444',
+      fuente: translate({id: 'waterfall.item1.fuente', message: 'CEER 2023 (VoLL) + ERSE/REN (ENS PT) + estimación ENS ES'}),
+      nota: translate({id: 'waterfall.item1.nota', message: 'ENS España es estimación — cuestión abierta (ver datos28A.json)'}),
+    },
+    {
+      label: translate({id: 'waterfall.item2.label', message: 'Operación Reforzada (Gas)'}),
+      shortLabel: translate({id: 'waterfall.item2.short', message: 'Op. Reforzada'}),
+      value: 666.0,
+      color: '#f59e0b',
+      fuente: translate({id: 'waterfall.item2.fuente', message: 'REE, informe abril 2026'}),
+      nota: translate({id: 'waterfall.item2.nota', message: 'Dato verificado en fuente primaria'}),
+    },
+    {
+      label: translate({id: 'waterfall.item3.label', message: 'Pérdidas Consumo/Comercio'}),
+      shortLabel: translate({id: 'waterfall.item3.short', message: 'Consumo'}),
+      value: 400.0,
+      color: '#f97316',
+      fuente: translate({id: 'waterfall.item3.fuente', message: 'CaixaBank Research, julio 2025'}),
+      nota: translate({id: 'waterfall.item3.nota', message: 'Estimación econométrica'}),
+    },
+    {
+      label: translate({id: 'waterfall.item4.label', message: 'Exposición Sanciones CNMC'}),
+      shortLabel: translate({id: 'waterfall.item4.short', message: 'Sanciones'}),
+      value: 240.0,
+      color: '#8b5cf6',
+      fuente: translate({id: 'waterfall.item4.fuente', message: 'CNMC, expedientes abril 2026'}),
+      nota: translate({id: 'waterfall.item4.nota', message: 'Exposición máxima estimada; litigios en curso'}),
+    },
+    {
+      label: translate({id: 'waterfall.item5.label', message: 'Daños Directos en Red'}),
+      shortLabel: translate({id: 'waterfall.item5.short', message: 'Daños Red'}),
+      value: 120.0,
+      color: '#eab308',
+      fuente: translate({id: 'waterfall.item5.fuente', message: 'REE / estimación sectorial'}),
+      nota: translate({id: 'waterfall.item5.nota', message: 'Estimación'}),
+    },
+  ], []);
+
   // Los datos base son estáticos y verificados; la API es mejora opcional
   const total = STATIC_ITEMS.reduce((s, d) => s + d.value, 0);
 
   const chartData = [
     ...STATIC_ITEMS,
     {
-      label: 'IMPACTO TOTAL ESTIMADO',
+      label: translate({id: 'waterfall.total.label', message: 'IMPACTO TOTAL ESTIMADO'}),
       shortLabel: 'TOTAL',
       value: total,
       color: '#dc2626',
       isTotal: true,
-      fuente: 'Suma de conceptos anteriores',
-      nota: 'Incluye estimaciones no verificadas (ENS España)',
+      fuente: translate({id: 'waterfall.total.fuente', message: 'Suma de conceptos anteriores'}),
+      nota: translate({id: 'waterfall.total.nota', message: 'Incluye estimaciones no verificadas (ENS España)'}),
     },
   ];
 
@@ -183,7 +186,7 @@ function FinancialWaterfallInner() {
             tick={{ fill: '#94a3b8', fontSize: 11 }}
             tickFormatter={v => `${v.toFixed(0)} M€`}
             label={{
-              value: 'Millones de €',
+              value: translate({id: 'waterfall.yAxis', message: 'Millones de €'}),
               angle: -90,
               position: 'insideLeft',
               fill: 'var(--text-1, #64748b)',
@@ -231,21 +234,19 @@ function FinancialWaterfallInner() {
         borderRadius: '0 6px 6px 0',
       }}>
         <p style={{ margin: '0 0 0.4rem' }}>
-          <strong>Metodología VoLL:</strong> El coste de la energía no suministrada
-          se calcula a 11.000 €/MWh (media ponderada residencial/industrial para España,
-          CEER 2023, Appendix B), sobre una ENS estimada de ~255.490 MWh
-          (55.489 MWh verificados en Portugal — ERSE/REN; ~200.000 MWh estimados
-          para España — dato no verificado en fuente primaria).
+          <Translate id="waterfall.footerText1" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
+            {`<b>Metodología VoLL:</b> El coste de la energía no suministrada se calcula a 11.000 €/MWh (media ponderada residencial/industrial para España, CEER 2023, Appendix B), sobre una ENS estimada de ~255.490 MWh (55.489 MWh verificados en Portugal — ERSE/REN; ~200.000 MWh estimados para España — dato no verificado en fuente primaria).`}
+          </Translate>
         </p>
         <p style={{ margin: '0 0 0.4rem' }}>
-          <strong>Operación Reforzada (666 M€):</strong> dato verificado en
-          fuente primaria (REE, informe abril 2026).
+          <Translate id="waterfall.footerText2" values={{ b: (chunks) => <strong>{chunks}</strong> }}>
+            {`<b>Operación Reforzada (666 M€):</b> dato verificado en fuente primaria (REE, informe abril 2026).`}
+          </Translate>
         </p>
         <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.55)' }}>
-          ⚠ Este análisis incluye estimaciones no verificadas en fuente primaria.
-          Ver <code>datos28A.json</code> § reposicion.ens_espana_total para la
-          declaración de cuestión abierta. Total estimado:{' '}
-          <strong>{total.toFixed(1)} M€</strong>.
+          <Translate id="waterfall.footerFallback" values={{ b: (chunks) => <strong>{chunks}</strong>, code: (chunks) => <code>{chunks}</code>, total: total.toFixed(1) }}>
+            {`⚠ Este análisis incluye estimaciones no verificadas en fuente primaria. Ver <code>datos28A.json</code> § reposicion.ens_espana_total para la declaración de cuestión abierta. Total estimado: <b>{total} M€</b>.`}
+          </Translate>
         </p>
       </div>
     </div>
@@ -265,7 +266,7 @@ export default function FinancialWaterfallChart() {
           fontFamily: 'monospace',
           fontSize: 13,
         }}>
-          Inicializando análisis financiero…
+          {translate({id: 'waterfall.init', message: 'Inicializando análisis financiero…'})}
         </div>
       }
     >
