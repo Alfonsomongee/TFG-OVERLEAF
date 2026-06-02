@@ -22,30 +22,25 @@ export default function NavigationGuide() {
 
   const routes = [
     {
-      icon: '📖',
       label: 'Leer el análisis',
       desc: '9 capítulos — del colapso físico a las consecuencias regulatorias',
       href: '/01-introduccion',
     },
     {
-      icon: '⚡',
       label: 'Explorar los simuladores',
       desc: '18 herramientas interactivas — frecuencia, cascada, Tap-Lag, PV curve',
       href: '/anexo-interactivos',
     },
     {
-      icon: '🔍',
       label: 'Consultar datos en tiempo real',
       desc: 'Mix de generación, precio SPOT, radar de vulnerabilidad sistémica',
       href: '/datos-tiempo-real',
     },
     {
-      icon: '💬',
       label: 'Preguntar al asistente',
       desc: 'El chatbot conoce el TFG completo — glosario, cifras y gráficas incluidas',
       action: () => {
         dismiss();
-        // Abre el chat disparando un clic en el botón .chat-fab
         const fab = document.querySelector('.chat-fab');
         if (fab) fab.click();
       },
@@ -58,7 +53,7 @@ export default function NavigationGuide() {
       padding: '1.5rem',
       border: '1px solid var(--ifm-color-emphasis-200)',
       borderRadius: '12px',
-      background: 'var(--ifm-background-surface-color)',
+      background: 'var(--ifm-background-color)',
       position: 'relative',
     }}>
       <button
@@ -81,12 +76,12 @@ export default function NavigationGuide() {
       </button>
 
       <p style={{
-        fontFamily: 'var(--font-mono)',
-        fontSize: '0.72rem',
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: 'var(--ifm-color-emphasis-500)',
-        margin: '0 0 1rem 0',
+        fontFamily: 'var(--ifm-font-family-base)',
+        fontSize: '1.6rem',
+        fontWeight: '700',
+        color: 'var(--ifm-menu-color)',
+        textAlign: 'center',
+        margin: '0 0 1.5rem 0',
       }}>
         ¿Por dónde empezar?
       </p>
@@ -104,8 +99,8 @@ export default function NavigationGuide() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '0.35rem',
-              padding: '0.875rem 1rem',
+              gap: '0.4rem',
+              padding: '1rem',
               border: '1px solid var(--ifm-color-emphasis-200)',
               borderRadius: '8px',
               textDecoration: 'none',
@@ -114,7 +109,7 @@ export default function NavigationGuide() {
               cursor: 'pointer',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
+              e.currentTarget.style.borderColor = 'var(--ifm-menu-color-active)';
               e.currentTarget.style.background = 'var(--ifm-color-emphasis-100)';
             }}
             onMouseLeave={e => {
@@ -122,33 +117,25 @@ export default function NavigationGuide() {
               e.currentTarget.style.background = 'transparent';
             }}
           >
-            <span style={{ fontSize: '1.4rem', lineHeight: 1 }}>{r.icon}</span>
             <span style={{
               fontWeight: 600,
-              fontSize: '0.875rem',
-              color: 'var(--ifm-font-color-base)',
+              fontSize: '1rem',
+              fontFamily: 'var(--ifm-font-family-base)',
+              color: 'var(--ifm-menu-color)',
             }}>
               {r.label}
             </span>
             <span style={{
-              fontSize: '0.775rem',
+              fontSize: '0.85rem',
               color: 'var(--ifm-color-emphasis-600)',
               lineHeight: 1.4,
+              fontFamily: 'var(--ifm-font-family-base)',
             }}>
               {r.desc}
             </span>
           </a>
         ))}
       </div>
-
-      <p style={{
-        margin: '1rem 0 0 0',
-        fontSize: '0.75rem',
-        color: 'var(--ifm-color-emphasis-400)',
-        textAlign: 'right',
-      }}>
-        Esta guía solo aparece una vez.
-      </p>
     </div>
   );
 }
