@@ -2,9 +2,9 @@
 // Endpoint para el chatbot RAG del TFG
 // Usa MiniSearch (BM25) + Gemini 1.5 Flash (gratuito)
 
-import MiniSearch from 'minisearch';
-import fs from 'fs';
-import path from 'path';
+const MiniSearch = require('minisearch');
+const fs = require('fs');
+const path = require('path');
 
 // Variables para cache en memoria
 let searchIndexData = null;
@@ -31,7 +31,7 @@ function getSearch() {
   return miniSearch;
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
