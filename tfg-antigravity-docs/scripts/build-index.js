@@ -45,7 +45,8 @@ function extractChunks(filePath, content) {
   const slug = filePath
     .replace(DOCS_DIR, '')
     .replace(/\.mdx?$/, '')
-    .replace(/\/index$/, '') || '/';
+    .replace(/\/index$/, '')
+    .replace(/\\/g, '/') || '/';
 
   // Divide el contenido por encabezados de nivel 2 (##)
   const sections = cleanBody.split(/^## /m).filter(Boolean);
@@ -64,6 +65,7 @@ function extractChunks(filePath, content) {
   for (const section of sections) {
     const lines = section.split('\n');
     const heading = lines[0].trim();
+    const cleanHeading = heading.replace(/<[^>]+>/g, '').trim();
     // Elimina la primera línea (el encabezado) y une el resto
     const text = lines
       .slice(1)
@@ -76,7 +78,7 @@ function extractChunks(filePath, content) {
     allChunks.push({
       id: docId++,
       title,
-      heading,
+      heading: cleanHeading,
       text,
       slug,
     });
