@@ -12,6 +12,7 @@ export default function ChatWidget() {
     },
   ]);
   const [loading, setLoading] = useState(false);
+  const [loadingStage, setLoadingStage] = useState('idle');
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -33,6 +34,7 @@ export default function ChatWidget() {
     setMessages(prev => [...prev, userMsg]);
     setQuestion('');
     setLoading(true);
+    setLoadingStage('searching');
 
     try {
       const res = await fetch('/api/chat', {
@@ -40,6 +42,7 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q }),
       });
+      setLoadingStage('generating');
       const data = await res.json();
       const botMsg = {
         role: 'assistant',
@@ -53,6 +56,7 @@ export default function ChatWidget() {
       ]);
     } finally {
       setLoading(false);
+      setLoadingStage('idle');
     }
   };
 
@@ -193,7 +197,9 @@ export default function ChatWidget() {
             ))}
             {loading && (
               <div style={{ color: '#94a3b8', fontSize: 13, fontStyle: 'italic', padding: '4px 0' }}>
-                Buscando en el TFG y consultando a la IA...
+                {loadingStage === 'searching'
+                  ? 'Buscando en el TFG...'
+                  : 'Generando respuesta...'}
               </div>
             )}
             <div ref={messagesEndRef} />

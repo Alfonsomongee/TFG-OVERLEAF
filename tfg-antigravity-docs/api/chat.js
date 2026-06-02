@@ -71,6 +71,17 @@ module.exports = async function handler(req, res) {
       fuzzy: 0.2,
     });
 
+    results.sort((a, b) => {
+      const aChunk = chunks[a.id];
+      const bChunk = chunks[b.id];
+      if (!aChunk || !bChunk) return 0;
+      const aGloss = aChunk.isGlossary ? 1 : 0;
+      const bGloss = bChunk.isGlossary ? 1 : 0;
+      return (bGloss - aGloss) ||
+             ((aChunk.chapterOrder || 999) - 
+              (bChunk.chapterOrder || 999));
+    });
+
     if (results.length === 0) {
       return res.status(200).json({
         answer: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
@@ -87,25 +98,23 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'API Key de Groq no configurada.' });
     }
 
-    const prompt = `Eres un asistente especializado en el análisis del apagón ibérico del 28 de abril de 2025. Responde ÚNICAMENTE con la información contenida en el CONTEXTO proporcionado a continuación. Si la información no está en el contexto, di: "Este detalle no aparece en el TFG; te recomiendo consultar el glosario o los capítulos técnicos."
+    const prompt = `Eres el asistente del TFG "Anatomía de un Colapso Sistémico", análisis forense del apagón ibérico del 28 de abril de 2025.
 
-Reglas críticas:
-- NO empieces NUNCA la frase con "Según el contexto proporcionado", "Basado en el contexto", ni nada similar. Responde directamente de forma natural y conversacional.
-- NO uses formato Markdown para negritas (no uses asteriscos * ni **). Usa texto plano y limpio.
-- Si la pregunta está relacionada con datos, gráficas o tablas, SIEMPRE debes añadir un enlace al final de tu respuesta apuntando a la URL proporcionada en el contexto. Ejemplo: "Puedes ver la gráfica detallada aquí: [Ver gráfica interactiva](/docs/ruta-al-capitulo)". 
-- OBLIGATORIO: Los enlaces que generes DEBEN usar la sintaxis Markdown de enlaces: [Texto](/ruta).
-- Sé preciso con las cifras y cita las magnitudes correctamente (MW, Hz, kV, s, etc.).
-- Si el contexto menciona fuentes (REE, ENTSO-E, ICAI, CNMC), indícalas.
-- Responde en español, en un máximo de 250 palabras.
-- No inventes datos.
+INSTRUCCIONES:
+- Responde directamente en español sin frases como "Según el contexto" o "Basado en el contexto".
+- No uses negritas ni asteriscos en el cuerpo del texto.
+- Si la respuesta incluye cifras, cita la fuente entre paréntesis: (REE), (ENTSO-E), (ICAI), etc.
+- Si el contexto incluye un slug, añade al final una línea: "Más información: [Ver capítulo](/ruta)"
+- Si la información no está en el contexto, di: "Este detalle no aparece en el TFG. Consulta el glosario o los capítulos técnicos."
+- Máximo 250 palabras.
 
 CONTEXTO:
 ${context}
 
-PREGUNTA DEL USUARIO:
+PREGUNTA:
 ${question}
 
-RESPUESTA NATURAL Y DIRECTA:`;
+RESPUESTA:`;
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
