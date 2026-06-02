@@ -8,7 +8,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      text: '👋 ¡Hola! Soy el asistente del TFG sobre el apagón del 28-A. Pregúntame cualquier duda sobre el contenido del sitio.',
+      text: '¡Hola! Soy el asistente del TFG sobre el apagón del 28-A. Pregúntame cualquier duda sobre el contenido del sitio.',
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ export default function ChatWidget() {
     } catch (err) {
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', text: '⚠️ Error de conexión. Comprueba tu red e inténtalo de nuevo.' },
+        { role: 'assistant', text: 'Error de conexión. Comprueba tu red e inténtalo de nuevo.' },
       ]);
     } finally {
       setLoading(false);
@@ -134,8 +134,8 @@ export default function ChatWidget() {
             right: 24,
             width: 380,
             maxHeight: 520,
-            backgroundColor: '#0f172a',
-            border: '1px solid #334155',
+            backgroundColor: '#636E4F',
+            border: '1px solid #4d5640',
             borderRadius: 16,
             display: 'flex',
             flexDirection: 'column',
@@ -150,7 +150,7 @@ export default function ChatWidget() {
               padding: '12px 16px',
               borderBottom: '1px solid #1e293b',
               fontWeight: 600,
-              color: '#e2e8f0',
+              color: '#2C2620',
               fontSize: 15,
               display: 'flex',
               alignItems: 'center',
@@ -177,8 +177,8 @@ export default function ChatWidget() {
                 key={i}
                 style={{
                   alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                  backgroundColor: m.role === 'user' ? '#2563eb' : '#1e293b',
-                  color: '#e2e8f0',
+                  backgroundColor: m.role === 'user' ? '#752E35' : '#F4F1EA',
+                  color: m.role === 'user' ? '#ffffff' : '#2C2620',
                   padding: '10px 14px',
                   borderRadius: 14,
                   maxWidth: '85%',
@@ -203,7 +203,7 @@ export default function ChatWidget() {
           <div
             style={{
               padding: '12px 16px',
-              borderTop: '1px solid #1e293b',
+              borderTop: '1px solid #4d5640',
               display: 'flex',
               gap: 8,
             }}
@@ -224,9 +224,9 @@ export default function ChatWidget() {
                 flex: 1,
                 padding: '10px 14px',
                 borderRadius: 10,
-                border: '1px solid #475569',
-                backgroundColor: '#1e293b',
-                color: '#e2e8f0',
+                border: '1px solid #4d5640',
+                backgroundColor: '#F4F1EA',
+                color: '#2C2620',
                 fontSize: 14,
                 outline: 'none',
               }}
@@ -237,7 +237,7 @@ export default function ChatWidget() {
               style={{
                 padding: '10px 16px',
                 borderRadius: 10,
-                backgroundColor: loading || !question.trim() ? '#334155' : '#3b82f6',
+                backgroundColor: loading || !question.trim() ? '#4d5640' : '#752E35',
                 color: '#fff',
                 border: 'none',
                 cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
