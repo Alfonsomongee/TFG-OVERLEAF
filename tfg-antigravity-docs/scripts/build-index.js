@@ -121,10 +121,48 @@ function injectMasterData() {
   }
 }
 
+function injectGlossary() {
+  try {
+    // Leer el archivo de datos del glosario directamente
+    const glossaryPath = path.join(__dirname, '..', 'src', 'data', 'glossary.js');
+    const raw = fs.readFileSync(glossaryPath, 'utf-8');
+    
+    // Extraer los términos con regex (evita ejecutar el módulo ES)
+    const termRegex = /\{\s*id:\s*slugify\(['"]([^'"]+)['"]\)[\s\S]*?term:\s*['"]([^'"]+)['"][\s\S]*?definition:\s*['"]([\s\S]*?)['"]\s*,?\s*\}/g;
+    let match;
+    let count = 0;
+    
+    while ((match = termRegex.exec(raw)) !== null) {
+      const term = match[2].trim();
+      const definition = match[3]
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      
+      if (definition.length < 10) continue;
+      
+      allChunks.push({
+        id: docId++,
+        title: 'Glosario Técnico',
+        heading: term,
+        text: `${term}: ${definition}`,
+        slug: `/glosario#${term.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
+        chapterOrder: 0,
+        isGlossary: true,
+      });
+      count++;
+    }
+    console.log(`  → ${count} términos del glosario indexados.`);
+  } catch (err) {
+    console.warn('  ⚠ No se pudo indexar el glosario:', err.message);
+  }
+}
+
 function buildIndex() {
   console.log('🔍 Construyendo índice de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
   injectMasterData();
+  injectGlossary();
 
   miniSearch.addAll(allChunks);
 

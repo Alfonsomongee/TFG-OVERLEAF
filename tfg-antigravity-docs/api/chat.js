@@ -20,7 +20,7 @@ function getSearch() {
         JSON.stringify(searchIndexData),
         {
           fields: ['title', 'heading', 'text'],
-          storeFields: ['title', 'heading', 'text', 'slug']
+          storeFields: ['title', 'heading', 'text', 'slug', 'chapterOrder', 'isGlossary']
         }
       );
     } catch (err) {
