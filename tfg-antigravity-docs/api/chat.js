@@ -6,21 +6,27 @@ import MiniSearch from 'minisearch';
 import fs from 'fs';
 import path from 'path';
 
-// Carga los datos estáticos generados en la compilación de forma robusta
-const searchIndexData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'search-index.json'), 'utf8'));
-const chunks = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'chunks.json'), 'utf8'));
-
-// Cache del motor de búsqueda para no reconstruirlo en cada invocación
+// Variables para cache en memoria
+let searchIndexData = null;
+let chunks = null;
 let miniSearch = null;
+
 function getSearch() {
   if (!miniSearch) {
-    miniSearch = MiniSearch.loadJSON(
-      JSON.stringify(searchIndexData),
-      {
-        fields: ['title', 'heading', 'text'],
-        storeFields: ['title', 'heading', 'text', 'slug']
-      }
-    );
+    try {
+      searchIndexData = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'search-index.json'), 'utf8'));
+      chunks = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'static', 'chunks.json'), 'utf8'));
+      miniSearch = MiniSearch.loadJSON(
+        JSON.stringify(searchIndexData),
+        {
+          fields: ['title', 'heading', 'text'],
+          storeFields: ['title', 'heading', 'text', 'slug']
+        }
+      );
+    } catch (err) {
+      console.error('Error cargando los archivos estáticos del índice:', err);
+      throw new Error('IndexFilesMissing');
+    }
   }
   return miniSearch;
 }
@@ -50,7 +56,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const searcher = getSearch();
+    let searcher;
+    try {
+      searcher = getSearch();
+    } catch (e) {
+      if (e.message === 'IndexFilesMissing') {
+        return res.status(500).json({ error: 'Falta el archivo de índice. Ejecuta el comando de build o revisa vercel.json.' });
+      }
+      throw e;
+    }
+
     const results = searcher.search(question.trim(), {
       prefix: true,
       fuzzy: 0.2,
