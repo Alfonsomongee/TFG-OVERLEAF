@@ -442,11 +442,24 @@ export default function ChatFullscreen({
       label: anchor.replace(/-/g, ' '),
       type: 'interactive',
     })),
-    ...activeFigures.map((fig, i) => ({
-      id: 'figure-' + i,
-      label: fig.src.split('/').pop().replace('.png','').replace('.jpg','').replace(/_/g,' '),
-      type: 'figure',
-    })),
+    ...activeFigures.map((fig, i) => {
+      const captionKey = 'caption_' + 
+        (lang === 'zh-Hans' ? 'en' : lang);
+      const caption = fig.caption[captionKey] 
+        || fig.caption.caption_es 
+        || '';
+      // Truncar el caption a 40 chars para el tab
+      const shortLabel = caption.length > 40 
+        ? caption.substring(0, 37) + '...' 
+        : caption;
+      return {
+        id: 'figure-' + i,
+        label: shortLabel || fig.src.split('/').pop()
+          .replace('.png','').replace('.jpg','')
+          .replace(/_/g,' '),
+        type: 'figure',
+      };
+    }),
   ];
 
   // ── Atajos de teclado ────────────────────────────────────
