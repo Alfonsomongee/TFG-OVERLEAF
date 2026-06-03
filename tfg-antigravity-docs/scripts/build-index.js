@@ -23,7 +23,7 @@ const KEYWORDS_DICT = [
 
 const miniSearch = new MiniSearch({
   fields: ['title', 'heading', 'subheading', 'text', 'keywordsText'],
-  storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile'],
+  storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile', 'artifact'],
   searchOptions: {
     boost: { title: 3, heading: 2.5, subheading: 2, keywordsText: 1.5, text: 1 },
     prefix: true,
@@ -179,7 +179,8 @@ function createChunk(metadata) {
     keywords,
     keywordsText,
     chapterOrder: metadata.chapterOrder || 0,
-    sourceFile: metadata.sourceFile || 'N/A'
+    sourceFile: metadata.sourceFile || 'N/A',
+    artifact: metadata.artifact || undefined
   });
 }
 
@@ -380,20 +381,113 @@ function injectGraphics() {
       subheading: '',
       rawText: rawText,
       slug: g.slug,
-      anchor: '',
+      anchor: g.id || '',
       chunkType: 'graphic',
       keywords: g.keywords,
       chapterOrder: 97,
-      sourceFile: 'graphics-metadata.json'
+      sourceFile: 'graphics-metadata.json',
+      artifact: {
+        id: g.id,
+        type: 'interactive',
+        source: 'annex_c',
+        title: g.title,
+        description: g.description,
+        slug: g.slug,
+        url: g.slug,
+        keywords: g.keywords || []
+      }
     });
   });
   console.log(`  → ${graphics.length} gráficas interactivas indexadas.`);
+}
+
+function injectForensicTables() {
+  const tablesPath = path.join(__dirname, '..', 'static', 'data', 'processed', 'forensic_categories.json');
+  if (!fs.existsSync(tablesPath)) return;
+  const raw = JSON.parse(fs.readFileSync(tablesPath, 'utf8'));
+  let count = 0;
+  raw.categories.forEach(category => {
+    (category.tables || []).forEach(table => {
+      const rawText = `Anexo B — Tabla forense\nCategoría: ${category.name || ''}\nID: ${table.id}\nNombre: ${table.name || table.id}\nOrigen: ${table.source || ''}\nNota: ${table.note || ''}\nColumnas: ${(table.columns || []).map(c => c.label || c.key).join(', ')}\nMuestra de datos: ${JSON.stringify(Array.isArray(table.data) ? table.data.slice(0, 3) : [])}`;
+      createChunk({
+        title: 'Anexo B — Tablas Forenses',
+        heading: table.name || table.id,
+        subheading: category.name || '',
+        rawText,
+        slug: '/anexo-tablas',
+        anchor: table.id,
+        chunkType: 'table',
+        keywords: extractKeywords(rawText),
+        chapterOrder: 96,
+        sourceFile: 'forensic_categories.json',
+        artifact: {
+          id: table.id,
+          type: 'table',
+          source: 'annex_b',
+          title: table.name || table.id,
+          description: table.note || '',
+          origin: table.source || '',
+          url: `/anexo-tablas#${table.id}`,
+          columns: table.columns || [],
+          sampleRows: Array.isArray(table.data) ? table.data.slice(0, 3) : []
+        }
+      });
+      count++;
+    });
+  });
+  console.log(`  → ${count} tablas forenses indexadas.`);
+}
+
+function injectImageGalleryData() {
+  const galleryPath = path.join(__dirname, '..', 'src', 'data', 'imageGalleryData.js');
+  if (!fs.existsSync(galleryPath)) return;
+  const raw = fs.readFileSync(galleryPath, 'utf8');
+  let count = 0;
+  const imgRegex = /\{\s*src:\s*['"]([^'"]+)['"],\s*caption_es:\s*['"]([^'"]+)['"]/g;
+  let match;
+  while ((match = imgRegex.exec(raw)) !== null) {
+    const src = match[1];
+    const caption_es = match[2];
+    const id = src.split('/').pop().replace(/\.[^/.]+$/, "");
+    
+    let title = caption_es;
+    if (title.length > 120) {
+      title = title.substring(0, 117) + '...';
+    }
+    const description = caption_es;
+    const rawText = `ID: ${id}\nTítulo: ${title}\nDescripción: ${description}\nRuta: ${src}`;
+    createChunk({
+      title: 'Anexo D — Gráficas de Datos Reales',
+      heading: title,
+      subheading: 'Gráficas 28-A / ESIOS / REE / ENTSO-E',
+      rawText,
+      slug: '/anexo-figuras',
+      anchor: id,
+      chunkType: 'data_figure',
+      keywords: extractKeywords(rawText),
+      chapterOrder: 95,
+      sourceFile: 'imageGalleryData.js',
+      artifact: {
+        id: id,
+        type: 'image',
+        source: 'annex_d',
+        title: title,
+        description: description,
+        path: src,
+        url: `/anexo-figuras#${id}`
+      }
+    });
+    count++;
+  }
+  console.log(`  → ${count} gráficas de datos reales indexadas.`);
 }
 
 function buildIndex() {
   console.log('🔍 Construyendo índice jerárquico de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
   injectMasterData();
+  injectForensicTables();
+  injectImageGalleryData();
   injectGlossary();
   injectGraphics();
 

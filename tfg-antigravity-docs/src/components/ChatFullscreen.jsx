@@ -307,6 +307,47 @@ const SUGGESTED_QUESTIONS = {
   },
 };
 
+function VisualArtifactCard({ artifact }) {
+  if (artifact.type === 'table') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: 'var(--chart-amber, hsl(38 100% 56%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        {artifact.origin && <div style={{ fontSize: 11, color: 'var(--chart-text-3, #64748b)', marginBottom: 8 }}>{artifact.origin}</div>}
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        {artifact.sampleRows && artifact.sampleRows.length > 0 && (
+          <div style={{ background: 'var(--chat-code-bg, rgba(0,0,0,0.2))', padding: 8, borderRadius: 6, fontSize: 11, fontFamily: 'monospace', color: 'var(--chart-text-2, #94a3b8)', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>
+            {JSON.stringify(artifact.sampleRows, null, 2)}
+          </div>
+        )}
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--chart-amber, hsl(38 100% 56%))', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>
+      </div>
+    );
+  }
+  if (artifact.type === 'image') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Gráfica de Datos Reales</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        {artifact.path && <img src={artifact.path} alt={artifact.title} style={{ width: '100%', borderRadius: 8, margin: '12px 0', border: '1px solid var(--chart-border, rgba(255,255,255,0.08))' }} />}
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--accent-electric, hsl(200 100% 60%))', textDecoration: 'none', fontWeight: 600 }}>Ver figura en contexto ↗</a>
+      </div>
+    );
+  }
+  if (artifact.type === 'interactive') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Interactivo</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>Abrir simulador ↗</a>
+      </div>
+    );
+  }
+  return null;
+}
+
 // ── Componente principal ───────────────────────────────────────
 export default function ChatFullscreen({
   isOpen,
@@ -607,6 +648,22 @@ export default function ChatFullscreen({
 
   // Determinar qué mostrar en el panel derecho
   const renderPanelContent = () => {
+    const latestAssistantMessage = messages
+      .filter(m => m.role === 'assistant')
+      .at(-1);
+
+    const visualArtifacts = latestAssistantMessage?.visualArtifacts || [];
+
+    if (visualArtifacts.length > 0) {
+      return (
+        <div style={{ height: '100%', overflowY: 'auto' }}>
+          {visualArtifacts.map(artifact => (
+            <VisualArtifactCard key={`${artifact.type}-${artifact.id}`} artifact={artifact} />
+          ))}
+        </div>
+      );
+    }
+
     if (activeTab === null) {
       return (
         <div style={{

@@ -16,7 +16,7 @@ function getSearch() {
         JSON.stringify(searchIndexData),
         {
           fields: ['title', 'heading', 'subheading', 'text', 'keywordsText'],
-          storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile']
+          storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile', 'artifact']
         }
       );
     } catch (err) {
@@ -44,12 +44,13 @@ function classifyIntent(question, mode = 'normal') {
     terms.forEach(t => { if (norm.includes(t)) scores[type] += weight; });
   };
 
+  match(['grafica', 'figura', 'simulador', 'mapa', 'tabla', 'imagen', 'ensename', 'muestrame', 'mostrar', 'ver grafica', 'ver figura'], 'visual', 4);
+  match(['evolucion', 'evoluciono', 'durante', '27 segundos', 'segundos criticos', 'cronologia', 'secuencia', 'minuto a minuto'], 'timeline', 3);
+  match(['cuanta', 'cuanto', 'cifra', 'porcentaje', 'demanda', 'mw', 'hz', 'mvar', 'kv', 'solar', 'mix'], 'quantitative', 2);
+  match(['reactiva', 'potencia reactiva', 'mvar', 'q-v', 'sobretension'], 'causal', 2);
   match(['por que', 'como amplifico', 'como actuo', 'mecanismo', 'detonante', 'causa', 'agravo', 'tap-lag', 'ufls', 'colapso en vez de'], 'causal', 3);
-  match(['kv', 'mw', 'hz', 'mvar', 'gw', 'cuanto', 'cifra', 'coste', 'porcentaje', 'demanda', 'perdida', 'm€'], 'quantitative', 1);
   match(['compara', 'comparar', 'vs', 'frente a', 'diferencia entre', 'discrepan', 'ree', 'icai', 'entso-e'], 'comparison', 3);
-  match(['cuando', 'cronologia', 'secuencia', 'hora', '12:33', 'antes', 'despues', 'minuto'], 'timeline', 1);
   match(['que es', 'define', 'explicame el concepto', 'que significa'], 'glossary', 4);
-  match(['figura', 'simulador', 'grafica', 'mapa', 'tabla', 'ensename', 'mostrar'], 'visual', 4);
   match(['sencill', 'no sabe', 'como si fuera', 'facil', 'para tontos'], 'simple', 1);
 
   let maxScore = 0;
@@ -147,6 +148,11 @@ function rerankResultsByIntent(results, chunksData, intent, question) {
     if (intent === 'glossary' && chunkType === 'glossary') adjustedScore *= 1.50;
     if (intent === 'visual' && chunkType === 'graphic') adjustedScore *= 1.45;
     if (intent === 'causal' && chunkType === 'causal') adjustedScore *= 1.45;
+
+    if (intent === 'quantitative' && chunkType === 'table') adjustedScore *= 1.8;
+    if (intent === 'visual' && chunkType === 'data_figure') adjustedScore *= 2.0;
+    if (intent === 'comparison' && chunkType === 'table') adjustedScore *= 1.5;
+    if (intent === 'causal' && chunkType === 'data_figure' && chunk.artifact && normQuestion.includes(normalizeText(chunk.artifact.id))) adjustedScore *= 1.25;
 
     if (keywords.some(kw => normQuestion.includes(normalizeText(kw)))) {
       adjustedScore *= 1.2;
@@ -355,6 +361,128 @@ function computeConfidence(selectedPairs, usedExpandedSearch) {
   return { confidence: 'baja', confidence_reason: 'Evidencia parcial, escasa o con fuerte dependencia de expansión semántica.' };
 }
 
+function getAllArtifactChunks(chunksData) {
+  return Object.values(chunksData || {}).filter(c => c && c.artifact);
+}
+
+function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore = 1, source = 'global') {
+  const q = normalizeText(question);
+  const id = normalizeText(artifact?.id || '');
+  const title = normalizeText(artifact?.title || '');
+  const desc = normalizeText(artifact?.description || '');
+  const origin = normalizeText(artifact?.origin || '');
+  const text = normalizeText(chunk?.text || '');
+  const haystack = `${id} ${title} ${desc} ${origin} ${text}`;
+
+  let score = baseScore;
+
+  if (source === 'selected') score *= 1.4;
+
+  // boosts by intent
+  if (intent === 'quantitative' && artifact.type === 'table') score *= 2.0;
+  if (intent === 'comparison' && artifact.type === 'table') score *= 2.0;
+  if (intent === 'visual' && artifact.source === 'annex_d') score *= 2.4;
+  if (intent === 'visual' && artifact.type === 'interactive') score *= 1.5;
+  if (intent === 'timeline' && artifact.type === 'table') score *= 1.6;
+
+  // canonical IDs
+  const boostIds = (ids, factor) => {
+    if (ids.some(target => id.includes(normalizeText(target)))) score *= factor;
+  };
+
+  if (q.includes('discrepan') || q.includes('ree') || q.includes('icai') || q.includes('entso-e') || q.includes('gobierno')) {
+    boostIds(['comparativa-conclusiones-entidades', 'compass-lexecon', 'indisponibilidad-generacion-convencional'], 3.0);
+  }
+
+  if (q.includes('reactiva') || q.includes('mvar') || q.includes('q-v') || q.includes('sobretension')) {
+    boostIds(['maniobras-compensacion-reactiva', 'inyeccion-reactiva-distribucion', 'asimetria_balance_reactiva_sur', 'fluctuaciones_tension_previas', 'tensiones-nudos-criticos'], 3.0);
+  }
+
+  if (q.includes('frecuencia') || q.includes('rocof') || q.includes('hz') || q.includes('nadir') || q.includes('27 segundos')) {
+    boostIds(['evolucion-frecuencia-rocof', 'frequency_voltage_carmona', 'tension_frecuencia_colapso'], 3.0);
+  }
+
+  if (q.includes('grafica') || q.includes('figura') || q.includes('ensename') || q.includes('muestrame')) {
+    if (artifact.source === 'annex_d') score *= 2.0;
+    if (artifact.type === 'interactive') score *= 1.2;
+  }
+
+  if (q.includes('ufls') || q.includes('deslastre') || q.includes('subfrecuencia')) {
+    boostIds(['escalones-ufls', 'tension_frecuencia_colapso', 'evolucion-frecuencia-rocof'], 3.0);
+  }
+
+  if (q.includes('francia') || q.includes('rte') || q.includes('reposicion') || q.includes('interconexion')) {
+    boostIds(['interconexion_francia_colapso', 'perdida_sincronismo_frontera', 'evolucion_carga_repuesta_francia', 'intercambios-internacionales-minuto', 'recuperacion-demanda-espana', 'recuperacion-portugal'], 3.0);
+  }
+
+  if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
+    boostIds(['costes-economicos', 'coste_optimo_ers', 'ers_revenue_stacking'], 3.0);
+  }
+
+  if (q.includes('solar') || q.includes('mix') || q.includes('generacion') || q.includes('renovable')) {
+    boostIds(['mix-generacion-12-30', 'ree_generation_mix_28april', 'mix_comparativo_2010_2024'], 3.0);
+  }
+
+  if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida')) {
+    boostIds(['load-shedding-es-pt', 'demand-shedding-es', 'recuperacion_demanda_peninsular'], 2.2);
+  }
+
+  // weak semantic textual match
+  const qTerms = q.split(/\s+/).filter(t => t.length > 4);
+  const matches = qTerms.filter(t => haystack.includes(t)).length;
+  score *= 1 + Math.min(matches * 0.08, 0.5);
+
+  return score;
+}
+
+function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxItems = 4) {
+  const candidates = [];
+
+  for (const pair of selectedPairs) {
+    if (pair.chunk?.artifact) {
+      candidates.push({
+        artifact: pair.chunk.artifact,
+        chunk: pair.chunk,
+        baseScore: 1,
+        source: 'selected'
+      });
+    }
+  }
+
+  for (const chunk of getAllArtifactChunks(chunksData)) {
+    candidates.push({
+      artifact: chunk.artifact,
+      chunk,
+      baseScore: 1,
+      source: 'global'
+    });
+  }
+
+  const scored = candidates.map(c => ({
+    ...c,
+    score: scoreArtifactForQuestion(c.artifact, c.chunk, intent, question, c.baseScore, c.source)
+  }));
+
+  const bestByKey = new Map();
+
+  for (const item of scored) {
+    const key = `${item.artifact.type}:${item.artifact.id}`;
+    const prev = bestByKey.get(key);
+    if (!prev || item.score > prev.score) bestByKey.set(key, item);
+  }
+
+  const sorted = [...bestByKey.values()].sort((a, b) => b.score - a.score);
+  const maxScore = sorted[0]?.score || 1;
+
+  return sorted
+    .filter(item => item.source === 'selected' || item.score >= maxScore * 0.35)
+    .slice(0, maxItems)
+    .map(item => ({
+      ...item.artifact,
+      relevance: parseFloat((item.score / maxScore).toFixed(2))
+    }));
+}
+
 function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
   const q = normalizeText(question);
   const suggestions = [];
@@ -436,7 +564,7 @@ export default async function handler(req, res) {
   const errResponse = (status, answer, errorMsg, detectedIntent = 'general') => {
     return res.status(status).json({
       answer, error: errorMsg, sources: [], confidence: 'sin_evidencia', confidence_reason: errorMsg,
-      relatedChapters: [], suggestedFigures: [], followUps: [], intent: detectedIntent
+      relatedChapters: [], suggestedFigures: [], visualArtifacts: [], followUps: [], intent: detectedIntent
     });
   };
 
@@ -506,7 +634,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         answer: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
         sources: [], confidence: 'sin_evidencia', confidence_reason: 'No se recuperaron fragmentos útiles.',
-        relatedChapters: [], suggestedFigures: [],
+        relatedChapters: [], suggestedFigures: [], visualArtifacts: [],
         followUps: ['¿Cuál fue la causa principal del apagón del 28-A?', '¿Dónde aparece explicado el Tap-Lag en el TFG?'],
         intent
       });
@@ -517,6 +645,7 @@ export default async function handler(req, res) {
     const suggestedFigures = buildSuggestedFigures(selectedPairs, 3);
     const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
     const followUps = buildFollowUps(question, selectedPairs, intent, 3);
+    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 4);
 
     const context = selectedPairs
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
@@ -581,7 +710,7 @@ RESPUESTA DEL ASISTENTE:`;
     const answer = data.choices?.[0]?.message?.content || 'No pude generar la respuesta.';
 
     return res.status(200).json({
-      answer, sources, confidence, confidence_reason, relatedChapters, suggestedFigures, followUps, intent
+      answer, sources, confidence, confidence_reason, relatedChapters, suggestedFigures, visualArtifacts, followUps, intent
     });
 
   } catch (error) {
