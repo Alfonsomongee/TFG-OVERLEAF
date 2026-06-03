@@ -9,12 +9,23 @@ process.stdout.setEncoding('utf-8');
 const DOCS_DIR = path.join(__dirname, '..', 'docs');
 const OUTPUT_DIR = path.join(__dirname, '..', 'static');
 
-// MiniSearch configurado para español e inglés
+const TARGET_CHARS = 1600;
+const MAX_CHARS = 2400;
+const OVERLAP_CHARS = 250;
+
+const KEYWORDS_DICT = [
+  'IBR', 'GFM', 'GFL', 'UFLS', 'OLTC', 'Tap-Lag', 'RoCoF', 'Q-V', 'MVAr', 'MW',
+  'inercia', 'SCADA', 'PMU', 'ENTSO-E', 'REE', 'ICAI', 'AELEC', 'P.O. 7.4',
+  'NC RfG', 'BESS', 'Black Start', 'Operación Reforzada', 'Gobierno', 'cascada',
+  'colapso', 'sobretensión', 'inversor', 'frecuencia', 'tensión', 'isla',
+  'reposición', 'blackout', 'apagón', '28-A', 'coste', 'capex', 'opex'
+];
+
 const miniSearch = new MiniSearch({
-  fields: ['title', 'heading', 'text'],
-  storeFields: ['title', 'heading', 'text', 'slug'],
+  fields: ['title', 'heading', 'subheading', 'text', 'keywordsText'],
+  storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile'],
   searchOptions: {
-    boost: { title: 5, heading: 3, text: 1 },
+    boost: { title: 3, heading: 2.5, subheading: 2, keywordsText: 1.5, text: 1 },
     prefix: true,
     fuzzy: 0.2,
   },
@@ -23,31 +34,174 @@ const miniSearch = new MiniSearch({
 let docId = 0;
 const allChunks = [];
 
+function normalizeText(str) {
+  return String(str || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function inferChunkType(text) {
+  const norm = normalizeText(text);
+  
+  const comparisonTerms = ['gobierno', 'ree', 'icai', 'entso-e', 'aelec', 'cnmc'];
+  const comparisonCount = comparisonTerms.filter(t => norm.includes(t)).length;
+  
+  const timeRegex = /\b([0-1]?[0-9]|2[0-3]):[0-5][0-9]\b/g;
+  const timeMatches = norm.match(timeRegex);
+  const timelineCount = timeMatches ? timeMatches.length : 0;
+
+  const quantRegex = /\b(mw|mvar|hz|kv|m€|s|hz\/s|gw|gv|millones)\b/g;
+  const quantMatches = norm.match(quantRegex);
+  const quantCount = quantMatches ? quantMatches.length : 0;
+
+  const causalTerms = ['causa', 'detonante', 'consecuencia', 'mecanismo', 'provoco', 'agravo', 'colapso', 'raiz', 'origen'];
+  const causalCount = causalTerms.filter(t => norm.includes(t)).length;
+
+  if (comparisonCount >= 2) return 'comparison';
+  if (timelineCount >= 3) return 'timeline';
+  if (quantCount >= 4) return 'quantitative';
+  if (causalCount >= 2) return 'causal';
+
+  return 'normal';
+}
+
+function extractKeywords(text) {
+  const found = new Set();
+  const lower = text.toLowerCase();
+  KEYWORDS_DICT.forEach(kw => {
+    if (lower.includes(kw.toLowerCase())) found.add(kw);
+  });
+  return Array.from(found);
+}
+
+function generateSlugify(text) {
+  if (!text) return '';
+  return normalizeText(text).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function splitLongParagraph(paragraph, maxChars = MAX_CHARS) {
+  const sentences = paragraph
+    .split(/(?<=[.!?;:])\s+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  const parts = [];
+  let current = '';
+
+  const pushCurrent = () => {
+    if (current.trim()) parts.push(current.trim());
+    current = '';
+  };
+
+  const iterateOver = sentences.length ? sentences : [paragraph];
+
+  for (const sentence of iterateOver) {
+    if (sentence.length > maxChars) {
+      pushCurrent();
+      for (let i = 0; i < sentence.length; i += maxChars) {
+        parts.push(sentence.slice(i, i + maxChars).trim());
+      }
+      continue;
+    }
+
+    if ((current.length + sentence.length + 1) > maxChars) {
+      pushCurrent();
+    }
+
+    current = current ? `${current} ${sentence}` : sentence;
+  }
+
+  pushCurrent();
+  return parts;
+}
+
+function getOverlapText(text, overlapChars = OVERLAP_CHARS) {
+  if (!text || text.length <= overlapChars) return text || '';
+  let overlap = text.slice(-overlapChars);
+  const firstSpace = overlap.indexOf(' ');
+  if (firstSpace > 0 && firstSpace < overlap.length - 1) {
+    overlap = overlap.slice(firstSpace + 1);
+  }
+  return overlap.trim();
+}
+
+function splitTextWithOverlap(text) {
+  if (text.length <= MAX_CHARS) return [text];
+  
+  const rawParagraphs = text.split(/\n\n+/);
+  const paragraphs = [];
+  
+  for (const rp of rawParagraphs) {
+    if (rp.length > MAX_CHARS) {
+      paragraphs.push(...splitLongParagraph(rp, MAX_CHARS));
+    } else {
+      paragraphs.push(rp);
+    }
+  }
+  
+  const chunks = [];
+  let currentChunk = '';
+
+  for (let i = 0; i < paragraphs.length; i++) {
+    const p = paragraphs[i].trim();
+    if (!p) continue;
+
+    if ((currentChunk.length + p.length) > TARGET_CHARS && currentChunk.length > 0) {
+      chunks.push(currentChunk.trim());
+      
+      const overlapText = getOverlapText(currentChunk, OVERLAP_CHARS);
+      currentChunk = overlapText ? `[continuación] ${overlapText}\n\n${p}` : p;
+    } else {
+      currentChunk = currentChunk ? `${currentChunk}\n\n${p}` : p;
+    }
+  }
+  if (currentChunk.trim()) chunks.push(currentChunk.trim());
+  return chunks;
+}
+
+function createChunk(metadata) {
+  const chunkType = metadata.chunkType || inferChunkType(metadata.rawText);
+  const keywords = metadata.keywords || extractKeywords(metadata.rawText);
+  const keywordsText = keywords.join(' ');
+  
+  const contextualText = `Capítulo: ${metadata.title || 'General'}\nSección: ${metadata.heading || 'General'}\nSubsección: ${metadata.subheading || 'N/A'}\n\n${metadata.rawText}`;
+
+  allChunks.push({
+    id: docId++,
+    title: metadata.title || '',
+    heading: metadata.heading || '',
+    subheading: metadata.subheading || '',
+    text: contextualText,
+    slug: metadata.slug || '',
+    anchor: metadata.anchor || '',
+    chunkType,
+    keywords,
+    keywordsText,
+    chapterOrder: metadata.chapterOrder || 0,
+    sourceFile: metadata.sourceFile || 'N/A'
+  });
+}
+
 function extractChunks(filePath, content) {
   const { data, content: body } = matter(content);
 
-  // Eliminar imports de React/Docusaurus
   let cleanBody = body
     .replace(/^import\s+.*?from\s+['"].*?['"];?\s*$/gm, '')
     .replace(/^import\s+\{[^}]+\}\s+from\s+['"].*?['"];?\s*$/gm, '')
-    // Eliminar tags JSX de componentes (líneas que son solo <Componente ... />)
     .replace(/^<[A-Z][^>]*\/>\s*$/gm, '')
     .replace(/^<[A-Z][^>]*>\s*$/gm, '')
     .replace(/^<\/[A-Z][^>]*>\s*$/gm, '')
-    // Eliminar bloques de frontmatter que se cuelen
     .replace(/^---[\s\S]*?---/m, '')
-    // Eliminar directivas de admonition
     .replace(/^:::[a-z]+.*$/gm, '')
     .replace(/^:::$/gm, '')
-    // Limpiar líneas vacías múltiples
     .replace(/\n{3,}/g, '\n\n')
     .normalize('NFC')
     .trim();
 
   const title = data.title || path.basename(filePath, '.mdx');
-  // Usar slug del frontmatter si existe
-  // Si no, generar desde el path eliminando prefijos numéricos
-  // como hace Docusaurus (01-contexto → /contexto)
+  const chapterOrder = data.sidebar_position || 0;
+  
   const rawSlug = filePath
     .replace(DOCS_DIR, '')
     .replace(/\.mdx?$/, '')
@@ -56,46 +210,73 @@ function extractChunks(filePath, content) {
 
   const slug = data.slug
     ? data.slug
-    : rawSlug
-        .split('/')
-        .map(segment => segment.replace(/^\d+-/, ''))
-        .join('/') || '/';
+    : rawSlug.split('/').map(segment => segment.replace(/^\d+-/, '')).join('/') || '/';
 
-  // Divide el contenido por encabezados de nivel 2 (##)
-  const sections = cleanBody.split(/^## /m).filter(Boolean);
-  if (sections.length === 0) {
-    // Si no hay encabezados, todo el contenido es un único fragmento
-    allChunks.push({
-      id: docId++,
-      title,
-      heading: title,
-      text: cleanBody.replace(/\n/g, ' ').substring(0, 2000),
-      slug,
-    });
-    return;
-  }
+  const lines = cleanBody.split('\n');
+  let currentHeading = title;
+  let currentSubheading = '';
+  let currentAnchor = '';
+  let buffer = [];
 
-  for (const section of sections) {
-    const lines = section.split('\n');
-    const heading = lines[0].trim();
-    const cleanHeading = heading.replace(/<[^>]+>/g, '').normalize('NFC').trim();
-    // Elimina la primera línea (el encabezado) y une el resto
-    const text = lines
-      .slice(1)
-      .join(' ')
-      .replace(/\n/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .substring(0, 2000);
-    if (text.length < 20) continue; // ignora secciones muy cortas
-    allChunks.push({
-      id: docId++,
-      title,
-      heading: cleanHeading,
-      text,
-      slug,
+  const flushBuffer = () => {
+    if (buffer.length === 0) return;
+    const textBlob = buffer.join('\n').trim();
+    if (textBlob.length < 20) {
+      buffer = [];
+      return;
+    }
+
+    const splitChunks = splitTextWithOverlap(textBlob);
+    splitChunks.forEach(textPortion => {
+      createChunk({
+        title,
+        heading: currentHeading,
+        subheading: currentSubheading,
+        rawText: textPortion,
+        slug,
+        anchor: currentAnchor,
+        chapterOrder,
+        sourceFile: path.basename(filePath)
+      });
     });
+    buffer = [];
+  };
+
+  for (const line of lines) {
+    const hMatch = line.match(/^(#{1,4})\s+(.+)$/);
+    if (hMatch) {
+      flushBuffer();
+      const level = hMatch[1].length;
+      let textLine = hMatch[2].trim();
+      
+      let newAnchor = '';
+      const anchorMatch = textLine.match(/\{#([^}]+)\}$/);
+      if (anchorMatch) {
+        newAnchor = anchorMatch[1];
+        textLine = textLine.replace(/\{#([^}]+)\}$/, '').trim();
+      } else {
+        newAnchor = generateSlugify(textLine);
+      }
+
+      const cleanTextLine = textLine.replace(/<[^>]+>/g, '').trim();
+
+      if (level === 1) {
+        currentHeading = cleanTextLine;
+        currentSubheading = '';
+        currentAnchor = newAnchor;
+      } else if (level === 2) {
+        currentHeading = cleanTextLine;
+        currentSubheading = '';
+        currentAnchor = newAnchor;
+      } else if (level >= 3) {
+        currentSubheading = cleanTextLine;
+        currentAnchor = newAnchor;
+      }
+    } else {
+      buffer.push(line);
+    }
   }
+  flushBuffer();
 }
 
 function walkDir(dir) {
@@ -115,11 +296,7 @@ function injectMasterData() {
   const masterDataPath = path.join(OUTPUT_DIR, 'data', 'datos28A.json');
   if (fs.existsSync(masterDataPath)) {
     const data = JSON.parse(fs.readFileSync(masterDataPath, 'utf8'));
-    allChunks.push({
-      id: docId++,
-      title: 'Tabla Maestra de Cifras Consolidadas (28-A)',
-      heading: 'Datos Oficiales, Exportaciones Netas y Mix de Generación',
-      text: `Datos críticos del colapso del 28-A:
+    const rawText = `Datos críticos del colapso del 28-A:
 - Demanda peninsular: ${data.demanda.peninsular_MW} MW. ${data.demanda.descripcion}
 - Mix renovable: ${data.mix_generacion.renovable_total_porcentaje}%, fotovoltaica: ${data.mix_generacion.fotovoltaica_porcentaje}%, nuclear: ${data.mix_generacion.nuclear_porcentaje}%, bombeo: ${data.mix_generacion.bombeo_activo_MW} MW.
 - Intercambios internacionales (importaciones y exportaciones netas): España exportaba ${data.intercambios_internacionales.exportacion_francia_MW} MW a Francia, ${data.intercambios_internacionales.exportacion_portugal_MW} MW a Portugal y ${data.intercambios_internacionales.exportacion_marruecos_MW} MW a Marruecos. ${data.intercambios_internacionales.descripcion}
@@ -128,40 +305,55 @@ function injectMasterData() {
 - Tensión máxima en barras: >${data.colapso_y_reposicion.tension_maxima_barras_colectoras_kV} kV.
 - Pérdida de generación en la cascada: ${data.colapso_y_reposicion.perdida_generacion_cascada_MW} MW.
 - Desconexiones de demanda (SO): ${data.colapso_y_reposicion.desconexiones_SO_MW} MW.
-- Coste de operación reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} millones de euros.`,
-      slug: '/anexo-tablas', // Enlazamos a la galería de tablas
+- Coste de operación reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} millones de euros.`;
+
+    const keywords = extractKeywords(rawText);
+
+    createChunk({
+      title: 'Tabla Maestra de Cifras Consolidadas (28-A)',
+      heading: 'Datos Oficiales, Exportaciones Netas y Mix de Generación',
+      subheading: '',
+      rawText: rawText,
+      slug: '/anexo-tablas',
+      anchor: 'cifras-maestras',
+      chunkType: 'master_data',
+      keywords: keywords,
+      chapterOrder: 99,
+      sourceFile: 'datos28A.json'
     });
   }
 }
 
 function injectGlossary() {
   try {
-    // Leer el archivo de datos del glosario directamente
     const glossaryPath = path.join(__dirname, '..', 'src', 'data', 'glossary.js');
-    const raw = fs.readFileSync(glossaryPath, 'utf-8');
+    if (!fs.existsSync(glossaryPath)) return;
     
-    // Extraer los términos con regex (evita ejecutar el módulo ES)
+    const raw = fs.readFileSync(glossaryPath, 'utf-8');
     const termRegex = /\{\s*id:\s*slugify\(['"]([^'"]+)['"]\)[\s\S]*?term:\s*['"]([^'"]+)['"][\s\S]*?definition:\s*['"]([\s\S]*?)['"]\s*,?\s*\}/g;
     let match;
     let count = 0;
     
     while ((match = termRegex.exec(raw)) !== null) {
       const term = match[2].trim();
-      const definition = match[3]
-        .replace(/\n/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+      const definition = match[3].replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
       
       if (definition.length < 10) continue;
       
-      allChunks.push({
-        id: docId++,
+      const anchor = generateSlugify(term);
+      const rawText = `${term}: ${definition}`.normalize('NFC');
+      
+      createChunk({
         title: 'Glosario Técnico',
         heading: term,
-        text: `${term}: ${definition}`.normalize('NFC'),
-        slug: `/glosario#${term.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`,
-        chapterOrder: 0,
-        isGlossary: true,
+        subheading: '',
+        rawText: rawText,
+        slug: '/glosario',
+        anchor: anchor,
+        chunkType: 'glossary',
+        keywords: extractKeywords(rawText),
+        chapterOrder: 98,
+        sourceFile: 'glossary.js'
       });
       count++;
     }
@@ -172,34 +364,34 @@ function injectGlossary() {
 }
 
 function injectGraphics() {
-  const graphicsPath = path.join(
-    __dirname, '..', 'static', 'data', 
-    'graphics-metadata.json'
-  );
+  const graphicsPath = path.join(__dirname, '..', 'static', 'data', 'graphics-metadata.json');
   if (!fs.existsSync(graphicsPath)) {
     console.warn('  ⚠ No se encontró graphics-metadata.json');
     return;
   }
-  const graphics = JSON.parse(
-    fs.readFileSync(graphicsPath, 'utf-8')
-  );
+  
+  const graphics = JSON.parse(fs.readFileSync(graphicsPath, 'utf-8'));
   graphics.forEach(g => {
-    allChunks.push({
-      id: docId++,
+    const rawText = `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`.normalize('NFC');
+    
+    createChunk({
       title: 'Herramientas Interactivas — Anexo C',
       heading: g.title,
-      text: `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`.normalize('NFC'),
+      subheading: '',
+      rawText: rawText,
       slug: g.slug,
-      chapterOrder: 1,
-      isGlossary: false,
-      isGraphic: true,
+      anchor: '',
+      chunkType: 'graphic',
+      keywords: g.keywords,
+      chapterOrder: 97,
+      sourceFile: 'graphics-metadata.json'
     });
   });
   console.log(`  → ${graphics.length} gráficas interactivas indexadas.`);
 }
 
 function buildIndex() {
-  console.log('🔍 Construyendo índice de búsqueda para el chatbot...');
+  console.log('🔍 Construyendo índice jerárquico de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
   injectMasterData();
   injectGlossary();
@@ -207,7 +399,6 @@ function buildIndex() {
 
   miniSearch.addAll(allChunks);
 
-  // Guarda el índice serializado (MiniSearch) y los fragmentos
   fs.writeFileSync(
     path.join(OUTPUT_DIR, 'search-index.json'),
     JSON.stringify(miniSearch.toJSON())
