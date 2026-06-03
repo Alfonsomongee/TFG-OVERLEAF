@@ -34,6 +34,14 @@ const SYSTEM_PROMPTS = {
   es: `Eres el asistente del TFG "Anatomía de un Colapso Sistémico", análisis forense del apagón ibérico del 28 de abril de 2025. Tienes acceso al contenido completo del trabajo. Respondes con precisión técnica, citando fuentes cuando el contexto las menciona, y diriges al lector a los capítulos, gráficas o términos del glosario relevantes.`,
   en: `You are the assistant for the thesis "Anatomy of a Systemic Collapse", a forensic analysis of the Iberian blackout of April 28, 2025. You have access to the complete content of the thesis. You respond with technical precision, citing sources when the context mentions them, and directing the reader to relevant chapters, interactive charts, or glossary terms.`,
   de: `Du bist der Assistent der Abschlussarbeit „Anatomie eines systemischen Zusammenbruchs", einer forensischen Analyse des iberischen Stromausfalls vom 28. April 2025. Du hast Zugriff auf den vollständigen Inhalt der Arbeit. Du antwortest mit technischer Präzision, zitierst Quellen, wenn der Kontext sie erwähnt, und verweist den Leser auf relevante Kapitel, interaktive Grafiken oder Glossarbegriffe.`,
+  'zh-Hans': `你是毕业论文《系统性崩溃解剖》的智能助手，该论文是对2025年4月28日伊比利亚大停电的法证分析。你能访问论文的完整内容。你以技术精确性回答问题，在上下文提及来源时进行引用，并将读者引导至相关章节、交互式图表或术语表条目。`,
+};
+
+const SIMPLE_SUFFIX = {
+  es: ' Cuando el modo sea "simple", explica como si hablaras con alguien de 15 años sin conocimientos técnicos: usa analogías cotidianas, evita siglas sin explicar, y limita la respuesta a 150 palabras.',
+  en: ' When mode is "simple", explain as if talking to a 15-year-old with no technical background: use everyday analogies, avoid unexplained acronyms, and limit the response to 150 words.',
+  de: ' Im Modus "simple" erkläre so, als würdest du mit einem 15-Jährigen ohne technische Kenntnisse sprechen: verwende alltägliche Analogien, vermeide unerklärte Abkürzungen, und begrenze die Antwort auf 150 Wörter.',
+  'zh-Hans': ' 当模式为"simple"时，请用15岁没有技术背景的人能理解的方式解释：使用日常类比，避免未解释的缩写，将回答限制在150字以内。',
 };
 
 const USER_PROMPT_TEMPLATES = {
@@ -96,6 +104,26 @@ FRAGE:
 ${question}
 
 ANTWORT:`,
+
+  'zh-Hans': (context, glossaryLinks, graphicLinks, question) => `指令：
+- 直接用简体中文回答。
+- 正文中不使用粗体或星号。
+- 如果答案包含数据，在括号内注明来源：(REE)、(ENTSO-E)、(ICAI) 等。
+- 如果上下文包含章节链接，请在结尾附上并说明用户将在那里找到什么。示例："更多信息：[事故分析 › Tap-Lag机制](/analisis-incidente) — 崩溃过程的详细说明"。使用章节链接块中的确切标题。
+- 不要编造路径或构建URL。只使用上下文中"Ruta:"下出现的slug。
+- 如果术语词汇表块中有术语，请在结尾使用该块中出现的确切链接添加它们。
+- 如果相关交互图表块中有图表，请在结尾使用该块中出现的确切链接添加它们。
+- 如果信息不在上下文中，请说："此详细信息未出现在论文中。请查阅术语表或技术章节。"
+- 最多250字。
+
+${glossaryLinks}${graphicLinks}
+论文背景：
+${context}
+
+问题：
+${question}
+
+回答：`,
 };
 
 // ── Handler principal ──────────────────────────────────────────────────────────
@@ -110,8 +138,20 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
 
-  const { question, locale: rawLocale } = req.body;
-  const locale = ['es', 'en', 'de'].includes(rawLocale) ? rawLocale : 'es';
+  const { question, locale: rawLocale, mode } = req.body;
+  const locale = ['es', 'en', 'de', 'zh-Hans'].includes(rawLocale) ? rawLocale : 'es';
+
+  // Detectar modo debate (dos narrativas)
+  const debateKeywords = [
+    'vs', 'versus', 'comparar', 'compare', 
+    'narrativa', 'narrative', 'versión de',
+    'version of', 'REE vs', 'ICAI vs',
+    'según REE', 'según ICAI', 'debate',
+    '对比', '比较', 'REE和ICAI'
+  ];
+  const isDebateMode = question && typeof question === 'string' 
+    ? debateKeywords.some(kw => question.toLowerCase().includes(kw.toLowerCase())) 
+    : false;
 
   if (!question || typeof question !== 'string' || question.trim().length < 3) {
     return res.status(400).json({ error: 'La pregunta debe tener al menos 3 caracteres.' });
@@ -172,7 +212,21 @@ module.exports = async function handler(req, res) {
         }).join('\n')}\n\n`
       : '';
 
-    const context = contentChunks
+    // Extraer timestamps de headings si existen
+    const timePattern = /\b(\d{2}:\d{2}:\d{2})\b/;
+    const chunksWithTime = contentChunks
+      .filter(c => timePattern.test(c.heading || c.text || ''))
+      .map(c => {
+        const match = (c.heading || c.text || '').match(timePattern);
+        return match ? `[${match[1]} CEST]` : null;
+      })
+      .filter(Boolean);
+    
+    const timeContext = chunksWithTime.length > 0
+      ? `\nEVENTOS TEMPORALES RELEVANTES: ${chunksWithTime.join(', ')}\n`
+      : '';
+
+    const context = timeContext + contentChunks
       .map(c => `## ${c.title} – ${c.heading}\n${c.text}`)
       .join('\n\n');
 
@@ -201,6 +255,16 @@ module.exports = async function handler(req, res) {
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
     if (!GROQ_API_KEY) return res.status(500).json({ error: 'API Key de Groq no configurada.' });
 
+    const debateSuffix = isDebateMode ? {
+      es: '\n\nSi la pregunta compara fuentes o narrativas, estructura tu respuesta en DOS bloques claramente separados:\n[VERSIÓN REE/GOBIERNO]: ...\n[VERSIÓN ICAI/ENTSO-E]: ...\nAl final añade una línea: "PUNTO DE CONSENSO:" con lo que ambas fuentes coinciden.',
+      en: '\n\nIf the question compares sources or narratives, structure your response in TWO clearly separated blocks:\n[REE/GOVERNMENT VERSION]: ...\n[ICAI/ENTSO-E VERSION]: ...\nAt the end add: "CONSENSUS POINT:" with what both sources agree on.',
+      de: '\n\nWenn die Frage Quellen oder Narrative vergleicht, strukturiere deine Antwort in ZWEI klar getrennte Blöcke:\n[REE/REGIERUNG VERSION]: ...\n[ICAI/ENTSO-E VERSION]: ...\nFüge am Ende hinzu: "KONSENSUSPUNKT:" mit dem, was beide Quellen übereinstimmen.',
+      'zh-Hans': '\n\n如果问题比较来源或叙述，将回答结构化为两个清晰分开的块：\n[REE/政府版本]：...\n[ICAI/ENTSO-E版本]：...\n最后添加："共识点："，说明两个来源的共同点。',
+    }[locale] || '' : '';
+
+    const systemPrompt = (SYSTEM_PROMPTS[locale] || SYSTEM_PROMPTS.es) + 
+      (mode === 'simple' ? (SIMPLE_SUFFIX[locale] || SIMPLE_SUFFIX.es) : '') +
+      debateSuffix;
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -211,7 +275,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: SYSTEM_PROMPTS[locale] },
+          { role: 'system', content: systemPrompt },
           { role: 'user', content: USER_PROMPT_TEMPLATES[locale](context, chapterLinks + glossaryLinks, graphicLinks, question.trim()) },
         ],
         temperature: 0.2,

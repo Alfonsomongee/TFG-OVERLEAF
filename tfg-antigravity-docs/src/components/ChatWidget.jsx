@@ -13,6 +13,7 @@ const UI_STRINGS = {
     ariaOpen: 'Abrir chat con IA',
     ariaClose: 'Cerrar chat con IA',
     title: 'Pregunta al TFG',
+    simplify: '⚡ Simplificar',
   },
   en: {
     greeting: 'Hello! I am the assistant for the thesis on the 28-A blackout. Ask me anything about the content of this site.',
@@ -24,6 +25,7 @@ const UI_STRINGS = {
     ariaOpen: 'Open AI chat',
     ariaClose: 'Close AI chat',
     title: 'Ask the AI',
+    simplify: '⚡ Simplify',
   },
   de: {
     greeting: 'Hallo! Ich bin der Assistent für die Abschlussarbeit über den Stromausfall vom 28. April. Stell mir gerne Fragen zum Inhalt dieser Seite.',
@@ -35,6 +37,7 @@ const UI_STRINGS = {
     ariaOpen: 'KI-Chat öffnen',
     ariaClose: 'KI-Chat schließen',
     title: 'Frage an die KI',
+    simplify: '⚡ Vereinfachen',
   },
   'zh-Hans': {
     greeting: '你好！我是关于2025年4月28日伊比利亚大停电毕业论文的智能助手。欢迎向我提问本站的任何内容。',
@@ -46,6 +49,7 @@ const UI_STRINGS = {
     ariaOpen: '打开AI对话',
     ariaClose: '关闭AI对话',
     title: '向AI提问',
+    simplify: '⚡ 简化说明',
   },
 };
 
@@ -98,6 +102,35 @@ export default function ChatWidget() {
         ...prev,
         { role: 'assistant', text: t.errorConnection },
       ]);
+    } finally {
+      setLoading(false);
+      setLoadingStage('idle');
+    }
+  };
+
+  const handleSimplify = async (originalQuestion) => {
+    setLoading(true);
+    setLoadingStage('generating');
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          question: originalQuestion, 
+          locale,
+          mode: 'simple'
+        }),
+      });
+      const data = await res.json();
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        text: data.answer || data.error 
+      }]);
+    } catch {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        text: t.errorConnection 
+      }]);
     } finally {
       setLoading(false);
       setLoadingStage('idle');
@@ -211,13 +244,51 @@ export default function ChatWidget() {
             {messages.map((m, i) => (
               <div key={i} style={{
                 alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+                maxWidth: '85%',
+              }}>
+              <div style={{
                 backgroundColor: m.role === 'user' ? 'var(--chat-user-msg-bg)' : 'var(--chat-assistant-msg-bg)',
                 color: m.role === 'user' ? 'var(--chat-user-msg-text)' : 'var(--chat-assistant-msg-text)',
-                padding: '10px 14px', borderRadius: 14, maxWidth: '85%',
+                padding: '10px 14px', borderRadius: 14,
                 fontSize: 14, lineHeight: 1.5,
                 whiteSpace: 'pre-wrap', wordBreak: 'break-word',
               }}>
                 {renderText(m.text)}
+              </div>
+              {m.role === 'assistant' && i > 0 && (
+                <button
+                  onClick={() => {
+                    const userMsg = messages[i - 1];
+                    if (userMsg?.role === 'user') {
+                      handleSimplify(userMsg.text);
+                    }
+                  }}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: 'none',
+                    border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                    borderRadius: 8,
+                    color: 'var(--chart-text-3, #64748b)',
+                    fontSize: 11,
+                    padding: '3px 8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={e => {
+                    e.target.style.borderColor = 'var(--accent-electric)';
+                    e.target.style.color = 'var(--accent-electric)';
+                  }}
+                  onMouseLeave={e => {
+                    e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                    e.target.style.color = 'var(--chart-text-3, #64748b)';
+                  }}
+                >
+                  {t.simplify}
+                </button>
+              )}
               </div>
             ))}
             {loading && (
