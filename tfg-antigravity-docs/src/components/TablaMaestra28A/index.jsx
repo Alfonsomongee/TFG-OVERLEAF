@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import Translate, { translate } from '@docusaurus/Translate';
-import datosForenses from '@site/src/data/datosForenses.json';
+import { useDocLang } from '@site/src/hooks/useDocLang';
+import datosForensesES from '@site/src/data/datosForenses.json';
+import datosForensesEN from '@site/src/data/datosForenses_en.json';
 import styles from './styles.module.css';
 
 // Función para aplanar el JSON maestro en un array de filas
@@ -22,12 +24,24 @@ function flattenData(obj, prefix = '') {
   return rows;
 }
 
-const allData = flattenData(datosForenses);
-const allSources = Array.from(new Set(allData.map(d => d.fuentePrimaria).filter(Boolean)));
+const allDataES = flattenData(datosForensesES);
+const allDataEN = flattenData(datosForensesEN);
+
+function getFilteredData(lang, selectedSources) {
+  const data = lang === 'en' ? allDataEN : allDataES;
+  if (selectedSources.length === 0) return data;
+  return data.filter(d => d.fuentePrimaria && selectedSources.includes(d.fuentePrimaria));
+}
 
 export default function TablaMaestra28A() {
+  const lang = useDocLang();
   const [selectedSources, setSelectedSources] = useState([]);
   const [expandedRow, setExpandedRow] = useState(null);
+  
+  const allSources = useMemo(() => {
+    const data = lang === 'en' ? allDataEN : allDataES;
+    return Array.from(new Set(data.map(d => d.fuentePrimaria).filter(Boolean)));
+  }, [lang]);
 
   const toggleSource = (source) => {
     if (selectedSources.includes(source)) {
@@ -37,10 +51,7 @@ export default function TablaMaestra28A() {
     }
   };
 
-  const filteredData = useMemo(() => {
-    if (selectedSources.length === 0) return allData;
-    return allData.filter(d => d.fuentePrimaria && selectedSources.includes(d.fuentePrimaria));
-  }, [selectedSources]);
+  const filteredData = useMemo(() => getFilteredData(lang, selectedSources), [lang, selectedSources]);
 
   return (
     <div className={styles.container}>

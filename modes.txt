@@ -1,0 +1,256 @@
+modes
+
+
+Arquitectura de Sistema de Diseño Editorial Técnico: Proyecto "Apagón Ibérico 28A"1. Introducción y Paradigmas de Diseño de Interfaces de Alta DensidadEl diseño y la ingeniería estructural de una interfaz forense interactiva exigen un enfoque metodológico extremadamente riguroso. Cuando se aborda una narrativa técnica de alta complejidad, como es el análisis del colapso de una red eléctrica en el proyecto "Apagón Ibérico 28A", la interfaz deja de ser un mero contenedor estético para convertirse en un marco cognitivo activo. Este marco dicta de manera invisible cómo el usuario procesa, interpreta y retiene volúmenes masivos de datos estructurados, simulaciones interactivas y literatura técnica. En el contexto del diseño de interfaces de 2026, fuertemente influenciado por los paradigmas de densidad extrema y fricción cero establecidos por plataformas como Linear, Vercel y Clerk, la estética debe supeditarse a la claridad absoluta, la jerarquía visual instantánea y la minimización de la carga cognitiva.El requisito de implementar una doble modalidad (Light Mode y Dark Mode) introduce un desafío arquitectónico de primer nivel. El sistema no solo debe invertir los valores de luminancia, sino que debe transmutar la psicología del entorno de lectura. El Modo Claro tiene el mandato explícito de emular un "paper analógico de investigación". Esto requiere la construcción de un entorno táctil, cálido y de alta gama, optimizado para la inmersión profunda y la lectura prolongada sin fatiga retinal. Por el contrario, el Modo Oscuro debe funcionar como un "dashboard de ingeniería sobrio y serio", proporcionando un entorno frío, altamente estructurado y de precisión milimétrica, diseñado para la monitorización de telemetría y el análisis de registros forenses.Para lograr esta dualidad sin comprometer la coherencia del sistema, es imperativo despojar al diseño de cualquier elemento decorativo superfluo. El uso de neones, colores fosforescentes, efectos de resplandor (glow) o estéticas cibernéticas ("gamer/cyberpunk") queda estrictamente prohibido, ya que introducen un ruido visual que socava gravemente la gravedad y la madurez de los datos forenses presentados. En su lugar, la arquitectura visual dependerá de un uso draconiano de la restricción: una paleta de colores semánticos limitada a un máximo de 10 variables exactas por modo, una precisión arquitectónica en la tipografía, y una física de interacción microscópica gobernada por funciones matemáticas de opacidad (como color-mix en CSS) y bordes subpíxel. Este informe detalla exhaustivamente las especificaciones sistémicas, las decisiones tipográficas, el mapeo cromático y la implementación técnica requerida para materializar esta visión en un entorno React/Docusaurus.2. Auditoría y Reestructuración de la Arquitectura TipográficaLa tipografía constituye el andamiaje fundamental de cualquier sistema de diseño editorial. En un proyecto técnico interactivo que combina prosa extensa, tablas de datos densas  y simuladores embebidos, las decisiones tipográficas determinan el ritmo de lectura, la capacidad de escaneo de la interfaz y la autoridad percibida del contenido.2.1 Análisis Crítico del Stack Tipográfico HeredadoLa auditoría del diseño actual revela el uso de una tríada tipográfica compuesta por Space Grotesk para los titulares, Inter para el cuerpo de texto y JetBrains Mono para la representación de datos y código. Un análisis forense de esta combinación frente a los objetivos exigidos revela fricciones significativas que deben ser resueltas.El principal punto de fallo en el stack actual es el uso de Space Grotesk. Se trata de una tipografía sans-serif geométrica, idiosincrásica, caracterizada por proporciones inusualmente anchas y trampas de tinta (ink traps) muy pronunciadas. Si bien es innegablemente popular en entornos de startups y ecosistemas Web3, acarrea una connotación inherente de "tecnología excéntrica" o "cyberpunk ligero". Esta personalidad tipográfica viola directamente ambos mandatos del proyecto: destruye la ilusión de un documento de investigación analógico y táctil en el Modo Claro, y carece de la rigidez clínica y autoritaria necesaria para el panel de ingeniería en el Modo Oscuro. Su tracking (espaciado entre letras) expansivo interrumpe el ritmo vertical estricto que requieren las interfaces técnicas de alta densidad.Por el contrario, el uso de Inter para el cuerpo del texto se mantiene como una decisión estructuralmente impecable. Diseñada específicamente para la legibilidad en pantallas de alta resolución, Inter posee una altura de la x (x-height) generosa, aperturas neutrales y un hinting meticuloso que facilita la lectura en bloques de texto masivos tanto en fondos de alta luminancia como en entornos oscuros. Actúa como el puente perfecto entre la sensación de un ensayo impreso (cuando se compone con un interlineado expansivo) y la limpieza digital de un dashboard.Finalmente, JetBrains Mono es una elección excepcional que debe ser ratificada. Su estructura monoespaciada es crítica para el alineamiento vertical de cifras en las tablas forenses orgánicas. Además, sus características tipográficas avanzadas, como los ceros atravesados por una barra diagonal y ligaduras específicas para sintaxis técnica, garantizan la decodificación instantánea de marcas de tiempo (timestamps), umbrales métricos y registros de error en los simuladores interactivos, previniendo errores de lectura en condiciones de fatiga visual.2.2 Propuesta de Reemplazo y Evolución Tipográfica para 2026Para alcanzar la estética "premium" y de alta gama exigida por un diseño editorial técnico contemporáneo (estilo Linear/Vercel), Space Grotesk debe ser completamente deprecada. La interfaz requiere una fuente tipográfica en sus titulares que exude autoridad estructural, racionalidad y una elegancia sobria.Se recomienda encarecidamente la adopción de Geist (desarrollada por Vercel) o, de forma nativa a través de Google Fonts, Inter Tight. Estas tipografías neo-grotescas ofrecen una estructura de ingeniería precisa. Al utilizar Inter Tight para los titulares y Inter para el cuerpo de texto, el sistema visual logra una cohesión monolítica. Los datos y la narrativa toman el protagonismo absoluto, mientras que la tipografía actúa como un contenedor transparente, sofisticado e invisible.2.3 Especificaciones de Pesos y Modulación EspacialEn el diseño técnico moderno, el contraste jerárquico no se logra mediante el uso abusivo de colores, sino a través de variaciones matemáticas en el peso y el tamaño tipográfico. Se evitan los extremos (pesos ultra-ligeros o ultra-negros) en favor de un espectro central ópticamente claro.Nivel JerárquicoTipografíaFont-WeightLine-HeightTracking (Letter-Spacing)Justificación ArquitectónicaTítulo Principal (h1)Inter Tight600 (SemiBold)1.15-0.025emUn tracking negativo cohesiona las palabras en bloques monolíticos, denotando autoridad y gravedad editorial.Subtítulos (h2, h3)Inter Tight500 (Medium)1.3-0.015emProporciona una segmentación clara de la narrativa sin competir con el título principal.Cuerpo de Texto (p, li)Inter400 (Regular)1.750emEl interlineado expansivo (1.75) es crucial para generar el ritmo de lectura relajado y analógico exigido.Elementos de Interfaz (Botones)Inter500 (Medium)1.0-0.01emGarantiza la nitidez instantánea en áreas interactivas de reducidas dimensiones.Datos y Simuladores (code)JetBrains Mono400 (Regular)1.60emMantiene el ritmo de la cuadrícula matemática inquebrantable necesaria para tablas y registros forenses.Cabeceras de Tabla (th)JetBrains Mono500 (Medium)1.20.05emUn tracking expansivo en mayúsculas diferencia visualmente los metadatos estructurales de los datos puros.3. Arquitectura Cromática: La Restricción de las 10 Variables SemánticasLa gestión del color es el vector más crítico para asegurar la salud visual del usuario durante el análisis prolongado de información. El mandato estricto exige limitar el sistema a exactamente 10 variables de color semánticas por modo. Esta restricción es una técnica de diseño avanzada que fuerza al diseñador a depender de las matemáticas de opacidad (mediante color-mix()) en lugar de generar una proliferación incontrolada de valores hexadecimales aislados ("dolores de cabeza cromáticos").Para satisfacer la creación de fondos estructurales, textos y acentos semánticos sin superar el límite de 10 variables, el ecosistema CSS se define bajo la siguiente matriz unificada: tres capas de fondo espacial, tres niveles de jerarquía de texto y cuatro identificadores de estado semántico.3.1 Anatomía del Modo Claro (Light Mode): El "Paper Analógico"El objetivo psicológico del Modo Claro es simular la respuesta óptica del papel de archivo de alto gramaje impreso con tintas tradicionales. El blanco digital puro (#ffffff o hsl(0, 0%, 100%)) refleja el 100% de la luz retroiluminada de la pantalla, provocando un deslumbramiento leve pero constante que fatiga la retina durante la lectura intensiva. Por tanto, el fondo estructural debe absorber parte de esta luz, utilizando blancos rotos (off-white) con sutiles matices cálidos.De igual forma, los acentos de alerta y error deben abandonar los colores primarios saturados del modelo RGB. El "rojo error" digital genera vibración óptica. En su lugar, se emplearán tonos granate profundo (bordeaux), naranjas cobrizos y verdes de bosque denso que emulan tintas litográficas.Estructura de las 10 Variables (Light Mode):Variable CSSValor HEXDescripción y Aplicación Semántica--bg-base#FCFAF8Fondo principal. Un off-white con una temperatura de color cálida (~4800K) que simula papel de algodón premium.--bg-surface#F5F2EDSuperficies secundarias. Utilizado para embeber tarjetas (cards) y simuladores. Aporta separación sin requerir bordes.--bg-elevated#FFFFFFElevación máxima. Usado exclusivamente en menús desplegables o modales para que se proyecten visualmente hacia el usuario.--text-main#1A1816Títulos y texto primario. Un negro-piedra cálido. Evita el contraste puro #000000 que resulta agresivo sobre papel cálido.--text-muted#5C5855Texto secundario y metadatos. Un gris cálido para notas técnicas, fechas y leyendas de gráficas.--text-micro#9E9893Estados inactivos. Gris lavado utilizado exclusivamente para bordes tenues dinámicos y textos deshabilitados.--accent-primary#1E3A8AColor de marca y acción. Un azul marino (Navy) profundo. Sustituye al azul eléctrico comercial aportando una pátina editorial.--accent-warning#9A3412Alertas moderadas (Admonitions). Un naranja óxido maduro. Reemplaza al ámbar reflectante para mantener la madurez.--accent-critical#7F1D1DIncidentes graves. Un bordeaux/vino oscuro. Denota urgencia extrema en los "Incident Boxes" sin provocar pánico visual.--accent-success#14532DRestauraciones técnicas. Verde bosque. Indica el éxito en las operaciones del simulador sin recurrir al verde fluorescente.3.2 Anatomía del Modo Oscuro (Dark Mode): El "Dashboard de Precisión"El Modo Oscuro debe abandonar por completo la calidez analógica. Su psicología se fundamenta en la supresión de la luz y la estructuración de la telemetría en un entorno de ingeniería nocturna. La regla inviolable de este modo es la erradicación de la "halación cromática", un defecto óptico que ocurre cuando colores altamente saturados (como el neón) se colocan sobre fondos muy oscuros, provocando que los bordes del texto parezcan difuminarse y brillar excesivamente.Para prevenir este agotamiento cognitivo, el fondo no será negro puro, sino un gris azulado de extrema profundidad (azul acero). Los colores de acento sufrirán una fuerte desaturación matemática, convirtiéndolos en colores pastel apagados o "mate" que resaltan por su contraste de luminancia relativa, no por su croma.Estructura de las 10 Variables (Dark Mode):Variable CSSValor HEXDescripción y Aplicación Semántica--bg-base#0D1117Fondo principal. Un gris acero muy frío, inspirado en el titanio no reflectante. Evita el #000000 puro.--bg-surface#161B22Superficies secundarias. Cajas de contención para simuladores interactivos y gráficas forenses (Recharts).--bg-elevated#21262DSuperficies flotantes. Menús contextuales y modales de intervención.--text-main#E5E7EBTítulos y lectura. Un blanco hielo. Ligeramente atenuado para no generar imágenes fantasma en la retina tras el desplazamiento.--text-muted#8B949EMetadatos y cabeceras. Un gris frío y técnico para los ejes de las gráficas Recharts y las tablas forenses.--text-micro#484F58Líneas y bordes. Un gris profundo para definir sutilmente los confines de las tablas orgánicas sin interrumpir el flujo visual.--accent-primary#38BDF8Navegación primaria. Cian eléctrico suavizado. Reemplaza el azul cobalto (que es invisible en fondos oscuros) aportando claridad.--accent-warning#D97706Atención técnica. Ámbar mate. Denota cuidado pero mantiene una estética estéril e industrial.--accent-critical#DC2626Líneas rojas de fallo. Un rojo carmesí plano y mate. Usado para umbrales de gráficas y "Incident Boxes".--accent-success#059669Restauración de red. Esmeralda apagado. Indica la reconexión de los nodos del simulador.4. Física de Interacción y Gestión de Estados DerivadosPara mantener el estricto límite de 10 variables semánticas sin perder la interactividad requerida por los botones, hovers y estados activos , la interfaz debe prescindir de variables "hardcoded" para estados secundarios. En su lugar, el sistema emplea el motor de renderizado CSS nativo color-mix(in srgb, color_A, color_B) para calcular dinámicamente tintes y sombras. Esto garantiza que cualquier interacción se sienta genéticamente vinculada al esquema base, previniendo discrepancias visuales.4.1 Comportamientos Hover y Bordes DinámicosEn el estilo de Linear y Vercel, los bordes rara vez son colores sólidos de alto contraste. Son líneas tenues que apenas delinean la superficie. El sistema derivará globalmente un borde unificado (equivalente a un --border-subtle) inyectando un porcentaje del texto silenciado en transparencia:border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);Los estados "Hover" de los contenedores (como las filas de una tabla orgánica que se están investigando o un botón fantasma) no utilizan un color gris arbitrario, sino una inyección matemática del texto principal con alta transparencia. Esto asegura que en el Light Mode el hover sea sutilmente oscuro, y en el Dark Mode, sutilmente brillante:background-color: color-mix(in srgb, var(--text-main) 6%, transparent);4.2 Botones Desplegables y Navegación (Sidebar)La interfaz incluye interacciones recurrentes como "Ver simulador" o "Ver mecanismo técnico", además de la navegación lateral (Sidebar). Estos botones secundarios, clasificados como "Ghost Buttons", están diseñados para no competir con el contenido narrativo principal.Comportamiento del "Ghost Button" sobre el fondo --bg-base:Estado de Reposo (Resting): El fondo es completamente transparente (background: transparent), careciendo de bordes visibles (border: 1px solid transparent). El texto se renderiza utilizando --text-muted, fusionándose orgánicamente con el flujo de lectura.Estado de Interacción (Hover): Al pasar el cursor, se aplica una transición suave (transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1)). El fondo adopta el tinte dinámico de 6% descrito anteriormente. Crucialmente, el texto transiciona a --text-main, incrementando su luminancia y peso óptico para confirmar la focalización interactiva.Sidebar Activa: Cuando un elemento del menú lateral es el foco actual del documento, adquiere un indicador semántico. En lugar de rellenar todo el fondo (lo cual genera pesadez visual), se utiliza una micro-línea vertical de 2px a la izquierda con el --accent-primary, y el texto pasa a --text-main con font-weight: 500.5. Ingeniería de Componentes EstructuralesLa representación visual de la información forense requiere componentes de interfaz que encapsulen la complejidad sin abrumar al usuario. Cada elemento interactivo ha sido rediseñado bajo los principios de la estética Vercel/Clerk, eliminando sombras gruesas y colores sólidos abrumadores.5.1 Cajas de Notas Técnicas (Admonitions)Las "Admonitions" son interrupciones narrativas esenciales para añadir contexto técnico al colapso eléctrico. Históricamente, estas cajas sufrían de un diseño torpe, usando fondos blancos puros sobre fondos de color en Light Mode, o azules semi-transparentes genéricos en Dark Mode que rompían la cohesión.Solución Estructural Contemporánea:El color de fondo de una nota técnica debe estar intrínsecamente ligado a su categoría semántica para permitir un reconocimiento subconsciente. Sin embargo, no puede ser un color sólido porque destruiría el contraste de lectura del texto interior.La solución es aplicar un "tintado fantasma" del 8% del color de acento correspondiente, combinado con un borde lateral grueso de 4px y un micro-borde delimitador envolvente del 15% de opacidad.Ejemplo (Nota Crítica en CSS dinámico):CSSbackground-color: color-mix(in srgb, var(--accent-critical) 8%, transparent);
+border: 1px solid color-mix(in srgb, var(--accent-critical) 15%, transparent);
+border-left: 4px solid var(--accent-critical);
+Esta técnica permite que el Modo Claro perciba la nota como un bloque ligeramente humedecido con tinta color bordeaux, mientras que el Modo Oscuro renderiza un panel de telemetría de cristal sutilmente iluminado en carmesí.5.2 Cajas de Incidente (Incident Boxes)Estas cajas tienen la misión crítica de romper el flujo estético general para denotar máxima severidad (ej. "Fallo en cascada detectado"), pero deben hacerlo de manera madura, sin incurrir en estridencias o "rojos escandalosos" que emulen aplicaciones no profesionales.Diseño de Urgencia Madura:Para denotar la naturaleza catastrófica pero técnica del contenido, la caja de incidente no utiliza animaciones ni resplandores. En su lugar, se diseña como una etiqueta física industrial estandarizada:Un borde perimetral sólido de 1px color --accent-critical.Un fondo teñido al 10% con el mismo acento.Patrón de Intervención Forense: Se inyecta un sutil repeating-linear-gradient inclinado a 45 grados. Este fondo rayado diagonal, con una opacidad extremadamente baja (4%), invoca subconscientemente la cinta de delimitación de áreas de riesgo ("hazard tape") característica de la ingeniería física industrial, pero su baja opacidad asegura que el texto montado sobre ella permanezca 100% legible y sobrio.5.3 Contenedores de Simulador y Gráficas (Cards)Los simuladores eléctricos interactivos y las gráficas visuales (basadas en Recharts) no pueden flotar libres sobre el texto base, ya que sus ejes y botones internos competirían con la prosa narrativa. Deben ser encapsulados lógicamente en superficies de contención denominadas "Cards" o tarjetas.Manejo Espacial y Sombras:En Modo Claro (Paper): La tarjeta utiliza --bg-surface. Para separar el "panel de control" de la "hoja de papel", se le aplica una sombra expansiva, hiper-suave y de bajísima opacidad: box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03). Esto genera un efecto de sutil levitación.En Modo Oscuro (Dashboard): Aquí reside una de las leyes fundamentales del diseño moderno: Las sombras negras no existen en la oscuridad profunda. Intentar proyectar una sombra en el modo oscuro genera un oscurecimiento embarrado ("muddy rendering") en los bordes. En cambio, la separación óptica se logra mediante "luces internas" (Inner Highlights). La tarjeta oscura prescinde de la sombra proyectada y recibe un micro-borde superior iluminado: box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), simulando el borde biselado de una pantalla incrustada en un hardware de titanio.Los colores inyectados en las librerías de Recharts (líneas, barras, ejes)  deben mapearse directamente a las variables CSS del :root. La línea roja de límite será var(--accent-critical), la línea cyan base será var(--accent-primary), y la restauración verde var(--accent-success). Esto mantiene los colores del dashboard limitados y coherentes sin configuraciones de Recharts independientes.5.4 Diseño de Tablas Forenses OrgánicasLa visualización de registros extensos y metadatos de red (timestamps, identificadores de nodo, fluctuaciones de voltaje) requiere un rediseño radical. El patrón estándar de "filas con patrón de cebra" (alternar colores grises por fila) es una reliquia visual pesada que interrumpe el escaneo vertical, una tarea fundamental en el análisis de logs y código forense.Estructura de Datos Orgánica:
+Una tabla técnica moderna debe percibirse como información impresa directamente sobre la página base, sin la limitación de celdas cerradas.Fondo: Totalmente transparente (background: transparent).Cuadrícula: Las líneas verticales (columnas) se eliminan por completo. Las separaciones horizontales entre filas de datos se reducen a un divisor infinitesimal (border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent)). La última fila carece de borde inferior, fundiéndose limpiamente en el texto adyacente.Jerarquía de Cabeceras (th): Para distinguir las etiquetas estructurales de los datos técnicos vivos, las cabeceras emplean tipografía monoespaciada (JetBrains Mono), color --text-muted, se fuerzan a mayúsculas (text-transform: uppercase) y se expanden con un tracking de 0.05em. Esta expansión métrica genera un anclaje visual superior de alta densidad.5.5 Navbar y Comportamiento del "Glassmorphism" TranslucidoEl menú superior estático (Navbar) presenta un desafío en la lectura técnica. Si es opaco, corta abruptamente los gráficos forenses al hacer scroll vertical. La auditoría indica el uso de un efecto de "Morfismo de Cristal" (Glassmorphism). Para ejecutar esto con precisión de ingeniería y cumplir el estilo Linear:
+El fondo de la navbar no debe ser un color sólido con simple opacidad (lo cual hace ilegible el texto subyacente). Se requiere la combinación de color-mix para tintar la capa base y el filtro de renderizado por hardware backdrop-filter.
+Específicamente, el sistema aplicará un blur(12px) para desenfocar la información técnica que se desliza por debajo, y crucialmente, un saturate(150%). Esta saturación evita que los colores de las gráficas Recharts que pasan bajo el menú se transformen en grises muertos, manteniendo la vitalidad del panel sin comprometer la legibilidad de la navegación.6. Accesibilidad y Estándares de Contraste (WCAG 2.1)El diseño de un sistema técnico orientado al estudio del "Apagón Ibérico" no puede permitirse barreras cognitivas o fisiológicas. El ecosistema cromático delineado por las 10 variables ha sido diseñado con márgenes matemáticos que superan los requerimientos de Nivel AA (y en elementos críticos, AAA) de las Directrices de Accesibilidad para el Contenido Web (WCAG 2.1).El contraste de luminancia relativa entre --bg-base y --text-main en ambos modos excede la relación de 7:1 requerida para una visibilidad óptima bajo estrés sostenido. Adicionalmente, el mapeo de colores de incidentes evita combinaciones problemáticas para usuarios con daltonismo (protanopía y deuteranopía). El rojo y el verde (--accent-critical y --accent-success) en sus variaciones mate difieren significativamente en luminancia, asegurando que un fallo de red o una restauración exitosa en los simuladores  puedan ser discernidos independientemente de la agudeza cromática del usuario.7. Implementación Estricta: Arquitectura CSS CompletaA continuación, se proporciona el código CSS unificado. Este bloque consolida toda la teoría analizada, mapeando exactamente las 10 variables estructurales y derivando estados complejos a través de color-mix. El código está optimizado para su inyección directa en ecosistemas basados en componentes dinámicos como React/Docusaurus. No se requiere la compilación de preprocesadores SCSS o LESS, operando de manera nativa mediante las especificaciones más modernas de CSS.CSS/* 
+==========================================================================
+   SISTEMA DE DISEÑO: "APAGÓN IBÉRICO 28A" (React / Docusaurus)
+   Estética Requerida: Paper Analógico (Light) / Dashboard Telemetría (Dark)
+   Paradigma Arquitectónico: Linear / Vercel / Clerk Docs
+========================================================================== 
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* =========================================
+   1. VARIABLES DE ESTADO ESTRICTO (MÁX. 10)
+   Modo Claro: Investigación Analógica
+========================================= */
+:root {
+  /* Fondos Estructurales (3) */
+  --bg-base: #FCFAF8;    /* Papel cálido táctil */
+  --bg-surface: #F5F2ED; /* Encapsulamiento suave */
+  --bg-elevated: #FFFFFF;/* Flotación física */
+
+  /* Textos y Lectura (3) */
+  --text-main: #1A1816;  /* Tinta negra-piedra cálida */
+  --text-muted: #5C5855; /* Tinta gris cálida metadatos */
+  --text-micro: #9E9893; /* Deshabilitados y bordes */
+
+  /* Acentos Semánticos (4) */
+  --accent-primary: #1E3A8A;  /* Navy Editorial Profundo */
+  --accent-warning: #9A3412;  /* Óxido / Ámbar maduro */
+  --accent-critical: #7F1D1D; /* Bordeaux / Vino tinto */
+  --accent-success: #14532D;  /* Verde bosque oscuro */
+
+  /* Variables Físicas Derivadas (Bordes dinámicos estrictos de 10 vars) */
+  --border-dynamic: color-mix(in srgb, var(--text-muted) 20%, transparent);
+  --hover-dynamic: color-mix(in srgb, var(--text-main) 6%, transparent);
+  
+  /* Sistema Tipográfico unificado */
+  --font-heading: 'Inter Tight', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* =========================================
+   2. VARIABLES DE ESTADO ESTRICTO (MÁX. 10)
+   Modo Oscuro: Dashboard Forense
+========================================= */
+html[data-theme='dark'] {
+  /* Fondos Estructurales (3) */
+  --bg-base: #0D1117;    /* Azul Acero frío, antireflejo */
+  --bg-surface: #161B22; /* Elevación técnica */
+  --bg-elevated: #21262D;/* Menús suspendidos */
+
+  /* Textos y Lectura (3) */
+  --text-main: #E5E7EB;  /* Hielo mate para lectura cruda */
+  --text-muted: #8B949E; /* Gris telemetría (ejes/fechas) */
+  --text-micro: #484F58; /* Bordes profundos apagados */
+
+  /* Acentos Semánticos sin Halación (4) */
+  --accent-primary: #38BDF8;  /* Cian desaturado técnico */
+  --accent-warning: #D97706;  /* Ámbar plano industrial */
+  --accent-critical: #DC2626; /* Carmesí mate puro */
+  --accent-success: #059669;  /* Esmeralda sin glow */
+}
+
+/* =========================================
+   3. BASE Y TIPOGRAFÍA
+========================================= */
+body {
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+h1 { font-weight: 600; line-height: 1.15; letter-spacing: -0.025em; font-size: 2.5rem; }
+h2 { font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; font-size: 1.75rem; }
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* =========================================
+   4. ESTRUCTURAS COMPONENTES
+========================================= */
+
+/* --- Navbar Transparencia Avanzada --- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg-base) 85%, transparent);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border-bottom: 1px solid var(--border-dynamic);
+}
+
+/* --- Botones y Sidebar Ghost --- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+/* Desplegables / Sidebar */
+.button.ghost {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+}
+
+.button.ghost:hover {
+  background-color: var(--hover-dynamic);
+  color: var(--text-main);
+}
+
+.button.ghost:active {
+  transform: scale(0.98);
+}
+
+/* Simulador Activo / Acción Principal */
+.button.primary {
+  background-color: var(--accent-primary);
+  color: var(--bg-base); /* Inversión para legibilidad total */
+  border: 1px solid var(--accent-primary);
+}
+
+.button.primary:hover {
+  filter: brightness(1.1);
+}
+
+/* --- Contenedores y Simuladores --- */
+.card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-dynamic);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+@media (prefers-color-scheme: light) {
+  :root.card {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03); /* Levitación papel */
+  }
+}
+html[data-theme='dark'].card {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); /* Hardware Inner Highlight */
+}
+
+/* --- Admonitions (Notas Técnicas Dinámicas) --- */
+.admonition {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  border-left: 4px solid var(--accent-primary);
+  color: var(--text-main);
+}
+
+.admonition.warning {
+  background-color: color-mix(in srgb, var(--accent-warning) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent-warning) 15%, transparent);
+  border-left-color: var(--accent-warning);
+}
+
+/* --- Incident Boxes (Severidad Forense Analítica) --- */
+.incident-box {
+  position: relative;
+  margin: 2.5rem 0;
+  padding: 1.5rem;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--accent-critical) 10%, transparent);
+  border: 1px solid var(--accent-critical);
+  color: var(--text-main);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    color-mix(in srgb, var(--accent-critical) 4%, transparent) 10px,
+    color-mix(in srgb, var(--accent-critical) 4%, transparent) 20px
+  );
+}
+
+.incident-box::before {
+  content: 'FALLO CRÍTICO DE SISTEMA';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent-critical);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* --- Tablas de Datos Orgánicas (Forensic Data Grids) --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+th, td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border-dynamic);
+}
+
+th {
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--text-micro);
+}
+
+td {
+  color: var(--text-main);
+}
+
+tr:last-child td {
+  border-bottom: none; /* Cierre orgánico sobre el fondo */
+}

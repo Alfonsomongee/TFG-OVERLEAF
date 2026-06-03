@@ -1,98 +1,89 @@
 /**
  * Bloque2MixGeneracion.jsx
  * Mix de generación peninsular a las 12:30 CEST del 28-A.
- *
- * CORRECCIONES respecto a la versión anterior:
- *
- * 1. DATOS — penetración FV corregida:
- *    La versión anterior daba solar al 65% con 19.155 MW, sin fuente
- *    verificada. Los datos del Comité de Análisis (p.38) dan:
- *    - FV: ~53,3% del mix
- *    - Mix renovable total: 82% (NO 84,5%)
- *    - Demanda peninsular: 25.184 MW
- *    Los MW por tecnología son estimaciones proporcionales coherentes
- *    con los porcentajes verificados. Se declaran como estimaciones.
- *
- * 2. DATOS — inercia H corregida:
- *    "H crítica de ~2.3s" → "H ibérica 2,21–2,71 s"
- *    (ENTSO-E Factual, Tabla 2-4, p.36)
- *
- * 3. DEPENDENCIA — lucide-react eliminada:
- *    AlertTriangle de lucide-react puede no estar instalado o generar
- *    errores de SSR. Sustituido por SVG inline simple.
- *
- * 4. MEJORA — distinción IBR vs síncrono más clara:
- *    La barra muestra qué tecnologías aportan inercia (verde) y cuáles
- *    no (ámbar), que es el dato pedagógicamente relevante.
  */
 import React from 'react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
 } from 'recharts';
 import styles from './Bloque2MixGeneracion.module.css';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 
-// Datos verificados: porcentajes del Comité de Análisis (p.38)
-// MW estimados proporcionalmente sobre demanda peninsular 25.184 MW
-// + exportaciones (~4.800 MW) + bombeo (~3.000 MW) ≈ 33.000 MW generación total
-// Estos son ESTIMACIONES de reparto — el Comité solo publica porcentajes
-const GENERATION_DATA = [
-  {
-    id: 'solar',
-    name: 'Solar fotovoltaica',
-    // ~53,3% del mix (Comité, p.38)
-    mw: 13428,
-    percentage: 53.3,
-    color: '#EF9F27',
-    aportaInercia: false,
+const STRINGS = {
+  es: {
+    solar: 'Solar fotovoltaica',
+    nuclear: 'Nuclear',
+    wind: 'Eólica',
+    hydro: 'Hidráulica',
+    ccgt: 'CCGT (gas)',
+    other: 'Cogeneración / otros',
+    alertTitle: 'ALERTA DE SISTEMA:',
+    alertText1: 'A las 12:30 CEST, el ',
+    alertText2: ' de la generación activa',
+    alertText3: ' provenía de fuentes renovables (Comité de Análisis, p.38), de las cuales la práctica totalidad operaba en modo grid-following sin aportar inercia mecánica genuina. Solo el ~',
+    alertText4: '% (nuclear, hidráulica y CCGT) aportaba masa síncrona. La constante de inercia ibérica era ',
+    alertText5: ' (ENTSO-E Factual, Tabla 2-4, p.36).',
+    ibrLabel: 'IBR sin inercia',
+    syncLabel: 'generación síncrona',
+    syncShort: 'Síncrono',
+    estTooltip: '(estimación)',
+    syncTag: 'síncrono',
+    ibrTag: 'IBR',
+    colTech: 'TECNOLOGÍA',
+    colDist: 'DISTRIBUCIÓN',
+    colPower: 'POTENCIA',
+    footer: 'Porcentajes: Comité de Análisis del Gobierno, p.38 (12:30 CEST, 28/04/2025). MW por tecnología: estimaciones proporcionales sobre demanda peninsular de 25.184 MW + exportaciones + bombeo. No proceden de telemetría ESIOS por pérdida de logs durante la cascada.'
   },
-  {
-    id: 'nuclear',
-    name: 'Nuclear',
-    // ~10% del mix (Comité, p.38)
-    mw: 2518,
-    percentage: 10.0,
-    color: '#378ADD',
-    aportaInercia: true,
+  en: {
+    solar: 'Solar photovoltaic',
+    nuclear: 'Nuclear',
+    wind: 'Wind',
+    hydro: 'Hydro',
+    ccgt: 'CCGT (gas)',
+    other: 'Cogeneration / others',
+    alertTitle: 'SYSTEM ALERT:',
+    alertText1: 'At 12:30 CEST, ',
+    alertText2: ' of active generation',
+    alertText3: ' came from renewable sources (Analysis Committee, p.38), practically all of which operated in grid-following mode without providing genuine mechanical inertia. Only ~',
+    alertText4: '% (nuclear, hydro and CCGT) provided synchronous mass. The Iberian inertia constant was ',
+    alertText5: ' (ENTSO-E Factual, Table 2-4, p.36).',
+    ibrLabel: 'IBR without inertia',
+    syncLabel: 'synchronous generation',
+    syncShort: 'Synchronous',
+    estTooltip: '(estimate)',
+    syncTag: 'synchronous',
+    ibrTag: 'IBR',
+    colTech: 'TECHNOLOGY',
+    colDist: 'DISTRIBUTION',
+    colPower: 'POWER',
+    footer: 'Percentages: Government Analysis Committee, p.38 (12:30 CEST, 28/04/2025). MW by technology: proportional estimates based on peninsular demand of 25,184 MW + exports + pumping. Not from ESIOS telemetry due to log loss during the cascade.'
   },
-  {
-    id: 'wind',
-    name: 'Eólica',
-    // ~12% del mix — parte del 82% renovable (estimación)
-    mw: 3022,
-    percentage: 12.0,
-    color: '#5DCAA5',
-    aportaInercia: false,
-  },
-  {
-    id: 'hydro',
-    name: 'Hidráulica',
-    // ~7% del mix (estimación, incluye bombeo)
-    mw: 1763,
-    percentage: 7.0,
-    color: '#888780',
-    aportaInercia: true,
-  },
-  {
-    id: 'ccgt',
-    name: 'CCGT (gas)',
-    // ~3% del mix (Comité, p.38)
-    mw: 756,
-    percentage: 3.0,
-    color: '#D85A30',
-    aportaInercia: true,
-  },
-  {
-    id: 'other',
-    name: 'Cogeneración / otros',
-    // ~4% restante
-    mw: 1008,
-    percentage: 4.0,
-    color: 'var(--text-1, #64748b)',
-    aportaInercia: true,
-  },
-];
+  de: {
+    solar: 'Photovoltaik',
+    nuclear: 'Kernenergie',
+    wind: 'Wind',
+    hydro: 'Wasserkraft',
+    ccgt: 'GuD-Kraftwerk (Gas)',
+    other: 'Kraft-Wärme-Kopplung / andere',
+    alertTitle: 'SYSTEMALARM:',
+    alertText1: 'Um 12:30 CEST stammten ',
+    alertText2: ' der aktiven Erzeugung',
+    alertText3: ' aus erneuerbaren Quellen (Analysekomitee, S.38), von denen fast alle im Grid-Following-Modus arbeiteten und keine echte mechanische Trägheit lieferten. Nur ~',
+    alertText4: '% (Kernkraft, Wasserkraft und GuD) lieferten synchrone Masse. Die iberische Trägheitskonstante betrug ',
+    alertText5: ' (ENTSO-E Factual, Tabelle 2-4, S.36).',
+    ibrLabel: 'IBR ohne Trägheit',
+    syncLabel: 'synchrone Erzeugung',
+    syncShort: 'Synchron',
+    estTooltip: '(Schätzung)',
+    syncTag: 'synchron',
+    ibrTag: 'IBR',
+    colTech: 'TECHNOLOGIE',
+    colDist: 'VERTEILUNG',
+    colPower: 'LEISTUNG',
+    footer: 'Prozentsätze: Analysekomitee der Regierung, S.38 (12:30 CEST, 28.04.2025). MW nach Technologie: proportionale Schätzungen basierend auf der Nachfrage des Festlandes von 25.184 MW + Exporte + Pumpen. Nicht aus ESIOS-Telemetrie aufgrund von Protokollverlusten während der Kaskade.'
+  }
+};
 
-// Icono de alerta SVG inline (sin dependencia de lucide-react)
 function AlertIcon() {
   return (
     <svg
@@ -109,30 +100,35 @@ function AlertIcon() {
 }
 
 export default function Bloque2MixGeneracion() {
-  const totalIBR    = GENERATION_DATA.filter(d => !d.aportaInercia).reduce((s, d) => s + d.percentage, 0);
-  const totalSincro = GENERATION_DATA.filter(d =>  d.aportaInercia).reduce((s, d) => s + d.percentage, 0);
+  const lang = useDocLang();
+  const s = STRINGS[lang] || STRINGS.es;
+
+  const GENERATION_DATA = [
+    { id: 'solar', name: s.solar, mw: 13428, percentage: 53.3, color: '#EF9F27', aportaInercia: false },
+    { id: 'nuclear', name: s.nuclear, mw: 2518, percentage: 10.0, color: '#378ADD', aportaInercia: true },
+    { id: 'wind', name: s.wind, mw: 3022, percentage: 12.0, color: '#5DCAA5', aportaInercia: false },
+    { id: 'hydro', name: s.hydro, mw: 1763, percentage: 7.0, color: '#888780', aportaInercia: true },
+    { id: 'ccgt', name: s.ccgt, mw: 756, percentage: 3.0, color: '#D85A30', aportaInercia: true },
+    { id: 'other', name: s.other, mw: 1008, percentage: 4.0, color: 'var(--text-1, #64748b)', aportaInercia: true },
+  ];
+
+  const totalIBR    = GENERATION_DATA.filter(d => !d.aportaInercia).reduce((sum, d) => sum + d.percentage, 0);
+  const totalSincro = GENERATION_DATA.filter(d =>  d.aportaInercia).reduce((sum, d) => sum + d.percentage, 0);
 
   return (
     <div className={styles.generationMix}>
-
-      {/* Alerta sin lucide */}
       <div className={styles.alertBox}>
         <AlertIcon />
         <div className={styles.alertText}>
-          <strong>ALERTA DE SISTEMA:</strong> A las 12:30 CEST, el{' '}
-          <strong>82% de la generación activa</strong> provenía de fuentes
-          renovables (Comité de Análisis, p.38), de las cuales la práctica
-          totalidad operaba en modo grid-following sin aportar inercia
-          mecánica genuina. Solo el ~{totalSincro.toFixed(0)}% (nuclear,
-          hidráulica y CCGT) aportaba masa síncrona. La constante de inercia
-          ibérica era <strong>H = 2,21–2,71 s</strong> (ENTSO-E Factual,
-          Tabla 2-4, p.36).
+          <strong>{s.alertTitle}</strong> {s.alertText1}
+          <strong>82%{s.alertText2}</strong>{s.alertText3}
+          {totalSincro.toFixed(0)}{s.alertText4}
+          <strong>H = 2,21–2,71 s</strong>{s.alertText5}
         </div>
       </div>
 
-      {/* Barra de composición IBR vs Síncrono */}
       <div style={{ margin: '1rem 0', borderRadius: 6, overflow: 'hidden', height: 28 }}
-           aria-label={`${totalIBR.toFixed(0)}% IBR sin inercia, ${totalSincro.toFixed(0)}% generación síncrona`}>
+           aria-label={`${totalIBR.toFixed(0)}% ${s.ibrLabel}, ${totalSincro.toFixed(0)}% ${s.syncLabel}`}>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{
             width: `${totalIBR}%`,
@@ -150,7 +146,7 @@ export default function Bloque2MixGeneracion() {
             paddingLeft: 6, fontSize: 11,
             fontFamily: 'monospace', color: '#fff', fontWeight: 700,
           }}>
-            {totalSincro.toFixed(0)}% Síncrono
+            {totalSincro.toFixed(0)}% {s.syncShort}
           </div>
         </div>
       </div>
@@ -172,7 +168,7 @@ export default function Bloque2MixGeneracion() {
                 </Pie>
                 <RechartsTooltip
                   formatter={(value, name) => [
-                    `~${value.toLocaleString('es-ES')} MW (estimación)`,
+                    `~${value.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW ${s.estTooltip}`,
                     name,
                   ]}
                   contentStyle={{
@@ -192,8 +188,8 @@ export default function Bloque2MixGeneracion() {
                 <span>
                   {item.name} ({item.percentage}%)
                   {item.aportaInercia
-                    ? <span style={{ color: '#60a5fa', fontSize: 10 }}> ⚙ síncrono</span>
-                    : <span style={{ color: '#f59e0b', fontSize: 10 }}> ⚡ IBR</span>}
+                    ? <span style={{ color: '#60a5fa', fontSize: 10 }}> ⚙ {s.syncTag}</span>
+                    : <span style={{ color: '#f59e0b', fontSize: 10 }}> ⚡ {s.ibrTag}</span>}
                 </span>
               </div>
             ))}
@@ -202,9 +198,9 @@ export default function Bloque2MixGeneracion() {
 
         <div className={styles.generationRight}>
           <div className={styles.tableHeader}>
-            <div className={styles.tableColTech}>TECNOLOGÍA</div>
-            <div className={styles.tableColBar}>DISTRIBUCIÓN</div>
-            <div className={styles.tableColValue}>POTENCIA</div>
+            <div className={styles.tableColTech}>{s.colTech}</div>
+            <div className={styles.tableColBar}>{s.colDist}</div>
+            <div className={styles.tableColValue}>{s.colPower}</div>
           </div>
 
           <div className={styles.tableRows}>
@@ -219,7 +215,7 @@ export default function Bloque2MixGeneracion() {
                   <div className={styles.tableRowPercentage}>{item.percentage}%</div>
                 </div>
                 <div className={styles.tableRowValue}>
-                  ~{item.mw.toLocaleString('es-ES')} MW
+                  ~{item.mw.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW
                 </div>
               </div>
             ))}
@@ -228,12 +224,7 @@ export default function Bloque2MixGeneracion() {
       </div>
 
       <div className={styles.generationFooter}>
-        <p>
-          Porcentajes: Comité de Análisis del Gobierno, p.38 (12:30 CEST, 28/04/2025).
-          MW por tecnología: estimaciones proporcionales sobre demanda peninsular
-          de 25.184 MW + exportaciones + bombeo. No proceden de telemetría ESIOS
-          por pérdida de logs durante la cascada.
-        </p>
+        <p>{s.footer}</p>
       </div>
     </div>
   );

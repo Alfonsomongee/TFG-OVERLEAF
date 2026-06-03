@@ -1,0 +1,622 @@
+# ROADMAP MAESTRO — TFG Apagón Ibérico 28-A
+## Documento de seguimiento + especificación para agentes de IA
+
+**Proyecto:** tfg-antigravity-docs (Docusaurus v2.4.3 + React 17 + MDX)  
+**URL:** https://tfg-overleaf.vercel.app  
+**Autor:** Alfonso Monge Díaz-Ángel  
+**Fecha de creación:** 2026-05-31  
+**Estado:** En progreso  
+
+---
+
+## INSTRUCCIONES PARA EL AGENTE
+
+Eres un ingeniero frontend senior y editor técnico trabajando sobre un TFG (Trabajo Fin de Grado) de Ingeniería de la Energía publicado como sitio Docusaurus. El sitio analiza forense y narrativamente el apagón eléctrico ibérico del 28 de abril de 2025.
+
+**REGLAS INQUEBRANTABLES:**
+1. Lee TODOS los archivos involucrados ANTES de editar nada.
+2. Haz `npm run build -- --locale es` después de cada bloque de cambios para verificar que no rompes nada.
+3. No toques archivos marcados como ✅ NO TOCAR en la sección correspondiente.
+4. Cada commit debe tener un mensaje descriptivo que referencie el ID de tarea (ej: `fix(C4): corregir nombre autor en GlosarioTecnico`).
+5. Si un archivo tiene más de 200 líneas, léelo completo antes de editar.
+
+**FILOSOFÍA DE DISEÑO:**
+El sitio tiene una estética "forense-cinematográfica": fondo oscuro azul noche (#0a1128), acentos cian eléctrico (hsl(190 100% 60%)) y ámbar (#ffaa00), tipografía monoespaciada para datos técnicos, efecto scanlines sutil. Cualquier componente nuevo debe respetar esta paleta. Consulta `src/css/custom.css` (líneas 1-100) y `src/css/designTokens.css` para los tokens exactos.
+
+---
+
+## ✅ NO TOCAR (funciona correctamente)
+
+- `plugins/remark-auto-glossary-links.js` — lógica robusta de longest-match-first
+- `src/hooks/useENTSOE.js` — AbortController, polling, fallback mock
+- `api/entsoe.js` — Edge Function proxy segura
+- `src/theme/Root.js` — zen-mode + glosario panel
+- `src/css/custom.css` líneas 1-500 (primera mitad) — tokens de diseño
+- `src/css/designTokens.css` — variables forenses
+- Contenido MDX de capítulos principales (no cambiar texto sin autorización)
+- Los 12 simuladores existentes (todos funcionales)
+
+---
+
+## SPRINT 0 — QUICK FIXES (< 30 minutos total)
+
+### Tarea C4 + C5: Reemplazar GlosarioTecnico.jsx
+**Prioridad:** 🔴 CRÍTICA  
+**Tiempo estimado:** 5 min  
+**Archivos:**
+- `src/components/GlosarioTecnico.jsx` (REEMPLAZAR COMPLETO)
+- `src/components/GlosarioTecnico.module.css` (verificar que existe)
+
+**Instrucciones:**
+1. El usuario ha proporcionado un nuevo `GlosarioTecnico.jsx` con 18 términos canónicos IEEE/ENTSO-E/CIGRE. Reemplaza el archivo actual con este nuevo.
+2. Verifica que `GlosarioTecnico.module.css` existe. Si no existe, crea uno vacío (el componente nuevo usa inline styles).
+3. Verifica que `docs/glosario.mdx` importa `GlosarioTecnico` correctamente:
+```mdx
+import GlosarioTecnico from '@site/src/components/GlosarioTecnico';
+<GlosarioTecnico />
+```
+4. Build y verifica.
+
+---
+
+### Tarea C6: Guard SSR en ExecutiveHook
+**Prioridad:** 🔴 CRÍTICA  
+**Tiempo estimado:** 2 min  
+**Archivo:** `src/components/ExecutiveHook.jsx`
+
+**Instrucciones:**
+1. Busca `new URLSearchParams(window.location.search)` (~línea 14).
+2. Envuélvelo en un guard:
+```js
+const isCongreso = typeof window !== 'undefined'
+  ? new URLSearchParams(window.location.search).get('modo') === 'congreso'
+  : false;
+```
+3. Build y verifica.
+
+---
+
+### Tarea I1: Eliminar jsx-nuevos/
+**Prioridad:** 🟠 ALTA  
+**Tiempo estimado:** 2 min  
+**Archivo:** `src/components/jsx-nuevos/` (carpeta completa)
+
+**Instrucciones:**
+1. Ejecuta `grep -rn "jsx-nuevos" src/ docs/` para confirmar que NADA importa de esta carpeta.
+2. Si grep devuelve 0 resultados, elimina la carpeta completa.
+3. Build y verifica.
+
+---
+
+### Tarea I2: Eliminar CineMode/ (mayúscula)
+**Prioridad:** 🟠 ALTA  
+**Tiempo estimado:** 5 min  
+**Archivo:** `src/components/CineMode/` (carpeta con ~40 slides Slide11-Slide99)
+
+**Instrucciones:**
+1. Ejecuta `grep -rn "CineMode" src/ docs/ --include="*.{js,jsx,mdx,ts,tsx}"` (case-sensitive).
+2. Verifica que NINGÚN import apunta a `CineMode/` (mayúscula). La versión activa es `cine-mode/` (minúscula).
+3. Si confirmado que es huérfano, elimina `src/components/CineMode/` completa.
+4. Build y verifica.
+
+---
+
+## SPRINT 1 — INFRAESTRUCTURA CSS Y CHARTS (~ 1.5 horas)
+
+### Tarea C1: Limpiar CSS duplicado
+**Prioridad:** 🔴 CRÍTICA  
+**Tiempo estimado:** 30 min  
+**Archivo:** `src/css/custom.css` (2118 líneas → ~900 líneas objetivo)
+
+**Instrucciones:**
+1. Lee el archivo COMPLETO. Identifica los bloques duplicados confirmados:
+   - `.theme-admonition`: duplicado en ~L490-503 y ~L692-703
+   - `html.zen-mode .theme-doc-sidebar-container` y todo el sistema zen-mode: ~L527-815 duplicado desde ~L718
+   - `.menu__list-item .menu__list-item`: ~L993-1004 y ~L1175-1187
+   - `.sidebar-category-interactive`: ~L1011-1018 y ~L1189-1200
+   - `.menu__caret`: ~L1020 y ~L1202
+   - `body::before` (textura): ~L1093-1104 y ~L1276-1288
+   - Sidebar scrollbar/mobile: ~L1034-1065 y ~L1217-1248
+
+2. **ANTES de cortar**, busca estos selectores que DEBEN preservarse (pueden estar solo en la segunda mitad):
+   - `.glossary-definition-panel`
+   - `.cine-fab`
+   - `.global-sidebar-btn`
+   - `.global-toc-btn`
+   - `.glossary-term` (estilos del panel flotante)
+   Si existen en la segunda mitad y NO en la primera, muévelos a la primera mitad antes de eliminar.
+
+3. El bloque `.table-full-width` tiene dos versiones:
+   - L1165: INCOMPLETA (falta `margin-right: -50vw`)
+   - L1392: COMPLETA
+   Conserva SOLO la versión completa (L1392).
+
+4. Elimina toda la segunda mitad duplicada.
+5. Build y verifica visualmente en /introduccion, /contexto, /analisis-incidente, /glosario.
+
+---
+
+### Tarea C2: Sincronizar glossary-terms.json
+**Prioridad:** 🔴 CRÍTICA  
+**Tiempo estimado:** 20 min  
+**Archivos:**
+- `src/data/glossary.js` (fuente: 119 términos con definiciones)
+- `src/data/glossary-terms.json` (destino: actualmente 57 entradas)
+
+**Instrucciones:**
+1. Escribe un script Node temporal (`scripts/sync-glossary.js`):
+```js
+const { GLOSSARY_TERMS } = require('../src/data/glossary.js');
+const fs = require('fs');
+
+const output = GLOSSARY_TERMS.map(t => ({
+  term: t.term,
+  definition: t.definition
+}));
+
+fs.writeFileSync(
+  'src/data/glossary-terms.json',
+  JSON.stringify(output, null, 2),
+  'utf-8'
+);
+
+console.log(`✅ Sincronizados ${output.length} términos`);
+```
+2. Ejecuta el script: `node scripts/sync-glossary.js`
+3. Verifica que `glossary-terms.json` ahora tiene ~119 entradas.
+4. Verifica que `GlossaryDefinitionPanel.jsx` sigue leyendo del mismo path.
+5. Build y verifica: pasa el ratón sobre cualquier `.glossary-term` en /introduccion → debe aparecer el panel con definición.
+
+---
+
+### Tarea C3: AbortController en EntsoeCharts y EsiosCharts
+**Prioridad:** 🔴 CRÍTICA  
+**Tiempo estimado:** 30 min  
+**Archivos:** Todos los `.jsx` en `src/components/EntsoeCharts/` (14) y `src/components/EsiosCharts/` (8)
+
+**Instrucciones:**
+Para CADA componente que tenga un `useEffect` con `fetch()`, aplica este patrón:
+
+```jsx
+useEffect(() => {
+  const controller = new AbortController();
+  
+  fetch(url, { signal: controller.signal })
+    .then(res => res.json())
+    .then(data => {
+      if (!controller.signal.aborted) {
+        setData(data);
+      }
+    })
+    .catch(err => {
+      if (err.name !== 'AbortError') {
+        console.error('Error fetching data:', err);
+        setError(err);
+      }
+    });
+
+  return () => controller.abort();
+}, []);
+```
+
+**CASO ESPECIAL:** `ActualGenerationChart.jsx` (líneas 27-31) hace 5 fetches sin `.catch()`. Usa `Promise.all` con un solo AbortController:
+```jsx
+useEffect(() => {
+  const controller = new AbortController();
+  const opts = { signal: controller.signal };
+  
+  Promise.all([
+    fetch(url1, opts).then(r => r.json()),
+    fetch(url2, opts).then(r => r.json()),
+    fetch(url3, opts).then(r => r.json()),
+    fetch(url4, opts).then(r => r.json()),
+    fetch(url5, opts).then(r => r.json()),
+  ])
+    .then(([d1, d2, d3, d4, d5]) => {
+      if (!controller.signal.aborted) {
+        // set states
+      }
+    })
+    .catch(err => {
+      if (err.name !== 'AbortError') {
+        console.error('Error:', err);
+        setError(err);
+      }
+    });
+
+  return () => controller.abort();
+}, []);
+```
+
+Build al terminar todos.
+
+---
+
+### Tarea C7: .catch() en fetches faltantes
+**Prioridad:** 🟠 ALTA  
+**Tiempo estimado:** 10 min  
+**Archivos:**
+- `src/components/Comparador28A.jsx` (~línea 130)
+
+**Instrucciones:**
+1. Busca fetch sin `.catch()`.
+2. Añade `.catch(err => { if (err.name !== 'AbortError') { console.error(err); setError(err); } })`.
+3. Si no tiene AbortController, añádelo también.
+
+---
+
+## SPRINT 2 — CONTENIDO (requiere revisión humana)
+
+### Tarea CT1: Reconciliar "15.000 MW" vs "60% de capacidad"
+**Archivo:** `docs/03-analisis-incidente.mdx` (~línea 374)
+**Problema:** Dice "15.000 MW (casi el 60% de la capacidad instantánea ibérica previa)". 60% de 29.600 MW = 17.760 MW, no 15.000.
+**Solución:** Cambiar a "15.000 MW (más del 50% de la capacidad instantánea ibérica previa)" O verificar con ENTSO-E Factual si la cifra correcta es ~17.700 MW y actualizar. El dato está marcado con CuestionAbierta, lo cual mitiga el riesgo.
+
+### Tarea CT2: Nota aclaratoria H=2,3s global vs H=1,3s zonal
+**Archivo:** `docs/02-contexto.mdx` (~línea 136)
+**Problema:** El lector se contradice entre "H = 2,3 s — por encima del umbral" y "1,3 s en el área Sur — por debajo".
+**Solución:** Añadir después de la mención de H=2,3s:
+```
+> **Nota metodológica:** El valor de H = 2,3 s es el promedio ponderado peninsular; los valores zonales (1,3 s en el sur, 1,84 s en el centro) estaban significativamente por debajo del umbral. El colapso se originó en la zona más débil, no en el promedio.
+```
+
+### Tarea CT3: Unificar duración reposición
+**Archivos:** `docs/04-reaccion-reposicion.mdx` y `docs/10-resumen-de-cifras.mdx`
+**Solución:** Usar "aproximadamente 18,5 horas" en ambos (medido hasta 07:05 del 29-A = 99,95% demanda).
+
+### Tarea CT4: Unificar reactiva importada
+**Archivo:** `docs/03-analisis-incidente.mdx`
+**Solución:** Usar "más de 4.500 MVAr" como texto y "4.609 MVAr" solo en la CuestionAbierta.
+
+### Tarea CT5: Moderar registro cap. 07b
+**Archivo:** `docs/07b-consecuencias-financieras.mdx`
+**Instrucciones:** Revisar y moderar expresiones grandilocuentes. Ejemplos:
+- "axiomáticamente demuestra" → "demuestra"
+- "guillotina operativa" → "desconexión automática"
+- "electroshock" → "aceleración sin precedentes"
+Mantener la contundencia de los datos pero alinear el tono con el registro neutro-académico del resto del TFG.
+
+### Tarea CT7: Integrar SwingEquationSimulator en cap. 2
+**Archivos:** `docs/02-contexto.mdx`, `src/components/SwingEquationSimulator/`
+**Instrucciones:**
+1. Verifica que el componente se exporta correctamente (lee `src/components/SwingEquationSimulator/index.js`).
+2. En `docs/02-contexto.mdx`, después del párrafo que menciona la ecuación de swing (~línea 136), añade:
+```mdx
+import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator";
+
+<SwingEquationSimulator />
+```
+3. Ajusta el texto circundante para introducir el simulador.
+4. Build y verifica.
+
+### Tarea CT8: Integrar UFLSVisualizer en cap. 3
+**Archivos:** `docs/03-analisis-incidente.mdx`, `src/components/UFLSVisualizer/`
+**Instrucciones:**
+1. Verifica que el componente funciona (lee `src/components/UFLSVisualizer/UFLSVisualizer.jsx`).
+2. En `docs/03-analisis-incidente.mdx`, después del párrafo sobre la paradoja del UFLS (~línea 390), añade:
+```mdx
+import UFLSVisualizer from "@site/src/components/UFLSVisualizer";
+
+<UFLSVisualizer />
+```
+3. Build y verifica.
+
+---
+
+## SPRINT 3 — REDISEÑO VISUAL DE MAPAS (~4-6 horas)
+
+### Tarea V1: Rediseñar IberianGridTopology con mapa geográfico real
+**Prioridad:** 🟠 ALTA  
+**Archivo principal:** `src/components/IberianGridTopology.jsx` (y su Base)  
+**Dependencia disponible:** `maplibre-gl` ya está en package.json  
+**Usado en:** `docs/05-analisis-informes.mdx`
+
+**Especificación visual:**
+- Fondo: mapa real de la Península Ibérica usando MapLibre GL con estilo oscuro (Maptiler Dark o similar vector tiles gratuito)
+- Los nodos de la red deben colocarse en coordenadas geográficas reales de las subestaciones principales:
+  - Granada: 37.18, -3.60
+  - Badajoz: 38.88, -6.97
+  - Carmona (Sevilla): 37.47, -5.64
+  - Núñez de Balboa (Badajoz): 38.71, -6.35
+  - Hernani: 43.27, -1.97
+  - Baixas (Francia): 42.72, 2.81
+  - Vic: 41.88, 2.25
+  - Argia/Arkale: 43.26, -2.09
+  - Madrid (centro): 40.42, -3.70
+  - Valencia: 39.47, -0.38
+  - Bilbao/Irún: 43.34, -1.79
+  - Porto: 41.15, -8.61
+  - Lisboa: 38.72, -9.14
+- Líneas de interconexión como arcos curvados entre nodos con grosor proporcional a la capacidad (400 kV gruesas, 220 kV finas)
+- Animación temporal: al pasar el tiempo (slider o autoplay), las líneas se van poniendo rojas y desconectándose según la cronología del colapso
+- Nodos: círculos con borde cian que parpadean en rojo cuando disparan
+- Frontera pirenaica: línea discontinua marcando la separación de sincronismo a las 12:33:21
+
+**Estilo CSS:**
+```css
+/* Respetar la paleta forense del sitio */
+background: var(--bg-0); /* #0a1128 */
+/* Nodos activos */ color: var(--accent-electric); /* hsl(190 100% 60%) */
+/* Nodos disparados */ color: var(--danger-500);
+/* Líneas normales */ stroke: rgba(0, 217, 255, 0.3);
+/* Líneas estresadas */ stroke: var(--forensic-amber-primary); /* #ffaa00 */
+/* Líneas cortadas */ stroke: var(--danger-700);
+```
+
+**Interactividad:**
+- Hover sobre nodo: tooltip con nombre, tensión, hora de disparo
+- Slider temporal: 12:32:57 → 12:33:30 CEST (paso de 1 segundo)
+- Botón play/pause para reproducir la cascada automáticamente
+- Botón reset para volver al estado pre-colapso
+
+**Implementación recomendada:**
+- Componente React con MapLibre GL como capa de fondo
+- Overlay SVG o canvas para nodos y líneas (más control que markers de MapLibre)
+- Datos de la animación desde `/static/data/datos28A.json` o hardcoded
+- BrowserOnly wrapper obligatorio
+
+---
+
+### Tarea V2: Rediseñar AnimatedRestorationMap con mapa real
+**Prioridad:** 🟠 ALTA  
+**Archivo:** `src/components/AnimatedRestorationMap.jsx`  
+**Usado en:** `docs/04-reaccion-reposicion.mdx`
+
+**Especificación visual:**
+- Mismo mapa base que V1 (MapLibre Dark)
+- Las 7 islas eléctricas como polígonos semitransparentes sobre la geografía:
+  - Zona Sur (Andalucía): naranja/ámbar
+  - Tajo-Centro (Madrid, Castilla): azul
+  - Levante (Valencia, Murcia): verde
+  - Norte (País Vasco, Cantabria): cian
+  - Galicia: púrpura
+  - Duero (Castilla y León): amarillo
+  - Portugal: rosa
+- Animación temporal (12:33 → 07:05 del 29-A):
+  - Fase 1: todo negro/apagado
+  - Fase 2: aparecen las primeras chispas (Black Start) en puntos específicos
+  - Fase 3: las islas se van iluminando gradualmente
+  - Fase 4: las islas se conectan entre sí (líneas verdes aparecen)
+  - Fase 5: todo unificado = restauración completa
+- Flechas animadas mostrando flujo Top-Down (Francia → Norte) y Bottom-Up (Marruecos → Sur)
+- Indicador de % de demanda restaurada en cada momento
+
+**Interactividad:**
+- Slider temporal: 12:33 → 07:05 (pasos de 15 minutos)
+- Play/pause automático
+- Hover sobre isla: tooltip con datos de restauración
+
+---
+
+### Tarea V3: Rediseño de la Sidebar
+**Prioridad:** 🟡 MEDIA  
+**Archivos:** `src/css/custom.css` (sección sidebar), posiblemente `src/theme/DocPage/index.js`
+
+**Mejoras especificadas:**
+
+1. **Transiciones más fluidas:**
+   - Cambiar `transition: all 180ms` a `transition: color 200ms ease, border-color 200ms ease, background 200ms ease` (evitar transiciones de layout)
+   - Expansión de categoría: cambiar `max-height` por `grid-template-rows: 0fr` → `1fr` (más suave)
+
+2. **Header con contexto:**
+   - Añadir debajo del título "28-A · INCIDENTE ELÉCTRICO" un micro indicador:
+   ```
+   📖 12 capítulos · 44 slides · 11 métricas
+   ```
+
+3. **Hover mejorado:**
+   - Al hacer hover en un item del sidebar, mostrar un borde izquierdo con gradiente (de cian a ámbar) en vez del color sólido actual
+
+4. **Iconos de categoría con tooltips:**
+   - Los iconos (⚡📊🎮🔮🛠️🌍📚📈) deben tener `title="nombre de la categoría"` para accesibilidad
+
+5. **Estado activo más visible:**
+   - El item activo debe tener un fondo con gradiente sutil:
+   ```css
+   .menu__link--active {
+     background: linear-gradient(90deg, rgba(255,184,0,0.08) 0%, transparent 100%);
+     border-left: 3px solid #FFB800;
+   }
+   ```
+
+6. **Scrollbar personalizado:**
+   ```css
+   .theme-doc-sidebar-menu::-webkit-scrollbar { width: 4px; }
+   .theme-doc-sidebar-menu::-webkit-scrollbar-track { background: transparent; }
+   .theme-doc-sidebar-menu::-webkit-scrollbar-thumb { 
+     background: rgba(0, 217, 255, 0.2); 
+     border-radius: 2px;
+   }
+   .theme-doc-sidebar-menu::-webkit-scrollbar-thumb:hover { 
+     background: rgba(0, 217, 255, 0.4); 
+   }
+   ```
+
+---
+
+## SPRINT 4 — INTEGRACIÓN DE INVESTIGACIONES
+
+### Tarea R1: Integrar tabla comparativa de apagones históricos
+**Prioridad:** 🟡 MEDIA  
+**Archivo destino:** `docs/07-resiliencia-futuro.mdx`  
+**Fuente:** Investigación A (documento de apagones históricos)
+
+**Instrucciones:**
+1. Crear una nueva sección `## Precedentes internacionales` al inicio del capítulo 7 (antes de las soluciones tecnológicas).
+2. Insertar una ForensicTable con 5 filas (Italia 2003, US 2003, Europa 2006, S. Australia 2016, UK 2019):
+
+```mdx
+<ForensicTable 
+  title="TABLA XX | INTERNATIONAL BLACKOUT REGULATORY RESPONSE"
+  source="Elaboración propia (fuentes: UCTE, NERC/FERC, ENTSO-E, AEMO, NGESO)"
+>
+
+| Evento | Causa raíz | Medida regulatoria | Plazo de implementación | Efectividad verificada |
+| --- | --- | --- | --- | --- |
+| Italia 2003 | Cascada térmica + colapso Q-V por OLTCs | UCTE Operation Handbook: bloqueo OLTC obligatorio | 21 meses | Alta: evitó recurrencia en 2006 y 2021 |
+| US/Canadá 2003 | Pérdida de situational awareness + N-1 violado | EPAct 2005 → NERC ERO → estándares obligatorios | 4 años | Total: sin blackout continental desde 2007 |
+| Europa 2006 | Descoordinación transfronteriza + despacho sin N-1 dinámico | EAS + creación ENTSO-E + Network Codes | 3–11 años | Alta: EAS contuvo separación 2021 |
+| S. Australia 2016 | LVRT deficiente en inversores + baja inercia | FFR obligatorio + System Strength + SynCons | 1–2 años | Alta: opera >70% renovable sin incidentes |
+| UK 2019 | Vector Shift + RoCoF excesivo + pérdida de DER | ALoMCP + RoCoF a 1 Hz/s + HVRT estricto | 3 años | Alta: sin cascada de DER posterior |
+
+</ForensicTable>
+```
+
+3. Añadir un párrafo de transición que conecte esta tabla con la sección existente sobre SynCon/BESS-GFM:
+```
+La revisión de estos cinco precedentes revela un patrón: las medidas regulatorias post-incidente tardan entre 1 y 11 años en implementarse, y su efectividad es uniformemente alta una vez desplegadas. El 28-A ibérico reproduce mecanismos ya documentados —en particular, el rol de los OLTCs (Italia 2003) y la fragilidad de inversores sin control dinámico (Australia 2016, UK 2019)— que el marco regulatorio peninsular no había integrado. Las soluciones tecnológicas que se examinan a continuación (SynCon, BESS-GFM, híbridos) son la traducción industrial de estas lecciones.
+```
+
+---
+
+### Tarea R2: Enriquecer cap. 8.5 con datos regulatorios verificados
+**Prioridad:** 🟡 MEDIA  
+**Archivo:** `docs/08.5-actualizacion-2026.mdx`  
+**Fuente:** Investigación C (marco regulatorio y sancionador)
+
+**Instrucciones:**
+1. Añadir ForensicTable con desglose de expedientes CNMC:
+
+```mdx
+<ForensicTable 
+  title="TABLA XX | CNMC SANCTIONING PROCEEDINGS (May 2026)"
+  source="CNMC / BOE"
+>
+
+| Entidad | Nº Expedientes | Tipificación |
+| --- | --- | --- |
+| REE (Operador del Sistema) | 1 | Muy grave (art. 64.25 LSE) — hasta 60 M€ |
+| Iberdrola (incl. Almaraz/Cofrentes) | 24 | Graves + Muy graves (nucleares) |
+| Endesa | 19 | Graves (control de tensión) |
+| Naturgy | 11 | Graves (ciclos combinados) |
+| Otros (Repsol, TotalEnergies, EDP, Engie, Mercuria) | ~10 | Graves (varios) |
+| Sistema Eléctrico de Conexión Huéneja | 1 | Grave (ICE Granada — punto cero) |
+
+</ForensicTable>
+```
+
+2. Añadir calendario de implementación de P.O. 7.4:
+
+```mdx
+<ForensicTable 
+  title="TABLA XX | P.O. 7.4 IMPLEMENTATION TIMELINE"
+  source="CNMC / BOE-A-2025-13076"
+>
+
+| Hito | Fecha | Estado |
+| --- | --- | --- |
+| Aprobación resolución CNMC | 12/06/2025 | ✅ Completado |
+| Expiración medidas transitorias | 19/01/2026 | ✅ Completado |
+| Formato telemetría I90DIA_CSV | 09/06/2026 | ⏳ Pendiente |
+| Tolerancia εQ (Anexo II) | 16/06/2026 | ⏳ Pendiente |
+| Operación normalizada completa | Q3-Q4 2026 | 📋 Estimado |
+
+</ForensicTable>
+```
+
+3. Añadir mención al litigio Iberdrola vs Redeia (Auto del Juzgado Mercantil nº 15 de Madrid, 21/04/2026).
+
+4. **Eliminar redundancias:** Si el cap. 8.5 ya explica NC RfG 2.0, Grid-Forming, o los expedientes CNMC de forma genérica, sustituir esas explicaciones por las versiones más precisas de la Investigación C.
+
+---
+
+## SPRINT 5 — DEPENDENCIAS Y PULIDO
+
+### Tarea I3: Auditar dependencias npm
+**Prioridad:** 🟡 MEDIA  
+**Archivo:** `package.json`
+
+**Instrucciones:**
+1. Ejecuta estos greps para cada dependencia sospechosa:
+```bash
+grep -rn "echarts" src/ --include="*.{js,jsx}" | grep -v node_modules
+grep -rn "plotly" src/ --include="*.{js,jsx}" | grep -v node_modules
+grep -rn "reactflow" src/ --include="*.{js,jsx}" | grep -v node_modules
+grep -rn "react-scrollama" src/ --include="*.{js,jsx}" | grep -v node_modules
+grep -rn "theme-mermaid" src/ docusaurus.config.js | grep -v node_modules
+```
+2. Si alguna devuelve 0 resultados, elimínala de `package.json` con `npm uninstall <pkg>`.
+3. `npm install` + build para verificar.
+
+---
+
+### Tarea I4: Migrar inline styles de ForensicUI/Primitives a CSS module
+**Prioridad:** 🟡 MEDIA  
+**Archivos:**
+- `src/components/ForensicUI/Primitives.jsx`
+- Crear `src/components/ForensicUI/Primitives.module.css`
+
+**Instrucciones:**
+1. Lee el archivo completo.
+2. Extrae los estilos inline de `CriticalEventBlock`, `IncidentDivider`, y `ForensicFigure` a clases CSS en el module.
+3. Asegúrate de que los colores usan variables CSS de `designTokens.css`:
+   - Bordes rojos → `var(--forensic-amber-critical)`
+   - Fondos oscuros → `var(--forensic-bg-secondary)`
+   - Texto tenue → `var(--forensic-text-dim)`
+4. Verifica tema claro Y oscuro.
+
+---
+
+### Tarea D1: Resolver sidebar_position duplicados
+**Prioridad:** ⚪ BAJA  
+**Archivos:** Varios MDX
+
+**Instrucciones:**
+El orden real está definido en `sidebars.js`, así que los `sidebar_position` en los MDX son irrelevantes pero confusos. Actualízalos para reflejar el orden real:
+- `impacto-social.mdx`: cambiar `sidebar_position: 9` → `sidebar_position: 7.7`
+- `glosario.mdx`: cambiar `sidebar_position: 10` → `sidebar_position: 10.1`
+- `referencias.mdx`: cambiar `sidebar_position: 11` → `sidebar_position: 10.2`
+- `galeria-graficas.mdx`: cambiar `sidebar_position: 12` → `sidebar_position: 11.5`
+
+---
+
+### Tarea D3: Crear .env.example
+**Prioridad:** ⚪ BAJA  
+
+**Instrucciones:**
+Crea `.env.example` en la raíz:
+```
+# API key para datos en tiempo real de ENTSO-E
+# Obtener en: https://transparency.entsoe.eu/
+ENTSOE_API_KEY=tu_clave_aqui
+
+# API key para datos ESIOS (Red Eléctrica)
+# Obtener en: https://www.esios.ree.es/
+ESIOS_API_KEY=tu_clave_aqui
+```
+
+---
+
+## REGISTRO DE PROGRESO
+
+| ID | Tarea | Estado | Commit | Fecha |
+|----|-------|--------|--------|-------|
+| C1 | Limpiar CSS duplicado | ⬜ Pendiente | — | — |
+| C2 | Sincronizar glossary-terms.json | ⬜ Pendiente | — | — |
+| C3 | AbortController en 22 charts | ⬜ Pendiente | — | — |
+| C4 | Corregir nombre autor | ⬜ Pendiente | — | — |
+| C5 | Fix useMemo deps | ⬜ Pendiente | — | — |
+| C6 | Guard SSR ExecutiveHook | ⬜ Pendiente | — | — |
+| C7 | .catch() en fetches | ⬜ Pendiente | — | — |
+| I1 | Eliminar jsx-nuevos/ | ⬜ Pendiente | — | — |
+| I2 | Eliminar CineMode/ | ⬜ Pendiente | — | — |
+| I3 | Auditar dependencias npm | ⬜ Pendiente | — | — |
+| I4 | Inline styles → CSS module | ⬜ Pendiente | — | — |
+| CT1 | Reconciliar 15.000 MW | ⬜ Pendiente | — | — |
+| CT2 | Nota H global vs zonal | ⬜ Pendiente | — | — |
+| CT3 | Unificar duración reposición | ⬜ Pendiente | — | — |
+| CT4 | Unificar reactiva importada | ⬜ Pendiente | — | — |
+| CT5 | Moderar registro 07b | ⬜ Pendiente | — | — |
+| CT7 | Integrar SwingEquation en cap.2 | ⬜ Pendiente | — | — |
+| CT8 | Integrar UFLS en cap.3 | ⬜ Pendiente | — | — |
+| V1 | Mapa IberianGridTopology | ⬜ Pendiente | — | — |
+| V2 | Mapa AnimatedRestoration | ⬜ Pendiente | — | — |
+| V3 | Rediseño sidebar | ⬜ Pendiente | — | — |
+| R1 | Tabla apagones históricos | ⬜ Pendiente | — | — |
+| R2 | Datos regulatorios cap.8.5 | ⬜ Pendiente | — | — |
+| D1 | sidebar_position duplicados | ⬜ Pendiente | — | — |
+| D3 | Crear .env.example | ⬜ Pendiente | — | — |
+
+---
+
+*Documento generado el 2026-05-31. Actualizar tras cada sprint.*

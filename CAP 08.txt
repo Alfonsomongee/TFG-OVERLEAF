@@ -1,0 +1,120 @@
+CAP 08
+
+
+YOUR ROLE AND CONSTRAINTS
+You are a senior technical editor and MDX developer working on an Energy Engineering thesis about the 2025 Iberian blackout. You have read/write access to all project folders.
+
+Non-negotiable rules before touching any file:
+
+Read the full current file before editing it — use your file-reading tool on the exact path. Never edit from memory.
+
+Preserve all existing JSX components exactly — do not modify props, rename components, or alter any import statement unless the specific improvement explicitly requires it.
+
+Preserve all existing figure captions (lines starting with _Figura) verbatim — do not reword them.
+
+Preserve the frontmatter block (the --- YAML section at the top) of every file verbatim.
+
+Write in Spanish for all new prose content added to MDX files (the document language is Spanish). Exception: ForensicTable title attributes follow the existing SCREAMING_SNAKE_CASE English convention already used in the project.
+
+Do not introduce new React component imports unless the component already exists in @site/src/components/. If unsure, check the src/components/ folder first.
+
+Match existing code style exactly: indent 2 spaces, use {/* */} for JSX comments, use backtick strings in JSX attributes only where already used.
+
+After each file edit, output a short diff summary listing lines changed/added/removed.
+
+CRITICAL CONTEXT — Table numbering conflict
+The project uses sequential table numbers across all chapters. A numbering collision exists between this chapter (08-uso-ia.mdx) and chapter 08.5 (08.5-actualizacion-2026.mdx). Both chapters currently use TABLA 20 and TABLA 21. This must be resolved.
+
+The last safely assigned table numbers before these chapters are:
+
+Chapter 7 (07-resiliencia-futuro.mdx): TABLA 5, TABLA 16, TABLA 17, TABLA 18, TABLA 19
+
+Chapter 6 (06-impacto-comunicativo.mdx): TABLA 2, TABLA 3
+
+Chapter 7b (07b-consecuencias-financieras.mdx): TABLA 15
+
+Chapter 08.5 (after Batch 3 execution): TABLA 20, TABLA 21
+
+Therefore, this chapter must use TABLA 22 and TABLA 23.
+
+IMPROVEMENT 12 — 08-uso-ia.mdx: Renumber tables to avoid collision with chapter 08.5
+File to edit
+tfg-antigravity-docs/docs/08-uso-ia.mdx
+
+What to change — Part 12‑A
+Find this exact line:
+
+text
+<ForensicTable 
+  title="TABLA 20 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+Replace it with:
+
+text
+<ForensicTable 
+  title="TABLA 22 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+What to change — Part 12‑B
+Find this exact line:
+
+text
+<ForensicTable 
+  title="TABLA 21 | LLM HEURISTIC FAILURE MODES"
+Replace it with:
+
+text
+<ForensicTable 
+  title="TABLA 23 | LLM HEURISTIC FAILURE MODES"
+Why
+The table numbers TABLA 20 and TABLA 21 are already assigned to tables in chapter 08.5 (CNMC SANCTIONING PROCEEDINGS and P.O. 7.4 IMPLEMENTATION TIMELINE). Keeping duplicate numbers would break cross‑references and confuse readers navigating the document. The new numbers (22, 23) follow the established sequence and avoid collision.
+
+Verification
+Both ForensicTable titles now read TABLA 22 | … and TABLA 23 | ….
+
+No other content in the file is modified.
+
+The import statements at the top of the file remain unchanged.
+
+EXECUTION ORDER
+08-uso-ia.mdx — Improvement 12‑A (renumber first table)
+
+08-uso-ia.mdx — Improvement 12‑B (renumber second table)
+
+EXPECTED OUTPUT FORMAT
+For each file edit, output:
+
+text
+### EDIT: <filename>
+**Change:** <one-line description>
+**Lines affected:** <approximate line range or “appended”>
+**Status:** ✅ Done / ❌ Failed (reason)
+**Diff summary:**
++ <added lines>
+- <removed lines>
+If any edit fails or a component reference is ambiguous, stop and report the issue before proceeding — do not guess or approximate.
+
+WHAT NOT TO DO
+❌ Do not rewrite or paraphrase any existing prose.
+
+❌ Do not add new import statements.
+
+❌ Do not change any sidebar_position, id, or other frontmatter values.
+
+❌ Do not modify any <ForensicTable> content other than the title attribute as specified.
+
+❌ Do not remove the ASCII flow diagram in the methodology section.
+
+❌ Do not modify the gallery cross‑reference link (./galeria-graficas.mdx#phaseplane).
+
+❌ Do not touch any file outside tfg-antigravity-docs/docs/08-uso-ia.mdx in this batch.
+
+CONTEXT FOR THE AI AGENT
+This TFG is a Docusaurus v3 site. Key technical facts that must not be contradicted in any new prose:
+
+The chapter describes five LLM operational functions and five heuristic failure modes observed during the research.
+
+The UFLS paradox, Tap‑Lag, capacitive meshing, 0.6 Hz oscillation, and network topology hallucination are documented as failure modes requiring explicit prompt correction.
+
+The chapter contains an ASCII workflow diagram that must be preserved verbatim.
+
+The gallery link ./galeria-graficas.mdx#phaseplane references the UFLS Phase Portrait interactive component.
+
+The conclusion states that LLMs are useful for processing (extraction, synthesis) but unreliable for causal inference on atypical physical phenomena.

@@ -1,0 +1,162 @@
+CAP 9
+
+You are a senior technical editor and MDX developer working on an Energy Engineering thesis about the 2025 Iberian blackout. You have read/write access to all project folders.
+
+Non-negotiable rules before touching any file:
+
+Read the full current file before editing it — use your file-reading tool on the exact path. Never edit from memory.
+
+Preserve all existing JSX components exactly — do not modify props, rename components, or alter any import statement unless the specific improvement explicitly requires it.
+
+Preserve all existing figure captions (lines starting with _Figura) verbatim — do not reword them.
+
+Preserve the frontmatter block (the --- YAML section at the top) of every file verbatim.
+
+Write in Spanish for all new prose content added to MDX files (the document language is Spanish). Exception: ForensicTable title attributes follow the existing SCREAMING_SNAKE_CASE English convention already used in the project.
+
+Do not introduce new React component imports unless the component already exists in @site/src/components/. If unsure, check the src/components/ folder first.
+
+Match existing code style exactly: indent 2 spaces, use {/* */} for JSX comments, use backtick strings in JSX attributes only where already used.
+
+After each file edit, output a short diff summary listing lines changed/added/removed.
+
+CRITICAL CONTEXT — Table numbering resolution
+The project uses sequential table numbers across all chapters. A numbering collision existed between chapter 8 (08-uso-ia.mdx) and chapter 08.5 (08.5-actualizacion-2026.mdx), which was resolved in Batch 4 by renumbering chapter 8's tables to TABLA 22 and TABLA 23.
+
+This chapter (09-conclusiones.mdx) currently uses TABLA 22, which now conflicts with chapter 8. The last safely assigned numbers are:
+
+Chapter 8: TABLA 22, TABLA 23
+
+Chapter 08.5: TABLA 20, TABLA 21
+
+Chapter 7: TABLA 5, TABLA 16–TABLA 19
+
+Therefore, this chapter's single ForensicTable must be renumbered to TABLA 24.
+
+IMPROVEMENT 13 — 09-conclusiones.mdx: Renumber table to resolve collision
+File to edit
+tfg-antigravity-docs/docs/09-conclusiones.mdx
+
+What to change
+Find this exact line:
+
+text
+<ForensicTable 
+  title="TABLA 22 | ENERGY TRANSITION STRUCTURAL TRILEMMA"
+Replace it with:
+
+text
+<ForensicTable 
+  title="TABLA 24 | ENERGY TRANSITION STRUCTURAL TRILEMMA"
+Why
+The number TABLA 22 is already assigned to LLM ASSISTANCE — OPERATIONAL FUNCTIONS in chapter 8. This duplication would break cross‑references. The new number (24) follows the established sequence and avoids collision.
+
+Verification
+The ForensicTable title now reads TABLA 24 | ….
+
+No other content in the file is modified.
+
+The import statements at the top of the file remain unchanged.
+
+IMPROVEMENT 14 — 09-conclusiones.mdx: Collapse <EnergyTrilemmaSimulator /> into a <details> block
+File to edit
+tfg-antigravity-docs/docs/09-conclusiones.mdx
+
+Context
+The <EnergyTrilemmaSimulator /> is the heaviest interactive component in the entire site (custom baricentric geometry, three sliders, zone classification, real‑time metrics). It appears in the final chapter, immediately after a ForensicTable. Rendering it inline delays the conclusion page load and distracts from the prose synthesis. Following the project‑wide optimisation strategy, it should be collapsed to defer its JavaScript and rendering until the user explicitly requests it.
+
+What to change
+Find this exact block (the introduction paragraph + the component):
+
+mdx
+### Simulador del Trilema (Modelo Interactivo)
+
+Explora las tensiones de estabilidad, coste y descarbonización moviendo los parámetros operativos de la red. El punto de anclaje (El Colapso) sitúa al sistema en el centro de máxima tensión simultánea.
+
+<EnergyTrilemmaSimulator />
+Replace it with:
+
+mdx
+### Simulador del Trilema (Modelo Interactivo)
+
+Explora las tensiones de estabilidad, coste y descarbonización moviendo los parámetros operativos de la red. El punto de anclaje (El Colapso) sitúa al sistema en el centro de máxima tensión simultánea.
+
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Abrir simulador interactivo del Trilema Energético</span>
+</summary>
+
+<div style={{marginTop:'1rem'}}>
+<EnergyTrilemmaSimulator />
+</div>
+
+</details>
+Why
+The EnergyTrilemmaSimulator is the most complex interactive component on the site. Collapsing it reduces the initial render cost of the conclusion chapter, which is critical because this is the page the tribunal is most likely to read first after the introduction.
+
+The summary text clearly tells the user what is inside; the prose context remains visible before expansion, so readers understand what the simulator does even if they never open it.
+
+The import line import EnergyTrilemmaSimulator from "@site/src/components/EnergyTrilemmaSimulator"; is not removed — the component is still referenced inside the <details>.
+
+Verification
+The <details> element appears directly after the sentence “El punto de anclaje (El Colapso) sitúa al sistema en el centro de máxima tensión simultánea.”
+
+The EnergyTrilemmaSimulator import at the top of the file remains unchanged.
+
+All surrounding prose (the “Tensión tecnológica”, “Tensión regulatoria”, “Tensión económica” sections) is completely untouched.
+
+The rest of the chapter — the :::note callout, the conclusion paragraph, and the “Líneas de investigación abiertas” section — is unmodified.
+
+EXECUTION ORDER
+09-conclusiones.mdx — Improvement 13 (renumber table)
+
+09-conclusiones.mdx — Improvement 14 (collapse EnergyTrilemmaSimulator)
+
+EXPECTED OUTPUT FORMAT
+For each file edit, output:
+
+text
+### EDIT: <filename>
+**Change:** <one-line description>
+**Lines affected:** <approximate line range or “appended”>
+**Status:** ✅ Done / ❌ Failed (reason)
+**Diff summary:**
++ <added lines>
+- <removed lines>
+If any edit fails or a component reference is ambiguous, stop and report the issue before proceeding — do not guess or approximate.
+
+WHAT NOT TO DO
+❌ Do not rewrite or paraphrase any existing prose.
+
+❌ Do not add new import statements.
+
+❌ Do not change any sidebar_position, id, or other frontmatter values.
+
+❌ Do not modify the :::note callout content.
+
+❌ Do not modify any of the three “Tensión” subsections.
+
+❌ Do not modify the “Líneas de investigación abiertas” section.
+
+❌ Do not remove the import EnergyTrilemmaSimulator line.
+
+❌ Do not touch any file outside tfg-antigravity-docs/docs/09-conclusiones.mdx in this batch.
+
+CONTEXT FOR THE AI AGENT
+This TFG is a Docusaurus v3 site. Key technical facts that must not be contradicted in any new prose:
+
+The blackout mechanism was overvoltage‑driven (capacitive instability in the Q‑V plane), not a frequency/inertia collapse.
+
+System inertia at collapse: H = 2.3 s (peninsular average), 1.3 s (southern zone). The 2.3 s figure was above ENTSO‑E's threshold — inertia was NOT the cause.
+
+IBR penetration at 12:30 CEST: 82% of instantaneous mix.
+
+Root‑cause trigger: transformer 400/220 kV in Granada tripped at 12:32:56.993 CEST, losing 355 MW active + 165 MVAr reactive absorption.
+
+Total cascade duration: 32 seconds (12:32:57 → 12:33:29.741 CEST).
+
+The UFLS paradox (frequency‑triggered load shedding aggravated overvoltage) is a central feature.
+
+The three tensions (tecnológica, regulatoria, económica) form the trilemma framework.
+
+The table describes four tensions between the trilemma vertices; it is now TABLA 24.

@@ -1,0 +1,134 @@
+═══════════════════════════════════════════════════════════════
+REGISTRO DE PROGRESO — ROADMAP MAESTRO
+═══════════════════════════════════════════════════════════════
+Proyecto: tfg-antigravity-docs
+Fecha inicio: 2026-05-31
+Última actualización: 2026-05-31
+
+───────────────────────────────────────────────────────────────
+SPRINT 0 — QUICK FIXES
+───────────────────────────────────────────────────────────────
+
+✅ C4 — Corregir nombre autor en ExecutiveHook
+   - Actualizado: "ALFONSO MONGE" → "ALFONSO MONGE DÍAZ-ÁNGEL"
+   - Archivo: src/components/ExecutiveHook.jsx (línea 284)
+   - Fecha: 2026-05-31
+   - Commit: (pending push)
+
+✅ GLOSSARY FIX — Plugin seenTerms compartido globalmente
+   - Implementado: seenTerms Set compartido en todo el documento
+   - Archivo: plugins/remark-auto-glossary-links.js
+   - Verificación local: OK (solo primera ocurrencia muestra panel)
+   - Fecha: 2026-05-31
+   - Commit: a310885f (verified locally)
+   - Debug logging añadido para futuras auditorías
+
+✅ C5 — Reemplazar GlosarioTecnico.jsx
+   - Reemplazado con versión canónica de 18 términos técnicos del 28-A
+   - Nueva estructura: categorías, búsqueda, filtros multiidioma
+   - Eliminada CSS innecesaria
+   - Fecha: 2026-05-31
+
+✅ C6 — Guard SSR en ExecutiveHook
+   - Añadido: if (typeof window === 'undefined') return en useEffect de splash
+   - Protege acceso a requestAnimationFrame y document.body
+   - Fecha: 2026-05-31
+⬜ I1 — Eliminar jsx-nuevos/
+⬜ I2 — Eliminar CineMode/
+
+───────────────────────────────────────────────────────────────
+SPRINT 1 — INFRAESTRUCTURA CSS Y CHARTS
+───────────────────────────────────────────────────────────────
+
+⬜ C1 — Limpiar CSS duplicado (30 min)
+⬜ C2 — Sincronizar glossary-terms.json
+   ℹ️  Nota: Script sync-glossary.js ya existe y fue ejecutado
+   ℹ️  119 términos sincronizados correctamente
+
+✅ C3 — AbortController en EntsoeCharts y EsiosCharts (21 archivos)
+   - EntsoeCharts: 14 archivos completados
+   - EsiosCharts: 7 archivos completados
+   - Patrón aplicado: controller + signal + AbortError check + cleanup return
+   - Build verificado: ✅ (exit code 0, all 6 languages)
+   - Fecha: 2026-05-31
+⬜ C7 — .catch() en fetches faltantes
+
+───────────────────────────────────────────────────────────────
+SPRINT 2 — CONTENIDO
+───────────────────────────────────────────────────────────────
+
+✅ CT1 — Reconciliar "15.000 MW" vs "60% → 50% capacidad"
+   - Cap 3 L110: "casi el 60%" → "más del 50%"
+   - Fecha: 2026-06-01
+✅ CT2 — Nota aclaratoria H global vs zonal
+   - Cap 2: H=2,3s "promedio ponderado peninsular" + valores zonales 1,3s/1,84s
+   - Fecha: 2026-06-01
+✅ CT3 — Unificar duración reposición
+   - Cap 4: "19 horas" → "18,5 horas (hasta las 07:05 del 29-A)"
+   - Cap 10: menciona "~18,5 horas"
+   - Fecha: 2026-06-01
+⬜ CT4 — Unificar reactiva importada
+   - (no se encontró "4.500 MVAr" en texto narrativo fuera de CuestionAbierta en cap 3)
+✅ CT5 — Moderar registro cap. 07b
+   - 12 sustituciones aplicadas (guillotina→desconexión, etc.)
+   - Fecha: 2026-06-01
+✅ CT7 — Integrar SwingEquationSimulator en cap. 2
+   - Importado + embebido, enlace galería conservado
+   - Fecha: 2026-06-01
+✅ CT8 — Integrar UFLSVisualizer en cap. 3
+   - Importado (ruta completa /UFLSVisualizer/UFLSVisualizer) + embebido
+   - Fecha: 2026-06-01
+
+───────────────────────────────────────────────────────────────
+SPRINT 3 — REDISEÑO VISUAL DE MAPAS
+───────────────────────────────────────────────────────────────
+
+⬜ V1 — Rediseñar IberianGridTopology con MapLibre GL
+⬜ V2 — Rediseñar AnimatedRestorationMap
+⬜ V3 — Rediseño Sidebar (transiciones, hover, scrollbar)
+
+───────────────────────────────────────────────────────────────
+SPRINT 4 — INTEGRACIÓN DE INVESTIGACIONES
+───────────────────────────────────────────────────────────────
+
+✅ R1 — Tabla comparativa apagones históricos (cap. 7)
+   - Insertada antes de "Tecnologías habilitadoras": Italia/US/Europa/SA/UK
+   - Fecha: 2026-06-01
+✅ R2 — Datos regulatorios verificados en cap. 8.5
+   - CNMC 66 expedientes (tabla), P.O. 7.4 timeline, litigio Iberdrola vs Redeia
+   - Fecha: 2026-06-01
+
+───────────────────────────────────────────────────────────────
+SPRINT 5 — DEPENDENCIAS Y PULIDO
+───────────────────────────────────────────────────────────────
+
+⬜ I3 — Auditar dependencias npm
+⬜ I4 — Inline styles → CSS module (ForensicUI)
+⬜ D1 — Resolver sidebar_position duplicados
+⬜ D3 — Crear .env.example
+
+═══════════════════════════════════════════════════════════════
+RESUMEN DE ESTADO
+═══════════════════════════════════════════════════════════════
+Completadas:   17/28 (61%)
+En progreso:    0
+Pendientes:    11
+Bloqueadas:     0
+Última actualización: 2026-06-01
+
+Completadas hoy (2026-06-01):
+CT1, CT2, CT3, CT5, CT7, CT8 (Sprint 2 Contenido)
+R1, R2 (Sprint 4 Investigaciones)
+Cap 1 (glosario tip + nota informes), Cap 9 (5ª línea)
+Cap 10 (generación vs demanda), Glosario (GlitchTitle+note)
+Impacto-social (conclusión + sidebar 7.7)
+Cap 7b (moderación + cifras)
+Cap 8.5 (cross-refs + datos regulatorios)
+Commit: 271b3225 — push a Vercel OK
+
+Pendientes prioritarias:
+1. C1 — Limpiar CSS duplicado (30 min)
+2. CT4 — Unificar reactiva (no encontrada en narrativa)
+3. I1 — Eliminar jsx-nuevos/
+4. I2 — Eliminar CineMode/
+═══════════════════════════════════════════════════════════════

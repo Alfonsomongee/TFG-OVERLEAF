@@ -2598,4 +2598,183 @@ h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
 html[data-theme='light'] .footer__title,
 html[data-theme='light'] .footer__link-item {
   color: #4A4138 !important;
+}/* ============================================================
+   Chat FAB — Botón flotante del asistente IA
+   ============================================================ */
+
+.chat-fab {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 9999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+  animation: fab-float 3s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: visible;
+  background: none;
+}
+
+/* Tema oscuro — azul forense */
+html[data-theme='dark'] .chat-fab {
+  --fab-bg: #185FA5;
+  --fab-ring: #185FA5;
+  --fab-spark-color: #FAC775;
+  --fab-spark-stroke: #EF9F27;
+  --fab-label-color: #B5D4F4;
+  --fab-close-color: #f87171;
+}
+
+/* Tema claro — burdeos académico */
+html[data-theme='light'] .chat-fab {
+  --fab-bg: #8B2635;
+  --fab-ring: #8B2635;
+  --fab-spark-color: #FAC775;
+  --fab-spark-stroke: #EF9F27;
+  --fab-label-color: #F5C4B3;
+  --fab-close-color: #8B2635;
+}
+
+/* Fallback si no hay data-theme */
+.chat-fab {
+  --fab-bg: #185FA5;
+  --fab-ring: #185FA5;
+  --fab-spark-color: #FAC775;
+  --fab-spark-stroke: #EF9F27;
+  --fab-label-color: #B5D4F4;
+  --fab-close-color: #f87171;
+  color: var(--fab-close-color);
+}
+
+/* Círculo de fondo del botón */
+.chat-fab::before {
+  content: '';
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--fab-bg);
+  z-index: 0;
+}
+
+/* Hover */
+.chat-fab:hover {
+  transform: scale(1.1) translateY(-3px);
+}
+
+/* Icono SVG del rayo */
+.chat-fab__icon {
+  position: relative;
+  z-index: 2;
+}
+
+/* Etiqueta ASK AI */
+.chat-fab__label {
+  position: relative;
+  z-index: 2;
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--fab-label-color);
+  line-height: 1;
+}
+
+/* Anillos de pulso */
+.chat-fab__ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid var(--fab-ring);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.chat-fab__ring--1 {
+  width: 56px;
+  height: 56px;
+  animation: fab-ring 2.4s ease-out infinite;
+}
+
+.chat-fab__ring--2 {
+  width: 56px;
+  height: 56px;
+  animation: fab-ring 2.4s ease-out 0.7s infinite;
+}
+
+/* Chispas */
+.chat-fab__spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+}
+
+.chat-fab__spark--1 {
+  background: #FAC775;
+  top: 10px;
+  left: 10px;
+  animation: fab-spark-1 2.4s ease-out 0.2s infinite;
+}
+
+.chat-fab__spark--2 {
+  background: #B5D4F4;
+  top: 8px;
+  right: 10px;
+  animation: fab-spark-2 2.4s ease-out 0.9s infinite;
+}
+
+.chat-fab__spark--3 {
+  background: #FAC775;
+  top: 6px;
+  left: 50%;
+  animation: fab-spark-3 2.4s ease-out 0.5s infinite;
+}
+
+/* ── Keyframes ── */
+
+@keyframes fab-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes fab-ring {
+  0%   { transform: translate(-50%, -50%) scale(1);    opacity: 0.5; }
+  70%  { transform: translate(-50%, -50%) scale(1.9);  opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1.9);  opacity: 0; }
+}
+
+@keyframes fab-spark-1 {
+  0%        { opacity: 0;   transform: translate(0, 0)      scale(0.5); }
+  30%       { opacity: 1;   transform: translate(-6px,-10px) scale(1); }
+  70%       { opacity: 0.4; transform: translate(-10px,-18px) scale(0.6); }
+  100%      { opacity: 0;   transform: translate(-12px,-24px) scale(0.2); }
+}
+
+@keyframes fab-spark-2 {
+  0%        { opacity: 0;   transform: translate(0, 0)      scale(0.5); }
+  40%       { opacity: 1;   transform: translate(6px,-10px)  scale(1); }
+  75%       { opacity: 0.4; transform: translate(10px,-18px) scale(0.6); }
+  100%      { opacity: 0;   transform: translate(12px,-24px) scale(0.2); }
+}
+
+@keyframes fab-spark-3 {
+  0%        { opacity: 0;   transform: translate(-50%, 0)         scale(0.4); }
+  25%       { opacity: 0.8; transform: translate(-50%, -12px)     scale(0.9); }
+  60%       { opacity: 1;   transform: translate(-50%, -20px)     scale(1); }
+  100%      { opacity: 0;   transform: translate(-50%, -28px)     scale(0.3); }
 }

@@ -29,71 +29,146 @@
  */
 import React, { useState } from 'react';
 import styles from './Bloque1KPI.module.css';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 
-const KPI_DATA = [
-  {
-    id: 'duration',
-    label: 'DURACIÓN DEL COLAPSO',
-    // CORRECCIÓN: 30 s (12:32:57 → 12:33:27 CEST), no 27 s
-    value: '30 s',
-    context: '12:32:57 → 12:33:27 CEST',
-    source: 'ENTSO-E Factual, pp.108-109',
-    color: 'red',
-    verified: true,
-  },
-  {
-    id: 'load',
-    label: 'DEMANDA PENINSULAR INTERRUMPIDA',
-    // CORRECCIÓN: 25,2 GW (demanda peninsular española), no "~31 GW carga ibérica total"
-    value: '25,2 GW',
-    context: 'España peninsular · 12:30 CEST',
-    source: 'Comité de Análisis del Gobierno, p.38',
-    color: 'red',
-    verified: true,
-  },
-  {
-    id: 'population',
-    label: 'POBLACIÓN AFECTADA',
-    // CORRECCIÓN: ~57 M (España peninsular + Portugal continental + Andorra)
-    value: '~57 M',
-    context: 'España peninsular + Portugal + Andorra',
-    source: 'Censos nacionales / ENTSO-E Factual',
-    color: 'amber',
-    verified: true,
-  },
-  {
-    id: 'deaths',
-    label: 'FALLECIDOS RELACIONADOS',
-    value: '8',
-    context: '7 España · 1 Portugal · ninguno en hospitales',
-    source: 'El País / RTP / informes ANEPC, 28–29/04/2025',
-    color: 'red',
-    verified: true,
-  },
-  {
-    id: 'recovery',
-    label: 'REPOSICIÓN COMPLETA',
-    value: '~18,5 h',
-    context: '99,95% a las 07:00 del 29 abr',
-    source: 'ENTSO-E Factual, pp.12-13 / REE Operación',
-    color: 'green',
-    verified: true,
-  },
-  {
-    id: 'losses',
-    label: 'PÉRDIDAS ECONÓMICAS (est.)',
-    value: '1.000–1.500 M€',
-    context: 'Estimación CEOE · 0,1% del PIB español',
-    source: 'CEOE, A. Garamendi, 29/04/2025 — estimación no auditada',
-    color: 'amber',
-    // Marcado como no verificado en fuente regulatoria primaria
-    verified: false,
+const STRINGS = {
+  es: {
+    duration: 'DURACIÓN DEL COLAPSO',
+    durationContext: '12:32:57 → 12:33:27 CEST',
+    durationSource: 'ENTSO-E Factual, pp.108-109',
+    load: 'DEMANDA PENINSULAR INTERRUMPIDA',
+    loadContext: 'España peninsular · 12:30 CEST',
+    loadSource: 'Comité de Análisis del Gobierno, p.38',
+    pop: 'POBLACIÓN AFECTADA',
+    popContext: 'España peninsular + Portugal + Andorra',
+    popSource: 'Censos nacionales / ENTSO-E Factual',
+    deaths: 'FALLECIDOS RELACIONADOS',
+    deathsContext: '7 España · 1 Portugal · ninguno en hospitales',
+    deathsSource: 'El País / RTP / informes ANEPC, 28–29/04/2025',
+    recovery: 'REPOSICIÓN COMPLETA',
+    recoveryContext: '99,95% a las 07:00 del 29 abr',
+    recoverySource: 'ENTSO-E Factual, pp.12-13 / REE Operación',
+    losses: 'PÉRDIDAS ECONÓMICAS (est.)',
+    lossesContext: 'Estimación CEOE · 0,1% del PIB español',
+    lossesSource: 'CEOE, A. Garamendi, 29/04/2025 — estimación no auditada',
     openNote: 'Cifra estimada por CEOE. No verificada en fuente regulatoria primaria (CNMC o REE). La CNMC cuantifica el daño regulatorio en 25,2–42,5 M€.',
+    est: '⚠ ESTIMACIÓN',
+    footer: 'Datos verificados en fuentes primarias: ENTSO-E Factual Report (oct. 2025), ENTSO-E Final Report (mar. 2026) y Comité de Análisis del Gobierno (jun. 2025). La demanda de 25,2 GW es la carga peninsular española; la carga ibérica total (incluyendo Portugal, bombeo y exportación) era ~31 GW. Las pérdidas económicas son estimaciones públicas de organizaciones sectoriales, no datos auditados.'
   },
+  en: {
+    duration: 'BLACKOUT DURATION',
+    durationContext: '12:32:57 → 12:33:27 CEST',
+    durationSource: 'ENTSO-E Factual, pp.108-109',
+    load: 'PENINSULAR DEMAND INTERRUPTED',
+    loadContext: 'Peninsular Spain · 12:30 CEST',
+    loadSource: 'Government Analysis Committee, p.38',
+    pop: 'AFFECTED POPULATION',
+    popContext: 'Peninsular Spain + Portugal + Andorra',
+    popSource: 'National censuses / ENTSO-E Factual',
+    deaths: 'RELATED DEATHS',
+    deathsContext: '7 Spain · 1 Portugal · none in hospitals',
+    deathsSource: 'El País / RTP / ANEPC reports, 28–29/04/2025',
+    recovery: 'FULL RESTORATION',
+    recoveryContext: '99.95% at 07:00 on Apr 29',
+    recoverySource: 'ENTSO-E Factual, pp.12-13 / REE Operations',
+    losses: 'ECONOMIC LOSSES (est.)',
+    lossesContext: 'CEOE estimate · 0.1% of Spanish GDP',
+    lossesSource: 'CEOE, A. Garamendi, 29/04/2025 — unaudited estimate',
+    openNote: 'Estimated figure by CEOE. Not verified in primary regulatory sources (CNMC or REE). CNMC quantifies regulatory damage at 25.2–42.5 M€.',
+    est: '⚠ ESTIMATE',
+    footer: 'Data verified in primary sources: ENTSO-E Factual Report (Oct 2025), ENTSO-E Final Report (Mar 2026), and Government Analysis Committee (Jun 2025). The 25.2 GW demand is the Spanish peninsular load; total Iberian load (including Portugal, pumping, and exports) was ~31 GW. Economic losses are public estimates from sector organizations, not audited data.'
+  },
+  de: {
+    duration: 'DAUER DES STROMAUSFALLS',
+    durationContext: '12:32:57 → 12:33:27 CEST',
+    durationSource: 'ENTSO-E Factual, S.108-109',
+    load: 'UNTERBROCHENE NACHFRAGE',
+    loadContext: 'Spanisches Festland · 12:30 CEST',
+    loadSource: 'Analysekomitee der Regierung, S.38',
+    pop: 'BETROFFENE BEVÖLKERUNG',
+    popContext: 'Spanisches Festland + Portugal + Andorra',
+    popSource: 'Nationale Volkszählungen / ENTSO-E Factual',
+    deaths: 'DAMIT VERBUNDENE TODESFÄLLE',
+    deathsContext: '7 Spanien · 1 Portugal · keine in Krankenhäusern',
+    deathsSource: 'El País / RTP / ANEPC-Berichte, 28.–29.04.2025',
+    recovery: 'VOLLSTÄNDIGE WIEDERHERSTELLUNG',
+    recoveryContext: '99,95% um 07:00 am 29. Apr',
+    recoverySource: 'ENTSO-E Factual, S.12-13 / REE-Betrieb',
+    losses: 'WIRTSCHAFTLICHE VERLUSTE (geschätzt)',
+    lossesContext: 'CEOE-Schätzung · 0,1% des spanischen BIP',
+    lossesSource: 'CEOE, A. Garamendi, 29.04.2025 — ungeprüfte Schätzung',
+    openNote: 'Geschätzte Zahl des CEOE. Nicht durch primäre regulatorische Quellen (CNMC oder REE) verifiziert. Die CNMC beziffert den regulatorischen Schaden auf 25,2–42,5 Mio. €.',
+    est: '⚠ SCHÄTZUNG',
+    footer: 'Daten in primären Quellen verifiziert: ENTSO-E Factual Report (Okt 2025), ENTSO-E Final Report (Mär 2026) und Analysekomitee der Regierung (Jun 2025). Die Nachfrage von 25,2 GW bezieht sich auf das spanische Festland; die gesamte iberische Last (einschließlich Portugal, Pumpen und Export) betrug ~31 GW. Wirtschaftliche Verluste sind öffentliche Schätzungen von Branchenverbänden, keine geprüften Daten.'
+  }
+};
+
+const getKpiData = (lang) => {
+  const s = STRINGS[lang] || STRINGS.es;
+  return [
+    {
+      id: 'duration',
+      label: s.duration,
+      value: '30 s',
+      context: s.durationContext,
+      source: s.durationSource,
+      color: 'red',
+      verified: true,
+    },
+    {
+      id: 'load',
+      label: s.load,
+      value: '25,2 GW',
+      context: s.loadContext,
+      source: s.loadSource,
+      color: 'red',
+      verified: true,
+    },
+    {
+      id: 'population',
+      label: s.pop,
+      value: '~57 M',
+      context: s.popContext,
+      source: s.popSource,
+      color: 'amber',
+      verified: true,
+    },
+    {
+      id: 'deaths',
+      label: s.deaths,
+      value: '8',
+      context: s.deathsContext,
+      source: s.deathsSource,
+      color: 'red',
+      verified: true,
+    },
+    {
+      id: 'recovery',
+      label: s.recovery,
+      value: '~18,5 h',
+      context: s.recoveryContext,
+      source: s.recoverySource,
+      color: 'green',
+      verified: true,
+    },
+    {
+      id: 'losses',
+      label: s.losses,
+      value: '1.000–1.500 M€',
+      context: s.lossesContext,
+      source: s.lossesSource,
+      color: 'amber',
+      verified: false,
+      openNote: s.openNote,
+    },
 ];
+};
 
 export default function Bloque1KPI() {
+  const lang = useDocLang();
   const [openTooltip, setOpenTooltip] = useState(null);
+  const KPI_DATA = getKpiData(lang);
+  const s = STRINGS[lang] || STRINGS.es;
 
   return (
     <div className={styles.kpiDashboard}>
@@ -124,7 +199,7 @@ export default function Bloque1KPI() {
               }}
                 title={kpi.openNote}
               >
-                ⚠ ESTIMACIÓN
+                {s.est}
               </div>
             )}
 
@@ -136,13 +211,7 @@ export default function Bloque1KPI() {
       </div>
 
       <div className={styles.kpiFooter}>
-        <p>
-          Datos verificados en fuentes primarias: ENTSO-E Factual Report (oct. 2025),
-          ENTSO-E Final Report (mar. 2026) y Comité de Análisis del Gobierno (jun. 2025).
-          La demanda de 25,2 GW es la carga peninsular española; la carga ibérica total
-          (incluyendo Portugal, bombeo y exportación) era ~31 GW. Las pérdidas económicas
-          son estimaciones públicas de organizaciones sectoriales, no datos auditados.
-        </p>
+        <p>{s.footer}</p>
       </div>
     </div>
   );

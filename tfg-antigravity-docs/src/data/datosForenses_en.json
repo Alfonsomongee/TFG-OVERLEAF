@@ -1,0 +1,665 @@
+{
+  "_meta": {
+    "descripcion": "Fuente única de verdad para todas las cifras numéricas del TFG sobre el apagón ibérico del 28-A. Toda cifra del sitio debe consumirse desde este archivo. Nunca editar texto MDX con valores numéricos sin actualizar este JSON primero.",
+    "version": "1.0.0",
+    "fecha": "2026-05-30",
+    "criterio_cita": "ENTSO-E Factual > Comité Análisis Gobierno > REE > literatura arbitrada",
+    "patron_cuestion_abierta": "Si notaDiscrepancia contiene 'CUESTIÓN ABIERTA', el sitio debe declararlo explícitamente sin inventar valor alternativo"
+  },
+  "sistema_operativo_1230": {
+    "_descripcion": "Estado del sistema eléctrico ibérico a las 12:30 CEST, 28 de abril de 2025",
+    "demanda_peninsular_espana": {
+      "valor": 25184,
+      "unidad": "MW",
+      "contexto": "56% of the Spanish peninsular historical peak",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "mix_renovable_instantaneo": {
+      "valor": 82,
+      "unidad": "%",
+      "contexto": "Percentage of renewable generation over instant total. Source: Analysis Committee",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": 84.5,
+      "notaDiscrepancia": "The published JSON in /static/data/blackout_snapshot_28A.json uses 84.5%. The difference is due to distinct aggregation of cogeneration or non-synchronous generation. The canonical value for the site is 82% (Committee). IMPORTANT: renewable ≠ non-synchronous ≠ IBR. See glossary."
+    },
+    "solar_fotovoltaica_pct": {
+      "valor": 53.3,
+      "unidad": "%",
+      "contexto": "Percentage of solar PV over total instant generation",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "nuclear_pct": {
+      "valor": 10,
+      "unidad": "%",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "ccgt_gas_pct": {
+      "valor": 3,
+      "unidad": "%",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "carbon_pct": {
+      "valor": 1,
+      "unidad": "%",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "cogeneracion_pct": {
+      "valor": 4,
+      "unidad": "%",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "bombeo_activo": {
+      "valor": 3000,
+      "unidad": "MW",
+      "contexto": "Pumped hydro consumption (load, not generation)",
+      "fuentePrimaria": "REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "exportacion_espana_francia": {
+      "valor": 1000,
+      "unidad": "MW",
+      "contexto": "Physical flow ES→FR before the cascade. Reduced during mitigation to ~1,300 MW bidirectional",
+      "fuentePrimaria": "ENTSO-E",
+      "pagina": null,
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": "The flow was reduced during mitigation maneuvers. Initial figure ENTSO-E May 9, 2025."
+    },
+    "exportacion_espana_portugal": {
+      "valor": 2000,
+      "unidad": "MW",
+      "fuentePrimaria": "ENTSO-E",
+      "pagina": null,
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "exportacion_espana_marruecos": {
+      "valor": 800,
+      "unidad": "MW",
+      "fuentePrimaria": "ENTSO-E",
+      "pagina": null,
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "inercia": {
+    "_descripcion": "Constante de inercia equivalente H del sistema ibérico el 28-A. H [s] = E_k [MWs] / S_base [MVA]. UNIDAD CORRECTA: segundos (s), NO 'GWs'. El sitio actual etiqueta erróneamente 'GWs' — corregir a 's' en todos los componentes.",
+    "H_espana_rango_min": {
+      "valor": 2.17,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": 2.14,
+      "notaDiscrepancia": "The site erroneously cites 2.14 s. The verified value in ENTSO-E Factual Table 2-4, p. 36 is 2.17 s (lower end of the range). Correct in all MDX texts and components."
+    },
+    "H_espana_rango_max": {
+      "valor": 2.67,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": 2.64,
+      "notaDiscrepancia": "The site erroneously cites 2.64 s. The verified value is 2.67 s. Correct."
+    },
+    "H_portugal_rango_min": {
+      "valor": 2.45,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "H_portugal_rango_max": {
+      "valor": 2.95,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "H_iberia_rango_min": {
+      "valor": 2.21,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "H_iberia_rango_max": {
+      "valor": 2.71,
+      "unidad": "s",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "tabla": "Table 2-4",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "Ek_espana": {
+      "valor": 97590,
+      "unidad": "MWs",
+      "contexto": "Total kinetic energy Spain. H [s] = E_k [MWs] / S_base [MVA]",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "Ek_portugal": {
+      "valor": 21884,
+      "unidad": "MWs",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "Ek_iberia_total": {
+      "valor": 119474,
+      "unidad": "MWs",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "36",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "umbral_referencia_2s": {
+      "valor": 2,
+      "unidad": "s",
+      "contexto": "Reference threshold in technical literature for systems with high IBR penetration",
+      "fuentePrimaria": "Technical literature (ESIG / NREL / Mehigan et al. 2020)",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "IMPORTANT: ENTSO-E DOES NOT publish a global 2 s threshold as a binding grid code. It is a heuristic from technical literature. Do not attribute to the NC RfG or any European regulation."
+    },
+    "conclusión_entsoe": {
+      "valor": null,
+      "unidad": null,
+      "contexto": "ENTSO-E concludes that even with significantly higher inertia, the loss of synchronism would not have been avoided. The dominant mechanism was voltage-related (Q-V), not frequency-related.",
+      "fuentePrimaria": "ENTSO-E Final Report",
+      "pagina": null,
+      "url": "https://www.entsoe.eu/news/2026/03/20/entso-e-publishes-expert-panel-final-report-on-28-april-2025-blackout-in-spain-and-portugal/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "cronologia_cascada": {
+    "_descripcion": "Secuencia verificada del colapso. Los tres valores de frecuencia mínima (47,79 / 48,30 / 48,46 Hz) NO son contradictorios: corresponden a instantes distintos del mismo transitorio. El sitio debe explicarlo así.",
+    "duracion_cascada": {
+      "valor": 30,
+      "unidad": "s",
+      "contexto": "Duration of the cascade from root trip (12:32:57) to zero voltage (12:33:27)",
+      "fuentePrimaria": "ENTSO-E Factual Report / REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "The CollapseSismograph labels '27 seconds' in its historical title and uses an 87 s axis. The actual systemic zero voltage according to ENTSO-E occurred exactly 30 seconds after the first trip."
+    },
+    "inicio_cascada_cest": {
+      "valor": "12:32:57",
+      "unidad": "CEST",
+      "contexto": "Trip of the 400/220 kV transformer in Granada due to overvoltage in the 220 kV collector (242 kV)",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "28",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "fin_cascada_cest": {
+      "valor": "12:33:27",
+      "unidad": "CEST",
+      "contexto": "Definitive zero voltage in the Iberian system",
+      "fuentePrimaria": "ENTSO-E Factual Report / REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": "12:33:29.741",
+      "notaDiscrepancia": "Time discrepancy: The Government Committee cites 12:33:29.741 CEST as the last trip of an isolated generator group. ENTSO-E places the functional zero at 12:33:24. Both are correct, but measure different milestones (systemic zero vs. last group)."
+    },
+    "perdida_sincronismo_cest": {
+      "valor": "12:33:21",
+      "unidad": "CEST",
+      "contexto": "Opening of trans-Pyrenean AC links by Out-of-Step protections (ANSI 78)",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "108-109",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "frecuencia_perdida_sincronismo": {
+      "valor": 48.46,
+      "unidad": "Hz",
+      "contexto": "Frequency of the Iberian system at the instant of synchronism loss with Continental Europe (12:33:21 CEST)",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "108-109",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": "There are three minimum frequency values cited in the literature (48.46 Hz, 48.30 Hz, and 47.79 Hz). They are not contradictory, but correspond to successive instants of the system collapse. 48.46 Hz corresponds exactly to the loss of synchronism."
+    },
+    "frecuencia_umbral_deslastre": {
+      "valor": 48,
+      "unidad": "Hz",
+      "contexto": "Activation threshold of the first load shedding step (UFLS).",
+      "fuentePrimaria": "P.O. 1.6 / ENTSO-E",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "The first element to shed by the under-frequency relay was pumped hydro at 49.5 Hz. Ordinary industrial demand began to disconnect later, upon crossing the 49.0 Hz threshold."
+    },
+    "frecuencia_disparo_grupo_posterior": {
+      "valor": 47.79,
+      "unidad": "Hz",
+      "contexto": "Frequency recorded at the trip of an individual generator group ~1.1 s AFTER the systemic zero.",
+      "fuentePrimaria": "Government Analysis Committee / REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "This value does not represent the nadir of the complete system, but the isolated frequency measured in the last generator group right before its definitive trip."
+    }
+  },
+  "potencias_cascada": {
+    "_descripcion": "Magnitudes de potencia durante el colapso. Son naturalezas distintas y NO deben usarse indistintamente.",
+    "disparo_raiz_potencia_activa": {
+      "valor": 355,
+      "unidad": "MW",
+      "contexto": "Active power lost in the initial trip of the 400/220 kV transformer in Granada at 12:32:57 CEST",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "28",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "disparo_raiz_reactiva_perdida": {
+      "valor": 165,
+      "unidad": "MVAr",
+      "contexto": "Inductive reactive power absorption capacity lost with the root trip.",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "28",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "perdida_generacion_20s": {
+      "valor": 2000,
+      "unidad": "MW",
+      "contexto": "Accumulated generation loss in the first ~20 s after the root trip",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": null,
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "perdida_generacion_total_cascada": {
+      "valor": 15000,
+      "unidad": "MW",
+      "contexto": "Total GENERATION loss during the entire cascade (~60% of instant generation).",
+      "fuentePrimaria": "Consolidated estimate (AI + DR-T)",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "This magnitude reflects the amount of 'lost generation' (15 GW). It is often confused in the media with the amount of 'demand left in the dark' (25.2 GW) or the total Iberian load (31 GW). They are physically distinct parameters."
+    },
+    "demanda_sin_suministro_espana": {
+      "valor": 25184,
+      "unidad": "MW",
+      "contexto": "Spanish peninsular demand left without supply.",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": "38",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "carga_iberica_total": {
+      "valor": 31000,
+      "unidad": "MW",
+      "contexto": "Total Iberian load: Spain + Portugal + pumping + export.",
+      "fuentePrimaria": "Consolidated ENTSO-E estimate",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "desconexiones_SO_granada": {
+      "valor": 355,
+      "unidad": "MW",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "desconexiones_SO_badajoz": {
+      "valor": 730,
+      "unidad": "MW",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": 727,
+      "notaDiscrepancia": "There is a slight variation in the literature: the Committee cites 730 MW, while ENTSO-E/REE estimate 727 MW due to differences in granular aggregation."
+    },
+    "desconexiones_SO_sevilla": {
+      "valor": 550,
+      "unidad": "MW",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "desconexiones_SO_total_comite": {
+      "valor": 1635,
+      "unidad": "MW",
+      "contexto": "Granada 355 + Badajoz 730 + Sevilla 550",
+      "fuentePrimaria": "Government Analysis Committee of Spain",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": 1916,
+      "notaDiscrepancia": "ENTSO-E/REE with greater granularity estimate ~1,916 MW for this block. The difference lies in the geographical aggregation boundaries used by each entity."
+    },
+    "tension_maxima_barras_colectoras": {
+      "valor": 440,
+      "unidad": "kV",
+      "contexto": "Maximum voltage exceeded on busbars during the cascade (>440 kV). The LVRT threshold P.O. 12.2 is 435 kV.",
+      "fuentePrimaria": "REE",
+      "pagina": "5",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "Although the regulatory threshold (LVRT) set to withstand voltage dips is 435 kV, records show that actual nodes exceeded 440 physical kV during the cascade."
+    },
+    "reactiva_frontera_ac_pico": {
+      "valor": null,
+      "unidad": "MVAr",
+      "contexto": "Reactive demand at the AC border.",
+      "fuentePrimaria": null,
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "This precise numerical value of MVAr could not be verified in the master tables of ENTSO-E's factual reports. It should be considered a secondary estimate."
+    },
+    "importacion_ac_pico": {
+      "valor": 3800,
+      "unidad": "MW",
+      "contexto": "Peak active power imported via AC interconnections at 12:33:19 CEST.",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "108-109",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "hvdc_inelfe": {
+    "_descripcion": "Comportamiento del enlace HVDC INELFE-1 (Santa Llogaia–Baixas, 2.000 MW nominales) durante el 28-A.",
+    "modo_operativo_inicial": {
+      "valor": "PMODE3",
+      "unidad": null,
+      "contexto": "Initial mode: AC emulation, responds to angular difference between ends",
+      "fuentePrimaria": "ENTSO-E Factual Report / REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "cambio_modo_hora_cest": {
+      "valor": "12:08",
+      "unidad": "CEST",
+      "contexto": "Change from PMODE3 to PMODE1 to dampen the detected 0.6 Hz oscillations",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "modo_operativo_durante_cascada": {
+      "valor": "PMODE1",
+      "unidad": null,
+      "contexto": "PMODE1: constant power, without dynamic response to the grid",
+      "fuentePrimaria": "ENTSO-E Factual Report / REE",
+      "pagina": "12",
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "flujo_durante_cascada": {
+      "valor": 1000,
+      "unidad": "MW",
+      "contexto": "The HVDC maintained 1,000 MW of ES→FR export during the entire cascade.",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": "Contrary to the widespread belief that the cable suddenly reversed its flow, records show that being blocked in PMODE1 it maintained its 1,000 MW exporting extraction."
+    },
+    "hora_desconexion_cest": {
+      "valor": "12:33:24",
+      "unidad": "CEST",
+      "contexto": "Last element to disconnect during the cascade",
+      "fuentePrimaria": "ENTSO-E Factual Report / REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "rocof": {
+    "_descripcion": "Rate of Change of Frequency. Ninguno es erróneo por sí solo: dependen de la ventana temporal.",
+    "rocof_hasta_separacion": {
+      "valor": 1,
+      "unidad": "Hz/s",
+      "contexto": "RoCoF of the Iberian system until the loss of synchronism at 12:33:20.560 CEST.",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": "ENTSO-E states that the frequency derivative was kept controlled below 1 Hz/s during almost the entire first phase of the event, before the final chaos."
+    },
+    "rocof_pico": {
+      "valor": null,
+      "unidad": "Hz/s",
+      "contexto": "Estimated RoCoF peak in millisecond measurement windows.",
+      "fuentePrimaria": null,
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": 1.5,
+      "notaDiscrepancia": "This value is a maximum peak estimate in extremely short sampling windows (100 ms). It is not listed directly in the main body of the ENTSO-E report."
+    },
+    "nota_metodologica": {
+      "valor": null,
+      "unidad": null,
+      "contexto": "The ENTSO-E/IEEE convention measures RoCoF in 100 ms, 500 ms, and 1 s windows.",
+      "fuentePrimaria": "IEEE C37.117 / ENTSO-E IGD",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "reposicion": {
+    "reposicion_portugal_transporte": {
+      "valor": "00:22 on April 29",
+      "unidad": "CEST",
+      "contexto": "Complete restoration of the Portuguese transmission grid",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12-13",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "reposicion_espana_transporte": {
+      "valor": "04:00 on April 29",
+      "unidad": "CEST",
+      "contexto": "Complete restoration of the Spanish transmission grid",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12-13",
+      "url": "https://www.entsoe.eu/publications/blackout/28-april-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "recuperacion_demanda_99pct": {
+      "valor": "07:00 on April 29",
+      "unidad": "CEST",
+      "contexto": "Recovery of 99.95% of peninsular demand",
+      "fuentePrimaria": "ENTSO-E Factual Report",
+      "pagina": "12-13",
+      "url": "https://www.entsoe.eu/publications/blackout/28-abril-2025-iberian-blackout/",
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "ens_portugal_transporte": {
+      "valor": 55489.4,
+      "unidad": "MWh",
+      "contexto": "Energy Not Supplied in the Portuguese transmission grid",
+      "fuentePrimaria": "ERSE / REN",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "ens_espana_total": {
+      "valor": null,
+      "unidad": "MWh",
+      "contexto": "Theoretical estimate of aggregated Energy Not Supplied.",
+      "fuentePrimaria": null,
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "This range is an approximate macroeconomic calculation. The official and exact figure of MWh of Energy Not Supplied for the entire Peninsula was not published in a unified manner in the primary ENTSO-E report."
+    }
+  },
+  "impacto_economico": {
+    "coste_operacion_reforzada_ree": {
+      "valor": 666,
+      "unidad": "M€",
+      "contexto": "Cost of Reinforced Operation (gas over-scheduling) until March 31, 2026",
+      "fuentePrimaria": "REE",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": "Media estimates (>1,000 M€) include externalities and lost profits, but the 666 M€ is the direct market cost accounted for by REE."
+    },
+    "coste_directo_cnmc": {
+      "valor_min": 25.2,
+      "valor_max": 42.5,
+      "unidad": "M€",
+      "fuentePrimaria": "CNMC",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    },
+    "impacto_recibo_regulado": {
+      "valor": 13.2,
+      "unidad": "%",
+      "contexto": "Percentage increase in the regulated PVPC bill",
+      "fuentePrimaria": "CNMC",
+      "pagina": null,
+      "url": null,
+      "valorAlternativo": null,
+      "notaDiscrepancia": null
+    }
+  },
+  "normativa": {
+    "_descripcion": "Referencias normativas verificadas. Usar estas citas exactas en el sitio.",
+    "po_74_actualizado": {
+      "referencia": "BOE-A-2025-13076",
+      "titulo": "CNMC Resolution of June 12, 2025",
+      "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-13076",
+      "vigente": true,
+      "nota": "Modifies P.O. 3.1, 3.6, 7.4, 9.1, 14.4. Introduces dynamic control and zonal reactive power markets. The 75% to 90% compliance increase proposed by REE (Oct 8, 2025) was NOT approved."
+    },
+    "rd_997_2025": {
+      "referencia": "BOE-A-2025-22434",
+      "titulo": "Royal Decree 997/2025, of November 5",
+      "url": "https://www.boe.es/buscar/doc.php?id=BOE-A-2025-22434",
+      "vigente": true,
+      "nota": "PNIEC Goal: 22.5 GW of storage in 2030."
+    },
+    "po_131": {
+      "referencia": "BOE-A-2005-5757",
+      "titulo": "P.O. 13.1 — Security criteria for the development of the transmission grid",
+      "url": "https://www.boe.es/diario_boe/txt.php?id=BOE-A-2005-5757",
+      "vigente": true,
+      "nota": "CRITICAL CORRECTION: the site attributes the 5% damping ratio threshold to this P.O. This is INCORRECT. P.O. 13.1 deals with grid development/planning; it evaluates oscillatory stability only qualitatively. The 5% threshold comes from Kundur (1994, ch. 12) and the ENTSO-E IGD on low-frequency oscillations."
+    },
+    "so_gl": {
+      "referencia": "Regulation (EU) 2017/1485",
+      "titulo": "System Operation Guidelines",
+      "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017R1485",
+      "vigente": true,
+      "nota": "Art. 18: five operational states: Normal, Alert, Emergency, Blackout, Restoration."
+    },
+    "nc_rfg_20_borrador": {
+      "referencia": "ENTSO-E Phase II Technical Report (Nov 4, 2025)",
+      "titulo": "Grid-Forming Requirements — Phase II",
+      "url": "https://www.entsoe.eu/news/2025/11/04/entso-e-publishes-phase-ii-technical-report-on-grid-forming-requirements/",
+      "vigente": false,
+      "nota": "Pending adoption by the European Commission. Requires mandatory GFM for non-synchronous modules ≥1 MW."
+    }
+  },
+  "inrush_aclaracion": {
+    "_descripcion": "Aclaración del término utilizado erróneamente en el capítulo Dimensión Europea / Portugal",
+    "termino_incorrecto": "sympathetic inrush current",
+    "termino_correcto": "magnetizing inrush in low SCR grid",
+    "norma": "IEEE C57.91 / IEEE C57.96 / CIGRE WG A2",
+    "explicacion": "The 'sympathetic inrush' occurs when the energization of a transformer re-magnetizes (through magnetic interaction) an adjacent already energized one. The mechanism described in the Portugal chapter (energization of T4 Zêzere from a single hydro generator with low SCR) is a classic 'magnetizing inrush': the 170 MVA transformer demands magnetizing current that exceeds nominal by an order of magnitude, with a high 2nd-order harmonic component. The isolated generator could not provide this reactive burst. Correct in the corresponding MDX."
+  },
+  "pvpc": {
+    "_meta": "Datos del mercado regulado PVPC post-apagón 28-A",
+    "incremento_restricciones_pct": {
+      "valor": 125,
+      "unidad": "%",
+      "fuente": "CNMC (pending verification in official 2025-2026 report)",
+      "estado": "pending_verification",
+      "descripcion": "Percentage increase in the technical constraints component of the PVPC bill for regulated customers, period May-June 2025 compared to the same period in 2024. Data not verified with a published primary CNMC source."
+    }
+  },
+  "impacto_social": {
+    "_meta": "Datos de impacto social y sanitario del apagón 28-A",
+    "censo_electrodependientes": {
+      "valor": 70000,
+      "unidad": "people",
+      "fuente": "Ministry of Health / Autonomous Communities (pending verification in official registry)",
+      "estado": "pending_verification",
+      "descripcion": "Estimate of the number of electro-dependent people in Spain (users of home medical equipment requiring continuous electrical supply). Indicative figure — the unified official registry was not operational on the date of the blackout."
+    }
+  }
+}

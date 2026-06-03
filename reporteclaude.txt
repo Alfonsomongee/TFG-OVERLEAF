@@ -1,0 +1,609 @@
+🟥 1. CRÍTICO — bloqueantes y errores de código
+C1. La paleta del modo claro está rota: cuatro reglas con !important se pisan entre sí
+Tu modo claro intenta tres estéticas distintas en el mismo selector html[data-theme='light'] .theme-doc-sidebar-container, todas con !important. La que gana es la última en orden de cascada — y muy probablemente no es la que quieres que el usuario vea:
+LíneaValor de background¿Qué pretendía?113-175--bg-0: #F4F1EA (papel cálido)Definición de la paleta analógica oficial912-916linear-gradient(#efebe1, #e8e3d5)Sidebar con gradiente cálido2125-2128#636E4F !important (verde oliva PANTONE 18-0312)Probablemente la deseada2286-2289#636E4F !important (duplicado)Duplicado literal del anterior2376-2379var(--bg-0) !important (cream)Esta es la que gana
+Consecuencia real: el usuario ve un sidebar color crema cuando tú creíste configurarlo verde oliva. Toda la paleta "PANTONE Bitumen + Sea Spray" que comentas en custom.css líneas 2117–2122 está muerta.
+Solución concreta: decide UNA paleta y elimina las otras dos. Si la final es verde oliva, borra los bloques de líneas 912-936, 2375-2400. Si es la analógica cream, borra todo el bloque 2105-2347. Y elimina el !important: definir tres valores compitiendo es lo que te metió aquí.
+C2. .table-full-width es literalmente un código roto. Esta es la línea 1230-1239:
+css.table-full-width {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  position: relative;
+  left: 50%;
+  width: 2px;                       /* ← sobreescribe 100vw */
+  background: linear-gradient(to bottom, rgba(255,170,0,0.4) 0%, rgba(255,170,0,0.1) 100%);
+  opacity: 0.3;
+}
+Es un copy-paste accidental de una regla de rail telemétrico dentro de la utility de tabla full-width. Cualquier <table className="table-full-width"> se renderizará como una barrita ámbar de 2 px de ancho. La versión correcta existe en líneas 1392-1402; borra la 1230-1239 entera.
+C3. Choque de posiciones en el sidebar (cinco sidebar_position duplicados)
+Docusaurus rompe empates por orden alfabético del archivo, así que tu navegación no respeta el orden que crees:
+sidebar_positionArchivos en conflicto1010-resumen-de-cifras.mdx y glosario.mdx1110-galeria-imagenes.mdx y referencias.mdx1211-cronologia.mdx y galeria-graficas.mdxSin posición13-sobre-el-autor.mdx y intro.mdx
+Solución: usa una secuencia 1.0 … 16.0 sin saltos ni decimales .5/.8 (te lleva a 7, 7.5, 7.7, 8, 8.5, 8.8, 9, 10, 10, 11, 11, 12, 12, 14, 15, 16, una taxonomía deformada). Mejor: migra a sidebars.js manual. Tu config la referencia (línea 75) pero no está incluida en el dump — si la tienes y agrupa por categorías, los sidebar_position ya no importan; si no la tienes, hay que crearla (ver sección 2).
+C4. Inconsistencia institucional grave (universidad)
+
+intro.mdx línea 28: "Universidad Pontificia Comillas ICAI"
+docusaurus.config.js líneas 185-191 (footer): "Universidad de Sevilla" — www.us.es
+08.5-actualizacion-2026.mdx línea 34: cita correctamente al IIT-ICAI de Comillas (es la fuente externa, no tu universidad)
+
+Una universidad de las dos es errónea. Es lo primero que verá el tribunal del TFG.
+C5. jsx-nuevos/ — carpeta de código fantasma
+/src/components/jsx-nuevos/ contiene tres archivos. FinancialWaterfallChart.jsx es idéntico al de fuera (275 líneas); los otros dos (AnimatedRestorationMap.jsx, InteractiveCTA.jsx) DIFIEREN del archivo principal. Esto es deuda técnica que confunde: el import resolverá uno u otro según los paths exactos, y dado que el contenido difiere, es posible que parte del sitio esté usando una versión obsoleta sin que lo sepas. Acción: ejecuta git diff jsx-nuevos/AnimatedRestorationMap.jsx ../AnimatedRestorationMap.jsx y borra la carpeta entera.
+C6. Bloques masivos de CSS duplicados literalmente
+custom.css tiene cuatro secciones íntegras duplicadas (verificado por diff visual entre rangos):
+SecciónPrimera apariciónDuplicadoAcciónADMONITIONS523-545725-747Eliminar 725-747RESPONSIVE OVERRIDES (h1/h2/incident-box)547-558749-760Eliminar 749-760ZEN MODE completo560-680762-852Eliminar 762-852FOOTER685-723858-898Eliminar 858-898Internal Chapter Items (.menu__list-item .menu__list-item)~10231241-1253Eliminar la segundaSidebar PARTS 4-8 (caret, scrollbar, mobile)~1130-12201255-1314Eliminar la segundaSidebar light mode 2125-21612125-21612286-2347Eliminar la segunda
+Hay incluso un comentario tuyo en la línea 836 — /* Duplicado eliminado — ver bloque KATEX MATH más arriba */ — que demuestra que sabías de los duplicados pero solo limpiaste uno. Estimación: podrías reducir custom.css de 2.541 a ~1.700 líneas sin perder nada.
+C7. ForensicReveal — accesibilidad y motion rotos
+ForensicReveal/index.js decodifica caracteres aleatorios sobre el texto antes de revelarlo. Tres problemas serios:
+
+Screen readers leen █▓▒░X0123 antes que el texto final. Sin aria-label con el contenido limpio, un usuario con lector de pantalla escucha basura.
+No respeta prefers-reduced-motion. Te recomiendo replicar el patrón de SwingEquationSimulator.jsx línea 135-139.
+React.Children.toArray(children).join('') no funciona si pasas elementos React (negrita, enlaces). Solo string plano. Si el texto tiene formato, se pierde silenciosamente.
+
+Parche mínimo:
+jsximport React, { useRef, useState, useEffect, useMemo } from 'react';
+import { useInView, motion } from 'framer-motion';
+import styles from './styles.module.css';
+
+const CHARSET = '█▓▒░0123456789X';
+const getRandomChar = () => CHARSET[Math.floor(Math.random() * CHARSET.length)];
+
+export default function ForensicReveal({ children, className }) {
+  const prefersReduced = useMemo(
+    () => typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  );
+
+  const text = React.Children.toArray(children).join('');
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.4 });
+  const [displayText, setDisplayText] = useState(prefersReduced ? text : '');
+  const [isFinished, setIsFinished] = useState(prefersReduced);
+
+  useEffect(() => {
+    if (prefersReduced || !isInView || isFinished || !text) return;
+    // … lógica existente
+  }, [isInView, prefersReduced, text, isFinished]);
+
+  // Accesibilidad: texto real disponible para lectores SIEMPRE
+  return (
+    <motion.span
+      ref={ref}
+      className={`${styles.forensicText} ${isFinished ? styles.finished : styles.scrambling} ${className || ''}`}
+      aria-label={text}
+    >
+      <span aria-hidden="true">{displayText || text.replace(/[^\s]/g, '█')}</span>
+    </motion.span>
+  );
+}
+C8. Sin sidebars.js en el dump — taxonomía descontrolada
+docusaurus.config.js línea 75 referencia ./sidebars.js pero no está en el volcado. Si existe en disco y agrupa los 38 .mdx en categorías, los problemas C3 son inofensivos. Si no existe o es module.exports = { tutorialSidebar: [{type: 'autogenerated', dirName: '.'}] }, toda la navegación está dictada por sidebar_position y nombre de archivo, y entonces tu tribunal verá un sidebar plano con 38 items sueltos. Confírmalo y, si falta, créalo (propuesta en sección 2).
+
+🟧 2. MEJORAS DE ALTO IMPACTO — estructura y refactor
+A1. Reordenación narrativa del sidebar
+Tu orden actual mezcla cronología, análisis, infraestructura interactiva y meta-documentación de forma plana. Para un lector que no conoce el tema, el problema no es el contenido sino la falta de actos. Propuesta de sidebars.js:
+js// sidebars.js
+module.exports = {
+  docs: [
+    'intro', // landing (slug: /)
+    {
+      type: 'category',
+      label: 'I · El incidente',
+      className: 'sidebar-icon-zap', // rayo rojo
+      collapsed: false,
+      items: ['01-introduccion', '02-contexto', '03-analisis-incidente', '04-reaccion-reposicion'],
+    },
+    {
+      type: 'category',
+      label: 'II · Las narrativas',
+      className: 'sidebar-icon-compass',
+      items: ['05-analisis-informes', '06-impacto-comunicativo'],
+    },
+    {
+      type: 'category',
+      label: 'III · Las consecuencias',
+      className: 'sidebar-icon-trending',
+      items: ['07b-consecuencias-financieras', 'impacto-social', '07-resiliencia-futuro'],
+    },
+    {
+      type: 'category',
+      label: 'IV · Dimensión europea',
+      className: 'sidebar-icon-globe',
+      items: [
+        'dimension-europea/01-francia-portugal',
+        'dimension-europea/02-coordinacion-continental',
+        'dimension-europea/03-dia-despues',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'V · Cierre',
+      className: 'sidebar-icon-flag',
+      items: ['09-conclusiones', '08.5-actualizacion-2026', '08-uso-ia'],
+    },
+    {
+      type: 'category',
+      label: 'Datos en tiempo real',
+      className: 'sidebar-icon-activity',
+      items: [{ type: 'autogenerated', dirName: 'datos-tiempo-real' }],
+    },
+    {
+      type: 'category',
+      label: 'Referencia',
+      className: 'sidebar-icon-book',
+      items: [
+        '10-resumen-de-cifras',
+        '11-cronologia',
+        'galeria-graficas',
+        '10-galeria-imagenes',
+        '15-galeria-de-tablas',
+        '16-galeria-forense',
+        '15-base-datos-maestra',
+        'glosario',
+        'referencias',
+      ],
+    },
+    '13-sobre-el-autor',
+  ],
+};
+Notas:
+
+El CSS de iconos ya existe (líneas 1448-1487 de custom.css: sidebar-icon-zap, sidebar-icon-compass, etc.) pero no veo evidencia de que estén siendo usados en sidebars.js — los aplicas vía className en la categoría.
+08.5 va al final, no entre el 8 y el 9: leer "Un año después" antes de las conclusiones rompe la cronología narrativa que el lector espera. Y "Uso de IA" es metodología → último.
+impacto-social.mdx queda huérfano en tu numeración (sidebar_position: 7.7). Es un capítulo de 368 líneas — el más largo del proyecto — y está mal posicionado. Va en "Consecuencias".
+
+A2. Las galerías son seis y se solapan
+Tienes seis páginas-galería con responsabilidades borrosas:
+ArchivoPropósito declarado¿Solape con?10-galeria-imagenes.mdx"Galería de Imágenes"15-galeria-de-tablas, galeria-graficasgaleria-graficas.mdx"Galería de Gráficas Interactivas"16-galeria-forense15-galeria-de-tablas.mdx"Registros de Datos Oficiales"15-base-datos-maestra16-galeria-forense.mdx"Bases de Datos ENTSO-E y ESIOS"galeria-graficas15-base-datos-maestra.mdx"Base de Datos Maestra del 28-A"15-galeria-de-tablas10-resumen-de-cifras.mdx"Cifras Maestras"KPIs en 01-introduccion
+Propuesta de consolidación a tres (alineada con el CSS de líneas 1404-1431 que ya tiene reglas full-width para todas):
+
+Cifras Maestras (10-resumen-de-cifras — quédatelo, es bueno con los BloqueXX components)
+Galería Visual (fusiona 10-galeria-imagenes + galeria-graficas + 16-galeria-forense, con tabs internos)
+Datos Crudos (fusiona 15-base-datos-maestra + 15-galeria-de-tablas)
+
+El CSS gana porque desaparecen 6 selectores de la regla .docs-doc-id-galeria-forense main… (línea 1404). Y el sidebar gana porque pasa de seis ítems de "Referencia" indistinguibles a tres.
+A3. Simuladores — refactorización menor pero importante
+SimuladorEstadoAcción recomendadaPVCurveSimulatorSólido. Física correcta (Van Cutsem & Vournas), accesibilidad bien implementada, preset 28-A pedagógico.Solo: cambia el comentario engañoso "Búsqueda binaria aproximada" en PVCurveSimulatorBase.jsx línea 86 — es búsqueda lineal, no binaria. Y mueve a binary search real si el barrido es de 2500 puntos (step=0.002, P hasta 5).SwingEquationSimulatorExcelente. RK4, BrowserOnly, accesibilidad.Migra los estilos inline a SwingEquationSimulator.module.css para coherencia con el resto del proyecto (líneas 178-360 son 180 líneas de estilo inline). Y añade listener al matchMedia para que prefers-reduced-motion reaccione si el usuario lo cambia en sesión.ANSI59Cascade (useCascadeSimulation.js)Bien diseñado. Refs para evitar closures stale, anclaje a datos ENTSO-E.Bug sutil: líneas 142-145 mutan nodesRef.current = nodes en el cuerpo del render. Esto es "unsafe" en modo concurrente de React 18. Mover a useEffect:useEffect(() => { nodesRef.current = nodes; }, [nodes]);AnimatedMapFuncional pero pobre. Los nodos están hardcodeados como {x, y} en un grid 100×100. Solapa con BlackoutPropagationMap, AnimatedRestorationMap, IberianGridMap, IberianGridTopology.Tienes cuatro mapas distintos del mismo evento. Decide cuál es canónico y borra los otros, o úsalos cada uno para una fase distinta (propagación, reposición, topología, eventos). Hoy compiten visualmente.
+A4. Swizzles que no hacen nada — bórralos
+js// src/theme/DocPage/index.js — 7 líneas, NO hace NADA:
+import React from 'react';
+import DocPage from '@theme-original/DocPage';
+export default function DocPageWrapper(props) {
+  return <DocPage {...props} />;
+}
+Lo mismo en src/theme/DocItem/Layout/index.js. Estas son swizzles vacías que solo te bloquean la actualización de Docusaurus (un breaking change en la API interna te rompe la build sin que ganes nada). Bórralos. Docusaurus 3.x emite el warning "unsafe swizzle" precisamente para esto.
+A5. Lógica shouldHideButtons duplicada entre Root.js y Layout/index.js
+Las dos calculan el mismo path-list:
+js// EN AMBOS archivos, copiado:
+const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor'];
+Si añades una ruta a uno y olvidas el otro, el FAB aparece pero el CSS sigue ocultándolo (o viceversa). Extrae a src/utils/routeMatchers.js:
+jsexport const HIDE_FLOATING_BUTTON_PATHS = [
+  '/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor',
+];
+export const isHomePage = (path) => path === '/' || /^\/[a-z]{2}\/?$/.test(path);
+export const shouldHideFloatingButtons = (path) =>
+  isHomePage(path) || HIDE_FLOATING_BUTTON_PATHS.some(k => path.includes(k));
+A6. DocRoot/index.js aplica un transition pesado a cada navegación
+Tu wrapper de DocRoot envuelve cada cambio de ruta en <AnimatePresence mode="wait"> con blur(6px) → blur(0) durante 550 ms. En un sitio de 38 capítulos eso significa medio segundo de blur por cada click en el sidebar, sobre un sistema que ya tiene un scrollbar custom, un body::before con noise SVG (línea 1342) y un panel-glosario fijado a la pantalla.
+Tu CSS ya lo intuye — la línea 1709-1712 dice "transición suave" pero esto es solo color, no blur. Acción: reduce a opacity puro:
+jsconst variants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.25 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};
+Borrar el blur ahorra entre 5-15 fps en móviles, y entre 200-400 ms de tiempo percibido a la navegación.
+
+🟨 3. PULIDO — limpieza fina
+P1. Specificity / !important proliferation
+He contado !important en custom.css más de 300 veces. Es síntoma de paletas competidoras (C1) — al consolidarlas y borrar duplicados, podrás eliminar la mayoría. Regla: cada !important que sobreviva debe tener un comentario /* override needed for Docusaurus theme X */.
+P2. font-family: 'Alfa Slab One', serif en el navbar (línea 1385)
+Estética Tarantino + text-shadow azul oscuro sobre un navbar transparente, con un proyecto que se vende como "documento forense". El choque tonal entre "ESTUDIO TÉCNICO SOBRE EL COLAPSO" + cyberpunk Tarantino es jarring. Considera: font-family: var(--font-display) (Space Grotesk) para coherencia con los headings.
+P3. body::before con SVG noise (línea 1342)
+feTurbulence baseFrequency='0.65' repintado a 100vw×100vh con position: fixed y z-index: 9999 es caro de renderizar en móviles de gama media. Opacidad 0.03 — apenas visible. Recomendación: déjalo solo en @media (min-width: 996px) o exporta a /img/noise.png y úsalo como background-image.
+P4. Footer dice 2 universidades distintas en footer.config.js
+Cuatro líneas, dos referencias a la misma escuela (185-191). Compáctalo:
+js{ title: 'Universidad', items: [
+  { label: 'Escuela Técnica Superior de Ingeniería — Universidad de Sevilla', href: 'https://www.us.es' },
+]},
+(O sustituye por Comillas según C4.)
+P5. intro.mdx mezcla MDX y style={{…}} inline
+La sección <div style={{ maxWidth: '720px', margin: '3rem auto 0' ... }}> debería ser un CSS module IntroFooter.module.css. Estilo inline en JSX no se beneficia de tu sistema de variables CSS (var(--text-2), var(--bg-1)) y rompe la consistencia con el modo claro.
+P6. Comentarios de código revelando inseguridad
+custom.css línea 1255-1259:
+css/* PART 4 - Experimentación Interactiva (Special Treatment) */
+/* Targets the category using a pseudo-selector or specific nth-child if possible.
+   Since we cannot target text easily, we just add a global rule for the interactive category if Docusaurus adds a class.
+   We removed classes in sidebars.js earlier!
+   I will restore a specific class ONLY for the interactive category in sidebars.js to apply this. */
+Esto es un TODO comentado en producción. O implementas la clase en sidebars.js (className: 'sidebar-category-interactive') y borras este TODO, o eliminas las reglas .sidebar-category-interactive.
+P7. Drop-cap en cada capítulo (línea 232-239)
+css.chapter > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 4em; ...
+}
+Buscando en los 23 MDX, ninguno usa className="chapter" alrededor del primer párrafo (Docusaurus envuelve en .theme-doc-markdown, no en .chapter). El drop-cap nunca se renderiza. O cambias el selector a .theme-doc-markdown > p:first-of-type::first-letter (con cuidado: las primeras p suelen ser un <GlitchTitle> + caption), o eliminas la regla.
+P8. intro.mdx sin id explícito
+Tiene slug: / pero no id. Docusaurus deriva id="intro" del nombre del archivo. Como en Root.js línea 15 usas isHomePage = path === '/' || path.match(/^\/[a-z]{2}$/), hay un edge case: si Docusaurus genera /intro/ por accidente (por configuración previa cacheada), el regex falla y el ChatWidget aparece sobre el ExecutiveHook. Añade id: intro explícitamente al frontmatter.
+P9. Los \n\n literales al principio de cada archivo
+Tu script de volcado prefijó \\n\\n al inicio de cada archivo. Si los archivos REALES en disco no los tienen, ignóralo. Pero verifica — si los \n\n están en disco, el frontmatter YAML no se parsea (el --- debe estar en línea 1) y el archivo se renderiza como markdown plano sin metadatos. Comprueba: head -1 docs/01-introduccion.mdx — debe imprimir ---, no \\n\\n.
+P10. onBrokenLinks: 'warn' y onBrokenMarkdownLinks: 'warn'
+Para un TFG público, esto es laxo. Cambia a 'throw' en CI y deja 'warn' solo en local. Te evita publicar links rotos a /figuras/albustami_ieee39_secuencia.png si lo olvidas alguna vez.
+
+I've now read the rest of the main narrative — chapters 02, 03, 04, 05, 06, 07, 07b, 09, the three dimension-europea files, impacto-social, and the datos-tiempo-real index plus a sample subpage, plus the CineMode shared CSS and several slide CSS files, plus the EsiosCharts. Here's the additional diagnosis layered on top of the first pass.
+
+🟥 CRÍTICO — Hallazgos del segundo barrido
+C9. Numeración de tablas rota: dos "TABLA 5", dos "TABLA 14", dos "TABLA 16"
+Tu sistema <ForensicTable title="TABLA N | ..." /> se ha desincronizado:
+NúmeroCapTítuloContenido realTABLA 505OFFICIAL EVENT SEQUENCE LOGSecuencia de 18 eventos REETABLA 507INTERNATIONAL BLACKOUT REGULATORY RESPONSE TIMELINEItalia 2003, US 2003, etc.TABLA 1404INCIDENT CHRONOLOGY — RECOVERY PHASESFases 0-4TABLA 1403 (ref)"intercambios-internacionales-minuto"Cap 03 línea 171 enlaza a una tabla 14 distinta en 15-galeria-de-tablasTABLA 1607SHORT CIRCUIT RATIO (SCR) THRESHOLDSUmbrales SCRTABLA 1603 (ref)"Línea Temporal" en galería forenseCap 03 línea 131 enlaza a una tabla 16 distinta
+Cuando un lector ve una nota al pie "véase Tabla 14", abre el sidebar buscándola y encuentra DOS, no sabe cuál es. Para un TFG con tribunal y posible publicación, esto es una pérdida de credibilidad inmediata.
+Solución: unifica el esquema de numeración. Opción mínima — añadir prefijo de capítulo: TABLA 3.4, TABLA 5.5, TABLA 7.5, TABLA 7.16. Opción mejor — numeración global secuencial con un script que cuente tablas en cada mdx en orden de sidebar y reescriba los títulos. Yo lo automatizaría: find docs -name '*.mdx' | xargs grep "TABLA" te da la lista para auditar manualmente en 15 minutos.
+C10. Numeración de figuras también rota: faltan figs 4, 6, 32-36
+Las figuras numeradas como pies (_Figura N. ..._) van:
+
+Cap 01: 1, 2, 3 ✓
+Cap 02: 5, 7, 8, 9, 10, 11 — faltan 4 y 6
+Cap 03: 12, 13, 14, 15, 16, 17, 18, 18b, 19 ✓
+Cap 04: 20, 21, 22, 23, 24, 25, 26 ✓
+Cap 05: 27, 28, 29, 30, 31 ✓
+Cap 07: 37, 38, 39, 40, 41, 42, 43 — faltan 32-36 (¿estaban en algún borrador eliminado?)
+Cap 07b: cero figuras numeradas
+Cap 09: cero figuras numeradas
+
+Los huecos sugieren que se eliminaron figuras sin renumerar. Renumera de 1 a N en orden de aparición. Si la 10-galeria-imagenes.mdx enumera figuras por número, esto le afecta.
+C11. El capítulo 07b está escrito en otra voz — y con errores gramaticales
+El contraste estilístico es inmediatamente perceptible. Compara cap 03 ("El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culminación de una degradación progresiva y mensurable") con cap 07b ("las ramificaciones de este suceso trascienden la fenomenología puramente electromecánica"). El segundo huele a salida de LLM sin editar:
+
+"El presente informe técnico despliega una auditoría financiera y macroeconómica de carácter exhaustivo"
+"el prisma de la economía de la energía"
+"la premisa analítica fundamental que rige este documento demuestra que..."
+"ortodoxia de la economía de la energía impone"
+"se ha erigido como un coste recurrente sin retorno patrimonial"
+"la prerrogativa absoluta para salvaguardar la soberanía industrial"
+
+Y, peor, errores gramaticales de concordancia que no aparecen en otros capítulos:
+LíneaErrorCorrección149"La impacto financiero en el sector electrointensivo"El impacto154"sino como un inversión en infraestructura crítica"una inversión154"Frente a la constante sobrecostes persistentes""Frente a los sobrecostes persistentes"19"el coste del capital destinado a la resiliencia sistémica es órdenes de magnitud inferior a la destrucción de valor"sintaxis correcta pero la idea está en cap 09 mejor expresada
+Acción: reescribir 07b en la misma voz forense del resto, eliminando relleno. Tendría que recortarse en torno al 40% del volumen actual.
+C12. Inconsistencia documentada Comillas vs Sevilla (refuerza C4)
+Ahora lo veo desde tres frentes adicionales:
+
+intro.mdx: "Universidad Pontificia Comillas ICAI"
+docusaurus.config.js footer: "Universidad de Sevilla" + www.us.es
+Memoria mía interna sobre tu perfil: "Universidad de Sevilla, Spain. 4th–5th year Energy Engineering"
+
+Y en cap 08.5 línea 34 citas correctamente el IIT-ICAI como FUENTE EXTERNA. Esa cita es válida — el ICAI es la fuente, pero NO es tu universidad si tú estudias en US. Si estudias en US, la firma de tu TFG es US, no Comillas.
+Si en cambio sí estudias en Comillas y mi memoria está obsoleta, entonces lo que está mal es el footer de docusaurus.config.js. Un solo error, dos sitios — pero un tribunal que vea ambas cosas pensará que copiaste y olvidaste limpiar.
+C13. Las cifras de la "Operación Reforzada" se contradicen
+
+Cap 01 (tabla magnitudes): "Coste acumulado 'Operación Reforzada' | >666 M€ (10 meses) | Redeia, abril 2026"
+Cap 07b línea 113: "estimaciones corporativas de Redeia cifraron el coste directo de este sobreesfuerzo en 711 millones de euros únicamente para los doce meses posteriores al incidente"
+Cap 09 línea siguiente conclusión: "El OPEX reaccionario superior a 711 millones de euros anuales mediante la quema de gas natural"
+
+Y la "nota" del cap 07b intenta arreglarlo: "666 M€ es el coste acumulado hasta el 31 de marzo de 2026, verificado por REE en abril de 2026. Los 711 M€ son la estimación de Redeia para los doce meses completos" — pero esa nota está en cap 07b, no en el cap 01 donde aparece la primera cifra. Un lector que entra por cap 01 jamás verá la nota explicativa.
+Acción: unifica a UNA cifra con una nota inline. Mi recomendación: usar siempre >666 M€ (verificado, 10 meses) con un asterisco que en el primer uso aclare la diferencia con la estimación de 711 M€/año.
+C14. Inconsistencia en lang props de componentes en MDX
+Tu intención parece ser que los componentes lean el idioma del frontmatter de la página, pero hay tres patrones distintos:
+jsx<FrequencyChart isGallery={true} lang={frontMatter.locale || 'es'} />   // cap 03 línea 66
+<TapLagSequence lang="es" />                                              // cap 03 línea 86
+<BlackoutPropagationMap lang={frontMatter.locale || 'es'} />              // cap 03 línea 126
+<ForensicReveal lang="es" l1="..." />                                     // cap 03, cap 04, cap 06, cap 09
+<StickyCollapse lang="es" />                                              // cap 03 línea 122
+<RadarVulnerabilidad lang="es" />                                         // cap 07 línea 62
+<ImageGallery lang="es" />                                                // cap 10-galeria-imagenes
+<VerticalTimeline lang="es" />                                            // cap 11-cronologia
+Tienes la infraestructura i18n: { defaultLocale: 'es', locales: ['es', 'en', 'pt', 'fr', 'it', 'de'] } en docusaurus.config.js, pero CASI NINGÚN componente leerá el locale correcto en versiones traducidas. Cuando un usuario abra la versión inglesa, los componentes con lang="es" literal seguirán mostrando español dentro de la UI inglesa.
+Solución elegante: crea un hook useDocLang() que llame a useLocation() + useDocusaurusContext(), y usa este hook DENTRO de cada componente. Elimina el prop lang de todas las llamadas en MDX. Reescribe ~50 sitios con find docs -name '*.mdx' -exec sed -i 's/ lang="es"//g; s/ lang={frontMatter.locale || .es.}//g' {} \; (verifica antes con --dry-run).
+C15. Los 45 slides de CineMode duplican boilerplate CSS y NO usan el sistema de temas
+Cada Slide{NN}.module.css repite literalmente:
+
+.container { background-color: #0a1128; height: 100vh; ... }
+.header { display: flex; justify-content: space-between; ... }
+.title { font-size: 52px; color: #e0e6f0; ... }
+.subtitle { font-size: 24px; color: #8892b0; ... }
+.footer { font-family: 'Fira Code'; font-size: 11px; color: #5a6e8a; ... }
+
+Multiplicado por 45 slides ≈ 1.500-1.800 líneas de CSS duplicado. Más grave: cada slide tiene los colores HARDCODEADOS (#0a1128, #3b82f6, #b91c1c, #e0e6f0, #cbd5e1...), no usan las variables del sistema (var(--bg-0), var(--accent-electric), var(--danger-500), var(--text-0)).
+Consecuencia: cuando el usuario alterna modo claro/oscuro en una página principal y luego entra al Modo Cine, los slides siempre se ven en modo oscuro porque ignoran el toggle. Es inconsistente con tu propuesta de "Modo Claro analógico vs Modo Oscuro glitch".
+Solución por fases:
+
+Crea src/components/CineMode/styles/Base.module.css con .container, .header, .content, .title, .subtitle, .footer. Usa variables CSS.
+En cada slide, importa también Base: import baseStyles from '../styles/Base.module.css'; import styles from '../styles/SlideNN.module.css';
+Aplica clases combinando: <div className={${baseStyles.container} ${styles.containerOverride}}>.
+En SlideNN.module.css, solo deja lo específico (.donutCard, .barList, etc.).
+
+Si el sprint no permite refactorizar 45 slides, al menos mueve los colores a vars: sed -i 's/#0a1128/var(--cine-bg, #0a1128)/g; s/#3b82f6/var(--cine-accent, #3b82f6)/g; s/#b91c1c/var(--cine-danger, #b91c1c)/g' src/components/CineMode/styles/Slide*.module.css (testea con --dry-run).
+C16. GenericEsiosChart existe pero nadie lo importa
+src/components/EsiosCharts/GenericEsiosChart.jsx (150 líneas) está construido como abstracción reutilizable: recibe dataUrl, title, unit, includeKeys como props. Pero un grep -l "GenericEsiosChart" en todo el repo no devuelve ningún consumidor. Mientras tanto, PotenciaChart.jsx, PrecioEnergiaChart.jsx, DemandaChart.jsx, PreciosChart.jsx, ProgramacionChart.jsx, SubastasChart.jsx copian la misma plantilla — CustomTooltip prácticamente idéntico, useEffect prácticamente idéntico, AbortController prácticamente idéntico.
+Acción: o usa el genérico (≈90% del código de cada chart específico se va), o bórralo si decidiste que la abstracción no funcionaba. Tener ambos coexistiendo es deuda técnica visible.
+
+🟧 MEJORAS DE ALTO IMPACTO — Segundo barrido
+A7. Redundancia narrativa: cinco mecanismos explicados 3-7 veces cada uno
+Sumando las dos pasadas, los siguientes hechos están explicados con casi las mismas palabras en múltiples capítulos:
+HechoRepetido enVecesH = 2,3 s peninsular, 1,3 s zona surCap 01, 02, 03, 05, 07, 09682% de penetración IBRCap 01, 02, 03, 05, 06, 07, 097Disparo raíz Granada 12:32:57 + (-355 MW, -165 MVAr)Cap 01, 02, 03, 04, 05, dim-europea/016Mecanismo Tap-Lag (OLTC inercia mecánica)Cap 03, 05, 07, 094Mallado de 11 líneas / efecto Ferranti / 1,05–2,4 GVArCap 03, 05, 093HVDC PMODE3→PMODE1 + 1.000 MWCap 02, 03, 05, dim-europea/014Apertura AC transpirenaica 12:33:21Cap 02, 03, 04, 054Paradoja del UFLS (deslastrar reactiva inductiva)Cap 03, 05, 073
+Esto no es necesariamente malo — un documental web pierde lectores entre capítulos y necesita reanclar. Pero el problema es que las repeticiones están redactadas casi idénticamente en lugar de añadir nuevo ángulo. La regla práctica: si el mismo hecho aparece dos veces, la segunda debe analizarlo desde otro ángulo (consecuencia, comparación, paradoja), no resumirlo de nuevo.
+Solución concreta: crea un componente <KeyFact id="...">...</KeyFact> que muestre el hecho ENRIQUECIDO la primera vez y RESUMIDO con link la segunda. Por ejemplo:
+jsx<KeyFact id="granada-disparo" mode="full">
+  A las 12:32:57 CEST el transformador 400/220 kV en Granada... [explicación completa]
+</KeyFact>
+
+// Segunda mención:
+<KeyFact id="granada-disparo" mode="callback" />
+// renderiza: "[el disparo raíz de Granada — ver §3.2]"
+Sin eso, mínimo de barrido manual: revisa los 4 capítulos centrales (02-05) y elimina los párrafos donde estás recapitulando lo que ya dijiste hace 30 líneas.
+A8. El bloque <details><summary>... de simulador colapsable está copiado literalmente 7+ veces
+Mismo bloque de inline styles (~250 caracteres) repetido en cap 02 (1×), cap 03 (1×), cap 06 (3×), cap 07 (2×), cap 09 (1×). Estilo idéntico:
+jsx<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Ver simulador X</span>
+</summary>
+Solución: registra un componente global en MDXComponents.js:
+jsx// src/components/Collapsible.jsx
+export default function Collapsible({ label, children }) {
+  return (
+    <details className="collapsible">
+      <summary><span>▶ {label}</span></summary>
+      <div className="collapsibleBody">{children}</div>
+    </details>
+  );
+}
+CSS en custom.css:
+css.collapsible > summary {
+  cursor: pointer; user-select: none;
+  padding: 0.75rem 1rem;
+  background: rgba(255,165,0,0.06);
+  border: 1px solid rgba(255,165,0,0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-1);
+  list-style: none;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.collapsibleBody { margin-top: 1rem; }
+Registrado en MDXComponents.js, lo usas como <Collapsible label="Ver simulador PV">...<PVCurveSimulator/>...</Collapsible> en cualquier MDX sin imports.
+Ganas: ~250 chars × 7 ocurrencias = ~1.750 chars de inline styles eliminados, y consistencia visual.
+A9. Las galerías repiten contenido entre sí — y entre ellas y los capítulos
+He observado:
+
+10-galeria-imagenes = imágenes que aparecen embebidas en cap 01-07.
+galeria-graficas = gráficas interactivas referenciadas en cap 02, 03, 05, 07, 09.
+15-galeria-de-tablas = tablas (las "TABLA N" forensic).
+16-galeria-forense = "Bases de Datos ENTSO-E y ESIOS" — solapa con datos-tiempo-real.
+15-base-datos-maestra = base de datos del 28-A.
+10-resumen-de-cifras = KPIs.
+
+Los capítulos enlazan a estas galerías constantemente — por ejemplo cap 03 línea 131 enlaza a "Tabla 16 / Línea Temporal" en 16-galeria-forense. Pero el modelo mental del lector es confuso: ¿cada galería es un "anexo" del TFG, o es navegación auxiliar? Un documental web normalmente tiene UNA galería pública (de imágenes) y la información cruda dentro de los capítulos.
+Mi propuesta en A2 (paso 1) era consolidar a 3 galerías. Refinamiento ahora que he leído el contenido: consolidar a 2 — una "Galería visual" (imágenes+gráficas) y un "Anexo de datos" (tablas+base de datos). Mover 16-galeria-forense a su lugar natural en datos-tiempo-real (ya es básicamente lo mismo).
+A10. La nota del Cap 02 sobre las 5 fases es redundante con la tabla de Cap 03
+Cap 02 línea 14-16 introduce las fases 0-4 como un :::note. Cap 03 línea 25-37 tiene una tabla cronológica completa. Cap 04 línea 24-58 tiene OTRA tabla de fases.
+Sugerencia: la nota de cap 02 sobra (es redundante con la tabla de cap 03 que aparece pocas páginas después) o, si quieres conservar el ancla narrativa, sustitúyela por un mini-diagrama horizontal de las 5 fases que NO repita el texto. Mantén la tabla detallada solo en cap 03.
+A11. Cap 09 reutiliza el "trilema" sin que cap 07 lo haya nombrado así
+Cap 07 (líneas 80-81) habla del "colapso de control" y "carecía de la arquitectura de control necesaria para movilizarlos coherentemente". Cap 07 desarrolla las tres dimensiones (técnica, regulatoria, económica) en secciones separadas pero NO las llama "trilema".
+Cap 09 línea 33-51 introduce ex novo el "Trilema estructural" con tabla y <EnergyTrilemmaSimulator />. El concepto llega frío.
+Sugerencia: introduce el trilema al final del Cap 02 ("Contexto"), reutilízalo como esqueleto explícito en cada capítulo de análisis (3-7), y entonces cap 09 cierra recogiendo el hilo. Hoy el trilema es un cierre retórico, no un instrumento de análisis transversal.
+A12. impacto-social.mdx (368 líneas) está descolocado en el sidebar
+Es el capítulo más largo del proyecto y está en sidebar_position: 7.7, perdido entre 07b (Consecuencias financieras) y 08 (Uso de IA). Conceptualmente pertenece a la sección de "Consecuencias" junto con 07b — y es donde lo coloco en mi propuesta A1. Lo confirmo ahora habiéndolo leído.
+Notas adicionales tras leerlo:
+
+Las primeras 18 horas analizadas en impacto-social solapan parcialmente con la "reposición" del Cap 04. Cap 04 cuenta la reposición desde el lado eléctrico (cómo se devolvió la tensión); impacto-social cuenta lo que sufría la sociedad mientras tanto. Es buena complementariedad, NO redundancia.
+El fallecimiento documentado en Portugal (línea 144-149 dentro de un :::danger) es un dato muy fuerte. Buena decisión narrativa colocarlo aislado.
+
+A13. La numeración de SCR en cap 07 línea 41 es "TABLA 16" pero ya hay un cap 03 ref a "Tabla 16"
+Ya lo apunté en C9. Específicamente para cap 07 línea 41 vs cap 03 línea 131: el lector ve "véase Tabla 16" en cap 03 y al hacer scroll por las tablas se encuentra primero la TABLA 16 de SCR del cap 07 (porque cap 07 está antes en el sidebar). Confusión.
+
+🟨 PULIDO — Segundo barrido
+P11. La tabla :::info Magnitudes del incidente en cap 01 está bien, pero la columna "Fuente" usa formatos inconsistentes
+| Generación destruida en la cascada | >15 GW en <30 s | Comité de Análisis del Gobierno, 2025 |
+| Demanda sin suministro (España) | 25,2 GW | ESIOS / REE |
+| Personas afectadas | ~57 millones | Comité de Análisis del Gobierno |
+| Coste acumulado "Operación Reforzada" | >666 M€ (10 meses) | Redeia, abril 2026 |
+A veces "Comité de Análisis del Gobierno, 2025" (con año), a veces sin. A veces "ESIOS / REE", a veces "REE / ENTSO-E". Estandariza: cada fuente con año, en formato uniforme <Org>, <mes año>.
+P12. _Figura N. ..._ con guión bajo cursiva en MDX
+Estás usando _Figura N. texto..._ para los pies de figura. Funciona pero rompe en MDX si hay paréntesis o caracteres especiales dentro. Mejor crear <figcaption> semántico:
+jsx// src/components/Figure.jsx
+export default function FigCaption({ n, source, children }) {
+  return (
+    <figcaption className="figure-caption">
+      <span className="fig-number">Figura {n}.</span> {children}
+      {source && <span className="fig-source">Fuente: {source}.</span>}
+    </figcaption>
+  );
+}
+Útil porque te permite, en una futura tabla de figuras o índice, recorrer automáticamente y construir el listado.
+P13. Las flechas → están escritas como caracteres unicode literales
+Veo ▶ y → y : separadores en multiples sitios. Funcionan pero rompen alineación monoespaciada en algunos navegadores. Considera CSS content: '\2192' o &#8594;. Pulido menor.
+P14. La directiva :::tip Simulador interactivo en cap 02 está innecesariamente anidada
+Cap 02 línea 34-46 envuelve un <SwingEquationSimulator> dentro de un :::tip que contiene un <details>. Es UNA capa de envoltura más de la necesaria. O un tip, o un details, no ambos. Yo simplificaría a:
+jsx<Collapsible label="Simulador interactivo — Ecuación de Oscilación">
+  Explora cómo varía la RoCoF al modificar la constante de inercia H.
+  <SwingEquationSimulator />
+  [→ Versión expandida en la Galería de Gráficas](./galeria-graficas.mdx#swing)
+</Collapsible>
+P15. Los <span id="t1"> etc en cap 03
+Cap 03 línea 45, 57, 79, 130, 162, 175, 178: <span id="t1"></span>, <span id="t3"></span>, etc. Son anchors para enlaces desde el sidebar o desde galería. Algunos están usados (#fase-1, #fase-2, #fase-3 son hash sobre h2, esos sí funcionan), otros no. Auditalos con grep -rn "#t[0-9]" docs/ — si no hay enlaces, elimínalos.
+P16. Cap 07 tabla TABLA 5 referencia que está mal nombrada
+jsx<ForensicTable 
+  title="TABLA 5 | INTERNATIONAL BLACKOUT REGULATORY RESPONSE TIMELINE"
+Tu numeración interna de cap 07 va: TABLA 5 (debería ser ~15), TABLA 16 (SCR), TABLA 17 (P.O. 7.4 marco), TABLA 18 (NC RfG tiers), TABLA 19 (EirGrid DS3). El salto 5 → 16 → 17 sugiere que TABLA 5 era un placeholder que olvidaste renumerar. Otra evidencia para la auditoría de C9.
+P17. Footnote <InteractiveFootnote> solo en cap 06
+Cap 06 línea 51 introduce <InteractiveFootnote citation="..." content="...">U.S.-Canada Power System...</InteractiveFootnote>. Es un patrón excelente — pero solo lo usas UNA VEZ en todo el TFG. Hay docenas de otras referencias inline en cap 03, cap 05, cap 07b, cap 09 que se beneficiarían del mismo widget. O lo expandes o eliminas el componente entero (es deuda mantenerlo solo para una cita).
+
+Resumen consolidado: prioridades de acción
+Si vas a invertir 1 día completo en pulir, mi orden:
+#AcciónTiempo aproxImpacto1Resolver C4 (Universidad correcta en intro + footer)5 minBloqueante tribunal2Resolver C2 (.table-full-width roto)2 minVisual3Resolver C1 (paleta light mode sin guerra de !important)30 minVisual crítico4Resolver C9 y P16 (numeración de tablas)1 hAcadémico5Resolver C10 (numeración de figuras)30 minAcadémico6Resolver C13 (cifra Operación Reforzada unificada)10 minCoherencia7Resolver C5 (borrar jsx-nuevos/)1 minLimpieza8Resolver C7 (ForensicReveal accesibilidad)15 minAccesibilidad9Reescribir Cap 07b en voz forense (C11)2-3 hCalidad académica10Crear <Collapsible> y reemplazar 7 sitios (A8)45 minMantenibilidad11Crear sidebars.js con la propuesta de A130 minNavegación12Borrar duplicados masivos en custom.css (C6)1 h-800 líneas13Bajar DocRoot/index.js blur a opacity puro (A6)5 minPerformance móvil14Borrar swizzles vacías (A4)2 minMantenibilidad15Unificar lang prop con useDocLang() (C14)1 hi18n16Mover colores hardcoded de CineMode a CSS vars (C15)30 min con sedCoherencia visual17Decidir sobre GenericEsiosChart (usar o borrar) (C16)30 minLimpieza18Auditar referencias <span id="t..."> huérfanos (P15)10 minLimpieza
+Los primeros 8 son críticos antes de defensa. Los del 9 al 18 hacen el proyecto significativamente más sólido pero pueden ir en una segunda iteración.
+
+
+🟥 CRÍTICO — Tercer barrido
+C17. El botón "Modo Cine" enlaza a /cine y la ruta no existe
+src/theme/Root.js línea 52 renderiza, en toda página que no esté en hideButtonsPaths, un FAB persistente:
+jsx<Link to="/cine" className="cine-fab" aria-label={translate({id: 'theme.cine.open', message: 'Abrir Modo Cine'})}>
+  <Translate id="theme.cine.button">Modo Cine</Translate>
+</Link>
+Pero en el dump no existe:
+
+src/pages/cine.{jsx,mdx} — no hay carpeta src/pages/
+docs/cine.mdx — no existe
+ninguna entrada cine en docusaurus.config.js que registre una ruta custom
+
+Por tanto el botón lleva a un 404 en cada capítulo. Y arrastra a la basura todo un sistema bien construido pero desconectado:
+Carpeta / archivoLíneasEstadosrc/components/CineMode/CinePlayer.jsx166importa todos los 45 slides eagerlysrc/components/CineMode/CineModeLauncher.jsx30nadie lo importasrc/components/CineMode/DigitalClock.jsx + StatusIndicator.jsx~30solo usados por slidessrc/components/CineMode/slides/Slide{NN}.jsx × 45~3.400todos huérfanos en cadenasrc/components/CineMode/styles/Slide{NN}.module.css × 45 + Shared.module.css + CinePlayer.module.css + CineModeLauncher.module.css~1.700todos huérfanossrc/components/cine-mode/ (carpeta paralela en minúsculas)600 jsx + 434 css = 1.034sistema ALTERNATIVO también huérfano (ActTransition, CineModePlayer, ParticleSystem, Scene, TimelineController, chartRegistry, cine-mode.css)Reglas CSS .cine-fab en custom.css~30huérfanasTraducciones theme.cine.button y theme.cine.open—irrelevantes si no hay página
+Total aproximado: ~5.500 líneas de JSX y CSS conectadas a un botón que da 404.
+Tres explicaciones plausibles, las tres requieren acción:
+
+El dump del proyecto excluyó src/pages/. Si es así, comprueba con ls src/pages/cine* en local — si existe, el problema es solo de cobertura del dump. Si no existe, sigue siendo bug.
+El feature se prototipó pero no se llegó a desplegar. En tal caso decide: o lo construyes (cap 02 y cap 03 ya tienen los datos de los slides hechos), o lo eliminas. Mantener un FAB persistente que da 404 es peor que no tenerlo.
+Existe en otro repositorio o branch. Misma acción: o lo traes a este TFG, o lo eliminas del FAB.
+
+Acción mínima inmediata si decides eliminar: borra del Root.js las líneas 52-54, las traducciones, las reglas .cine-fab en custom.css, y los dos directorios CineMode/ y cine-mode/. Ganas ~5.500 líneas. Si decides construirlo, partes del trabajo ya hecho — CinePlayer.jsx ya importa los 45 slides — solo necesitas crear src/pages/cine.jsx y montar el player allí.
+C18. ChatWidget hace fetch('/api/chat') y el endpoint no está en el repo
+src/components/ChatWidget.jsx línea 38:
+jsxconst res = await fetch('/api/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ question: q }),
+});
+En el dump:
+
+no hay carpeta /api/
+no hay vercel.json que configure rutas serverless
+no hay next.config.js
+
+Docusaurus es estático. Para que /api/chat funcione necesitas que Vercel detecte un directorio api/ en la raíz con un handler. Si ese directorio existe en local pero no se incluyó en el dump, ignóralo — pero el riesgo es real: si lo borraste por accidente o nunca lo subiste, el ChatWidget mostrará "⚠️ Error de conexión" en cada interacción en producción.
+Verifica con curl https://tfg-overleaf.vercel.app/api/chat -X POST -H "Content-Type: application/json" -d '{"question":"test"}'. Si devuelve 404, el endpoint no existe y el botón es una promesa rota.
+Además, sin BrowserOnly envolviendo ChatWidget, si en algún momento Layout/index.js lo renderiza durante SSR, romperá build con fetch is not defined. Mira tu Layout línea 43: {!isHomePage && <ChatWidget />} — la mounta condicionalmente pero no la aísla de SSR. Envuélvela:
+jsximport BrowserOnly from '@docusaurus/BrowserOnly';
+// …
+{!isHomePage && <BrowserOnly>{() => <ChatWidget />}</BrowserOnly>}
+C19. Lista verificada de componentes huérfanos (~2.000 líneas adicionales)
+Tras descontar los componentes que SÍ se usan vía lazy en InteractiveGraphicsGalleryBase.jsx (AnimatedMap, IberianGridTopology, SynchrophasorPlot, PhasePlanePlot, InterconnectionDashboard, ThermalAdjustmentCostMatrix, StickyCollapse, Comparador28A, RadarVulnerabilidad, TapLagSequence, CollapseSismograph, FinancialWaterfallChart), los huérfanos REALES son:
+ComponenteLíneasNotasENTSOEDashboard/ (dashboard + modal + CSS)950Componente excelente (KPIs, BrowserOnly, vars CSS, error handling) — desperdiciadoIberianGridMap.jsx336Aparente versión vieja de IberianGridTopologyDatosTiempoRealNav.jsx214Nav para sección — quizá pre-/datos-tiempo-real/index.mdxStickyTimeline.jsx159No confundir con VerticalTimeline (sí usado)MediaCoverageDashboard.jsx127Cap 06 usa MediaCardGallery, no ésteDocumentLibrary.jsx + CSS87+381Buena UI orfaCollapseTimelineChart.jsx70Importa forensicDataI18nCustomCursor/index.js + CSS77Cursor custom no aplicado en ningún sitioStickyScene.jsx + CSS50"Sticky" en cap 03 usa StickyCollapseEconomicImpactTable.jsx34Tabla sueltajsx-nuevos/ (ya en C5)≈630Confirmado huérfanoGaleriaForense/ForensicTableViewer.jsx + CSS157El usado es ForensicTable de ForensicUI/Primitivesblackout3d (chart sin componente)—Definido en diccionario línea 62 de InteractiveGraphicsGalleryBase en 6 idiomas, sin entrada en graphicsData. Promesa visual sin código.
+Total purgable verificado: ~2.300 líneas JSX+CSS más allá de C5.
+Acción: un PR sencillo de "dead code removal" con git, eliminando estas carpetas. Cuidado de buscar transitividad con grep -rln NombreComponente src/ antes de borrar cada uno.
+C20. Antipatrón en los 45 slides de Modo Cine + bug de scrub hacia atrás
+He muestreado Slide21.jsx, Slide12.jsx. Los 45 slides comparten exactamente este patrón:
+jsxconst [stage, setStage] = useState(0);
+useEffect(() => {
+  if (slideProgress >= 0.2) setStage(1);
+  if (slideProgress >= 0.5) setStage(2);
+  if (slideProgress >= 0.8) setStage(3);
+}, [slideProgress]);
+Tres problemas:
+
+stage es estado derivado, no estado de React. El valor depende 100% del prop slideProgress. No necesita useState ni useEffect. Cada cambio de slideProgress ya re-renderiza el componente; calcular stage en el render basta.
+Bug funcional: el scrub hacia atrás no decrementa stage. Si el usuario está en slideProgress = 0.9 (stage = 3) y retrocede a slideProgress = 0.1, ninguna condición if (slideProgress >= …) se cumple, pero setStage no se llama con 0 — stage queda en 3. El bloque condicional {stage >= 3 && (...)} sigue renderizando contenido de la fase final aunque visualmente estés al principio. Es un fallo de coreografía que un revisor crítico verá en la defensa si reproduce el scrub.
+El antipatrón se replica 45 veces. Cuando arregles el bug, hay que tocar 45 archivos.
+
+Solución única, replicar a todos:
+jsx// Reemplazar TODO el bloque useState + useEffect por una sola línea:
+const stage = slideProgress >= 0.8 ? 3
+            : slideProgress >= 0.5 ? 2
+            : slideProgress >= 0.2 ? 1
+            : 0;
+O mejor — extrae a un hook compartido en CineMode/:
+js// src/components/CineMode/useSlideStages.js
+export function useSlideStages(progress, thresholds = [0.2, 0.5, 0.8]) {
+  return thresholds.reduce((acc, t) => progress >= t ? acc + 1 : acc, 0);
+}
+Si finalmente decides eliminar el Modo Cine (C17), el problema desaparece — pero si lo conservas, esto es bloqueante.
+C21. Hard-coded i18n masivo en FrequencyChart.jsx — y existe forensicDataI18n sin usar
+FrequencyChart.jsx líneas 28-110 declaran un array de pasos con texto traducido a 6 idiomas literalmente embebido en el componente:
+jstext: t(
+  'Un transformador de 400/220 kV en Granada...',
+  'A 400/220 kV transformer in Granada...',
+  'Um transformador de 400/220 kV em Granada...',
+  'Un transformateur 400/220 kV à Grenade...',
+  'Un trasformatore 400/220 kV a Granada...',
+  'Ein 400/220-kV-Transformator in Granada...',
+),
+InteractiveGraphicsGalleryBase.jsx líneas 19-176 hacen lo mismo: un dictionary con entradas para frequency, map, timeline, ..., cada una con 6 traducciones inline.
+Mientras tanto, el proyecto YA tiene src/data/forensicDataI18n.js y forensicChartsI18n.js, y los importa FrequencyChart.jsx línea 24 para otros datos. La abstracción correcta existe pero está infrautilizada.
+Cada vez que edites texto narrativo (por ejemplo cuando corrijas el cap 07b por C11), tendrás que editar 6 strings en el origen y, si el texto está en FrequencyChart y InteractiveGraphicsGalleryBase, en dos sitios.
+Acción: mueve las cadenas de FrequencyChart y InteractiveGraphicsGalleryBase al data file. Patrón:
+js// src/data/cineSteps.js o forensicChartsI18n.js
+export const FREQUENCY_STEPS = {
+  step1: {
+    title: { es: '12:32:57 — El detonante', en: '12:32:57 — The Trigger', /* ... */ },
+    text:  { es: 'Un transformador...', en: 'A 400/220 kV...', /* ... */ },
+    visibleUntilT: 0,
+  },
+  // ...
+};
+Y consumir:
+jsximport { FREQUENCY_STEPS } from '@site/src/data/forensicDataI18n';
+// ...
+const steps = Object.values(FREQUENCY_STEPS).map(s => ({
+  title: s.title[locale] || s.title.es,
+  text: s.text[locale] || s.text.es,
+  visibleUntilT: s.visibleUntilT,
+}));
+Esto centraliza el contenido y simplifica las correcciones.
+
+🟧 ALTO IMPACTO — Tercer barrido
+A14. El "Modo Cine" si se decide MANTENER necesita varias correcciones de raíz
+Si optas por construir/desplegar el feature en lugar de eliminarlo, además de C20 hay que resolver:
+
+El antipatrón color hardcoded de C15 — los slides ignoran tu sistema de temas claro/oscuro. Si abres /cine con tema claro activo, los slides siguen renderizándose oscuros (#0a1128 literal).
+Performance: CinePlayer.jsx importa los 45 slides EAGERLY (no lazy). El bundle inicial de la página /cine cargará los 45 componentes incluso si el usuario solo ve 3. Recomendación: convertir todos a React.lazy() y usar <Suspense> con un spinner.
+Solapamiento entre CineMode/ y cine-mode/ — son dos sistemas independientes (uno usa slideProgress prop drilling, el otro usa un chartRegistry.js con Scene + TimelineController). Decide cuál es la fuente de verdad y elimina el otro completo.
+El FAB siempre visible salvo en hideButtonsPaths. En un TFG académico, "Modo Cine" puede parecer frívolo en cap 07b (Consecuencias financieras) o cap 09 (Conclusiones). Considera limitarlo solo a capítulos visuales (cap 02-04).
+
+A15. ENTSOEDashboard es código excelente — úsalo o documenta por qué no
+Mientras todo lo demás es deuda técnica, ENTSOEDashboard/ENTSOEDashboard.jsx es el patrón que debería ser obligatorio en este proyecto: usa useColorMode() implícitamente vía vars CSS, tiene BrowserOnly wrapper, tiene tabs useState, skeleton loading, error handling, delta percentages, y useENTSOEData hook personalizado de src/hooks/useENTSOE.js. Está sobreingenierizado para nadie.
+Tres opciones:
+
+Inclúyelo en cap 02 o en datos-tiempo-real/index.mdx como dashboard hero — la sección "Datos en Tiempo Real" hoy es un grid de Link cards a subpáginas de 12 líneas cada una. Ese dashboard sustituiría 10 de esas subpáginas instantáneamente.
+Crea una página /dashboard que lo monte solo. Es la forma más simple de salvar 950 líneas de trabajo.
+Elimínalo y documenta la decisión en el README.
+
+No mantener un dashboard de calidad sin uso es lo peor: contamina el grep, infla el bundle si alguien lo importa por error, y desmotiva al revisor que lo descubra.
+A16. Inconsistencia "scrollytelling" — Scrollama + Recharts coexisten con el patrón inferior slideProgress
+FrequencyChart.jsx usa la librería react-scrollama (importada línea 18) para detectar pasos de scroll. Es el patrón estándar para scrollytelling en webs editoriales (NYT, Pudding).
+Los slides de CineMode usan slideProgress (0–1) pasado como prop por el CinePlayer, con un cálculo manual del progreso.
+StickyCollapse.jsx (cap 03 línea 122) — usado, no he revisado código — probablemente usa otra cosa.
+Tres mecanismos paralelos de "el usuario está al X% del scroll de esta sección". Si decides invertir en pulido del scrollytelling, estandariza a Scrollama (ya está en el bundle) y elimina los otros sistemas.
+A17. blackout3d y deck.gl — promesa no cumplida
+El diccionario de InteractiveGraphicsGalleryBase.jsx (líneas 62-69) anuncia en 6 idiomas:
+
+"Mapa 3D del Apagón (WebGL) — Simulación geográfica interactiva con Deck.gl de la cascada de desconexiones y flujos masivos de reactiva"
+
+Pero:
+
+graphicsData (líneas 187-207) no contiene la entrada blackout3d
+grep -rln "deck\|DeckGL" src/components/ devuelve cero ocurrencias
+No hay dependencia @deck.gl en uso
+
+Es contenido prometido sin implementación. Como minimum, elimina las 6 traducciones del diccionario. Idealmente, o construye la visualización 3D (usa lo que ya tienes en BlackoutPropagationMapBase como base, añade altura por reactiva), o documenta como "Trabajo futuro" en cap 09 "Líneas de investigación abiertas".
+A18. CSS modules hereda inline-style en muchos componentes — inconsistencia
+Conté tres patrones distintos en el proyecto para styling:
+
+CSS modules (mayoría): import styles from './X.module.css' + className={styles.foo}. Patrón correcto en Docusaurus.
+Inline styles JSX: style={{display: 'flex', padding: '1rem'}} — abundante en intro.mdx, capítulos MDX, SwingEquationSimulator.jsx (P3 de mi primer barrido), ChatWidget.jsx.
+<style> tags dentro del JSX: AuthorProfile.jsx línea 7 abre <style>{...}</style> con 100+ líneas de CSS dentro del JSX como string template.
+
+Tres patrones que hacen lo mismo. El de AuthorProfile es el peor — el browser no cachea esos estilos, se re-inyectan en cada montaje, no se procesan por la pipeline de CSS modules. Acción: crea AuthorProfile.module.css (ya existe — son 110 líneas) y migra los ~100 líneas del template string a ese archivo CSS module.
+
+🟨 PULIDO — Tercer barrido
+P18. cap 02 línea 110 — <CollapseSismograph lang={frontMatter.locale || 'es'} />
+Mismo patrón que P14 — usa el hook useDocusaurusContext() dentro del componente en lugar de pasar lang como prop. Si C14 se resuelve, este caso se cae automáticamente.
+P19. forensicDataI18n está siendo importado por componentes huérfanos (CollapseTimelineChart)
+Cuando hagas el barrido de huérfanos (C19), si decides borrar CollapseTimelineChart.jsx, asegúrate de que src/data/forensicDataI18n.js no se queda con código muerto que solo sirve a ese componente. Puede haber claves del diccionario que nadie consume.
+P20. Sobre BlackoutPropagationMapBase.jsx — código de modelo
+He revisado parcialmente. Líneas 1-80 son geometría hardcoded con outline de Iberia (28 puntos), Portugal (10) y Mallorca (5). Coordenadas correctas, función geoToSvg limpia. Subestaciones (líneas 51-63) con coordenadas reales verificadas. Lo dejo aquí porque es código ejemplar — el resto del proyecto debería imitar este nivel de cuidado. Solo una observación menor: línea 4 import { useColorMode } from '@docusaurus/theme-common' — bien usado. Patrón a propagar al resto de componentes que hoy hardcodean colores.
+P21. InteractiveGraphicsGalleryBase tiene propLang pero usa el contexto si no se pasa
+Línea 209-211: function InteractiveGraphicsGallery({ lang: propLang }) { const { i18n } = useDocusaurusContext(); const locale = propLang || i18n.currentLocale; ... }
+Esto es el patrón híbrido correcto que recomendé en C14. Funciona como fallback robusto. Replícalo en todos los componentes que aceptan lang actualmente.
+P22. data-text attribute en GlitchTitle
+GlitchTitle.jsx línea 11: data-text={typeof children === 'string' ? children : ''}
+Si children no es string (porque metiste un <b> o un span dentro), el data-text queda vacío, los ::before/::after no renderizan el glitch. En los MDX vi siempre <GlitchTitle>Texto plano</GlitchTitle>, así que es consistente, pero documéntalo: <GlitchTitle> solo acepta string children. Idealmente añade un console.warn en dev:
+jsxif (process.env.NODE_ENV !== 'production' && typeof children !== 'string') {
+  console.warn('GlitchTitle: children should be a string for the glitch effect to render.');
+}
+P23. La carpeta /data del proyecto tiene archivos referenciados pero no auditados
+Veo imports a @site/src/data/forensicDataI18n, @site/src/data/forensicChartsI18n desde varios componentes, pero el dump no incluye src/data/. Si esos archivos son grandes (lo serán, dado que centralizan todos los textos de gráficos en 6 idiomas), también deberían auditarse. Confirmar que tu forensicChartsI18n.js tiene entradas COHERENTES con graphicsData de InteractiveGraphicsGalleryBase — si el dictionary local y el remoto se han desincronizado, tienes inconsistencias entre lo que se muestra en la galería y lo que se monta.
+
+Síntesis de los tres barridos
+He cubierto los frentes que pediste con la granularidad que pude:
+FrenteProfundidad realNarrativa MDX (orden, redundancia, tono)Completa — los 23 mdx principales + 3 dimension-europea + 1 impacto-social + datos-tiempo-realComponentes React críticos (simuladores, mapas)Completa — PVCurve, SwingEq, ANSI59, ForensicReveal, FrequencyChart, BlackoutMap, ENTSOEDashboardCSS / themingCompleta — los 2.541 líneas de custom.css + CineMode/Shared + slidesDocusaurus arch (swizzling, sidebar, navbar)Completa — los 4 swizzles + configCineModeEstructural — sé que son 45 slides huérfanos, no ejecuté el run actualEntsoeCharts / EsiosChartsSample — 4 charts leídos + estructura confirmada via lazy chainsrc/data/ y pluginsNo auditado — el dump no los incluyesrc/hooks/useENTSOE.jsNo auditado, mismo motivoComponentes de cap 06 (TimelineCrisis, SentimentAnalyzer, MediaCardGallery)Solo verifiqué que existen y se importanInteractiveFootnote, CuestionAbierta, BiblioCardSolo verifiqué firma/api/chat endpointConfirmado ausente del dump
+Línea de cierre. En las tres pasadas el proyecto demuestra dos cosas a la vez: tiene un núcleo de ingeniería sólido — los simuladores físicos, los mapas, el dashboard ENTSO-E, GlitchTitle, BlackoutPropagationMapBase son código que un revisor técnico apreciará — y simultáneamente arrastra una capa gruesa de exploración no consolidada — jsx-nuevos/, dos sistemas de CineMode paralelos, el FAB que da 404, los duplicados en custom.css, las galerías solapadas, las inconsistencias de tablas y figuras numeradas, el cap 07b en otra voz. La diferencia entre el resultado actual y un TFG "tribunal-ready" no es un rediseño — es un día de limpieza disciplinada siguiendo la lista priorizada de los tres barridos. Las decisiones más altas en impacto son: (1) decidir qué pasa con CineMode, (2) reescribir 07b en voz forense, (3) limpiar duplicados de custom.css, (4) unificar la numeración de tablas y figuras, (5) eliminar el ~25% de código muerto en src/components/.
+Si te sirve, puedo en una sesión siguiente bajar a granularidad de patch: producir los diffs específicos para los puntos 1-15 de la lista de prioridades del segundo barrido, o un único PR de "limpieza" con todos los cambios mecánicos (duplicados CSS, swizzles vacías, jsx-nuevos, sidebar_position duplicados) listo para aplicar.
+
+

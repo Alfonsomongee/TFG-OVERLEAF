@@ -1,0 +1,155 @@
+CAP 08.5
+
+
+YOUR ROLE AND CONSTRAINTS
+You are a senior technical editor and MDX developer working on an Energy Engineering thesis about the 2025 Iberian blackout. You have read/write access to all project folders.
+
+Non-negotiable rules before touching any file:
+
+Read the full current file before editing it — use your file-reading tool on the exact path. Never edit from memory.
+
+Preserve all existing JSX components exactly — do not modify props, rename components, or alter any import statement unless the specific improvement explicitly requires it.
+
+Preserve all existing figure captions (lines starting with _Figura) verbatim — do not reword them.
+
+Preserve the frontmatter block (the --- YAML section at the top) of every file verbatim.
+
+Write in Spanish for all new prose content added to MDX files (the document language is Spanish). Exception: ForensicTable title attributes follow the existing SCREAMING_SNAKE_CASE English convention already used in the project.
+
+Do not introduce new React component imports unless the component already exists in @site/src/components/. If unsure, check the src/components/ folder first.
+
+Match existing code style exactly: indent 2 spaces, use {/* */} for JSX comments, use backtick strings in JSX attributes only where already used.
+
+After each file edit, output a short diff summary listing lines changed/added/removed.
+
+IMPROVEMENT 10 — 08.5-actualizacion-2026.mdx: Fix table number placeholders
+File to edit
+tfg-antigravity-docs/docs/08.5-actualizacion-2026.mdx
+
+Context
+The chapter contains two ForensicTable components with placeholder titles TABLA XX. They need real sequential numbers consistent with the rest of the project.
+
+What to change — Part 10‑A
+Find this exact line:
+
+text
+<ForensicTable 
+  title="TABLA XX | CNMC SANCTIONING PROCEEDINGS (MAY 2026)"
+Replace it with:
+
+text
+<ForensicTable 
+  title="TABLA 20 | CNMC SANCTIONING PROCEEDINGS (MAY 2026)"
+What to change — Part 10‑B
+Find this exact line:
+
+text
+<ForensicTable 
+  title="TABLA XX | P.O. 7.4 IMPLEMENTATION TIMELINE"
+Replace it with:
+
+text
+<ForensicTable 
+  title="TABLA 21 | P.O. 7.4 IMPLEMENTATION TIMELINE"
+Why
+The placeholder TABLA XX breaks visual consistency and gives an unfinished appearance. Assigning numbers 20 and 21 follows the numbering established in earlier chapters (e.g., TABLA 5, TABLA 15–19).
+
+Verification
+The tables now display TABLA 20 | … and TABLA 21 | ….
+
+No other content in the file is modified.
+
+IMPROVEMENT 11 — 08.5-actualizacion-2026.mdx: Collapse <Comparador28A /> into a <details> block
+File to edit
+tfg-antigravity-docs/docs/08.5-actualizacion-2026.mdx
+
+Context
+The <Comparador28A /> component is a heavy interactive dashboard that compares current system conditions with the blackout snapshot. It is rendered inline after a short introduction, increasing initial page weight. Following the project‑wide strategy, it should be collapsed to defer loading.
+
+What to change
+Find the exact block (starting with ## Sistema Ahora vs 28-A and ending before ## 1. El Paradigma...):
+
+mdx
+## Sistema Ahora vs 28-A
+
+El siguiente panel compara las métricas de vulnerabilidad sistémica actuales con las condiciones registradas el 28 de abril de 2025 a las 12:30 CEST.
+
+<Comparador28A lang="es" />
+Replace it with:
+
+mdx
+## Sistema Ahora vs 28-A
+
+El siguiente panel compara las métricas de vulnerabilidad sistémica actuales con las condiciones registradas el 28 de abril de 2025 a las 12:30 CEST.
+
+<details>
+<summary style={{cursor:'pointer', userSelect:'none', padding:'0.75rem 1rem', background:'rgba(255,165,0,0.06)', border:'1px solid rgba(255,165,0,0.2)', borderRadius:'8px', fontSize:'0.9rem', color:'rgba(203,213,225,0.85)', listStyle:'none', display:'flex', alignItems:'center', gap:'0.5rem'}}>
+  <span>▶ Ver comparador interactivo (Sistema Actual vs 28-A)</span>
+</summary>
+
+<div style={{marginTop:'1rem'}}>
+<Comparador28A lang="es" />
+</div>
+
+</details>
+Why
+<Comparador28A /> is a complex, interactive component (likely fetches real‑time data or renders heavy graphics). Collapsing it matches the treatment of TimelineCrisis, SentimentAnalyzer, RadarVulnerabilidad, etc.
+
+Users still see the descriptive text and can expand the component on demand, reducing the initial render cost and improving perceived performance.
+
+The import line remains unchanged; the component is still referenced inside the <details>.
+
+Verification
+The <details> element appears directly after the paragraph “El siguiente panel compara…”.
+
+The <Comparador28A /> import at the top of the file is not removed.
+
+The rest of the chapter (headings, warnings, tables) is untouched.
+
+EXECUTION ORDER
+08.5-actualizacion-2026.mdx — Improvement 10‑A (fix first table placeholder)
+
+08.5-actualizacion-2026.mdx — Improvement 10‑B (fix second table placeholder)
+
+08.5-actualizacion-2026.mdx — Improvement 11 (collapse Comparador28A)
+
+EXPECTED OUTPUT FORMAT
+For each file edit, output:
+
+text
+### EDIT: <filename>
+**Change:** <one-line description>
+**Lines affected:** <approximate line range or “appended”>
+**Status:** ✅ Done / ❌ Failed (reason)
+**Diff summary:**
++ <added lines>
+- <removed lines>
+If any edit fails or a component reference is ambiguous, stop and report the issue before proceeding — do not guess or approximate.
+
+WHAT NOT TO DO
+❌ Do not rewrite or paraphrase any existing prose.
+
+❌ Do not add new import statements.
+
+❌ Do not change any sidebar_position, id, or other frontmatter values.
+
+❌ Do not modify any <ForensicTable> content other than the title attribute as specified.
+
+❌ Do not remove the import lines at the top of the file.
+
+❌ Do not touch any file outside tfg-antigravity-docs/docs/08.5-actualizacion-2026.mdx in this batch.
+
+CONTEXT FOR THE AI AGENT
+This TFG is a Docusaurus v3 site. Key technical facts that must not be contradicted in any new prose:
+
+The blackout was an overvoltage‑driven collapse, not a frequency/inertia failure.
+
+INELFE‑1 mode change (PMODE3→PMODE1) at 12:08 CEST removed dynamic support; the HVDC maintained 1 GW export and was the last to disconnect.
+
+The root trigger was the trip of a 400/220 kV transformer in Granada (‑355 MW active, ‑165 MVAr reactive absorption).
+
+66 CNMC sanctioning proceedings were opened; REE faces a “muy grave” charge.
+
+The new P.O. 7.4 (BOE‑A‑2025‑13076) mandates dynamic voltage control and grid‑forming capability.
+
+The chapter references earlier chapters correctly; the only changes are the table titles and the collapsible wrapper.
