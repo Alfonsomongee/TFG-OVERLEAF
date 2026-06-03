@@ -16,10 +16,12 @@
  */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import { GLOSSARY_TERMS as GLOSSARY_ES } from '@site/src/data/glossary';
 import { GLOSSARY_TERMS as GLOSSARY_EN } from '@site/src/data/glossary_en';
 import { GLOSSARY_TERMS as GLOSSARY_DE } from '@site/src/data/glossary_de';
+import { GLOSSARY_TERMS as GLOSSARY_ZH } from '@site/src/data/glossary_zh-Hans';
 
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
@@ -27,10 +29,13 @@ function PanelInner() {
   const [isClosing, setIsClosing] = useState(false);
   const timeoutRef = useRef(null);
   const fadeOutRef = useRef(null);
-  const lang = useDocLang();
+  const { i18n: { currentLocale: lang } } = useDocusaurusContext();
 
   const termsMap = useMemo(() => {
-    const glossaryTerms = lang === 'en' ? GLOSSARY_EN : lang === 'de' ? GLOSSARY_DE : GLOSSARY_ES;
+    const glossaryTerms = lang === 'en' ? GLOSSARY_EN 
+    : lang === 'de' ? GLOSSARY_DE 
+    : lang === 'zh-Hans' ? GLOSSARY_ZH
+    : GLOSSARY_ES;
     const map = {};
     for (const entry of glossaryTerms) {
       const key = entry.term.toLowerCase();

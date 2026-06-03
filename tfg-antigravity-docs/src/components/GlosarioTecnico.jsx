@@ -10,6 +10,7 @@ import { GLOSSARY_TERMS as ptTerms } from '../data/glossary_pt';
 import { GLOSSARY_TERMS as frTerms } from '../data/glossary_fr';
 import { GLOSSARY_TERMS as itTerms } from '../data/glossary_it';
 import { GLOSSARY_TERMS as deTerms } from '../data/glossary_de';
+import { GLOSSARY_TERMS as zhTerms } from '../data/glossary_zh-Hans';
 
 function TermItem({ term }) {
   const [activo, setActivo] = useState(false);
@@ -48,7 +49,7 @@ function TermItem({ term }) {
 }
 
 export default function GlosarioTecnico({}) {
-  const lang = useDocLang();
+  const { i18n: { currentLocale: lang } } = useDocusaurusContext();
   
   let GLOSSARY_TERMS = esTerms;
   if (lang === 'en') GLOSSARY_TERMS = enTerms;
@@ -56,6 +57,7 @@ export default function GlosarioTecnico({}) {
   if (lang === 'fr') GLOSSARY_TERMS = frTerms;
   if (lang === 'it') GLOSSARY_TERMS = itTerms;
   if (lang === 'de') GLOSSARY_TERMS = deTerms;
+  if (lang === 'zh-Hans') GLOSSARY_TERMS = zhTerms;
   
   const getStrings = (l) => {
     switch (l) {
@@ -108,6 +110,16 @@ export default function GlosarioTecnico({}) {
         all: "Alle",
         reset: "Suche zurücksetzen",
         footer: "Letzte Aktualisierung: Mai 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+      };
+      case 'zh-Hans': return {
+        searchPlaceholder: "搜索术语或定义...",
+        noResults: "未找到匹配您搜索的术语。",
+        showing: "显示",
+        of: "共",
+        terms: "个术语",
+        all: "全部",
+        reset: "重置搜索",
+        footer: "最后更新：2026年5月 — Alfonso Monge García，塞维利亚大学ETSI"
       };
       default: return {
         searchPlaceholder: "Buscar término o definición...",
