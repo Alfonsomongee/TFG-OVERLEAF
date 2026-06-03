@@ -66,7 +66,7 @@ function CustomTooltip({ active, payload }) {
   if (!d) return null;
   return (
     <div style={{
-      background: 'rgba(10,10,20,0.97)',
+      background: 'var(--chart-bg, rgba(10,10,20,0.97))',
       border: `1px solid ${d.color}60`,
       borderRadius: 8,
       padding: '10px 14px',

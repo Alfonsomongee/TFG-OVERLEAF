@@ -130,7 +130,7 @@ function FrequencyTooltip({ active, payload, label, strings }) {
   if (f == null) return null;
   return (
     <div style={{
-      background: 'rgba(10,10,20,0.96)',
+      background: 'var(--chart-bg, rgba(10,10,20,0.96))',
       border: '1px solid rgba(255,77,77,0.4)',
       borderRadius: 6,
       padding: '8px 12px',

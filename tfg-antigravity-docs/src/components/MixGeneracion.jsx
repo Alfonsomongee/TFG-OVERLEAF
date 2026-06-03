@@ -51,7 +51,7 @@ function CustomPieTooltip({ active, payload }) {
   const d = payload[0];
   return (
     <div style={{
-      background: 'rgba(10,10,20,0.96)',
+      background: 'var(--chart-bg, rgba(10,10,20,0.96))',
       border: `1px solid ${d.payload.fill}60`,
       borderRadius: 6,
       padding: '8px 12px',

@@ -65,7 +65,7 @@ function ResilienceTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
+      background: 'var(--chart-bg, rgba(10,15,30,0.97))',
       border: '1px solid rgba(255,255,255,0.1)',
       borderRadius: 6,
       padding: '8px 12px',
@@ -239,7 +239,7 @@ function SectorialResilienceChartInner() {
               stroke="#ef4444"
               strokeWidth={2.5}
               name="Industria (electrointensiva)"
-              dot={{ r: 4, fill: '#0a0f1c', stroke: '#ef4444', strokeWidth: 2 }}
+              dot={{ r: 4, fill: 'var(--chart-bg, #0a0f1c)', stroke: '#ef4444', strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />
@@ -249,7 +249,7 @@ function SectorialResilienceChartInner() {
               stroke="#06b6d4"
               strokeWidth={2.5}
               name="Servicios / Residencial"
-              dot={{ r: 4, fill: '#0a0f1c', stroke: '#06b6d4', strokeWidth: 2 }}
+              dot={{ r: 4, fill: 'var(--chart-bg, #0a0f1c)', stroke: '#06b6d4', strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />

@@ -43,7 +43,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 
 // ─── Paleta forense ───────────────────────────────────────────────────────────
 const C = {
-  bg:       '#060d1a',
+  bg:       'var(--chart-bg, #060d1a)',
   grid:     'rgba(0,217,255,0.06)',
   normal:   '#00d9ff',   // tensión normal
   warning:  '#f59e0b',   // tensión en alerta
@@ -609,7 +609,7 @@ export default function TapLagSequence({}) {
         height: 380, display: 'flex', alignItems: 'center',
         justifyContent: 'center', color: 'var(--ifm-color-emphasis-400)',
         fontFamily: 'monospace', fontSize: 13,
-        background: '#060d1a', borderRadius: 10,
+        background: 'var(--chart-bg, #060d1a)', borderRadius: 10,
       }}>
         {lang === 'es' ? 'Inicializando diagrama Tap-Lag…' : 'Initializing Tap-Lag diagram…'}
       </div>
