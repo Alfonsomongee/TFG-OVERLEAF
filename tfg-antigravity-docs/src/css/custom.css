@@ -3151,3 +3151,35 @@ html[data-theme='light'] .theme-admonition--danger {
 html[data-theme='light'] .theme-admonition--danger .admonitionHeading {
   color: #c0392b;
 }
+
+/* ============================================================
+   SIDEBAR — Transición suave apertura/cierre
+   ============================================================ */
+
+.theme-doc-sidebar-container {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.theme-doc-sidebar-container[style*="display: none"],
+.sidebar-collapsed .theme-doc-sidebar-container {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+/* Botones globales de sidebar con transición */
+.global-sidebar-btn,
+.global-sidebar-close-btn {
+  transition: opacity 0.2s ease, 
+              transform 0.2s ease !important;
+}
+
+/* Menú lateral — transición en items */
+.menu__list {
+  transition: opacity 0.2s ease 0.05s !important;
+}
+
+.sidebar-collapsed .menu__list {
+  opacity: 0;
+}

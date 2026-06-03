@@ -63,57 +63,116 @@ const FIGURE_INDEX = buildFigureIndex();
 
 // Keywords para buscar figuras relevantes en el texto de la respuesta
 const FIGURE_KEYWORDS = {
-  'inercia':         ['futured_grid_evolution', 'conventionalunits', 'scr_iberia'],
-  'inertia':         ['futured_grid_evolution', 'conventionalunits'],
-  'trägheit':        ['futured_grid_evolution'],
-  '惯量':             ['futured_grid_evolution'],
-  'tap-lag':         ['tap_lag_decoupling', 'nunez_balboa_precursores'],
-  'tap lag':         ['tap_lag_decoupling'],
-  'colapso':         ['cascada_desconexiones', 'tension_frecuencia_colapso'],
-  'collapse':        ['cascada_desconexiones', 'tension_frecuencia_colapso'],
-  'frecuencia':      ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
-  'frequency':       ['frequency_voltage_carmona'],
-  'frequenz':        ['frequency_voltage_carmona'],
-  '频率':             ['frequency_voltage_carmona'],
-  'recuperación':    ['estrategia_reenergizacion_dual', 'black_start_hidroelectrico'],
-  'recovery':        ['estrategia_reenergizacion_dual'],
-  'reposición':      ['islas_reposicion_entsoe', 'estrategia_reenergizacion_dual'],
-  'mix':             ['ree_generation_mix_28april', 'mix_comparativo_2010_2024'],
-  'fotovoltaica':    ['ree_generation_mix_28april', 'capacidad_instalada_2025'],
-  'solar':           ['ree_generation_mix_28april'],
-  'cascada':         ['cascada_desconexiones', 'heatmap_propagation'],
-  'cascade':         ['cascada_desconexiones'],
-  'sobretensión':    ['precursor_overvoltage_22april', 'aluvion_alertas_sobretension_sur'],
-  'overvoltage':     ['precursor_overvoltage_22april'],
-  'francia':         ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
-  'france':          ['interconexion_francia_colapso'],
-  'sincronismo':     ['perdida_sincronismo_frontera'],
-  'synchronism':     ['perdida_sincronismo_frontera'],
-  'pmu':             ['pmu_sensors_europe', 'wams_oscilaciones_carmona'],
-  'gfm':             ['gfl_vs_gfm_circuit1', 'hitachi_hybrid'],
-  'gfl':             ['gfl_vs_gfm_circuit1'],
-  'bess':            ['hitachi_hybrid', 'ers_revenue_stacking'],
-  'islanding':       ['islas_reposicion_entsoe'],
-  'islas':           ['islas_reposicion_entsoe'],
-  'prensa':          ['collage_conservador', 'collage_progresista', 'collage_internacional'],
-  'media':           ['collage_internacional'],
-  'coste':           ['coste_optimo_ers', 'ers_revenue_stacking'],
-  'cost':            ['coste_optimo_ers'],
+  // Cada entrada: keyword → [archivos MUY específicos]
+  // Solo matchear cuando la relación es obvia y directa
+
+  // Frecuencia y caída
+  'frecuencia': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'frequency': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'frequenz': ['frequency_voltage_carmona'],
+  '频率': ['frequency_voltage_carmona'],
+  'nadir': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'rocof': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'caída de frecuencia': ['frequency_voltage_carmona'],
+  'frequency drop': ['frequency_voltage_carmona'],
+  'hercios': ['frequency_voltage_carmona'],
+  'hz': ['frequency_voltage_carmona'],
+
+  // Inercia — solo cuando se pregunta explícitamente
+  'inercia síncrona': ['futured_grid_evolution', 'conventionalunits'],
+  'synchronous inertia': ['futured_grid_evolution', 'conventionalunits'],
+  'constante h': ['futured_grid_evolution'],
+  'inertia constant': ['futured_grid_evolution'],
+  'masa rotacional': ['futured_grid_evolution'],
+
+  // Tap-Lag
+  'tap-lag': ['tap_lag_decoupling', 'nunez_balboa_precursores'],
+  'tap lag': ['tap_lag_decoupling'],
+  'oltc': ['tap_lag_decoupling'],
+  'transformador': ['tap_lag_decoupling'],
+
+  // Colapso y cascada
+  'cascada': ['cascada_desconexiones', 'heatmap_propagation'],
+  'cascade': ['cascada_desconexiones'],
+  'cascada de desconexiones': ['cascada_desconexiones'],
+  'disconnection cascade': ['cascada_desconexiones'],
+  'propagación': ['heatmap_propagation', 'cascada_desconexiones'],
+  'propagation': ['heatmap_propagation'],
+
+  // Tensión y Q-V
+  'colapso de tensión': ['tension_frecuencia_colapso', 'fluctuaciones_tension_previas'],
+  'voltage collapse': ['tension_frecuencia_colapso'],
+  'sobretensión': ['precursor_overvoltage_22april', 'aluvion_alertas_sobretension_sur'],
+  'overvoltage': ['precursor_overvoltage_22april'],
+  'potencia reactiva': ['asimetria_balance_reactiva_sur'],
+  'reactive power': ['asimetria_balance_reactiva_sur'],
+  'mvar': ['asimetria_balance_reactiva_sur'],
+
+  // Mix generación
+  'mix de generación': ['ree_generation_mix_28april', 'mix_comparativo_2010_2024'],
+  'generation mix': ['ree_generation_mix_28april'],
+  'fotovoltaica': ['ree_generation_mix_28april'],
+  'solar': ['ree_generation_mix_28april'],
+  'renovable': ['ree_generation_mix_28april', 'mix_comparativo_2010_2024'],
+
+  // Recuperación
+  'recuperación': ['estrategia_reenergizacion_dual', 'black_start_hidroelectrico'],
+  'recovery': ['estrategia_reenergizacion_dual'],
+  'black start': ['black_start_hidroelectrico'],
+  'reposición': ['islas_reposicion_entsoe', 'estrategia_reenergizacion_dual'],
+  're-energización': ['evolucion_mix_reenergizacion'],
+
+  // Interconexión
+  'interconexión': ['interconexion_francia_colapso'],
+  'interconnection': ['interconexion_francia_colapso'],
+  'francia': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'france': ['interconexion_francia_colapso'],
+  'sincronismo': ['perdida_sincronismo_frontera'],
+
+  // GFM/GFL e inversores
+  'gfm': ['gfl_vs_gfm_circuit1'],
+  'gfl': ['gfl_vs_gfm_circuit1'],
+  'inversor': ['gfl_vs_gfm_circuit1'],
+  'grid-forming': ['gfl_vs_gfm_circuit1'],
+
+  // Impacto económico
+  'coste': ['coste_optimo_ers', 'ers_revenue_stacking'],
+  'cost': ['coste_optimo_ers'],
+  'bess': ['hitachi_hybrid', 'ers_revenue_stacking'],
+
+  // Islas eléctricas
+  'islas': ['islas_reposicion_entsoe'],
+  'islanding': ['islas_reposicion_entsoe'],
+  'fragmentación': ['islas_reposicion_entsoe'],
 };
 
 function findRelevantFigures(text, lang) {
   const lower = text.toLowerCase();
-  const found = new Set();
+  const found = new Map(); // filename → score
+  
+  // Buscar matches exactos primero (mayor score)
   Object.entries(FIGURE_KEYWORDS).forEach(([keyword, files]) => {
-    if (lower.includes(keyword)) {
-      files.forEach(f => found.add(f));
+    if (lower.includes(keyword.toLowerCase())) {
+      const isExact = keyword.includes(' '); // frases son más específicas
+      files.forEach(f => {
+        const current = found.get(f) || 0;
+        found.set(f, current + (isExact ? 2 : 1));
+      });
     }
   });
-  // Mapear nombres de archivo a entradas completas
-  return [...found]
-    .map(filename => FIGURE_INDEX.find(fig => fig.src.includes(filename)))
-    .filter(Boolean)
-    .slice(0, 3); // máximo 3 figuras
+
+  // Ordenar por score y tomar las 2 mejores (no 3)
+  const sorted = [...found.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([filename]) => filename);
+
+  // Mapear a entradas completas del índice
+  return sorted
+    .map(filename => FIGURE_INDEX.find(fig => 
+      fig.src.includes(filename)
+    ))
+    .filter(Boolean);
 }
 
 function extractInteractiveAnchors(text) {
