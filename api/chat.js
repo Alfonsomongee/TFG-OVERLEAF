@@ -125,7 +125,9 @@ export default async function handler(req, res) {
     // Buscar con query original primero, luego con expansión
     const results = searcher.search(baseQuery, {
       prefix: true,
-      fuzzy: 0.2,
+      // Fuzzy dinámico: permite 1 error en palabras largas, exacto en cortas
+      fuzzy: term => term.length > 4 ? 1 : 0, 
+      boost: { heading: 2.5, title: 1.5, text: 1 } // Prioridad a los títulos y encabezados
     });
 
     // Si hay pocos resultados, buscar con términos expandidos
@@ -133,7 +135,8 @@ export default async function handler(req, res) {
       const expandedQuery = [...expandedTerms].join(' ');
       const expandedResults = searcher.search(expandedQuery, {
         prefix: true,
-        fuzzy: 0.15,
+        fuzzy: term => term.length > 5 ? 2 : 1, // Más permisivo en la segunda batida
+        boost: { heading: 2, title: 1.5, text: 1 }
       });
       // Añadir resultados expandidos que no estén ya en results
       const existingIds = new Set(results.map(r => r.id));
@@ -150,7 +153,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const topChunks = results.slice(0, 5).map(r => chunks[r.id]);
+    const topChunks = results.slice(0, 10).map(r => chunks[r.id]);
     const context = topChunks
       .map(c => `## ${c.title} – ${c.heading} (Enlace: ${c.slug})\n${c.text}`)
       .join('\n\n');
