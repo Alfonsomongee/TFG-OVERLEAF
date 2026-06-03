@@ -1,0 +1,314 @@
+{
+  "categories": [
+    {
+      "id": "frequency-stability",
+      "name": "Frequenzstabilität",
+      "icon": "⚡",
+      "color": "hsl(190 100% 60%)",
+      "tables": [
+        {
+          "id": "inertia-distribution",
+          "name": "Trägheitsverteilung (12:00 CEST)",
+          "source": "ICAI-Bericht Tabelle 4-1",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Gebiet" },
+            { "key": "nuclear", "label": "Kernkraft (MW)" },
+            { "key": "combined", "label": "GuD-Kraftwerk (MW)" },
+            { "key": "coal", "label": "Kohle (MW)" },
+            { "key": "hydro", "label": "Wasserkraft (MW)" },
+            { "key": "total", "label": "Gesamt (MW)" },
+            { "key": "inertia_s", "label": "Trägheit (s)" }
+          ],
+          "note": "Werte vor dem Zusammenbruch. Trägheit gemäß ICAI-Bericht geschätzt."
+        },
+        {
+          "id": "pump-storage-es",
+          "name": "Pumpspeicher-Abschaltung in Spanien",
+          "source": "ENTSO-E-Bericht Tabelle 3-8",
+          "type": "table",
+          "columns": [
+            { "key": "pump", "label": "Pumpe" },
+            { "key": "step_hz", "label": "Stufe (Hz)" },
+            { "key": "tripped", "label": "Abgeschaltet" }
+          ],
+          "note": "Gesamte abgeschaltete Pumpleistung: 2.168 MW bei 49,5 Hz + 588 MW bei 49,3 Hz = 2.756 MW."
+        },
+        {
+          "id": "pump-storage-pt",
+          "name": "Pumpspeicher-Abschaltung in Portugal",
+          "source": "ENTSO-E-Bericht Tabelle 3-10",
+          "type": "table",
+          "columns": [
+            { "key": "pump", "label": "Pumpe" },
+            { "key": "step_hz", "label": "Stufe (Hz)" },
+            { "key": "p_previous_mw", "label": "Vorherige P (MW)" },
+            { "key": "p_tripped_mw", "label": "Abgeschaltete P (MW)" }
+          ],
+          "note": "Gesamte abgeschaltete Pumpleistung in Portugal: 2.098 MW."
+        }
+      ]
+    },
+    {
+      "id": "voltage-violations",
+      "name": "Spannungsverletzungen und Schutzeinrichtungen",
+      "icon": "⚠️",
+      "color": "hsl(38 100% 56%)",
+      "tables": [
+        {
+          "id": "ics-violations",
+          "name": "Durch TSO verletzte ICS-Kriterien",
+          "source": "ENTSO-E-Bericht Tabelle 3-3",
+          "type": "table",
+          "columns": [
+            { "key": "tso", "label": "ÜNB" },
+            { "key": "criterion", "label": "Kriterium" },
+            { "key": "value", "label": "Wert" },
+            { "key": "limit", "label": "Grenzwert" },
+            { "key": "violation", "label": "Verletzung" }
+          ]
+        },
+        {
+          "id": "protection-events",
+          "name": "Leitungsschutz in der Ereignisabfolge",
+          "source": "ENTSO-E-Bericht Tabelle 3-4",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "element", "label": "Element" },
+            { "key": "tso", "label": "ÜNB" },
+            { "key": "cause", "label": "Ursache" }
+          ]
+        },
+        {
+          "id": "france-tripped-lines",
+          "name": "In Frankreich abgeschaltete Leitungen",
+          "source": "ENTSO-E-Bericht Tabelle 3-5",
+          "type": "table",
+          "columns": [
+            { "key": "line", "label": "Leitung" },
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "cause", "label": "Ursache" }
+          ]
+        },
+        {
+          "id": "france-production-tripping",
+          "name": "Erzeugungsabschaltung in Frankreich",
+          "source": "ENTSO-E-Bericht Tabelle 3-6",
+          "type": "table",
+          "columns": [
+            { "key": "unit", "label": "Einheit" },
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "mw", "label": "MW" },
+            { "key": "cause", "label": "Ursache" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network-topology",
+      "name": "Netzstruktur",
+      "icon": "🗺️",
+      "color": "hsl(220 80% 65%)",
+      "tables": [
+        {
+          "id": "re-voltage-manoeuvres",
+          "name": "Spannungsregelungsmaßnahmen (Red Eléctrica)",
+          "source": "REE-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "action", "label": "Maßnahme" },
+            { "key": "element", "label": "Element" },
+            { "key": "area", "label": "Gebiet" }
+          ]
+        },
+        {
+          "id": "re-topological-manoeuvres",
+          "name": "Topologische Maßnahmen von Red Eléctrica",
+          "source": "REE-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "action", "label": "Maßnahme" },
+            { "key": "element", "label": "Element" }
+          ]
+        },
+        {
+          "id": "ren-topological-manoeuvres",
+          "name": "Topologische Maßnahmen von REN (Portugal)",
+          "source": "ENTSO-E-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "action", "label": "Maßnahme" },
+            { "key": "element", "label": "Element" }
+          ]
+        },
+        {
+          "id": "lines-outage-icai",
+          "name": "Offene Leitungen nach Gebiet (9:00 CEST)",
+          "source": "ICAI-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Gebiet" },
+            { "key": "lines_400kv", "label": "Leitungen 400 kV" },
+            { "key": "lines_220kv", "label": "Leitungen 220 kV" },
+            { "key": "total", "label": "Gesamt" }
+          ]
+        },
+        {
+          "id": "km-percentage-icai",
+          "name": "Prozentualer Anteil offener Leitungs-km nach Gebiet",
+          "source": "ICAI-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Gebiet" },
+            { "key": "km_400kv", "label": "km 400 kV" },
+            { "key": "pct_400kv", "label": "% 400 kV" },
+            { "key": "km_220kv", "label": "km 220 kV" },
+            { "key": "pct_220kv", "label": "% 220 kV" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demand-load",
+      "name": "Nachfrage und Last",
+      "icon": "📉",
+      "color": "hsl(0 75% 56%)",
+      "tables": [
+        {
+          "id": "demand-shedding-es",
+          "name": "Lastabwurf in Spanien",
+          "source": "ENTSO-E-Bericht Tabelle 3-11",
+          "type": "table",
+          "columns": [
+            { "key": "distributor", "label": "Verteiler" },
+            { "key": "mw", "label": "MW" },
+            { "key": "time", "label": "Zeit (CEST)" }
+          ]
+        },
+        {
+          "id": "demand-shedding-pt",
+          "name": "Lastabwurf in Portugal (LFDD)",
+          "source": "ENTSO-E-Bericht Tabelle 3-12",
+          "type": "table",
+          "columns": [
+            { "key": "step", "label": "Stufe" },
+            { "key": "hz", "label": "Hz" },
+            { "key": "mw", "label": "MW" }
+          ]
+        },
+        {
+          "id": "electro-intensive-pt",
+          "name": "Abschaltung stromintensiver Verbraucher (Portugal)",
+          "source": "ENTSO-E-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "consumer", "label": "Verbraucher" },
+            { "key": "mw", "label": "MW" },
+            { "key": "time", "label": "Zeit (CEST)" }
+          ]
+        },
+        {
+          "id": "load-shedding-es-pt",
+          "name": "Zusammenfassung Lastabwurf ES + PT",
+          "source": "ENTSO-E-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "country", "label": "Land" },
+            { "key": "mechanism", "label": "Mechanismus" },
+            { "key": "mw", "label": "MW" }
+          ]
+        },
+        {
+          "id": "dso-load-shedding",
+          "name": "Lastabwurf nach Verteilernetzbetreiber (VNB)",
+          "source": "REE / ENTSO-E-Bericht",
+          "type": "table",
+          "columns": [
+            { "key": "dso", "label": "VNB" },
+            { "key": "mw", "label": "MW" },
+            { "key": "pct", "label": "%" }
+          ]
+        },
+        {
+          "id": "spanish-demand-forecast",
+          "name": "Spanische Lastprognose (28-A)",
+          "source": "REE / ESIOS",
+          "type": "table",
+          "columns": [
+            { "key": "hour", "label": "Stunde" },
+            { "key": "forecast_mw", "label": "Prognose (MW)" },
+            { "key": "actual_mw", "label": "Tatsächlich (MW)" },
+            { "key": "diff_mw", "label": "Diff (MW)" }
+          ]
+        },
+        {
+          "id": "portuguese-demand-forecast",
+          "name": "Portugiesische Lastprognose (28-A)",
+          "source": "REN / ENTSO-E",
+          "type": "table",
+          "columns": [
+            { "key": "hour", "label": "Stunde" },
+            { "key": "forecast_mw", "label": "Prognose (MW)" },
+            { "key": "actual_mw", "label": "Tatsächlich (MW)" },
+            { "key": "diff_mw", "label": "Diff (MW)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recovery-eas",
+      "name": "Wiederherstellung und EAS",
+      "icon": "🔁",
+      "color": "hsl(142 70% 45%)",
+      "tables": [
+        {
+          "id": "eas-state-changes",
+          "name": "Zustandsänderungen im ENTSO-E EAS",
+          "source": "ENTSO-E EAS",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Zeit (CEST)" },
+            { "key": "area", "label": "Gebiet" },
+            { "key": "from_state", "label": "Ausgangszustand" },
+            { "key": "to_state", "label": "Zielzustand" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "government-data",
+      "name": "Regierungsbericht und Leistung",
+      "icon": "🏛️",
+      "color": "hsl(270 60% 60%)",
+      "tables": [
+        {
+          "id": "unavailable-capacity",
+          "name": "Nicht verfügbare und installierte Kapazität nach Technologie",
+          "source": "Bericht der spanischen Regierung",
+          "type": "table",
+          "columns": [
+            { "key": "technology", "label": "Technologie" },
+            { "key": "installed_mw", "label": "Installiert (MW)" },
+            { "key": "unavailable_mw", "label": "Nicht verfügbar (MW)" },
+            { "key": "pct", "label": "%" }
+          ]
+        },
+        {
+          "id": "compass-lexecon",
+          "name": "Schlussfolgerungsvergleich (Compass Lexecon / INESC TEC)",
+          "source": "Compass Lexecon / INESC TEC",
+          "type": "table",
+          "columns": [
+            { "key": "aspect", "label": "Aspekt" },
+            { "key": "compass", "label": "Compass Lexecon" },
+            { "key": "inesc", "label": "INESC TEC" }
+          ]
+        }
+      ]
+    }
+  ]
+}

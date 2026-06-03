@@ -1,0 +1,314 @@
+{
+  "categories": [
+    {
+      "id": "frequency-stability",
+      "name": "Frequency Stability",
+      "icon": "⚡",
+      "color": "hsl(190 100% 60%)",
+      "tables": [
+        {
+          "id": "inertia-distribution",
+          "name": "Inertia Distribution (12:00 CEST)",
+          "source": "ICAI Report Table 4-1",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Area" },
+            { "key": "nuclear", "label": "Nuclear (MW)" },
+            { "key": "combined", "label": "Combined Cycle (MW)" },
+            { "key": "coal", "label": "Coal (MW)" },
+            { "key": "hydro", "label": "Hydro (MW)" },
+            { "key": "total", "label": "Total (MW)" },
+            { "key": "inertia_s", "label": "Inertia (s)" }
+          ],
+          "note": "Values prior to collapse. Inertia estimated per ICAI report."
+        },
+        {
+          "id": "pump-storage-es",
+          "name": "Pump Storage Disconnection in Spain",
+          "source": "ENTSO-E Report Table 3-8",
+          "type": "table",
+          "columns": [
+            { "key": "pump", "label": "Pump" },
+            { "key": "step_hz", "label": "Step (Hz)" },
+            { "key": "tripped", "label": "Tripped" }
+          ],
+          "note": "Total disconnected pumping: 2,168 MW at 49.5 Hz + 588 MW at 49.3 Hz = 2,756 MW."
+        },
+        {
+          "id": "pump-storage-pt",
+          "name": "Pump Storage Disconnection in Portugal",
+          "source": "ENTSO-E Report Table 3-10",
+          "type": "table",
+          "columns": [
+            { "key": "pump", "label": "Pump" },
+            { "key": "step_hz", "label": "Step (Hz)" },
+            { "key": "p_previous_mw", "label": "Previous P (MW)" },
+            { "key": "p_tripped_mw", "label": "Disconnected P (MW)" }
+          ],
+          "note": "Total disconnected pumping in Portugal: 2,098 MW."
+        }
+      ]
+    },
+    {
+      "id": "voltage-violations",
+      "name": "Voltage Violations and Protections",
+      "icon": "⚠️",
+      "color": "hsl(38 100% 56%)",
+      "tables": [
+        {
+          "id": "ics-violations",
+          "name": "ICS Criteria Violated by TSO",
+          "source": "ENTSO-E Report Table 3-3",
+          "type": "table",
+          "columns": [
+            { "key": "tso", "label": "TSO" },
+            { "key": "criterion", "label": "Criterion" },
+            { "key": "value", "label": "Value" },
+            { "key": "limit", "label": "Limit" },
+            { "key": "violation", "label": "Violation" }
+          ]
+        },
+        {
+          "id": "protection-events",
+          "name": "Line Protections in the Sequence of Events",
+          "source": "ENTSO-E Report Table 3-4",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "element", "label": "Element" },
+            { "key": "tso", "label": "TSO" },
+            { "key": "cause", "label": "Cause" }
+          ]
+        },
+        {
+          "id": "france-tripped-lines",
+          "name": "Lines Disconnected in France",
+          "source": "ENTSO-E Report Table 3-5",
+          "type": "table",
+          "columns": [
+            { "key": "line", "label": "Line" },
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "cause", "label": "Cause" }
+          ]
+        },
+        {
+          "id": "france-production-tripping",
+          "name": "Generation Disconnection in France",
+          "source": "ENTSO-E Report Table 3-6",
+          "type": "table",
+          "columns": [
+            { "key": "unit", "label": "Unit" },
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "mw", "label": "MW" },
+            { "key": "cause", "label": "Cause" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network-topology",
+      "name": "Network Structure",
+      "icon": "🗺️",
+      "color": "hsl(220 80% 65%)",
+      "tables": [
+        {
+          "id": "re-voltage-manoeuvres",
+          "name": "Voltage Control Manoeuvres (Red Eléctrica)",
+          "source": "REE Report",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "action", "label": "Action" },
+            { "key": "element", "label": "Element" },
+            { "key": "area", "label": "Area" }
+          ]
+        },
+        {
+          "id": "re-topological-manoeuvres",
+          "name": "Red Eléctrica Topological Manoeuvres",
+          "source": "REE Report",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "action", "label": "Action" },
+            { "key": "element", "label": "Element" }
+          ]
+        },
+        {
+          "id": "ren-topological-manoeuvres",
+          "name": "REN Topological Manoeuvres (Portugal)",
+          "source": "ENTSO-E Report",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "action", "label": "Action" },
+            { "key": "element", "label": "Element" }
+          ]
+        },
+        {
+          "id": "lines-outage-icai",
+          "name": "Open Lines by Area (9:00 CEST)",
+          "source": "ICAI Report",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Area" },
+            { "key": "lines_400kv", "label": "Lines 400 kV" },
+            { "key": "lines_220kv", "label": "Lines 220 kV" },
+            { "key": "total", "label": "Total" }
+          ]
+        },
+        {
+          "id": "km-percentage-icai",
+          "name": "Percentage of Open Line km by Area",
+          "source": "ICAI Report",
+          "type": "table",
+          "columns": [
+            { "key": "area", "label": "Area" },
+            { "key": "km_400kv", "label": "km 400 kV" },
+            { "key": "pct_400kv", "label": "% 400 kV" },
+            { "key": "km_220kv", "label": "km 220 kV" },
+            { "key": "pct_220kv", "label": "% 220 kV" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demand-load",
+      "name": "Demand and Load",
+      "icon": "📉",
+      "color": "hsl(0 75% 56%)",
+      "tables": [
+        {
+          "id": "demand-shedding-es",
+          "name": "Load Shedding in Spain",
+          "source": "ENTSO-E Report Table 3-11",
+          "type": "table",
+          "columns": [
+            { "key": "distributor", "label": "Distributor" },
+            { "key": "mw", "label": "MW" },
+            { "key": "time", "label": "Time (CEST)" }
+          ]
+        },
+        {
+          "id": "demand-shedding-pt",
+          "name": "Load Shedding in Portugal (LFDD)",
+          "source": "ENTSO-E Report Table 3-12",
+          "type": "table",
+          "columns": [
+            { "key": "step", "label": "Step" },
+            { "key": "hz", "label": "Hz" },
+            { "key": "mw", "label": "MW" }
+          ]
+        },
+        {
+          "id": "electro-intensive-pt",
+          "name": "Electro-intensive Consumer Disconnection (Portugal)",
+          "source": "ENTSO-E Report",
+          "type": "table",
+          "columns": [
+            { "key": "consumer", "label": "Consumer" },
+            { "key": "mw", "label": "MW" },
+            { "key": "time", "label": "Time (CEST)" }
+          ]
+        },
+        {
+          "id": "load-shedding-es-pt",
+          "name": "Load Shedding Summary ES + PT",
+          "source": "ENTSO-E Report",
+          "type": "table",
+          "columns": [
+            { "key": "country", "label": "Country" },
+            { "key": "mechanism", "label": "Mechanism" },
+            { "key": "mw", "label": "MW" }
+          ]
+        },
+        {
+          "id": "dso-load-shedding",
+          "name": "Load Shedding by Distributor (DSO)",
+          "source": "REE / ENTSO-E Report",
+          "type": "table",
+          "columns": [
+            { "key": "dso", "label": "DSO" },
+            { "key": "mw", "label": "MW" },
+            { "key": "pct", "label": "%" }
+          ]
+        },
+        {
+          "id": "spanish-demand-forecast",
+          "name": "Spanish Demand Forecast (28-A)",
+          "source": "REE / ESIOS",
+          "type": "table",
+          "columns": [
+            { "key": "hour", "label": "Hour" },
+            { "key": "forecast_mw", "label": "Forecast (MW)" },
+            { "key": "actual_mw", "label": "Actual (MW)" },
+            { "key": "diff_mw", "label": "Diff (MW)" }
+          ]
+        },
+        {
+          "id": "portuguese-demand-forecast",
+          "name": "Portuguese Demand Forecast (28-A)",
+          "source": "REN / ENTSO-E",
+          "type": "table",
+          "columns": [
+            { "key": "hour", "label": "Hour" },
+            { "key": "forecast_mw", "label": "Forecast (MW)" },
+            { "key": "actual_mw", "label": "Actual (MW)" },
+            { "key": "diff_mw", "label": "Diff (MW)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recovery-eas",
+      "name": "Recovery and EAS",
+      "icon": "🔁",
+      "color": "hsl(142 70% 45%)",
+      "tables": [
+        {
+          "id": "eas-state-changes",
+          "name": "State Changes in ENTSO-E EAS",
+          "source": "ENTSO-E EAS",
+          "type": "table",
+          "columns": [
+            { "key": "time", "label": "Time (CEST)" },
+            { "key": "area", "label": "Area" },
+            { "key": "from_state", "label": "From State" },
+            { "key": "to_state", "label": "To State" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "government-data",
+      "name": "Government Report and Power",
+      "icon": "🏛️",
+      "color": "hsl(270 60% 60%)",
+      "tables": [
+        {
+          "id": "unavailable-capacity",
+          "name": "Unavailable and Installed Capacity by Technology",
+          "source": "Spanish Government Report",
+          "type": "table",
+          "columns": [
+            { "key": "technology", "label": "Technology" },
+            { "key": "installed_mw", "label": "Installed (MW)" },
+            { "key": "unavailable_mw", "label": "Unavailable (MW)" },
+            { "key": "pct", "label": "%" }
+          ]
+        },
+        {
+          "id": "compass-lexecon",
+          "name": "Conclusions Comparison (Compass Lexecon / INESC TEC)",
+          "source": "Compass Lexecon / INESC TEC",
+          "type": "table",
+          "columns": [
+            { "key": "aspect", "label": "Aspect" },
+            { "key": "compass", "label": "Compass Lexecon" },
+            { "key": "inesc", "label": "INESC TEC" }
+          ]
+        }
+      ]
+    }
+  ]
+}

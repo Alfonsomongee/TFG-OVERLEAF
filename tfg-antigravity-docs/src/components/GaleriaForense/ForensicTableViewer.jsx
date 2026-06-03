@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import styles from './ForensicTableViewer.module.css';
 
 // Extract HSL values from strings like "var(--chart-cyan)" to raw numbers "190, 100%, 60%" for use in hsla()
@@ -19,6 +20,7 @@ const extractHSL = (hslString) => {
 
 export default function ForensicTableViewer() {
   const isBrowser = useIsBrowser();
+  const lang = useDocLang();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,8 +28,13 @@ export default function ForensicTableViewer() {
 
   useEffect(() => {
     if (!isBrowser) return;
+    const jsonFile = lang === 'en'
+      ? '/data/tablasdefinitivas_en.json'
+      : lang === 'de'
+      ? '/data/tablasdefinitivas_de.json'
+      : '/data/tablasdefinitivas.json';
     
-    fetch('/data/tablasdefinitivas.json')
+    fetch(jsonFile)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
