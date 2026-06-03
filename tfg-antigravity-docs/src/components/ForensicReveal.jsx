@@ -76,9 +76,9 @@ function ExpandButton({ expanded,  onClick,  level}) {
         marginTop: '0.4rem',
         padding: '0.2rem 0.6rem',
         background: 'transparent',
-        border: `1px solid ${level === 2 ? 'rgba(0,217,255,0.3)' : 'rgba(245,158,11,0.35)'}`,
+        border: 'none',
         borderRadius: 4,
-        color:  level === 2 ? '#00d9ff' : '#f59e0b',
+        color:  level === 2 ? '#636E4F' : '#8B2635',
         cursor: 'pointer',
         fontFamily: 'monospace',
         fontSize: 11,
@@ -94,8 +94,8 @@ function ExpandButton({ expanded,  onClick,  level}) {
 // ─── Panel revelado ───────────────────────────────────────────────────────────
 function RevealPanel({ children, level, id }) {
   const colors = {
-    2: { bg: 'rgba(0,217,255,0.04)',   border: 'rgba(0,217,255,0.2)',   left: '#00d9ff' },
-    3: { bg: 'rgba(245,158,11,0.04)', border: 'rgba(245,158,11,0.25)', left: '#f59e0b' },
+    2: { left: '#636E4F' },
+    3: { left: '#8B2635' },
   };
   const c = colors[level];
 
@@ -106,8 +106,8 @@ function RevealPanel({ children, level, id }) {
       style={{
         marginTop: '0.6rem',
         padding: '0.75rem 1rem',
-        background: c.bg,
-        border: `1px solid ${c.border}`,
+        background: 'transparent',
+        border: 'none',
         borderLeft: `3px solid ${c.left}`,
         borderRadius: '0 6px 6px 0',
         fontSize: '0.9rem',
@@ -135,9 +135,9 @@ function LevelBadge({ level}) {
   const lang = useDocLang();
   const isEs = lang === 'es';
   const badges = {
-    1: { label: isEs ? 'Síntesis'  : 'Summary',   color: '#94a3b8' },
-    2: { label: isEs ? 'Técnico'   : 'Technical',  color: '#00d9ff' },
-    3: { label: isEs ? 'Pericial'  : 'Expert',     color: '#f59e0b' },
+    1: { label: isEs ? 'Síntesis'  : 'Summary',   color: '#636E4F' },
+    2: { label: isEs ? 'Técnico'   : 'Technical',  color: '#636E4F' },
+    3: { label: isEs ? 'Pericial'  : 'Expert',     color: '#8B2635' },
   };
   const b = badges[level];
   return (
