@@ -20,15 +20,24 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
   }
 
-  const { question, answer, caption, figureId } = req.body;
+  const { question, answer, caption, figureTitle, figureId } = req.body;
   if (!question || !answer || !caption) {
     return res.status(400).json({ error: 'Faltan parámetros' });
   }
 
-  const prompt = `La siguiente pregunta del usuario: "${question}"
-Respuesta del asistente (resumida): "${answer.substring(0, 400)}"
-Figura técnica mostrada: "${caption}"
-Escribe un breve párrafo (2-3 líneas, máximo 80 palabras) que explique por qué esta figura es relevante para responder la pregunta, conectando la figura con la respuesta del asistente. Usa un tono divulgativo pero técnico. Responde SOLO con el párrafo, nada más.`;
+  const prompt = `Eres un divulgador técnico experto en sistemas eléctricos. Tu tarea es explicar por qué una figura específica es relevante para responder la pregunta de un usuario, basándote en la respuesta que ya ha dado el asistente.
+
+Pregunta del usuario: "${question}"
+Respuesta del asistente (resumida): "${answer.substring(0, 500)}"
+Título de la figura: "${figureTitle || caption}"
+Descripción de la figura: "${caption}"
+
+Genera un párrafo corto (máximo 70 palabras) que:
+1. Conecte directamente la figura con la pregunta del usuario.
+2. Explique qué aspecto de la respuesta ilustra la figura.
+3. Use un tono claro y divulgativo, pero manteniendo precisión técnica.
+4. No repitas información obvia (como "esta figura muestra...").
+Responde SOLO con el párrafo, sin introducciones ni despedidas.`;
 
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {

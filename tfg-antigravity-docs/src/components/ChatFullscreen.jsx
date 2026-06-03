@@ -3,12 +3,12 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { ColorModeProvider } from '@docusaurus/theme-common/internal';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
-async function fetchFigureContext(question, answer, caption, figureId) {
+async function fetchFigureContext(question, answer, caption, figureTitle, figureId) {
   try {
     const res = await fetch('/api/figure-context', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, answer, caption, figureId }),
+      body: JSON.stringify({ question, answer, caption, figureTitle, figureId }),
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
@@ -315,6 +315,7 @@ export default function ChatFullscreen({
   const [activeFigures, setActiveFigures]   = useState([]);
   const [activeTab, setActiveTab]           = useState(null); // 'interactive-X' | 'figure-X'
   const [figureContexts, setFigureContexts] = useState({}); // { 'figure-0': 'texto...' }
+  const [figureFeedback, setFigureFeedback] = useState({});
   const [panelKey, setPanelKey]             = useState(0);
   const [panelVisible, setPanelVisible]     = useState(true);
   const [presentationMode, setPresentationMode] = useState(false);
@@ -432,10 +433,11 @@ export default function ChatFullscreen({
 
     const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
     const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
+    const figureTitle = fig.caption.caption_es || fig.caption.caption_en || caption;
 
     setFigureContexts(prev => ({ ...prev, [activeTab]: 'loading' }));
     
-    fetchFigureContext(questionMsg, answerMsg, caption, figureId).then(ctx => {
+    fetchFigureContext(questionMsg, answerMsg, caption, figureTitle, figureId).then(ctx => {
       if (ctx) {
         setFigureContexts(prev => ({ ...prev, [activeTab]: ctx }));
         try { localStorage.setItem(cacheKey, ctx); } catch(e) {}
@@ -773,6 +775,28 @@ export default function ChatFullscreen({
       const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
       const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
       
+      const questionMsg = lastUserMsg ? lastUserMsg.text : '';
+      let qHash = 0;
+      for (let i = 0; i < questionMsg.length; i++) qHash = Math.imul(31, qHash) + questionMsg.charCodeAt(i) | 0;
+      const figureId = fig.src;
+      const feedbackKey = `feedback_figure_${figureId}_${qHash}`;
+
+      const handleFeedback = (isPositive) => {
+        try { localStorage.setItem(feedbackKey, isPositive ? 'yes' : 'no'); } catch(e) {}
+        setFigureFeedback(prev => ({ ...prev, [feedbackKey]: isPositive }));
+      };
+      
+      let voted = null;
+      if (figureFeedback[feedbackKey] !== undefined) {
+        voted = figureFeedback[feedbackKey];
+      } else {
+        try {
+          const cached = localStorage.getItem(feedbackKey);
+          if (cached === 'yes') voted = true;
+          else if (cached === 'no') voted = false;
+        } catch(e) {}
+      }
+      
       return (
         <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
           {/* Contexto editorial */}
@@ -810,6 +834,20 @@ export default function ChatFullscreen({
                 figureContexts[activeTab]
               )}
             </p>
+            {figureContexts[activeTab] && figureContexts[activeTab] !== 'loading' && figureContexts[activeTab] !== 'error' && (
+              <div style={{ display: 'flex', gap: 8, marginTop: 8, justifyContent: 'flex-end' }}>
+                <button 
+                  onClick={() => handleFeedback(true)} 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === true ? 1 : 0.5 }}
+                  title="Explicación útil"
+                >👍</button>
+                <button 
+                  onClick={() => handleFeedback(false)} 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === false ? 1 : 0.5 }}
+                  title="Explicación poco útil"
+                >👎</button>
+              </div>
+            )}
           </div>
 
           {/* Imagen */}
