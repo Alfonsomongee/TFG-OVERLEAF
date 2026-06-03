@@ -876,16 +876,22 @@ export default function ChatFullscreen({
             }}
           />
 
-          {/* Fuente */}
+          {/* Leyenda / Fuente */}
           <p style={{
-            marginTop: 10,
-            fontSize: 11,
-            color: 'var(--chart-text-3, #64748b)',
+            marginTop: 12,
+            fontSize: 12,
+            color: 'var(--chart-text-2, #94a3b8)',
             textAlign: 'center',
             fontStyle: 'italic',
+            lineHeight: 1.5,
+            padding: '0 16px',
           }}>
-            {fig.chapter && `Capítulo ${fig.chapter.replace('ch','')} — `}
-            {fig.src.split('/').pop()}
+            {caption ? caption : (
+              <>
+                {fig.chapter && `Capítulo ${fig.chapter.replace('ch','')} — `}
+                {fig.src.split('/').pop()}
+              </>
+            )}
           </p>
         </div>
       );
