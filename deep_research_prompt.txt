@@ -1,0 +1,49 @@
+# CONTEXTO DEL SISTEMA
+Soy un desarrollador construyendo una plataforma documental interactiva (basada en Docusaurus) sobre el análisis forense de un colapso sistémico en la red eléctrica europea (el incidente "28-A"). He integrado un asistente de IA inmersivo que no es un simple chatbot, sino una herramienta de "análisis forense asistido". 
+
+# ARQUITECTURA ACTUAL DE LA IA
+La IA está construida sobre las siguientes tecnologías y paradigmas:
+
+## 1. Frontend (React / Docusaurus)
+- **ChatWidget.jsx**: Un botón flotante que simula un terminal forense con animaciones "neon pulse". Muestra notificaciones cuando la IA sugiere contenido.
+- **ChatFullscreen.jsx**: Un overlay inmersivo (React Portal) que toma toda la pantalla dividiéndola en dos columnas ajustables (mediante un divisor arrastrable).
+  - *Columna Izquierda*: Interfaz de chat conversacional. Soporta Markdown.
+  - *Columna Derecha*: "Visualizador de Evidencias". Muestra dinámicamente Gráficas (imágenes con captions reales) o Simuladores Interactivos (componentes React pesados cargados mediante lazy/Suspense).
+- **Interacción Multimodal**:
+  - Input por texto.
+  - Input por Voz a Texto (usando `webkitSpeechRecognition`), sensible al idioma (ES, EN, DE, ZH).
+  - Atajos de teclado avanzados (ESC para salir, Cmd+M para mutear/activar micrófono, Cmd+P para modo presentación, Cmd+Flechas para navegar por las evidencias en tabs).
+- **Estética**: Diseño minimalista, "forense", sin emojis, con soporte nativo de transiciones suaves entre modo claro y oscuro.
+
+## 2. Lógica de Sincronización (Frontend)
+- El frontend parsea silenciosamente la última respuesta de la IA buscando patrones específicos:
+  - `extractInteractiveAnchors`: Si la IA menciona términos clave (ej. "frecuencia", "tap-lag") o usa anclas Markdown, el panel derecho carga automáticamente un componente interactivo de simulación.
+  - `findRelevantFigures`: Si la IA habla de ciertos temas, un diccionario estricto (`FIGURE_KEYWORDS`) matchea y renderiza los diagramas técnicos exactos relacionados con el texto.
+
+## 3. Backend (Vercel Serverless Function /api/chat.js)
+- Implementación de RAG (Retrieval-Augmented Generation) ligero en memoria.
+- **Búsqueda Semántica**: Utiliza `MiniSearch` sobre un archivo `chunks.json` pre-generado a partir de los documentos MDX.
+- **Query Expansion**: Antes de buscar, la query del usuario pasa por un diccionario de sinónimos técnicos (ej. "inercia" -> "inertia", "H", "masa rotacional") para evitar búsquedas fallidas.
+- **Streaming**: Las respuestas del LLM se envían en streaming de vuelta al frontend para una percepción de latencia nula.
+
+---
+
+# OBJETIVO DE LA INVESTIGACIÓN (DEEP RESEARCH)
+Necesito que actúes como un Experto Principal en UI/UX y Arquitecto de IA. Analiza profundamente el estado actual del arte en interfaces humano-IA, específicamente aquellas orientadas a entornos técnicos, análisis de datos complejos y "copilotos" inmersivos (como el Canvas de ChatGPT, los artefactos de Claude, o V0 de Vercel).
+
+Quiero que me propongas **5 a 7 ideas innovadoras, técnicamente viables y altamente impactantes** para mejorar la forma en que el usuario interactúa con esta IA. 
+
+Tus propuestas deben estar orientadas a:
+1. **Reducir la fricción** (¿Qué más puede predecir la IA? ¿Cómo mejoramos la latencia percibida?).
+2. **Aumentar la inmersión forense** (¿Efectos de UI, sonido, tipografía dinámica, visualización en tiempo real?).
+3. **Manejo de Contexto y Memoria** (¿Debería la IA recordar la sesión? ¿Mostrar un "mapa mental" de lo discutido?).
+4. **Agencialidad** (¿Debería la IA poder cambiar de página por el usuario o resaltar partes del Docusaurus de fondo?).
+
+# REQUISITOS DE TU RESPUESTA
+1. Que las ideas sean aplicables a un stack de **React + Docusaurus + Vercel Functions**.
+2. **Evita ideas genéricas** (no me digas "añade un historial de chat" o "pon un loader", ve más allá).
+3. **Formato estructurado**: Para cada idea, proporciona:
+   - **Nombre de la característica**.
+   - **El "Por qué"** (Valor UX).
+   - **Implementación técnica de alto nivel** (Qué APIs, hooks o estrategias usaríamos).
+4. Dirígete a mí con un tono técnico, directo y estructurado, para que mi agente programador de IA (Antigravity) pueda leer tu respuesta y traducirla inmediatamente a un Plan de Implementación de código.

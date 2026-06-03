@@ -3,6 +3,21 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { ColorModeProvider } from '@docusaurus/theme-common/internal';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
+async function fetchFigureContext(question, answer, caption, figureId) {
+  try {
+    const res = await fetch('/api/figure-context', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, caption, figureId }),
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    return data.context;
+  } catch {
+    return null;
+  }
+}
+
 // ── Lazy imports de simuladores (Anexo C) ──────────────────────
 const FrequencyChart      = lazy(() => import('./FrequencyChart'));
 const SwingEquationSimulator = lazy(() => import('./SwingEquationSimulator'));
@@ -299,6 +314,7 @@ export default function ChatFullscreen({
   const [activeAnchors, setActiveAnchors]   = useState([]);
   const [activeFigures, setActiveFigures]   = useState([]);
   const [activeTab, setActiveTab]           = useState(null); // 'interactive-X' | 'figure-X'
+  const [figureContexts, setFigureContexts] = useState({}); // { 'figure-0': 'texto...' }
   const [panelKey, setPanelKey]             = useState(0);
   const [panelVisible, setPanelVisible]     = useState(true);
   const [presentationMode, setPresentationMode] = useState(false);
@@ -387,6 +403,47 @@ export default function ChatFullscreen({
       }, 180);
     }
   }, [messages, lang]);
+
+  useEffect(() => {
+    if (!activeTab || !activeTab.startsWith('figure-')) return;
+    const idx = parseInt(activeTab.split('-')[1]);
+    const fig = activeFigures[idx];
+    if (!fig) return;
+
+    const userMsgs = messages.filter(m => m.role === 'user');
+    const questionMsg = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].text : '';
+    const asstMsgs = messages.filter(m => m.role === 'assistant');
+    const answerMsg = asstMsgs.length > 0 ? asstMsgs[asstMsgs.length - 1].text : '';
+
+    const figureId = fig.src;
+    let qHash = 0;
+    for (let i = 0; i < questionMsg.length; i++) qHash = Math.imul(31, qHash) + questionMsg.charCodeAt(i) | 0;
+    const cacheKey = `fig_ctx_${qHash}_${figureId}`;
+
+    if (figureContexts[activeTab] && figureContexts[activeTab] !== 'loading' && figureContexts[activeTab] !== 'error') return;
+    
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: cached }));
+        return;
+      }
+    } catch(e) {}
+
+    const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
+    const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
+
+    setFigureContexts(prev => ({ ...prev, [activeTab]: 'loading' }));
+    
+    fetchFigureContext(questionMsg, answerMsg, caption, figureId).then(ctx => {
+      if (ctx) {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: ctx }));
+        try { localStorage.setItem(cacheKey, ctx); } catch(e) {}
+      } else {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: 'error' }));
+      }
+    });
+  }, [activeTab, activeFigures, messages, lang]);
 
   // Scroll al fondo de los mensajes
   useEffect(() => {
@@ -745,7 +802,13 @@ export default function ChatFullscreen({
               lineHeight: 1.7,
               margin: 0,
             }}>
-              {caption}
+              {figureContexts[activeTab] === 'loading' ? (
+                <span style={{ opacity: 0.6 }}>⟳ {ui.loading}</span>
+              ) : figureContexts[activeTab] === 'error' || !figureContexts[activeTab] ? (
+                caption
+              ) : (
+                figureContexts[activeTab]
+              )}
             </p>
           </div>
 
