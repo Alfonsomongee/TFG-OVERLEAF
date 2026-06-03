@@ -14,7 +14,7 @@ const UI_STRINGS = {
     ariaOpen: 'Abrir chat con IA',
     ariaClose: 'Cerrar chat con IA',
     title: 'Pregunta al TFG',
-    simplify: '⚡ Simplificar',
+    simplify: 'SIMPLIFICAR',
   },
   en: {
     greeting: 'Hello! I am the assistant for the thesis on the 28-A blackout. Ask me anything about the content of this site.',
@@ -26,7 +26,7 @@ const UI_STRINGS = {
     ariaOpen: 'Open AI chat',
     ariaClose: 'Close AI chat',
     title: 'Ask the AI',
-    simplify: '⚡ Simplify',
+    simplify: 'SIMPLIFY',
   },
   de: {
     greeting: 'Hallo! Ich bin der Assistent für die Abschlussarbeit über den Stromausfall vom 28. April. Stell mir gerne Fragen zum Inhalt dieser Seite.',
@@ -38,7 +38,7 @@ const UI_STRINGS = {
     ariaOpen: 'KI-Chat öffnen',
     ariaClose: 'KI-Chat schließen',
     title: 'Frage an die KI',
-    simplify: '⚡ Vereinfachen',
+    simplify: 'VEREINFACHEN',
   },
   'zh-Hans': {
     greeting: '你好！我是关于2025年4月28日伊比利亚大停电毕业论文的智能助手。欢迎向我提问本站的任何内容。',
@@ -50,7 +50,7 @@ const UI_STRINGS = {
     ariaOpen: '打开AI对话',
     ariaClose: '关闭AI对话',
     title: '向AI提问',
-    simplify: '⚡ 简化说明',
+    simplify: '简化',
   },
 };
 
@@ -243,37 +243,34 @@ export default function ChatWidget() {
               title="Pantalla completa"
               aria-label="Abrir en pantalla completa"
               style={{
-                background: 'linear-gradient(135deg, hsla(190,100%,60%,0.15), hsla(190,100%,60%,0.05))',
-                border: '1px solid hsla(190,100%,60%,0.4)',
+                background: 'none',
+                border: '1px solid var(--ifm-color-primary)',
                 borderRadius: 7,
-                color: 'hsl(190 100% 60%)',
+                color: 'var(--ifm-color-primary)',
                 cursor: 'pointer',
-                padding: '4px 8px',
+                padding: '3px 10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 5,
                 transition: 'all 0.2s ease',
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                boxShadow: '0 0 8px hsla(190,100%,60%,0.15)',
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--accent-electric)';
-                e.currentTarget.style.color = 'var(--accent-electric)';
+                e.currentTarget.style.background = 'var(--ifm-color-primary)';
+                e.currentTarget.style.color = 'var(--ifm-background-color)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                e.currentTarget.style.color = 'var(--chart-text-3, #64748b)';
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = 'var(--ifm-color-primary)';
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
               </svg>
-              <span style={{ fontSize: 10, letterSpacing: '0.08em' }}>
-                EXPAND
-              </span>
+              EXPAND
             </button>
           </div>
 
@@ -310,21 +307,23 @@ export default function ChatWidget() {
                   style={{
                     alignSelf: 'flex-start',
                     background: 'none',
-                    border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-                    borderRadius: 8,
-                    color: 'var(--ifm-color-primary, #64748b)',
-                    fontSize: 11,
+                    border: '1px solid var(--ifm-color-primary)',
+                    borderRadius: 6,
+                    color: 'var(--ifm-color-primary)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
                     padding: '3px 8px',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                   }}
                   onMouseEnter={e => {
-                    e.target.style.borderColor = 'var(--accent-electric)';
-                    e.target.style.color = 'var(--accent-electric)';
+                    e.target.style.background = 'var(--ifm-color-primary)';
+                    e.target.style.color = 'var(--ifm-background-color)';
                   }}
                   onMouseLeave={e => {
-                    e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                    e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                    e.target.style.background = 'none';
+                    e.target.style.color = 'var(--ifm-color-primary)';
                   }}
                 >
                   {t.simplify}
@@ -388,27 +387,34 @@ export default function ChatWidget() {
             position: 'fixed',
             bottom: 170,
             right: 24,
-            backgroundColor: 'hsl(190 100% 60%)',
-            color: '#000',
+            backgroundColor: 'var(--ifm-color-primary)',
+            color: 'var(--ifm-background-color)',
             borderRadius: 20,
-            padding: '5px 12px',
-            fontSize: 11,
+            padding: '6px 14px',
+            fontSize: 10,
             fontWeight: 700,
-            letterSpacing: '0.06em',
+            letterSpacing: '0.1em',
             cursor: 'pointer',
             zIndex: 10000,
-            animation: 'neonPulseChat 2s ease infinite',
-            boxShadow: '0 0 16px hsla(190,100%,60%,0.5)',
+            boxShadow: '0 2px 16px rgba(0,0,0,0.25)',
             display: 'flex',
             alignItems: 'center',
-            gap: 5,
+            gap: 6,
             userSelect: 'none',
+            animation: 'fadeInUp 0.3s ease',
+            border: '1px solid transparent',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.35)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.25)';
           }}
         >
-          <svg width="10" height="10" viewBox="0 0 18 18" fill="none">
-            <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
-          </svg>
-          VER EN PANTALLA COMPLETA
+          EXPAND
         </div>
       )}
 

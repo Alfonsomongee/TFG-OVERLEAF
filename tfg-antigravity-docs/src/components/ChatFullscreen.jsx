@@ -140,7 +140,7 @@ const UI = {
     loading: 'Cargando...',
     interactive: 'Interactivo',
     figure: 'Figura',
-    simplify: '⚡ Simplificar',
+    simplify: 'SIMPLIFICAR',
     searching: 'Buscando...',
     generating: 'Generando...',
   },
@@ -150,7 +150,7 @@ const UI = {
     loading: 'Loading...',
     interactive: 'Interactive',
     figure: 'Figure',
-    simplify: '⚡ Simplify',
+    simplify: 'SIMPLIFY',
     searching: 'Searching...',
     generating: 'Generating...',
   },
@@ -160,7 +160,7 @@ const UI = {
     loading: 'Wird geladen...',
     interactive: 'Interaktiv',
     figure: 'Abbildung',
-    simplify: '⚡ Vereinfachen',
+    simplify: 'VEREINFACHEN',
     searching: 'Suche...',
     generating: 'Generiere...',
   },
@@ -170,7 +170,7 @@ const UI = {
     loading: '加载中...',
     interactive: '交互式',
     figure: '图',
-    simplify: '⚡ 简化',
+    simplify: '简化',
     searching: '搜索中...',
     generating: '生成中...',
   },
@@ -263,22 +263,94 @@ export default function ChatFullscreen({
       
       const interactiveLabels = {
         swing: {
-          es: 'Este simulador te permite modificar la constante de inercia H y ver en tiempo real cómo cambia la caída de frecuencia (RoCoF). Es el modelo matemático exacto que explica por qué el sistema ibérico fue tan vulnerable el 28-A.',
-          en: 'This simulator lets you modify the inertia constant H and see in real time how the frequency drop (RoCoF) changes. It is the exact mathematical model explaining why the Iberian system was so vulnerable on April 28.',
-          de: 'Dieser Simulator ermöglicht es, die Trägheitskonstante H zu ändern und in Echtzeit zu sehen, wie sich der Frequenzabfall (RoCoF) verändert.',
-          'zh-Hans': '此模拟器允许您修改惯量常数H，实时查看频率下降（RoCoF）如何变化。',
+          es: 'La Ecuación del Swing es el modelo matemático fundamental que gobierna la dinámica de frecuencia. Permite cuantificar cómo la constante de inercia H (en segundos) determina la velocidad de caída de frecuencia ante un desequilibrio de potencia. El 28-A, con H≈2,3s y 82% de penetración IBR, el RoCoF superó 1,5 Hz/s — valor letal para las protecciones de las centrales nucleares.',
+          en: 'The Swing Equation is the fundamental mathematical model governing frequency dynamics. It quantifies how the inertia constant H (in seconds) determines the rate of frequency drop under a power imbalance. On April 28, with H≈2.3s and 82% IBR penetration, the RoCoF exceeded 1.5 Hz/s — a lethal value for nuclear plant protection relays.',
+          de: 'Die Swing-Gleichung ist das grundlegende mathematische Modell der Frequenzdynamik. Am 28. April, mit H≈2,3s und 82% IBR-Durchdringung, überstieg der RoCoF 1,5 Hz/s — ein für Kernkraftschutzrelais letaler Wert.',
+          'zh-Hans': '摆动方程是控制频率动态的基本数学模型。2025年4月28日，H≈2.3秒，IBR渗透率82%，RoCoF超过1.5 Hz/s——对核电站保护继电器而言是致命值。',
         },
         'tap-lag-sequence': {
-          es: 'Animación paso a paso del mecanismo Tap-Lag: cómo los transformadores OLTC crearon una ilusión de tensión normal en el SCADA mientras el sistema se acercaba al colapso.',
-          en: 'Step-by-step animation of the Tap-Lag mechanism: how OLTC transformers created an illusion of normal voltage in SCADA while the system approached collapse.',
-          de: 'Schritt-für-Schritt-Animation des Tap-Lag-Mechanismus.',
-          'zh-Hans': 'Tap-Lag机制的逐步动画。',
+          es: 'El mecanismo Tap-Lag fue el factor causal invisible del 28-A. Los transformadores OLTC de los parques solares, al regular automáticamente la tensión, absorbían potencia reactiva capacitiva masiva (≈1.050 MVAr en el sur) mientras el SCADA de REE mostraba tensiones aparentemente normales. Esta "ilusión de estabilidad" enmascaró el colapso Q-V que se gestaba.',
+          en: 'The Tap-Lag mechanism was the invisible causal factor of April 28. OLTC transformers in solar farms, automatically regulating voltage, absorbed massive capacitive reactive power (≈1,050 MVAr in the south) while REE\'s SCADA showed apparently normal voltages. This "stability illusion" masked the Q-V collapse building beneath.',
+          de: 'Der Tap-Lag-Mechanismus war der unsichtbare Kausalfaktor des 28. April. OLTC-Transformatoren absorbierten massiv kapazitive Blindleistung (≈1.050 MVAr im Süden), während das SCADA normale Spannungen anzeigte.',
+          'zh-Hans': 'Tap-Lag机制是4月28日不可见的因果因素。太阳能场的OLTC变压器自动调节电压，吸收大量容性无功功率（南部约1050 MVAr），而REE的SCADA显示表面正常的电压。',
         },
         frequency: {
-          es: 'Gráfica scrollytelling de la caída de frecuencia durante los 27 segundos críticos del 28-A, con las actuaciones automáticas de protección marcadas en el eje temporal.',
-          en: 'Scrollytelling chart of the frequency drop during the critical 27 seconds of April 28, with automatic protection actions marked on the timeline.',
-          de: 'Scrollytelling-Diagramm des Frequenzabfalls während der kritischen 27 Sekunden.',
-          'zh-Hans': '28日关键27秒频率下降的滚动叙事图表。',
+          es: 'La caída de frecuencia del 28-A se produjo en 27 segundos: de 50 Hz a 0 Hz. El nadir frecuencial alcanzó 47,79 Hz antes del disparo de las nucleares. El RoCoF medio durante la cascada superó 1,0 Hz/s, activando los 6 escalones de deslastre UFLS entre 12:33:20 y 12:33:22 CEST. La separación de la interconexión con Francia a las 12:33:21,535 CEST fue el punto de no retorno.',
+          en: 'The April 28 frequency collapse occurred in 27 seconds: from 50 Hz to 0 Hz. The frequency nadir reached 47.79 Hz before nuclear plant trips. The average RoCoF during the cascade exceeded 1.0 Hz/s, activating 6 UFLS load shedding steps between 12:33:20 and 12:33:22 CEST. The France interconnection separation at 12:33:21.535 CEST was the point of no return.',
+          de: 'Der Frequenzkollaps des 28. April dauerte 27 Sekunden: von 50 Hz auf 0 Hz. Der Frequenznadir erreichte 47,79 Hz. Der mittlere RoCoF überstieg 1,0 Hz/s und aktivierte 6 UFLS-Stufen.',
+          'zh-Hans': '4月28日频率崩溃发生在27秒内：从50 Hz到0 Hz。频率最低点达到47.79 Hz。平均RoCoF超过1.0 Hz/s，激活了6个UFLS减负荷步骤。',
+        },
+        'mix-generacion': {
+          es: 'A las 12:30 CEST del 28-A, la solar fotovoltaica aportaba el 53-59% del mix peninsular (18.068 MW estimados). Esta penetración récord de IBR redujo la inercia síncrona del sistema al mínimo histórico. La demanda era de tan solo 25.184 MW — un 56% del pico histórico — creando un sistema eléctricamente "vacío" y extremadamente frágil ante cualquier perturbación.',
+          en: 'At 12:30 CEST on April 28, solar PV contributed 53-59% of the peninsular mix (estimated 18,068 MW). This record IBR penetration reduced the system\'s synchronous inertia to a historical minimum. Demand was only 25,184 MW — 56% of the historical peak — creating an electrically "hollow" system extremely fragile to any disturbance.',
+          de: 'Um 12:30 CEST am 28. April trug Solar-PV 53-59% des Peninsular-Mix bei. Diese Rekord-IBR-Durchdringung reduzierte die Systemträgheit auf ein historisches Minimum.',
+          'zh-Hans': '4月28日12:30 CEST，太阳能光伏贡献了半岛电网53-59%的发电量（估计18,068 MW）。这一创纪录的IBR渗透率将系统同步惯量降至历史最低。',
+        },
+        'blackout-map': {
+          es: 'La cascada de desconexiones IBR se produjo en menos de 650 ms. Entre 12:32:57 y 12:33:24 CEST se perdieron 1.917 MW directos en una secuencia de 8 eventos, con pérdidas totales estimadas de 2.000-2.500 MW. La propagación geográfica siguió el gradiente de penetración solar: sur de España primero, luego Extremadura y Levante, finalmente la separación de Francia.',
+          en: 'The IBR disconnection cascade occurred in less than 650 ms. Between 12:32:57 and 12:33:24 CEST, 1,917 MW were directly lost in a sequence of 8 events, with total estimated losses of 2,000-2,500 MW. Geographic propagation followed the solar penetration gradient: southern Spain first, then Extremadura and Levante, finally the France separation.',
+          de: 'Die IBR-Abschaltkaskade ereignete sich in weniger als 650 ms. Zwischen 12:32:57 und 12:33:24 CEST gingen 1.917 MW in 8 Ereignissen verloren.',
+          'zh-Hans': 'IBR断开级联发生在650毫秒内。在12:32:57至12:33:24 CEST之间，8个事件中直接损失1,917 MW，总损失估计2,000-2,500 MW。',
+        },
+        pvcurve: {
+          es: 'La curva P-V demuestra el mecanismo físico del colapso de tensión capacitivo que causó el 28-A. El sistema ibérico, operando con 1.050 MVAr de inyección capacitiva neta en el sur, se encontraba cerca del "punto de nariz" de la curva — el límite de cargabilidad máxima. Cualquier perturbación adicional en la potencia reactiva era suficiente para cruzar ese umbral y desencadenar el colapso.',
+          en: 'The P-V curve demonstrates the physical mechanism of the capacitive voltage collapse that caused April 28. The Iberian system, operating with 1,050 MVAr of net capacitive injection in the south, was near the "nose point" of the curve — the maximum loadability limit. Any additional reactive power disturbance was sufficient to cross that threshold and trigger collapse.',
+          de: 'Die P-V-Kurve demonstriert den physischen Mechanismus des kapazitiven Spannungskollapses. Das iberische System operierte nahe dem "Nasenpunkt" — dem Maximum der Belastbarkeit.',
+          'zh-Hans': 'P-V曲线展示了导致4月28日电容性电压崩溃的物理机制。伊比利亚系统在南部以1050 MVAr净容性注入运行，接近曲线的"鼻点"——最大负载能力极限。',
+        },
+        sismograph: {
+          es: 'El sismógrafo del colapso reproduce la evolución transitoria de frecuencia y tensión en Carmona (400 kV) durante los 27 segundos críticos. Los datos muestran la correlación exacta entre la cascada de desconexiones IBR, la activación secuencial de los 6 escalones UFLS y el disparo final de las centrales nucleares a 47,79 Hz.',
+          en: 'The collapse seismograph reproduces the transient evolution of frequency and voltage at Carmona (400 kV) during the critical 27 seconds. Data shows the exact correlation between the IBR disconnection cascade, sequential activation of 6 UFLS steps, and final nuclear plant trip at 47.79 Hz.',
+          de: 'Der Kollaps-Seismograph reproduziert die transiente Frequenz- und Spannungsentwicklung in Carmona (400 kV) während der kritischen 27 Sekunden.',
+          'zh-Hans': '崩溃地震图再现了卡尔莫纳（400 kV）在关键27秒内的频率和电压瞬态演变。',
+        },
+        ansi59: {
+          es: 'El bucle de retroalimentación ANSI 59 explica por qué las desconexiones IBR se aceleraron en cascada. Cada IBR que disparaba por sobretensión liberaba potencia reactiva capacitiva al sistema, elevando aún más la tensión y provocando nuevos disparos. Este mecanismo de retroalimentación positiva convirtió una perturbación local en el sur en un colapso sistémico peninsular.',
+          en: 'The ANSI 59 feedback loop explains why IBR disconnections cascaded and accelerated. Each IBR that tripped due to overvoltage released capacitive reactive power to the system, further raising voltage and triggering new trips. This positive feedback mechanism turned a local southern disturbance into a peninsular systemic collapse.',
+          de: 'Die ANSI-59-Rückkopplungsschleife erklärt, warum sich IBR-Abschaltungen beschleunigten. Jedes ausgelöste IBR setzte kapazitive Blindleistung frei und erhöhte die Spannung weiter.',
+          'zh-Hans': 'ANSI 59反馈回路解释了为什么IBR断开呈级联加速。每个因过压跳闸的IBR向系统释放容性无功功率，进一步提高电压并触发新的跳闸。',
+        },
+        interconnection: {
+          es: 'Las interconexiones internacionales revelan la paradoja estructural del sistema ibérico: diseñadas para importar energía en déficit, resultaron insuficientes durante el 28-A. La capacidad de interconexión con Francia (2.800 MW nominales) representaba solo el 3,7% de la potencia instalada peninsular — muy por debajo del mínimo del 10% recomendado por la CE. La apertura de Hernani a las 12:33:21 CEST selló el aislamiento total.',
+          en: 'International interconnections reveal the structural paradox of the Iberian system: designed to import energy during deficit, they proved insufficient on April 28. Interconnection capacity with France (2,800 MW nominal) represented only 3.7% of peninsular installed capacity — well below the EC-recommended 10% minimum. The Hernani opening at 12:33:21 CEST sealed total isolation.',
+          de: 'Die Verbindungskapazität mit Frankreich (2.800 MW) repräsentierte nur 3,7% der installierten Kapazität — weit unter dem von der EU empfohlenen Minimum von 10%.',
+          'zh-Hans': '与法国的互联容量（2800 MW额定值）仅代表半岛装机容量的3.7%——远低于欧盟推荐的10%最低值。',
+        },
+        topology: {
+          es: 'La topología de red ibérica muestra la distribución geográfica desigual entre generación (concentrada en el sur y el litoral) y demanda (centros urbanos del norte y centro). Esta asimetría estructural, combinada con la alta penetración solar en Extremadura y Andalucía, creó los flujos de potencia reactiva críticos que precipitaron el colapso.',
+          en: 'The Iberian grid topology shows the uneven geographic distribution between generation (concentrated in the south and coast) and demand (urban centers in the north and center). This structural asymmetry, combined with high solar penetration in Extremadura and Andalusia, created the critical reactive power flows that precipitated the collapse.',
+          de: 'Die Netztopologie zeigt die ungleiche geografische Verteilung zwischen Erzeugung (Süden und Küste) und Nachfrage (nördliche und zentrale Städte).',
+          'zh-Hans': '电网拓扑显示了发电（集中在南部和沿海）与需求（北部和中部城市中心）之间不均衡的地理分布。',
+        },
+        waterfall: {
+          es: 'La cascada financiera cuantifica el coste real del apagón frente al coste de haberlo prevenido. Las estimaciones sitúan el impacto económico directo en 1.600-2.200 M€, mientras que el CAPEX total del retrofitting regulatorio (GFM, compensadores síncronos, BESS) se estima en 800-1.200 M€. La inacción fue 1,5-2x más cara que la inversión preventiva.',
+          en: 'The financial waterfall quantifies the real cost of the blackout versus the cost of prevention. Economic impact estimates range from €1.6-2.2 billion, while total regulatory retrofitting CAPEX (GFM, synchronous compensators, BESS) is estimated at €800M-1.2B. Inaction was 1.5-2x more expensive than preventive investment.',
+          de: 'Die Finanzkaskade quantifiziert die tatsächlichen Kosten des Ausfalls. Der wirtschaftliche Schaden beträgt 1,6-2,2 Mrd. €, der Präventions-CAPEX 800 Mio.-1,2 Mrd. €.',
+          'zh-Hans': '财务级联量化了停电的实际成本与预防成本。经济影响估计为16-22亿欧元，而预防性投资约为8-12亿欧元。',
+        },
+        streamgraph: {
+          es: 'El streamgraph de transición energética muestra cómo España pasó en 15 años de un sistema dominado por generación síncrona (nuclear, gas, carbón) a un mix con 82% de penetración IBR. Esta transformación estructural es el contexto macroenergético que hizo posible el 28-A: sin esa transición, el sistema habría tenido suficiente inercia síncrona para absorber la perturbación.',
+          en: 'The energy transition streamgraph shows how Spain transitioned in 15 years from a system dominated by synchronous generation (nuclear, gas, coal) to a mix with 82% IBR penetration. This structural transformation is the macro-energy context that made April 28 possible: without this transition, the system would have had sufficient synchronous inertia to absorb the disturbance.',
+          de: 'Das Streamgraph zeigt, wie Spanien in 15 Jahren von einem synchronen System zu einem Mix mit 82% IBR-Durchdringung überging.',
+          'zh-Hans': '能源转型流图显示西班牙如何在15年内从以同步发电为主的系统转变为82% IBR渗透率的混合电网。',
+        },
+        restoration: {
+          es: 'La re-energización del sistema ibérico tardó 18,5 horas — un proceso técnicamente complejo que requirió la coordinación de estrategias Top-Down (soporte desde Francia y Marruecos) y Bottom-Up (arranque autónomo de centrales hidroeléctricas bajo el P.O. 1.6). La restricción de reconexión de IBRs durante las primeras horas fue determinante para garantizar la estabilidad de las islas eléctricas nacientes.',
+          en: 'Re-energization of the Iberian system took 18.5 hours — a technically complex process requiring coordination of Top-Down strategies (support from France and Morocco) and Bottom-Up (autonomous hydroelectric Black Start under P.O. 1.6). The IBR reconnection restriction during the first hours was crucial to ensure stability of the nascent electrical islands.',
+          de: 'Die Wiederinbetriebnahme dauerte 18,5 Stunden und erforderte die Koordination von Top-Down- und Bottom-Up-Strategien gemäß P.O. 1.6.',
+          'zh-Hans': '伊比利亚系统的重新通电耗时18.5小时，需要协调自上而下（法国和摩洛哥支持）和自下而上（根据P.O. 1.6的水电黑启动）策略。',
+        },
+        timeline: {
+          es: 'La cronología forense del 28-A documenta 47 eventos críticos en 18,5 horas. Los primeros 27 segundos (12:32:57 - 12:33:24 CEST) contienen los 8 disparos IBR en cascada, los 6 escalones UFLS, el disparo nuclear y el colapso total. Esta densidad de eventos en tiempo tan breve es inédita en la historia de los sistemas eléctricos europeos.',
+          en: 'The April 28 forensic chronology documents 47 critical events over 18.5 hours. The first 27 seconds (12:32:57 - 12:33:24 CEST) contain 8 cascading IBR trips, 6 UFLS steps, the nuclear trip, and total collapse. This event density in such a brief window is unprecedented in European power system history.',
+          de: 'Die forensische Chronologie des 28. April dokumentiert 47 kritische Ereignisse in 18,5 Stunden. Die ersten 27 Sekunden enthalten 8 IBR-Auslösungen, 6 UFLS-Stufen und den Gesamtkollaps.',
+          'zh-Hans': '4月28日法证年表记录了18.5小时内的47个关键事件。最初27秒（12:32:57 - 12:33:24 CEST）包含8次IBR级联跳闸、6个UFLS步骤、核电跳闸和全面崩溃。',
+        },
+        matrix: {
+          es: 'La matriz de costes de inacción compara el OPEX acumulado por no invertir en resiliencia frente al CAPEX del retrofitting regulatorio. Cada año de retraso en la implementación de GFM, compensadores síncronos y BESS añade aproximadamente 180-220 M€ en riesgo económico sistémico. El 28-A demostró empíricamente que el coste de la inacción supera ampliamente al de la prevención.',
+          en: 'The inaction cost matrix compares accumulated OPEX from not investing in resilience versus regulatory retrofitting CAPEX. Each year of delay in implementing GFM, synchronous compensators, and BESS adds approximately €180-220M in systemic economic risk. April 28 empirically demonstrated that the cost of inaction far exceeds the cost of prevention.',
+          de: 'Die Kostenmatrix der Untätigkeit vergleicht den kumulierten OPEX ohne Resilienzinvestition mit dem Retrofitting-CAPEX. Jedes Verzögerungsjahr fügt 180-220 Mio. € systemisches Risiko hinzu.',
+          'zh-Hans': '不作为成本矩阵比较了不投资韧性的累积运营支出与监管改造资本支出。每年延迟实施GFM、同步补偿器和BESS会增加约1.8-2.2亿欧元的系统性经济风险。',
         },
       };
       
@@ -455,22 +527,26 @@ export default function ChatFullscreen({
           onClick={onClose}
           style={{
             background: 'none',
-            border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-            borderRadius: 8, color: 'var(--chart-text-2, #94a3b8)',
-            cursor: 'pointer', padding: '5px 14px',
-            fontSize: 12, letterSpacing: '0.08em',
+            border: '1px solid var(--ifm-color-primary)',
+            borderRadius: 8,
+            color: 'var(--ifm-color-primary)',
+            cursor: 'pointer',
+            padding: '5px 14px',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
             transition: 'all 0.15s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#ef4444';
-            e.currentTarget.style.color = '#ef4444';
+            e.currentTarget.style.background = 'var(--ifm-color-primary)';
+            e.currentTarget.style.color = 'var(--ifm-background-color)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-            e.currentTarget.style.color = 'var(--chart-text-2, #94a3b8)';
+            e.currentTarget.style.background = 'none';
+            e.currentTarget.style.color = 'var(--ifm-color-primary)';
           }}
         >
-          {ui.exit} ✕
+          {ui.exit.toUpperCase()} ×
         </button>
       </div>
 
@@ -630,15 +706,16 @@ export default function ChatFullscreen({
                           ? 'var(--accent-electric)'
                           : 'var(--chart-amber)')
                       : 'var(--chart-text-2, #94a3b8)',
-                    fontSize: 11, cursor: 'pointer',
+                    cursor: 'pointer',
                     transition: 'all 0.15s ease',
-                    letterSpacing: '0.04em',
-                    textTransform: 'capitalize',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    fontSize: 10,
+                    fontWeight: 700,
                     display: 'flex', alignItems: 'center', gap: 5,
                   }}
                 >
-                  {tab.type === 'interactive' ? '⚡' : '🖼'}
-                  {tab.label}
+                  {tab.label.toUpperCase()}
                 </button>
               ))}
             </div>
