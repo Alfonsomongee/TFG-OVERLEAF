@@ -24,7 +24,9 @@ import { GLOSSARY_TERMS as GLOSSARY_DE } from '@site/src/data/glossary_de';
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
+  const [isClosing, setIsClosing] = useState(false);
   const timeoutRef = useRef(null);
+  const fadeOutRef = useRef(null);
   const lang = useDocLang();
 
   const termsMap = useMemo(() => {
@@ -45,6 +47,8 @@ function PanelInner() {
     
     // Si entramos en la palabra O en la propia tarjeta, cancelamos el cierre (Hover Bridge)
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
+    setIsClosing(false);
 
     // Solo cambiamos la palabra si estamos encima de un término (no de la tarjeta)
     if (el.classList.contains('glossary-term')) {
@@ -64,8 +68,12 @@ function PanelInner() {
     if (el) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
-        setActive(null);
-      }, 450); // 450ms de gracia
+        setIsClosing(true);
+        fadeOutRef.current = setTimeout(() => {
+          setActive(null);
+          setIsClosing(false);
+        }, 2000); // 2 segundos de fade-out
+      }, 450); // 450ms de gracia antes de iniciar fade
     }
   }, []);
 
@@ -77,6 +85,7 @@ function PanelInner() {
       document.removeEventListener('mouseenter', handleEnter, true);
       document.removeEventListener('mouseleave', handleLeave, true);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
     };
   }, [handleEnter, handleLeave]);
 
@@ -84,7 +93,7 @@ function PanelInner() {
 
   return (
     <aside
-      className="glossary-definition-panel"
+      className={`glossary-definition-panel ${isClosing ? 'closing' : ''}`}
       aria-live="polite"
       aria-label={`Definición: ${active.term}`}
       style={{

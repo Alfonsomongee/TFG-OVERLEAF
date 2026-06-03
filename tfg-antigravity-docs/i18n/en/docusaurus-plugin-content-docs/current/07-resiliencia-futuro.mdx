@@ -6,11 +6,11 @@ title: "Resiliencia y Futuro"
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
-import GlossaryLink from "@site/src/components/GlossaryLink";
+
 
 <GlitchTitle>Resilience & Future</GlitchTitle>
 
-The structural lesson of 28 April does not reside in the collapse itself, but in the class of vulnerability it revealed. The forensic analysis demonstrated that the voltage zero was not a failure of active power reserves nor an isolated operational error: it was the terminal manifestation of a fundamental incompatibility between the physics of an inverter-dominated system and a technical-regulatory framework designed for synchronous networks. The scenario that produced the 28 April event — high <GlossaryLink term="IBR">IBR</GlossaryLink> penetration, scarce coupled synchronous generation and depressed net demand — was not a climatic anomaly, but a preview of conditions that will recur with increasing frequency as decarbonisation advances.
+The structural lesson of 28 April does not reside in the collapse itself, but in the class of vulnerability it revealed. The forensic analysis demonstrated that the voltage zero was not a failure of active power reserves nor an isolated operational error: it was the terminal manifestation of a fundamental incompatibility between the physics of an inverter-dominated system and a technical-regulatory framework designed for synchronous networks. The scenario that produced the 28 April event — high IBR penetration, scarce coupled synchronous generation and depressed net demand — was not a climatic anomaly, but a preview of conditions that will recur with increasing frequency as decarbonisation advances.
 
 ## The physics of systemic fragility
 
@@ -22,11 +22,11 @@ $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
 $$
 
-where $H$ is the equivalent system inertia constant (in seconds), $f_0$ the nominal frequency (50 Hz), $df/dt$ the <GlossaryLink term="RoCoF (Rate of Change of Frequency)">RoCoF</GlossaryLink>, $P_m$ the total mechanical power input to coupled synchronous rotors, $P_e$ the net electrical power demanded and $D$ the damping coefficient of frequency-dependent loads.
+where $H$ is the equivalent system inertia constant (in seconds), $f_0$ the nominal frequency (50 Hz), $df/dt$ the RoCoF, $P_m$ the total mechanical power input to coupled synchronous rotors, $P_e$ the net electrical power demanded and $D$ the damping coefficient of frequency-dependent loads.
 
-The central parameter is $H$: its reduction means that any power imbalance translates into a proportionally sharper RoCoF, shortening the time window available for regulation systems to act. <GlossaryLink term="GFL (Grid-Following)">Grid-following</GlossaryLink> inverters are decoupled from the network frequency via their DC links and **contribute no inherent electromechanical inertia** to the swing equation.
+The central parameter is $H$: its reduction means that any power imbalance translates into a proportionally sharper RoCoF, shortening the time window available for regulation systems to act. Grid-following inverters are decoupled from the network frequency via their DC links and **contribute no inherent electromechanical inertia** to the swing equation.
 
-The system certified $H = 2.3$ s at the moment of collapse — above the 2.0 s ENTSO-E recommended threshold. The 28 April event was not a frequency collapse from synchronous mass deficit. However, in scenarios with IBR penetration exceeding 80%, the sustained reduction of $H$ converts moderate-amplitude perturbations into critical contingencies, because the time available before <GlossaryLink term="UFLS (Underfrequency Load Shedding)">UFLS</GlossaryLink> relay activation compresses to the point where it becomes inoperable at the mechanical speed of breaker opening.
+The system certified $H = 2.3$ s at the moment of collapse — above the 2.0 s ENTSO-E recommended threshold. The 28 April event was not a frequency collapse from synchronous mass deficit. However, in scenarios with IBR penetration exceeding 80%, the sustained reduction of $H$ converts moderate-amplitude perturbations into critical contingencies, because the time available before UFLS relay activation compresses to the point where it becomes inoperable at the mechanical speed of breaker opening.
 
 ### Short-circuit power collapse: the network strength metric
 
@@ -46,14 +46,14 @@ $$
 | Category | SCR threshold | Operational implication |
 | --- | --- | --- |
 | **Strong grid** | SCR > 3 | GFL inverters operate with small-signal stability. Distance protections maintain selectivity. |
-| **Weak grid** | 2 ≤ SCR ≤ 3 | Degraded <GlossaryLink term="Phase-Locked Loop (PLL)">PLL</GlossaryLink> stability margin under fast perturbations. Risk of adverse control loop interaction between nearby installations. |
+| **Weak grid** | 2 ≤ SCR ≤ 3 | Degraded PLL stability margin under fast perturbations. Risk of adverse control loop interaction between nearby installations. |
 | **Very weak grid** | SCR &lt; 2 | GFL inverter PLLs prone to loss of synchronism under minor voltage variations. Distance protections lose directionality. |
 
 
 
 </ForensicTable>
 
-During the hours before the collapse, large areas of the Iberian Peninsula operated as **very weak grids** (SCR &lt; 2): massive solar production had displaced combined-cycle plants by merit order, removing precisely the $S_{sc}$ sources that provide nodal stiffness. Under these conditions, with $\mathrm{SCR} \ll 2$, the overall grid impedance becomes so high that voltage magnitude also becomes sensitive to <GlossaryLink term="Potencia activa">active power</GlossaryLink> variations: solar injection ramps acquire a voltage-disturbing power that would be harmless in conventional synchronous networks.
+During the hours before the collapse, large areas of the Iberian Peninsula operated as **very weak grids** (SCR &lt; 2): massive solar production had displaced combined-cycle plants by merit order, removing precisely the $S_{sc}$ sources that provide nodal stiffness. Under these conditions, with $\mathrm{SCR} \ll 2$, the overall grid impedance becomes so high that voltage magnitude also becomes sensitive to active power variations: solar injection ramps acquire a voltage-disturbing power that would be harmless in conventional synchronous networks.
 
 ![Voltage maps of the peninsular 400 kV network during the critical pre-collapse period](/figuras/scr_iberia.png) _Figure 37. Geographical evolution of voltages in the 400 kV network prior to collapse (sequence a–d). Warm-colour zones show the progression and concentration of severe overvoltages in the southern and south-western peninsula — precisely the nodes with the greatest structural short-circuit power deficiency. Source: IIT-ICAI._
 
@@ -63,7 +63,7 @@ There is a structural contradiction inherent to power triangle geometry. The max
 
 $$S_{\max} = \sqrt{P^2 + Q^2}$$
 
-When a photovoltaic plant experiences a sudden cloud clearing, its MPPT algorithms order active power injection ramps of thousands of MW/h. To avoid exceeding $S_{\max}$, the controller must simultaneously reduce its <GlossaryLink term="Potencia reactiva">reactive power</GlossaryLink> $Q$ margin. The paradox: that is precisely the moment when the abrupt increase in $P$ over a network with SCR &lt; 2 causes a severe overvoltage, requiring the inverter to massively absorb reactive power to contain it. The inverter faces two **simultaneously incompatible** physical obligations: maximise $P$ by market signal and maximise $Q$ for voltage stability.
+When a photovoltaic plant experiences a sudden cloud clearing, its MPPT algorithms order active power injection ramps of thousands of MW/h. To avoid exceeding $S_{\max}$, the controller must simultaneously reduce its reactive power $Q$ margin. The paradox: that is precisely the moment when the abrupt increase in $P$ over a network with SCR &lt; 2 causes a severe overvoltage, requiring the inverter to massively absorb reactive power to contain it. The inverter faces two **simultaneously incompatible** physical obligations: maximise $P$ by market signal and maximise $Q$ for voltage stability.
 
 This contradiction explains why 28 April was not an energy collapse but a control collapse: the system had sufficient resources but lacked the control architecture needed to deploy them coherently.
 
@@ -83,14 +83,14 @@ Overcoming the revealed vulnerability requires a transition in grid control arch
 
 ### BESS with grid-forming control: speed and precision
 
-Unlike a GFL inverter, a <GlossaryLink term="GFM (Grid-Forming)">grid-forming</GlossaryLink> (GFM) inverter operates as a Thévenin equivalent: it autonomously synthesises an internal voltage reference in magnitude and angle ($V\angle\delta$) behind a virtual coupling impedance. By imposing this voltage vector instantaneously, the GFM inverter inherently injects or absorbs active and reactive current in response to any network variation, without depending on external phase measurements or calculation delays.
+Unlike a GFL inverter, a grid-forming (GFM) inverter operates as a Thévenin equivalent: it autonomously synthesises an internal voltage reference in magnitude and angle ($V\angle\delta$) behind a virtual coupling impedance. By imposing this voltage vector instantaneously, the GFM inverter inherently injects or absorbs active and reactive current in response to any network variation, without depending on external phase measurements or calculation delays.
 
 ![Equivalent circuits of Grid-Following (GFL) and Grid-Forming (GFM) inverter topologies](/figuras/gfl_vs_gfm_circuit1.png) _Figure 39. Left: GFL inverter as a PLL-dependent controlled current source. Right: GFM inverter as an autonomous voltage source behind virtual impedance $Z_{\mathrm{GFM}}$. The fundamental difference: the GFM does not need to «read» the network to operate — it creates it._
 
 When the GFM inverter is backed by a battery storage system (BESS-GFM), the combination delivers two additional stability services:
 
-- **<GlossaryLink term="Inercia Sintética">Synthetic inertia</GlossaryLink>**: the algorithm continuously measures $df/dt$ and adjusts output power proportionally within **tens of milliseconds**, emulating rotating mass behaviour.
-- **<GlossaryLink term="Fast Frequency Response (FFR)">FFR</GlossaryLink>**: upon exceeding a RoCoF or frequency deviation threshold, the BESS injects a predefined active power block **sub-cyclically** (≤ 0.25 s), arresting the frequency slope before synchronous governors can process the perturbation.
+- **Synthetic inertia**: the algorithm continuously measures $df/dt$ and adjusts output power proportionally within **tens of milliseconds**, emulating rotating mass behaviour.
+- **FFR**: upon exceeding a RoCoF or frequency deviation threshold, the BESS injects a predefined active power block **sub-cyclically** (≤ 0.25 s), arresting the frequency slope before synchronous governors can process the perturbation.
 
 ERCOT (Texas) operational experience quantifies this service. The structural critical inertia threshold is approximately **100,000 MW·s**: below this, a category C contingency (~2,750 MW) drives frequency below 59.3 Hz before mechanical governors can act. The system operates with three alert zones: **green** (>120,000 MW·s), **yellow** (110,000–119,999 MW·s) and **red** (&lt;100,000 MW·s, with out-of-merit-order forced dispatch).
 
@@ -100,11 +100,11 @@ However, IGBT semiconductors rarely sustain currents beyond **1.2–1.5 times** 
 
 ### Synchronous condensers: short-circuit power and genuine rotational inertia
 
-The inverter current limitation justifies the complementary deployment of <GlossaryLink term="Compensadores Síncronos (SynCons)">synchronous condensers</GlossaryLink> (SynCons): large-mass rotating machines synchronously coupled to the network but operated unloaded, freely exchanging reactive power based on excitation level.
+The inverter current limitation justifies the complementary deployment of synchronous condensers (SynCons): large-mass rotating machines synchronously coupled to the network but operated unloaded, freely exchanging reactive power based on excitation level.
 
 Their dual contribution: fault currents of the order of **300–400%** of nominal value during the first transient cycles, increasing the SCR at the connection node; and genuine rotational inertia physically available within the **first millisecond** of a transient, without algorithmic mediation or control latency.
 
-The **<GlossaryLink term="Estrategia Brownfield">Brownfield strategy</GlossaryLink>** proposes a deployment path that minimises new civil investment: converting the large alternators of coal, combined-cycle or nuclear plants under decommissioning into synchronous condensers, once the turbine-generator set is decoupled. This converts stranded assets into systemic stability resources, preserving the value of already-installed 400 kV evacuation nodes.
+The **Brownfield strategy** proposes a deployment path that minimises new civil investment: converting the large alternators of coal, combined-cycle or nuclear plants under decommissioning into synchronous condensers, once the turbine-generator set is decoupled. This converts stranded assets into systemic stability resources, preserving the value of already-installed 400 kV evacuation nodes.
 
 ### Hybrid architecture: complementarity as the condition of resilience
 
@@ -116,7 +116,7 @@ None of the three technology families, deployed in isolation, is sufficient:
 
 ![Hybrid architecture for systemic resilience in decarbonised networks](/figuras/hitachi_hybrid.png) _Figure 40. Hybrid architecture scheme: BESS-GFM manage voltage in real time and deliver FFR; synchronous condensers provide rotational inertia and short-circuit power for nodal stiffness. Resilience requires both components — neither is a substitute for the other. Source: Hitachi Energy / FUTURED._
 
-Minimising the total system cost does not coincide with minimising <GlossaryLink term="Coste Nivelado de la Energía (LCOE)">LCOE</GlossaryLink>, but requires internalising in market design the <GlossaryLink term="Servicios Esenciales de Confiabilidad (ERS)">Essential Reliability Services (ERS</GlossaryLink>) that synchronous machines provided implicitly.
+Minimising the total system cost does not coincide with minimising LCOE, but requires internalising in market design the Essential Reliability Services (ERS) that synchronous machines provided implicitly.
 
 ![Techno-economic optimisation of resilience in IBR-dominated systems](/figuras/coste_optimo_ers.png) _Figure 41. The total system cost minimum is reached with a mix that remunerates ERS, not by simply maximising renewable penetration. The gap between the LCOE optimum and the system optimum is the cost of unrecompensed ancillary services. Source: Julia Matevosyan (ESIG) / FUTURED._
 
@@ -168,7 +168,7 @@ A revealing regulatory tension emerged in October 2025: REE requested raising th
 
 ### The European framework: NC RfG 2.0 and ENTSO-E Phase I and II reports
 
-The <GlossaryLink term="NC RfG">NC RfG</GlossaryLink> in force over the last decade was designed under the GFL paradigm: it standardised fault ride-through profiles and frequency thresholds, but did not contemplate the possibility that no heavy rotating machine remained to follow. This conceptual gap was demonstrated in the 8 seconds of the Iberian collapse.
+The NC RfG in force over the last decade was designed under the GFL paradigm: it standardised fault ride-through profiles and frequency thresholds, but did not contemplate the possibility that no heavy rotating machine remained to follow. This conceptual gap was demonstrated in the 8 seconds of the Iberian collapse.
 
 ENTSO-E's Technical Group on Grid-Forming Capability (TG GFC) produced two reference documents:
 
