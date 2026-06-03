@@ -243,17 +243,21 @@ export default function ChatWidget() {
               title="Pantalla completa"
               aria-label="Abrir en pantalla completa"
               style={{
-                background: 'none',
-                border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                background: 'linear-gradient(135deg, hsla(190,100%,60%,0.15), hsla(190,100%,60%,0.05))',
+                border: '1px solid hsla(190,100%,60%,0.4)',
                 borderRadius: 7,
-                color: 'var(--chart-text-3, #64748b)',
+                color: 'hsl(190 100% 60%)',
                 cursor: 'pointer',
-                padding: '4px 7px',
+                padding: '4px 8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'all 0.15s ease',
-                lineHeight: 1,
+                gap: 5,
+                transition: 'all 0.2s ease',
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                boxShadow: '0 0 8px hsla(190,100%,60%,0.15)',
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderColor = 'var(--accent-electric)';
@@ -267,6 +271,9 @@ export default function ChatWidget() {
               <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
               </svg>
+              <span style={{ fontSize: 10, letterSpacing: '0.08em' }}>
+                EXPAND
+              </span>
             </button>
           </div>
 
@@ -305,7 +312,7 @@ export default function ChatWidget() {
                     background: 'none',
                     border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
                     borderRadius: 8,
-                    color: 'var(--chart-text-3, #64748b)',
+                    color: 'var(--ifm-color-primary, #64748b)',
                     fontSize: 11,
                     padding: '3px 8px',
                     cursor: 'pointer',
@@ -317,7 +324,7 @@ export default function ChatWidget() {
                   }}
                   onMouseLeave={e => {
                     e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                    e.target.style.color = 'var(--chart-text-3, #64748b)';
+                    e.target.style.color = 'var(--ifm-color-primary, #64748b)';
                   }}
                 >
                   {t.simplify}
@@ -370,6 +377,38 @@ export default function ChatWidget() {
               ➤
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Badge invitación pantalla completa */}
+      {open && messages.length >= 3 && !fullscreen && (
+        <div
+          onClick={() => setFullscreen(true)}
+          style={{
+            position: 'fixed',
+            bottom: 170,
+            right: 24,
+            backgroundColor: 'hsl(190 100% 60%)',
+            color: '#000',
+            borderRadius: 20,
+            padding: '5px 12px',
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            cursor: 'pointer',
+            zIndex: 10000,
+            animation: 'neonPulseChat 2s ease infinite',
+            boxShadow: '0 0 16px hsla(190,100%,60%,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
+            userSelect: 'none',
+          }}
+        >
+          <svg width="10" height="10" viewBox="0 0 18 18" fill="none">
+            <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
+          </svg>
+          VER EN PANTALLA COMPLETA
         </div>
       )}
 

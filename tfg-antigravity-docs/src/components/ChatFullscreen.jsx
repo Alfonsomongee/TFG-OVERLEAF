@@ -260,15 +260,73 @@ export default function ChatFullscreen({
       const anchor = activeAnchors[idx];
       const Component = INTERACTIVE_MAP[anchor];
       if (!Component) return null;
+      
+      const interactiveLabels = {
+        swing: {
+          es: 'Este simulador te permite modificar la constante de inercia H y ver en tiempo real cómo cambia la caída de frecuencia (RoCoF). Es el modelo matemático exacto que explica por qué el sistema ibérico fue tan vulnerable el 28-A.',
+          en: 'This simulator lets you modify the inertia constant H and see in real time how the frequency drop (RoCoF) changes. It is the exact mathematical model explaining why the Iberian system was so vulnerable on April 28.',
+          de: 'Dieser Simulator ermöglicht es, die Trägheitskonstante H zu ändern und in Echtzeit zu sehen, wie sich der Frequenzabfall (RoCoF) verändert.',
+          'zh-Hans': '此模拟器允许您修改惯量常数H，实时查看频率下降（RoCoF）如何变化。',
+        },
+        'tap-lag-sequence': {
+          es: 'Animación paso a paso del mecanismo Tap-Lag: cómo los transformadores OLTC crearon una ilusión de tensión normal en el SCADA mientras el sistema se acercaba al colapso.',
+          en: 'Step-by-step animation of the Tap-Lag mechanism: how OLTC transformers created an illusion of normal voltage in SCADA while the system approached collapse.',
+          de: 'Schritt-für-Schritt-Animation des Tap-Lag-Mechanismus.',
+          'zh-Hans': 'Tap-Lag机制的逐步动画。',
+        },
+        frequency: {
+          es: 'Gráfica scrollytelling de la caída de frecuencia durante los 27 segundos críticos del 28-A, con las actuaciones automáticas de protección marcadas en el eje temporal.',
+          en: 'Scrollytelling chart of the frequency drop during the critical 27 seconds of April 28, with automatic protection actions marked on the timeline.',
+          de: 'Scrollytelling-Diagramm des Frequenzabfalls während der kritischen 27 Sekunden.',
+          'zh-Hans': '28日关键27秒频率下降的滚动叙事图表。',
+        },
+      };
+      
+      const label = interactiveLabels[anchor]?.[lang] 
+        || interactiveLabels[anchor]?.es
+        || '';
+
       return (
-        <div style={{ padding: '24px', height: '100%', overflowY: 'auto' }}>
-          <Suspense fallback={
-            <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
-              ⟳ {ui.loading}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+          {label && (
+            <div style={{
+              padding: '14px 24px',
+              borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              backgroundColor: 'hsla(190,100%,60%,0.04)',
+              flexShrink: 0,
+            }}>
+              <div style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                color: 'var(--accent-electric, hsl(190 100% 60%))',
+                marginBottom: 5,
+                textTransform: 'uppercase',
+              }}>
+                {lang === 'en' ? '◈ INTERACTIVE SIMULATOR'
+                  : lang === 'de' ? '◈ INTERAKTIVER SIMULATOR'
+                  : lang === 'zh-Hans' ? '◈ 交互式模拟器'
+                  : '◈ SIMULADOR INTERACTIVO'}
+              </div>
+              <p style={{
+                fontSize: 13,
+                color: 'var(--chart-text-1, #e2e8f0)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                {label}
+              </p>
             </div>
-          }>
-            <Component />
-          </Suspense>
+          )}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+            <Suspense fallback={
+              <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
+                ⟳ {ui.loading}
+              </div>
+            }>
+              <Component />
+            </Suspense>
+          </div>
         </div>
       );
     }
@@ -277,27 +335,71 @@ export default function ChatFullscreen({
       const idx = parseInt(activeTab.split('-')[1]);
       const fig = activeFigures[idx];
       if (!fig) return null;
-      const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang); 
+      const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
       const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
+      
+      // Generar texto contextual basado en la última pregunta del usuario
+      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+      const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+      
       return (
         <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
+          {/* Contexto editorial */}
+          <div style={{
+            marginBottom: 20,
+            padding: '14px 16px',
+            borderLeft: '3px solid var(--accent-electric, hsl(190 100% 60%))',
+            backgroundColor: 'hsla(190,100%,60%,0.05)',
+            borderRadius: '0 8px 8px 0',
+          }}>
+            <div style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              color: 'var(--accent-electric, hsl(190 100% 60%))',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+            }}>
+              {lang === 'en' ? '◈ WHY THIS IS RELEVANT'
+                : lang === 'de' ? '◈ WARUM DIES RELEVANT IST'
+                : lang === 'zh-Hans' ? '◈ 为什么这与此相关'
+                : '◈ POR QUÉ ESTO ES RELEVANTE'}
+            </div>
+            <p style={{
+              fontSize: 13,
+              color: 'var(--chart-text-1, #e2e8f0)',
+              lineHeight: 1.7,
+              margin: 0,
+            }}>
+              {caption}
+            </p>
+          </div>
+
+          {/* Imagen */}
           <img
             src={fig.src}
             alt={caption}
             style={{
-              width: '100%', maxWidth: 900,
+              width: '100%',
+              maxWidth: 860,
               borderRadius: 8,
               border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
-              display: 'block', margin: '0 auto',
+              display: 'block',
+              margin: '0 auto',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
             }}
           />
+
+          {/* Fuente */}
           <p style={{
-            marginTop: 12, fontSize: 12,
-            color: 'var(--chart-text-2, #94a3b8)',
-            lineHeight: 1.6, textAlign: 'center',
-            maxWidth: 700, margin: '12px auto 0',
+            marginTop: 10,
+            fontSize: 11,
+            color: 'var(--chart-text-3, #64748b)',
+            textAlign: 'center',
+            fontStyle: 'italic',
           }}>
-            {caption}
+            {fig.chapter && `Capítulo ${fig.chapter.replace('ch','')} — `}
+            {fig.src.split('/').pop()}
           </p>
         </div>
       );
@@ -420,7 +522,7 @@ export default function ChatFullscreen({
                     style={{
                       alignSelf: 'flex-start', background: 'none',
                       border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-                      borderRadius: 8, color: 'var(--chart-text-3, #64748b)',
+                      borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
                       fontSize: 11, padding: '3px 8px',
                       cursor: 'pointer', transition: 'all 0.15s ease',
                     }}
@@ -430,7 +532,7 @@ export default function ChatFullscreen({
                     }}
                     onMouseLeave={e => {
                       e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                      e.target.style.color = 'var(--chart-text-3, #64748b)';
+                      e.target.style.color = 'var(--ifm-color-primary, #64748b)';
                     }}
                   >
                     {ui.simplify}
