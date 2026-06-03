@@ -176,6 +176,51 @@ const UI = {
   },
 };
 
+const SUGGESTED_QUESTIONS = {
+  swing: {
+    es: ['¿Qué RoCoF se registró el 28-A?', '¿Cómo afecta la constante H a la caída de frecuencia?', '¿Qué es la inercia sintética?'],
+    en: ['What RoCoF was recorded on April 28?', 'How does constant H affect the frequency drop?', 'What is synthetic inertia?'],
+    de: ['Welcher RoCoF wurde am 28. April gemessen?', 'Wie beeinflusst H den Frequenzabfall?', 'Was ist synthetische Trägheit?'],
+    'zh-Hans': ['4月28日记录的RoCoF是多少？', 'H常数如何影响频率下降？', '什么是合成惯量？'],
+  },
+  'tap-lag-sequence': {
+    es: ['¿Qué es el efecto Tap-Lag?', '¿Cómo afectaron los OLTC al colapso?', '¿Por qué el SCADA no detectó el problema?'],
+    en: ['What is the Tap-Lag effect?', 'How did OLTC transformers affect the collapse?', 'Why did SCADA not detect the problem?'],
+    de: ['Was ist der Tap-Lag-Effekt?', 'Wie beeinflussten OLTC-Transformatoren den Kollaps?', 'Warum erkannte SCADA das Problem nicht?'],
+    'zh-Hans': ['什么是Tap-Lag效应？', 'OLTC变压器如何影响崩溃？', '为什么SCADA没有检测到问题？'],
+  },
+  frequency: {
+    es: ['¿Cuánto tardó en caer la frecuencia?', '¿Qué es el nadir frecuencial?', '¿Cuándo se activó el deslastre UFLS?'],
+    en: ['How long did the frequency take to collapse?', 'What is the frequency nadir?', 'When was UFLS load shedding activated?'],
+    de: ['Wie lange dauerte der Frequenzabfall?', 'Was ist der Frequenznadir?', 'Wann wurde UFLS aktiviert?'],
+    'zh-Hans': ['频率崩溃用了多长时间？', '什么是频率最低点？', 'UFLS何时被激活？'],
+  },
+  'mix-generacion': {
+    es: ['¿Cuánto solar había el día del apagón?', '¿Por qué el mix renovable aumentó el riesgo?', '¿Qué es la penetración IBR?'],
+    en: ['How much solar was there on the day of the blackout?', 'Why did the renewable mix increase risk?', 'What is IBR penetration?'],
+    de: ['Wie viel Solar gab es am Tag des Ausfalls?', 'Warum erhöhte der erneuerbare Mix das Risiko?', 'Was ist IBR-Durchdringung?'],
+    'zh-Hans': ['停电当天有多少太阳能？', '为什么可再生能源组合增加了风险？', '什么是IBR渗透率？'],
+  },
+  'blackout-map': {
+    es: ['¿Qué regiones se vieron más afectadas?', '¿Cuántos MW se perdieron en la cascada?', '¿En qué orden se desconectaron las centrales?'],
+    en: ['Which regions were most affected?', 'How many MW were lost in the cascade?', 'In what order did plants disconnect?'],
+    de: ['Welche Regionen waren am stärksten betroffen?', 'Wie viele MW gingen in der Kaskade verloren?', 'In welcher Reihenfolge schalteten die Anlagen ab?'],
+    'zh-Hans': ['哪些地区受影响最大？', '级联中损失了多少MW？', '电站按什么顺序断开？'],
+  },
+  pvcurve: {
+    es: ['¿Qué es el colapso de tensión?', '¿Cuál era el margen reactivo antes del apagón?', '¿Qué es el punto de nariz de la curva P-V?'],
+    en: ['What is voltage collapse?', 'What was the reactive margin before the blackout?', 'What is the nose point of the P-V curve?'],
+    de: ['Was ist Spannungskollaps?', 'Wie groß war die Blindleistungsreserve vor dem Ausfall?', 'Was ist der Nasenpunkt der P-V-Kurve?'],
+    'zh-Hans': ['什么是电压崩溃？', '停电前无功裕度是多少？', '什么是P-V曲线的鼻点？'],
+  },
+  interconnection: {
+    es: ['¿Cuál es la capacidad de interconexión con Francia?', '¿Qué pasó con la interconexión durante el apagón?', '¿Por qué España está poco interconectada?'],
+    en: ['What is the interconnection capacity with France?', 'What happened to the interconnection during the blackout?', 'Why is Spain poorly interconnected?'],
+    de: ['Wie groß ist die Verbindungskapazität mit Frankreich?', 'Was passierte mit der Verbindung während des Ausfalls?', 'Warum ist Spanien schlecht vernetzt?'],
+    'zh-Hans': ['与法国的互联容量是多少？', '停电期间互联发生了什么？', '为什么西班牙互联程度低？'],
+  },
+};
+
 // ── Componente principal ───────────────────────────────────────
 export default function ChatFullscreen({
   isOpen,
@@ -194,6 +239,9 @@ export default function ChatFullscreen({
   const [activeAnchors, setActiveAnchors]   = useState([]);
   const [activeFigures, setActiveFigures]   = useState([]);
   const [activeTab, setActiveTab]           = useState(null); // 'interactive-X' | 'figure-X'
+  const [panelKey, setPanelKey]             = useState(0);
+  const [panelVisible, setPanelVisible]     = useState(true);
+  const [presentationMode, setPresentationMode] = useState(false);
   const [question, setQuestion]             = useState('');
   const messagesEndRef                      = useRef(null);
   const inputRef                            = useRef(null);
@@ -207,9 +255,17 @@ export default function ChatFullscreen({
     setActiveAnchors(anchors);
     setActiveFigures(figures);
     // Seleccionar primer tab automáticamente
-    if (anchors.length > 0) setActiveTab('interactive-0');
-    else if (figures.length > 0) setActiveTab('figure-0');
-    else setActiveTab(null);
+    const newTab = anchors.length > 0 
+      ? 'interactive-0' 
+      : figures.length > 0 ? 'figure-0' : null;
+    if (newTab !== activeTab) {
+      setPanelVisible(false);
+      setTimeout(() => {
+        setActiveTab(newTab);
+        setPanelKey(k => k + 1);
+        setPanelVisible(true);
+      }, 180);
+    }
   }, [messages, lang]);
 
   // Scroll al fondo de los mensajes
@@ -523,37 +579,77 @@ export default function ChatFullscreen({
             {t.header}
           </span>
         </div>
-        <button
-          onClick={onClose}
-          style={{
-            background: 'none',
-            border: '1px solid var(--ifm-color-primary)',
-            borderRadius: 8,
-            color: 'var(--ifm-color-primary)',
-            cursor: 'pointer',
-            padding: '5px 14px',
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            transition: 'all 0.15s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'var(--ifm-color-primary)';
-            e.currentTarget.style.color = 'var(--ifm-background-color)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'none';
-            e.currentTarget.style.color = 'var(--ifm-color-primary)';
-          }}
-        >
-          {ui.exit.toUpperCase()} ×
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <button
+            onClick={() => setPresentationMode(p => !p)}
+            title={presentationMode
+              ? (lang === 'en' ? 'Show chat' : lang === 'de' ? 'Chat anzeigen' : lang === 'zh-Hans' ? '显示聊天' : 'Mostrar chat')
+              : (lang === 'en' ? 'Presentation mode' : lang === 'de' ? 'Präsentationsmodus' : lang === 'zh-Hans' ? '演示模式' : 'Modo presentación')
+            }
+            style={{
+              background: presentationMode ? 'var(--ifm-color-primary)' : 'none',
+              border: '1px solid var(--ifm-color-primary)',
+              borderRadius: 8,
+              color: presentationMode ? 'var(--ifm-background-color)' : 'var(--ifm-color-primary)',
+              cursor: 'pointer',
+              padding: '5px 14px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              transition: 'all 0.2s ease',
+              marginRight: 8,
+            }}
+            onMouseEnter={e => {
+              if (!presentationMode) {
+                e.currentTarget.style.background = 'var(--ifm-color-primary)';
+                e.currentTarget.style.color = 'var(--ifm-background-color)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (!presentationMode) {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = 'var(--ifm-color-primary)';
+              }
+            }}
+          >
+            {presentationMode
+              ? (lang === 'en' ? 'CHAT' : lang === 'de' ? 'CHAT' : lang === 'zh-Hans' ? '聊天' : 'CHAT')
+              : (lang === 'en' ? 'PRESENT' : lang === 'de' ? 'PRÄSENTATION' : lang === 'zh-Hans' ? '演示' : 'PRESENTAR')
+            }
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: '1px solid var(--ifm-color-primary)',
+              borderRadius: 8,
+              color: 'var(--ifm-color-primary)',
+              cursor: 'pointer',
+              padding: '5px 14px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--ifm-color-primary)';
+              e.currentTarget.style.color = 'var(--ifm-background-color)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'none';
+              e.currentTarget.style.color = 'var(--ifm-color-primary)';
+            }}
+          >
+            {ui.exit.toUpperCase()} ×
+          </button>
+        </div>
       </div>
 
       {/* ── MAIN GRID ── */}
       <div style={{
         flex: 1, display: 'grid',
-        gridTemplateColumns: '360px 1fr',
+        gridTemplateColumns: presentationMode ? '0px 1fr' : '360px 1fr',
+        transition: 'grid-template-columns 0.3s ease',
         overflow: 'hidden', minHeight: 0,
       }}>
 
@@ -561,7 +657,10 @@ export default function ChatFullscreen({
         <div style={{
           display: 'flex', flexDirection: 'column',
           borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
-          overflow: 'hidden',
+          overflow: presentationMode ? 'hidden' : 'hidden',
+          opacity: presentationMode ? 0 : 1,
+          transition: 'opacity 0.3s ease',
+          pointerEvents: presentationMode ? 'none' : 'auto',
           backgroundColor: 'var(--chat-bg, rgba(10,15,30,0.97))',
         }}>
           {/* Messages */}
@@ -623,6 +722,56 @@ export default function ChatFullscreen({
             )}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Sugerencias de preguntas */}
+          {activeAnchors.length > 0 && !loading && (() => {
+            const anchor = activeAnchors[0];
+            const suggestions = SUGGESTED_QUESTIONS[anchor]?.[lang] 
+              || SUGGESTED_QUESTIONS[anchor]?.es;
+            if (!suggestions) return null;
+            return (
+              <div style={{
+                padding: '8px 14px',
+                borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                {suggestions.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      onSend(q);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+                      borderRadius: 8,
+                      color: 'var(--chart-text-2, #94a3b8)',
+                      cursor: 'pointer',
+                      padding: '5px 10px',
+                      fontSize: 11,
+                      textAlign: 'left',
+                      transition: 'all 0.15s ease',
+                      lineHeight: 1.4,
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
+                      e.currentTarget.style.color = 'var(--ifm-color-primary)';
+                      e.currentTarget.style.background = 'rgba(139,38,53,0.04)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.08))';
+                      e.currentTarget.style.color = 'var(--chart-text-2, #94a3b8)';
+                      e.currentTarget.style.background = 'none';
+                    }}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
 
           {/* Input */}
           <div style={{
@@ -688,7 +837,15 @@ export default function ChatFullscreen({
               {allTabs.map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    if (tab.id === activeTab) return;
+                    setPanelVisible(false);
+                    setTimeout(() => {
+                      setActiveTab(tab.id);
+                      setPanelKey(k => k + 1);
+                      setPanelVisible(true);
+                    }, 180);
+                  }}
                   style={{
                     padding: '4px 12px', borderRadius: 8, whiteSpace: 'nowrap',
                     border: `1px solid ${activeTab === tab.id
@@ -722,7 +879,12 @@ export default function ChatFullscreen({
           )}
 
           {/* Contenido activo */}
-          <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+          <div style={{
+            flex: 1, overflow: 'hidden', position: 'relative',
+            transition: 'opacity 0.18s ease, transform 0.18s ease',
+            opacity: panelVisible ? 1 : 0,
+            transform: panelVisible ? 'translateX(0)' : 'translateX(8px)',
+          }}>
             {renderPanelContent()}
           </div>
         </div>
