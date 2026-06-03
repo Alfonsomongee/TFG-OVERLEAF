@@ -177,16 +177,16 @@ export default function ChatWidget() {
       {open && (
         <div style={{
           position: 'fixed', bottom: 160, right: 24, width: 380,
-          maxHeight: 520, backgroundColor: '#636E4F',
-          border: '1px solid #4d5640', borderRadius: 16,
+          maxHeight: 520, backgroundColor: 'var(--chat-bg)',
+          border: '1px solid var(--chat-border)', borderRadius: 16,
           display: 'flex', flexDirection: 'column',
           zIndex: 9999, boxShadow: '0 8px 32px rgba(0,242,254,0.15)',
           animation: 'fadeInUp 0.3s ease',
         }}>
           {/* Cabecera */}
           <div style={{
-            padding: '12px 16px', borderBottom: '1px solid #1e293b',
-            fontWeight: 600, color: '#2C2620', fontSize: 15,
+            padding: '12px 16px', borderBottom: '1px solid var(--chat-border)',
+            fontWeight: 600, color: 'var(--chat-header-color)', fontSize: 15,
             display: 'flex', alignItems: 'center', gap: 8,
           }}>
             {t.header}
@@ -200,8 +200,8 @@ export default function ChatWidget() {
             {messages.map((m, i) => (
               <div key={i} style={{
                 alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                backgroundColor: m.role === 'user' ? '#752E35' : '#F4F1EA',
-                color: m.role === 'user' ? '#ffffff' : '#2C2620',
+                backgroundColor: m.role === 'user' ? 'var(--chat-user-msg-bg)' : 'var(--chat-assistant-msg-bg)',
+                color: m.role === 'user' ? 'var(--chat-user-msg-text)' : 'var(--chat-assistant-msg-text)',
                 padding: '10px 14px', borderRadius: 14, maxWidth: '85%',
                 fontSize: 14, lineHeight: 1.5,
                 whiteSpace: 'pre-wrap', wordBreak: 'break-word',
@@ -219,7 +219,7 @@ export default function ChatWidget() {
 
           {/* Input */}
           <div style={{
-            padding: '12px 16px', borderTop: '1px solid #4d5640',
+            padding: '12px 16px', borderTop: '1px solid var(--chat-border)',
             display: 'flex', gap: 8,
           }}>
             <input
@@ -236,8 +236,8 @@ export default function ChatWidget() {
               placeholder={t.placeholder}
               style={{
                 flex: 1, padding: '10px 14px', borderRadius: 10,
-                border: '1px solid #4d5640', backgroundColor: '#F4F1EA',
-                color: '#2C2620', fontSize: 14, outline: 'none',
+                border: '1px solid var(--chat-border)', backgroundColor: 'var(--chat-input-bg)',
+                color: 'var(--chat-input-text)', fontSize: 14, outline: 'none',
               }}
             />
             <button
@@ -245,8 +245,8 @@ export default function ChatWidget() {
               disabled={loading || !question.trim()}
               style={{
                 padding: '10px 16px', borderRadius: 10,
-                backgroundColor: loading || !question.trim() ? '#4d5640' : '#752E35',
-                color: '#fff', border: 'none',
+                backgroundColor: loading || !question.trim() ? 'var(--chat-btn-bg-disabled)' : 'var(--chat-btn-bg)',
+                color: 'var(--chat-btn-text)', border: 'none',
                 cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
                 fontSize: 14, fontWeight: 500, transition: 'background-color 0.2s',
               }}
