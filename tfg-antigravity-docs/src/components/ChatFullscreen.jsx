@@ -144,6 +144,17 @@ const FIGURE_KEYWORDS = {
   'francia': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
   'france': ['interconexion_francia_colapso'],
   'sincronismo': ['perdida_sincronismo_frontera'],
+  // Intercambios internacionales (import/export)
+  'importaciones': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'exportaciones': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'intercambios': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia', 'entsoe_flow_deviation'],
+  'flujos': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia', 'entsoe_flow_deviation'],
+  'balance neto': ['interconexion_francia_colapso'],
+  'net exporter': ['interconexion_francia_colapso'],
+  'envíos a francia': ['interconexion_francia_colapso'],
+  'send to france': ['interconexion_francia_colapso'],
+  'marruecos': ['intercambio_marruecos_topdown'],
+  'portugal': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
 
   // GFM/GFL e inversores
   'gfm': ['gfl_vs_gfm_circuit1'],
