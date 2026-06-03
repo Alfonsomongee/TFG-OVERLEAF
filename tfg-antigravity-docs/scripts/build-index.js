@@ -45,11 +45,21 @@ function extractChunks(filePath, content) {
     .trim();
 
   const title = data.title || path.basename(filePath, '.mdx');
-  const slug = filePath
+  // Usar slug del frontmatter si existe
+  // Si no, generar desde el path eliminando prefijos numéricos
+  // como hace Docusaurus (01-contexto → /contexto)
+  const rawSlug = filePath
     .replace(DOCS_DIR, '')
     .replace(/\.mdx?$/, '')
     .replace(/\/index$/, '')
-    .replace(/\\/g, '/') || '/';
+    .replace(/\\/g, '/');
+
+  const slug = data.slug
+    ? data.slug
+    : rawSlug
+        .split('/')
+        .map(segment => segment.replace(/^\d+-/, ''))
+        .join('/') || '/';
 
   // Divide el contenido por encabezados de nivel 2 (##)
   const sections = cleanBody.split(/^## /m).filter(Boolean);

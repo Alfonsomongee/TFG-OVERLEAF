@@ -165,7 +165,10 @@ module.exports = async function handler(req, res) {
     const chapterLinks = contentChunks.length > 0
       ? `${locale === 'en' ? 'CHAPTER LINKS' : locale === 'de' ? 'KAPITEL-LINKS' : 'ENLACES DE CAPÍTULOS'}:\n${[...new Set(contentChunks.map(c => c.slug))].map(slug => {
           const chunk = contentChunks.find(c => c.slug === slug);
-          return `- [${chunk.title}](${slug})`;
+          const heading = chunk.heading && chunk.heading !== chunk.title
+            ? ` › ${chunk.heading}`
+            : '';
+          return `- [${chunk.title}${heading}](${slug})`;
         }).join('\n')}\n\n`
       : '';
 
@@ -187,9 +190,10 @@ module.exports = async function handler(req, res) {
       : '';
 
     const graphicLinks = graphicChunks.length > 0
-      ? `${labels.graphics}:\n${graphicChunks.map(c =>
-          `- [${c.heading}](${c.slug})`
-        ).join('\n')}\n\n`
+      ? `${labels.graphics}:\n${graphicChunks.map(c => {
+          const desc = c.text ? ' — ' + c.text.substring(0, 80).replace(/\n/g, ' ') + '...' : '';
+          return `- [${c.heading}](${c.slug})${desc}`;
+        }).join('\n')}\n\n`
       : '';
 
     // ── Llamada a Groq ──
