@@ -16,7 +16,7 @@ function flattenData(obj, prefix = '') {
     if (val && typeof val === 'object' && !Array.isArray(val) && val.valor !== undefined) {
       rows.push({
         id: prefix + key,
-        name: key.replace(/_/g, ' '),
+        name: val.label || key.replace(/_/g, ' '),
         ...val
       });
     } else if (val && typeof val === 'object' && !Array.isArray(val)) {
