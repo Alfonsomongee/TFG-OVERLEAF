@@ -18,10 +18,10 @@ const extractHSL = (hslString) => {
   return { h: 190, s: '100%', l: '60%' }; 
 };
 
-export default function ForensicTableViewer() {
+export default function ForensicTableViewer({ locale: localeProp }) {
   const isBrowser = useIsBrowser();
   const { i18n: { currentLocale } } = useDocusaurusContext();
-  const lang = currentLocale || 'es';
+  const lang = localeProp || currentLocale || 'es';
   console.log('[ForensicTableViewer] lang detectado:', lang, '| URL:', typeof window !== 'undefined' ? window.location.href : 'SSR');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
