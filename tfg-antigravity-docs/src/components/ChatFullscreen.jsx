@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
@@ -242,6 +242,10 @@ export default function ChatFullscreen({
   const [panelKey, setPanelKey]             = useState(0);
   const [panelVisible, setPanelVisible]     = useState(true);
   const [presentationMode, setPresentationMode] = useState(false);
+  const [chatWidth, setChatWidth] = useState(360);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(360);
   const [question, setQuestion]             = useState('');
   const messagesEndRef                      = useRef(null);
   const inputRef                            = useRef(null);
@@ -282,6 +286,40 @@ export default function ChatFullscreen({
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
+
+  const handleDragStart = (e) => {
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartWidth.current = chatWidth;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleDragMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    const delta = e.clientX - dragStartX.current;
+    const newWidth = Math.min(
+      Math.max(dragStartWidth.current + delta, 260),
+      640
+    );
+    setChatWidth(newWidth);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleDragMove);
+    window.addEventListener('mouseup', handleDragEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [handleDragMove, handleDragEnd]);
 
   const handleSend = () => {
     if (!question.trim() || loading) return;
@@ -648,7 +686,9 @@ export default function ChatFullscreen({
       {/* ── MAIN GRID ── */}
       <div style={{
         flex: 1, display: 'grid',
-        gridTemplateColumns: presentationMode ? '0px 1fr' : '360px 1fr',
+        gridTemplateColumns: presentationMode 
+          ? '0px 1fr' 
+          : `${chatWidth}px 8px 1fr`,
         transition: 'grid-template-columns 0.3s ease',
         overflow: 'hidden', minHeight: 0,
       }}>
@@ -818,6 +858,43 @@ export default function ChatFullscreen({
             </button>
           </div>
         </div>
+
+        {/* ── DIVISOR ARRASTRABLE ── */}
+        {!presentationMode && (
+          <div
+            onMouseDown={handleDragStart}
+            style={{
+              width: 8,
+              cursor: 'col-resize',
+              backgroundColor: 'transparent',
+              borderLeft: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'background-color 0.15s ease',
+              position: 'relative',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = 
+                'var(--ifm-color-primary)';
+              e.currentTarget.style.opacity = '0.3';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.opacity = '1';
+            }}
+          >
+            <div style={{
+              width: 2,
+              height: 32,
+              borderRadius: 2,
+              backgroundColor: 'var(--chart-text-3, #64748b)',
+              opacity: 0.4,
+            }} />
+          </div>
+        )}
 
         {/* ── RIGHT: CONTENT PANEL ── */}
         <div style={{
