@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
+import useIsBrowser from '@docusaurus/useIsBrowser';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import styles from './ForensicGallery.module.css';
 
 function ForensicGalleryInner() {
+  const isBrowser = useIsBrowser();
+  const lang = useDocLang();
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/processed/forensic_categories.json')
+    if (!isBrowser) return;
+    const jsonFile = lang === 'en'
+      ? '/data/processed/forensic_categories_en.json'
+      : lang === 'de'
+      ? '/data/processed/forensic_categories_de.json'
+      : '/data/processed/forensic_categories.json';
+    fetch(jsonFile)
       .then(res => res.json())
       .then(data => {
         setCategories(data.categories || []);
@@ -34,7 +44,7 @@ function ForensicGalleryInner() {
         console.error('Error loading forensic categories:', err);
         setLoading(false);
       });
-  }, []);
+  }, [isBrowser, lang]);
 
   if (loading) {
     return <div className={styles.loading}>{translate({id: 'forensic.loading', message: 'Descargando registros de incidencias...'})}</div>;
