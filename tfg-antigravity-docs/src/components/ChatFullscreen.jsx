@@ -377,6 +377,83 @@ export default function ChatFullscreen({
     };
   }, [handleDragMove, handleDragEnd]);
 
+  const allTabs = [
+    ...activeAnchors.map((anchor, i) => ({
+      id: 'interactive-' + i,
+      label: anchor.replace(/-/g, ' '),
+      type: 'interactive',
+    })),
+    ...activeFigures.map((fig, i) => ({
+      id: 'figure-' + i,
+      label: fig.src.split('/').pop().replace('.png','').replace('.jpg','').replace(/_/g,' '),
+      type: 'figure',
+    })),
+  ];
+
+  // ── Atajos de teclado ────────────────────────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e) => {
+      // ESC — cerrar fullscreen
+      if (e.key === 'Escape' && !isListening) {
+        onClose();
+        return;
+      }
+      
+      // Ctrl/Cmd + → — siguiente tab
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (allTabs.length > 1) {
+          const currentIdx = allTabs.findIndex(t => t.id === activeTab);
+          const nextIdx = (currentIdx + 1) % allTabs.length;
+          setPanelVisible(false);
+          setTimeout(() => {
+            setActiveTab(allTabs[nextIdx].id);
+            setPanelKey(k => k + 1);
+            setPanelVisible(true);
+          }, 180);
+        }
+        return;
+      }
+      
+      // Ctrl/Cmd + ← — tab anterior
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (allTabs.length > 1) {
+          const currentIdx = allTabs.findIndex(t => t.id === activeTab);
+          const prevIdx = (currentIdx - 1 + allTabs.length) % allTabs.length;
+          setPanelVisible(false);
+          setTimeout(() => {
+            setActiveTab(allTabs[prevIdx].id);
+            setPanelKey(k => k + 1);
+            setPanelVisible(true);
+          }, 180);
+        }
+        return;
+      }
+
+      // Ctrl/Cmd + P — toggle modo presentación
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        setPresentationMode(p => !p);
+        return;
+      }
+
+      // Ctrl/Cmd + M — toggle micrófono
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault();
+        if (isListening) stopListening();
+        else startListening();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isListening, allTabs, activeTab, onClose, 
+      startListening, stopListening, setPresentationMode]);
+
   const handleSend = () => {
     if (!question.trim() || loading) return;
     onSend(question);
@@ -630,19 +707,6 @@ export default function ChatFullscreen({
   };
 
   // ── Tabs combinados ───────────────────────────────────────────
-  const allTabs = [
-    ...activeAnchors.map((anchor, i) => ({
-      id: 'interactive-' + i,
-      label: anchor.replace(/-/g, ' '),
-      type: 'interactive',
-    })),
-    ...activeFigures.map((fig, i) => ({
-      id: 'figure-' + i,
-      label: fig.src.split('/').pop().replace('.png','').replace('.jpg','').replace(/_/g,' '),
-      type: 'figure',
-    })),
-  ];
-
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 99999,
@@ -671,6 +735,40 @@ export default function ChatFullscreen({
             textTransform: 'uppercase',
           }}>
             {t.header}
+          </span>
+          <span style={{
+            fontSize: 9,
+            color: 'var(--chart-text-3, #64748b)',
+            letterSpacing: '0.06em',
+            display: 'flex',
+            gap: 8,
+            alignItems: 'center',
+            marginLeft: 12,
+          }}>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>ESC</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘M</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘P</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘→</span>
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
