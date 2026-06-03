@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
 import useIsBrowser from '@docusaurus/useIsBrowser';
-import { useDocLang } from '@site/src/hooks/useDocLang';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './ForensicGallery.module.css';
 
 function ForensicGalleryInner() {
   const isBrowser = useIsBrowser();
-  const lang = useDocLang();
+  const { i18n: { currentLocale } } = useDocusaurusContext();
+  const lang = currentLocale || 'es';
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [loading, setLoading] = useState(true);

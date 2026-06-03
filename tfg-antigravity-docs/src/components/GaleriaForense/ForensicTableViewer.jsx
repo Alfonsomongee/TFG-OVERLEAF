@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
-import { useDocLang } from '@site/src/hooks/useDocLang';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './ForensicTableViewer.module.css';
 
 // Extract HSL values from strings like "var(--chart-cyan)" to raw numbers "190, 100%, 60%" for use in hsla()
@@ -20,7 +20,8 @@ const extractHSL = (hslString) => {
 
 export default function ForensicTableViewer() {
   const isBrowser = useIsBrowser();
-  const lang = useDocLang();
+  const { i18n: { currentLocale } } = useDocusaurusContext();
+  const lang = currentLocale || 'es';
   console.log('[ForensicTableViewer] lang detectado:', lang, '| URL:', typeof window !== 'undefined' ? window.location.href : 'SSR');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
