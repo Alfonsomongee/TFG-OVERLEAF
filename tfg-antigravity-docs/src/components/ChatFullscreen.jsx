@@ -1075,30 +1075,78 @@ export default function ChatFullscreen({
                 }}>
                   {renderText(m.text)}
                 </div>
-                {m.role === 'assistant' && i > 0 && (
-                  <button
-                    onClick={() => {
-                      const prev = messages[i - 1];
-                      if (prev?.role === 'user') onSimplify(prev.text);
-                    }}
-                    style={{
-                      alignSelf: 'flex-start', background: 'none',
-                      border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-                      borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
-                      fontSize: 11, padding: '3px 8px',
-                      cursor: 'pointer', transition: 'all 0.15s ease',
-                    }}
-                    onMouseEnter={e => {
-                      e.target.style.borderColor = 'var(--accent-electric)';
-                      e.target.style.color = 'var(--accent-electric)';
-                    }}
-                    onMouseLeave={e => {
-                      e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                      e.target.style.color = 'var(--ifm-color-primary, #64748b)';
-                    }}
-                  >
-                    {ui.simplify}
-                  </button>
+                {m.role === 'assistant' && (
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {i > 0 && (
+                      <button
+                        onClick={() => {
+                          const prev = messages[i - 1];
+                          if (prev?.role === 'user') onSimplify(prev.text);
+                        }}
+                        style={{
+                          background: 'none',
+                          border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                          borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                          fontSize: 11, padding: '3px 8px',
+                          cursor: 'pointer', transition: 'all 0.15s ease',
+                        }}
+                        onMouseEnter={e => {
+                          e.target.style.borderColor = 'var(--accent-electric)';
+                          e.target.style.color = 'var(--accent-electric)';
+                        }}
+                        onMouseLeave={e => {
+                          e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                          e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                        }}
+                      >
+                        {ui.simplify}
+                      </button>
+                    )}
+                    {(() => {
+                      const lastAssistantIndex = [...messages].reverse().findIndex(msg => msg.role === 'assistant');
+                      const actualLastAssistantIndex = lastAssistantIndex >= 0 ? messages.length - 1 - lastAssistantIndex : -1;
+                      const isLastAssistant = i === actualLastAssistantIndex;
+                      
+                      if (isLastAssistant) return null;
+                      
+                      const anchors = extractInteractiveAnchors(m.text);
+                      const figures = findRelevantFigures(m.text, lang);
+                      if (anchors.length === 0 && figures.length === 0) return null;
+
+                      return (
+                        <button
+                          onClick={() => {
+                            setActiveAnchors(anchors);
+                            setActiveFigures(figures);
+                            const newTab = anchors.length > 0 ? 'interactive-0' : 'figure-0';
+                            setPanelVisible(false);
+                            setTimeout(() => {
+                              setActiveTab(newTab);
+                              setPanelKey(k => k + 1);
+                              setPanelVisible(true);
+                            }, 180);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                            borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                            fontSize: 11, padding: '3px 8px',
+                            cursor: 'pointer', transition: 'all 0.15s ease',
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.borderColor = 'var(--accent-electric)';
+                            e.target.style.color = 'var(--accent-electric)';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                            e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                          }}
+                        >
+                          {lang === 'en' ? 'VIEW ASSOCIATED MEDIA' : lang === 'zh-Hans' ? '查看相关媒体' : lang === 'de' ? 'ZUGEHÖRIGE MEDIEN ANZEIGEN' : 'VER GRÁFICAS ASOCIADAS'}
+                        </button>
+                      );
+                    })()}
+                  </div>
                 )}
               </div>
             ))}
