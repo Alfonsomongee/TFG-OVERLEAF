@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { ColorModeProvider } from '@docusaurus/theme-common/internal';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
 // ── Lazy imports de simuladores (Anexo C) ──────────────────────
@@ -690,13 +691,15 @@ export default function ChatFullscreen({
             </div>
           )}
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
-            <Suspense fallback={
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
-                ⟳ {ui.loading}
-              </div>
-            }>
-              <Component />
-            </Suspense>
+            <ColorModeProvider>
+              <Suspense fallback={
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
+                  ⟳ {ui.loading}
+                </div>
+              }>
+                <Component />
+              </Suspense>
+            </ColorModeProvider>
           </div>
         </div>
       );
