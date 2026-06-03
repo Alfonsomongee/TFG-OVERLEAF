@@ -27,6 +27,103 @@ function getSearch() {
   return miniSearch;
 }
 
+async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt },
+      ],
+      temperature,
+      max_tokens: maxTokens,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    const error = new Error(`Groq API error ${response.status}: ${errorText}`);
+    error.provider = 'groq';
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content?.trim() || '';
+}
+
+async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const response = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'deepseek-v4-flash',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt },
+      ],
+      temperature,
+      max_tokens: maxTokens,
+      stream: false,
+      thinking: { type: 'disabled' },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    const error = new Error(`DeepSeek API error ${response.status}: ${errorText}`);
+    error.provider = 'deepseek';
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content?.trim() || '';
+}
+
+async function callLLM({ prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const groqKey = process.env.GROQ_API_KEY;
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const errors = [];
+
+  if (groqKey) {
+    try {
+      console.log('[api/chat] LLM provider selected: groq');
+      return await callGroq({ apiKey: groqKey, prompt, systemPrompt, temperature, maxTokens });
+    } catch (error) {
+      console.error('[api/chat] Groq failed:', error.status || '', error.message);
+      errors.push(error.message);
+    }
+  }
+
+  if (deepseekKey) {
+    try {
+      console.log('[api/chat] LLM provider selected: deepseek');
+      return await callDeepSeek({ apiKey: deepseekKey, prompt, systemPrompt, temperature, maxTokens });
+    } catch (error) {
+      console.error('[api/chat] DeepSeek failed:', error.status || '', error.message);
+      errors.push(error.message);
+    }
+  }
+
+  const error = new Error(
+    errors.length
+      ? `All LLM providers failed: ${errors.join(' | ')}`
+      : 'No LLM provider configured: missing GROQ_API_KEY and DEEPSEEK_API_KEY'
+  );
+  error.provider = 'none';
+  error.status = errors.some(e => e.includes('429')) ? 429 : 502;
+  throw error;
+}
+
 function normalizeText(str) {
   return String(str || '')
     .toLowerCase()
@@ -687,27 +784,36 @@ ${question}
 
 RESPUESTA DEL ASISTENTE:`;
 
-    const GROQ_API_KEY = process.env.GROQ_API_KEY;
-    if (!GROQ_API_KEY) return errResponse(500, 'El servicio de IA no está configurado.', 'Falta GROQ_API_KEY.', intent);
+    const systemPrompt = 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.';
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [
-          { role: 'system', content: 'Eres un experto en sistemas eléctricos respondiendo dudas sobre un TFG.' },
-          { role: 'user', content: prompt }
-        ],
+    let answer;
+    try {
+      answer = await callLLM({
+        prompt,
+        systemPrompt,
         temperature: 0.2,
-        max_tokens: 500
-      })
-    });
+        maxTokens: 500,
+      });
+    } catch (llmError) {
+      console.error('[api/chat] LLM provider error:', llmError?.message);
 
-    if (!response.ok) return errResponse(502, 'IA no disponible temporalmente.', 'Fallo API Groq.', intent);
+      return res.status(llmError?.status || 502).json({
+        answer: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo. Revisa GROQ_API_KEY, DEEPSEEK_API_KEY, cuota o conectividad del proveedor.',
+        error: llmError?.message || 'LLM provider error',
+        sources: typeof sources !== 'undefined' ? sources : [],
+        confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
+        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : 'El fallo ocurrió después de recuperar contexto, durante la generación del modelo.',
+        relatedChapters: typeof relatedChapters !== 'undefined' ? relatedChapters : [],
+        suggestedFigures: typeof suggestedFigures !== 'undefined' ? suggestedFigures : [],
+        visualArtifacts: typeof visualArtifacts !== 'undefined' ? visualArtifacts : [],
+        followUps: typeof followUps !== 'undefined' ? followUps : [],
+        intent: typeof intent !== 'undefined' ? intent : 'general',
+      });
+    }
 
-    const data = await response.json();
-    const answer = data.choices?.[0]?.message?.content || 'No pude generar la respuesta.';
+    if (!answer) {
+      answer = 'He recuperado contexto del TFG, pero el modelo no ha devuelto una respuesta textual. Prueba a reformular la pregunta.';
+    }
 
     return res.status(200).json({
       answer, sources, confidence, confidence_reason, relatedChapters, suggestedFigures, visualArtifacts, followUps, intent

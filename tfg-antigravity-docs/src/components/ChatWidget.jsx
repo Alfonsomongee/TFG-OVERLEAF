@@ -78,6 +78,30 @@ export default function ChatWidget() {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  const parseChatResponse = async (res) => {
+    const raw = await res.text();
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return {
+        answer: raw
+          ? `La API respondió con formato no JSON. Status ${res.status}. Inicio: ${raw.slice(0, 180)}`
+          : `La API respondió sin cuerpo. Status ${res.status}.`
+      };
+    }
+  };
+
+  const makeAssistantMessage = (data, fallbackText = 'Error al obtener respuesta.') => ({
+    role: 'assistant',
+    text: data.answer || data.error || fallbackText,
+    sources: data.sources || [],
+    suggestedFigures: data.suggestedFigures || [],
+    visualArtifacts: data.visualArtifacts || [],
+    followUps: data.followUps || [],
+    intent: data.intent || 'general',
+  });
+
   const handleSend = async () => {
     const q = question.trim();
     if (!q || loading) return;
@@ -94,10 +118,10 @@ export default function ChatWidget() {
         body: JSON.stringify({ question: q, locale }),
       });
       setLoadingStage('generating');
-      const data = await res.json();
+      const data = await parseChatResponse(res);
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', text: data.answer || 'Error al obtener respuesta.' },
+        makeAssistantMessage(data, `Error del endpoint (${res.status})`),
       ]);
     } catch {
       setMessages(prev => [
@@ -123,11 +147,8 @@ export default function ChatWidget() {
           mode: 'simple'
         }),
       });
-      const data = await res.json();
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        text: data.answer || data.error 
-      }]);
+      const data = await parseChatResponse(res);
+      setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
     } catch {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -435,12 +456,9 @@ export default function ChatWidget() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ question: q, locale }),
             });
-            const data = await res.json();
+            const data = await parseChatResponse(res);
             setLoadingStage('generating');
-            setMessages(prev => [...prev, {
-              role: 'assistant',
-              text: data.answer || data.error || 'Error',
-            }]);
+            setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
           } catch {
             setMessages(prev => [...prev, {
               role: 'assistant',
