@@ -18,6 +18,8 @@ function ForensicGalleryInner() {
       ? '/data/processed/forensic_categories_en.json'
       : lang === 'de'
       ? '/data/processed/forensic_categories_de.json'
+      : lang === 'zh-Hans'
+      ? '/data/processed/forensic_categories_zh-Hans.json'
       : '/data/processed/forensic_categories.json';
     fetch(jsonFile)
       .then(res => res.json())

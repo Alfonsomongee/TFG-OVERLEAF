@@ -36,6 +36,17 @@ const UI_STRINGS = {
     ariaClose: 'KI-Chat schließen',
     title: 'Frage an die KI',
   },
+  'zh-Hans': {
+    greeting: '你好！我是关于2025年4月28日伊比利亚大停电毕业论文的智能助手。欢迎向我提问本站的任何内容。',
+    header: '论文助手 – 28A大停电',
+    placeholder: '例如：惯性在事故中起了什么作用？',
+    searching: '正在检索论文内容...',
+    generating: '正在生成回答...',
+    errorConnection: '连接错误，请检查网络后重试。',
+    ariaOpen: '打开AI对话',
+    ariaClose: '关闭AI对话',
+    title: '向AI提问',
+  },
 };
 
 export default function ChatWidget() {

@@ -1,0 +1,32 @@
+---
+id: anexo-tablas
+title: "附录 B — 表格与文档记录索引"
+sidebar_label: "附录 B · 表格与记录"
+sidebar_position: 31
+hide_title: true
+pagination_prev: null
+pagination_next: null
+---
+
+import { useState } from 'react';
+import GlitchTitle from "@site/src/components/GlitchTitle";
+import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
+import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
+import TabSelector from '@site/src/components/TabSelector';
+
+<GlitchTitle>附录 B — 表格与文档记录</GlitchTitle>
+
+本工作中所有编号表格（表 1 – 表 27）以及包含4月28日事件完整技术记录的主数据库。
+
+export const AnexoB = () => {
+  const [tab, setTab] = useState(0);
+  return (
+    <>
+      <TabSelector active={tab} onSelect={setTab} labels={['编号表格', '主数据库']} />
+      {tab === 0 && <ForensicGallery />}
+      {tab === 1 && <TablaMaestra28A />}
+    </>
+  );
+};
+
+<AnexoB />

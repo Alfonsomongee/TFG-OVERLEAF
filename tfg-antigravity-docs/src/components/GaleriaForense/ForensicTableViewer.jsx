@@ -33,6 +33,8 @@ export default function ForensicTableViewer() {
       ? '/data/tablasdefinitivas_en.json'
       : lang === 'de'
       ? '/data/tablasdefinitivas_de.json'
+      : lang === 'zh-Hans'
+      ? '/data/tablasdefinitivas_zh-Hans.json'
       : '/data/tablasdefinitivas.json';
     
     fetch(jsonFile)
