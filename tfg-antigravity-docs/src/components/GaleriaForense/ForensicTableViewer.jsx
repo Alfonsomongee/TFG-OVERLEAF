@@ -55,7 +55,7 @@ export default function ForensicTableViewer() {
         setError(err.message);
         setLoading(false);
       });
-  }, [isBrowser]);
+  }, [isBrowser, lang]);
 
   if (!isBrowser) return <div className={styles.loader}>[ INITIALIZING TERMINAL... ]</div>;
   if (loading) return <div className={styles.loader}>[ LOADING DATA... ]</div>;
