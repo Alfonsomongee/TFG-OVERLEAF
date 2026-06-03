@@ -66,10 +66,83 @@ export default async function handler(req, res) {
       throw e;
     }
 
-    const results = searcher.search(question.trim(), {
+    // ── Query expansion — sinónimos y términos relacionados ──
+    const SYNONYMS = {
+      // Prensa y medios
+      'prensa': ['medios', 'comunicación', 'periodistas', 'noticias', 'cobertura', 'encuadre'],
+      'medios': ['prensa', 'periódicos', 'televisión', 'radio', 'comunicación'],
+      'internacional': ['europa', 'extranjero', 'global', 'mundial', 'europeo'],
+      'periodistas': ['prensa', 'medios', 'periodismo', 'noticias'],
+      'noticias': ['prensa', 'medios', 'información', 'comunicación'],
+      // Técnicos
+      'inercia': ['inertia', 'H', 'masa', 'rotacional', 'síncrona'],
+      'inertia': ['inercia', 'H', 'rotational', 'synchronous'],
+      'frecuencia': ['frequency', 'Hz', 'nadir', 'RoCoF', 'oscilación'],
+      'frequency': ['frecuencia', 'Hz', 'nadir', 'RoCoF'],
+      'colapso': ['collapse', 'apagón', 'blackout', 'fallo', 'caída'],
+      'collapse': ['colapso', 'blackout', 'failure', 'apagón'],
+      'apagón': ['blackout', 'colapso', 'corte', 'fallo', '28-A', '28A'],
+      'blackout': ['apagón', 'colapso', 'corte', 'fallo', '28-A'],
+      'renovable': ['solar', 'eólica', 'fotovoltaica', 'IBR', 'inversor'],
+      'renewable': ['solar', 'wind', 'photovoltaic', 'IBR', 'inverter'],
+      'tensión': ['voltaje', 'voltage', 'kV', 'sobretensión', 'Q-V'],
+      'voltage': ['tensión', 'voltaje', 'kV', 'overvoltage'],
+      'reactiva': ['reactive', 'MVAr', 'Q', 'capacitiva', 'inductiva'],
+      'reactive': ['reactiva', 'MVAr', 'Q', 'capacitive'],
+      'interconexión': ['interconnection', 'Francia', 'frontera', 'importación'],
+      'interconnection': ['interconexión', 'France', 'border', 'import'],
+      'recuperación': ['recovery', 'reposición', 'black start', 're-energización'],
+      'recovery': ['recuperación', 'restoration', 'black start', 're-energization'],
+      'prensa internacional': ['medios internacionales', 'cobertura internacional', 'periodismo extranjero'],
+      // Redes sociales
+      'redes sociales': ['twitter', 'X', 'social media', 'viral', 'desinformación'],
+      'social media': ['redes sociales', 'twitter', 'X', 'viral'],
+      'desinformación': ['fake news', 'bulos', 'información falsa', 'vacuum filling'],
+      // Económico
+      'económico': ['economic', 'coste', 'cost', 'pérdidas', 'impacto'],
+      'economic': ['económico', 'cost', 'coste', 'losses', 'impact'],
+    };
+
+    // Expandir la query con sinónimos
+    const baseQuery = question.trim();
+    const queryWords = baseQuery.toLowerCase().split(/\s+/);
+    const expandedTerms = new Set([baseQuery]);
+    
+    queryWords.forEach(word => {
+      if (SYNONYMS[word]) {
+        SYNONYMS[word].forEach(syn => expandedTerms.add(syn));
+      }
+    });
+    
+    // También buscar frases de dos palabras
+    for (let i = 0; i < queryWords.length - 1; i++) {
+      const phrase = queryWords[i] + ' ' + queryWords[i+1];
+      if (SYNONYMS[phrase]) {
+        SYNONYMS[phrase].forEach(syn => expandedTerms.add(syn));
+      }
+    }
+
+    // Buscar con query original primero, luego con expansión
+    const results = searcher.search(baseQuery, {
       prefix: true,
       fuzzy: 0.2,
     });
+
+    // Si hay pocos resultados, buscar con términos expandidos
+    if (results.length < 3 && expandedTerms.size > 1) {
+      const expandedQuery = [...expandedTerms].join(' ');
+      const expandedResults = searcher.search(expandedQuery, {
+        prefix: true,
+        fuzzy: 0.15,
+      });
+      // Añadir resultados expandidos que no estén ya en results
+      const existingIds = new Set(results.map(r => r.id));
+      expandedResults.forEach(r => {
+        if (!existingIds.has(r.id)) {
+          results.push({ ...r, score: r.score * 0.8 }); // penalizar ligeramente
+        }
+      });
+    }
 
     if (results.length === 0) {
       return res.status(200).json({
