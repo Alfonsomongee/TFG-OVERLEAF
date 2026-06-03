@@ -150,10 +150,16 @@ module.exports = async function handler(req, res) {
     }
 
     // ── Separar chunks por tipo ──
-    const top = results.slice(0, 10).map(r => allChunks[r.id]);
-    const contentChunks = top.filter(c => !c.isGlossary && !c.isGraphic).slice(0, 5);
-    const glossaryChunks = top.filter(c => c.isGlossary).slice(0, 3);
-    const graphicChunks = top.filter(c => c.isGraphic).slice(0, 2);
+    const allResults = results.map(r => allChunks[r.id]);
+    const contentChunks = allResults
+      .filter(c => !c.isGlossary && !c.isGraphic)
+      .slice(0, 5);
+    const glossaryChunks = allResults
+      .filter(c => c.isGlossary)
+      .slice(0, 3);
+    const graphicChunks = allResults
+      .filter(c => c.isGraphic)
+      .slice(0, 2);
 
     // ── Construir contexto de contenido ──
     const chapterLinks = contentChunks.length > 0
@@ -189,6 +195,7 @@ module.exports = async function handler(req, res) {
     // ── Llamada a Groq ──
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
     if (!GROQ_API_KEY) return res.status(500).json({ error: 'API Key de Groq no configurada.' });
+
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
