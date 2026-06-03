@@ -250,6 +250,62 @@ export default function ChatFullscreen({
   const messagesEndRef                      = useRef(null);
   const inputRef                            = useRef(null);
 
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  const startListening = useCallback(() => {
+    if (!('webkitSpeechRecognition' in window) && 
+        !('SpeechRecognition' in window)) {
+      alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome.');
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || 
+                              window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    // Idioma según locale activo
+    const langMap = {
+      es: 'es-ES',
+      en: 'en-US', 
+      de: 'de-DE',
+      'zh-Hans': 'zh-CN',
+    };
+    recognition.lang = langMap[lang] || 'es-ES';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join('');
+      setQuestion(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  }, [lang]);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    setIsListening(false);
+  }, []);
+
   // Analizar última respuesta del asistente
   useEffect(() => {
     const last = [...messages].reverse().find(m => m.role === 'assistant');
@@ -763,6 +819,35 @@ export default function ChatFullscreen({
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Indicador de escucha activa */}
+          {isListening && (
+            <div style={{
+              padding: '6px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              color: 'var(--ifm-color-primary)',
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+              animation: 'fadeInUp 0.2s ease',
+            }}>
+              <div style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: 'var(--ifm-color-primary)',
+                animation: 'neonPulseChat 0.8s ease infinite',
+                flexShrink: 0,
+              }}/>
+              {lang === 'en' ? 'LISTENING...'
+                : lang === 'de' ? 'HÖRE ZU...'
+                : lang === 'zh-Hans' ? '正在听...'
+                : 'ESCUCHANDO...'}
+            </div>
+          )}
+
           {/* Sugerencias de preguntas */}
           {activeAnchors.length > 0 && !loading && (() => {
             const anchor = activeAnchors[0];
@@ -839,6 +924,50 @@ export default function ChatFullscreen({
                 fontSize: 13, outline: 'none',
               }}
             />
+            <button
+              onClick={isListening ? stopListening : startListening}
+              title={
+                isListening
+                  ? (lang === 'en' ? 'Stop' : lang === 'de' ? 'Stopp' : lang === 'zh-Hans' ? '停止' : 'Parar')
+                  : (lang === 'en' ? 'Speak' : lang === 'de' ? 'Sprechen' : lang === 'zh-Hans' ? '说话' : 'Hablar')
+              }
+              style={{
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: isListening
+                  ? '1px solid var(--ifm-color-primary)'
+                  : '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                backgroundColor: isListening
+                  ? 'var(--ifm-color-primary)'
+                  : 'transparent',
+                color: isListening
+                  ? 'var(--ifm-background-color)'
+                  : 'var(--chart-text-2, #94a3b8)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                animation: isListening ? 'neonPulseChat 1s ease infinite' : 'none',
+                flexShrink: 0,
+              }}
+            >
+              <svg 
+                width="14" height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="2" width="6" height="12" rx="3"/>
+                <path d="M5 10a7 7 0 0 0 14 0"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+              </svg>
+            </button>
             <button
               onClick={handleSend}
               disabled={loading || !question.trim()}
