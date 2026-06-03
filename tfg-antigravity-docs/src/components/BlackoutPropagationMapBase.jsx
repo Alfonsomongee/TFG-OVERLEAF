@@ -172,7 +172,7 @@ function BlackoutMapContent({}) {
   return (
     <div style={{
       width: '100%',
-      background: 'var(--bg-0, #050a14)',
+      background: 'var(--bg-0, var(--chart-bg, #050a14))',
       borderRadius: 12,
       border: '1px solid rgba(0,217,255,0.15)',
       overflow: 'hidden',
@@ -339,7 +339,7 @@ function BlackoutMapContent({}) {
               <rect x={tx-6} y={ty-14}
                     width={tw+12} height={lines.length*14+18}
                     rx="4"
-                    fill="rgba(5,10,20,0.96)"
+                    fill="var(--chart-bg, rgba(5,10,20,0.96))"
                     stroke="rgba(0,217,255,0.3)" strokeWidth="1"/>
               {lines.map((line, li) => (
                 <text key={li} x={tx} y={ty + li*14}
@@ -376,7 +376,7 @@ function BlackoutMapContent({}) {
 
       {/* ── PANEL INFERIOR ── */}
       <div style={{
-        background: 'rgba(5,10,20,0.95)',
+        background: 'var(--chart-bg, rgba(5,10,20,0.95))',
         borderTop: '1px solid rgba(0,217,255,0.2)',
         padding: '16px 20px',
         display: 'grid',
@@ -505,7 +505,7 @@ export default function BlackoutPropagationMapBase({}) {
   return (
     <BrowserOnly fallback={
       <div style={{
-        height: 480, background:'#050a14', borderRadius:12,
+        height: 480, background:'var(--chart-bg, #050a14)', borderRadius:12,
         display:'flex', alignItems:'center', justifyContent:'center',
         color:'#ef4444', fontFamily:'monospace', fontSize:12,
       }}>

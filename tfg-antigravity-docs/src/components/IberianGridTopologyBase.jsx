@@ -210,7 +210,7 @@ function TopologyContent({}) {
   return (
     <div style={{
       width: '100%',
-      background: 'var(--bg-0, #050a14)',
+      background: 'var(--bg-0, var(--chart-bg, #050a14))',
       borderRadius: 12,
       border: '1px solid rgba(0,217,255,0.15)',
       overflow: 'hidden',
@@ -260,7 +260,7 @@ function TopologyContent({}) {
         </defs>
 
         {/* Mar de fondo */}
-        <rect width="1000" height="800" fill="var(--bg-0, #050a14)" />
+        <rect width="1000" height="800" fill="var(--bg-0, var(--chart-bg, #050a14))" />
         <rect width="1000" height="800" fill="rgba(0,40,80,0.15)" />
 
         <g filter={`url(#${ids.relief})`}>
@@ -424,7 +424,7 @@ function TopologyContent({}) {
                 width={tw + 12}
                 height={lines.length * 15 + 18}
                 rx="4"
-                fill="rgba(5,10,20,0.95)"
+                fill="var(--chart-bg, rgba(5,10,20,0.95))"
                 stroke="rgba(0,217,255,0.3)"
                 strokeWidth="1"
               />
@@ -448,7 +448,7 @@ function TopologyContent({}) {
 
       {/* ── PANEL INFERIOR ─────────────────────────────────────────── */}
       <div style={{
-        background: 'rgba(5,10,20,0.95)',
+        background: 'var(--chart-bg, rgba(5,10,20,0.95))',
         borderTop: '1px solid rgba(0,217,255,0.2)',
         padding: '16px 20px',
         display: 'grid',
@@ -579,7 +579,7 @@ export default function IberianGridTopology({}) {
   return (
     <BrowserOnly fallback={
       <div style={{
-        height: 480, background: '#050a14', borderRadius: 12,
+        height: 480, background: 'var(--chart-bg, #050a14)', borderRadius: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: '#00d9ff', fontFamily: 'monospace', fontSize: 12,
       }}>

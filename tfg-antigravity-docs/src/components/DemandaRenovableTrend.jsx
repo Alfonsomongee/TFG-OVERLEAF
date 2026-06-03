@@ -57,7 +57,7 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
+      background: 'var(--chart-bg, rgba(10,15,30,0.97))',
       border: '1px solid rgba(255,255,255,0.1)',
       borderRadius: 6, padding: '8px 12px',
       fontFamily: 'monospace', fontSize: 12, color: '#e2e8f0',

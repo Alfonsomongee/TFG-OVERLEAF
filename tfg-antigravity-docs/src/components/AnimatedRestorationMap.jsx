@@ -180,7 +180,7 @@ function RestorationContent({}) {
   return (
     <div style={{
       width: '100%',
-      background: 'var(--bg-0, #050a14)',
+      background: 'var(--bg-0, var(--chart-bg, #050a14))',
       borderRadius: 12,
       border: '1px solid rgba(0,217,255,0.15)',
       overflow: 'hidden',
@@ -192,8 +192,8 @@ function RestorationContent({}) {
         <svg viewBox="0 0 1000 800" style={{ width: '100%', display: 'block' }}>
         <defs>
           <radialGradient id="bgGrad2" cx="50%" cy="50%" r="70%">
-            <stop offset="0%"   stopColor="#0a1628" />
-            <stop offset="100%" stopColor="#050a14" />
+            <stop offset="0%"   stopColor="var(--chart-bg, #0a1628)" />
+            <stop offset="100%" stopColor="var(--chart-bg, #050a14)" />
           </radialGradient>
           <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
             <path d="M 40 0 L 0 0 0 40" fill="none"
@@ -350,7 +350,7 @@ function RestorationContent({}) {
 
       {/* ── PANEL INFERIOR ─────────────────────────────────────── */}
       <div style={{
-        background: 'rgba(5,10,20,0.95)',
+        background: 'var(--chart-bg, rgba(5,10,20,0.95))',
         borderTop: '1px solid rgba(0,217,255,0.2)',
         padding: '16px 20px',
         display: 'grid',
@@ -473,7 +473,7 @@ export default function AnimatedRestorationMap({}) {
   return (
     <BrowserOnly fallback={
       <div style={{
-        height: 480, background: '#050a14', borderRadius: 12,
+        height: 480, background: 'var(--chart-bg, #050a14)', borderRadius: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: '#10b981', fontFamily: 'monospace', fontSize: 12,
       }}>
