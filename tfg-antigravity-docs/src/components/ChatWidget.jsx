@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, X } from 'lucide-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import ChatFullscreen from './ChatFullscreen';
 
 const UI_STRINGS = {
   es: {
@@ -65,6 +66,7 @@ export default function ChatWidget() {
   ]);
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState('idle');
+  const [fullscreen, setFullscreen] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -231,9 +233,41 @@ export default function ChatWidget() {
           <div style={{
             padding: '12px 16px', borderBottom: '1px solid var(--chat-border)',
             fontWeight: 600, color: 'var(--chat-header-color)', fontSize: 15,
-            display: 'flex', alignItems: 'center', gap: 8,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            {t.header}
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {t.header}
+            </span>
+            <button
+              onClick={() => setFullscreen(true)}
+              title="Pantalla completa"
+              aria-label="Abrir en pantalla completa"
+              style={{
+                background: 'none',
+                border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                borderRadius: 7,
+                color: 'var(--chart-text-3, #64748b)',
+                cursor: 'pointer',
+                padding: '4px 7px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease',
+                lineHeight: 1,
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--accent-electric)';
+                e.currentTarget.style.color = 'var(--accent-electric)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                e.currentTarget.style.color = 'var(--chart-text-3, #64748b)';
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
 
           {/* Mensajes */}
@@ -338,6 +372,44 @@ export default function ChatWidget() {
           </div>
         </div>
       )}
+
+      {/* Modo pantalla completa */}
+      <ChatFullscreen
+        isOpen={fullscreen}
+        onClose={() => setFullscreen(false)}
+        messages={messages}
+        loading={loading}
+        loadingStage={loadingStage}
+        onSend={async (q) => {
+          setMessages(prev => [...prev, { role: 'user', text: q }]);
+          setLoading(true);
+          setLoadingStage('searching');
+          try {
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: q, locale }),
+            });
+            const data = await res.json();
+            setLoadingStage('generating');
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              text: data.answer || data.error || 'Error',
+            }]);
+          } catch {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              text: t.errorConnection,
+            }]);
+          } finally {
+            setLoading(false);
+            setLoadingStage('idle');
+          }
+        }}
+        onSimplify={handleSimplify}
+        t={t}
+        renderText={renderText}
+      />
     </>
   );
 }
