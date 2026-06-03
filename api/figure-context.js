@@ -25,19 +25,33 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Faltan parámetros' });
   }
 
-  const prompt = `Eres un divulgador técnico experto en sistemas eléctricos. Tu tarea es explicar por qué una figura específica es relevante para responder la pregunta de un usuario, basándote en la respuesta que ya ha dado el asistente.
+  const prompt = `Eres un experto en comunicación técnica de sistemas eléctricos de potencia.
 
-Pregunta del usuario: "${question}"
-Respuesta del asistente (resumida): "${answer.substring(0, 500)}"
-Título de la figura: "${figureTitle || caption}"
-Descripción de la figura: "${caption}"
+TAREA OBLIGATORIA: Genera EXACTAMENTE un párrafo de máximo 50 palabras que explique **por qué esta figura concreta ayuda al usuario a entender MEJOR la respuesta del asistente**.
 
-Genera un párrafo corto (máximo 70 palabras) que:
-1. Conecte directamente la figura con la pregunta del usuario.
-2. Explique qué aspecto de la respuesta ilustra la figura.
-3. Use un tono claro y divulgativo, pero manteniendo precisión técnica.
-4. No repitas información obvia (como "esta figura muestra...").
-Responde SOLO con el párrafo, sin introducciones ni despedidas.`;
+DATOS DE ENTRADA:
+- Pregunta del usuario: "${question}"
+- Respuesta del asistente: "${answer.substring(0, 520)}"
+- Figura (título + descripción): "${figureTitle || caption}"
+
+REGLAS ESTRICTAS (debes cumplirlas todas):
+1. Longitud máxima: 50 palabras.
+2. La primera frase DEBE empezar con una de estas estructuras exactas:
+   • "Esta figura es clave porque..."
+   • "Ilustra perfectamente cómo..."
+   • "Es especialmente relevante porque..."
+3. Conecta con un elemento concreto de la pregunta o de la respuesta (ej: exportaciones netas a Francia, Tap-Lag en 220 kV, nadir de 47,79 Hz, RoCoF >1 Hz/s, etc.).
+4. PROHIBIDO ABSOLUTAMENTE:
+   - Decir "esta figura muestra", "en la imagen se ve", "la gráfica representa", "se observa".
+   - Describir visualmente la figura.
+   - Dar información que ya está en la respuesta del asistente.
+5. Tono: claro, preciso, para lector técnico intermedio. Usa magnitudes correctas.
+6. Salida: SOLO el párrafo. Nada más. Sin comillas, sin encabezados, sin "Aquí tienes el texto:".
+
+Ejemplo de salida perfecta (52 palabras):
+"Esta figura es clave porque muestra el flujo neto exportado a Francia en el momento del colapso, lo que explica directamente por qué las reservas de potencia reactiva del sur eran insuficientes para absorber la sobretensión generada por los IBR."
+
+Genera el párrafo ahora:`;
 
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {
