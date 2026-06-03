@@ -38,13 +38,14 @@ const SYSTEM_PROMPTS = {
 
 const USER_PROMPT_TEMPLATES = {
   es: (context, glossaryLinks, graphicLinks, question) => `INSTRUCCIONES:
-- Responde directamente en español sin frases como "Según el contexto" o "Basado en el contexto".
+- Responde directamente en español.
 - No uses negritas ni asteriscos en el cuerpo del texto.
 - Si la respuesta incluye cifras, cita la fuente entre paréntesis: (REE), (ENTSO-E), (ICAI), etc.
-- Si el contexto incluye un slug de capítulo, añade al final: "Más información: [Ver capítulo](/ruta)"
-- Si hay términos técnicos relevantes en el glosario, añádelos al final como: "Ver en el glosario: [TÉRMINO](/glosario#término)"
-- Si hay gráficas interactivas relacionadas, añádelas al final como: "Gráfica interactiva: [TÍTULO](/ruta#anchor)"
-- Si la información no está en el contexto, di exactamente: "Este detalle no aparece en el TFG. Consulta el glosario o los capítulos técnicos."
+- Si el contexto incluye una Ruta de capítulo, añade al final UN enlace con ese slug exacto: "Más información: [Ver capítulo](SLUG_EXACTO)"
+- NO inventes rutas ni construyas URLs. Usa únicamente los slugs que aparecen en el contexto bajo "Ruta:".
+- Si hay términos en el bloque TÉRMINOS DEL GLOSARIO, añádelos al final usando exactamente los enlaces que aparecen en ese bloque, sin modificarlos.
+- Si hay gráficas en el bloque GRÁFICAS INTERACTIVAS, añádelas al final usando exactamente los enlaces que aparecen en ese bloque, sin modificarlos.
+- Si la información no está en el contexto, di: "Este detalle no aparece en el TFG. Consulta el glosario o los capítulos técnicos."
 - Máximo 250 palabras.
 
 ${glossaryLinks}${graphicLinks}
@@ -57,13 +58,14 @@ ${question}
 RESPUESTA:`,
 
   en: (context, glossaryLinks, graphicLinks, question) => `INSTRUCTIONS:
-- Answer directly in English without phrases like "According to the context" or "Based on the context".
+- Answer directly in English.
 - Do not use bold or asterisks in the body of the text.
 - If the answer includes figures, cite the source in parentheses: (REE), (ENTSO-E), (ICAI), etc.
-- If the context includes a chapter slug, add at the end: "More info: [See chapter](/path)"
-- If there are relevant technical terms in the glossary, add them at the end as: "See in glossary: [TERM](/glossary#term)"
-- If there are related interactive charts, add them at the end as: "Interactive chart: [TITLE](/path#anchor)"
-- If the information is not in the context, say exactly: "This detail does not appear in the thesis. Check the glossary or the technical chapters."
+- If the context includes a chapter Route, add at the end ONE link using that exact slug: "More info: [See chapter](EXACT_SLUG)"
+- DO NOT invent paths or construct URLs. Only use slugs that appear in the context under "Ruta:".
+- If there are terms in the RELEVANT GLOSSARY TERMS block, add them at the end using exactly the links that appear in that block, without modifying them.
+- If there are charts in the RELATED INTERACTIVE CHARTS block, add them at the end using exactly the links that appear in that block, without modifying them.
+- If the information is not in the context, say: "This detail does not appear in the thesis. Check the glossary or the technical chapters."
 - Maximum 250 words.
 
 ${glossaryLinks}${graphicLinks}
@@ -76,13 +78,14 @@ ${question}
 ANSWER:`,
 
   de: (context, glossaryLinks, graphicLinks, question) => `ANWEISUNGEN:
-- Antworte direkt auf Deutsch ohne Phrasen wie „Laut Kontext" oder „Basierend auf dem Kontext".
+- Antworte direkt auf Deutsch.
 - Verwende keine Fettschrift oder Sternchen im Fließtext.
 - Wenn die Antwort Zahlen enthält, zitiere die Quelle in Klammern: (REE), (ENTSO-E), (ICAI) usw.
-- Wenn der Kontext einen Kapitel-Slug enthält, füge am Ende hinzu: „Mehr Infos: [Kapitel ansehen](/pfad)"
-- Wenn relevante Fachbegriffe im Glossar vorhanden sind, füge sie am Ende hinzu: „Im Glossar: [BEGRIFF](/glossar#begriff)"
-- Wenn verwandte interaktive Grafiken vorhanden sind, füge sie am Ende hinzu: „Interaktive Grafik: [TITEL](/pfad#anker)"
-- Wenn die Information nicht im Kontext vorhanden ist, sage genau: „Dieses Detail erscheint nicht in der Abschlussarbeit. Bitte Glossar oder technische Kapitel konsultieren."
+- Wenn der Kontext eine Kapitel-Route enthält, füge am Ende EINEN Link mit dem exakten Slug hinzu: "Mehr Infos: [Kapitel ansehen](EXAKTER_SLUG)"
+- ERFINDE KEINE Pfade und konstruiere KEINE URLs. Verwende nur Slugs, die im Kontext unter "Ruta:" erscheinen.
+- Wenn Begriffe im Block RELEVANTE GLOSSARBEGRIFFE vorhanden sind, füge sie am Ende mit genau den Links ein, die in diesem Block erscheinen, ohne sie zu ändern.
+- Wenn Grafiken im Block VERWANDTE INTERAKTIVE GRAFIKEN vorhanden sind, füge sie am Ende mit genau den Links ein, die in diesem Block erscheinen, ohne sie zu ändern.
+- Wenn die Information nicht im Kontext vorhanden ist, sage: "Dieses Detail erscheint nicht in der Abschlussarbeit. Bitte Glossar oder technische Kapitel konsultieren."
 - Maximal 250 Wörter.
 
 ${glossaryLinks}${graphicLinks}
@@ -153,8 +156,15 @@ module.exports = async function handler(req, res) {
     const graphicChunks = top.filter(c => c.isGraphic).slice(0, 2);
 
     // ── Construir contexto de contenido ──
+    const chapterLinks = contentChunks.length > 0
+      ? `${locale === 'en' ? 'CHAPTER LINKS' : locale === 'de' ? 'KAPITEL-LINKS' : 'ENLACES DE CAPÍTULOS'}:\n${[...new Set(contentChunks.map(c => c.slug))].map(slug => {
+          const chunk = contentChunks.find(c => c.slug === slug);
+          return `- [${chunk.title}](${slug})`;
+        }).join('\n')}\n\n`
+      : '';
+
     const context = contentChunks
-      .map(c => `## ${c.title} – ${c.heading}\nRuta: ${c.slug}\n${c.text}`)
+      .map(c => `## ${c.title} – ${c.heading}\n${c.text}`)
       .join('\n\n');
 
     const SECTION_LABELS = {
@@ -190,7 +200,7 @@ module.exports = async function handler(req, res) {
         model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: SYSTEM_PROMPTS[locale] },
-          { role: 'user', content: USER_PROMPT_TEMPLATES[locale](context, glossaryLinks, graphicLinks, question.trim()) },
+          { role: 'user', content: USER_PROMPT_TEMPLATES[locale](context, chapterLinks + glossaryLinks, graphicLinks, question.trim()) },
         ],
         temperature: 0.2,
         max_tokens: 800,

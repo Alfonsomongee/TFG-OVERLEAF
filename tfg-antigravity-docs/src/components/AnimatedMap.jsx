@@ -74,7 +74,7 @@ export default function AnimatedMap({}) {
       <div 
         className={styles.mapArea}
         style={{ 
-          backgroundImage: `url('/img/iberian_satellite.png')`, 
+          backgroundImage: `url('/img/iberian_satellite.webp')`, 
           backgroundSize: 'cover', 
           backgroundPosition: 'center',
           backgroundColor: '#050505'
