@@ -21,6 +21,7 @@ const extractHSL = (hslString) => {
 export default function ForensicTableViewer() {
   const isBrowser = useIsBrowser();
   const lang = useDocLang();
+  console.log('[ForensicTableViewer] lang detectado:', lang, '| URL:', typeof window !== 'undefined' ? window.location.href : 'SSR');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
