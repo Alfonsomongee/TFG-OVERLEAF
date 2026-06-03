@@ -41,7 +41,7 @@ const USER_PROMPT_TEMPLATES = {
 - Responde directamente en español.
 - No uses negritas ni asteriscos en el cuerpo del texto.
 - Si la respuesta incluye cifras, cita la fuente entre paréntesis: (REE), (ENTSO-E), (ICAI), etc.
-- Si el contexto incluye una Ruta de capítulo, añade al final UN enlace con ese slug exacto: "Más información: [Ver capítulo](SLUG_EXACTO)"
+- Si el contexto incluye un enlace de capítulo, añádelo al final con una frase que explique qué encontrará el usuario ahí. Ejemplo: "Más información: [Análisis del Incidente › Mecanismo Tap-Lag](/analisis-incidente) — explicación detallada del proceso de colapso". Usa el título y heading exactos del bloque ENLACES DE CAPÍTULOS.
 - NO inventes rutas ni construyas URLs. Usa únicamente los slugs que aparecen en el contexto bajo "Ruta:".
 - Si hay términos en el bloque TÉRMINOS DEL GLOSARIO, añádelos al final usando exactamente los enlaces que aparecen en ese bloque, sin modificarlos.
 - Si hay gráficas en el bloque GRÁFICAS INTERACTIVAS, añádelas al final usando exactamente los enlaces que aparecen en ese bloque, sin modificarlos.
@@ -61,7 +61,7 @@ RESPUESTA:`,
 - Answer directly in English.
 - Do not use bold or asterisks in the body of the text.
 - If the answer includes figures, cite the source in parentheses: (REE), (ENTSO-E), (ICAI), etc.
-- If the context includes a chapter Route, add at the end ONE link using that exact slug: "More info: [See chapter](EXACT_SLUG)"
+- If the context includes a chapter link, add it at the end with a phrase explaining what the user will find there. Example: "More info: [Incident Analysis › Tap-Lag Mechanism](/analisis-incidente) — detailed explanation of the collapse process". Use the exact title and heading from the CHAPTER LINKS block.
 - DO NOT invent paths or construct URLs. Only use slugs that appear in the context under "Ruta:".
 - If there are terms in the RELEVANT GLOSSARY TERMS block, add them at the end using exactly the links that appear in that block, without modifying them.
 - If there are charts in the RELATED INTERACTIVE CHARTS block, add them at the end using exactly the links that appear in that block, without modifying them.
@@ -81,7 +81,7 @@ ANSWER:`,
 - Antworte direkt auf Deutsch.
 - Verwende keine Fettschrift oder Sternchen im Fließtext.
 - Wenn die Antwort Zahlen enthält, zitiere die Quelle in Klammern: (REE), (ENTSO-E), (ICAI) usw.
-- Wenn der Kontext eine Kapitel-Route enthält, füge am Ende EINEN Link mit dem exakten Slug hinzu: "Mehr Infos: [Kapitel ansehen](EXAKTER_SLUG)"
+- Wenn der Kontext einen Kapitel-Link enthält, füge ihn am Ende mit einem erklärenden Satz hinzu, was der Nutzer dort findet. Beispiel: "Mehr Infos: [Vorfallsanalyse › Tap-Lag-Mechanismus](/analisis-incidente) — detaillierte Erklärung des Zusammenbruchsprozesses". Verwende den genauen Titel und Heading aus dem Block KAPITEL-LINKS.
 - ERFINDE KEINE Pfade und konstruiere KEINE URLs. Verwende nur Slugs, die im Kontext unter "Ruta:" erscheinen.
 - Wenn Begriffe im Block RELEVANTE GLOSSARBEGRIFFE vorhanden sind, füge sie am Ende mit genau den Links ein, die in diesem Block erscheinen, ohne sie zu ändern.
 - Wenn Grafiken im Block VERWANDTE INTERAKTIVE GRAFIKEN vorhanden sind, füge sie am Ende mit genau den Links ein, die in diesem Block erscheinen, ohne sie zu ändern.
@@ -184,9 +184,10 @@ module.exports = async function handler(req, res) {
     const labels = SECTION_LABELS[locale];
 
     const glossaryLinks = glossaryChunks.length > 0
-      ? `${labels.glossary}:\n${glossaryChunks.map(c =>
-          `- [${c.heading}](${c.slug}): ${c.text.substring(0, 120)}...`
-        ).join('\n')}\n\n`
+      ? `${labels.glossary}:\n${glossaryChunks.map(c => {
+          const def = c.text ? c.text.replace(c.heading + ': ', '').substring(0, 100) : '';
+          return `- [${c.heading}](${c.slug}) — ${def}...`;
+        }).join('\n')}\n\n`
       : '';
 
     const graphicLinks = graphicChunks.length > 0
