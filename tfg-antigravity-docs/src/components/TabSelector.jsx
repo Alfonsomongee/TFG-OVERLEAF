@@ -11,6 +11,7 @@ export default function TabSelector({ active, onSelect, labels }) {
         <button
           key={i}
           onClick={() => onSelect(i)}
+          className={`tab-selector-btn${active === i ? ' active' : ''}`}
           style={{
             flex: 1,
             padding: '0.5rem 1.25rem',

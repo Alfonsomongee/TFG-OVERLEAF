@@ -2847,3 +2847,142 @@ html[data-theme='light'] {
   --chat-btn-bg-disabled: #4d5640;
   --chat-btn-text: #ffffff;
 }
+
+/* ============================================================
+   NAVBAR MICROINTERACTIONS
+   ============================================================ */
+
+/* Base para todos los items del navbar */
+.navbar__items .navbar__item,
+.navbar__items .navbar__link {
+  position: relative;
+  transition: color var(--tr-base) var(--tr-ease),
+              opacity var(--tr-base) var(--tr-ease);
+}
+
+/* Glow effect en hover — modo oscuro */
+html[data-theme='dark'] .navbar__link:hover,
+html[data-theme='dark'] .navbar__item--active .navbar__link {
+  color: var(--accent-electric) !important;
+  text-shadow: 0 0 12px hsla(190, 100%, 60%, 0.5);
+}
+
+/* Glow effect en hover — modo claro */
+html[data-theme='light'] .navbar__link:hover,
+html[data-theme='light'] .navbar__item--active .navbar__link {
+  color: var(--primary) !important;
+  text-shadow: none;
+  opacity: 0.85;
+}
+
+/* Locale dropdown */
+html[data-theme='dark'] .navbar__item.dropdown:hover .navbar__link {
+  color: var(--accent-electric) !important;
+}
+
+/* Search bar activation effect */
+html[data-theme='dark'] .navbar .DocSearch-Button {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  transition: border-color var(--tr-base) var(--tr-ease),
+              box-shadow var(--tr-base) var(--tr-ease) !important;
+  color: var(--text-2) !important;
+}
+
+html[data-theme='dark'] .navbar .DocSearch-Button:hover,
+html[data-theme='dark'] .navbar .DocSearch-Button:focus {
+  border-color: var(--accent-electric) !important;
+  box-shadow: 0 0 0 2px hsla(190, 100%, 60%, 0.15),
+              0 0 12px hsla(190, 100%, 60%, 0.1) !important;
+  color: var(--accent-electric) !important;
+  background: transparent !important;
+}
+
+html[data-theme='light'] .navbar .DocSearch-Button {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  transition: border-color var(--tr-base) var(--tr-ease),
+              box-shadow var(--tr-base) var(--tr-ease) !important;
+}
+
+html[data-theme='light'] .navbar .DocSearch-Button:hover,
+html[data-theme='light'] .navbar .DocSearch-Button:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 38, 53, 0.1) !important;
+  background: transparent !important;
+}
+
+/* Lunr search button (docusaurus-lunr-search) */
+html[data-theme='dark'] .search-bar input,
+html[data-theme='dark'] .aa-Input,
+html[data-theme='dark'] [class*='searchBar'] input {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
+  color: var(--text-1) !important;
+  transition: border-color var(--tr-base) var(--tr-ease),
+              box-shadow var(--tr-base) var(--tr-ease) !important;
+}
+
+html[data-theme='dark'] .search-bar input:focus,
+html[data-theme='dark'] [class*='searchBar'] input:focus {
+  border-color: var(--accent-electric) !important;
+  box-shadow: 0 0 0 2px hsla(190, 100%, 60%, 0.15) !important;
+  outline: none !important;
+}
+
+html[data-theme='light'] .search-bar input,
+html[data-theme='light'] [class*='searchBar'] input {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  transition: border-color var(--tr-base) var(--tr-ease) !important;
+}
+
+html[data-theme='light'] .search-bar input:focus,
+html[data-theme='light'] [class*='searchBar'] input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 38, 53, 0.1) !important;
+  outline: none !important;
+}
+
+/* ============================================================
+   FORENSIC GALLERY — BOTONES DE CATEGORÍA Y TABSELECTOR
+   ============================================================ */
+
+/* TabSelector — botones principales (Number tables / Master database) */
+html[data-theme='dark'] .tab-selector-btn {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  transition: all var(--tr-base) var(--tr-ease) !important;
+}
+
+html[data-theme='dark'] .tab-selector-btn:hover {
+  border-color: var(--accent-electric) !important;
+  color: var(--accent-electric) !important;
+  box-shadow: 0 0 8px hsla(190, 100%, 60%, 0.15) !important;
+}
+
+html[data-theme='dark'] .tab-selector-btn.active {
+  border-color: var(--accent-electric) !important;
+  color: var(--accent-electric) !important;
+  background: hsla(190, 100%, 60%, 0.08) !important;
+  box-shadow: 0 0 12px hsla(190, 100%, 60%, 0.2) !important;
+}
+
+html[data-theme='light'] .tab-selector-btn {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  transition: all var(--tr-base) var(--tr-ease) !important;
+}
+
+html[data-theme='light'] .tab-selector-btn:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+html[data-theme='light'] .tab-selector-btn.active {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+  background: rgba(139, 38, 53, 0.06) !important;
+}
