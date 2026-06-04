@@ -1064,7 +1064,7 @@ module.exports = async function handler(req, res) {
     }
 
     const reranked = rerankResultsByIntent(results, chunks, intent, question);
-    const selectedPairs = selectContextChunks(reranked, chunks, 7);
+    const selectedPairs = selectContextChunks(reranked, chunks, 9);
 
     if (selectedPairs.length === 0) {
       return res.status(200).json({
