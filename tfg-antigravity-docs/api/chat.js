@@ -737,8 +737,65 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     boostIds(['mix-generacion-12-30', 'ree_generation_mix_28april', 'mix_comparativo_2010_2024'], 3.0);
   }
 
-  if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida')) {
-    boostIds(['load-shedding-es-pt', 'demand-shedding-es', 'recuperacion_demanda_peninsular'], 2.2);
+  if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida') ||
+      q.includes('carga desconectada') || q.includes('mw desconect') ||
+      q.includes('cuanta carga') || q.includes('desconecto')) {
+    boostIds(['load-shedding-es-pt', 'demand-shedding-es',
+              'demand-shedding-pt', 'dso-load-shedding'], 3.0);
+    // Penalizar charts ENTSO-E de precios para esta pregunta
+    if (['chart-9','chart-11','chart-2','chart-19'].includes(artifact.id)) score *= 0.15;
+  }
+
+  // Secuencia temporal de eventos → simuladores timeline y sismógrafo
+  const SEQUENCE_KEYWORDS = [
+    'secuencia', 'sequence', 'cronologia', 'chronology',
+    '27 segundos', '27 seconds', 'critical seconds', 'segundos criticos',
+    'paso a paso', 'step by step', 'timeline', 'linea de tiempo',
+    'que paso', 'what happened', 'orden de eventos'
+  ];
+  if (SEQUENCE_KEYWORDS.some(k => q.includes(k))) {
+    if (artifact.id === 'timeline') score *= 4.0;
+    if (artifact.id === 'sismograph') score *= 3.5;
+    if (artifact.id === 'sticky-collapse') score *= 3.0;
+    if (artifact.id === 'map') score *= 2.0;
+    // Penalizar charts ENTSO-E de intercambios para esta pregunta
+    if (['chart-23','chart-14','chart-13'].includes(artifact.id)) score *= 0.2;
+  }
+
+  // Reformas, resiliencia, futuro → simuladores específicos
+  const RESILIENCE_KEYWORDS = [
+    'reforma', 'regulacion', 'propone', 'evitar', 'prevenir',
+    'resiliencia', 'futuro', 'solucion', 'recomendacion',
+    'gfm', 'bess', 'inversor formador', 'grid-forming',
+    'ers', 'mercado capacidad', 'nc rfg'
+  ];
+  if (RESILIENCE_KEYWORDS.some(k => q.includes(k))) {
+    if (artifact.id === 'matrix') score *= 4.0;
+    if (artifact.id === 'radar-vulnerabilidad') score *= 3.5;
+    if (artifact.id === 'comparador-28a') score *= 3.0;
+    if (artifact.id === 'waterfall') score *= 2.5;
+    if (['coste_optimo_ers', 'ers_revenue_stacking',
+         'gfl_vs_gfm_circuit1', 'po74_banda_muerta'].includes(artifact.id)) {
+      score *= 2.5;
+    }
+    // Penalizar artifacts de recuperación para preguntas de reforma
+    if (['recuperacion_demanda_peninsular', 'estrategia_reenergizacion_dual',
+         'black_start_hidroelectrico'].includes(artifact.id)) score *= 0.2;
+  }
+
+  // Preguntas sobre MW perdidos en cascada IBR no necesitan charts de precios
+  const CASCADE_MW_KEYWORDS = [
+    'mw perdidos', 'mw se perdieron', 'cascada ibr',
+    'desconexiones ibr', 'generacion perdida', 'potencia perdida',
+    'cuantos mw', 'perdida de generacion'
+  ];
+  if (CASCADE_MW_KEYWORDS.some(k => q.includes(k))) {
+    if (['chart-8','chart-9','chart-10','chart-11',
+         'chart-20','chart-22'].includes(artifact.id)) score *= 0.1;
+    boostIds(['secuencia-desconexion-suroeste',
+              'cascada_desconexiones', 'heatmap_propagation'], 3.5);
+    if (artifact.id === 'map') score *= 3.0;
+    if (artifact.id === 'ansi59') score *= 2.5;
   }
 
   // Penalizar artifacts de tensión/precursores para preguntas económicas
@@ -760,6 +817,18 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   if (PRICE_KEYWORDS.some(k => q.includes(k)) &&
       RECOVERY_ARTIFACT_IDS.includes(artifact.id)) {
     score *= 0.25;
+  }
+
+  // Los tres artifacts más omnipresentes necesitan penalización base
+  // salvo cuando la pregunta los pide explícitamente
+  const OMNIPRESENT_ARTIFACTS = {
+    'precursor_overvoltage_22april': ['precursor', 'abril', '22 de abril', 'nunez balboa', 'oscilacion previa', 'evento previo'],
+    'entsoe_flow_deviation': ['ntc', 'desvio', 'programa intercambio', 'flujo comercial', 'intercambio programado'],
+    'hvdc_control_transition': ['hvdc', 'santa llogaia', 'pmode', 'inelfe', 'enlace hvdc'],
+  };
+  if (OMNIPRESENT_ARTIFACTS[artifact.id]) {
+    const isExplicit = OMNIPRESENT_ARTIFACTS[artifact.id].some(k => q.includes(k));
+    if (!isExplicit) score *= 0.3;
   }
 
   const qTerms = q.split(/\s+/).filter(t => t.length > 4);
