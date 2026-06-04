@@ -315,9 +315,54 @@ function VisualArtifactCard({ artifact }) {
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
         {artifact.origin && <div style={{ fontSize: 11, color: 'var(--chart-text-3, #64748b)', marginBottom: 8 }}>{artifact.origin}</div>}
         <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
-        {artifact.sampleRows && artifact.sampleRows.length > 0 && (
-          <div style={{ background: 'var(--chat-code-bg, rgba(0,0,0,0.2))', padding: 8, borderRadius: 6, fontSize: 11, fontFamily: 'monospace', color: 'var(--chart-text-2, #94a3b8)', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>
-            {JSON.stringify(artifact.sampleRows, null, 2)}
+        {artifact.sampleRows && artifact.sampleRows.length > 0 && artifact.columns && (
+          <div style={{ overflowX: 'auto', marginTop: 12 }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: 11,
+              color: 'var(--chart-text-2, #94a3b8)',
+            }}>
+              <thead>
+                <tr>
+                  {artifact.columns.map(col => (
+                    <th key={col.key} style={{
+                      padding: '6px 10px',
+                      textAlign: 'left',
+                      borderBottom: '1px solid var(--chart-amber, hsl(38 100% 56%))',
+                      color: 'var(--chart-amber, hsl(38 100% 56%))',
+                      fontWeight: 700,
+                      fontSize: 10,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {col.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {artifact.sampleRows.map((row, i) => (
+                  <tr key={i} style={{
+                    borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                    backgroundColor: i % 2 === 0
+                      ? 'rgba(255,255,255,0.02)'
+                      : 'transparent',
+                  }}>
+                    {artifact.columns.map(col => (
+                      <td key={col.key} style={{
+                        padding: '6px 10px',
+                        fontSize: 11,
+                        lineHeight: 1.4,
+                      }}>
+                        {row[col.key] ?? '—'}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
         <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--chart-amber, hsl(38 100% 56%))', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>

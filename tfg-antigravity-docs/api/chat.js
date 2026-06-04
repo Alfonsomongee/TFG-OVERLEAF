@@ -612,7 +612,15 @@ function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxIt
     }
   }
 
+  // Solo añadir globales que NO estén ya en selectedPairs
+  const selectedArtifactIds = new Set(
+    selectedPairs
+      .filter(p => p.chunk?.artifact)
+      .map(p => p.chunk.artifact.id)
+  );
+
   for (const chunk of getAllArtifactChunks(chunksData)) {
+    if (selectedArtifactIds.has(chunk.artifact.id)) continue;
     candidates.push({
       artifact: chunk.artifact,
       chunk,
@@ -826,24 +834,35 @@ module.exports = async function handler(req, res) {
     const prompt = `Eres el asistente pericial-documental oficial del TFG sobre el apagón ibérico del 28 de abril de 2025.
 Responde ÚNICAMENTE basándote en el CONTEXTO proporcionado.
 
-REGLAS DE TONO Y ESTILO:
-1. Sé preciso, técnico y natural. No suenes robótico.
-2. Prefiere párrafos fluidos salvo que el usuario pida listas, cronologías o cifras.
-3. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica").
-4. NUNCA empieces con "Según el contexto" ni "Basado en la información".
-5. Si no hay información suficiente, dilo directamente.
-6. Responde en ${langName}. Máximo 250 palabras.
+REGLAS DE TONO Y ESTILO (OBLIGATORIAS):
+1. Sé preciso, claro, técnico y natural. No seas pedante ni burocrático. No suenes robótico.
+2. Evita las respuestas tipo lista, a menos que el usuario pida explícitamente comparar, listar cronología o cifras. Prefiere párrafos fluidos.
+3. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica", "el mecanismo raíz es").
+4. NUNCA empieces con frases como "Según el contexto", "Basado en la información". Tampoco uses la muletilla "es importante destacar". Ve directo al grano.
+5. Si no hay información suficiente en el contexto o existen dudas, dilo abiertamente de forma directa.
+6. Responde siempre en ${langName}. Máximo 250 palabras.
 
-INSTRUCCIÓN POR INTENCIÓN: ${intentInstruction}
+INSTRUCCIÓN ESPECÍFICA SEGÚN LA INTENCIÓN DEL USUARIO:
+${intentInstruction}
 
-ANCLAJE DOCUMENTAL: Cierra la respuesta con un enlace Markdown a la sección más relevante usando una de las [URL internas] del contexto.
+CIERRE Y ANCLAJE DOCUMENTAL:
+Cierra con naturalidad. La respuesta debe terminar con:
+1. Una frase breve de anclaje documental con enlace Markdown a la sección más relevante usando la [URL interna a citar].
+2. Una pregunta proactiva contextual, breve y concreta, extraída o inspirada en la lista de SUGERENCIAS.
+
+No uses fórmulas genéricas como "¿quieres preguntar otra cosa?", "espero haberte ayudado" o "si tienes más dudas".
+La pregunta proactiva debe sonar como una continuación lógica del razonamiento, no como una frase comercial.
+
+SUGERENCIAS CONTEXTUALES POSIBLES (elige una para el cierre):
+${followUps.map(q => `- ${q}`).join('\n')}
 
 CONTEXTO RECUPERADO:
 ${context}
 
-PREGUNTA: ${question}
+PREGUNTA DEL USUARIO:
+${question}
 
-RESPUESTA:`;
+RESPUESTA DEL ASISTENTE:`;
 
     const systemPrompt = 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.';
 
