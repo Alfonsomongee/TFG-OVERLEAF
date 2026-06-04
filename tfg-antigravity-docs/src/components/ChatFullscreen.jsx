@@ -528,7 +528,7 @@ export default function ChatFullscreen({
             src: a.url || '',
             caption: {
               caption_es: a.description || a.title,
-              caption_en: a.description || a.title,
+              caption_en: a.description_en || a.description || a.title,
             },
             chapter: 'entsoe',
             artifact: a,
@@ -994,7 +994,7 @@ export default function ChatFullscreen({
               {figureContexts[activeTab] === 'loading' ? (
                 <span style={{ opacity: 0.6 }}>⟳ {ui.loading}</span>
               ) : figureContexts[activeTab] === 'error' || !figureContexts[activeTab] ? (
-                caption
+                (lang === 'en' ? (fig.artifact?.whyMatters_en || fig.artifact?.whyMatters) : fig.artifact?.whyMatters) || caption
               ) : (
                 figureContexts[activeTab]
               )}

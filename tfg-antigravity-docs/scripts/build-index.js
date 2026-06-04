@@ -495,25 +495,36 @@ function injectEntsoeCharts() {
 
   const raw = fs.readFileSync(chartsPath, 'utf8');
 
-  // Extraer objetos de la lista: id, title, description
-  const idMatches     = [...raw.matchAll(/id:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
-  const titleMatches  = [...raw.matchAll(/title:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
-  const descMatches   = [...raw.matchAll(/description:\s*`([\s\S]*?)`/g)].map(m => m[1].trim());
-  // Fallback si las descriptions usan comillas simples/dobles
-  const descMatchesQ  = [...raw.matchAll(/description:\s*['"]([^'"]{20,})['"]/g)].map(m => m[1]);
-  const descriptions  = descMatches.length >= idMatches.length ? descMatches : descMatchesQ;
+  // Evaluar forensicCharts.js en un contexto limpio para evitar parsing por regex frágil
+  const jsContent = raw
+    .replace(/export\s+/g, '')
+    .replace(/import\s+.*?from\s+['"].*?['"];?/g, '');
+  
+  const vm = require('vm');
+  const sandbox = {};
+  let CHARTS = [];
+  try {
+    vm.runInNewContext(jsContent + '\nvar result = CHARTS;', sandbox);
+    CHARTS = sandbox.result || [];
+  } catch (err) {
+    console.error('Error evaluando forensicCharts.js en build-index:', err);
+    return;
+  }
 
   let count = 0;
-  idMatches.forEach((id, i) => {
-    const title       = titleMatches[i] || id;
-    const description = (descriptions[i] || '').substring(0, 400).replace(/\n/g,' ').replace(/\s+/g,' ');
-    if (!title) return;
+  CHARTS.forEach(chart => {
+    const id = chart.id;
+    const title = chart.title || id;
+    const description = (chart.desc || '').replace(/\n/g,' ').replace(/\s+/g,' ');
+    const relevance = (chart.rel || '').replace(/\n/g,' ').replace(/\s+/g,' ');
+    if (!id) return;
 
     const rawText = [
       `Anexo ENTSO-E — Gráfica con datos reales de la API`,
       `ID: ${id}`,
       `Título: ${title}`,
-      `Descripción: ${description}`,
+      `Qué muestra: ${description}`,
+      `Por qué importa para el 28-A: ${relevance}`,
       `Fuente: ESIOS / ENTSO-E / REE / OMIE — datos extraídos directamente de las APIs oficiales`
     ].join('\n').normalize('NFC');
 
@@ -534,12 +545,15 @@ function injectEntsoeCharts() {
         source:      'annex_entsoe',
         title,
         description,
+        whyMatters:  relevance,
+        description_en: chart.desc_en || description,
+        whyMatters_en:  chart.rel_en || relevance,
         url:         `/anexo-entsoe#${id}`,
       }
     });
     count++;
   });
-  console.log(`  → ${count} gráficas ENTSO-E indexadas.`);
+  console.log(`  → ${count} gráficas ENTSO-E indexadas con descripción y relevancia.`);
 }
 
 function buildIndex() {
