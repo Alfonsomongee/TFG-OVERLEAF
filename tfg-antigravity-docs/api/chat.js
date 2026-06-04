@@ -1062,7 +1062,7 @@ module.exports = async function handler(req, res) {
     const suggestedFigures = buildSuggestedFigures(selectedPairs, 3);
     const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
     const followUps = buildFollowUps(question, selectedPairs, intent, 3);
-    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 4);
+    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 2);
 
     const context = selectedPairs
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
@@ -1086,12 +1086,16 @@ REGLAS DE TONO Y ESTILO (OBLIGATORIAS):
 INSTRUCCIÓN ESPECÍFICA SEGÚN LA INTENCIÓN DEL USUARIO:
 ${intentInstruction}
 
-ENLACES CONTEXTUALES EN EL CUERPO (OBLIGATORIO):
-Cuando menciones un concepto técnico clave (Tap-Lag, RoCoF, UFLS, inercia, Q-V, OLTC, IBR, GFM, BESS, etc.)
-que aparezca en el contexto con una URL interna, enlázalo de forma natural en la frase:
-- CORRECTO: "el mecanismo [Tap-Lag](analisis-incidente#tap-lag) amplificó la sobretensión porque..."
-- INCORRECTO: "el mecanismo Tap-Lag amplificó la sobretensión (ver: analisis-incidente#tap-lag)"
-El enlace debe estar integrado en la frase, no al final como nota a pie.
+ENLACES EN EL TEXTO (REGLAS ABSOLUTAS):
+1. Usa EXACTAMENTE la [URL interna a citar] que aparece en el CONTEXTO, incluyendo siempre el #anchor si lo tiene. NUNCA elimines el fragmento #anchor de una URL.
+2. Ejemplos de formato correcto:
+   - [Tap-Lag](analisis-incidente#tap-lag) ← concepto de glosario
+   - [oscilograma del disparo raíz](anexo-figuras#aluvion_alertas_sobretension_sur) ← figura
+   - [tabla de escalones UFLS](anexo-tablas#escalones-ufls) ← tabla
+   - [sección de análisis](analisis-incidente#cascada-ibr) ← capítulo
+3. Integra el enlace en la frase, no al final como nota.
+4. Enlaza 2-3 conceptos o recursos por respuesta máximo. No enlaces todo.
+5. PROHIBIDO inventar URLs. Solo usa las que aparecen en [URL interna a citar].
 
 CIERRE Y ANCLAJE DOCUMENTAL:
 Cierra con una frase que:
@@ -1100,15 +1104,22 @@ Cierra con una frase que:
 
 No uses fórmulas genéricas como "¿quieres preguntar otra cosa?" ni "espero haberte ayudado".
 
-RECURSOS VISUALES DISPONIBLES (usa esta información para orientar al usuario):
-${visualArtifacts && visualArtifacts.length > 0 ? visualArtifacts.map(a =>
-  `- [${a.type.toUpperCase()}] "${a.title}" — ${(a.description||'').substring(0,100)}`
-).join('\n') : 'Ninguno disponible'}
+RECURSO VISUAL PRINCIPAL (si hay uno disponible):
+${visualArtifacts && visualArtifacts.length > 0
+  ? `Hay ${visualArtifacts.length} recurso(s) visual(es) disponible(s) en el panel derecho:
+${visualArtifacts.map((a, i) =>
+  `${i+1}. [${a.type === 'interactive' ? 'SIMULADOR' : a.type === 'table' ? 'TABLA' : a.type === 'entsoe_chart' ? 'GRÁFICA DATOS REALES' : 'FIGURA'}] "${a.title}"
+   Descripción: ${(a.description||'').substring(0,150)}
+   Por qué es relevante: conéctalo directamente con un dato concreto de tu respuesta.`
+).join('\n')}
 
-Si hay recursos visuales listados arriba, menciona en la respuesta UNO (el más relevante)
-con una frase que explique qué debe buscar el usuario en ese recurso para entender mejor
-la respuesta. Ejemplo: "En el simulador de frecuencia puedes ver cómo el RoCoF superó
-1,5 Hz/s en los primeros 8 segundos — observa el punto exacto donde la curva se acelera."
+Menciona el recurso MÁS relevante en la respuesta con una frase que diga
+QUÉ debe buscar el usuario en ese recurso y QUÉ verá que confirma tu explicación.
+Ejemplo: "En la tabla de escalones UFLS del panel derecho, observa cómo el
+escalón 3 se activa exactamente cuando la frecuencia cruza 48,8 Hz — ese es
+el momento en que el sistema pierde los últimos sumideros de reactiva."
+NO menciones recursos que no estén en esta lista.`
+  : 'No hay recursos visuales disponibles para esta respuesta.'}
 
 SUGERENCIAS CONTEXTUALES POSIBLES (elige una para el cierre):
 ${followUps.map(q => `- ${q}`).join('\n')}
@@ -1129,7 +1140,7 @@ RESPUESTA DEL ASISTENTE:`;
         prompt,
         systemPrompt,
         temperature: 0.2,
-        maxTokens: 500,
+        maxTokens: 650,
       });
     } catch (llmError) {
       console.error('[api/chat] LLM provider error:', llmError?.message);
