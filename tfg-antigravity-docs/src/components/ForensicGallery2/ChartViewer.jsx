@@ -160,7 +160,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
         {/* ── HEADER ── */}
         <div className={styles.chartHeader}>
           <div className={styles.chartHeaderTop}>
-            <h2 className={styles.chartTitle} style={{ color: '#64242E' }}>{chart.fullTitle}</h2>
+            <h2 className={styles.chartTitle}>{chart.fullTitle}</h2>
           </div>
           {chart.subtitle && (
             <div className={styles.chartSubtitle}>{chart.subtitle}</div>
@@ -210,10 +210,10 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
             {mobileDescOpen ? '▲' : '▼'} {l.whatShows}
           </button>
           <div data-mobile-collapsible="desc">
-            <div className={styles.descTitle} style={{ color: '#636E4F' }}>
+            <div className={styles.descTitle}>
               &#123;{l.whatShows}&#125;
             </div>
-            <div className={styles.descText} style={{ color: '#41424A' }}>
+            <div className={styles.descText}>
               {desc.split('\n\n').map((para, i) => (
                 <p key={i} className={i === 0 ? styles.firstParagraph : ''}>{para}</p>
               ))}
@@ -223,10 +223,10 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
 
         {/* ── RELEVANCIA FORENSE ── */}
         <div className={styles.relSection} style={{ borderLeftColor: cat.color, background: 'transparent' }}>
-          <div className={styles.relTitle} style={{ color: '#64242E' }}>
+          <div className={styles.relTitle}>
             &#123;{l.relevance}&#125;
           </div>
-          <div className={styles.relText} style={{ color: '#41424A' }}>
+          <div className={styles.relText}>
             {rel.split('\n\n').map((para, i) => (
               <p key={i}>{para}</p>
             ))}
