@@ -17,7 +17,7 @@ function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
       className={clsx(
         styles.sidebar,
         hideOnScroll && styles.sidebarWithHideableNavbar,
-        isHidden ? 'sidebar-collapsed' : null,
+        isHidden && styles.sidebarCollapsed,
       )}
       inert={isHidden ? '' : undefined}
       aria-hidden={isHidden}
