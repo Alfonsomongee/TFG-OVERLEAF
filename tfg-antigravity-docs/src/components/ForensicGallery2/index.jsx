@@ -1,5 +1,5 @@
 // index.jsx — ForensicGallery2 main component
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useForensicData } from '@site/src/data/forensicChartsI18n';
 import LeftPanel from './LeftPanel';
@@ -49,6 +49,21 @@ export default function ForensicGallery2() {
     setCategoryGridMode(true);
     setActiveChartId(null);
   }, []);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && CHARTS.some(c => c.id === hash)) {
+        handleSelectChart(hash);
+      }
+    };
+
+    // Check hash on initial load
+    onHashChange();
+
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [CHARTS, handleSelectChart]);
 
   return (
     <div className={styles.gallery}>

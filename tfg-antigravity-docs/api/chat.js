@@ -1239,6 +1239,68 @@ module.exports = async function handler(req, res) {
       expandedResults.forEach(r => { if (!existingIds.has(r.id)) results.push({ ...r, score: r.score * 0.8 }); });
     }
 
+    // ── Búsqueda secundaria sin stop words ──────────────────────
+    // Para preguntas tipo "¿qué es X?" el BM25 se satura con
+    // stop words y los chunks técnicos relevantes no llegan.
+    // Extraemos los términos técnicos y hacemos una búsqueda
+    // adicional fusionando los resultados.
+    const STOP_WORDS = new Set([
+      'que', 'es', 'el', 'la', 'los', 'las', 'un', 'una', 'de',
+      'del', 'en', 'y', 'o', 'a', 'por', 'para', 'con', 'se',
+      'su', 'sus', 'como', 'si', 'no', 'lo', 'le', 'me', 'te',
+      'nos', 'al', 'hay', 'fue', 'son', 'era', 'ser', 'fue',
+      'han', 'has', 'fue', 'cuál', 'cual', 'qué', 'como',
+      'what', 'is', 'the', 'how', 'does', 'why', 'when',
+      'where', 'which', 'are', 'was', 'were', 'did', 'do',
+      'an', 'of', 'in', 'to', 'and', 'or', 'for',
+    ]);
+
+    const keyTerms = normalizeText(baseQuery)
+      .split(/\s+/)
+      .filter(t => t.length > 2 && !STOP_WORDS.has(t));
+
+    if (keyTerms.length > 0 && keyTerms.length < normalizeText(baseQuery).split(/\s+/).length) {
+      // Solo si hay stop words que eliminar (evita búsqueda duplicada)
+      const keyQuery = keyTerms.join(' ');
+      const keyResults = searcher.search(keyQuery, {
+        prefix: true,
+        fuzzy: t => t.length > 3 ? 1 : 0,
+      });
+      const existingIds = new Set(results.map(r => r.id));
+      keyResults.forEach(r => {
+        if (!existingIds.has(r.id)) {
+          results.push({ ...r, score: r.score * 0.85 });
+        }
+      });
+    }
+
+    // ── Boost explícito para glosario cuando intent es glossary ─
+    // Garantiza que el chunk del glosario del término técnico
+    // siempre llega al pool de reranking
+    if (intent === 'glossary') {
+      const normQ = normalizeText(baseQuery);
+      for (const [id, chunk] of Object.entries(chunks)) {
+        if (chunk.chunkType !== 'glossary') continue;
+        const normHeading = normalizeText(chunk.heading || '');
+        // Si el heading del glosario aparece en la pregunta
+        if (normHeading.length > 2 && normQ.includes(normHeading)) {
+          const alreadyIn = results.some(r => String(r.id) === String(id));
+          if (!alreadyIn) {
+            results.push({
+              id: isNaN(id) ? id : Number(id),
+              score: 80, // score alto para que reranking lo vea
+              terms: [],
+              match: {},
+            });
+          } else {
+            // Si ya está, subir su score
+            const existing = results.find(r => String(r.id) === String(id));
+            if (existing) existing.score = Math.max(existing.score, 80);
+          }
+        }
+      }
+    }
+
     const reranked = rerankResultsByIntent(results, chunks, intent, question);
     const selectedPairs = selectContextChunks(reranked, chunks, 9);
 
