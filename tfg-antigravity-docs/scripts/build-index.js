@@ -298,15 +298,19 @@ function injectMasterData() {
   if (fs.existsSync(masterDataPath)) {
     const data = JSON.parse(fs.readFileSync(masterDataPath, 'utf8'));
     const rawText = `Datos críticos del colapso del 28-A:
-- Demanda peninsular: ${data.demanda.peninsular_MW} MW. ${data.demanda.descripcion}
-- Mix renovable: ${data.mix_generacion.renovable_total_porcentaje}%, fotovoltaica: ${data.mix_generacion.fotovoltaica_porcentaje}%, nuclear: ${data.mix_generacion.nuclear_porcentaje}%, bombeo: ${data.mix_generacion.bombeo_activo_MW} MW.
-- Intercambios internacionales (importaciones y exportaciones netas): España exportaba ${data.intercambios_internacionales.exportacion_francia_MW} MW a Francia, ${data.intercambios_internacionales.exportacion_portugal_MW} MW a Portugal y ${data.intercambios_internacionales.exportacion_marruecos_MW} MW a Marruecos. ${data.intercambios_internacionales.descripcion}
-- Inercia Ibérica: entre ${data.inercia_y_estabilidad.inercia_iberia_s} segundos. Energía cinética: ${data.inercia_y_estabilidad.energia_cinetica_total_iberia_MWs} MWs.
-- Frecuencia de pérdida de sincronismo: ${data.inercia_y_estabilidad.frecuencia_perdida_sincronismo_Hz} Hz. RoCoF pico: ${data.inercia_y_estabilidad.rocof_maximo_Hz_s} Hz/s.
-- Tensión máxima en barras: >${data.colapso_y_reposicion.tension_maxima_barras_colectoras_kV} kV.
-- Pérdida de generación en la cascada: ${data.colapso_y_reposicion.perdida_generacion_cascada_MW} MW.
-- Desconexiones de demanda (SO): ${data.colapso_y_reposicion.desconexiones_SO_MW} MW.
-- Coste de operación reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} millones de euros.`;
+- Demanda peninsular en el momento del apagón: ${data.demanda.peninsular_MW} MW (${data.demanda.descripcion || '56% del pico histórico'}).
+- Mix renovable: ${data.mix_generacion.renovable_total_porcentaje}%, fotovoltaica: ${data.mix_generacion.fotovoltaica_porcentaje}%, nuclear: ${data.mix_generacion.nuclear_porcentaje}%, bombeo activo: ${data.mix_generacion.bombeo_activo_MW} MW.
+- Intercambios internacionales: España exportaba ${data.intercambios_internacionales.exportacion_francia_MW} MW a Francia, ${data.intercambios_internacionales.exportacion_portugal_MW} MW a Portugal, ${data.intercambios_internacionales.exportacion_marruecos_MW} MW a Marruecos. ${data.intercambios_internacionales.descripcion || ''}
+- Inercia ibérica H_tot: ${data.inercia_y_estabilidad.inercia_iberia_s} s. Energía cinética total: ${data.inercia_y_estabilidad.energia_cinetica_total_iberia_MWs} MWs.
+- Frecuencia en pérdida de sincronismo con Francia: ${data.inercia_y_estabilidad.frecuencia_perdida_sincronismo_Hz} Hz a las ${data.colapso_y_reposicion.separacion_francia_hora || '12:33:21.535 CEST'}.
+- Nadir frecuencial: ${data.colapso_y_reposicion.frecuencia_nadir_Hz || 47.79} Hz. RoCoF hasta separación: ${data.colapso_y_reposicion.rocof_hasta_separacion_Hz_s || 1.0} Hz/s.
+- Tensión máxima en barras colectoras: >${data.colapso_y_reposicion.tension_maxima_barras_colectoras_kV} kV.
+- Disparo raíz: ${data.colapso_y_reposicion.disparo_raiz_granada_MW || 355} MW en Granada a las ${data.colapso_y_reposicion.disparo_raiz_granada_hora || '12:32:56.993 CEST'}.
+- Pérdida de generación en los primeros 20 s: ${data.colapso_y_reposicion.perdida_generacion_20s_MW || 2000} MW. Total cascada: ${data.colapso_y_reposicion.perdida_generacion_cascada_MW} MW.
+- Demanda sin suministro: España ${data.colapso_y_reposicion.demanda_sin_suministro_espana_MW || 25184} MW (${data.colapso_y_reposicion.desconexion_espana_porcentaje || 33.8}% de su demanda). Portugal ${data.colapso_y_reposicion.demanda_sin_suministro_portugal_MW || 1955} MW (${data.colapso_y_reposicion.desconexion_portugal_porcentaje || 33.3}% de su demanda). Total ibérico: ${data.colapso_y_reposicion.carga_iberica_total_MW || 31000} MW.
+- Reposición: Portugal completó el transporte a las ${data.colapso_y_reposicion.reposicion_portugal_transporte || '00:22 del 29 de abril'} (~${data.colapso_y_reposicion.duracion_reposicion_portugal_h || 12} horas). España completó el transporte a las ${data.colapso_y_reposicion.reposicion_espana_transporte || '04:00 del 29 de abril'} (~${data.colapso_y_reposicion.duracion_reposicion_espana_h || 16} horas). Recuperación del 99% de demanda: ${data.colapso_y_reposicion.recuperacion_demanda_99pct || '07:00 del 29 de abril'}.
+- Coste de Operación Reforzada: ${data.colapso_y_reposicion.coste_operacion_reforzada_M_eur} M€/año.
+- Electrodependientes sin suministro: ~70.000 personas.`;
 
     const keywords = extractKeywords(rawText);
 
