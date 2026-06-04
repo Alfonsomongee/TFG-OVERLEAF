@@ -275,7 +275,7 @@ Tu sitio documenta el **análisis del Apagón Ibérico del 28 de Abril de 2025**
 
 ## 📧 Información de Contacto
 
-**Autor:** Alfonso Monge García  
+**Autor:** Alfonso Monge Díaz-Ángel  
 **Institución:** ETSI - Universidad de Sevilla  
 **Email:** alfonsomongee@gmail.com  
 **GitHub:** github.com/alfonsomongee

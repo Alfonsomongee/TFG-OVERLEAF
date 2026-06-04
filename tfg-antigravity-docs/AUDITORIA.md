@@ -456,7 +456,7 @@ tfg-antigravity-docs/
 **2.7**  
 - Línea 132 (useMemo de letters): usa `[]` como dependencias en lugar de `[GLOSSARY_TERMS]`. Si el idioma cambia, `letters` se recalcula en el siguiente render pero podría mostrar el array vacío brevemente. **Posible bug visual**.  
 - Hardcoded "May 2026" / "mayo 2026" en el footer (líneas 70, 79, 100, 120) — debería venir de config.  
-- El autor en footer dice "Alfonso Monge García" pero el config.js y el resto del sitio dice "Alfonso Monge Díaz-Ángel" — **inconsistencia de nombre**.  
+- El autor en footer dice "Alfonso Monge Díaz-Ángel" pero el config.js y el resto del sitio dice "Alfonso Monge Díaz-Ángel" — **inconsistencia de nombre**.  
 **2.8** Improvable.
 
 ---
@@ -1120,7 +1120,7 @@ Sitio de documentación técnica interactivo construido con Docusaurus 2.4.3 + R
 ### 8.3 Top 10 problemas de dificultad media
 
 1. **`ExecutiveHook.jsx:14`** — `window.location.search` sin guard SSR → error potencial en pre-render.
-2. **`GlosarioTecnico.jsx` footer** — autor dice "Alfonso Monge García" en vez de "Alfonso Monge Díaz-Ángel" (inconsistencia con el resto del sitio).
+2. **`GlosarioTecnico.jsx` footer** — autor dice "Alfonso Monge Díaz-Ángel" en vez de "Alfonso Monge Díaz-Ángel" (inconsistencia con el resto del sitio).
 3. **sidebar_position duplicados** — `docs/10-resumen-de-cifras.mdx` y `docs/glosario.mdx` tienen `sidebar_position: 10`; `docs/10-galeria-imagenes.mdx` y `docs/referencias.mdx` tienen `sidebar_position: 11`; `docs/11-cronologia.mdx` y `docs/galeria-graficas.mdx` tienen `sidebar_position: 12`; `docs/09-conclusiones.mdx` y `docs/impacto-social.mdx` tienen `sidebar_position: 9`. Estos conflictos se resuelven por el orden explícito en `sidebars.js`, pero son confusos.
 4. **`GlossaryLink.jsx`** — lógica `isTouch` en render (no en useEffect) → potencial hydration mismatch SSR/cliente.
 5. **`ForensicUI/Primitives.jsx`** — todos los estilos de `CriticalEventBlock`, `IncidentDivider`, `ForensicFigure` son inline. Difícil de mantener y no respeta el tema oscuro/claro.
@@ -1134,7 +1134,7 @@ Sitio de documentación técnica interactivo construido con Docusaurus 2.4.3 + R
 
 1. **Eliminar la segunda mitad duplicada de custom.css** (líneas ~500-2118): quedarse solo con la primera mitad y el bloque `.table-full-width` completo (líneas 1392-1401). Reducir el archivo en ~1000 líneas. Impacto inmediato en mantenibilidad y tiempo de parseo CSS.
 
-2. **Corregir el nombre del autor en `GlosarioTecnico.jsx` líneas ~70, 79, 100, 120**: cambiar "Alfonso Monge García" a "Alfonso Monge Díaz-Ángel". 5 minutos.
+2. **Corregir el nombre del autor en `GlosarioTecnico.jsx` líneas ~70, 79, 100, 120**: cambiar "Alfonso Monge Díaz-Ángel" a "Alfonso Monge Díaz-Ángel". 5 minutos.
 
 3. **Sincronizar `glossary-terms.json` con `glossary.js`**: exportar los ~119 términos de `glossary.js` al JSON para que el panel flotante tenga las mismas definiciones que el plugin. Impacto: el 100% de los spans del glosario tendrán definición en el panel. Se puede hacer con un script Node de 10 líneas.
 

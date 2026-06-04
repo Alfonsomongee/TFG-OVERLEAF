@@ -143,7 +143,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © 2025 Alfonso Monge García. Built with Docusaurus.`,
+        copyright: `Copyright © 2025 Alfonso Monge Díaz-Ángel. Built with Docusaurus.`,
       },
       prism: {
         theme: lightTheme,

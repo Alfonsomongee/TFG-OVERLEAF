@@ -4606,7 +4606,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "terms",
         all: "All",
         reset: "Reset search",
-        footer: "Last updated: May 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Last updated: May 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
       case 'pt': return {
         searchPlaceholder: "Pesquisar termo ou definição...",
@@ -4616,7 +4616,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "termos",
         all: "Todas",
         reset: "Reiniciar pesquisa",
-        footer: "Última atualização: maio 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Última atualização: maio 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
       case 'fr': return {
         searchPlaceholder: "Rechercher un terme ou une définition...",
@@ -4626,7 +4626,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "termes",
         all: "Toutes",
         reset: "Réinitialiser la recherche",
-        footer: "Dernière mise à jour : mai 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Dernière mise à jour : mai 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
       case 'it': return {
         searchPlaceholder: "Cerca termine o definizione...",
@@ -4636,7 +4636,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "termini",
         all: "Tutte",
         reset: "Ripristina ricerca",
-        footer: "Ultimo aggiornamento: maggio 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Ultimo aggiornamento: maggio 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
       case 'de': return {
         searchPlaceholder: "Begriff oder Definition suchen...",
@@ -4646,7 +4646,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "Begriffe",
         all: "Alle",
         reset: "Suche zurücksetzen",
-        footer: "Letzte Aktualisierung: Mai 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Letzte Aktualisierung: Mai 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
       default: return {
         searchPlaceholder: "Buscar término o definición...",
@@ -4656,7 +4656,7 @@ export default function GlosarioTecnico({ lang: propLang }) {
         terms: "términos",
         all: "Todas",
         reset: "Reiniciar búsqueda",
-        footer: "Última actualización: mayo 2026 — Alfonso Monge García, ETSI Universidad de Sevilla"
+        footer: "Última actualización: mayo 2026 — Alfonso Monge Díaz-Ángel, ETSI Universidad de Sevilla"
       };
     }
   };
