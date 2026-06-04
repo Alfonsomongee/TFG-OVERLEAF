@@ -1,0 +1,2988 @@
+==================================================
+   VOLCADO COMPLETO DEL BOT DE CHARLA (BOT 2.0)   
+==================================================
+
+
+
+##################################################
+### ARCHIVO: Backend API: api/chat.js
+### RUTA ORIGINAL: c:\Users\aphmo\Proyectos\TFG OVERLEAF\tfg-antigravity-docs\api\chat.js
+##################################################
+
+// api/chat.js
+const MiniSearch = require('minisearch');
+const fs = require('fs');
+const path = require('path');
+
+let chunks = null;
+let miniSearch = null;
+
+const rateLimiter = new Map();
+const RATE_LIMIT_WINDOW = 60_000;
+const RATE_LIMIT_MAX = 12;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimiter.get(ip);
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
+    rateLimiter.set(ip, { windowStart: now, count: 1 });
+    return true;
+  }
+  entry.count++;
+  return entry.count <= RATE_LIMIT_MAX;
+}
+
+if (typeof global.rateLimitInterval === 'undefined') {
+  global.rateLimitInterval = setInterval(() => {
+    const now = Date.now();
+    for (const [ip, entry] of rateLimiter) {
+      if (now - entry.windowStart > RATE_LIMIT_WINDOW * 2) rateLimiter.delete(ip);
+    }
+  }, 120_000);
+}
+
+function getSearch() {
+  if (!miniSearch) {
+    const t0 = Date.now();
+    try {
+      const indexRaw = fs.readFileSync(path.join(__dirname, '..', 'static', 'search-index.json'), 'utf8');
+      chunks = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'static', 'chunks.json'), 'utf8'));
+      miniSearch = MiniSearch.loadJSON(indexRaw, {
+        fields: ['title', 'heading', 'subheading', 'text', 'keywordsText'],
+        storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile', 'artifact']
+      });
+      console.log(`[api/chat] MiniSearch loaded in ${Date.now() - t0}ms, ${Object.keys(chunks).length} chunks`);
+    } catch (err) {
+      console.error('Error cargando los archivos estáticos del índice:', err);
+      throw new Error('IndexFilesMissing');
+    }
+  }
+  return miniSearch;
+}
+
+async function callWithTimeout(url, options, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    return response;
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === 'AbortError') {
+      const error = new Error(`LLM timeout after ${timeoutMs}ms`);
+      error.status = 504;
+      throw error;
+    }
+    throw err;
+  }
+}
+
+async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const response = await callWithTimeout(
+    'https://api.groq.com/openai/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+      }),
+    },
+    6000
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    const error = new Error(`Groq ${response.status}: ${errorText.slice(0, 200)}`);
+    error.provider = 'groq';
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  return {
+    text: data.choices?.[0]?.message?.content?.trim() || '',
+    provider: 'groq',
+    model: data.model,
+    tokens: data.usage?.total_tokens,
+  };
+}
+
+async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const response = await callWithTimeout(
+    'https://api.deepseek.com/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
+        temperature,
+        max_tokens: maxTokens,
+        stream: false,
+      }),
+    },
+    9000
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    const error = new Error(`DeepSeek ${response.status}: ${errorText.slice(0, 200)}`);
+    error.provider = 'deepseek';
+    error.status = response.status;
+    throw error;
+  }
+
+  const data = await response.json();
+  return {
+    text: data.choices?.[0]?.message?.content?.trim() || '',
+    provider: 'deepseek',
+    model: data.model,
+    tokens: data.usage?.total_tokens,
+  };
+}
+
+async function callLLM({ prompt, systemPrompt, temperature = 0.2, maxTokens = 500 }) {
+  const groqKey = process.env.GROQ_API_KEY;
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const errors = [];
+
+  console.log('[api/chat] LLM config:', {
+    groq: !!groqKey,
+    deepseek: !!deepseekKey,
+    promptLen: prompt.length,
+  });
+
+  if (groqKey) {
+    try {
+      const result = await callGroq({ apiKey: groqKey, prompt, systemPrompt, temperature, maxTokens });
+      console.log(`[api/chat] ✓ ${result.provider}/${result.model} — ${result.tokens} tokens`);
+      return result;
+    } catch (error) {
+      console.error(`[api/chat] ✗ Groq: ${error.message}`);
+      errors.push({ provider: 'groq', message: error.message, status: error.status });
+    }
+  }
+
+  if (deepseekKey) {
+    try {
+      const result = await callDeepSeek({ apiKey: deepseekKey, prompt, systemPrompt, temperature, maxTokens });
+      console.log(`[api/chat] ✓ ${result.provider}/${result.model} — ${result.tokens} tokens`);
+      return result;
+    } catch (error) {
+      console.error(`[api/chat] ✗ DeepSeek: ${error.message}`);
+      errors.push({ provider: 'deepseek', message: error.message, status: error.status });
+    }
+  }
+
+  const error = new Error(
+    errors.length
+      ? `All providers failed: ${errors.map(e => `${e.provider}:${e.status}`).join(', ')}`
+      : 'No LLM provider configured'
+  );
+  error.provider = 'none';
+  error.status = errors.some(e => e.status === 429) ? 429 : 502;
+  error.details = errors;
+  throw error;
+}
+
+function normalizeText(str) {
+  return String(str || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function classifyIntent(question, mode = 'normal') {
+  if (mode === 'simple') return 'simple';
+
+  const scores = { causal: 0, quantitative: 0, comparison: 0, timeline: 0, glossary: 0, visual: 0, simple: 0, general: 0 };
+  const norm = normalizeText(question);
+
+  const match = (terms, type, weight = 1) => {
+    terms.forEach(t => { if (norm.includes(t)) scores[type] += weight; });
+  };
+
+  match(['grafica', 'figura', 'simulador', 'mapa', 'tabla', 'imagen', 'ensename', 'muestrame', 'mostrar', 'ver grafica', 'ver figura'], 'visual', 4);
+  match(['evolucion', 'evoluciono', 'durante', '27 segundos', 'segundos criticos', 'cronologia', 'secuencia', 'minuto a minuto'], 'timeline', 3);
+  match(['cuanta', 'cuanto', 'cifra', 'porcentaje', 'demanda', 'mw', 'hz', 'mvar', 'kv', 'solar', 'mix'], 'quantitative', 2);
+  match(['reactiva', 'potencia reactiva', 'mvar', 'q-v', 'sobretension'], 'causal', 2);
+  match(['por que', 'como amplifico', 'como actuo', 'mecanismo', 'detonante', 'causa', 'agravo', 'tap-lag', 'ufls', 'colapso en vez de'], 'causal', 3);
+  match(['compara', 'comparar', 'vs', 'frente a', 'diferencia entre', 'discrepan', 'ree', 'icai', 'entso-e'], 'comparison', 3);
+  match(['que es', 'define', 'explicame el concepto', 'que significa'], 'glossary', 4);
+  match(['sencill', 'no sabe', 'como si fuera', 'facil', 'para tontos'], 'simple', 1);
+
+  let maxScore = 0;
+  let detectedIntent = 'general';
+  const priorities = ['visual', 'comparison', 'glossary', 'causal', 'quantitative', 'timeline', 'simple', 'general'];
+
+  Object.entries(scores).forEach(([intent, score]) => {
+    if (score > maxScore) {
+      maxScore = score;
+      detectedIntent = intent;
+    } else if (score === maxScore && score > 0) {
+      if (priorities.indexOf(intent) < priorities.indexOf(detectedIntent)) {
+        detectedIntent = intent;
+      }
+    }
+  });
+
+  return maxScore > 0 ? detectedIntent : 'general';
+}
+
+function getIntentInstruction(intent) {
+  const map = {
+    causal: "Estructura la respuesta como cadena causal: causa raíz → mecanismo → consecuencia. Distingue entre detonante principal, factor agravante y síntoma.",
+    quantitative: "Prioriza cifras exactas, unidades y comparación entre magnitudes. Da número, unidad e interpretación. No redondees si el contexto da cifras precisas.",
+    comparison: "Organiza por posiciones institucionales. Separa la versión del Gobierno/REE, ICAI/AELEC y ENTSO-E. Identifica de forma muy clara cuál es el consenso y cuál la discrepancia.",
+    timeline: "Ordena cronológicamente. Usa timestamps si aparecen en el contexto.",
+    glossary: "Define primero el concepto de forma rigurosa, luego explica inmediatamente su papel o utilidad concreta en el colapso del 28-A.",
+    visual: "Relaciona activamente la respuesta con figuras, mapas, tablas o simuladores si aparecen en el contexto recuperado.",
+    simple: "Explica con lenguaje sumamente claro, sin perder exactitud física. Usa una analogía técnica breve solo si ayuda sustancialmente. Evita jerga innecesaria.",
+    general: "Responde de forma técnica, directa y conversacional."
+  };
+  return map[intent] || map.general;
+}
+
+function applySlugPenalties(score, chunk, normalizedQuestion) {
+  const slug = normalizeText(chunk?.slug || '');
+  let adjusted = score;
+
+  const asksAboutAI =
+    normalizedQuestion.includes('ia') ||
+    normalizedQuestion.includes('inteligencia artificial') ||
+    normalizedQuestion.includes('llm') ||
+    normalizedQuestion.includes('prompt') ||
+    normalizedQuestion.includes('uso de ia');
+
+  const asksAboutEurope =
+    normalizedQuestion.includes('europa') ||
+    normalizedQuestion.includes('europea') ||
+    normalizedQuestion.includes('francia') ||
+    normalizedQuestion.includes('portugal') ||
+    normalizedQuestion.includes('entso-e') ||
+    normalizedQuestion.includes('rte') ||
+    normalizedQuestion.includes('interconexion');
+
+  const asksHowItStarted =
+    normalizedQuestion.includes('como empezo') ||
+    normalizedQuestion.includes('como inicio') ||
+    normalizedQuestion.includes('origen del apagon') ||
+    normalizedQuestion.includes('empezo el apagon') ||
+    normalizedQuestion.includes('inicio el apagon') ||
+    normalizedQuestion.includes('por que se fue la luz');
+
+  if (slug.includes('uso-ia') && !asksAboutAI) adjusted *= 0.35;
+  if (slug.includes('dimension-europea') && !asksAboutEurope) adjusted *= 0.55;
+
+  if (asksHowItStarted && slug.includes('impacto-comunicativo')) adjusted *= 0.45;
+  if (asksHowItStarted && slug.includes('consecuencias-financieras')) adjusted *= 0.45;
+  if (asksHowItStarted && slug.includes('dimension-europea')) adjusted *= 0.45;
+
+  return adjusted;
+}
+
+function rerankResultsByIntent(results, chunksData, intent, question) {
+  const normQuestion = normalizeText(question);
+  const questionTerms = normQuestion.split(/\s+/).filter(t => t.length > 3);
+  
+  return results.map(r => {
+    const chunk = chunksData[r.id];
+    if (!chunk) return { ...r, adjustedScore: 0 };
+
+    let adjustedScore = r.score || 0;
+    const chunkType = chunk.chunkType || 'normal';
+    const keywords = Array.isArray(chunk.keywords) ? chunk.keywords : [];
+    
+    const title = normalizeText(chunk.title || '');
+    const heading = normalizeText(chunk.heading || '');
+    const subheading = normalizeText(chunk.subheading || '');
+    const text = normalizeText(chunk.text || '');
+    const normSlug = normalizeText(chunk.slug || '');
+    const combinedHead = `${heading} ${subheading} ${normSlug}`;
+
+    if (intent === 'comparison' && chunkType === 'comparison') adjustedScore *= 1.45;
+    if (intent === 'quantitative' && (chunkType === 'quantitative' || chunkType === 'master_data')) adjustedScore *= 1.45;
+    if (intent === 'timeline' && chunkType === 'timeline') adjustedScore *= 1.45;
+    if (intent === 'glossary' && chunkType === 'glossary') adjustedScore *= 1.50;
+    if (intent === 'visual' && chunkType === 'graphic') adjustedScore *= 1.45;
+    if (intent === 'causal' && chunkType === 'causal') adjustedScore *= 1.45;
+
+    if (intent === 'quantitative' && chunkType === 'table') adjustedScore *= 1.8;
+    if (intent === 'visual' && chunkType === 'data_figure') adjustedScore *= 2.0;
+    if (intent === 'comparison' && chunkType === 'table') adjustedScore *= 1.5;
+    if (intent === 'causal' && chunkType === 'data_figure' && chunk.artifact && normQuestion.includes(normalizeText(chunk.artifact.id))) adjustedScore *= 1.25;
+
+    if (keywords.some(kw => normQuestion.includes(normalizeText(kw)))) {
+      adjustedScore *= 1.2;
+    }
+
+    if (questionTerms.some(t => title.includes(t) || heading.includes(t))) {
+      adjustedScore *= 1.15;
+    }
+
+    if (normQuestion.includes('tap-lag') || normQuestion.includes('tap lag')) {
+      if (combinedHead.includes('tap-lag') || combinedHead.includes('taplag') || text.includes('tap-lag')) adjustedScore *= 1.8;
+      if (normSlug.includes('analisis-incidente')) adjustedScore *= 1.35;
+    }
+    
+    if (normQuestion.includes('ufls') || normQuestion.includes('deslastre')) {
+      if (combinedHead.includes('ufls') || text.includes('ufls') || text.includes('deslastre')) adjustedScore *= 1.7;
+    }
+    
+    if (normQuestion.includes('gfm') || normQuestion.includes('grid forming') || normQuestion.includes('grid-forming')) {
+      if ((chunk.chunkType || '') === 'glossary') adjustedScore *= 1.8;
+      if (text.includes('grid-forming') || text.includes('gfm')) adjustedScore *= 1.4;
+    }
+    
+    if (intent === 'visual' && (normQuestion.includes('frecuencia') || normQuestion.includes('frequency') || normQuestion.includes('rocof') || normQuestion.includes('nadir'))) {
+      if ((chunk.chunkType || '') === 'graphic') adjustedScore *= 2.0;
+      if (text.includes('frecuencia') || text.includes('frequency') || text.includes('rocof') || text.includes('nadir')) adjustedScore *= 1.4;
+    }
+    
+    if (normQuestion.includes('francia') || normQuestion.includes('reposición') || normQuestion.includes('reposicion') || normQuestion.includes('rte')) {
+      if (text.includes('francia') || text.includes('rte') || text.includes('reposicion') || text.includes('reposición')) adjustedScore *= 1.45;
+    }
+    
+    if (normQuestion.includes('coste') || normQuestion.includes('opex') || normQuestion.includes('capex') || normQuestion.includes('operacion reforzada')) {
+      if (normSlug.includes('consecuencias-financieras') || text.includes('operacion reforzada') || text.includes('operación reforzada')) adjustedScore *= 1.6;
+    }
+
+    if (
+      normQuestion.includes('como empezo') ||
+      normQuestion.includes('como inicio') ||
+      normQuestion.includes('origen del apagon') ||
+      normQuestion.includes('empezo el apagon') ||
+      normQuestion.includes('inicio el apagon') ||
+      normQuestion.includes('por que se fue la luz')
+    ) {
+      if (normSlug.includes('analisis-incidente')) adjustedScore *= 1.8;
+      if (normSlug.includes('contexto')) adjustedScore *= 1.45;
+      if (normSlug.includes('resumen-de-cifras')) adjustedScore *= 1.35;
+      if (text.includes('tap-lag') || text.includes('sobretension') || text.includes('colapso de tension')) adjustedScore *= 1.35;
+    }
+
+    if (normQuestion.includes('inercia') || normQuestion.includes('rocof')) {
+      if (normSlug.includes('analisis-incidente') || normSlug.includes('resiliencia-futuro') || normSlug.includes('resumen-de-cifras')) adjustedScore *= 1.4;
+      if (text.includes('inercia') || text.includes('rocof') || text.includes('h=')) adjustedScore *= 1.3;
+    }
+
+    if (!chunk.text || chunk.text.length < 100) adjustedScore *= 0.7;
+
+    adjustedScore = applySlugPenalties(adjustedScore, chunk, normQuestion);
+
+    return { ...r, adjustedScore };
+  }).sort((a, b) => b.adjustedScore - a.adjustedScore);
+}
+
+function selectContextChunks(rerankedResults, chunksData, maxChunks = 7) {
+  if (rerankedResults.length === 0) return [];
+  const bestScore = rerankedResults[0].adjustedScore;
+  const selectedPairs = [];
+  const slugCount = {};
+
+  for (const r of rerankedResults) {
+    const chunk = chunksData[r.id];
+    if (!chunk) continue;
+    
+    const chunkType = chunk.chunkType || 'normal';
+
+    if (r.adjustedScore < bestScore * 0.18 && chunkType !== 'master_data' && chunkType !== 'glossary') {
+      if (selectedPairs.length >= 3) break;
+    }
+
+    const slug = chunk.slug || 'unknown';
+    slugCount[slug] = (slugCount[slug] || 0) + 1;
+    if (slugCount[slug] > 2 && selectedPairs.length >= 2 && chunkType !== 'master_data') continue;
+
+    selectedPairs.push({ result: r, chunk });
+    if (selectedPairs.length >= maxChunks) break;
+  }
+  return selectedPairs;
+}
+
+function buildChunkUrl(chunk) {
+  const slug = chunk?.slug || '';
+  const anchor = chunk?.anchor || '';
+  return anchor ? `${slug}#${anchor}` : slug;
+}
+
+function makeExcerpt(text, maxLength = 220) {
+  if (!text || typeof text !== 'string') return '';
+  const clean = text.replace(/Capítulo:.*?\n\n/g, '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= maxLength) return clean;
+  return clean.slice(0, maxLength).replace(/\s+\S*$/, '') + '…';
+}
+
+function buildSources(selectedPairs, maxItems = 5) {
+  const sources = [];
+  const seen = new Set();
+  
+  if (selectedPairs.length === 0) return sources;
+  const maxScore = selectedPairs[0].result.adjustedScore || 1;
+
+  for (const { result, chunk } of selectedPairs) {
+    const title = chunk.title || 'Sección desconocida';
+    const heading = chunk.heading || '';
+    const slug = chunk.slug || '';
+    const anchor = chunk.anchor || '';
+    
+    const url = buildChunkUrl(chunk);
+    const key = url || title;
+    
+    if (!seen.has(key)) {
+      seen.add(key);
+      const relevance = parseFloat((result.adjustedScore / maxScore).toFixed(2));
+      sources.push({
+        title,
+        heading,
+        slug,
+        anchor,
+        url, chunkType: chunk.chunkType,
+        relevance,
+        excerpt: makeExcerpt(chunk.text, 220)
+      });
+      if (sources.length >= maxItems) break;
+    }
+  }
+  return sources;
+}
+
+function extractFiguresFromText(text) {
+  if (!text || typeof text !== 'string') return [];
+  const figures = [];
+  const seen = new Set();
+  const pushFigure = (label, path) => {
+    if (!path || !path.startsWith('/figuras/')) return;
+    const cleanPath = path.trim();
+    const cleanLabel = (label || cleanPath.split('/').pop() || 'Figura').replace(/\s+/g, ' ').trim();
+    if (seen.has(cleanPath)) return;
+    seen.add(cleanPath);
+    figures.push({ label: cleanLabel, path: cleanPath });
+  };
+
+  const mdRegex = /!\[([^\]]*)\]\((\/figuras\/[^)\s]+\.(?:png|jpg|jpeg|svg|webp))\)/gi;
+  let match;
+  while ((match = mdRegex.exec(text)) !== null) pushFigure(match[1], match[2]);
+  
+  const rawRegex = /(\/figuras\/[A-Za-z0-9_\-./]+\.(?:png|jpg|jpeg|svg|webp))/gi;
+  while ((match = rawRegex.exec(text)) !== null) pushFigure(match[1].split('/').pop(), match[1]);
+
+  return figures;
+}
+
+function buildSuggestedFigures(selectedPairs, maxItems = 3) {
+  const figures = [];
+  const seen = new Set();
+  for (const { chunk } of selectedPairs) {
+    if (!chunk || !chunk.text) continue;
+    const extracted = extractFiguresFromText(chunk.text);
+    for (const f of extracted) {
+      if (!seen.has(f.path)) {
+        seen.add(f.path);
+        figures.push(f);
+        if (figures.length >= maxItems) return figures;
+      }
+    }
+  }
+  return figures;
+}
+
+function buildRelatedChapters(selectedPairs, maxItems = 5) {
+  const chapters = new Set();
+  for (const { chunk } of selectedPairs) {
+    const name = (chunk.title && chunk.title.length > 3) ? chunk.title : chunk.heading;
+    if (name) chapters.add(name);
+    if (chapters.size >= maxItems) break;
+  }
+  return Array.from(chapters);
+}
+
+function computeConfidence(selectedPairs, usedExpandedSearch) {
+  if (selectedPairs.length === 0) {
+    return { confidence: 'sin_evidencia', confidence_reason: 'No se recuperaron fragmentos útiles.' };
+  }
+  const validScores = selectedPairs.map(p => p.result.adjustedScore || 0).filter(s => s > 0);
+  const bestScore = validScores[0] || 0;
+  const thirdScore = validScores[2] || 0;
+  
+  const uniqueUrls = new Set(selectedPairs.map(p => buildChunkUrl(p.chunk)).filter(Boolean));
+  const hasSeveralSources = uniqueUrls.size >= 2;
+  const hasThreeResults = selectedPairs.length >= 3;
+  const scoreCoherence = bestScore > 0 && (thirdScore / bestScore) >= 0.35;
+
+  if (hasThreeResults && hasSeveralSources && scoreCoherence && !usedExpandedSearch) {
+    return { confidence: 'alta', confidence_reason: 'La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.' };
+  }
+  if ((hasThreeResults && scoreCoherence) || (hasSeveralSources && !usedExpandedSearch)) {
+    return { confidence: 'media', confidence_reason: 'Evidencia recuperada suficiente, aunque menos homogénea.' };
+  }
+  return { confidence: 'baja', confidence_reason: 'Evidencia parcial, escasa o con fuerte dependencia de expansión semántica.' };
+}
+
+function getAllArtifactChunks(chunksData) {
+  return Object.values(chunksData || {}).filter(c => c && c.artifact);
+}
+
+function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore = 1, source = 'global') {
+  const q = normalizeText(question);
+  const id = normalizeText(artifact?.id || '');
+  const title = normalizeText(artifact?.title || '');
+  const desc = normalizeText(artifact?.description || '');
+  const origin = normalizeText(artifact?.origin || '');
+  const text = normalizeText(chunk?.text || '');
+  const haystack = `${id} ${title} ${desc} ${origin} ${text}`;
+
+  let score = baseScore;
+
+  if (source === 'selected') score *= 1.4;
+
+  if (intent === 'quantitative' && artifact.type === 'table') score *= 2.0;
+  if (intent === 'comparison' && artifact.type === 'table') score *= 2.0;
+  if (intent === 'visual' && artifact.source === 'annex_d') score *= 2.4;
+  if (intent === 'visual' && artifact.type === 'interactive') score *= 1.5;
+  if (intent === 'timeline' && artifact.type === 'table') score *= 1.6;
+
+  const boostIds = (ids, factor) => {
+    if (ids.some(target => id.includes(normalizeText(target)))) score *= factor;
+  };
+
+  if (q.includes('discrepan') || q.includes('ree') || q.includes('icai') || q.includes('entso-e') || q.includes('gobierno')) {
+    boostIds(['comparativa-conclusiones-entidades', 'compass-lexecon', 'indisponibilidad-generacion-convencional'], 3.0);
+  }
+
+  if (q.includes('reactiva') || q.includes('mvar') || q.includes('q-v') || q.includes('sobretension')) {
+    boostIds(['maniobras-compensacion-reactiva', 'inyeccion-reactiva-distribucion', 'asimetria_balance_reactiva_sur', 'fluctuaciones_tension_previas', 'tensiones-nudos-criticos'], 3.0);
+  }
+
+  if (q.includes('frecuencia') || q.includes('rocof') || q.includes('hz') || q.includes('nadir') || q.includes('27 segundos')) {
+    boostIds(['evolucion-frecuencia-rocof', 'frequency_voltage_carmona', 'tension_frecuencia_colapso'], 3.0);
+  }
+
+  if (q.includes('grafica') || q.includes('figura') || q.includes('ensename') || q.includes('muestrame')) {
+    if (artifact.source === 'annex_d') score *= 2.0;
+    if (artifact.type === 'interactive') score *= 1.2;
+  }
+
+  if (q.includes('ufls') || q.includes('deslastre') || q.includes('subfrecuencia')) {
+    boostIds(['escalones-ufls', 'tension_frecuencia_colapso', 'evolucion-frecuencia-rocof'], 3.0);
+  }
+
+  if (q.includes('francia') || q.includes('rte') || q.includes('reposicion') || q.includes('interconexion')) {
+    boostIds(['interconexion_francia_colapso', 'perdida_sincronismo_frontera', 'evolucion_carga_repuesta_francia', 'intercambios-internacionales-minuto', 'recuperacion-demanda-espana', 'recuperacion-portugal'], 3.0);
+  }
+
+  if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
+    boostIds(['costes-economicos', 'coste_optimo_ers', 'ers_revenue_stacking'], 3.0);
+  }
+
+  if (q.includes('solar') || q.includes('mix') || q.includes('generacion') || q.includes('renovable')) {
+    boostIds(['mix-generacion-12-30', 'ree_generation_mix_28april', 'mix_comparativo_2010_2024'], 3.0);
+  }
+
+  if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida')) {
+    boostIds(['load-shedding-es-pt', 'demand-shedding-es', 'recuperacion_demanda_peninsular'], 2.2);
+  }
+
+  const qTerms = q.split(/\s+/).filter(t => t.length > 4);
+  const matches = qTerms.filter(t => haystack.includes(t)).length;
+  score *= 1 + Math.min(matches * 0.08, 0.5);
+
+  return score;
+}
+
+function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxItems = 4) {
+  const candidates = [];
+
+  for (const pair of selectedPairs) {
+    if (pair.chunk?.artifact) {
+      candidates.push({
+        artifact: pair.chunk.artifact,
+        chunk: pair.chunk,
+        baseScore: 1,
+        source: 'selected'
+      });
+    }
+  }
+
+  for (const chunk of getAllArtifactChunks(chunksData)) {
+    candidates.push({
+      artifact: chunk.artifact,
+      chunk,
+      baseScore: 1,
+      source: 'global'
+    });
+  }
+
+  const scored = candidates.map(c => ({
+    ...c,
+    score: scoreArtifactForQuestion(c.artifact, c.chunk, intent, question, c.baseScore, c.source)
+  }));
+
+  const bestByKey = new Map();
+
+  for (const item of scored) {
+    const key = `${item.artifact.type}:${item.artifact.id}`;
+    const prev = bestByKey.get(key);
+    if (!prev || item.score > prev.score) bestByKey.set(key, item);
+  }
+
+  const sorted = [...bestByKey.values()].sort((a, b) => b.score - a.score);
+  const maxScore = sorted[0]?.score || 1;
+
+  return sorted
+    .filter(item => item.source === 'selected' || item.score >= maxScore * 0.35)
+    .slice(0, maxItems)
+    .map(item => ({
+      ...item.artifact,
+      relevance: parseFloat((item.score / maxScore).toFixed(2))
+    }));
+}
+
+function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
+  const q = normalizeText(question);
+  const suggestions = [];
+  const add = (text) => { if (text && !suggestions.includes(text)) suggestions.push(text); };
+
+  if (q.includes('como empezo') || q.includes('como inicio') || q.includes('por que se fue la luz') || q.includes('explicame de forma sencilla') || q.includes('no se nada')) {
+    add('¿Cuál fue la causa física principal frente a los factores agravantes?');
+    add('¿Cómo se conectan Tap-Lag, potencia reactiva y pérdida de generación?');
+    add('¿Por qué no fue simplemente un problema de baja inercia?');
+  } else if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
+    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
+    add('¿Qué parte del coste corresponde a OPEX recurrente y cuál a CAPEX preventivo?');
+    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+  } else if (q.includes('francia') || q.includes('rte') || q.includes('interconexion') || q.includes('reposicion')) {
+    add('¿Qué papel jugó la interconexión con Francia en el punto de no retorno?');
+    add('¿Cómo se combinó el soporte de Francia con el Black Start hidroeléctrico?');
+    add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
+  } else if (q.includes('figura') || q.includes('simulador') || q.includes('grafica') || q.includes('mapa') || q.includes('tabla')) {
+    add('¿Qué simulador muestra mejor la secuencia completa del colapso?');
+    add('¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?');
+    add('¿Dónde se ve mejor la caída de frecuencia durante los 27 segundos críticos?');
+  } else if (q.includes('gfm') || q.includes('grid forming') || q.includes('bess')) {
+    add('¿En qué se diferencia un inversor grid-forming de uno grid-following?');
+    add('¿Por qué los BESS-GFM podrían sustituir parte de la inercia síncrona?');
+    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
+  } else if (q.includes('tap-lag') || q.includes('oltc')) {
+    add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
+    add('¿Por qué el SCADA de REE no veía la tensión real de los secundarios?');
+  } else if (q.includes('ufls') || q.includes('deslastre')) {
+    add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
+    add('¿Qué diferencia hay entre un colapso de frecuencia y uno de sobretensión?');
+  } else {
+    const textContext = [
+      ...selectedPairs.map(p => `${p.chunk.title || ''} ${p.chunk.heading || ''} ${p.chunk.text || ''}`)
+    ].join(' ').toLowerCase();
+
+    if (textContext.includes('tap-lag') || textContext.includes('oltc')) {
+      add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
+    }
+    if (textContext.includes('ufls') || textContext.includes('deslastre')) {
+      add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
+    }
+    if (textContext.includes('inercia') || textContext.includes('rocof')) {
+      add('¿La baja inercia fue causa raíz o solo un factor agravante?');
+    }
+    if (textContext.includes('gobierno') || textContext.includes('ree') || textContext.includes('icai')) {
+      add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    }
+    if (textContext.includes('interconexión') || textContext.includes('francia')) {
+      add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
+    }
+    if (textContext.includes('reactiva') || textContext.includes('mvar') || textContext.includes('q-v')) {
+      add('¿Qué es el margen Q-V y por qué se agotó el 28-A?');
+    }
+    if (textContext.includes('black start') || textContext.includes('reposición')) {
+      add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
+    }
+    if (textContext.includes('coste') || textContext.includes('opex') || textContext.includes('bess')) {
+      add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+    }
+  }
+
+  if (suggestions.length === 0) {
+    add('¿Cuál fue la causa física principal del apagón del 28-A?');
+    add('¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?');
+  }
+
+  return suggestions.slice(0, maxItems);
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const errResponse = (status, answer, errorMsg, detectedIntent = 'general') => {
+    return res.status(status).json({
+      answer, error: errorMsg, sources: [], confidence: 'sin_evidencia', confidence_reason: errorMsg,
+      relatedChapters: [], suggestedFigures: [], visualArtifacts: [], followUps: [], intent: detectedIntent
+    });
+  };
+
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+
+  if (!checkRateLimit(clientIp)) {
+    return errResponse(429, 'Has enviado demasiadas preguntas en poco tiempo. Espera un momento.', 'rate_limit_exceeded');
+  }
+
+  if (req.method !== 'POST') return errResponse(405, 'Método HTTP no válido.', 'Método no permitido. Usa POST.');
+
+  const { question, locale = 'es', mode = 'normal' } = req.body || {};
+  if (!question || typeof question !== 'string' || question.trim().length < 3) {
+    return errResponse(400, 'No he podido procesar tu solicitud.', 'La pregunta debe tener al menos 3 caracteres.');
+  }
+
+  const intent = classifyIntent(question, mode);
+
+  try {
+    let searcher;
+    try { searcher = getSearch(); } catch (e) { return errResponse(500, 'Error al buscar en el TFG.', 'Falta el archivo de índice.', intent); }
+
+    const SYNONYMS = {
+      'prensa': ['media', 'medios', 'comunicación', 'periodistas', 'noticias', 'cobertura'],
+      'medios': ['prensa', 'periódicos', 'televisión', 'radio', 'comunicación'],
+      'internacional': ['europa', 'extranjero', 'global', 'mundial', 'europeo'],
+      'inercia': ['inertia', 'H', 'masa', 'rotacional', 'síncrona'],
+      'frecuencia': ['frequency', 'Hz', 'nadir', 'RoCoF', 'oscilación'],
+      'colapso': ['collapse', 'apagón', 'blackout', 'fallo', 'caída'],
+      'apagon': ['blackout', 'colapso', 'corte', 'fallo', '28-A', '28A'],
+      'renovable': ['renewable', 'solar', 'eólica', 'fotovoltaica', 'IBR', 'inversor'],
+      'tension': ['tensión', 'voltaje', 'voltage', 'kV', 'sobretensión', 'Q-V'],
+      'reactiva': ['reactive', 'MVAr', 'Q', 'capacitiva', 'inductiva'],
+      'interconexion': ['interconnection', 'Francia', 'frontera', 'importación'],
+      'recuperacion': ['recovery', 'reposición', 'black start', 're-energización'],
+      'economico': ['economic', 'coste', 'cost', 'pérdidas', 'impacto'],
+      'redes sociales': ['twitter', 'X', 'social media', 'viral', 'desinformación'],
+      'tap lag': ['tap-lag', 'oltc', 'secundario', '220 kv', 'scada'],
+      'ufls': ['deslastre', 'subfrecuencia', 'carga inductiva'],
+      'grid forming': ['grid-forming', 'gfm', 'bess', 'inversor formador de red'],
+      'grid following': ['grid-following', 'gfl', 'pll', 'inversor seguidor de red']
+    };
+
+    const baseQuery = question.trim();
+    const normalizedQuery = normalizeText(baseQuery);
+    const queryWords = normalizedQuery.split(/\s+/).filter(Boolean);
+    const expandedTerms = new Set([baseQuery]);
+    
+    queryWords.forEach(word => {
+      if (SYNONYMS[word]) SYNONYMS[word].forEach(s => expandedTerms.add(s));
+    });
+    
+    for (let i = 0; i < queryWords.length - 1; i++) {
+      const phrase = `${queryWords[i]} ${queryWords[i + 1]}`;
+      if (SYNONYMS[phrase]) SYNONYMS[phrase].forEach(s => expandedTerms.add(s));
+    }
+
+    let usedExpandedSearch = false;
+    const results = searcher.search(baseQuery, { prefix: true, fuzzy: t => t.length > 4 ? 1 : 0 });
+
+    if (results.length < 3 && expandedTerms.size > 1) {
+      usedExpandedSearch = true;
+      const expandedQuery = [...expandedTerms].join(' ');
+      const expandedResults = searcher.search(expandedQuery, { prefix: true, fuzzy: t => t.length > 5 ? 2 : 1 });
+      const existingIds = new Set(results.map(r => r.id));
+      expandedResults.forEach(r => { if (!existingIds.has(r.id)) results.push({ ...r, score: r.score * 0.8 }); });
+    }
+
+    const reranked = rerankResultsByIntent(results, chunks, intent, question);
+    const selectedPairs = selectContextChunks(reranked, chunks, 7);
+
+    if (selectedPairs.length === 0) {
+      return res.status(200).json({
+        answer: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
+        sources: [], confidence: 'sin_evidencia', confidence_reason: 'No se recuperaron fragmentos útiles.',
+        relatedChapters: [], suggestedFigures: [], visualArtifacts: [],
+        followUps: ['¿Cuál fue la causa principal del apagón del 28-A?', '¿Dónde aparece explicado el Tap-Lag en el TFG?'],
+        intent
+      });
+    }
+
+    const sources = buildSources(selectedPairs, 5);
+    const relatedChapters = buildRelatedChapters(selectedPairs, 5);
+    const suggestedFigures = buildSuggestedFigures(selectedPairs, 3);
+    const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
+    const followUps = buildFollowUps(question, selectedPairs, intent, 3);
+    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 4);
+
+    const context = selectedPairs
+      .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
+      .join('\n\n---\n\n');
+
+    const intentInstruction = getIntentInstruction(intent);
+    const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
+
+    const prompt = `Eres el asistente pericial-documental oficial del TFG sobre el apagón ibérico del 28 de abril de 2025.
+Responde ÚNICAMENTE basándote en el CONTEXTO proporcionado.
+
+REGLAS DE TONO Y ESTILO:
+1. Sé preciso, técnico y natural. No suenes robótico.
+2. Prefiere párrafos fluidos salvo que el usuario pida listas, cronologías o cifras.
+3. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica").
+4. NUNCA empieces con "Según el contexto" ni "Basado en la información".
+5. Si no hay información suficiente, dilo directamente.
+6. Responde en ${langName}. Máximo 250 palabras.
+
+INSTRUCCIÓN POR INTENCIÓN: ${intentInstruction}
+
+ANCLAJE DOCUMENTAL: Cierra la respuesta con un enlace Markdown a la sección más relevante usando una de las [URL internas] del contexto.
+
+CONTEXTO RECUPERADO:
+${context}
+
+PREGUNTA: ${question}
+
+RESPUESTA:`;
+
+    const systemPrompt = 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.';
+
+    let llmResult;
+    try {
+      llmResult = await callLLM({
+        prompt,
+        systemPrompt,
+        temperature: 0.2,
+        maxTokens: 500,
+      });
+    } catch (llmError) {
+      console.error('[api/chat] LLM provider error:', llmError?.message);
+
+      return res.status(llmError?.status || 502).json({
+        answer: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo. Revisa GROQ_API_KEY, DEEPSEEK_API_KEY, cuota o conectividad del proveedor.',
+        error: llmError?.message || 'LLM provider error',
+        sources: typeof sources !== 'undefined' ? sources : [],
+        confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
+        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : 'El fallo ocurrió después de recuperar contexto, durante la generación del modelo.',
+        relatedChapters: typeof relatedChapters !== 'undefined' ? relatedChapters : [],
+        suggestedFigures: typeof suggestedFigures !== 'undefined' ? suggestedFigures : [],
+        visualArtifacts: typeof visualArtifacts !== 'undefined' ? visualArtifacts : [],
+        followUps: typeof followUps !== 'undefined' ? followUps : [],
+        intent: typeof intent !== 'undefined' ? intent : 'general',
+      });
+    }
+
+    const answer = llmResult?.text || 'He recuperado contexto del TFG, pero el modelo no ha devuelto una respuesta textual. Prueba a reformular la pregunta.';
+    const provider = llmResult?.provider || 'unknown';
+    const model = llmResult?.model || 'unknown';
+
+    return res.status(200).json({
+      answer, provider, model, sources, confidence, confidence_reason, relatedChapters, suggestedFigures, visualArtifacts, followUps, intent
+    });
+
+  } catch (error) {
+    return errResponse(500, 'Error interno del servidor.', error.message, intent);
+  }
+}
+
+
+
+##################################################
+### ARCHIVO: Frontend Widget: src/components/ChatWidget.jsx
+### RUTA ORIGINAL: c:\Users\aphmo\Proyectos\TFG OVERLEAF\tfg-antigravity-docs\src\components\ChatWidget.jsx
+##################################################
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Sparkles, X } from 'lucide-react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import ChatFullscreen from './ChatFullscreen';
+
+const UI_STRINGS = {
+  es: {
+    greeting: '¡Hola! Soy el asistente del TFG sobre el apagón del 28-A. Pregúntame cualquier duda sobre el contenido del sitio.',
+    header: 'Asistente del TFG – Apagón 28A',
+    placeholder: 'Ej: ¿Cuál fue el papel de la inercia?',
+    searching: 'Buscando en el TFG...',
+    generating: 'Generando respuesta...',
+    errorConnection: 'Error de conexión. Comprueba tu red e inténtalo de nuevo.',
+    ariaOpen: 'Abrir chat con IA',
+    ariaClose: 'Cerrar chat con IA',
+    title: 'Pregunta al TFG',
+    simplify: 'SIMPLIFICAR',
+  },
+  en: {
+    greeting: 'Hello! I am the assistant for the thesis on the 28-A blackout. Ask me anything about the content of this site.',
+    header: 'Thesis Assistant – 28A Blackout',
+    placeholder: 'E.g.: What role did inertia play?',
+    searching: 'Searching the thesis...',
+    generating: 'Generating answer...',
+    errorConnection: 'Connection error. Check your network and try again.',
+    ariaOpen: 'Open AI chat',
+    ariaClose: 'Close AI chat',
+    title: 'Ask the AI',
+    simplify: 'SIMPLIFY',
+  },
+  de: {
+    greeting: 'Hallo! Ich bin der Assistent für die Abschlussarbeit über den Stromausfall vom 28. April. Stell mir gerne Fragen zum Inhalt dieser Seite.',
+    header: 'TFG-Assistent – Stromausfall 28A',
+    placeholder: 'Z.B.: Welche Rolle spielte die Trägheit?',
+    searching: 'Suche in der Arbeit...',
+    generating: 'Antwort wird generiert...',
+    errorConnection: 'Verbindungsfehler. Bitte Netzwerk prüfen und erneut versuchen.',
+    ariaOpen: 'KI-Chat öffnen',
+    ariaClose: 'KI-Chat schließen',
+    title: 'Frage an die KI',
+    simplify: 'VEREINFACHEN',
+  },
+  'zh-Hans': {
+    greeting: '你好！我是关于2025年4月28日伊比利亚大停电毕业论文的智能助手。欢迎向我提问本站的任何内容。',
+    header: '论文助手 – 28A大停电',
+    placeholder: '例如：惯性在事故中起了什么作用？',
+    searching: '正在检索论文内容...',
+    generating: '正在生成回答...',
+    errorConnection: '连接错误，请检查网络后重试。',
+    ariaOpen: '打开AI对话',
+    ariaClose: '关闭AI对话',
+    title: '向AI提问',
+    simplify: '简化',
+  },
+};
+
+export default function ChatWidget() {
+  const { i18n: { currentLocale } } = useDocusaurusContext();
+  const locale = UI_STRINGS[currentLocale] ? currentLocale : 'es';
+  const t = UI_STRINGS[locale];
+
+  const [open, setOpen] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: t.greeting },
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [loadingStage, setLoadingStage] = useState('idle');
+  const [fullscreen, setFullscreen] = useState(false);
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  const parseChatResponse = async (res) => {
+    const raw = await res.text();
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return {
+        answer: raw
+          ? `La API respondió con formato no JSON. Status ${res.status}. Inicio: ${raw.slice(0, 180)}`
+          : `La API respondió sin cuerpo. Status ${res.status}.`
+      };
+    }
+  };
+
+  const makeAssistantMessage = (data, fallbackText = 'Error al obtener respuesta.') => ({
+    role: 'assistant',
+    text: data.answer || data.error || fallbackText,
+    sources: data.sources || [],
+    suggestedFigures: data.suggestedFigures || [],
+    visualArtifacts: data.visualArtifacts || [],
+    followUps: data.followUps || [],
+    intent: data.intent || 'general',
+  });
+
+  const handleSend = async () => {
+    const q = question.trim();
+    if (!q || loading) return;
+
+    setMessages(prev => [...prev, { role: 'user', text: q }]);
+    setQuestion('');
+    setLoading(true);
+    setLoadingStage('searching');
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: q, locale }),
+      });
+      setLoadingStage('generating');
+      const data = await parseChatResponse(res);
+      setMessages(prev => [
+        ...prev,
+        makeAssistantMessage(data, `Error del endpoint (${res.status})`),
+      ]);
+    } catch {
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant', text: t.errorConnection },
+      ]);
+    } finally {
+      setLoading(false);
+      setLoadingStage('idle');
+    }
+  };
+
+  const handleSimplify = async (originalQuestion) => {
+    setLoading(true);
+    setLoadingStage('generating');
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          question: originalQuestion, 
+          locale,
+          mode: 'simple'
+        }),
+      });
+      const data = await parseChatResponse(res);
+      setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
+    } catch {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        text: t.errorConnection 
+      }]);
+    } finally {
+      setLoading(false);
+      setLoadingStage('idle');
+    }
+  };
+
+  const renderText = (text) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) parts.push(text.substring(lastIndex, match.index));
+      parts.push(
+        <a
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#60a5fa', textDecoration: 'underline' }}
+          key={match.index}
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = linkRegex.lastIndex;
+    }
+    if (lastIndex < text.length) parts.push(text.substring(lastIndex));
+    return parts.length > 0 ? parts : text;
+  };
+
+  return (
+    <>
+      <button
+        className="chat-fab"
+        onClick={() => setOpen(!open)}
+        aria-label={open ? t.ariaClose : t.ariaOpen}
+        title={t.title}
+      >
+        {open ? (
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"
+            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="6" y1="6" x2="22" y2="22"
+              stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+            <line x1="22" y1="6" x2="6" y2="22"
+              stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+          </svg>
+        ) : (
+          <>
+            <span className="chat-fab__ring chat-fab__ring--1" aria-hidden="true"/>
+            <span className="chat-fab__ring chat-fab__ring--2" aria-hidden="true"/>
+            <span className="chat-fab__spark chat-fab__spark--1" aria-hidden="true"/>
+            <span className="chat-fab__spark chat-fab__spark--2" aria-hidden="true"/>
+            <span className="chat-fab__spark chat-fab__spark--3" aria-hidden="true"/>
+            <svg
+              className="chat-fab__icon"
+              width="28" height="28"
+              viewBox="0 0 28 28"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <polygon
+                points="15,4 9,15 14,15 11,26 21,13 15,13"
+                fill="var(--fab-spark-color)"
+                stroke="var(--fab-spark-stroke)"
+                strokeWidth="0.6"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="chat-fab__label" aria-hidden="true">ASK AI</span>
+          </>
+        )}
+      </button>
+
+      {/* Panel del chat */}
+      <style>
+        {`
+          @keyframes neonPulseChat {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(59,130,246,0.5)); }
+            50% { filter: drop-shadow(0 0 12px rgba(59,130,246,0.8)); }
+          }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}
+      </style>
+      {open && (
+        <div style={{
+          position: 'fixed', bottom: 160, right: 24, width: 380,
+          maxHeight: 520, backgroundColor: 'var(--chat-bg)',
+          border: '1px solid var(--chat-border)', borderRadius: 16,
+          display: 'flex', flexDirection: 'column',
+          zIndex: 9999, boxShadow: '0 8px 32px rgba(0,242,254,0.15)',
+          animation: 'fadeInUp 0.3s ease',
+        }}>
+          {/* Cabecera */}
+          <div style={{
+            padding: '12px 16px', borderBottom: '1px solid var(--chat-border)',
+            fontWeight: 600, color: 'var(--chat-header-color)', fontSize: 15,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {t.header}
+            </span>
+            <button
+              onClick={() => setFullscreen(true)}
+              title="Pantalla completa"
+              aria-label="Abrir en pantalla completa"
+              style={{
+                background: 'none',
+                border: '1px solid var(--ifm-color-primary)',
+                borderRadius: 7,
+                color: 'var(--ifm-color-primary)',
+                cursor: 'pointer',
+                padding: '3px 10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 5,
+                transition: 'all 0.2s ease',
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'var(--ifm-color-primary)';
+                e.currentTarget.style.color = 'var(--ifm-background-color)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = 'var(--ifm-color-primary)';
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
+              </svg>
+              EXPAND
+            </button>
+          </div>
+
+          {/* Mensajes */}
+          <div style={{
+            flex: 1, overflowY: 'auto', padding: '12px 16px',
+            display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 360,
+          }}>
+            {messages.map((m, i) => (
+              <div key={i} style={{
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+                maxWidth: '85%',
+              }}>
+              <div style={{
+                backgroundColor: m.role === 'user' ? 'var(--chat-user-msg-bg)' : 'var(--chat-assistant-msg-bg)',
+                color: m.role === 'user' ? 'var(--chat-user-msg-text)' : 'var(--chat-assistant-msg-text)',
+                padding: '10px 14px', borderRadius: 14,
+                fontSize: 14, lineHeight: 1.5,
+                whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+              }}>
+                {renderText(m.text)}
+              </div>
+              {m.role === 'assistant' && i > 0 && (
+                <button
+                  onClick={() => {
+                    const userMsg = messages[i - 1];
+                    if (userMsg?.role === 'user') {
+                      handleSimplify(userMsg.text);
+                    }
+                  }}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: 'none',
+                    border: '1px solid var(--ifm-color-primary)',
+                    borderRadius: 6,
+                    color: 'var(--ifm-color-primary)',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    padding: '3px 8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={e => {
+                    e.target.style.background = 'var(--ifm-color-primary)';
+                    e.target.style.color = 'var(--ifm-background-color)';
+                  }}
+                  onMouseLeave={e => {
+                    e.target.style.background = 'none';
+                    e.target.style.color = 'var(--ifm-color-primary)';
+                  }}
+                >
+                  {t.simplify}
+                </button>
+              )}
+              </div>
+            ))}
+            {loading && (
+              <div style={{ color: '#94a3b8', fontSize: 13, fontStyle: 'italic', padding: '4px 0' }}>
+                {loadingStage === 'searching' ? t.searching : t.generating}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div style={{
+            padding: '12px 16px', borderTop: '1px solid var(--chat-border)',
+            display: 'flex', gap: 8,
+          }}>
+            <input
+              ref={inputRef}
+              type="text"
+              value={question}
+              onChange={e => setQuestion(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder={t.placeholder}
+              style={{
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                border: '1px solid var(--chat-border)', backgroundColor: 'var(--chat-input-bg)',
+                color: 'var(--chat-input-text)', fontSize: 14, outline: 'none',
+              }}
+            />
+            <button
+              onClick={handleSend}
+              disabled={loading || !question.trim()}
+              style={{
+                padding: '10px 16px', borderRadius: 10,
+                backgroundColor: loading || !question.trim() ? 'var(--chat-btn-bg-disabled)' : 'var(--chat-btn-bg)',
+                color: 'var(--chat-btn-text)', border: 'none',
+                cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
+                fontSize: 14, fontWeight: 500, transition: 'background-color 0.2s',
+              }}
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Badge invitación pantalla completa */}
+      {open && messages.length >= 3 && !fullscreen && (
+        <div
+          onClick={() => setFullscreen(true)}
+          style={{
+            position: 'fixed',
+            bottom: 170,
+            right: 24,
+            backgroundColor: 'var(--ifm-color-primary)',
+            color: 'var(--ifm-background-color)',
+            borderRadius: 20,
+            padding: '6px 14px',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            cursor: 'pointer',
+            zIndex: 10000,
+            boxShadow: '0 2px 16px rgba(0,0,0,0.25)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            userSelect: 'none',
+            animation: 'fadeInUp 0.3s ease',
+            border: '1px solid transparent',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.35)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.25)';
+          }}
+        >
+          EXPAND
+        </div>
+      )}
+
+      {/* Modo pantalla completa */}
+      <ChatFullscreen
+        isOpen={fullscreen}
+        onClose={() => setFullscreen(false)}
+        messages={messages}
+        loading={loading}
+        loadingStage={loadingStage}
+        onSend={async (q) => {
+          setMessages(prev => [...prev, { role: 'user', text: q }]);
+          setLoading(true);
+          setLoadingStage('searching');
+          try {
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: q, locale }),
+            });
+            const data = await parseChatResponse(res);
+            setLoadingStage('generating');
+            setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
+          } catch {
+            setMessages(prev => [...prev, {
+              role: 'assistant',
+              text: t.errorConnection,
+            }]);
+          } finally {
+            setLoading(false);
+            setLoadingStage('idle');
+          }
+        }}
+        onSimplify={handleSimplify}
+        t={t}
+        renderText={renderText}
+      />
+    </>
+  );
+}
+
+
+
+##################################################
+### ARCHIVO: Fullscreen Interface: src/components/ChatFullscreen.jsx
+### RUTA ORIGINAL: c:\Users\aphmo\Proyectos\TFG OVERLEAF\tfg-antigravity-docs\src\components\ChatFullscreen.jsx
+##################################################
+
+import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { ColorModeProvider } from '@docusaurus/theme-common/internal';
+import { imageGalleryData } from '@site/src/data/imageGalleryData';
+
+async function fetchFigureContext(question, answer, caption, figureTitle, figureId) {
+  try {
+    const res = await fetch('/api/figure-context', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, answer, caption, figureTitle, figureId }),
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    return data.context;
+  } catch {
+    return null;
+  }
+}
+
+// ── Lazy imports de simuladores (Anexo C) ──────────────────────
+const FrequencyChart      = lazy(() => import('./FrequencyChart'));
+const SwingEquationSimulator = lazy(() => import('./SwingEquationSimulator'));
+const TapLagSequence      = lazy(() => import('./TapLagSequence'));
+const BlackoutPropagationMap = lazy(() => import('./BlackoutPropagationMap'));
+const CollapseSismograph  = lazy(() => import('./CollapseSismograph'));
+const PVCurveSimulator    = lazy(() => import('./PVCurveSimulator'));
+const ANSI59Cascade       = lazy(() => import('./ANSI59Cascade'));
+const InterconnectionDashboard = lazy(() => import('./InterconnectionDashboard'));
+const IberianGridTopology = lazy(() => import('./IberianGridTopology'));
+const MixGeneracion       = lazy(() => import('./MixGeneracion'));
+const FinancialWaterfallChart = lazy(() => import('./FinancialWaterfallChart'));
+const EnergyTransitionStreamgraph = lazy(() => import('./EnergyTransitionStreamgraph'));
+const AnimatedRestorationMap = lazy(() => import('./AnimatedRestorationMap'));
+const VerticalTimeline    = lazy(() => import('./VerticalTimeline'));
+const ThermalAdjustmentCostMatrix = lazy(() => import('./ThermalAdjustmentCostMatrix'));
+
+// ── Mapa anchor → componente interactivo ──────────────────────
+const INTERACTIVE_MAP = {
+  'swing':           SwingEquationSimulator,
+  'tap-lag':         TapLagSequence,
+  'tap-lag-sequence': TapLagSequence,
+  'frequency':       FrequencyChart,
+  'mix-generacion':  MixGeneracion,
+  'blackout-map':    BlackoutPropagationMap,
+  'blackout3d':      BlackoutPropagationMap,
+  'map':             BlackoutPropagationMap,
+  'pvcurve':         PVCurveSimulator,
+  'pv-curve':        PVCurveSimulator,
+  'ufls':            CollapseSismograph,
+  'sismograph':      CollapseSismograph,
+  'ansi59':          ANSI59Cascade,
+  'interconnection': InterconnectionDashboard,
+  'topology':        IberianGridTopology,
+  'iberian-grid':    IberianGridTopology,
+  'waterfall':       FinancialWaterfallChart,
+  'streamgraph':     EnergyTransitionStreamgraph,
+  'restoration':     AnimatedRestorationMap,
+  'timeline':        VerticalTimeline,
+  'matrix':          ThermalAdjustmentCostMatrix,
+};
+
+// ── Mapa keywords → figuras estáticas (Anexo A) ───────────────
+// Índice plano de todas las figuras con sus keywords
+const buildFigureIndex = () => {
+  const index = [];
+  imageGalleryData.chapters.forEach(ch => {
+    ch.images.forEach(img => {
+      index.push({
+        src: img.src,
+        caption: img, // objeto con caption_es, caption_en, etc.
+        chapter: ch.id,
+      });
+    });
+  });
+  return index;
+};
+const FIGURE_INDEX = buildFigureIndex();
+
+// Keywords para buscar figuras relevantes en el texto de la respuesta
+const FIGURE_KEYWORDS = {
+  // Cada entrada: keyword → [archivos MUY específicos]
+  // Solo matchear cuando la relación es obvia y directa
+
+  // Frecuencia y caída
+  'frecuencia': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'frequency': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'frequenz': ['frequency_voltage_carmona'],
+  '频率': ['frequency_voltage_carmona'],
+  'nadir': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'rocof': ['frequency_voltage_carmona', 'wams_oscilaciones_carmona'],
+  'caída de frecuencia': ['frequency_voltage_carmona'],
+  'frequency drop': ['frequency_voltage_carmona'],
+  'hercios': ['frequency_voltage_carmona'],
+  'hz': ['frequency_voltage_carmona'],
+
+  // Inercia — solo cuando se pregunta explícitamente
+  'inercia síncrona': ['futured_grid_evolution', 'conventionalunits'],
+  'synchronous inertia': ['futured_grid_evolution', 'conventionalunits'],
+  'constante h': ['futured_grid_evolution'],
+  'inertia constant': ['futured_grid_evolution'],
+  'masa rotacional': ['futured_grid_evolution'],
+
+  // Tap-Lag
+  'tap-lag': ['tap_lag_decoupling', 'nunez_balboa_precursores'],
+  'tap lag': ['tap_lag_decoupling'],
+  'oltc': ['tap_lag_decoupling'],
+  'transformador': ['tap_lag_decoupling'],
+
+  // Colapso y cascada
+  'cascada': ['cascada_desconexiones', 'heatmap_propagation'],
+  'cascade': ['cascada_desconexiones'],
+  'cascada de desconexiones': ['cascada_desconexiones'],
+  'disconnection cascade': ['cascada_desconexiones'],
+  'propagación': ['heatmap_propagation', 'cascada_desconexiones'],
+  'propagation': ['heatmap_propagation'],
+
+  // Tensión y Q-V
+  'colapso de tensión': ['tension_frecuencia_colapso', 'fluctuaciones_tension_previas'],
+  'voltage collapse': ['tension_frecuencia_colapso'],
+  'sobretensión': ['precursor_overvoltage_22april', 'aluvion_alertas_sobretension_sur'],
+  'overvoltage': ['precursor_overvoltage_22april'],
+  'potencia reactiva': ['asimetria_balance_reactiva_sur'],
+  'reactive power': ['asimetria_balance_reactiva_sur'],
+  'mvar': ['asimetria_balance_reactiva_sur'],
+
+  // Mix generación
+  'mix de generación': ['ree_generation_mix_28april', 'mix_comparativo_2010_2024'],
+  'generation mix': ['ree_generation_mix_28april'],
+  'fotovoltaica': ['ree_generation_mix_28april'],
+  'solar': ['ree_generation_mix_28april'],
+  'renovable': ['ree_generation_mix_28april', 'mix_comparativo_2010_2024'],
+
+  // Recuperación
+  'recuperación': ['estrategia_reenergizacion_dual', 'black_start_hidroelectrico'],
+  'recovery': ['estrategia_reenergizacion_dual'],
+  'black start': ['black_start_hidroelectrico'],
+  'reposición': ['islas_reposicion_entsoe', 'estrategia_reenergizacion_dual'],
+  're-energización': ['evolucion_mix_reenergizacion'],
+
+  // Interconexión
+  'interconexión': ['interconexion_francia_colapso'],
+  'interconnection': ['interconexion_francia_colapso'],
+  'francia': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'france': ['interconexion_francia_colapso'],
+  'sincronismo': ['perdida_sincronismo_frontera'],
+  // Intercambios internacionales (import/export)
+  'importaciones': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'exportaciones': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+  'intercambios': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia', 'entsoe_flow_deviation'],
+  'flujos': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia', 'entsoe_flow_deviation'],
+  'balance neto': ['interconexion_francia_colapso'],
+  'net exporter': ['interconexion_francia_colapso'],
+  'envíos a francia': ['interconexion_francia_colapso'],
+  'send to france': ['interconexion_francia_colapso'],
+  'marruecos': ['intercambio_marruecos_topdown'],
+  'portugal': ['interconexion_francia_colapso', 'evolucion_carga_repuesta_francia'],
+
+  // GFM/GFL e inversores
+  'gfm': ['gfl_vs_gfm_circuit1'],
+  'gfl': ['gfl_vs_gfm_circuit1'],
+  'inversor': ['gfl_vs_gfm_circuit1'],
+  'grid-forming': ['gfl_vs_gfm_circuit1'],
+
+  // Impacto económico
+  'coste': ['coste_optimo_ers', 'ers_revenue_stacking'],
+  'cost': ['coste_optimo_ers'],
+  'bess': ['hitachi_hybrid', 'ers_revenue_stacking'],
+
+  // Islas eléctricas
+  'islas': ['islas_reposicion_entsoe'],
+  'islanding': ['islas_reposicion_entsoe'],
+  'fragmentación': ['islas_reposicion_entsoe'],
+};
+
+function findRelevantFigures(text, lang) {
+  const lower = text.toLowerCase();
+  const found = new Map(); // filename → score
+  
+  // Buscar matches exactos primero (mayor score)
+  Object.entries(FIGURE_KEYWORDS).forEach(([keyword, files]) => {
+    if (lower.includes(keyword.toLowerCase())) {
+      const isExact = keyword.includes(' '); // frases son más específicas
+      files.forEach(f => {
+        const current = found.get(f) || 0;
+        found.set(f, current + (isExact ? 2 : 1));
+      });
+    }
+  });
+
+  // Ordenar por score y tomar las 2 mejores (no 3)
+  const sorted = [...found.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([filename]) => filename);
+
+  // Mapear a entradas completas del índice
+  return sorted
+    .map(filename => FIGURE_INDEX.find(fig => 
+      fig.src.includes(filename)
+    ))
+    .filter(Boolean);
+}
+
+function extractInteractiveAnchors(text) {
+  const anchors = new Set();
+  const regex = /\]\(([^)]+#([^)]+))\)/g;
+  let m;
+  while ((m = regex.exec(text)) !== null) {
+    const anchor = m[2].toLowerCase();
+    if (INTERACTIVE_MAP[anchor]) anchors.add(anchor);
+  }
+  // También buscar menciones directas de términos
+  const lower = text.toLowerCase();
+  Object.keys(INTERACTIVE_MAP).forEach(key => {
+    if (lower.includes(key.replace('-', ' '))) anchors.add(key);
+  });
+  return [...anchors].slice(0, 4);
+}
+
+// ── Labels UI multiidioma ──────────────────────────────────────
+const UI = {
+  es: {
+    exit: 'Cerrar',
+    noContent: 'Haz una pregunta para ver contenido relacionado aquí',
+    loading: 'Cargando...',
+    interactive: 'Interactivo',
+    figure: 'Figura',
+    simplify: 'SIMPLIFICAR',
+    searching: 'Buscando...',
+    generating: 'Generando...',
+  },
+  en: {
+    exit: 'Close',
+    noContent: 'Ask a question to see related content here',
+    loading: 'Loading...',
+    interactive: 'Interactive',
+    figure: 'Figure',
+    simplify: 'SIMPLIFY',
+    searching: 'Searching...',
+    generating: 'Generating...',
+  },
+  de: {
+    exit: 'Schließen',
+    noContent: 'Stellen Sie eine Frage, um verwandten Inhalt zu sehen',
+    loading: 'Wird geladen...',
+    interactive: 'Interaktiv',
+    figure: 'Abbildung',
+    simplify: 'VEREINFACHEN',
+    searching: 'Suche...',
+    generating: 'Generiere...',
+  },
+  'zh-Hans': {
+    exit: '关闭',
+    noContent: '提问以在此查看相关内容',
+    loading: '加载中...',
+    interactive: '交互式',
+    figure: '图',
+    simplify: '简化',
+    searching: '搜索中...',
+    generating: '生成中...',
+  },
+};
+
+const SUGGESTED_QUESTIONS = {
+  swing: {
+    es: ['¿Qué RoCoF se registró el 28-A?', '¿Cómo afecta la constante H a la caída de frecuencia?', '¿Qué es la inercia sintética?'],
+    en: ['What RoCoF was recorded on April 28?', 'How does constant H affect the frequency drop?', 'What is synthetic inertia?'],
+    de: ['Welcher RoCoF wurde am 28. April gemessen?', 'Wie beeinflusst H den Frequenzabfall?', 'Was ist synthetische Trägheit?'],
+    'zh-Hans': ['4月28日记录的RoCoF是多少？', 'H常数如何影响频率下降？', '什么是合成惯量？'],
+  },
+  'tap-lag-sequence': {
+    es: ['¿Qué es el efecto Tap-Lag?', '¿Cómo afectaron los OLTC al colapso?', '¿Por qué el SCADA no detectó el problema?'],
+    en: ['What is the Tap-Lag effect?', 'How did OLTC transformers affect the collapse?', 'Why did SCADA not detect the problem?'],
+    de: ['Was ist der Tap-Lag-Effekt?', 'Wie beeinflussten OLTC-Transformatoren den Kollaps?', 'Warum erkannte SCADA das Problem nicht?'],
+    'zh-Hans': ['什么是Tap-Lag效应？', 'OLTC变压器如何影响崩溃？', '为什么SCADA没有检测到问题？'],
+  },
+  frequency: {
+    es: ['¿Cuánto tardó en caer la frecuencia?', '¿Qué es el nadir frecuencial?', '¿Cuándo se activó el deslastre UFLS?'],
+    en: ['How long did the frequency take to collapse?', 'What is the frequency nadir?', 'When was UFLS load shedding activated?'],
+    de: ['Wie lange dauerte der Frequenzabfall?', 'Was ist der Frequenznadir?', 'Wann wurde UFLS aktiviert?'],
+    'zh-Hans': ['频率崩溃用了多长时间？', '什么是频率最低点？', 'UFLS何时被激活？'],
+  },
+  'mix-generacion': {
+    es: ['¿Cuánto solar había el día del apagón?', '¿Por qué el mix renovable aumentó el riesgo?', '¿Qué es la penetración IBR?'],
+    en: ['How much solar was there on the day of the blackout?', 'Why did the renewable mix increase risk?', 'What is IBR penetration?'],
+    de: ['Wie viel Solar gab es am Tag des Ausfalls?', 'Warum erhöhte der erneuerbare Mix das Risiko?', 'Was ist IBR-Durchdringung?'],
+    'zh-Hans': ['停电当天有多少太阳能？', '为什么可再生能源组合增加了风险？', '什么是IBR渗透率？'],
+  },
+  'blackout-map': {
+    es: ['¿Qué regiones se vieron más afectadas?', '¿Cuántos MW se perdieron en la cascada?', '¿En qué orden se desconectaron las centrales?'],
+    en: ['Which regions were most affected?', 'How many MW were lost in the cascade?', 'In what order did plants disconnect?'],
+    de: ['Welche Regionen waren am stärksten betroffen?', 'Wie viele MW gingen in der Kaskade verloren?', 'In welcher Reihenfolge schalteten die Anlagen ab?'],
+    'zh-Hans': ['哪些地区受影响最大？', '级联中损失了多少MW？', '电站按什么顺序断开？'],
+  },
+  pvcurve: {
+    es: ['¿Qué es el colapso de tensión?', '¿Cuál era el margen reactivo antes del apagón?', '¿Qué es el punto de nariz de la curva P-V?'],
+    en: ['What is voltage collapse?', 'What was the reactive margin before the blackout?', 'What is the nose point of the P-V curve?'],
+    de: ['Was ist Spannungskollaps?', 'Wie groß war die Blindleistungsreserve vor dem Ausfall?', 'Was ist der Nasenpunkt der P-V-Kurve?'],
+    'zh-Hans': ['什么是电压崩溃？', '停电前无功裕度是多少？', '什么是P-V曲线的鼻点？'],
+  },
+  interconnection: {
+    es: ['¿Cuál es la capacidad de interconexión con Francia?', '¿Qué pasó con la interconexión durante el apagón?', '¿Por qué España está poco interconectada?'],
+    en: ['What is the interconnection capacity with France?', 'What happened to the interconnection during the blackout?', 'Why is Spain poorly interconnected?'],
+    de: ['Wie groß ist die Verbindungskapazität mit Frankreich?', 'Was passierte mit der Verbindung während des Ausfalls?', 'Warum ist Spanien schlecht vernetzt?'],
+    'zh-Hans': ['与法国的互联容量是多少？', '停电期间互联发生了什么？', '为什么西班牙互联程度低？'],
+  },
+};
+
+function VisualArtifactCard({ artifact }) {
+  if (artifact.type === 'table') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: 'var(--chart-amber, hsl(38 100% 56%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        {artifact.origin && <div style={{ fontSize: 11, color: 'var(--chart-text-3, #64748b)', marginBottom: 8 }}>{artifact.origin}</div>}
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        {artifact.sampleRows && artifact.sampleRows.length > 0 && (
+          <div style={{ background: 'var(--chat-code-bg, rgba(0,0,0,0.2))', padding: 8, borderRadius: 6, fontSize: 11, fontFamily: 'monospace', color: 'var(--chart-text-2, #94a3b8)', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>
+            {JSON.stringify(artifact.sampleRows, null, 2)}
+          </div>
+        )}
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--chart-amber, hsl(38 100% 56%))', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>
+      </div>
+    );
+  }
+  if (artifact.type === 'image') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Gráfica de Datos Reales</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        {artifact.path && <img src={artifact.path} alt={artifact.title} style={{ width: '100%', borderRadius: 8, margin: '12px 0', border: '1px solid var(--chart-border, rgba(255,255,255,0.08))' }} />}
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--accent-electric, hsl(200 100% 60%))', textDecoration: 'none', fontWeight: 600 }}>Ver figura en contexto ↗</a>
+      </div>
+    );
+  }
+  if (artifact.type === 'interactive') {
+    return (
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+        <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Interactivo</div>
+        <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
+        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>Abrir simulador ↗</a>
+      </div>
+    );
+  }
+  return null;
+}
+
+// ── Componente principal ───────────────────────────────────────
+export default function ChatFullscreen({
+  isOpen,
+  onClose,
+  messages,
+  loading,
+  loadingStage,
+  onSend,
+  onSimplify,
+  t,
+  renderText,
+}) {
+  const { i18n: { currentLocale: lang } } = useDocusaurusContext();
+  const ui = UI[lang] || UI.es;
+
+  const [activeAnchors, setActiveAnchors]   = useState([]);
+  const [activeFigures, setActiveFigures]   = useState([]);
+  const [activeTab, setActiveTab]           = useState(null); // 'interactive-X' | 'figure-X'
+  const [figureContexts, setFigureContexts] = useState({}); // { 'figure-0': 'texto...' }
+  const [figureFeedback, setFigureFeedback] = useState({});
+  const [panelKey, setPanelKey]             = useState(0);
+  const [panelVisible, setPanelVisible]     = useState(true);
+  const [presentationMode, setPresentationMode] = useState(false);
+  const [chatWidth, setChatWidth] = useState(360);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(360);
+  const [question, setQuestion]             = useState('');
+  const messagesEndRef                      = useRef(null);
+  const inputRef                            = useRef(null);
+
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  const startListening = useCallback(() => {
+    if (!('webkitSpeechRecognition' in window) && 
+        !('SpeechRecognition' in window)) {
+      alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome.');
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || 
+                              window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    // Idioma según locale activo
+    const langMap = {
+      es: 'es-ES',
+      en: 'en-US', 
+      de: 'de-DE',
+      'zh-Hans': 'zh-CN',
+    };
+    recognition.lang = langMap[lang] || 'es-ES';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join('');
+      setQuestion(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+  }, [lang]);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    setIsListening(false);
+  }, []);
+
+  // Analizar última respuesta del asistente
+  useEffect(() => {
+    const last = [...messages].reverse().find(m => m.role === 'assistant');
+    if (!last) return;
+    const anchors  = extractInteractiveAnchors(last.text);
+    const figures  = findRelevantFigures(last.text, lang);
+    setActiveAnchors(anchors);
+    setActiveFigures(figures);
+    // Seleccionar primer tab automáticamente
+    const newTab = anchors.length > 0 
+      ? 'interactive-0' 
+      : figures.length > 0 ? 'figure-0' : null;
+    if (newTab !== activeTab) {
+      setPanelVisible(false);
+      setTimeout(() => {
+        setActiveTab(newTab);
+        setPanelKey(k => k + 1);
+        setPanelVisible(true);
+      }, 180);
+    }
+  }, [messages, lang]);
+
+  useEffect(() => {
+    if (!activeTab || !activeTab.startsWith('figure-')) return;
+    const idx = parseInt(activeTab.split('-')[1]);
+    const fig = activeFigures[idx];
+    if (!fig) return;
+
+    const userMsgs = messages.filter(m => m.role === 'user');
+    const questionMsg = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].text : '';
+    const asstMsgs = messages.filter(m => m.role === 'assistant');
+    const answerMsg = asstMsgs.length > 0 ? asstMsgs[asstMsgs.length - 1].text : '';
+
+    const figureId = fig.src;
+    let qHash = 0;
+    for (let i = 0; i < questionMsg.length; i++) qHash = Math.imul(31, qHash) + questionMsg.charCodeAt(i) | 0;
+    const cacheKey = `fig_ctx_${qHash}_${figureId}`;
+
+    if (figureContexts[activeTab] && figureContexts[activeTab] !== 'loading' && figureContexts[activeTab] !== 'error') return;
+    
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: cached }));
+        return;
+      }
+    } catch(e) {}
+
+    const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
+    const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
+    const figureTitle = fig.caption.caption_es || fig.caption.caption_en || caption;
+
+    setFigureContexts(prev => ({ ...prev, [activeTab]: 'loading' }));
+    
+    fetchFigureContext(questionMsg, answerMsg, caption, figureTitle, figureId).then(ctx => {
+      if (ctx) {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: ctx }));
+        try { localStorage.setItem(cacheKey, ctx); } catch(e) {}
+      } else {
+        setFigureContexts(prev => ({ ...prev, [activeTab]: 'error' }));
+      }
+    });
+  }, [activeTab, activeFigures, messages, lang]);
+
+  // Scroll al fondo de los mensajes
+  useEffect(() => {
+    if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isOpen]);
+
+  useEffect(() => {
+    if (isOpen) inputRef.current?.focus();
+  }, [isOpen]);
+
+  // Bloquear scroll del body
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  const handleDragStart = (e) => {
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartWidth.current = chatWidth;
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleDragMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    const delta = e.clientX - dragStartX.current;
+    const newWidth = Math.min(
+      Math.max(dragStartWidth.current + delta, 260),
+      640
+    );
+    setChatWidth(newWidth);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleDragMove);
+    window.addEventListener('mouseup', handleDragEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [handleDragMove, handleDragEnd]);
+
+  const allTabs = [
+    ...activeAnchors.map((anchor, i) => ({
+      id: 'interactive-' + i,
+      label: anchor.replace(/-/g, ' '),
+      type: 'interactive',
+    })),
+    ...activeFigures.map((fig, i) => {
+      const captionKey = 'caption_' + 
+        (lang === 'zh-Hans' ? 'en' : lang);
+      const caption = fig.caption[captionKey] 
+        || fig.caption.caption_es 
+        || '';
+      // Truncar el caption a 40 chars para el tab
+      const shortLabel = caption.length > 40 
+        ? caption.substring(0, 37) + '...' 
+        : caption;
+      return {
+        id: 'figure-' + i,
+        label: shortLabel || fig.src.split('/').pop()
+          .replace('.png','').replace('.jpg','')
+          .replace(/_/g,' '),
+        type: 'figure',
+      };
+    }),
+  ];
+
+  // ── Atajos de teclado ────────────────────────────────────
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e) => {
+      // ESC — cerrar fullscreen
+      if (e.key === 'Escape' && !isListening) {
+        onClose();
+        return;
+      }
+      
+      // Ctrl/Cmd + → — siguiente tab
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (allTabs.length > 1) {
+          const currentIdx = allTabs.findIndex(t => t.id === activeTab);
+          const nextIdx = (currentIdx + 1) % allTabs.length;
+          setPanelVisible(false);
+          setTimeout(() => {
+            setActiveTab(allTabs[nextIdx].id);
+            setPanelKey(k => k + 1);
+            setPanelVisible(true);
+          }, 180);
+        }
+        return;
+      }
+      
+      // Ctrl/Cmd + ← — tab anterior
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (allTabs.length > 1) {
+          const currentIdx = allTabs.findIndex(t => t.id === activeTab);
+          const prevIdx = (currentIdx - 1 + allTabs.length) % allTabs.length;
+          setPanelVisible(false);
+          setTimeout(() => {
+            setActiveTab(allTabs[prevIdx].id);
+            setPanelKey(k => k + 1);
+            setPanelVisible(true);
+          }, 180);
+        }
+        return;
+      }
+
+      // Ctrl/Cmd + P — toggle modo presentación
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        setPresentationMode(p => !p);
+        return;
+      }
+
+      // Ctrl/Cmd + M — toggle micrófono
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault();
+        if (isListening) stopListening();
+        else startListening();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isListening, allTabs, activeTab, onClose, 
+      startListening, stopListening, setPresentationMode]);
+
+  const handleSend = () => {
+    if (!question.trim() || loading) return;
+    onSend(question);
+    setQuestion('');
+  };
+
+  if (!isOpen) return null;
+
+  // Determinar qué mostrar en el panel derecho
+  const renderPanelContent = () => {
+    const latestAssistantMessage = messages
+      .filter(m => m.role === 'assistant')
+      .at(-1);
+
+    const visualArtifacts = latestAssistantMessage?.visualArtifacts || [];
+
+    if (visualArtifacts.length > 0) {
+      return (
+        <div style={{ height: '100%', overflowY: 'auto' }}>
+          {visualArtifacts.map(artifact => (
+            <VisualArtifactCard key={`${artifact.type}-${artifact.id}`} artifact={artifact} />
+          ))}
+        </div>
+      );
+    }
+
+    if (activeTab === null) {
+      return (
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          height: '100%', gap: 16,
+          color: 'var(--chart-text-3, #64748b)', textAlign: 'center',
+        }}>
+          <svg width="52" height="52" viewBox="0 0 28 28" fill="none" opacity="0.25">
+            <polygon points="15,4 9,15 14,15 11,26 21,13 15,13" fill="currentColor"/>
+          </svg>
+          <p style={{ fontSize: 14, maxWidth: 320, lineHeight: 1.7 }}>
+            {ui.noContent}
+          </p>
+        </div>
+      );
+    }
+
+    if (activeTab.startsWith('interactive-')) {
+      const idx = parseInt(activeTab.split('-')[1]);
+      const anchor = activeAnchors[idx];
+      const Component = INTERACTIVE_MAP[anchor];
+      if (!Component) return null;
+      
+      const interactiveLabels = {
+        swing: {
+          es: 'La Ecuación del Swing es el modelo matemático fundamental que gobierna la dinámica de frecuencia. Permite cuantificar cómo la constante de inercia H (en segundos) determina la velocidad de caída de frecuencia ante un desequilibrio de potencia. El 28-A, con H≈2,3s y 82% de penetración IBR, el RoCoF superó 1,5 Hz/s — valor letal para las protecciones de las centrales nucleares.',
+          en: 'The Swing Equation is the fundamental mathematical model governing frequency dynamics. It quantifies how the inertia constant H (in seconds) determines the rate of frequency drop under a power imbalance. On April 28, with H≈2.3s and 82% IBR penetration, the RoCoF exceeded 1.5 Hz/s — a lethal value for nuclear plant protection relays.',
+          de: 'Die Swing-Gleichung ist das grundlegende mathematische Modell der Frequenzdynamik. Am 28. April, mit H≈2,3s und 82% IBR-Durchdringung, überstieg der RoCoF 1,5 Hz/s — ein für Kernkraftschutzrelais letaler Wert.',
+          'zh-Hans': '摆动方程是控制频率动态的基本数学模型。2025年4月28日，H≈2.3秒，IBR渗透率82%，RoCoF超过1.5 Hz/s——对核电站保护继电器而言是致命值。',
+        },
+        'tap-lag-sequence': {
+          es: 'El mecanismo Tap-Lag fue el factor causal invisible del 28-A. Los transformadores OLTC de los parques solares, al regular automáticamente la tensión, absorbían potencia reactiva capacitiva masiva (≈1.050 MVAr en el sur) mientras el SCADA de REE mostraba tensiones aparentemente normales. Esta "ilusión de estabilidad" enmascaró el colapso Q-V que se gestaba.',
+          en: 'The Tap-Lag mechanism was the invisible causal factor of April 28. OLTC transformers in solar farms, automatically regulating voltage, absorbed massive capacitive reactive power (≈1,050 MVAr in the south) while REE\'s SCADA showed apparently normal voltages. This "stability illusion" masked the Q-V collapse building beneath.',
+          de: 'Der Tap-Lag-Mechanismus war der unsichtbare Kausalfaktor des 28. April. OLTC-Transformatoren absorbierten massiv kapazitive Blindleistung (≈1.050 MVAr im Süden), während das SCADA normale Spannungen anzeigte.',
+          'zh-Hans': 'Tap-Lag机制是4月28日不可见的因果因素。太阳能场的OLTC变压器自动调节电压，吸收大量容性无功功率（南部约1050 MVAr），而REE的SCADA显示表面正常的电压。',
+        },
+        frequency: {
+          es: 'La caída de frecuencia del 28-A se produjo en 27 segundos: de 50 Hz a 0 Hz. El nadir frecuencial alcanzó 47,79 Hz antes del disparo de las nucleares. El RoCoF medio durante la cascada superó 1,0 Hz/s, activando los 6 escalones de deslastre UFLS entre 12:33:20 y 12:33:22 CEST. La separación de la interconexión con Francia a las 12:33:21,535 CEST fue el punto de no retorno.',
+          en: 'The April 28 frequency collapse occurred in 27 seconds: from 50 Hz to 0 Hz. The frequency nadir reached 47.79 Hz before nuclear plant trips. The average RoCoF during the cascade exceeded 1.0 Hz/s, activating 6 UFLS load shedding steps between 12:33:20 and 12:33:22 CEST. The France interconnection separation at 12:33:21.535 CEST was the point of no return.',
+          de: 'Der Frequenzkollaps des 28. April dauerte 27 Sekunden: von 50 Hz auf 0 Hz. Der Frequenznadir erreichte 47,79 Hz. Der mittlere RoCoF überstieg 1,0 Hz/s und aktivierte 6 UFLS-Stufen.',
+          'zh-Hans': '4月28日频率崩溃发生在27秒内：从50 Hz到0 Hz。频率最低点达到47.79 Hz。平均RoCoF超过1.0 Hz/s，激活了6个UFLS减负荷步骤。',
+        },
+        'mix-generacion': {
+          es: 'A las 12:30 CEST del 28-A, la solar fotovoltaica aportaba el 53-59% del mix peninsular (18.068 MW estimados). Esta penetración récord de IBR redujo la inercia síncrona del sistema al mínimo histórico. La demanda era de tan solo 25.184 MW — un 56% del pico histórico — creando un sistema eléctricamente "vacío" y extremadamente frágil ante cualquier perturbación.',
+          en: 'At 12:30 CEST on April 28, solar PV contributed 53-59% of the peninsular mix (estimated 18,068 MW). This record IBR penetration reduced the system\'s synchronous inertia to a historical minimum. Demand was only 25,184 MW — 56% of the historical peak — creating an electrically "hollow" system extremely fragile to any disturbance.',
+          de: 'Um 12:30 CEST am 28. April trug Solar-PV 53-59% des Peninsular-Mix bei. Diese Rekord-IBR-Durchdringung reduzierte die Systemträgheit auf ein historisches Minimum.',
+          'zh-Hans': '4月28日12:30 CEST，太阳能光伏贡献了半岛电网53-59%的发电量（估计18,068 MW）。这一创纪录的IBR渗透率将系统同步惯量降至历史最低。',
+        },
+        'blackout-map': {
+          es: 'La cascada de desconexiones IBR se produjo en menos de 650 ms. Entre 12:32:57 y 12:33:24 CEST se perdieron 1.917 MW directos en una secuencia de 8 eventos, con pérdidas totales estimadas de 2.000-2.500 MW. La propagación geográfica siguió el gradiente de penetración solar: sur de España primero, luego Extremadura y Levante, finalmente la separación de Francia.',
+          en: 'The IBR disconnection cascade occurred in less than 650 ms. Between 12:32:57 and 12:33:24 CEST, 1,917 MW were directly lost in a sequence of 8 events, with total estimated losses of 2,000-2,500 MW. Geographic propagation followed the solar penetration gradient: southern Spain first, then Extremadura and Levante, finally the France separation.',
+          de: 'Die IBR-Abschaltkaskade ereignete sich in weniger als 650 ms. Zwischen 12:32:57 und 12:33:24 CEST gingen 1.917 MW in 8 Ereignissen verloren.',
+          'zh-Hans': 'IBR断开级联发生在650毫秒内。在12:32:57至12:33:24 CEST之间，8个事件中直接损失1,917 MW，总损失估计2,000-2,500 MW。',
+        },
+        pvcurve: {
+          es: 'La curva P-V demuestra el mecanismo físico del colapso de tensión capacitivo que causó el 28-A. El sistema ibérico, operando con 1.050 MVAr de inyección capacitiva neta en el sur, se encontraba cerca del "punto de nariz" de la curva — el límite de cargabilidad máxima. Cualquier perturbación adicional en la potencia reactiva era suficiente para cruzar ese umbral y desencadenar el colapso.',
+          en: 'The P-V curve demonstrates the physical mechanism of the capacitive voltage collapse that caused April 28. The Iberian system, operating with 1,050 MVAr of net capacitive injection in the south, was near the "nose point" of the curve — the maximum loadability limit. Any additional reactive power disturbance was sufficient to cross that threshold and trigger collapse.',
+          de: 'Die P-V-Kurve demonstriert den physischen Mechanismus des kapazitiven Spannungskollapses. Das iberische System operierte nahe dem "Nasenpunkt" — dem Maximum der Belastbarkeit.',
+          'zh-Hans': 'P-V曲线展示了导致4月28日电容性电压崩溃的物理机制。伊比利亚系统在南部以1050 MVAr净容性注入运行，接近曲线的"鼻点"——最大负载能力极限。',
+        },
+        sismograph: {
+          es: 'El sismógrafo del colapso reproduce la evolución transitoria de frecuencia y tensión en Carmona (400 kV) durante los 27 segundos críticos. Los datos muestran la correlación exacta entre la cascada de desconexiones IBR, la activación secuencial de los 6 escalones UFLS y el disparo final de las centrales nucleares a 47,79 Hz.',
+          en: 'The collapse seismograph reproduces the transient evolution of frequency and voltage at Carmona (400 kV) during the critical 27 seconds. Data shows the exact correlation between the IBR disconnection cascade, sequential activation of 6 UFLS steps, and final nuclear plant trip at 47.79 Hz.',
+          de: 'Der Kollaps-Seismograph reproduziert die transiente Frequenz- und Spannungsentwicklung in Carmona (400 kV) während der kritischen 27 Sekunden.',
+          'zh-Hans': '崩溃地震图再现了卡尔莫纳（400 kV）在关键27秒内的频率和电压瞬态演变。',
+        },
+        ansi59: {
+          es: 'El bucle de retroalimentación ANSI 59 explica por qué las desconexiones IBR se aceleraron en cascada. Cada IBR que disparaba por sobretensión liberaba potencia reactiva capacitiva al sistema, elevando aún más la tensión y provocando nuevos disparos. Este mecanismo de retroalimentación positiva convirtió una perturbación local en el sur en un colapso sistémico peninsular.',
+          en: 'The ANSI 59 feedback loop explains why IBR disconnections cascaded and accelerated. Each IBR that tripped due to overvoltage released capacitive reactive power to the system, further raising voltage and triggering new trips. This positive feedback mechanism turned a local southern disturbance into a peninsular systemic collapse.',
+          de: 'Die ANSI-59-Rückkopplungsschleife erklärt, warum sich IBR-Abschaltungen beschleunigten. Jedes ausgelöste IBR setzte kapazitive Blindleistung frei und erhöhte die Spannung weiter.',
+          'zh-Hans': 'ANSI 59反馈回路解释了为什么IBR断开呈级联加速。每个因过压跳闸的IBR向系统释放容性无功功率，进一步提高电压并触发新的跳闸。',
+        },
+        interconnection: {
+          es: 'Las interconexiones internacionales revelan la paradoja estructural del sistema ibérico: diseñadas para importar energía en déficit, resultaron insuficientes durante el 28-A. La capacidad de interconexión con Francia (2.800 MW nominales) representaba solo el 3,7% de la potencia instalada peninsular — muy por debajo del mínimo del 10% recomendado por la CE. La apertura de Hernani a las 12:33:21 CEST selló el aislamiento total.',
+          en: 'International interconnections reveal the structural paradox of the Iberian system: designed to import energy during deficit, they proved insufficient on April 28. Interconnection capacity with France (2,800 MW nominal) represented only 3.7% of peninsular installed capacity — well below the EC-recommended 10% minimum. The Hernani opening at 12:33:21 CEST sealed total isolation.',
+          de: 'Die Verbindungskapazität mit Frankreich (2.800 MW) repräsentierte nur 3,7% der installierten Kapazität — weit unter dem von der EU empfohlenen Minimum von 10%.',
+          'zh-Hans': '与法国的互联容量（2800 MW额定值）仅代表半岛装机容量的3.7%——远低于欧盟推荐的10%最低值。',
+        },
+        topology: {
+          es: 'La topología de red ibérica muestra la distribución geográfica desigual entre generación (concentrada en el sur y el litoral) y demanda (centros urbanos del norte y centro). Esta asimetría estructural, combinada con la alta penetración solar en Extremadura y Andalucía, creó los flujos de potencia reactiva críticos que precipitaron el colapso.',
+          en: 'The Iberian grid topology shows the uneven geographic distribution between generation (concentrated in the south and coast) and demand (urban centers in the north and center). This structural asymmetry, combined with high solar penetration in Extremadura and Andalusia, created the critical reactive power flows that precipitated the collapse.',
+          de: 'Die Netztopologie zeigt die ungleiche geografische Verteilung zwischen Erzeugung (Süden und Küste) und Nachfrage (nördliche und zentrale Städte).',
+          'zh-Hans': '电网拓扑显示了发电（集中在南部和沿海）与需求（北部和中部城市中心）之间不均衡的地理分布。',
+        },
+        waterfall: {
+          es: 'La cascada financiera cuantifica el coste real del apagón frente al coste de haberlo prevenido. Las estimaciones sitúan el impacto económico directo en 1.600-2.200 M€, mientras que el CAPEX total del retrofitting regulatorio (GFM, compensadores síncronos, BESS) se estima en 800-1.200 M€. La inacción fue 1,5-2x más cara que la inversión preventiva.',
+          en: 'The financial waterfall quantifies the real cost of the blackout versus the cost of prevention. Economic impact estimates range from €1.6-2.2 billion, while total regulatory retrofitting CAPEX (GFM, synchronous compensators, BESS) is estimated at €800M-1.2B. Inaction was 1.5-2x more expensive than preventive investment.',
+          de: 'Die Finanzkaskade quantifiziert die tatsächlichen Kosten des Ausfalls. Der wirtschaftliche Schaden beträgt 1,6-2,2 Mrd. €, der Präventions-CAPEX 800 Mio.-1,2 Mrd. €.',
+          'zh-Hans': '财务级联量化了停电的实际成本与预防成本。经济影响估计为16-22亿欧元，而预防性投资约为8-12亿欧元。',
+        },
+        streamgraph: {
+          es: 'El streamgraph de transición energética muestra cómo España pasó en 15 años de un sistema dominado por generación síncrona (nuclear, gas, carbón) a un mix con 82% de penetración IBR. Esta transformación estructural es el contexto macroenergético que hizo posible el 28-A: sin esa transición, el sistema habría tenido suficiente inercia síncrona para absorber la perturbación.',
+          en: 'The energy transition streamgraph shows how Spain transitioned in 15 years from a system dominated by synchronous generation (nuclear, gas, coal) to a mix with 82% IBR penetration. This structural transformation is the macro-energy context that made April 28 possible: without this transition, the system would have had sufficient synchronous inertia to absorb the disturbance.',
+          de: 'Das Streamgraph zeigt, wie Spanien in 15 Jahren von einem synchronen System zu einem Mix mit 82% IBR-Durchdringung überging.',
+          'zh-Hans': '能源转型流图显示西班牙如何在15年内从以同步发电为主的系统转变为82% IBR渗透率的混合电网。',
+        },
+        restoration: {
+          es: 'La re-energización del sistema ibérico tardó 18,5 horas — un proceso técnicamente complejo que requirió la coordinación de estrategias Top-Down (soporte desde Francia y Marruecos) y Bottom-Up (arranque autónomo de centrales hidroeléctricas bajo el P.O. 1.6). La restricción de reconexión de IBRs durante las primeras horas fue determinante para garantizar la estabilidad de las islas eléctricas nacientes.',
+          en: 'Re-energization of the Iberian system took 18.5 hours — a technically complex process requiring coordination of Top-Down strategies (support from France and Morocco) and Bottom-Up (autonomous hydroelectric Black Start under P.O. 1.6). The IBR reconnection restriction during the first hours was crucial to ensure stability of the nascent electrical islands.',
+          de: 'Die Wiederinbetriebnahme dauerte 18,5 Stunden und erforderte die Koordination von Top-Down- und Bottom-Up-Strategien gemäß P.O. 1.6.',
+          'zh-Hans': '伊比利亚系统的重新通电耗时18.5小时，需要协调自上而下（法国和摩洛哥支持）和自下而上（根据P.O. 1.6的水电黑启动）策略。',
+        },
+        timeline: {
+          es: 'La cronología forense del 28-A documenta 47 eventos críticos en 18,5 horas. Los primeros 27 segundos (12:32:57 - 12:33:24 CEST) contienen los 8 disparos IBR en cascada, los 6 escalones UFLS, el disparo nuclear y el colapso total. Esta densidad de eventos en tiempo tan breve es inédita en la historia de los sistemas eléctricos europeos.',
+          en: 'The April 28 forensic chronology documents 47 critical events over 18.5 hours. The first 27 seconds (12:32:57 - 12:33:24 CEST) contain 8 cascading IBR trips, 6 UFLS steps, the nuclear trip, and total collapse. This event density in such a brief window is unprecedented in European power system history.',
+          de: 'Die forensische Chronologie des 28. April dokumentiert 47 kritische Ereignisse in 18,5 Stunden. Die ersten 27 Sekunden enthalten 8 IBR-Auslösungen, 6 UFLS-Stufen und den Gesamtkollaps.',
+          'zh-Hans': '4月28日法证年表记录了18.5小时内的47个关键事件。最初27秒（12:32:57 - 12:33:24 CEST）包含8次IBR级联跳闸、6个UFLS步骤、核电跳闸和全面崩溃。',
+        },
+        matrix: {
+          es: 'La matriz de costes de inacción compara el OPEX acumulado por no invertir en resiliencia frente al CAPEX del retrofitting regulatorio. Cada año de retraso en la implementación de GFM, compensadores síncronos y BESS añade aproximadamente 180-220 M€ en riesgo económico sistémico. El 28-A demostró empíricamente que el coste de la inacción supera ampliamente al de la prevención.',
+          en: 'The inaction cost matrix compares accumulated OPEX from not investing in resilience versus regulatory retrofitting CAPEX. Each year of delay in implementing GFM, synchronous compensators, and BESS adds approximately €180-220M in systemic economic risk. April 28 empirically demonstrated that the cost of inaction far exceeds the cost of prevention.',
+          de: 'Die Kostenmatrix der Untätigkeit vergleicht den kumulierten OPEX ohne Resilienzinvestition mit dem Retrofitting-CAPEX. Jedes Verzögerungsjahr fügt 180-220 Mio. € systemisches Risiko hinzu.',
+          'zh-Hans': '不作为成本矩阵比较了不投资韧性的累积运营支出与监管改造资本支出。每年延迟实施GFM、同步补偿器和BESS会增加约1.8-2.2亿欧元的系统性经济风险。',
+        },
+      };
+      
+      const label = interactiveLabels[anchor]?.[lang] 
+        || interactiveLabels[anchor]?.es
+        || '';
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+          {label && (
+            <div style={{
+              padding: '14px 24px',
+              borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              backgroundColor: 'hsla(190,100%,60%,0.04)',
+              flexShrink: 0,
+            }}>
+              <div style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                color: 'var(--accent-electric, hsl(190 100% 60%))',
+                marginBottom: 5,
+                textTransform: 'uppercase',
+              }}>
+                {lang === 'en' ? '◈ INTERACTIVE SIMULATOR'
+                  : lang === 'de' ? '◈ INTERAKTIVER SIMULATOR'
+                  : lang === 'zh-Hans' ? '◈ 交互式模拟器'
+                  : '◈ SIMULADOR INTERACTIVO'}
+              </div>
+              <p style={{
+                fontSize: 13,
+                color: 'var(--chart-text-1, #e2e8f0)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                {label}
+              </p>
+            </div>
+          )}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+            <ColorModeProvider>
+              <Suspense fallback={
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
+                  ⟳ {ui.loading}
+                </div>
+              }>
+                <Component />
+              </Suspense>
+            </ColorModeProvider>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeTab.startsWith('figure-')) {
+      const idx = parseInt(activeTab.split('-')[1]);
+      const fig = activeFigures[idx];
+      if (!fig) return null;
+      const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
+      const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
+      
+      // Generar texto contextual basado en la última pregunta del usuario
+      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+      const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'assistant');
+      
+      const questionMsg = lastUserMsg ? lastUserMsg.text : '';
+      let qHash = 0;
+      for (let i = 0; i < questionMsg.length; i++) qHash = Math.imul(31, qHash) + questionMsg.charCodeAt(i) | 0;
+      const figureId = fig.src;
+      const feedbackKey = `feedback_figure_${figureId}_${qHash}`;
+
+      const handleFeedback = (isPositive) => {
+        try { localStorage.setItem(feedbackKey, isPositive ? 'yes' : 'no'); } catch(e) {}
+        setFigureFeedback(prev => ({ ...prev, [feedbackKey]: isPositive }));
+      };
+      
+      let voted = null;
+      if (figureFeedback[feedbackKey] !== undefined) {
+        voted = figureFeedback[feedbackKey];
+      } else {
+        try {
+          const cached = localStorage.getItem(feedbackKey);
+          if (cached === 'yes') voted = true;
+          else if (cached === 'no') voted = false;
+        } catch(e) {}
+      }
+      
+      return (
+        <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
+          {/* Contexto editorial */}
+          <div style={{
+            marginBottom: 20,
+            padding: '14px 16px',
+            borderLeft: '3px solid var(--accent-electric, hsl(190 100% 60%))',
+            backgroundColor: 'hsla(190,100%,60%,0.05)',
+            borderRadius: '0 8px 8px 0',
+          }}>
+            <div style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              color: 'var(--accent-electric, hsl(190 100% 60%))',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+            }}>
+              {lang === 'en' ? '◈ WHY THIS IS RELEVANT'
+                : lang === 'de' ? '◈ WARUM DIES RELEVANT IST'
+                : lang === 'zh-Hans' ? '◈ 为什么这与此相关'
+                : '◈ POR QUÉ ESTO ES RELEVANTE'}
+            </div>
+            <p style={{
+              fontSize: 13,
+              color: 'var(--chart-text-1, #e2e8f0)',
+              lineHeight: 1.7,
+              margin: 0,
+            }}>
+              {figureContexts[activeTab] === 'loading' ? (
+                <span style={{ opacity: 0.6 }}>⟳ {ui.loading}</span>
+              ) : figureContexts[activeTab] === 'error' || !figureContexts[activeTab] ? (
+                caption
+              ) : (
+                figureContexts[activeTab]
+              )}
+            </p>
+            {figureContexts[activeTab] && figureContexts[activeTab] !== 'loading' && figureContexts[activeTab] !== 'error' && (
+              <div style={{ display: 'flex', gap: 8, marginTop: 8, justifyContent: 'flex-end' }}>
+                <button 
+                  onClick={() => handleFeedback(true)} 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === true ? 1 : 0.5 }}
+                  title="Explicación útil"
+                >👍</button>
+                <button 
+                  onClick={() => handleFeedback(false)} 
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === false ? 1 : 0.5 }}
+                  title="Explicación poco útil"
+                >👎</button>
+              </div>
+            )}
+          </div>
+
+          {/* Imagen */}
+          <img
+            src={fig.src}
+            alt={caption}
+            style={{
+              width: '100%',
+              maxWidth: 860,
+              borderRadius: 8,
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              display: 'block',
+              margin: '0 auto',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+            }}
+          />
+
+          {/* Leyenda / Fuente */}
+          <p style={{
+            marginTop: 12,
+            fontSize: 12,
+            color: 'var(--chart-text-2, #94a3b8)',
+            textAlign: 'center',
+            fontStyle: 'italic',
+            lineHeight: 1.5,
+            padding: '0 16px',
+          }}>
+            {caption ? caption : (
+              <>
+                {fig.chapter && `Capítulo ${fig.chapter.replace('ch','')} — `}
+                {fig.src.split('/').pop()}
+              </>
+            )}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // ── Tabs combinados ───────────────────────────────────────────
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 99999,
+      backgroundColor: 'var(--ifm-background-color)',
+      display: 'flex', flexDirection: 'column',
+      animation: 'fadeInUp 0.2s ease',
+    }}>
+      {/* ── HEADER ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 20px',
+        borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+        backgroundColor: 'var(--chart-bg, rgba(10,15,30,0.97))',
+        flexShrink: 0, minHeight: 48,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+            <polygon points="15,4 9,15 14,15 11,26 21,13 15,13"
+              fill="var(--accent-electric, hsl(190 100% 60%))"
+              strokeWidth="0.6" strokeLinejoin="round"/>
+          </svg>
+          <span style={{
+            fontWeight: 700, fontSize: 14, letterSpacing: '0.06em',
+            color: 'var(--chart-text-1, #e2e8f0)',
+            textTransform: 'uppercase',
+          }}>
+            {t.header}
+          </span>
+          <span style={{
+            fontSize: 9,
+            color: 'var(--chart-text-3, #64748b)',
+            letterSpacing: '0.06em',
+            display: 'flex',
+            gap: 8,
+            alignItems: 'center',
+            marginLeft: 12,
+          }}>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>ESC</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘M</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘P</span>
+            <span style={{
+              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              borderRadius: 4,
+              padding: '1px 5px',
+              fontSize: 9,
+            }}>⌘→</span>
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <button
+            onClick={() => setPresentationMode(p => !p)}
+            title={presentationMode
+              ? (lang === 'en' ? 'Show chat' : lang === 'de' ? 'Chat anzeigen' : lang === 'zh-Hans' ? '显示聊天' : 'Mostrar chat')
+              : (lang === 'en' ? 'Presentation mode' : lang === 'de' ? 'Präsentationsmodus' : lang === 'zh-Hans' ? '演示模式' : 'Modo presentación')
+            }
+            style={{
+              background: presentationMode ? 'var(--ifm-color-primary)' : 'none',
+              border: '1px solid var(--ifm-color-primary)',
+              borderRadius: 8,
+              color: presentationMode ? 'var(--ifm-background-color)' : 'var(--ifm-color-primary)',
+              cursor: 'pointer',
+              padding: '5px 14px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              transition: 'all 0.2s ease',
+              marginRight: 8,
+            }}
+            onMouseEnter={e => {
+              if (!presentationMode) {
+                e.currentTarget.style.background = 'var(--ifm-color-primary)';
+                e.currentTarget.style.color = 'var(--ifm-background-color)';
+              }
+            }}
+            onMouseLeave={e => {
+              if (!presentationMode) {
+                e.currentTarget.style.background = 'none';
+                e.currentTarget.style.color = 'var(--ifm-color-primary)';
+              }
+            }}
+          >
+            {presentationMode
+              ? (lang === 'en' ? 'CHAT' : lang === 'de' ? 'CHAT' : lang === 'zh-Hans' ? '聊天' : 'CHAT')
+              : (lang === 'en' ? 'PRESENT' : lang === 'de' ? 'PRÄSENTATION' : lang === 'zh-Hans' ? '演示' : 'PRESENTAR')
+            }
+          </button>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: '1px solid var(--ifm-color-primary)',
+              borderRadius: 8,
+              color: 'var(--ifm-color-primary)',
+              cursor: 'pointer',
+              padding: '5px 14px',
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'var(--ifm-color-primary)';
+              e.currentTarget.style.color = 'var(--ifm-background-color)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'none';
+              e.currentTarget.style.color = 'var(--ifm-color-primary)';
+            }}
+          >
+            {ui.exit.toUpperCase()} ×
+          </button>
+        </div>
+      </div>
+
+      {/* ── MAIN GRID ── */}
+      <div style={{
+        flex: 1, display: 'grid',
+        gridTemplateColumns: presentationMode 
+          ? '0px 1fr' 
+          : `${chatWidth}px 8px 1fr`,
+        transition: 'grid-template-columns 0.3s ease',
+        overflow: 'hidden', minHeight: 0,
+      }}>
+
+        {/* ── LEFT: CHAT ── */}
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+          overflow: presentationMode ? 'hidden' : 'hidden',
+          opacity: presentationMode ? 0 : 1,
+          transition: 'opacity 0.3s ease',
+          pointerEvents: presentationMode ? 'none' : 'auto',
+          backgroundColor: 'var(--chat-bg, rgba(10,15,30,0.97))',
+        }}>
+          {/* Messages */}
+          <div style={{
+            flex: 1, overflowY: 'auto',
+            padding: '16px',
+            display: 'flex', flexDirection: 'column', gap: 12,
+          }}>
+            {messages.map((m, i) => (
+              <div key={i} style={{
+                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                display: 'flex', flexDirection: 'column', gap: 4,
+                maxWidth: '92%',
+              }}>
+                <div style={{
+                  backgroundColor: m.role === 'user'
+                    ? 'var(--chat-user-msg-bg)'
+                    : 'var(--chat-assistant-msg-bg)',
+                  color: m.role === 'user'
+                    ? 'var(--chat-user-msg-text)'
+                    : 'var(--chat-assistant-msg-text)',
+                  padding: '10px 14px', borderRadius: 14,
+                  fontSize: 13, lineHeight: 1.6,
+                  whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+                }}>
+                  {renderText(m.text)}
+                </div>
+                {m.role === 'assistant' && (
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {i > 0 && (
+                      <button
+                        onClick={() => {
+                          const prev = messages[i - 1];
+                          if (prev?.role === 'user') onSimplify(prev.text);
+                        }}
+                        style={{
+                          background: 'none',
+                          border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                          borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                          fontSize: 11, padding: '3px 8px',
+                          cursor: 'pointer', transition: 'all 0.15s ease',
+                        }}
+                        onMouseEnter={e => {
+                          e.target.style.borderColor = 'var(--accent-electric)';
+                          e.target.style.color = 'var(--accent-electric)';
+                        }}
+                        onMouseLeave={e => {
+                          e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                          e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                        }}
+                      >
+                        {ui.simplify}
+                      </button>
+                    )}
+                    {(() => {
+                      const lastAssistantIndex = [...messages].reverse().findIndex(msg => msg.role === 'assistant');
+                      const actualLastAssistantIndex = lastAssistantIndex >= 0 ? messages.length - 1 - lastAssistantIndex : -1;
+                      const isLastAssistant = i === actualLastAssistantIndex;
+                      
+                      if (isLastAssistant) return null;
+                      
+                      const anchors = extractInteractiveAnchors(m.text);
+                      const figures = findRelevantFigures(m.text, lang);
+                      if (anchors.length === 0 && figures.length === 0) return null;
+
+                      return (
+                        <button
+                          onClick={() => {
+                            setActiveAnchors(anchors);
+                            setActiveFigures(figures);
+                            const newTab = anchors.length > 0 ? 'interactive-0' : 'figure-0';
+                            setPanelVisible(false);
+                            setTimeout(() => {
+                              setActiveTab(newTab);
+                              setPanelKey(k => k + 1);
+                              setPanelVisible(true);
+                            }, 180);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                            borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                            fontSize: 11, padding: '3px 8px',
+                            cursor: 'pointer', transition: 'all 0.15s ease',
+                          }}
+                          onMouseEnter={e => {
+                            e.target.style.borderColor = 'var(--accent-electric)';
+                            e.target.style.color = 'var(--accent-electric)';
+                          }}
+                          onMouseLeave={e => {
+                            e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
+                            e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                          }}
+                        >
+                          {lang === 'en' ? 'VIEW ASSOCIATED MEDIA' : lang === 'zh-Hans' ? '查看相关媒体' : lang === 'de' ? 'ZUGEHÖRIGE MEDIEN ANZEIGEN' : 'VER GRÁFICAS ASOCIADAS'}
+                        </button>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+            ))}
+            {loading && (
+              <div style={{ color: '#94a3b8', fontSize: 12, fontStyle: 'italic' }}>
+                {loadingStage === 'searching' ? ui.searching : ui.generating}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Indicador de escucha activa */}
+          {isListening && (
+            <div style={{
+              padding: '6px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              color: 'var(--ifm-color-primary)',
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+              animation: 'fadeInUp 0.2s ease',
+            }}>
+              <div style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: 'var(--ifm-color-primary)',
+                animation: 'neonPulseChat 0.8s ease infinite',
+                flexShrink: 0,
+              }}/>
+              {lang === 'en' ? 'LISTENING...'
+                : lang === 'de' ? 'HÖRE ZU...'
+                : lang === 'zh-Hans' ? '正在听...'
+                : 'ESCUCHANDO...'}
+            </div>
+          )}
+
+          {/* Sugerencias de preguntas */}
+          {activeAnchors.length > 0 && !loading && (() => {
+            const anchor = activeAnchors[0];
+            const suggestions = SUGGESTED_QUESTIONS[anchor]?.[lang] 
+              || SUGGESTED_QUESTIONS[anchor]?.es;
+            if (!suggestions) return null;
+            return (
+              <div style={{
+                padding: '8px 14px',
+                borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 4,
+              }}>
+                {suggestions.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      onSend(q);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+                      borderRadius: 8,
+                      color: 'var(--chart-text-2, #94a3b8)',
+                      cursor: 'pointer',
+                      padding: '5px 10px',
+                      fontSize: 11,
+                      textAlign: 'left',
+                      transition: 'all 0.15s ease',
+                      lineHeight: 1.4,
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
+                      e.currentTarget.style.color = 'var(--ifm-color-primary)';
+                      e.currentTarget.style.background = 'rgba(139,38,53,0.04)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.08))';
+                      e.currentTarget.style.color = 'var(--chart-text-2, #94a3b8)';
+                      e.currentTarget.style.background = 'none';
+                    }}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+
+          {/* Input */}
+          <div style={{
+            padding: '12px 14px',
+            borderTop: '1px solid var(--chat-border)',
+            display: 'flex', gap: 8, flexShrink: 0,
+          }}>
+            <input
+              ref={inputRef}
+              type="text"
+              value={question}
+              onChange={e => setQuestion(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder={t.placeholder}
+              style={{
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                border: '1px solid var(--chat-border)',
+                backgroundColor: 'var(--chat-input-bg)',
+                color: 'var(--chat-input-text)',
+                fontSize: 13, outline: 'none',
+              }}
+            />
+            <button
+              onClick={isListening ? stopListening : startListening}
+              title={
+                isListening
+                  ? (lang === 'en' ? 'Stop' : lang === 'de' ? 'Stopp' : lang === 'zh-Hans' ? '停止' : 'Parar')
+                  : (lang === 'en' ? 'Speak' : lang === 'de' ? 'Sprechen' : lang === 'zh-Hans' ? '说话' : 'Hablar')
+              }
+              style={{
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: isListening
+                  ? '1px solid var(--ifm-color-primary)'
+                  : '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                backgroundColor: isListening
+                  ? 'var(--ifm-color-primary)'
+                  : 'transparent',
+                color: isListening
+                  ? 'var(--ifm-background-color)'
+                  : 'var(--chart-text-2, #94a3b8)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                animation: isListening ? 'neonPulseChat 1s ease infinite' : 'none',
+                flexShrink: 0,
+              }}
+            >
+              <svg 
+                width="14" height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="2" width="6" height="12" rx="3"/>
+                <path d="M5 10a7 7 0 0 0 14 0"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+              </svg>
+            </button>
+            <button
+              onClick={handleSend}
+              disabled={loading || !question.trim()}
+              style={{
+                padding: '10px 16px', borderRadius: 10,
+                backgroundColor: loading || !question.trim()
+                  ? 'var(--chat-btn-bg-disabled)'
+                  : 'var(--chat-btn-bg)',
+                color: 'var(--chat-btn-text)',
+                border: 'none',
+                cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
+                fontSize: 14, fontWeight: 600,
+                transition: 'background-color 0.2s',
+              }}
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+
+        {/* ── DIVISOR ARRASTRABLE ── */}
+        {!presentationMode && (
+          <div
+            onMouseDown={handleDragStart}
+            style={{
+              width: 8,
+              cursor: 'col-resize',
+              backgroundColor: 'transparent',
+              borderLeft: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'background-color 0.15s ease',
+              position: 'relative',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = 
+                'var(--ifm-color-primary)';
+              e.currentTarget.style.opacity = '0.3';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.opacity = '1';
+            }}
+          >
+            <div style={{
+              width: 2,
+              height: 32,
+              borderRadius: 2,
+              backgroundColor: 'var(--chart-text-3, #64748b)',
+              opacity: 0.4,
+            }} />
+          </div>
+        )}
+
+        {/* ── RIGHT: CONTENT PANEL ── */}
+        <div style={{
+          display: 'flex', flexDirection: 'column',
+          overflow: 'hidden',
+          backgroundColor: 'var(--ifm-background-surface-color)',
+        }}>
+          {/* Tabs */}
+          {allTabs.length > 0 && (
+            <div style={{
+              display: 'flex', gap: 6, padding: '8px 16px',
+              borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              flexShrink: 0, overflowX: 'auto',
+              backgroundColor: 'var(--chart-bg, rgba(10,15,30,0.97))',
+              alignItems: 'center',
+            }}>
+              {allTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    if (tab.id === activeTab) return;
+                    setPanelVisible(false);
+                    setTimeout(() => {
+                      setActiveTab(tab.id);
+                      setPanelKey(k => k + 1);
+                      setPanelVisible(true);
+                    }, 180);
+                  }}
+                  style={{
+                    padding: '4px 12px', borderRadius: 8, whiteSpace: 'nowrap',
+                    border: `1px solid ${activeTab === tab.id
+                      ? (tab.type === 'interactive'
+                          ? 'var(--accent-electric)'
+                          : 'var(--chart-amber)')
+                      : 'var(--chart-border, rgba(255,255,255,0.12))'}`,
+                    backgroundColor: activeTab === tab.id
+                      ? (tab.type === 'interactive'
+                          ? 'hsla(190,100%,60%,0.1)'
+                          : 'hsla(38,100%,56%,0.1)')
+                      : 'transparent',
+                    color: activeTab === tab.id
+                      ? (tab.type === 'interactive'
+                          ? 'var(--accent-electric)'
+                          : 'var(--chart-amber)')
+                      : 'var(--chart-text-2, #94a3b8)',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    display: 'flex', alignItems: 'center', gap: 5,
+                  }}
+                >
+                  {tab.label.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Contenido activo */}
+          <div style={{
+            flex: 1, overflow: 'hidden', position: 'relative',
+            transition: 'opacity 0.18s ease, transform 0.18s ease',
+            opacity: panelVisible ? 1 : 0,
+            transform: panelVisible ? 'translateX(0)' : 'translateX(8px)',
+          }}>
+            {renderPanelContent()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+##################################################
+### ARCHIVO: Backend API Helper: api/figure-context.js
+### RUTA ORIGINAL: c:\Users\aphmo\Proyectos\TFG OVERLEAF\api\figure-context.js
+##################################################
+
+// api/figure-context.js
+// Endpoint para generar el contexto dinámico de las figuras mediante IA
+
+export default async function handler(req, res) {
+  // CORS configuration
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  // Handle OPTIONS request for CORS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Método no permitido. Usa POST.' });
+  }
+
+  const { question, answer, caption, figureTitle, figureId } = req.body;
+  if (!question || !answer || !caption) {
+    return res.status(400).json({ error: 'Faltan parámetros' });
+  }
+
+  const prompt = `Eres un experto en comunicación técnica de sistemas eléctricos de potencia.
+
+TAREA OBLIGATORIA: Genera EXACTAMENTE un párrafo de máximo 50 palabras que explique **por qué esta figura concreta ayuda al usuario a entender MEJOR la respuesta del asistente**.
+
+DATOS DE ENTRADA:
+- Pregunta del usuario: "${question}"
+- Respuesta del asistente: "${answer.substring(0, 520)}"
+- Figura (título + descripción): "${figureTitle || caption}"
+
+REGLAS ESTRICTAS (debes cumplirlas todas):
+1. Longitud máxima: 50 palabras.
+2. La primera frase DEBE empezar con una de estas estructuras exactas:
+   • "Esta figura es clave porque..."
+   • "Ilustra perfectamente cómo..."
+   • "Es especialmente relevante porque..."
+3. Conecta con un elemento concreto de la pregunta o de la respuesta (ej: exportaciones netas a Francia, Tap-Lag en 220 kV, nadir de 47,79 Hz, RoCoF >1 Hz/s, etc.).
+4. PROHIBIDO ABSOLUTAMENTE:
+   - Decir "esta figura muestra", "en la imagen se ve", "la gráfica representa", "se observa".
+   - Describir visualmente la figura.
+   - Dar información que ya está en la respuesta del asistente.
+5. Tono: claro, preciso, para lector técnico intermedio. Usa magnitudes correctas.
+6. Salida: SOLO el párrafo. Nada más. Sin comillas, sin encabezados, sin "Aquí tienes el texto:".
+
+Ejemplo de salida perfecta (52 palabras):
+"Esta figura es clave porque muestra el flujo neto exportado a Francia en el momento del colapso, lo que explica directamente por qué las reservas de potencia reactiva del sur eran insuficientes para absorber la sobretensión generada por los IBR."
+
+Genera el párrafo ahora:`;
+
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_API_KEY) {
+    return res.status(500).json({ error: 'API Key de Groq no configurada.' });
+  }
+
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.2,
+        max_tokens: 150
+      })
+    });
+
+    if (!response.ok) {
+      console.error('Groq API error:', response.status, await response.text());
+      return res.status(502).json({ error: 'Error del servicio de IA' });
+    }
+
+    const data = await response.json();
+    const context = data.choices?.[0]?.message?.content || '';
+
+    return res.status(200).json({ context: context.trim() });
+  } catch (error) {
+    console.error('Error en figure-context:', error);
+    return res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+}
+

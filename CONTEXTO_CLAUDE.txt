@@ -1,35 +1,1464 @@
 ====================================================================
-CONTEXTO PARA CLAUDE: ESTADO DEL PROYECTO TFG DOCUSAURUS (INCIDENTE 28-A)
+CONTEXTO GENERAL DEL PROYECTO TFG: APAGÓN IBÉRICO DEL 28-A
 ====================================================================
 
-¡Hola Claude! Te paso el contexto actual de mi proyecto para que sepas exactamente en qué punto estamos y me ayudes a seguir construyendo.
+Hola Claude, a continuación te presento un contexto detallado del proyecto en el que estamos trabajando, seguido de la configuración del sitio, un fragmento del índice de búsqueda y dos simuladores interactivos clave.
 
-1. NATURALEZA DEL PROYECTO
-Estoy desarrollando mi TFG sobre el "Análisis Forense del Apagón Ibérico del 28 de Abril de 2025 (28-A)" utilizando Docusaurus como plataforma interactiva. El objetivo es ir más allá del típico PDF académico y ofrecer una experiencia interactiva (Modo Cine, animaciones al hacer scroll, gráficas dinámicas, etc.).
+--- INTRODUCCIÓN Y NATURALEZA DEL TRABAJO ---
+Este es un Trabajo de Fin de Grado (TFG) interactivo titulado "Análisis Forense del Apagón Ibérico del 28 de Abril de 2025 (28-A)".
+A diferencia de los TFGs tradicionales en formato PDF estático, este proyecto está desarrollado como un sitio web interactivo en Docusaurus con un diseño "ciber-forense" premium (modo oscuro, acentos cian y ámbar, y animaciones de terminal).
 
-2. LO QUE YA HEMOS IMPLEMENTADO (ESTADO ACTUAL)
-Con mi asistente local de código ya hemos integrado exitosamente tus componentes. En concreto, tenemos:
+El 28-A representa un apagón general de la península ibérica (España y Portugal) que dejó sin suministro a unos 57 millones de personas.
+El análisis del trabajo compara tres visiones periciales en conflicto sobre las causas raíz:
+1. La visión de la Administración y el Operador del Sistema (REE): centrada en el cumplimiento regulatorio (falta de absorción de reactiva por las plantas renovables, según Procedimiento de Operación P.O. 7.4).
+2. La visión del sector de la Generación (Informe IIT-ICAI / AELEC / Compass Lexecon): apunta a fallos de observabilidad de REE en la red de 220 kV y a la maniobra de mallado (meshing) que indujo sobretensiones capacitivas por efecto Ferranti, desencadenando el fenómeno "Tap-Lag".
+3. La visión de ENTSO-E (el gestor europeo): analiza las oscilaciones inter-área síncronas continentales y la fragilidad del Criterio N-1 frente a dinámicas ultrarrápidas de inversores en redes con alta penetración renovable y baja inercia síncrona.
 
-- **ENTSO-E Dashboard Interactivo**: 
-  Un panel que muestra los datos de la plataforma ENTSO-E. Como aún espero la API Key oficial, hemos implementado una capa de "mock data" para entorno de desarrollo.
-  *Se ha integrado también un Botón Modal global (desde `Root.js`) que permite abrir este dashboard desde cualquier punto del TFG sin perder el hilo de lectura.*
+--- ARQUITECTURA TÉCNICA DE LA WEB ---
+- Framework: Docusaurus (React + MDX).
+- Buscador y Chatbot: Usamos un chatbot RAG local. En el cliente, consume una biblioteca de búsqueda liviana (minisearch) cargada con un índice jerárquico estático ('static/chunks.json'). Cuando el usuario hace una pregunta, minisearch extrae los fragmentos más relevantes y los envía junto con el prompt del sistema al API /api/chat que llama a DeepSeek (v3/r1) para generar la respuesta.
+- Gráficas y Simuladores: Componentes React personalizados con Recharts y animaciones SVG interactivas (sin Tailwind, usando CSS Modules puros).
 
-- **Galería Forense de Datos (GalleryForensic)**:
-  Ejecutamos el script `process-28a-data.js` sobre mis archivos brutos (`TABLAS.txt` y los JSON de ENTSO-E que pesaban megas). El script generó con éxito archivos reducidos (`28A_demand.json`, `28A_inertia.json`, etc.) y el `gallery-index.json`. 
-  *Hemos copiado el componente `GalleryForensic.jsx`, sus CSS, y los JSONs en `src/components/GalleryForensic` y `src/data/processed`. Está registrado en `MDXComponents.js` y publicado en la ruta `docs/04-galeria-datos.mdx`.*
 
-- **Sincronización Scroll (Sticky Timeline)**:
-  Implementamos un componente sticky en el Capítulo 3 que avanza y resalta hitos cronológicos a medida que el usuario baja por la página (usando IntersectionObserver).
+====================================================================
+CONFIGURACIÓN DE DOCUSAURUS (docusaurus.config.js)
+====================================================================
+```javascript
+// @ts-check
+// `@type` JSDoc annotations allow editor autocompletion and type checking
+// (when paired with `@ts-check`).
+// There are various equivalent ways to declare your Docusaurus config.
+// See: https://docusaurus.io/docs/api/docusaurus-config
 
-3. STACK TECNOLÓGICO Y RUTAS CLAVE
-- Framework: Docusaurus (React, MDX)
-- Gráficas: Recharts
-- Estilos: CSS Modules nativos (sin Tailwind)
-- Rutas de componentes: `/tfg-antigravity-docs/src/components/...`
-- Rutas de datos: `/tfg-antigravity-docs/src/data/...`
-- Componentes inyectados globalmente en: `src/theme/MDXComponents.js` (incluyendo `GalleryForensic`, `ENTSOEDashboard`, etc.)
+const {themes: {github: lightTheme, dracula: darkTheme}} = require('prism-react-renderer');
 
-4. MI OBJETIVO AHORA MISMO
-A partir de aquí, quiero seguir puliendo el TFG. 
+/** @type {import('@docusaurus/types').Config} */
+const config = {
+  title: 'Análisis del Apagón de 28 Abril de 2025',
+  tagline: 'Estudio técnico sobre el colapso del sistema eléctrico ibérico y sus implicaciones para la estabilidad de redes con alta penetración renovable',
+  favicon: 'img/favicon.png',
 
-[AQUÍ ESCRIBE TU PETICIÓN PARA CLAUDE, POR EJEMPLO: "Quiero añadir más gráficas a la galería", "Quiero crear la estructura del capítulo 5", "Quiero mejorar la estética del modo cine", etc.]
+  // Set the production url of your site here
+  url: 'https://tfg-overleaf.vercel.app',
+  // Set the /<baseUrl>/ pathname under which your site is served
+  // For GitHub pages it is often '/<projectName>/'
+  baseUrl: '/',
+
+  // GitHub pages deployment config.
+  // If you aren't using GitHub pages, you don't need these.
+  organizationName: 'alfonsomongee',
+  projectName: 'TFG-OVERLEAF',
+
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+
+  // Even if you don't use internalization, you can use this field to set useful
+  // metadata like html lang. For example, if your site is Chinese, you may want
+  // to replace "en" with "zh-Hans".
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en', 'de', 'zh-Hans'],
+    localeConfigs: {
+      es: {
+        label: 'Español',
+        direction: 'ltr',
+        htmlLang: 'es-ES',
+      },
+      en: {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+      },
+
+      de: {
+        label: 'Deutsch',
+        direction: 'ltr',
+        htmlLang: 'de-DE',
+      },
+      'zh-Hans': {
+        label: '中文',
+        direction: 'ltr',
+        htmlLang: 'zh-Hans',
+      },
+    },
+  },
+
+  presets: [
+    [
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+          routeBasePath: '/',
+          remarkPlugins: [
+            [require('remark-math'), { strict: false }],
+            require('./plugins/remark-auto-glossary-links'),
+          ],
+          rehypePlugins: [
+            [require('rehype-katex'), { strict: false }],
+          ],
+        },
+        blog: false,
+        theme: {
+          customCss: require.resolve('./src/css/custom.css'),
+        },
+      }),
+    ],
+  ],
+
+  plugins: [
+    [
+      require.resolve('docusaurus-lunr-search'),
+      {
+        languages: ['es', 'en', 'de'],
+      },
+    ],
+
+  ],
+
+  clientModules: [
+    require.resolve('./src/js/copyEmail.js'),
+  ],
+
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      // Replace with your project's social card
+      image: 'img/social-card.jpg',
+      navbar: {
+        hideOnScroll: true,
+        title: '',
+        logo: {
+          alt: '',
+          src: 'img/logo_transparent.png',
+          style: { display: 'none' },
+        },
+        items: [
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
+          {
+            to: '/sobre-el-autor',
+            label: 'Sobre el Autor',
+            position: 'right',
+          },
+          {
+            href: 'pathname:///tfg_antigravity(1).pdf',
+            label: 'Descargar PDF',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/Alfonsomongee/TFG-OVERLEAF',
+            label: 'GitHub',
+            position: 'right',
+          },
+        ],
+      },
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Contenido',
+            items: [
+              {
+                label: 'Introducción',
+                to: '/',
+              },
+              {
+                label: 'Contexto Técnico',
+                to: '/contexto',
+              },
+              {
+                label: 'Análisis del Incidente',
+                to: '/analisis-incidente',
+              },
+            ],
+          },
+          {
+            title: 'Universidad',
+            items: [
+              {
+                label: 'Escuela Técnica Superior de Ingeniería',
+                href: 'https://www.us.es',
+              },
+              {
+                label: 'Universidad de Sevilla',
+                href: 'https://www.us.es',
+              },
+            ],
+          },
+          {
+            title: 'Contacto',
+            items: [
+              {
+                label: 'Alfonso Monge Díaz-Ángel',
+                href: 'mailto:alfonsomongediazangel@gmail.com',
+              },
+              {
+                label: 'LinkedIn',
+                href: 'https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277',
+              },
+            ],
+          },
+          {
+            title: 'Recursos',
+            items: [
+              {
+                label: 'Descargar PDF del TFG',
+                href: 'pathname:///tfg_antigravity(1).pdf',
+              },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/Alfonsomongee/TFG-OVERLEAF',
+              },
+              {
+                label: 'Docusaurus',
+                href: 'https://docusaurus.io',
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © 2026 Alfonso Monge Díaz-Ángel. alfonsomongediazangel@gmail.com. Built with Docusaurus.`,
+      },
+      prism: {
+        theme: lightTheme,
+        darkTheme: darkTheme,
+      },
+    }),
+
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css',
+      type: 'text/css',
+      integrity: 'sha384-SfHjyzed8eCsTSa4t2GoMc4WnsCLa6cQpFqPRCaizz0FlQUOyafw/AyIUCQU/KuM',
+      crossorigin: 'anonymous',
+    },
+    {
+      href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Alfa+Slab+One&family=Playfair+Display:wght@700;800;900&display=swap',
+      type: 'text/css',
+      rel: 'stylesheet',
+    },
+  ],
+  headTags: [
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
+    {
+      tagName: 'script',
+      attributes: { type: 'text/javascript' },
+      innerHTML: `(function(){var z=localStorage.getItem('zen-mode');if(z===null||z==='true'){document.documentElement.classList.add('zen-mode');}})();`,
+    },
+  ],
+};
+
+module.exports = config;
+
+```
+
+====================================================================
+FRAGMENTO DEL ÍNDICE DE BÚSQUEDA (static/chunks.json)
+====================================================================
+Muestra de los primeros 3 chunks indexados que consume minisearch en el Chatbot RAG:
+```json
+[
+  {
+    "id": 0,
+    "title": "Introducción",
+    "heading": "Introducción",
+    "subheading": "",
+    "text": "Capítulo: Introducción\nSección: Introducción\nSubsección: N/A\n\n<GlitchTitle>Introducción</GlitchTitle>\r\n\r\n\r\n\r\n| Parámetro | Valor | Fuente |\r\n| :--- | :--- | :--- |\r\n| Generación destruida en la cascada | >15 GW en <30 s | Comité de Análisis del Gobierno, 2025 |\r\n| Demanda sin suministro (España) | 25,2 GW | ESIOS / REE |\r\n| Demanda sin suministro (Portugal) | ~5,8 GW | REN / ENTSO-E |\r\n| Personas afectadas | ~57 millones | Comité de Análisis del Gobierno |\r\n| Duración del apagón (reposición 99,95%) | 18,5 horas | REE / ENTSO-E |\r\n| Pérdida económica estimada (VoLL) | 1.000–1.500 M€ | CEOE / ATA / estimación propia |\r\n| Coste acumulado \"Operación Reforzada\" | >666 M€ (10 meses) | Redeia, abril 2026 |\r\n\r\n\r\nEl 28 de abril de 2025, el sistema síncrono ibérico sufrió un colapso de tensión que destruyó más de 15 GW de generación en cuestión de segundos (que derivó en la interrupción de ~25,2 GW de demanda) y dejó sin suministro eléctrico a aproximadamente 57 millones de personas. Por magnitud y velocidad de propagación, el episodio no tiene precedentes en el sistema europeo continental en más de veinte años. Este trabajo no es una reconstrucción cronológica del evento: es un análisis crítico y comparativo de las narrativas técnicas, regulatorias y operativas que han competido por explicarlo. ## Objeto y alcance\r\n\r\nEl colapso —caracterizado por una cascada de desconexiones asociadas a fenómenos de sobretensión en un contexto de elevada penetración de Recursos Basados en Inversores (IBR)—\r\nha generado un profundo desacuerdo interpretativo sobre sus causas raíz y la\r\nasignación de responsabilidades. La investigación examina tres visiones\r\ninstitucionales predominantes: *(Nota: el análisis opera sobre cuatro informes primarios —Gobierno, REE, IIT-ICAI/AELEC y ENTSO-E— agrupados en tres visiones, dado que los informes del Gobierno y de REE comparten premisas causales fundamentales.)*\r\n\r\nVisión de la Administración (Gobierno / REE, el Operador del Sistema, filial de la sociedad holding Redeia). El informe del Comité de Análisis del Consejo de Seguridad Nacional interpreta el colapso desde la óptica del cumplimiento normativo. Su tesis atribuye el agravamiento del evento a un déficit de absorción de potencia reactiva inductiva que impidió contener la escalada de tensión, en contravención de los\r\nrequerimientos del Procedimiento de Operación P.O. 7.4. Visión del sector generador (Informe ICAI / AELEC).",
+    "slug": "/",
+    "anchor": "",
+    "chunkType": "comparison",
+    "keywords": [
+      "IBR",
+      "SCADA",
+      "ENTSO-E",
+      "REE",
+      "ICAI",
+      "AELEC",
+      "P.O. 7.4",
+      "Operación Reforzada",
+      "Gobierno",
+      "cascada",
+      "colapso",
+      "sobretensión",
+      "inversor",
+      "tensión",
+      "reposición",
+      "apagón",
+      "coste"
+    ],
+    "keywordsText": "IBR SCADA ENTSO-E REE ICAI AELEC P.O. 7.4 Operación Reforzada Gobierno cascada colapso sobretensión inversor tensión reposición apagón coste",
+    "chapterOrder": 1,
+    "sourceFile": "01-introduccion.mdx"
+  },
+  {
+    "id": 1,
+    "title": "Introducción",
+    "heading": "Introducción",
+    "subheading": "",
+    "text": "Capítulo: Introducción\nSección: Introducción\nSubsección: N/A\n\n[continuación] del evento a un déficit de absorción de potencia reactiva inductiva que impidió contener la escalada de tensión, en contravención de los\r\nrequerimientos del Procedimiento de Operación P.O. 7.4. Visión del sector generador (Informe ICAI / AELEC).\n\nEl análisis pericial del IIT-ICAI y Compass Lexecon desplaza la responsabilidad hacia decisiones operativas concretas de REE. La tesis central cuestiona la maniobra de mallado (*meshing*) ejecutada por el\r\noperador, argumentando que incrementó la contribución capacitiva de la red en un\r\nescenario de baja fortaleza síncrona y generó un pulso de sobretensión\r\namplificado por las limitaciones de observabilidad sobre la red de 220 kV\r\n—fenómeno denominado Tap-Lag. Visión del gestor europeo (ENTSO-E). El informe factual de ENTSO-E adopta una perspectiva de área síncrona continental: analiza la propagación de oscilaciones inter-área y cuestiona la suficiencia del Criterio N−1 frente a\r\nfenómenos dinámicos ultrarrápidos propios de sistemas dominados por electrónica\r\nde potencia. ![Replicación de la secuencia del colapso](/figuras/albustami_ieee39_secuencia.png) _Figura 1. Replicación de la secuencia del colapso (interacción OA/AA). Fuente: Albustami et al., 2025._\r\n\r\nEl alcance del trabajo se articula sobre el contraste de estas tres narrativas con los _Network Codes_ europeos —en particular el Reglamento RfG— y con los principios\r\nmodernos de estabilidad de tensión en sistemas dominados por inversores, con el propósito de identificar lecciones\r\nestructurales, limitaciones metodológicas y vacíos regulatorios que condicionan\r\nla resiliencia del sistema eléctrico europeo en la transición hacia la\r\ndescarbonización. El análisis narrativo se fundamenta en una reconstrucción electromagnética del transitorio, construida sobre los registros PMU y WAMS, y es compatible con la evidencia oscilográfica publicada por los cuatro agentes. ## La vulnerabilidad estructural del sistema ibérico\r\n\r\nLa transición energética ha alterado de forma profunda la dinámica del sistema peninsular. La sustitución acelerada de centrales síncronas por IBR reduce las masas rotatorias acopladas a la red y, con ellas, dos parámetros críticos de forma simultánea: la inercia del sistema (*H*) —que\r\ncayó a valores zonales de entre 1,3 s y 1,8 s en el sur peninsular, por\r\ndebajo del umbral de 2 s que la literatura técnica asocia con márgenes dinámicos\r\ncomprometidos— y la potencia de cortocircuito disponible en los nudos. Esta\r\ndoble merma no afecta únicamente al eje frecuencia–potencia activa:",
+    "slug": "/",
+    "anchor": "",
+    "chunkType": "comparison",
+    "keywords": [
+      "IBR",
+      "Tap-Lag",
+      "inercia",
+      "PMU",
+      "ENTSO-E",
+      "REE",
+      "ICAI",
+      "AELEC",
+      "P.O. 7.4",
+      "colapso",
+      "sobretensión",
+      "inversor",
+      "frecuencia",
+      "tensión"
+    ],
+    "keywordsText": "IBR Tap-Lag inercia PMU ENTSO-E REE ICAI AELEC P.O. 7.4 colapso sobretensión inversor frecuencia tensión",
+    "chapterOrder": 1,
+    "sourceFile": "01-introduccion.mdx"
+  },
+  {
+    "id": 2,
+    "title": "Introducción",
+    "heading": "Introducción",
+    "subheading": "",
+    "text": "Capítulo: Introducción\nSección: Introducción\nSubsección: N/A\n\n[continuación] sur peninsular, por\r\ndebajo del umbral de 2 s que la literatura técnica asocia con márgenes dinámicos\r\ncomprometidos— y la potencia de cortocircuito disponible en los nudos. Esta\r\ndoble merma no afecta únicamente al eje frecuencia–potencia activa:\n\nerosiona de\r\nforma crítica la capacidad del sistema para absorber dinámicamente potencia\r\nreactiva y sostener la tensión ante transitorios rápidos, que es precisamente el\r\neje sobre el que se articuló el colapso. ![Metamorfosis electromecánica del sistema de potencia](/figuras/futured_grid_evolution.png) _Figura 2. Metamorfosis electromecánica del sistema de potencia (desplazamiento IBR). El reemplazo de grandes masas rotatorias reduce drásticamente la inercia total del sistema. Fuente: FutuRed, 2024._\r\n\r\nLa mañana del incidente, el sistema operaba con una elevada penetración de generación renovable no síncrona (cuya estructura en detalle se describe en el apartado de Contexto Técnico) en condiciones de demanda valle. Para equilibrar la generación, REE desacopló la práctica totalidad de los grupos térmicos disponibles, llevando el número de generadores síncronos a mínimos históricos. El parque IBR operaba prácticamente en su totalidad en modo grid-following: inversores que necesitan una tensión y frecuencia externas estables como\r\nreferencia de sincronismo. Al desaparecer los grupos síncronos, el sistema\r\nperdió su principal mecanismo de absorción dinámica de potencia reactiva y, con\r\nél, el amortiguamiento natural frente a transitorios de tensión. A esta fragilidad interna se añade el aislamiento estructural de la península ibérica. Con una capacidad de interconexión transfronteriza del 7,9 % sobre la demanda punta —muy por debajo de los objetivos comunitarios—, el sistema ibérico no puede importar estabilidad dinámica desde el núcleo continental en situaciones de emergencia. La confluencia de baja fortaleza síncrona y aislamiento relativo de red configuró la vulnerabilidad que hizo imposible frenar la cascada de sobretensiones a las 12:33:29.741 CEST. El colapso afectó simultáneamente a España y Portugal. El sistema de REN (Redes Energéticas Nacionais) estaba eléctricamente sincronizado con REE a través de las interconexiones de alta tensión; al producirse el cero de tensión en el sistema peninsular español, la red portuguesa colapsó en milisegundos. La potencia demandada sin suministro en Portugal alcanzó los ~5,8 GW, y la reposición completa del sistema portugués requirió ~12 horas (frente a las ~15,5 horas del sistema español). Los capítulos 4 y 7c analizan la dimensión portuguesa con detalle.",
+    "slug": "/",
+    "anchor": "",
+    "chunkType": "causal",
+    "keywords": [
+      "IBR",
+      "inercia",
+      "SCADA",
+      "REE",
+      "cascada",
+      "colapso",
+      "inversor",
+      "frecuencia",
+      "tensión",
+      "isla",
+      "reposición"
+    ],
+    "keywordsText": "IBR inercia SCADA REE cascada colapso inversor frecuencia tensión isla reposición",
+    "chapterOrder": 1,
+    "sourceFile": "01-introduccion.mdx"
+  }
+]
+```
+
+====================================================================
+SIMULADOR 1: GRÁFICO DE FRECUENCIA SCROLLYTELLING (FrequencyChart.jsx)
+====================================================================
+```javascript
+/**
+ * FrequencyChart.jsx
+ * Gráfico scrollytelling de la caída de frecuencia durante el 28-A.
+ *
+ * MEJORAS respecto a la versión anterior:
+ * 1. CartesianGrid añadido: mejora la lectura de valores en el eje Y.
+ * 2. Tooltip personalizado: muestra tiempo exacto y frecuencia en Hz.
+ * 3. Modo no-galería: migrado de float:right a flexbox — más robusto en móvil.
+ * 4. prefers-reduced-motion: desactiva animationDuration si el usuario lo prefiere.
+ * 5. ReferenceLine de 48,46 Hz etiquetada más claramente como
+ *    "Pérdida sincronismo FR (48,46 Hz)" para audiencia internacional.
+ * 6. Línea de referencia adicional a 49,0 Hz (primer escalón UFLS demanda).
+ *    NOTA: el bombeo se deslastra a 49,5 Hz (ya representado), la demanda
+ *    a 49,0 Hz (añadido). Fuente: P.O. 1.6 / datos28A.json.
+ */
+import { useDocLang } from '@site/src/hooks/useDocLang';
+import React, { useState, useMemo } from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { Scrollama, Step } from 'react-scrollama';
+import {
+  LineChart, Line, ReferenceLine, YAxis, XAxis,
+  ResponsiveContainer, CartesianGrid, Tooltip,
+} from 'recharts';
+import styles from './FrequencyChart.module.css';
+import { useForensicDataTablas } from '../data/forensicDataI18n';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+// ─── Pasos del scrollytelling ─────────────────────────────────────────────────
+const getSteps = (lang) => {
+  const t = (es, en, pt, fr, it, de) =>
+    ({ es, en, pt, fr, it, de }[lang] || es);
+  return [
+    {
+      stepIndex: 0,
+      title: t('12:32:57 — El detonante', '12:32:57 — The Trigger',
+               '12:32:57 — O Gatilho', '12:32:57 — Le Déclencheur',
+               '12:32:57 — L\'Innesco', '12:32:57 — Der Auslöser'),
+      text: t(
+        'Un transformador de 400/220 kV en Granada se desconecta por sobretensión en el colector a 220 kV (242 kV), eliminando bruscamente 355 MW activos y 165 MVAr de absorción reactiva inductiva. (ENTSO-E Factual, p.28)',
+        'A 400/220 kV transformer in Granada disconnects due to overvoltage on the 220 kV collector busbar (242 kV), abruptly eliminating 355 MW active and 165 MVAr inductive reactive absorption. (ENTSO-E Factual, p.28)',
+        'Um transformador de 400/220 kV em Granada desconecta por sobretensão no coletor 220 kV, eliminando 355 MW ativos e 165 MVAr de absorção reativa. (ENTSO-E Factual, p.28)',
+        'Un transformateur 400/220 kV à Grenade se déconnecte pour surtension sur le jeu de barres collecteur 220 kV, éliminant 355 MW actifs et 165 MVAr d\'absorption réactive. (ENTSO-E Factual, p.28)',
+        'Un trasformatore 400/220 kV a Granada si disconnette per sovratensione sul collettore 220 kV, eliminando 355 MW attivi e 165 MVAr di assorbimento reattivo. (ENTSO-E Factual, p.28)',
+        'Ein 400/220-kV-Transformator in Granada schaltet wegen Überspannung am 220-kV-Sammelschienensystem ab und eliminiert 355 MW Wirkleistung und 165 MVAr Blindleistungsaufnahme. (ENTSO-E Factual, S.28)',
+      ),
+      visibleUntilT: 0,
+    },
+    {
+      stepIndex: 1,
+      title: t('12:33:15 — Sobretensión latente', '12:33:15 — Latent Overvoltage',
+               '12:33:15 — Sobretensão Latente', '12:33:15 — Surtension Latente',
+               '12:33:15 — Sovratensione Latente', '12:33:15 — Latente Überspannung'),
+      text: t(
+        'La tensión escala en la red de 400 kV por efecto Ferranti (red capacitiva descargada de flujos de potencia). El fenómeno Tap-Lag en los transformadores de colector oculta la sobretensión a los sistemas SCADA de REE.',
+        'Voltage rises across the 400 kV grid due to the Ferranti effect (capacitive grid unloaded from power flows). The Tap-Lag phenomenon in collector transformers hides the overvoltage from REE SCADA systems.',
+        'A tensão sobe na rede 400 kV pelo efeito Ferranti. O fenômeno Tap-Lag nos transformadores de coletor oculta a sobretensão dos sistemas SCADA da REE.',
+        'La tension monte sur le réseau 400 kV par effet Ferranti. Le phénomène Tap-Lag dans les transformateurs collecteurs masque la surtension aux systèmes SCADA de REE.',
+        'La tensione sale sulla rete 400 kV per effetto Ferranti. Il fenomeno Tap-Lag nei trasformatori collettori nasconde la sovratensione ai sistemi SCADA di REE.',
+        'Die Spannung steigt im 400-kV-Netz durch den Ferranti-Effekt. Das Tap-Lag-Phänomen in Kollektortransformatoren verbirgt die Überspannung vor den SCADA-Systemen der REE.',
+      ),
+      visibleUntilT: 18,
+    },
+    {
+      stepIndex: 2,
+      title: t('12:33:18 — Inicio de la cascada', '12:33:18 — Cascade Initiation',
+               '12:33:18 — Início da Cascata', '12:33:18 — Début de la Cascade',
+               '12:33:18 — Inizio della Cascata', '12:33:18 — Kaskadenbeginn'),
+      text: t(
+        'Los nudos colectores superan 1,10 p.u. (~145 kV en 132 kV). Los inversores solares activan su protección HVRT (High Voltage Ride-Through). Caen en cascada las plantas de Badajoz (730 MW) y Sevilla (550 MW).',
+        'Collector nodes exceed 1.10 p.u. (~145 kV in 132 kV). Solar inverters activate their HVRT (High Voltage Ride-Through) protection. Badajoz (730 MW) and Seville (550 MW) cascade down.',
+        'Os nós coletores superam 1,10 p.u. Os inversores solares ativam proteção HVRT. Caem Badajoz (730 MW) e Sevilha (550 MW).',
+        'Les nœuds collecteurs dépassent 1,10 p.u. Les onduleurs solaires activent leur protection HVRT. Badajoz (730 MW) et Séville (550 MW) tombent en cascade.',
+        'I nodi collettori superano 1,10 p.u. Gli inverter solari attivano la protezione HVRT. Cadono Badajoz (730 MW) e Siviglia (550 MW).',
+        'Kollektorknoten überschreiten 1,10 p.u. Solar-Wechselrichter aktivieren HVRT-Schutz. Badajoz (730 MW) und Sevilla (550 MW) fallen kaskadenförmig aus.',
+      ),
+      visibleUntilT: 21,
+    },
+    {
+      stepIndex: 3,
+      title: t('12:33:20 — Caída libre inercial', '12:33:20 — Inertial Freefall',
+               '12:33:20 — Queda Livre Inercial', '12:33:20 — Chute Libre Inertielle',
+               '12:33:20 — Caduta Libera Inerziale', '12:33:20 — Trägheitsfreier Fall'),
+      text: t(
+        'Tras la pérdida de ~15 GW de generación en segundos, la frecuencia cae con un RoCoF sostenido cercano a 1 Hz/s. Con H_eq ≈ 2,4 s (ENTSO-E Factual, Tabla 2-4), el sistema tiene escasos segundos antes de la separación.',
+        'After losing ~15 GW of generation in seconds, frequency drops with a sustained RoCoF near 1 Hz/s. With H_eq ≈ 2.4 s (ENTSO-E Factual, Table 2-4), the system has just seconds before separation.',
+        'Após perda de ~15 GW em segundos, a frequência cai com RoCoF próximo a 1 Hz/s. Com H_eq ≈ 2,4 s, o sistema tem apenas segundos antes da separação.',
+        'Après perte de ~15 GW en quelques secondes, la fréquence chute avec un RoCoF soutenu proche de 1 Hz/s. Avec H_eq ≈ 2,4 s, le système dispose de quelques secondes avant la séparation.',
+        'Dopo la perdita di ~15 GW in pochi secondi, la frequenza scende con RoCoF sostenuto vicino a 1 Hz/s. Con H_eq ≈ 2,4 s, il sistema ha pochi secondi prima della separazione.',
+        'Nach Verlust von ~15 GW in Sekunden fällt die Frequenz mit einem anhaltenden RoCoF nahe 1 Hz/s. Mit H_eq ≈ 2,4 s hat das System nur noch Sekunden bis zur Trennung.',
+      ),
+      visibleUntilT: 23,
+    },
+    {
+      stepIndex: 4,
+      title: t('12:33:21 — Aislamiento europeo', '12:33:21 — European Isolation',
+               '12:33:21 — Isolamento Europeu', '12:33:21 — Isolement Européen',
+               '12:33:21 — Isolamento Europeo', '12:33:21 — Europäische Isolation'),
+      text: t(
+        'A 48,46 Hz, las protecciones de pérdida de sincronismo (ANSI 78) abren los enlaces AC con Francia. La península ibérica queda aislada del área síncrona continental europea. (ENTSO-E Factual, pp.108-109)',
+        'At 48.46 Hz, loss-of-synchronism protections (ANSI 78) open AC links with France. The Iberian Peninsula becomes isolated from the European continental synchronous area. (ENTSO-E Factual, pp.108-109)',
+        'A 48,46 Hz, proteções de perda de sincronismo abrem os links AC com a França. A península ibérica fica isolada da área síncrona continental europeia.',
+        'À 48,46 Hz, les protections de perte de synchronisme ouvrent les liaisons CA avec la France. La péninsule ibérique se retrouve isolée de la zone synchrone continentale européenne.',
+        'A 48,46 Hz, le protezioni di perdita del sincronismo aprono i collegamenti CA con la Francia. La penisola iberica rimane isolata dall\'area sincrona continentale europea.',
+        'Bei 48,46 Hz öffnen Synchronismusverlustschutzvorrichtungen die Wechselstromverbindungen mit Frankreich. Die Iberische Halbinsel ist vom europäischen kontinentalen Synchronbereich isoliert.',
+      ),
+      visibleUntilT: 24,
+    },
+    {
+      stepIndex: 5,
+      title: t('12:33:23 — Colapso y paradoja UFLS', '12:33:23 — Collapse & UFLS Paradox',
+               '12:33:23 — Colapso e Paradoxo UFLS', '12:33:23 — Effondrement et Paradoxe UFLS',
+               '12:33:23 — Collasso e Paradosso UFLS', '12:33:23 — Kollaps & UFLS-Paradoxon'),
+      text: t(
+        'El UFLS deslastra bombeo e industria. Paradoja: al eliminar consumo inductivo, agrava la sobretensión residual. El reactor nuclear activa SCRAM automático. Cero de tensión sistémico a las 12:33:27 CEST.',
+        'UFLS sheds pumping and industry. Paradox: removing inductive consumption worsens residual overvoltage. Nuclear reactor triggers automatic SCRAM. Systemic voltage zero at 12:33:27 CEST.',
+        'O UFLS corta bombeamento e indústria. Paradoxo: eliminar consumo indutivo agrava a sobretensão residual. Reator nuclear ativa SCRAM. Zero de tensão a 12:33:27 CEST.',
+        'L\'UFLS déleste le pompage et l\'industrie. Paradoxe : supprimer la consommation inductive aggrave la surtension résiduelle. Le réacteur nucléaire déclenche un SCRAM. Zéro de tension à 12:33:27 CEST.',
+        'L\'UFLS scarica pompaggio e industria. Paradosso: eliminare il consumo induttivo peggiora la sovratensione residua. Il reattore nucleare attiva lo SCRAM. Zero di tensione a 12:33:27 CEST.',
+        'UFLS wirft Pump- und Industrielast ab. Paradoxon: Entfernen induktiver Last verschlimmert die Restüberspannung. Kernreaktor löst automatischen SCRAM aus. Systemweiter Spannungsnullpunkt um 12:33:27 CEST.',
+      ),
+      visibleUntilT: 26,
+    },
+  ];
+};
+
+// ─── Tooltip personalizado ────────────────────────────────────────────────────
+function FrequencyTooltip({ active, payload, label, strings }) {
+  if (!active || !payload?.length) return null;
+  const f = payload[0]?.value;
+  if (f == null) return null;
+  return (
+    <div style={{
+      background: 'var(--chart-bg, rgba(10,10,20,0.96))',
+      border: '1px solid rgba(255,77,77,0.4)',
+      borderRadius: 6,
+      padding: '8px 12px',
+      fontFamily: 'monospace',
+      fontSize: 12,
+      color: '#e2e8f0',
+    }}>
+      <p style={{ margin: '0 0 4px', color: '#94a3b8' }}>
+        t = {label} s
+      </p>
+      <p style={{ margin: 0, color: '#FF4D4D', fontWeight: 'bold' }}>
+        f = {f.toFixed(3)} Hz
+      </p>
+    </div>
+  );
+}
+
+// ─── Gráfico base (reutilizable) ──────────────────────────────────────────────
+function FrequencyLineChart({ data, strings, animated = false }) {
+  // Respetar prefers-reduced-motion
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} margin={{ top: 20, right: 30, left: 10, bottom: 24 }}>
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="rgba(255,255,255,0.06)"
+          vertical={false}
+        />
+        <XAxis
+          dataKey="tiempoS"
+          domain={[0, 30]}
+          type="number"
+          stroke="#475569"
+          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+          label={{
+            value: strings.xaxis,
+            position: 'insideBottom',
+            offset: -12,
+            fill: 'var(--text-1, #64748b)',
+            fontSize: 11,
+          }}
+        />
+        <YAxis
+          domain={[46, 50.2]}
+          stroke="#475569"
+          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+          unit=" Hz"
+        />
+        <Tooltip content={<FrequencyTooltip strings={strings} />} />
+
+        {/* Umbral deslastre bombeo (49,5 Hz) — P.O. 1.6 */}
+        <ReferenceLine
+          y={49.5}
+          stroke="#f59e0b"
+          strokeDasharray="4 4"
+          label={{
+            position: 'insideBottomRight',
+            value: strings.ufls,
+            fill: '#f59e0b',
+            fontSize: 10,
+          }}
+        />
+        {/* Umbral deslastre demanda (49,0 Hz) — P.O. 1.6 */}
+        <ReferenceLine
+          y={49.0}
+          stroke="#ef4444"
+          strokeDasharray="3 5"
+          label={{
+            position: 'insideBottomRight',
+            value: strings.uflsDemand,
+            fill: '#ef4444',
+            fontSize: 10,
+          }}
+        />
+        {/* Pérdida de sincronismo (48,46 Hz) — ENTSO-E Factual */}
+        <ReferenceLine
+          y={48.46}
+          stroke="#dc2626"
+          strokeDasharray="4 4"
+          label={{
+            position: 'insideTopRight',
+            value: strings.iso,
+            fill: '#dc2626',
+            fontSize: 10,
+          }}
+        />
+
+        <Line
+          type="stepAfter"
+          dataKey="frecuencia"
+          stroke="#FF4D4D"
+          strokeWidth={3}
+          isAnimationActive={animated && !prefersReduced}
+          animationDuration={600}
+          dot={{ r: 4, fill: 'var(--ifm-background-surface-color)', stroke: '#FF4D4D', strokeWidth: 2 }}
+          activeDot={{ r: 6, fill: '#FF4D4D' }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+// ─── Strings de UI ────────────────────────────────────────────────────────────
+const getStrings = (l) => {
+  switch (l) {
+    case 'en': return {
+      xaxis: 'Seconds from trigger',
+      ufls: 'Pump UFLS (49.5 Hz)',
+      uflsDemand: 'Demand UFLS (49.0 Hz)',
+      iso: 'FR sync loss (48.46 Hz)',
+      dyn: 'Collapse dynamics — 30 critical seconds.',
+    };
+    case 'pt': return {
+      xaxis: 'Segundos desde o gatilho',
+      ufls: 'UFLS Bombagem (49.5 Hz)',
+      uflsDemand: 'UFLS Demanda (49.0 Hz)',
+      iso: 'Perda sinc. FR (48,46 Hz)',
+      dyn: 'Dinâmica de colapso — 30 segundos críticos.',
+    };
+    case 'fr': return {
+      xaxis: 'Secondes depuis le déclencheur',
+      ufls: 'UFLS Pompage (49.5 Hz)',
+      uflsDemand: 'UFLS Demande (49.0 Hz)',
+      iso: 'Perte synchro FR (48,46 Hz)',
+      dyn: 'Dynamique d\'effondrement — 30 secondes critiques.',
+    };
+    case 'it': return {
+      xaxis: 'Secondi dall\'innesco',
+      ufls: 'UFLS Pompaggio (49.5 Hz)',
+      uflsDemand: 'UFLS Domanda (49.0 Hz)',
+      iso: 'Perdita sinc. FR (48,46 Hz)',
+      dyn: 'Dinamica di collasso — 30 secondi critici.',
+    };
+    case 'de': return {
+      xaxis: 'Sekunden seit Auslöser',
+      ufls: 'UFLS Pumpen (49.5 Hz)',
+      uflsDemand: 'UFLS Nachfrage (49.0 Hz)',
+      iso: 'FR Synch.verlust (48,46 Hz)',
+      dyn: 'Kollapsdynamik — 30 kritische Sekunden.',
+    };
+    default: return {
+      xaxis: 'Segundos desde el detonante',
+      ufls: 'UFLS Bombeo (49,5 Hz)',
+      uflsDemand: 'UFLS Demanda (49,0 Hz)',
+      iso: 'Pérdida sinc. FR (48,46 Hz)',
+      dyn: 'Dinámica de colapso — 30 segundos críticos.',
+    };
+  }
+};
+
+// ─── Exportación principal ────────────────────────────────────────────────────
+export default function FrequencyChartScrolly({ isGallery = false}) {
+  const lang = useDocLang();
+  const { i18n } = useDocusaurusContext();
+  const currentLang = lang || i18n.currentLocale || 'es';
+
+  const loadingText = {
+    en: 'Loading interactive visualization...',
+    pt: 'Carregando visualização interativa...',
+    fr: 'Chargement de la visualisation interactive...',
+    it: 'Caricamento della visualizzazione interattiva...',
+    de: 'Interaktive Visualisierung wird geladen...',
+    es: 'Cargando visualización interactiva...',
+  }[currentLang] || 'Cargando...';
+
+  return (
+    <BrowserOnly fallback={
+      <div style={{ color: 'var(--text-1, #64748b)', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
+        {loadingText}
+      </div>
+    }>
+      {() => <FrequencyChartScrollyContent isGallery={isGallery} lang={currentLang} />}
+    </BrowserOnly>
+  );
+}
+
+function FrequencyChartScrollyContent({ isGallery}) {
+  const lang = useDocLang();
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const STEPS = useMemo(() => getSteps(lang), [lang]);
+  const strings = useMemo(() => getStrings(lang), [lang]);
+  const currentStep = STEPS[currentStepIndex] || STEPS[0];
+
+  const { timelineData } = useForensicDataTablas();
+  const validTimelineData = useMemo(
+    () => (timelineData || []).filter(d => d.frecuencia > 0),
+    [timelineData],
+  );
+  const visibleData = useMemo(
+    () => validTimelineData.filter(d => d.tiempoS <= currentStep.visibleUntilT),
+    [validTimelineData, currentStep.visibleUntilT],
+  );
+
+  // ── Modo galería ──────────────────────────────────────────────────────────
+  if (isGallery) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{
+          height: 380,
+          background: 'var(--ifm-background-surface-color)',
+          borderRadius: 12,
+          padding: '1rem',
+          border: '1px solid var(--ifm-color-emphasis-200)',
+        }}>
+          <FrequencyLineChart data={visibleData} strings={strings} animated={false} />
+        </div>
+
+        {/* Botones de paso */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}
+             role="tablist" aria-label="Fases del colapso">
+          {STEPS.map(s => {
+            const isActive = currentStepIndex === s.stepIndex;
+            return (
+              <button
+                key={s.stepIndex}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setCurrentStepIndex(s.stepIndex)}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: 4,
+                  border: 'none',
+                  borderLeft: isActive ? '3px solid var(--ifm-color-primary)' : '3px solid transparent',
+                  backgroundColor: isActive
+                    ? 'color-mix(in srgb, var(--ifm-color-primary) 15%, transparent)'
+                    : 'transparent',
+                  color: isActive ? 'var(--ifm-color-primary)' : 'var(--ifm-font-color-base)',
+                  cursor: 'pointer',
+                  fontWeight: isActive ? 'bold' : 'normal',
+                  transition: 'all 0.25s ease',
+                  fontSize: 12,
+                }}
+              >
+                {s.title.split(' — ')[0]}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Panel de texto */}
+        <div style={{
+          padding: '1rem',
+          background: 'rgba(255,77,77,0.05)',
+          border: '1px solid rgba(255,77,77,0.15)',
+          borderRadius: 8,
+          minHeight: 80,
+        }}>
+          <h4 style={{ color: 'var(--ifm-color-primary)', margin: '0 0 8px' }}>
+            {currentStep.title}
+          </h4>
+          <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+            {currentStep.text}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Modo scrollytelling (página MDX) ─────────────────────────────────────
+  return (
+    <div
+      className={styles.scrollyWrapper}
+      style={{ position: 'relative', margin: '2rem 0' }}
+    >
+      <div style={{
+        display: 'flex',
+        gap: '2rem',
+        alignItems: 'flex-start',
+      }}>
+        {/* Textos a la izquierda */}
+        <div style={{ width: '42%', flexShrink: 0, position: 'relative', zIndex: 5 }}>
+          <Scrollama
+            onStepEnter={({ data }) => setCurrentStepIndex(data)}
+            offset={0.5}
+          >
+            {STEPS.map(s => (
+              <Step data={s.stepIndex} key={s.stepIndex}>
+                <div style={{
+                  margin: '48vh 0',
+                  padding: '1.5rem',
+                  backgroundColor: 'var(--ifm-background-surface-color)',
+                  border: currentStepIndex === s.stepIndex
+                    ? '2px solid var(--ifm-color-primary)'
+                    : '1px solid var(--ifm-color-emphasis-200)',
+                  borderRadius: 8,
+                  boxShadow: currentStepIndex === s.stepIndex
+                    ? '0 8px 30px rgba(255,77,77,0.1)'
+                    : 'none',
+                  opacity: currentStepIndex === s.stepIndex ? 1 : 0.35,
+                  transform: currentStepIndex === s.stepIndex
+                    ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}>
+                  <h4 style={{
+                    color: 'var(--ifm-color-primary)',
+                    fontSize: '1.1rem',
+                    marginBottom: '0.75rem',
+                  }}>
+                    {s.title}
+                  </h4>
+                  <p style={{ fontSize: '1rem', lineHeight: 1.65, margin: 0 }}>
+                    {s.text}
+                  </p>
+                </div>
+              </Step>
+            ))}
+          </Scrollama>
+        </div>
+
+        {/* Gráfico sticky a la derecha */}
+        <div style={{
+          flex: 1,
+          position: 'sticky',
+          top: '100px',
+          height: '62vh',
+          zIndex: 10,
+        }}>
+          <div style={{ marginBottom: '0.75rem' }}>
+            <h3 style={{ margin: 0, color: 'var(--ifm-color-primary)', fontSize: '1rem' }}>
+              {currentStep.title}
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--ifm-color-emphasis-700)', margin: '4px 0 0' }}>
+              {strings.dyn}
+            </p>
+          </div>
+          <div style={{
+            height: 'calc(100% - 52px)',
+            background: 'var(--ifm-background-surface-color)',
+            borderRadius: 12,
+            padding: '0.75rem',
+            border: '1px solid var(--ifm-color-emphasis-200)',
+          }}>
+            <FrequencyLineChart data={visibleData} strings={strings} animated />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+```
+
+====================================================================
+SIMULADOR 2: DIAGRAMA ANIMADO DEL EFECTO TAP-LAG (TapLagSequence.jsx)
+====================================================================
+```javascript
+/**
+ * TapLagSequence.jsx
+ * Diagrama SVG animado del efecto Tap-Lag — mecanismo causal del 28-A.
+ *
+ * EL MECANISMO EN 5 PASOS (verificado en ENTSO-E Factual, p.28 / IIT-ICAI):
+ *
+ * PASO 1 — Estado nominal (antes de 12:30 CEST)
+ *   Red colectora 220 kV en tensión normal (~220 kV).
+ *   OLTC en posición neutra. SCADA de REE muestra 400 kV normal.
+ *
+ * PASO 2 — Crecimiento de tensión en el colector (12:30–12:32 CEST)
+ *   La alta penetración FV genera exceso de reactiva capacitiva.
+ *   La tensión sube en la red colectora 220 kV.
+ *   El OLTC intenta compensar: cambia de toma mecánicamente (inercia ~30-90s).
+ *   El SCADA de REE sigue viendo el lado 400 kV: todo parece normal.
+ *
+ * PASO 3 — Desacoplamiento Tap-Lag (12:32 CEST)
+ *   El OLTC no puede seguir el ritmo: la tensión en 220 kV supera 1.05 p.u.
+ *   El primario 400 kV está dentro de límites → SCADA no detecta el problema.
+ *   Hay una "brecha de observabilidad": REE está ciego a la sobretensión real.
+ *
+ * PASO 4 — Umbral ANSI 59 superado (12:32:57 CEST)
+ *   La tensión en el colector 220 kV alcanza ~242 kV (1.10 p.u.).
+ *   El relé ANSI 59 del transformador de Granada dispara.
+ *   Pérdida instantánea: −355 MW activos, −165 MVAr de absorción reactiva.
+ *
+ * PASO 5 — Cascada (12:32:57–12:33:27 CEST)
+ *   La reactiva perdida eleva la tensión en nudos vecinos.
+ *   Más plantas cruzan el umbral ANSI 59. Bucle de retroalimentación positiva.
+ *   En 30 segundos: −15 GW, cero eléctrico sistémico.
+ *
+ * DISEÑO:
+ *   - SVG puro con animaciones CSS: sin dependencias externas.
+ *   - Estética "oscilloscope forense": fondo oscuro, trazos neón, tipografía monospace.
+ *   - Navegación: botones paso anterior/siguiente + barra de progreso clicable.
+ *   - prefers-reduced-motion: desactiva las animaciones de pulso/parpadeo.
+ *   - role="img" + aria-label descriptivo por paso.
+ *   - Prop `lang` para ES/EN.
+ */
+import { useDocLang } from '@site/src/hooks/useDocLang';
+import React, { useState, useCallback, useMemo } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+// ─── Paleta forense ───────────────────────────────────────────────────────────
+const C = {
+  bg:       'var(--chart-bg, #060d1a)',
+  grid:     'rgba(0,217,255,0.06)',
+  normal:   '#00d9ff',   // tensión normal
+  warning:  '#f59e0b',   // tensión en alerta
+  critical: '#ef4444',   // tensión crítica / disparo
+  scada:    '#10b981',   // lo que ve el SCADA (400 kV)
+  hidden:   '#a78bfa',   // lo que NO ve el SCADA (220 kV colector)
+  text:     'var(--ifm-font-color-base)',
+  dim:      'var(--ifm-color-emphasis-400)',
+  border:   'rgba(0,217,255,0.15)',
+};
+
+// ─── Datos de cada paso ───────────────────────────────────────────────────────
+function getSteps(lang) {
+  const isEs = lang === 'es';
+  return [
+    {
+      id: 1,
+      time: isEs ? 'Antes de 12:30 CEST' : 'Before 12:30 CEST',
+      title: isEs ? 'Estado nominal' : 'Nominal state',
+      subtitle: isEs
+        ? 'El sistema opera dentro de los límites del P.O. 1.1.'
+        : 'System operates within P.O. 1.1 limits.',
+      v400:   1.00,   // p.u. — lo que ve el SCADA
+      v220:   1.00,   // p.u. — tensión real en colector
+      oltcPos: 0,     // posición relativa OLTC (-1 a +1)
+      ansi59:  false,
+      cascade: false,
+      scadaAlert: false,
+      note: isEs
+        ? 'SCADA REE: tensión 400 kV = 1,00 p.u. ✓'
+        : 'REE SCADA: 400 kV voltage = 1.00 p.u. ✓',
+    },
+    {
+      id: 2,
+      time: isEs ? '12:30–12:32 CEST' : '12:30–12:32 CEST',
+      title: isEs ? 'Tensión sube en el colector' : 'Voltage rises in collector',
+      subtitle: isEs
+        ? 'Alta penetración FV genera exceso de reactiva capacitiva. El OLTC intenta compensar.'
+        : 'High PV penetration generates excess capacitive reactive. OLTC tries to compensate.',
+      v400:   1.03,
+      v220:   1.06,
+      oltcPos: 0.4,
+      ansi59:  false,
+      cascade: false,
+      scadaAlert: false,
+      note: isEs
+        ? 'SCADA REE: 400 kV = 1,03 p.u. — dentro de límites. OLTC ajustando…'
+        : 'REE SCADA: 400 kV = 1.03 p.u. — within limits. OLTC adjusting…',
+    },
+    {
+      id: 3,
+      time: isEs ? '~12:32 CEST' : '~12:32 CEST',
+      title: isEs ? 'Desacoplamiento Tap-Lag' : 'Tap-Lag decoupling',
+      subtitle: isEs
+        ? 'El OLTC no puede seguir el ritmo. La tensión en 220 kV supera 1,05 p.u. El SCADA sigue ciego.'
+        : 'OLTC cannot keep up. Voltage in 220 kV exceeds 1.05 p.u. SCADA remains blind.',
+      v400:   1.04,
+      v220:   1.08,
+      oltcPos: 0.8,
+      ansi59:  false,
+      cascade: false,
+      scadaAlert: false,
+      note: isEs
+        ? '⚠ SCADA REE: 400 kV = 1,04 p.u. — tolerable. Red colectora: 1,08 p.u. — INVISIBLE para REE'
+        : '⚠ REE SCADA: 400 kV = 1.04 p.u. — tolerable. Collector: 1.08 p.u. — INVISIBLE to REE',
+    },
+    {
+      id: 4,
+      time: '12:32:57 CEST',
+      title: isEs ? 'Disparo ANSI 59 en Granada' : 'ANSI 59 trip in Granada',
+      subtitle: isEs
+        ? 'El colector 220 kV alcanza ~242 kV (1,10 p.u.). El relé ANSI 59 dispara. −355 MW, −165 MVAr.'
+        : 'Collector 220 kV reaches ~242 kV (1.10 p.u.). ANSI 59 relay trips. −355 MW, −165 MVAr.',
+      v400:   1.05,
+      v220:   1.10,
+      oltcPos: 1.0,
+      ansi59:  true,
+      cascade: false,
+      scadaAlert: true,
+      note: isEs
+        ? '🔴 DISPARO: 242 kV en colector (>1,10 p.u.). ENTSO-E Factual, p.28'
+        : '🔴 TRIP: 242 kV at collector (>1.10 p.u.). ENTSO-E Factual, p.28',
+    },
+    {
+      id: 5,
+      time: '12:32:57–12:33:27 CEST',
+      title: isEs ? 'Cascada geométrica' : 'Geometric cascade',
+      subtitle: isEs
+        ? 'La reactiva perdida eleva la tensión en nudos vecinos. Badajoz −730 MW, Sevilla −550 MW. En 30 segundos: cero eléctrico.'
+        : 'Lost reactive raises voltage at neighbouring nodes. Badajoz −730 MW, Seville −550 MW. In 30 seconds: electrical zero.',
+      v400:   0.00,
+      v220:   0.00,
+      oltcPos: 0,
+      ansi59:  true,
+      cascade: true,
+      scadaAlert: true,
+      note: isEs
+        ? '🔴 CASCADA: −1.635 MW en <30s → cero sistémico. Comité de Análisis, p.38'
+        : '🔴 CASCADE: −1,635 MW in <30s → systemic zero. Analysis Committee, p.38',
+    },
+  ];
+}
+
+// ─── SVG principal ────────────────────────────────────────────────────────────
+function DiagramSVG({ step, prefersReduced }) {
+  const W = 780, H = 460;
+  const isLast = step.cascade;
+
+  // Tensiones normalizadas para la barra visual
+  const bar400H = Math.round(step.v400 * 100);
+  const bar220H = Math.round(step.v220 * 100);
+
+  // Color de la barra según nivel
+  const colorBar = (v) => {
+    if (v === 0)   return C.dim;
+    if (v >= 1.10) return C.critical;
+    if (v >= 1.05) return C.warning;
+    return C.normal;
+  };
+
+  // Posición OLTC visual (0=neutro, 1=máximo ajuste)
+  const oltcY = 170 - Math.round(step.oltcPos * 35);
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ width: '100%', maxWidth: W, display: 'block', margin: '0 auto' }}
+      role="img"
+      aria-label={`Paso ${step.id}: ${step.title}. ${step.subtitle}`}
+    >
+      <defs>
+        {/* Grid de fondo */}
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d={`M 20 0 L 0 0 0 20`} fill="none" stroke={C.grid} strokeWidth="0.5" />
+        </pattern>
+        {/* Glow neón */}
+        <filter id="glow-cyan">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-red">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-amber">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      {/* Fondo */}
+      <rect width={W} height={H} fill={C.bg} />
+      <rect width={W} height={H} fill="url(#grid)" />
+
+      {/* ── SECCIÓN IZQUIERDA: Red de Transporte 400 kV (lo que ve REE) ── */}
+      <text x="20" y="22" fill={C.scada} fontSize="13" fontFamily="monospace"
+            fontWeight="700" letterSpacing="0.1em">
+        RED 400 kV — VISIBLE PARA SCADA REE
+      </text>
+
+      {/* Barra 400 kV */}
+      <rect x="20" y="35" width="180" height="8" rx="2"
+            fill="rgba(16,185,129,0.15)" stroke={C.scada} strokeWidth="1" />
+      <rect x="20" y="35" width={Math.min(180, Math.round(step.v400 * 180))} height="8" rx="2"
+            fill={colorBar(step.v400)} opacity="0.9">
+        {!prefersReduced && (
+          <animate attributeName="width"
+            from="0" to={Math.min(180, Math.round(step.v400 * 180))}
+            dur="1.2s" fill="freeze" />
+        )}
+      </rect>
+      <text x="210" y="43" fill={colorBar(step.v400)} fontSize="13"
+            fontFamily="monospace" fontWeight="bold">
+        {step.v400 === 0 ? '0' : step.v400.toFixed(2)} p.u.
+      </text>
+
+      {/* Línea de transmisión */}
+      <line x1="20" y1="60" x2="200" y2="60"
+            stroke={step.scadaAlert ? C.warning : C.scada}
+            strokeWidth="3" strokeDasharray={step.scadaAlert ? '8 4' : 'none'}
+            filter={step.scadaAlert ? 'url(#glow-amber)' : 'url(#glow-cyan)'} />
+      <text x="100" y="75" fill={C.dim} fontSize="15" fontFamily="monospace"
+            textAnchor="middle">Línea 400 kV</text>
+
+      {/* ── TRANSFORMADOR OLTC (centro) ── */}
+      {/* Cuerpo del transformador */}
+      <rect x="265" y="100" width="90" height="100" rx="4"
+            fill="rgba(0,217,255,0.04)" stroke={step.ansi59 ? C.critical : C.border}
+            strokeWidth={step.ansi59 ? 2 : 1}
+            filter={step.ansi59 ? 'url(#glow-red)' : 'none'} />
+
+      {/* Etiqueta TR */}
+      <text x="310" y="120" fill={step.ansi59 ? C.critical : C.dim}
+            fontSize="15" fontFamily="monospace" textAnchor="middle" fontWeight="700">
+        TR 400/220kV
+      </text>
+      <text x="310" y="133" fill={step.ansi59 ? C.critical : C.dim}
+            fontSize="13" fontFamily="monospace" textAnchor="middle">
+        OLTC
+      </text>
+
+      {/* Indicador de posición OLTC */}
+      <rect x="285" y="140" width="40" height="50" rx="2"
+            fill="rgba(255,255,255,0.03)" stroke={C.border} strokeWidth="1" />
+      <text x="310" y="153" fill={C.dim} fontSize="13" fontFamily="monospace"
+            textAnchor="middle">Toma</text>
+      {/* Aguja de posición */}
+      <line x1="310" y1="185" x2="310" y2={oltcY + 30}
+            stroke={step.oltcPos > 0.8 ? C.warning : C.dim}
+            strokeWidth="2" />
+      <circle cx="310" cy={oltcY + 30} r="3"
+              fill={step.oltcPos > 0.8 ? C.warning : C.dim} />
+
+      {/* Símbolo ANSI 59 si disparado */}
+      {step.ansi59 && (
+        <>
+          <rect x="270" y="196" width="80" height="18" rx="3"
+                fill={C.critical} opacity="0.9"
+                filter="url(#glow-red)">
+            {!prefersReduced && (
+              <animate attributeName="opacity"
+                values="1;0.2;1" dur="0.75s" repeatCount="indefinite" />
+            )}
+          </rect>
+          <text x="310" y="209" fill="#fff" fontSize="15"
+                fontFamily="monospace" textAnchor="middle" fontWeight="bold">
+            ⚡ ANSI 59
+          </text>
+        </>
+      )}
+
+      {/* ── SECCIÓN DERECHA: Red Colectora 220 kV (oculta para REE) ── */}
+      <text x="390" y="22" fill={C.hidden} fontSize="13" fontFamily="monospace"
+            fontWeight="700" letterSpacing="0.05em">
+        RED 220 kV — INVISIBLE PARA SCADA
+      </text>
+
+      {/* Barra 220 kV colector */}
+      <rect x="390" y="35" width="180" height="8" rx="2"
+            fill="rgba(167,139,250,0.1)" stroke={C.hidden} strokeWidth="1" />
+      <rect x="390" y="35" width={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))} height="8" rx="2"
+            fill={colorBar(step.v220)} opacity="0.9">
+        {!prefersReduced && (
+          <animate attributeName="width"
+            from="0" to={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))}
+            dur="1.2s" fill="freeze" />
+        )}
+      </rect>
+      <text x="578" y="43" fill={colorBar(step.v220)} fontSize="13"
+            fontFamily="monospace" fontWeight="bold">
+        {isLast ? '—' : `${step.v220.toFixed(2)} p.u.`}
+      </text>
+
+      {/* Plantas FV (colector) */}
+      {[0, 1, 2].map(i => {
+        const x = 400 + i * 60;
+        const fallen = isLast || (step.ansi59 && i === 0);
+        return (
+          <g key={i}>
+            <line x1={x + 12} y1="60" x2={x + 12} y2="90"
+                  stroke={fallen ? C.dim : C.hidden}
+                  strokeWidth="1.5" strokeDasharray={fallen ? '4 3' : 'none'} />
+            {/* Panel FV */}
+            <rect x={x} y="90" width="24" height="14" rx="1"
+                  fill={fallen ? 'rgba(71,85,105,0.3)' : 'rgba(167,139,250,0.2)'}
+                  stroke={fallen ? C.dim : C.hidden} strokeWidth="1" />
+            {/* Líneas del panel */}
+            {[4, 8, 12].map(lx => (
+              <line key={lx} x1={x + lx} y1="90" x2={x + lx} y2="104"
+                    stroke={fallen ? C.dim : C.hidden} strokeWidth="0.5" opacity="0.5" />
+            ))}
+            <text x={x + 12} y="118" fill={fallen ? C.dim : C.hidden}
+                  fontSize="13" fontFamily="monospace" textAnchor="middle">
+              {fallen ? 'TRIP' : 'FV'}
+            </text>
+            {/* Potencia */}
+            <text x={x + 12} y="128" fill={fallen ? C.critical : C.hidden}
+                  fontSize="13" fontFamily="monospace" textAnchor="middle">
+              {fallen ? '0 MW' : (i === 0 ? '355MW' : i === 1 ? '730MW' : '550MW')}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* ── BRECHA DE OBSERVABILIDAD (el elemento clave del Tap-Lag) ── */}
+      {step.id >= 3 && (
+        <>
+          {/* Zona ciega */}
+          <rect x="265" y="55" width="350" height="35" rx="3"
+                fill="rgba(245,158,11,0.07)"
+                stroke={C.warning} strokeWidth="1" strokeDasharray="5 3"
+                opacity={step.id >= 3 ? 1 : 0}>
+            {!prefersReduced && (
+              <animate attributeName="opacity"
+                from="0" to="1" dur="1.2s" fill="freeze" />
+            )}
+          </rect>
+          <text x="440" y="68" fill={C.warning} fontSize="13"
+                fontFamily="monospace" textAnchor="middle" fontWeight="700">
+            ZONA CIEGA SCADA
+          </text>
+          <text x="440" y="80" fill={C.warning} fontSize="13"
+                fontFamily="monospace" textAnchor="middle" opacity="0.8">
+            REE no observa la red colectora
+          </text>
+        </>
+      )}
+
+      {/* ── BARRA DE TENSIÓN VISUAL (gauge) ── */}
+      {/* 400 kV gauge */}
+      <text x="20" y="165" fill={C.dim} fontSize="13" fontFamily="monospace">
+        V₄₀₀ (p.u.)
+      </text>
+      <rect x="20" y="180" width="14" height="110" rx="2"
+            fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
+      <rect x="20" y={180 + 110 - bar400H} width="14" height={bar400H} rx="2"
+            fill={colorBar(step.v400)} />
+      {/* Marcas */}
+      {[0.9, 1.1].map(v => {
+        const y = 290 - Math.round(v * 90);
+        return (
+          <g key={v}>
+            <line x1="32" y1={y} x2="36" y2={y}
+                  stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
+                  strokeWidth="1" />
+            <text x="38" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
+                  fontSize="11" fontFamily="monospace">{v.toFixed(2)}</text>
+          </g>
+        );
+      })}
+
+      {/* 220 kV gauge */}
+      <text x="710" y="165" fill={C.dim} fontSize="13" fontFamily="monospace"
+            textAnchor="end">V₂₂₀ (p.u.)</text>
+      <rect x="726" y="180" width="14" height="110" rx="2"
+            fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
+      <rect x="726" y={isLast ? 290 : 180 + 110 - bar220H} width="14"
+            height={isLast ? 0 : bar220H} rx="2"
+            fill={colorBar(step.v220)} />
+      {[0.9, 1.1].map(v => {
+        const y = 290 - Math.round(v * 90);
+        return (
+          <g key={v}>
+            <line x1="722" y1={y} x2="726" y2={y}
+                  stroke={v >= 1.1 ? C.critical : v >= 1.05 ? C.warning : C.dim}
+                  strokeWidth="1" />
+            <text x="720" y={y + 3} fill={v >= 1.1 ? C.critical : C.dim}
+                  fontSize="11" fontFamily="monospace" textAnchor="end">
+              {v.toFixed(2)}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Umbral ANSI 59 (línea roja en ambos gauges) */}
+      <line x1="20" y1={290 - Math.round(1.10 * 90)} x2="68" y2={290 - Math.round(1.10 * 90)}
+            stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
+      <line x1="722" y1={290 - Math.round(1.10 * 90)} x2="738" y2={290 - Math.round(1.10 * 90)}
+            stroke={C.critical} strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
+      <text x="72" y={290 - Math.round(1.10 * 90) + 3} fill={C.critical}
+            fontSize="13" fontFamily="monospace">ANSI 59</text>
+
+      {/* ── CASCADA VISUAL (paso 5) ── */}
+      {isLast && (
+        <>
+          <rect x="40" y="145" width="680" height="95" rx="4"
+                fill="rgba(239,68,68,0.08)"
+                stroke={C.critical} strokeWidth="1.5"
+                filter="url(#glow-red)" />
+          <text x="380" y="178" fill={C.critical} fontSize="18"
+                fontFamily="monospace" textAnchor="middle" fontWeight="bold"
+                filter="url(#glow-red)">
+            CERO ELÉCTRICO SISTÉMICO
+          </text>
+          <text x="380" y="200" fill={C.critical} fontSize="15"
+                fontFamily="monospace" textAnchor="middle">
+            −15 GW en 30 segundos · 25.184 MW de demanda sin suministro
+          </text>
+          <text x="380" y="217" fill="#f87171" fontSize="13"
+                fontFamily="monospace" textAnchor="middle" opacity="0.8">
+            ~60 millones de personas · primer colapso por sobretensión en Europa Continental
+          </text>
+        </>
+      )}
+
+      {/* ── NOTA INFERIOR ── */}
+      <rect x="20" y="360" width="720" height="44" rx="3"
+            fill="rgba(255,255,255,0.02)" stroke={C.border} strokeWidth="1" />
+      <text x="36" y="378" fill={step.ansi59 ? C.critical : C.dim}
+            fontSize="13" fontFamily="monospace">
+        {step.note}
+      </text>
+      <text x="36" y="394" fill={C.dim} fontSize="15" fontFamily="monospace">
+        {step.time}
+      </text>
+    </svg>
+  );
+}
+
+// ─── Componente principal ─────────────────────────────────────────────────────
+function TapLagSequenceInner({}) {
+  const lang = useDocLang();
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = useMemo(() => getSteps(lang), [lang]);
+  const step  = steps[activeStep];
+  const isEs  = lang === 'es';
+
+  const prefersReduced = useMemo(
+    () => typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  );
+
+  const prev = useCallback(() => setActiveStep(s => Math.max(0, s - 1)), []);
+  const next = useCallback(() => setActiveStep(s => Math.min(steps.length - 1, s + 1)), [steps.length]);
+
+  const phaseColor = step.cascade ? C.critical : step.ansi59 ? C.critical : step.id >= 3 ? C.warning : C.normal;
+
+  return (
+    <div style={{ fontFamily: 'monospace' }}>
+
+      {/* Título del paso */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+        marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem',
+      }}>
+        <div>
+          <span style={{
+            fontSize: 10, color: phaseColor, fontWeight: 700,
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+          }}>
+            {isEs ? `Paso ${step.id} de ${steps.length}` : `Step ${step.id} of ${steps.length}`}
+            {' · '}{step.time}
+          </span>
+          <h4 style={{ margin: '4px 0 0', fontSize: 15, color: phaseColor }}>
+            {step.title}
+          </h4>
+          <p style={{ margin: '3px 0 0', fontSize: 12, color: 'var(--ifm-color-emphasis-600)', lineHeight: 1.5 }}>
+            {step.subtitle}
+          </p>
+        </div>
+
+        {/* Controles */}
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <button
+            onClick={prev}
+            disabled={activeStep === 0}
+            aria-label={isEs ? 'Paso anterior' : 'Previous step'}
+            style={{
+              padding: '0.35rem 0.75rem',
+              background: 'transparent',
+              border: `1px solid ${activeStep === 0 ? C.border : phaseColor}`,
+              borderRadius: 4, color: activeStep === 0 ? C.dim : phaseColor,
+              cursor: activeStep === 0 ? 'not-allowed' : 'pointer',
+              fontFamily: 'monospace', fontSize: 13,
+              opacity: activeStep === 0 ? 0.4 : 1,
+            }}
+          >
+            ←
+          </button>
+          <button
+            onClick={next}
+            disabled={activeStep === steps.length - 1}
+            aria-label={isEs ? 'Paso siguiente' : 'Next step'}
+            style={{
+              padding: '0.35rem 0.75rem',
+              background: activeStep < steps.length - 1 ? `${phaseColor}22` : 'transparent',
+              border: `1px solid ${activeStep === steps.length - 1 ? C.border : phaseColor}`,
+              borderRadius: 4, color: activeStep === steps.length - 1 ? C.dim : phaseColor,
+              cursor: activeStep === steps.length - 1 ? 'not-allowed' : 'pointer',
+              fontFamily: 'monospace', fontSize: 13,
+              opacity: activeStep === steps.length - 1 ? 0.4 : 1,
+            }}
+          >
+            →
+          </button>
+        </div>
+      </div>
+
+      {/* Barra de progreso clicable */}
+      <div style={{
+        display: 'flex', gap: '3px', marginBottom: '0.75rem',
+      }}
+        role="tablist"
+        aria-label={isEs ? 'Pasos del mecanismo Tap-Lag' : 'Tap-Lag mechanism steps'}
+      >
+        {steps.map((s, i) => {
+          const c = s.cascade ? C.critical : s.ansi59 ? C.critical : s.id >= 3 ? C.warning : C.normal;
+          const isActive = i === activeStep;
+          return (
+            <button
+              key={i}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveStep(i)}
+              title={s.title}
+              style={{
+                flex: isActive ? 2 : 1,
+                height: 4,
+                background: isActive ? c : i < activeStep ? `${c}66` : 'rgba(255,255,255,0.08)',
+                border: 'none',
+                borderRadius: 2,
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'all 0.25s ease',
+              }}
+            />
+          );
+        })}
+      </div>
+
+      {/* SVG */}
+      <div style={{
+        background: C.bg,
+        borderRadius: 10,
+        border: `1px solid ${phaseColor}30`,
+        overflow: 'hidden',
+        transition: 'border-color 0.3s ease',
+      }}>
+        <DiagramSVG step={step} prefersReduced={prefersReduced} />
+      </div>
+
+      {/* Leyenda */}
+      <div style={{
+        marginTop: '0.75rem',
+        display: 'flex', flexWrap: 'wrap', gap: '1rem',
+        fontSize: 11, color: C.dim,
+      }}>
+        {[
+          { color: C.scada,    label: isEs ? 'Visible para SCADA REE (400 kV)' : 'Visible to REE SCADA (400 kV)' },
+          { color: C.hidden,   label: isEs ? 'Invisible para REE (220 kV colector)' : 'Invisible to REE (220 kV collector)' },
+          { color: C.warning,  label: isEs ? 'Tensión en alerta (>1,05 p.u.)' : 'Voltage alert (>1.05 p.u.)' },
+          { color: C.critical, label: isEs ? 'Umbral ANSI 59 (>1,10 p.u.)' : 'ANSI 59 threshold (>1.10 p.u.)' },
+        ].map((l, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <div style={{ width: 8, height: 8, borderRadius: 2, background: l.color, flexShrink: 0 }} />
+            <span>{l.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        marginTop: '0.75rem',
+        fontSize: 11, color: '#374151',
+        borderTop: '1px solid rgba(255,255,255,0.05)',
+        paddingTop: '0.6rem',
+      }}>
+        {isEs
+          ? 'Fuentes: ENTSO-E Factual Report (2025), p.28 · IIT-ICAI / Compass Lexecon · Comité de Análisis del Gobierno (2025), p.38'
+          : 'Sources: ENTSO-E Factual Report (2025), p.28 · IIT-ICAI / Compass Lexecon · Government Analysis Committee (2025), p.38'}
+      </div>
+    </div>
+  );
+}
+
+export default function TapLagSequence({}) {
+  const lang = useDocLang();
+  return (
+    <BrowserOnly fallback={
+      <div style={{
+        height: 380, display: 'flex', alignItems: 'center',
+        justifyContent: 'center', color: 'var(--ifm-color-emphasis-400)',
+        fontFamily: 'monospace', fontSize: 13,
+        background: 'var(--chart-bg, #060d1a)', borderRadius: 10,
+      }}>
+        {lang === 'es' ? 'Inicializando diagrama Tap-Lag…' : 'Initializing Tap-Lag diagram…'}
+      </div>
+    }>
+      {() => <TapLagSequenceInner />}
+    </BrowserOnly>
+  );
+}
+
+```
