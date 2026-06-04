@@ -251,136 +251,193 @@ function getIntentInstruction(intent) {
   return map[intent] || map.general;
 }
 
-function applySlugPenalties(score, chunk, normalizedQuestion) {
+// ── Tabla de boosts por intent × chunkType ─────────────────────
+const INTENT_BOOST_TABLE = {
+  'comparison:comparison':     1.45,
+  'comparison:table':          1.8,
+  'quantitative:quantitative': 1.45,
+  'quantitative:master_data':  1.45,
+  'quantitative:table':        1.8,
+  'timeline:timeline':         1.45,
+  'glossary:glossary':         1.5,
+  'visual:graphic':            1.45,
+  'visual:data_figure':        2.0,
+  'causal:causal':             1.45,
+  'causal:data_figure':        1.25,
+};
+
+// ── Reglas de boost por keyword en la pregunta ─────────────────
+const KEYWORD_BOOST_RULES = [
+  {
+    keywords: ['tap-lag', 'tap lag', 'oltc'],
+    textMatch: ['tap-lag', 'taplag', 'oltc'],
+    boost: 1.8,
+    slugMatch: ['analisis-incidente'],
+    slugBoost: 1.35,
+  },
+  {
+    keywords: ['ufls', 'deslastre', 'subfrecuencia'],
+    textMatch: ['ufls', 'deslastre'],
+    boost: 1.7,
+  },
+  {
+    keywords: ['gfm', 'grid forming', 'grid-forming'],
+    chunkTypeMatch: 'glossary',
+    typeBoost: 1.8,
+    textMatch: ['grid-forming', 'gfm'],
+    boost: 1.4,
+  },
+  {
+    keywords: ['frecuencia', 'frequency', 'rocof', 'nadir', '27 segundos'],
+    intentFilter: 'visual',
+    chunkTypeMatch: 'graphic',
+    typeBoost: 2.0,
+    textMatch: ['frecuencia', 'frequency', 'rocof', 'nadir'],
+    boost: 1.4,
+  },
+  {
+    keywords: ['francia', 'reposicion', 'reposición', 'rte', 'interconexion'],
+    textMatch: ['francia', 'rte', 'reposicion', 'reposición'],
+    boost: 1.45,
+  },
+  {
+    keywords: ['coste', 'opex', 'capex', 'operacion reforzada'],
+    slugMatch: ['consecuencias-financieras'],
+    slugBoost: 1.6,
+    textMatch: ['operacion reforzada', 'operación reforzada'],
+    boost: 1.6,
+  },
+  {
+    keywords: ['inercia', 'rocof'],
+    slugMatch: ['analisis-incidente', 'resiliencia-futuro', 'resumen-de-cifras'],
+    slugBoost: 1.4,
+    textMatch: ['inercia', 'rocof', 'h='],
+    boost: 1.3,
+  },
+  {
+    keywords: ['como empezo', 'como inicio', 'origen del apagon',
+               'empezo el apagon', 'inicio el apagon', 'por que se fue la luz'],
+    slugMatch: ['analisis-incidente'],
+    slugBoost: 1.8,
+    textMatch: ['tap-lag', 'sobretension', 'colapso de tension'],
+    boost: 1.35,
+    extraSlugBoosts: [
+      { slug: 'contexto',         factor: 1.45 },
+      { slug: 'resumen-de-cifras', factor: 1.35 },
+    ],
+  },
+];
+
+// ── Tabla de penalizaciones por slug ───────────────────────────
+const SLUG_PENALTY_RULES = [
+  {
+    slugContains: 'uso-ia',
+    unless: ['ia', 'inteligencia artificial', 'llm', 'prompt', 'uso de ia'],
+    factor: 0.35,
+  },
+  {
+    slugContains: 'dimension-europea',
+    unless: ['europa', 'europea', 'francia', 'portugal', 'entso-e', 'rte', 'interconexion'],
+    factor: 0.55,
+  },
+  {
+    slugContains: 'impacto-comunicativo',
+    onlyWhen: ['como empezo', 'como inicio', 'origen del apagon',
+               'empezo el apagon', 'inicio el apagon', 'por que se fue la luz'],
+    factor: 0.45,
+  },
+  {
+    slugContains: 'consecuencias-financieras',
+    onlyWhen: ['como empezo', 'como inicio', 'origen del apagon',
+               'empezo el apagon', 'inicio el apagon', 'por que se fue la luz'],
+    factor: 0.45,
+  },
+];
+
+function applySlugPenalties(score, chunk, normQ) {
   const slug = normalizeText(chunk?.slug || '');
   let adjusted = score;
 
-  const asksAboutAI =
-    normalizedQuestion.includes('ia') ||
-    normalizedQuestion.includes('inteligencia artificial') ||
-    normalizedQuestion.includes('llm') ||
-    normalizedQuestion.includes('prompt') ||
-    normalizedQuestion.includes('uso de ia');
+  for (const rule of SLUG_PENALTY_RULES) {
+    if (!slug.includes(rule.slugContains)) continue;
 
-  const asksAboutEurope =
-    normalizedQuestion.includes('europa') ||
-    normalizedQuestion.includes('europea') ||
-    normalizedQuestion.includes('francia') ||
-    normalizedQuestion.includes('portugal') ||
-    normalizedQuestion.includes('entso-e') ||
-    normalizedQuestion.includes('rte') ||
-    normalizedQuestion.includes('interconexion');
+    if (rule.unless) {
+      const matched = rule.unless.some(t => normQ.includes(t));
+      if (!matched) adjusted *= rule.factor;
+    }
 
-  const asksHowItStarted =
-    normalizedQuestion.includes('como empezo') ||
-    normalizedQuestion.includes('como inicio') ||
-    normalizedQuestion.includes('origen del apagon') ||
-    normalizedQuestion.includes('empezo el apagon') ||
-    normalizedQuestion.includes('inicio el apagon') ||
-    normalizedQuestion.includes('por que se fue la luz');
-
-  if (slug.includes('uso-ia') && !asksAboutAI) adjusted *= 0.35;
-  if (slug.includes('dimension-europea') && !asksAboutEurope) adjusted *= 0.55;
-
-  if (asksHowItStarted && slug.includes('impacto-comunicativo')) adjusted *= 0.45;
-  if (asksHowItStarted && slug.includes('consecuencias-financieras')) adjusted *= 0.45;
-  if (asksHowItStarted && slug.includes('dimension-europea')) adjusted *= 0.45;
+    if (rule.onlyWhen) {
+      const matched = rule.onlyWhen.some(t => normQ.includes(t));
+      if (matched) adjusted *= rule.factor;
+    }
+  }
 
   return adjusted;
 }
 
 function rerankResultsByIntent(results, chunksData, intent, question) {
-  const normQuestion = normalizeText(question);
-  const questionTerms = normQuestion.split(/\s+/).filter(t => t.length > 3);
-  
+  const normQ = normalizeText(question);
+  const qTerms = normQ.split(/\s+/).filter(t => t.length > 3);
+
   return results.map(r => {
     const chunk = chunksData[r.id];
     if (!chunk) return { ...r, adjustedScore: 0 };
 
-    let adjustedScore = r.score || 0;
-    const chunkType = chunk.chunkType || 'normal';
-    const keywords = Array.isArray(chunk.keywords) ? chunk.keywords : [];
-    
+    let score = r.score || 0;
+    const ct = chunk.chunkType || 'normal';
+    const text = normalizeText(chunk.text || '');
+    const slug = normalizeText(chunk.slug || '');
+    const head = `${normalizeText(chunk.heading || '')} ${normalizeText(chunk.subheading || '')} ${slug}`;
     const title = normalizeText(chunk.title || '');
     const heading = normalizeText(chunk.heading || '');
-    const subheading = normalizeText(chunk.subheading || '');
-    const text = normalizeText(chunk.text || '');
-    const normSlug = normalizeText(chunk.slug || '');
-    const combinedHead = `${heading} ${subheading} ${normSlug}`;
+    const kws = Array.isArray(chunk.keywords) ? chunk.keywords : [];
 
-    if (intent === 'comparison' && chunkType === 'comparison') adjustedScore *= 1.45;
-    if (intent === 'quantitative' && (chunkType === 'quantitative' || chunkType === 'master_data')) adjustedScore *= 1.45;
-    if (intent === 'timeline' && chunkType === 'timeline') adjustedScore *= 1.45;
-    if (intent === 'glossary' && chunkType === 'glossary') adjustedScore *= 1.50;
-    if (intent === 'visual' && chunkType === 'graphic') adjustedScore *= 1.45;
-    if (intent === 'causal' && chunkType === 'causal') adjustedScore *= 1.45;
+    // 1. Boost por intent × chunkType
+    const tableKey = `${intent}:${ct}`;
+    if (INTENT_BOOST_TABLE[tableKey]) score *= INTENT_BOOST_TABLE[tableKey];
 
-    if (intent === 'quantitative' && chunkType === 'table') adjustedScore *= 1.8;
-    if (intent === 'visual' && chunkType === 'data_figure') adjustedScore *= 2.0;
-    if (intent === 'comparison' && chunkType === 'table') adjustedScore *= 1.5;
-    if (intent === 'causal' && chunkType === 'data_figure' && chunk.artifact && normQuestion.includes(normalizeText(chunk.artifact.id))) adjustedScore *= 1.25;
-
-    if (keywords.some(kw => normQuestion.includes(normalizeText(kw)))) {
-      adjustedScore *= 1.2;
+    // Caso especial: causal + data_figure solo si el artifact ID aparece en la pregunta
+    if (intent === 'causal' && ct === 'data_figure' && chunk.artifact) {
+      if (!normQ.includes(normalizeText(chunk.artifact.id))) score /= 1.25;
     }
 
-    if (questionTerms.some(t => title.includes(t) || heading.includes(t))) {
-      adjustedScore *= 1.15;
+    // 2. Boost por keywords del chunk
+    if (kws.some(kw => normQ.includes(normalizeText(kw)))) score *= 1.2;
+
+    // 3. Boost por coincidencia en título/heading
+    if (qTerms.some(t => title.includes(t) || heading.includes(t))) score *= 1.15;
+
+    // 4. Boosts por reglas de keyword (tabla declarativa)
+    for (const rule of KEYWORD_BOOST_RULES) {
+      if (!rule.keywords.some(kw => normQ.includes(kw))) continue;
+      if (rule.intentFilter && intent !== rule.intentFilter) continue;
+
+      if (rule.textMatch?.some(tm => text.includes(tm) || head.includes(tm))) {
+        score *= rule.boost;
+      }
+      if (rule.slugMatch?.some(sm => slug.includes(sm))) {
+        score *= (rule.slugBoost || 1);
+      }
+      if (rule.chunkTypeMatch && ct === rule.chunkTypeMatch) {
+        score *= (rule.typeBoost || 1);
+      }
+      if (rule.extraSlugBoosts) {
+        for (const extra of rule.extraSlugBoosts) {
+          if (slug.includes(extra.slug)) score *= extra.factor;
+        }
+      }
     }
 
-    if (normQuestion.includes('tap-lag') || normQuestion.includes('tap lag')) {
-      if (combinedHead.includes('tap-lag') || combinedHead.includes('taplag') || text.includes('tap-lag')) adjustedScore *= 1.8;
-      if (normSlug.includes('analisis-incidente')) adjustedScore *= 1.35;
-    }
-    
-    if (normQuestion.includes('ufls') || normQuestion.includes('deslastre')) {
-      if (combinedHead.includes('ufls') || text.includes('ufls') || text.includes('deslastre')) adjustedScore *= 1.7;
-    }
-    
-    if (normQuestion.includes('gfm') || normQuestion.includes('grid forming') || normQuestion.includes('grid-forming')) {
-      if ((chunk.chunkType || '') === 'glossary') adjustedScore *= 1.8;
-      if (text.includes('grid-forming') || text.includes('gfm')) adjustedScore *= 1.4;
-    }
-    
-    if (intent === 'visual' && (normQuestion.includes('frecuencia') || normQuestion.includes('frequency') || normQuestion.includes('rocof') || normQuestion.includes('nadir'))) {
-      if ((chunk.chunkType || '') === 'graphic') adjustedScore *= 2.0;
-      if (text.includes('frecuencia') || text.includes('frequency') || text.includes('rocof') || text.includes('nadir')) adjustedScore *= 1.4;
-    }
-    
-    if (normQuestion.includes('francia') || normQuestion.includes('reposición') || normQuestion.includes('reposicion') || normQuestion.includes('rte')) {
-      if (text.includes('francia') || text.includes('rte') || text.includes('reposicion') || text.includes('reposición')) adjustedScore *= 1.45;
-    }
-    
-    if (normQuestion.includes('coste') || normQuestion.includes('opex') || normQuestion.includes('capex') || normQuestion.includes('operacion reforzada')) {
-      if (normSlug.includes('consecuencias-financieras') || text.includes('operacion reforzada') || text.includes('operación reforzada')) adjustedScore *= 1.6;
-    }
+    // 5. Penalización por chunk corto
+    if (!chunk.text || chunk.text.length < 100) score *= 0.7;
 
-    if (
-      normQuestion.includes('como empezo') ||
-      normQuestion.includes('como inicio') ||
-      normQuestion.includes('origen del apagon') ||
-      normQuestion.includes('empezo el apagon') ||
-      normQuestion.includes('inicio el apagon') ||
-      normQuestion.includes('por que se fue la luz')
-    ) {
-      if (normSlug.includes('analisis-incidente')) adjustedScore *= 1.8;
-      if (normSlug.includes('contexto')) adjustedScore *= 1.45;
-      if (normSlug.includes('resumen-de-cifras')) adjustedScore *= 1.35;
-      if (text.includes('tap-lag') || text.includes('sobretension') || text.includes('colapso de tension')) adjustedScore *= 1.35;
-    }
+    // 6. Penalizaciones por slug
+    score = applySlugPenalties(score, chunk, normQ);
 
-    if (normQuestion.includes('inercia') || normQuestion.includes('rocof')) {
-      if (normSlug.includes('analisis-incidente') || normSlug.includes('resiliencia-futuro') || normSlug.includes('resumen-de-cifras')) adjustedScore *= 1.4;
-      if (text.includes('inercia') || text.includes('rocof') || text.includes('h=')) adjustedScore *= 1.3;
-    }
-
-    if (!chunk.text || chunk.text.length < 100) adjustedScore *= 0.7;
-
-    adjustedScore = applySlugPenalties(adjustedScore, chunk, normQuestion);
-
-    return { ...r, adjustedScore };
+    return { ...r, adjustedScore: score };
   }).sort((a, b) => b.adjustedScore - a.adjustedScore);
 }
+
 
 function selectContextChunks(rerankedResults, chunksData, maxChunks = 7) {
   if (rerankedResults.length === 0) return [];
