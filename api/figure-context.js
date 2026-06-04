@@ -25,33 +25,29 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Faltan parámetros' });
   }
 
-  const prompt = `Eres un experto en comunicación técnica de sistemas eléctricos de potencia.
+  const prompt = `Eres el asistente pericial del TFG sobre el apagón ibérico del 28-A.
 
-TAREA OBLIGATORIA: Genera EXACTAMENTE un párrafo de máximo 50 palabras que explique **por qué esta figura concreta ayuda al usuario a entender MEJOR la respuesta del asistente**.
+TAREA: Escribe UN párrafo de 40-60 palabras que explique al usuario
+QUÉ debe buscar en esta figura concreta para entender mejor la respuesta,
+y POR QUÉ esa figura es la evidencia más directa del fenómeno descrito.
 
-DATOS DE ENTRADA:
+DATOS:
 - Pregunta del usuario: "${question}"
-- Respuesta del asistente: "${answer.substring(0, 520)}"
-- Figura (título + descripción): "${figureTitle || caption}"
+- Respuesta del asistente (extracto): "${answer.substring(0, 400)}"
+- Título de la figura: "${figureTitle || caption}"
+- Descripción técnica: "${caption}"
 
-REGLAS ESTRICTAS (debes cumplirlas todas):
-1. Longitud máxima: 50 palabras.
-2. La primera frase DEBE empezar con una de estas estructuras exactas:
-   • "Esta figura es clave porque..."
-   • "Ilustra perfectamente cómo..."
-   • "Es especialmente relevante porque..."
-3. Conecta con un elemento concreto de la pregunta o de la respuesta (ej: exportaciones netas a Francia, Tap-Lag en 220 kV, nadir de 47,79 Hz, RoCoF >1 Hz/s, etc.).
-4. PROHIBIDO ABSOLUTAMENTE:
-   - Decir "esta figura muestra", "en la imagen se ve", "la gráfica representa", "se observa".
-   - Describir visualmente la figura.
-   - Dar información que ya está en la respuesta del asistente.
-5. Tono: claro, preciso, para lector técnico intermedio. Usa magnitudes correctas.
-6. Salida: SOLO el párrafo. Nada más. Sin comillas, sin encabezados, sin "Aquí tienes el texto:".
+REGLAS ESTRICTAS:
+1. Empieza con: "Fíjate en..." / "Observa cómo..." / "Esta figura muestra directamente..." / "El dato clave aquí es..."
+2. Señala UN elemento concreto y visible de la figura (una curva, un timestamp, una zona coloreada, un valor numérico).
+3. Explica qué significa ese elemento en el contexto de la respuesta.
+4. PROHIBIDO: describir genéricamente la figura, repetir la descripción técnica, usar "esta figura es clave porque".
+5. Máximo 60 palabras. Solo el párrafo, sin comillas ni encabezados.
 
-Ejemplo de salida perfecta (52 palabras):
-"Esta figura es clave porque muestra el flujo neto exportado a Francia en el momento del colapso, lo que explica directamente por qué las reservas de potencia reactiva del sur eran insuficientes para absorber la sobretensión generada por los IBR."
+Ejemplo perfecto (48 palabras):
+"Fíjate en el instante 12:33:21 CEST: la curva de frecuencia cae en picado mientras la tensión ya lleva 24 segundos por encima de 1,10 p.u. Ese desfase temporal es la prueba forense de que el colapso fue capacitivo, no inercial — la tensión falló primero."
 
-Genera el párrafo ahora:`;
+Escribe el párrafo ahora:`;
 
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {

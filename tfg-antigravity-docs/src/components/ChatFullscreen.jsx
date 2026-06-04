@@ -1006,22 +1006,19 @@ export default function ChatFullscreen({
           />
 
           {/* Leyenda / Fuente */}
-          <p style={{
-            marginTop: 12,
-            fontSize: 12,
-            color: 'var(--chart-text-2, #94a3b8)',
-            textAlign: 'center',
-            fontStyle: 'italic',
-            lineHeight: 1.5,
-            padding: '0 16px',
-          }}>
-            {caption ? caption : (
-              <>
-                {fig.chapter && `Capítulo ${fig.chapter.replace('ch','')} — `}
-                {fig.src.split('/').pop()}
-              </>
-            )}
-          </p>
+          {caption && figureContexts[activeTab] !== caption && (
+            <p style={{
+              marginTop: 12,
+              fontSize: 11,
+              color: 'var(--chart-text-3, #64748b)',
+              textAlign: 'center',
+              fontStyle: 'italic',
+              lineHeight: 1.5,
+              padding: '0 16px',
+            }}>
+              {caption}
+            </p>
+          )}
         </div>
       );
     }

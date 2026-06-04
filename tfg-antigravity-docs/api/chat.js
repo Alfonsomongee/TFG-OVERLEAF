@@ -429,6 +429,9 @@ function rerankResultsByIntent(results, chunksData, intent, question) {
     }
 
     // 5. Penalización por chunk corto
+    // Boost al glosario cuando la pregunta contiene términos técnicos definidos
+    if (ct === 'glossary') score *= 1.4;
+
     if (!chunk.text || chunk.text.length < 100) score *= 0.7;
 
     // 6. Penalizaciones por slug
@@ -946,11 +949,12 @@ Responde ÚNICAMENTE basándote en el CONTEXTO proporcionado.
 
 REGLAS DE TONO Y ESTILO (OBLIGATORIAS):
 1. Sé preciso, claro, técnico y natural. No seas pedante ni burocrático. No suenes robótico.
-2. Evita las respuestas tipo lista, a menos que el usuario pida explícitamente comparar, listar cronología o cifras. Prefiere párrafos fluidos.
-3. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica", "el mecanismo raíz es").
-4. NUNCA empieces con frases como "Según el contexto", "Basado en la información". Tampoco uses "es importante destacar". Ve directo al grano.
-5. Si no hay información suficiente en el contexto, dilo directamente.
-6. Responde siempre en ${langName}. Máximo 280 palabras.
+2. PROHIBIDO usar notación LaTeX o matemática ($H$, $f$, \frac, etc.). Escribe las magnitudes en texto plano: "H = 2,3 s", "ΔP/Δt", "50 Hz". El chat no renderiza LaTeX.
+3. Evita las respuestas tipo lista, a menos que el usuario pida explícitamente comparar, listar cronología o cifras. Prefiere párrafos fluidos.
+4. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica", "el mecanismo raíz es").
+5. NUNCA empieces con frases como "Según el contexto", "Basado en la información". Tampoco uses "es importante destacar". Ve directo al grano.
+6. Si no hay información suficiente en el contexto, dilo directamente.
+7. Responde siempre en ${langName}. Máximo 280 palabras.
 
 INSTRUCCIÓN ESPECÍFICA SEGÚN LA INTENCIÓN DEL USUARIO:
 ${intentInstruction}
