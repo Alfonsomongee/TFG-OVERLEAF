@@ -672,7 +672,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   if (ENTSOE_ESIOS_IDS.includes(artifact.id)) score *= 1.5;
 
   const SEMANTIC_BOOSTS = {
-    'chart-1':  ['demanda', 'peninsular', 'mw', 'colapso', 'caida'],
+    'chart-1':  ['demanda peninsular', 'caida de demanda', 'recuperacion demanda'],
     'chart-2':  ['demanda', 'portugal', 'espana', 'iberico', 'total'],
     'chart-8':  ['renovable', 'co2', 'ibr', 'penetracion', 'porcentaje'],
     'chart-9':  ['precio', 'spot', 'omie', 'negativo', 'mercado'],
@@ -708,6 +708,14 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     boostIds(['evolucion-frecuencia-rocof', 'frequency_voltage_carmona', 'tension_frecuencia_colapso'], 3.0);
   }
 
+  // Simulador interactivo de frecuencia: boost extra cuando se pide
+  // explícitamente una gráfica de frecuencia
+  if ((q.includes('grafica') || q.includes('muestrame') || q.includes('ensename') ||
+       q.includes('simulador') || q.includes('ver')) &&
+      (q.includes('frecuencia') || q.includes('caida') || q.includes('hz'))) {
+    if (artifact.id === 'frequency' && artifact.type === 'interactive') score *= 4.0;
+  }
+
   if (q.includes('grafica') || q.includes('figura') || q.includes('ensename') || q.includes('muestrame')) {
     if (artifact.source === 'annex_d') score *= 2.0;
     if (artifact.type === 'interactive') score *= 1.2;
@@ -731,6 +739,27 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
 
   if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida')) {
     boostIds(['load-shedding-es-pt', 'demand-shedding-es', 'recuperacion_demanda_peninsular'], 2.2);
+  }
+
+  // Penalizar artifacts de tensión/precursores para preguntas económicas
+  const ECONOMIC_KEYWORDS = ['coste', 'precio', 'economico', 'financiero',
+    'opex', 'capex', 'mercado', 'euro', 'impacto economico'];
+  const TENSION_ARTIFACT_IDS = ['precursor_overvoltage_22april',
+    'hvdc_control_transition', 'entsoe_flow_deviation',
+    'nunez_balboa_precursores', 'wams_oscilaciones_carmona'];
+  if (ECONOMIC_KEYWORDS.some(k => q.includes(k)) &&
+      TENSION_ARTIFACT_IDS.includes(artifact.id)) {
+    score *= 0.2;
+  }
+
+  // Penalizar artifacts de recuperación/reposición para preguntas de precio
+  const PRICE_KEYWORDS = ['precio', 'spot', 'omie', 'tarifa', 'kwh', 'mwh'];
+  const RECOVERY_ARTIFACT_IDS = ['estrategia_reenergizacion_dual',
+    'black_start_hidroelectrico', 'islas_reposicion_entsoe',
+    'evolucion_carga_repuesta_francia'];
+  if (PRICE_KEYWORDS.some(k => q.includes(k)) &&
+      RECOVERY_ARTIFACT_IDS.includes(artifact.id)) {
+    score *= 0.25;
   }
 
   const qTerms = q.split(/\s+/).filter(t => t.length > 4);
