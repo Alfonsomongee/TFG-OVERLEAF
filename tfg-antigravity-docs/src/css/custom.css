@@ -1,68 +1,41 @@
-@import './designTokens.css';
+@import './design-tokens.css';
 
 /* ============================================================
    TFG Apagón Ibérico 28A — Cyberpunk Editorial Custom CSS
    ============================================================ */
 
-:root {
-  /* ── Brand / acentos ─────────────────────────────────── */
-  --accent-electric: hsl(190 100% 60%);   /* cian CECOEL — datos fríos */
-  --accent-amber: var(--forensic-amber-primary); /* ámbar — alarma / transición */
-  --accent-magenta: hsl(322 100% 62%);   /* glitch / dato anómalo */
+/* ==========================================================================
+   Infima / Docusaurus theme bridge
+   ========================================================================== */
 
-  /* ── Gráficos (Variables inyectadas en .jsx) ────────── */
-  --chart-cyan: hsl(190 100% 60%);
-  --chart-red: hsl(0 75% 56%);
-  --chart-amber: hsl(38 100% 56%);
+:root,
+html[data-theme='light'] {
+  --ifm-background-color: var(--color-bg-page);
+  --ifm-background-surface-color: var(--color-bg-surface);
+  --ifm-font-color-base: var(--color-text-primary);
+  --ifm-font-color-secondary: var(--color-text-secondary);
+  --ifm-color-primary: var(--color-accent-primary);
+  --ifm-color-primary-dark: var(--color-accent-primary-hover);
+  --ifm-color-primary-darker: var(--color-accent-primary-hover);
+  --ifm-color-primary-darkest: var(--color-accent-primary-hover);
+  --ifm-color-primary-light: var(--color-accent-secondary);
+  --ifm-color-primary-lighter: var(--color-accent-secondary);
+  --ifm-color-primary-lightest: var(--color-accent-secondary-soft);
+  --ifm-navbar-background-color: var(--nav-bg);
+  --ifm-navbar-link-color: var(--nav-text);
+  --ifm-toc-border-color: var(--color-border-subtle);
+  --ifm-code-background: var(--code-bg);
+  --ifm-code-color: var(--code-text);
+  --ifm-pre-background: var(--pre-bg);
 
-  /* ── Backgrounds (dark, base) ─────────────────────────── */
-  --bg-0: #0a1128;              /* azul oscuro forense */
-  --bg-1: #0f1830;              /* cards base */
-  --bg-2: #162040;              /* surfaces elevadas */
-  --bg-3: #1e2a50;              /* hover state */
+  --scroll-progress-color: var(--color-accent-primary);
 
-  /* ── Texto (jerarquía 4 niveles) ──────────────────────── */
-  --text-0: hsl(220 20% 98%);  /* primario — titulares */
-  --text-1: hsl(220 15% 88%);  /* secundario — body */
-  --text-2: hsl(220 12% 68%);  /* terciario — captions */
-  --text-3: hsl(220 10% 48%);  /* meta — fuentes, dek */
-
-  /* ── Escala danger/warning ────────────────────────────── */
-  --warn-300: hsl(38 95% 70%);
-  --warn-500: hsl(38 100% 56%);
-  --warn-700: hsl(28 100% 46%);
-  --danger-300: hsl(8 85% 70%);
-  --danger-500: hsl(0 75% 56%);
-  --danger-700: hsl(0 80% 38%);
-  --danger-900: hsl(0 70% 22%);  /* el rojo del colapso */
-
-  /* ── Gradients narrativos ─────────────────────────────── */
-  --grad-calm:     linear-gradient(180deg, hsl(220 60% 4%), hsl(220 50% 8%));
-  --grad-tension:  linear-gradient(180deg, hsl(220 50% 6%), hsl(38 50% 12%));
-  --grad-collapse: linear-gradient(180deg, hsl(0 70% 10%), hsl(220 60% 3%));
-
-  /* ── Docusaurus override ──────────────────────────────── */
-  --ifm-color-primary: var(--accent-electric);
-  --ifm-color-primary-dark: hsl(190 100% 50%);
-  --ifm-color-primary-darker: hsl(190 100% 45%);
-  --ifm-color-primary-darkest: hsl(190 100% 40%);
-  --ifm-color-primary-light: hsl(190 100% 70%);
-  --ifm-color-primary-lighter: hsl(190 100% 80%);
-  --ifm-color-primary-lightest: hsl(190 100% 90%);
-  --ifm-background-color: var(--bg-0);
-  --ifm-background-surface-color: var(--bg-1);
-  --ifm-font-color-base: var(--text-1);
-
-  --ifm-color-success: #10b981;
-  --ifm-color-warning: var(--accent-amber);
-  --ifm-color-danger: var(--danger-500);
-
-  /* ── Tipografía (Fuentes y clamp) ──────────────────────── */
+  /* Tipografía (Fuentes y clamp) */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
 
-  /* Type scale — Perfect Fourth (1.333) entre 320px y 1440px */
+  /* Type scale */
   --fs-caption: clamp(0.75rem, 0.7rem + 0.2vw, 0.85rem);
   --fs-meta:    clamp(0.8rem,  0.75rem + 0.25vw, 0.9rem);
   --fs-body:    clamp(1rem,    0.95rem + 0.3vw,  1.125rem);
@@ -78,7 +51,6 @@
   --lh-tight: 1.05;
   --lh-snug:  1.2;
   --lh-body:  1.65;
-
   --tr-tight: -0.03em;
   --tr-loose: 0.12em;
 
@@ -88,9 +60,8 @@
   --ifm-font-size-base: var(--fs-body);
   --ifm-line-height-base: var(--lh-body);
 
-  /* Code highlight */
-  --docusaurus-highlighted-code-line-bg: hsl(190 100% 60% / 0.1);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --docusaurus-highlighted-code-line-bg: var(--color-bg-elevated);
+  --glass-shadow: 0 8px 32px var(--card-shadow);
 
   /* Sistema de transiciones */
   --tr-fast:   150ms;
@@ -98,121 +69,29 @@
   --tr-slow:   300ms;
   --tr-ease:   cubic-bezier(0.4, 0, 0.2, 1);
   --tr-spring: cubic-bezier(0.25, 1, 0.5, 1);
-
 }
 
-/* ── DARK THEME — variables explícitas (no depender solo de :root) ── */
 html[data-theme='dark'] {
-  --bg-0: #0a1128;
-  --bg-1: #0f1830;
-  --bg-2: #162040;
-  --bg-3: #1e2a50;
-  --text-0: #ffffff;
-  --text-1: #e8e8e8;
-  --text-2: #b0b8cc;
-  --text-3: #7888aa;
+  --ifm-background-color: var(--color-bg-page);
+  --ifm-background-surface-color: var(--color-bg-surface);
+  --ifm-font-color-base: var(--color-text-primary);
+  --ifm-font-color-secondary: var(--color-text-secondary);
+  --ifm-color-primary: var(--color-accent-primary);
+  --ifm-color-primary-dark: var(--color-accent-primary-hover);
+  --ifm-color-primary-darker: var(--color-accent-primary-hover);
+  --ifm-color-primary-darkest: var(--color-accent-primary-hover);
+  --ifm-color-primary-light: var(--color-accent-primary-hover);
+  --ifm-color-primary-lighter: var(--color-accent-primary-hover);
+  --ifm-color-primary-lightest: var(--color-accent-primary-hover);
+  --ifm-navbar-background-color: var(--nav-bg);
+  --ifm-navbar-link-color: var(--nav-text);
+  --ifm-toc-border-color: var(--color-border-subtle);
+  --ifm-code-background: var(--code-bg);
+  --ifm-code-color: var(--code-text);
+  --ifm-pre-background: var(--pre-bg);
 
-  --ifm-background-color: #0a1128;
-  --ifm-background-surface-color: #0f1830;
-  --ifm-font-color-base: #ffffff;
-  --ifm-navbar-background-color: var(--bg-0);
-  --scroll-progress-color: hsl(190 100% 60%);
-
-  /* Chart palette — dark */
-  --chart-bg:          rgba(10, 15, 30, 0.97);
-  --chart-bg-card:     rgba(15, 24, 48, 0.95);
-  --chart-border:      rgba(255, 255, 255, 0.06);
-  --chart-grid:        rgba(255, 255, 255, 0.06);
-  --chart-text-1:      #e2e8f0;
-  --chart-text-2:      #94a3b8;
-  --chart-text-3:      #64748b;
-  --chart-cyan:        hsl(190 100% 60%);
-  --chart-amber:       hsl(38 100% 56%);
-  --chart-red:         #ef4444;
-  --chart-green:       #10b981;
-  --chart-blue:        #3b82f6;
-  --chart-purple:      #8b5cf6;
-  --chart-tooltip-bg:  rgba(5, 10, 20, 0.96);
-  --chart-tooltip-border: rgba(0, 217, 255, 0.2);
-}
-
-/* ── LIGHT THEME — Paleta Analógica Oficial ─────────────────────── */
-html[data-theme='light'] {
-  /* Fondos (papel cálido) */
-  --bg-0: #F4F1EA;
-  --bg-1: #EBE6DD;
-  --bg-2: #E2E5DE;
-  --bg-3: #E0D8CD;
-  
-  /* Textos (tinta) */
-  --text-0: #2B2B2B;
-  --text-1: #5C5C5C;
-  --text-2: #827E7A;
-  --text-3: #827E7A;
-
-  /* Acentos (sellos y gráficas) */
-  --primary: #8B2635;
-  --primary-hover: #6B1C2A;
-  --secondary: #4A6B5D;
-  --secondary-hover: #3A5549;
-  --link: #1D3557;
-  --link-hover: #0F2338;
-  --warning: #D4A373;
-  --danger: #8B2635;
-  --success: #4A6B5D;
-  --terracotta: #B85C38;
-  
-  /* Gráficos (Variables inyectadas en .jsx) */
-  --chart-cyan: var(--secondary); /* Verde bosque */
-  --chart-red: var(--primary); /* Burdeos */
-  --chart-amber: var(--warning); /* Mostaza */
-
-  /* Neutros adicionales */
-  --border-light: #D1CCC5;
-  --shadow-light: rgba(0,0,0,0.06);
-  --card-elevated: #F0EDE6;
-
-  /* Compatibilidad con el diseño base de la aplicación */
-  --accent-electric: var(--link);
-  --accent-amber: var(--warning);
-
-  /* Override Docusaurus */
-  --ifm-background-color: var(--bg-0);
-  --ifm-background-surface-color: var(--bg-1);
-  --ifm-font-color-base: var(--text-0);
-  --ifm-navbar-background-color: transparent;
-  
-  --ifm-color-primary: var(--primary);
-  --ifm-color-primary-dark: var(--primary-hover);
-  --ifm-color-primary-darker: var(--primary-hover);
-  --ifm-color-primary-darkest: #4a141c;
-  --ifm-color-primary-light: #a63142;
-  --ifm-color-primary-lighter: #b3394a;
-  --ifm-color-primary-lightest: #cc495b;
-  
-  --ifm-color-success: var(--success);
-  --ifm-color-warning: var(--warning);
-  --ifm-color-danger: var(--danger);
-  
-  --ifm-menu-color: var(--text-1);
-  --ifm-menu-color-active: var(--primary);
-  --ifm-link-color: var(--link);
-  --ifm-link-hover-color: var(--link-hover);
-  --scroll-progress-color: #8B2635;
-
-  /* Chart palette — light */
-  --chart-bg:          rgba(240, 237, 230, 0.97);
-  --chart-bg-card:     rgba(235, 230, 221, 0.95);
-  --chart-border:      rgba(0, 0, 0, 0.07);
-  --chart-grid:        rgba(0, 0, 0, 0.07);
-  --chart-text-1:      #2B2B2B;
-  --chart-text-2:      #5C5C5C;
-  --chart-text-3:      #827E7A;
-  --chart-green:       #4A6B5D;
-  --chart-blue:        #1D3557;
-  --chart-purple:      #6B4F7A;
-  --chart-tooltip-bg:  rgba(240, 237, 230, 0.98);
-  --chart-tooltip-border: rgba(139, 38, 53, 0.25);
+  --scroll-progress-color: var(--color-accent-primary);
+  --docusaurus-highlighted-code-line-bg: var(--color-bg-elevated);
 }
 
 /* Glassmorphism Navbar */
