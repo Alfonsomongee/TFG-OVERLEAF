@@ -18,9 +18,6 @@ export default function BiblioCard() {
           <div
             key={ref.id}
             className={styles.referenceCard}
-            style={{
-              borderLeftColor: '#636E4F',
-            }}
           >
             <div className={styles.refId}>[{ref.id}]</div>
             <div className={styles.title}>
