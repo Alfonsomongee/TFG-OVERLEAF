@@ -831,6 +831,25 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     if (!isExplicit) score *= 0.3;
   }
 
+  // Tablas de desconexión de carga — boost fuerte para que
+  // lleguen al panel y el LLM tenga los datos exactos de PT
+  const LOAD_SHEDDING_KEYWORDS = [
+    'carga desconectada', 'carga se desconecto', 'cuanta carga',
+    'demanda desconectada', 'mw desconect', 'suministro perdido',
+    'demand shedding', 'load shedding', 'desconexion de carga',
+    'cuanto se perdio', 'cuanta demanda'
+  ];
+  if (LOAD_SHEDDING_KEYWORDS.some(k => q.includes(k))) {
+    if (['load-shedding-es-pt', 'demand-shedding-es',
+         'demand-shedding-pt', 'dso-load-shedding',
+         'pump-storage-es', 'pump-storage-pt'].includes(artifact.id)) {
+      score *= 5.0;
+    }
+    if (['chart-2','chart-9','chart-11','chart-20'].includes(artifact.id)) {
+      score *= 0.05;
+    }
+  }
+
   const qTerms = q.split(/\s+/).filter(t => t.length > 4);
   const matches = qTerms.filter(t => haystack.includes(t)).length;
   score *= 1 + Math.min(matches * 0.08, 0.5);
