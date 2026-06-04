@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, X } from 'lucide-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import ChatFullscreen from './ChatFullscreen';
+import ChatFullscreen, { preloadAllSimulators } from './ChatFullscreen';
 
 const UI_STRINGS = {
   es: {
@@ -10,6 +10,7 @@ const UI_STRINGS = {
     placeholder: 'Ej: ¿Cuál fue el papel de la inercia?',
     searching: 'Buscando en el TFG...',
     generating: 'Generando respuesta...',
+    synthesizing: 'Elaborando respuesta...',
     errorConnection: 'Error de conexión. Comprueba tu red e inténtalo de nuevo.',
     ariaOpen: 'Abrir chat con IA',
     ariaClose: 'Cerrar chat con IA',
@@ -22,6 +23,7 @@ const UI_STRINGS = {
     placeholder: 'E.g.: What role did inertia play?',
     searching: 'Searching the thesis...',
     generating: 'Generating answer...',
+    synthesizing: 'Generating answer...',
     errorConnection: 'Connection error. Check your network and try again.',
     ariaOpen: 'Open AI chat',
     ariaClose: 'Close AI chat',
@@ -34,6 +36,7 @@ const UI_STRINGS = {
     placeholder: 'Z.B.: Welche Rolle spielte die Trägheit?',
     searching: 'Suche in der Arbeit...',
     generating: 'Antwort wird generiert...',
+    synthesizing: 'Antwort wird erstellt...',
     errorConnection: 'Verbindungsfehler. Bitte Netzwerk prüfen und erneut versuchen.',
     ariaOpen: 'KI-Chat öffnen',
     ariaClose: 'KI-Chat schließen',
@@ -46,6 +49,7 @@ const UI_STRINGS = {
     placeholder: '例如：惯性在事故中起了什么作用？',
     searching: '正在检索论文内容...',
     generating: '正在生成回答...',
+    synthesizing: '正在生成回答...',
     errorConnection: '连接错误，请检查网络后重试。',
     ariaOpen: '打开AI对话',
     ariaClose: '关闭AI对话',
@@ -118,6 +122,8 @@ export default function ChatWidget() {
         body: JSON.stringify({ question: q, locale }),
       });
       setLoadingStage('generating');
+      await new Promise(r => setTimeout(r, 400));
+      setLoadingStage('synthesizing');
       const data = await parseChatResponse(res);
       setMessages(prev => [
         ...prev,
@@ -191,6 +197,7 @@ export default function ChatWidget() {
         onClick={() => setOpen(!open)}
         aria-label={open ? t.ariaClose : t.ariaOpen}
         title={t.title}
+        onMouseEnter={() => preloadAllSimulators()}
       >
         {open ? (
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none"
@@ -261,6 +268,7 @@ export default function ChatWidget() {
             </span>
             <button
               onClick={() => setFullscreen(true)}
+              onMouseEnter={() => preloadAllSimulators()}
               title="Pantalla completa"
               aria-label="Abrir en pantalla completa"
               style={{
@@ -354,7 +362,11 @@ export default function ChatWidget() {
             ))}
             {loading && (
               <div style={{ color: '#94a3b8', fontSize: 13, fontStyle: 'italic', padding: '4px 0' }}>
-                {loadingStage === 'searching' ? t.searching : t.generating}
+                {loadingStage === 'searching'
+                  ? t.searching
+                  : loadingStage === 'synthesizing'
+                  ? t.synthesizing
+                  : t.generating}
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -456,14 +468,11 @@ export default function ChatWidget() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ question: q, locale }),
             });
-            const data = await parseChatResponse(res);
             setLoadingStage('generating');
+            await new Promise(r => setTimeout(r, 400));
+            setLoadingStage('synthesizing');
+            const data = await parseChatResponse(res);
             setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
-          } catch {
-            setMessages(prev => [...prev, {
-              role: 'assistant',
-              text: t.errorConnection,
-            }]);
           } finally {
             setLoading(false);
             setLoadingStage('idle');

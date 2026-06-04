@@ -18,22 +18,28 @@ async function fetchFigureContext(question, answer, caption, figureTitle, figure
   }
 }
 
+function lazyWithPreload(importFn) {
+  const Component = lazy(importFn);
+  Component.preload = importFn;
+  return Component;
+}
+
 // ── Lazy imports de simuladores (Anexo C) ──────────────────────
-const FrequencyChart      = lazy(() => import('./FrequencyChart'));
-const SwingEquationSimulator = lazy(() => import('./SwingEquationSimulator'));
-const TapLagSequence      = lazy(() => import('./TapLagSequence'));
-const BlackoutPropagationMap = lazy(() => import('./BlackoutPropagationMap'));
-const CollapseSismograph  = lazy(() => import('./CollapseSismograph'));
-const PVCurveSimulator    = lazy(() => import('./PVCurveSimulator'));
-const ANSI59Cascade       = lazy(() => import('./ANSI59Cascade'));
-const InterconnectionDashboard = lazy(() => import('./InterconnectionDashboard'));
-const IberianGridTopology = lazy(() => import('./IberianGridTopology'));
-const MixGeneracion       = lazy(() => import('./MixGeneracion'));
-const FinancialWaterfallChart = lazy(() => import('./FinancialWaterfallChart'));
-const EnergyTransitionStreamgraph = lazy(() => import('./EnergyTransitionStreamgraph'));
-const AnimatedRestorationMap = lazy(() => import('./AnimatedRestorationMap'));
-const VerticalTimeline    = lazy(() => import('./VerticalTimeline'));
-const ThermalAdjustmentCostMatrix = lazy(() => import('./ThermalAdjustmentCostMatrix'));
+const FrequencyChart      = lazyWithPreload(() => import('./FrequencyChart'));
+const SwingEquationSimulator = lazyWithPreload(() => import('./SwingEquationSimulator'));
+const TapLagSequence      = lazyWithPreload(() => import('./TapLagSequence'));
+const BlackoutPropagationMap = lazyWithPreload(() => import('./BlackoutPropagationMap'));
+const CollapseSismograph  = lazyWithPreload(() => import('./CollapseSismograph'));
+const PVCurveSimulator    = lazyWithPreload(() => import('./PVCurveSimulator'));
+const ANSI59Cascade       = lazyWithPreload(() => import('./ANSI59Cascade'));
+const InterconnectionDashboard = lazyWithPreload(() => import('./InterconnectionDashboard'));
+const IberianGridTopology = lazyWithPreload(() => import('./IberianGridTopology'));
+const MixGeneracion       = lazyWithPreload(() => import('./MixGeneracion'));
+const FinancialWaterfallChart = lazyWithPreload(() => import('./FinancialWaterfallChart'));
+const EnergyTransitionStreamgraph = lazyWithPreload(() => import('./EnergyTransitionStreamgraph'));
+const AnimatedRestorationMap = lazyWithPreload(() => import('./AnimatedRestorationMap'));
+const VerticalTimeline    = lazyWithPreload(() => import('./VerticalTimeline'));
+const ThermalAdjustmentCostMatrix = lazyWithPreload(() => import('./ThermalAdjustmentCostMatrix'));
 
 // ── Mapa anchor → componente interactivo ──────────────────────
 const INTERACTIVE_MAP = {
@@ -229,6 +235,7 @@ const UI = {
     simplify: 'SIMPLIFICAR',
     searching: 'Buscando...',
     generating: 'Generando...',
+    synthesizing: 'Elaborando respuesta...',
   },
   en: {
     exit: 'Close',
@@ -239,6 +246,7 @@ const UI = {
     simplify: 'SIMPLIFY',
     searching: 'Searching...',
     generating: 'Generating...',
+    synthesizing: 'Generating answer...',
   },
   de: {
     exit: 'Schließen',
@@ -249,6 +257,7 @@ const UI = {
     simplify: 'VEREINFACHEN',
     searching: 'Suche...',
     generating: 'Generiere...',
+    synthesizing: 'Antwort wird erstellt...',
   },
   'zh-Hans': {
     exit: '关闭',
@@ -259,6 +268,7 @@ const UI = {
     simplify: '简化',
     searching: '搜索中...',
     generating: '生成中...',
+    synthesizing: '正在生成回答...',
   },
 };
 
@@ -1408,7 +1418,11 @@ export default function ChatFullscreen({
             ))}
             {loading && (
               <div style={{ color: '#94a3b8', fontSize: 12, fontStyle: 'italic' }}>
-                {loadingStage === 'searching' ? ui.searching : ui.generating}
+                {loadingStage === 'searching'
+                  ? ui.searching
+                  : loadingStage === 'synthesizing'
+                  ? ui.synthesizing
+                  : ui.generating}
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -1692,4 +1706,14 @@ export default function ChatFullscreen({
       </div>
     </div>
   );
+}
+
+export function preloadAllSimulators() {
+  [
+    FrequencyChart, SwingEquationSimulator, TapLagSequence,
+    BlackoutPropagationMap, CollapseSismograph, PVCurveSimulator,
+    ANSI59Cascade, InterconnectionDashboard, IberianGridTopology,
+    MixGeneracion, FinancialWaterfallChart, EnergyTransitionStreamgraph,
+    AnimatedRestorationMap, VerticalTimeline, ThermalAdjustmentCostMatrix,
+  ].forEach(C => { if (C?.preload) C.preload().catch(() => {}); });
 }

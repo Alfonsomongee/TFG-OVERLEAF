@@ -1072,8 +1072,31 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return errResponse(405, 'Método HTTP no válido.', 'Método no permitido. Usa POST.');
 
   const { question, locale = 'es', mode = 'normal' } = req.body || {};
-  if (!question || typeof question !== 'string' || question.trim().length < 3) {
-    return errResponse(400, 'No he podido procesar tu solicitud.', 'La pregunta debe tener al menos 3 caracteres.');
+  const trimmedQ = question?.trim() || '';
+  if (!trimmedQ || typeof question !== 'string') {
+    return errResponse(400,
+      'No he podido procesar tu solicitud.',
+      'Pregunta vacía.');
+  }
+
+  // Lista de acrónimos técnicos válidos aunque sean cortos
+  const VALID_SHORT_TERMS = new Set([
+    'ibr', 'gfm', 'gfl', 'ufls', 'hvdc', 'pmu', 'wams',
+    'ree', 'ren', 'rte', 'q-v', 'pcc', 'scr', 'ers',
+    'nhv', 'mhv', 'oltc', 'sssc', 'bess', 'ffr', 'afrr',
+    'mfrr', 'fcr', 'ntc', 'atc', 'ptc', '28-a', '28a',
+    'tap', 'mw', 'hz', 'kv', 'mvar', 'gw', 'gvar',
+  ]);
+
+  const isShortButValid =
+    trimmedQ.length < 10 &&
+    VALID_SHORT_TERMS.has(trimmedQ.toLowerCase().replace(/[¿?]/g, ''));
+
+  if (trimmedQ.length < 10 && !isShortButValid) {
+    return errResponse(400,
+      'La pregunta es demasiado corta. Prueba a formularla con más detalle. ' +
+      'Por ejemplo: "¿Qué es el Tap-Lag?" o "¿Cuánta demanda se perdió?"',
+      'Pregunta demasiado corta (mínimo 10 caracteres).');
   }
 
   const intent = classifyIntent(question, mode);
