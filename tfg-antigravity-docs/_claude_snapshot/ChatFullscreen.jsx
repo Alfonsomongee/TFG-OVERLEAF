@@ -522,7 +522,6 @@ export default function ChatFullscreen({
             },
             chapter: 'entsoe',
             artifact: a,
-            tabLabel: '★ ' + (a.title || 'Gráfica ENTSO-E').substring(0, 30),
           };
         }
         return found || null;
@@ -649,18 +648,21 @@ export default function ChatFullscreen({
       type: 'interactive',
     })),
     ...activeFigures.map((fig, i) => {
-      let label;
-      if (fig.tabLabel) {
-        label = fig.tabLabel;
-      } else {
-        const captionKey = 'caption_' + (lang === 'zh-Hans' ? 'en' : lang);
-        const caption = fig.caption[captionKey] || fig.caption.caption_es || '';
-        label = caption.length > 37 ? caption.substring(0, 37) + '...' : caption;
-      }
+      const captionKey = 'caption_' + 
+        (lang === 'zh-Hans' ? 'en' : lang);
+      const caption = fig.caption[captionKey] 
+        || fig.caption.caption_es 
+        || '';
+      // Truncar el caption a 40 chars para el tab
+      const shortLabel = caption.length > 40 
+        ? caption.substring(0, 37) + '...' 
+        : caption;
       return {
         id: 'figure-' + i,
-        label: label || fig.src.split('/').pop().replace(/\.\w+$/, '').replace(/_/g,' '),
-        type: fig.artifact?.type === 'entsoe_chart' ? 'entsoe' : 'figure',
+        label: shortLabel || fig.src.split('/').pop()
+          .replace('.png','').replace('.jpg','')
+          .replace(/_/g,' '),
+        type: 'figure',
       };
     }),
     ...activeTables.map((table, i) => ({
@@ -1650,19 +1652,19 @@ export default function ChatFullscreen({
                   style={{
                     padding: '4px 12px', borderRadius: 8, whiteSpace: 'nowrap',
                     border: `1px solid ${activeTab === tab.id
-                      ? (tab.type === 'interactive' ? 'var(--accent-electric)'
-                        : tab.type === 'entsoe' ? 'hsl(280 100% 70%)'
-                        : 'var(--chart-amber)')
+                      ? (tab.type === 'interactive'
+                          ? 'var(--accent-electric)'
+                          : 'var(--chart-amber)')
                       : 'var(--chart-border, rgba(255,255,255,0.12))'}`,
                     backgroundColor: activeTab === tab.id
-                      ? (tab.type === 'interactive' ? 'hsla(190,100%,60%,0.1)'
-                        : tab.type === 'entsoe' ? 'hsla(280,100%,70%,0.1)'
-                        : 'hsla(38,100%,56%,0.1)')
+                      ? (tab.type === 'interactive'
+                          ? 'hsla(190,100%,60%,0.1)'
+                          : 'hsla(38,100%,56%,0.1)')
                       : 'transparent',
                     color: activeTab === tab.id
-                      ? (tab.type === 'interactive' ? 'var(--accent-electric)'
-                        : tab.type === 'entsoe' ? 'hsl(280 100% 70%)'
-                        : 'var(--chart-amber)')
+                      ? (tab.type === 'interactive'
+                          ? 'var(--accent-electric)'
+                          : 'var(--chart-amber)')
                       : 'var(--chart-text-2, #94a3b8)',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',

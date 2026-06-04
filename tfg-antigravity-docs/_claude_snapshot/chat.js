@@ -210,51 +210,13 @@ function classifyIntent(question, mode = 'normal') {
     terms.forEach(t => { if (norm.includes(t)) scores[type] += weight; });
   };
 
-  // Visual
-  match(['grafica', 'figura', 'simulador', 'mapa', 'tabla', 'imagen',
-         'ensename', 'muestrame', 'mostrar', 'ver grafica', 'ver figura',
-         'show me', 'chart', 'graph', 'figure', 'map', 'diagram',
-         'visualize', 'display', 'plot'],
-        'visual', 4);
-
-  // Timeline
-  match(['evolucion', 'evoluciono', 'durante', '27 segundos',
-         'segundos criticos', 'cronologia', 'secuencia', 'minuto a minuto',
-         'sequence', 'timeline', 'chronology', 'step by step',
-         'what happened', '27 seconds', 'critical seconds',
-         'order of events'],
-        'timeline', 3);
-
-  // Quantitative
-  match(['cuanta', 'cuanto', 'cifra', 'porcentaje', 'demanda',
-         'mw', 'hz', 'mvar', 'kv', 'solar', 'mix',
-         'how much', 'how many', 'percentage', 'value',
-         'magnitude', 'figure', 'number'],
-        'quantitative', 2);
-
-  // Causal
-  match(['reactiva', 'potencia reactiva', 'mvar', 'q-v', 'sobretension',
-         'reactive power', 'overvoltage', 'voltage collapse'],
-        'causal', 2);
-
-  match(['por que', 'como amplifico', 'como actuo', 'mecanismo',
-         'detonante', 'causa', 'agravo', 'tap-lag', 'ufls',
-         'colapso en vez de',
-         'why', 'how did', 'mechanism', 'trigger', 'cause',
-         'root cause', 'what caused', 'reason'],
-        'causal', 3);
-
-  // Comparison
-  match(['compara', 'comparar', 'vs', 'frente a', 'diferencia entre',
-         'discrepan', 'ree', 'icai', 'entso-e',
-         'compare', 'versus', 'difference', 'disagree', 'discrepancy',
-         'contrast'],
-        'comparison', 3);
-
-  // Glossary
-  match(['que es', 'define', 'explicame el concepto', 'que significa',
-         'what is', 'define', 'explain', 'meaning of', 'definition'],
-        'glossary', 4);
+  match(['grafica', 'figura', 'simulador', 'mapa', 'tabla', 'imagen', 'ensename', 'muestrame', 'mostrar', 'ver grafica', 'ver figura'], 'visual', 4);
+  match(['evolucion', 'evoluciono', 'durante', '27 segundos', 'segundos criticos', 'cronologia', 'secuencia', 'minuto a minuto'], 'timeline', 3);
+  match(['cuanta', 'cuanto', 'cifra', 'porcentaje', 'demanda', 'mw', 'hz', 'mvar', 'kv', 'solar', 'mix'], 'quantitative', 2);
+  match(['reactiva', 'potencia reactiva', 'mvar', 'q-v', 'sobretension'], 'causal', 2);
+  match(['por que', 'como amplifico', 'como actuo', 'mecanismo', 'detonante', 'causa', 'agravo', 'tap-lag', 'ufls', 'colapso en vez de'], 'causal', 3);
+  match(['compara', 'comparar', 'vs', 'frente a', 'diferencia entre', 'discrepan', 'ree', 'icai', 'entso-e'], 'comparison', 3);
+  match(['que es', 'define', 'explicame el concepto', 'que significa'], 'glossary', 4);
   match(['sencill', 'no sabe', 'como si fuera', 'facil', 'para tontos'], 'simple', 1);
 
   let maxScore = 0;
@@ -466,12 +428,10 @@ function rerankResultsByIntent(results, chunksData, intent, question) {
       }
     }
 
-    // Boost al glosario SOLO cuando la intención lo requiere
-    if (ct === 'glossary' && (intent === 'glossary' || intent === 'general')) {
-      score *= 1.4;
-    }
+    // 5. Penalización por chunk corto
+    // Boost al glosario cuando la pregunta contiene términos técnicos definidos
+    if (ct === 'glossary') score *= 1.4;
 
-    // Penalización por chunk corto
     if (!chunk.text || chunk.text.length < 100) score *= 0.7;
 
     // 6. Penalizaciones por slug
@@ -505,25 +465,6 @@ function selectContextChunks(rerankedResults, chunksData, maxChunks = 7) {
     selectedPairs.push({ result: r, chunk });
     if (selectedPairs.length >= maxChunks) break;
   }
-
-  // Garantizar que master_data siempre está en el contexto
-  // para preguntas cuantitativas — contiene todas las cifras clave del 28-A
-  const hasMasterData = selectedPairs.some(
-    p => p.chunk.chunkType === 'master_data'
-  );
-  if (!hasMasterData) {
-    const masterEntry = Object.entries(chunksData).find(
-      ([, c]) => c.chunkType === 'master_data'
-    );
-    if (masterEntry) {
-      const [id, chunk] = masterEntry;
-      selectedPairs.push({
-        result: { id, adjustedScore: 1 },
-        chunk,
-      });
-    }
-  }
-
   return selectedPairs;
 }
 
@@ -732,8 +673,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
 
   const SEMANTIC_BOOSTS = {
     'chart-1':  ['demanda peninsular', 'caida de demanda', 'recuperacion demanda'],
-    'chart-2':  ['demanda total iberica', 'carga total es pt',
-                 'demanda ibérica', 'carga ibérica'],
+    'chart-2':  ['demanda', 'portugal', 'espana', 'iberico', 'total'],
     'chart-8':  ['renovable', 'co2', 'ibr', 'penetracion', 'porcentaje'],
     'chart-9':  ['precio', 'spot', 'omie', 'negativo', 'mercado'],
     'chart-11': ['precio', 'europa', 'mercado', 'day-ahead', 'mibel'],
@@ -743,8 +683,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     'chart-19': ['imbalance', 'desvio', 'mw', 'deficit'],
     'chart-20': ['precio', 'desvio', 'maximo', '9999', 'infarto'],
     'chart-21': ['reserva', 'frr', 'afrr', 'mfrr', 'frecuencia'],
-    'chart-23': ['fallback entso-e', 'protocolo emergencia europeo',
-                 'proceso in entso-e', 'desconexion continental'],
+    'chart-23': ['protocolo', 'emergencia', 'fallback', 'separacion', 'in'],
   };
 
   if (SEMANTIC_BOOSTS[artifact.id]) {
@@ -886,10 +825,6 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     'precursor_overvoltage_22april': ['precursor', 'abril', '22 de abril', 'nunez balboa', 'oscilacion previa', 'evento previo'],
     'entsoe_flow_deviation': ['ntc', 'desvio', 'programa intercambio', 'flujo comercial', 'intercambio programado'],
     'hvdc_control_transition': ['hvdc', 'santa llogaia', 'pmode', 'inelfe', 'enlace hvdc'],
-    'chart-23': ['fallback', 'protocolo entso', 'proceso in',
-                 'separacion continental', 'interconexion europea'],
-    'chart-2': ['demanda total iberica', 'mwh semana',
-                'carga iberica total', 'perdida total suministro'],
   };
   if (OMNIPRESENT_ARTIFACTS[artifact.id]) {
     const isExplicit = OMNIPRESENT_ARTIFACTS[artifact.id].some(k => q.includes(k));
@@ -970,7 +905,7 @@ function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxIt
   const maxScore = sorted[0]?.score || 1;
 
   return sorted
-    .filter(item => item.source === 'selected' || item.score >= maxScore * 0.50)
+    .filter(item => item.source === 'selected' || item.score >= maxScore * 0.35)
     .slice(0, maxItems)
     .map(item => ({
       ...item.artifact,
@@ -1216,42 +1151,7 @@ ${question}
 
 RESPUESTA DEL ASISTENTE:`;
 
-    const systemPrompt = `Eres el asistente pericial-documental del TFG \\
-"Análisis Forense del Apagón Ibérico del 28 de abril de 2025".
-
-El TFG tiene esta estructura:
-- /contexto → Contexto técnico previo al 28-A
-- /analisis-incidente → Las 4 fases del colapso (12:32:57-12:33:27 CEST)
-- /analisis-informes → Comparativa REE vs ICAI/AELEC vs ENTSO-E
-- /resumen-de-cifras → Cifras consolidadas verificadas
-- /resiliencia-futuro → GFM, BESS, ERS, propuestas regulatorias
-- /reaccion-reposicion → Black start, reposición ES y PT
-- /dimension-europea → Coordinación ENTSO-E, Francia, Portugal
-- /glosario → 119 términos técnicos definidos
-- /anexo-tablas → 42 tablas forenses con datos del evento
-- /anexo-figuras → 41 gráficas PNG con datos reales
-- /anexo-entsoe → 35 gráficas interactivas con datos ESIOS/ENTSO-E/OMIE
-- /anexo-interactivos → 18 simuladores React interactivos
-
-Cifras maestras verificadas del 28-A:
-- Inicio cascada: 12:32:56.993 CEST (disparo raíz Granada, 355 MW)
-- Duración cascada: ~30 segundos
-- Nadir frecuencia: 47,79 Hz
-- RoCoF máximo: ~1,5 Hz/s en ventanas de 100 ms
-- Tensión máxima barras colectoras: >440 kV (umbral LVRT: 435 kV)
-- Inercia H_tot ibérica: 2,21-2,71 s
-- Pérdida generación cascada: ~15.000 MW
-- Demanda sin suministro España: 25.184 MW (33,8%)
-- Demanda sin suministro Portugal: 1.955 MW (33,3%)
-- Total ibérico: ~31.000 MW
-- Reposición Portugal transporte: ~12 h (00:22 del 29-A)
-- Reposición España transporte: ~16 h (04:00 del 29-A)
-- Separación con Francia: 12:33:21,535 CEST
-- HVDC Santa Llogaia en PMODE1 (1.000 MW, sin frequency response)
-- Coste Operación Reforzada: 666 M€/año
-
-Responde siempre anclado en los datos del TFG. No inventes cifras.
-Si el contexto contradice las cifras maestras anteriores, usa las del contexto.`;
+    const systemPrompt = 'Eres un asistente técnico especializado en sistemas eléctricos de potencia.';
 
     let llmResult;
     try {
