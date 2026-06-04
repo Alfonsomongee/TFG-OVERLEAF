@@ -482,6 +482,62 @@ function injectImageGalleryData() {
   console.log(`  → ${count} gráficas de datos reales indexadas.`);
 }
 
+function injectEntsoeCharts() {
+  const chartsPath = path.join(__dirname, '..', 'src', 'data', 'forensicCharts.js');
+  if (!fs.existsSync(chartsPath)) {
+    console.warn('  ⚠ No se encontró forensicCharts.js');
+    return;
+  }
+
+  const raw = fs.readFileSync(chartsPath, 'utf8');
+
+  // Extraer objetos de la lista: id, title, description
+  const idMatches     = [...raw.matchAll(/id:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+  const titleMatches  = [...raw.matchAll(/title:\s*['"]([^'"]+)['"]/g)].map(m => m[1]);
+  const descMatches   = [...raw.matchAll(/description:\s*`([\s\S]*?)`/g)].map(m => m[1].trim());
+  // Fallback si las descriptions usan comillas simples/dobles
+  const descMatchesQ  = [...raw.matchAll(/description:\s*['"]([^'"]{20,})['"]/g)].map(m => m[1]);
+  const descriptions  = descMatches.length >= idMatches.length ? descMatches : descMatchesQ;
+
+  let count = 0;
+  idMatches.forEach((id, i) => {
+    const title       = titleMatches[i] || id;
+    const description = (descriptions[i] || '').substring(0, 400).replace(/\n/g,' ').replace(/\s+/g,' ');
+    if (!title) return;
+
+    const rawText = [
+      `Anexo ENTSO-E — Gráfica con datos reales de la API`,
+      `ID: ${id}`,
+      `Título: ${title}`,
+      `Descripción: ${description}`,
+      `Fuente: ESIOS / ENTSO-E / REE / OMIE — datos extraídos directamente de las APIs oficiales`
+    ].join('\n').normalize('NFC');
+
+    createChunk({
+      title:        'Anexo ENTSO-E — Gráficas con Datos Reales de las APIs',
+      heading:      title,
+      subheading:   'Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A',
+      rawText,
+      slug:         '/anexo-entsoe',
+      anchor:       id,
+      chunkType:    'data_figure',
+      keywords:     extractKeywords(rawText),
+      chapterOrder: 94,
+      sourceFile:   'forensicCharts.js',
+      artifact: {
+        id,
+        type:        'entsoe_chart',
+        source:      'annex_entsoe',
+        title,
+        description,
+        url:         `/anexo-entsoe#${id}`,
+      }
+    });
+    count++;
+  });
+  console.log(`  → ${count} gráficas ENTSO-E indexadas.`);
+}
+
 function buildIndex() {
   console.log('🔍 Construyendo índice jerárquico de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
@@ -490,6 +546,7 @@ function buildIndex() {
   injectImageGalleryData();
   injectGlossary();
   injectGraphics();
+  injectEntsoeCharts();
 
   miniSearch.addAll(allChunks);
 

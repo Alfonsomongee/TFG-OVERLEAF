@@ -612,6 +612,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   if (intent === 'quantitative') {
     if (artifact.type === 'table')            score *= 2.0;
     if (artifact.source === 'annex_d')        score *= 1.8;
+    if (artifact.source === 'annex_entsoe')   score *= 2.2;
     if (artifact.type === 'interactive')      score *= 1.3;
   }
   if (intent === 'comparison') {
@@ -621,11 +622,13 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   }
   if (intent === 'visual') {
     if (artifact.source === 'annex_d')        score *= 2.8;  // máximo peso: datos reales
+    if (artifact.source === 'annex_entsoe')   score *= 2.8;
     if (artifact.type === 'interactive')      score *= 1.8;
     if (artifact.type === 'table')            score *= 0.8;  // tablas menos relevantes en visual
   }
   if (intent === 'timeline') {
     if (artifact.source === 'annex_d')        score *= 2.2;  // gráficas temporales reales
+    if (artifact.source === 'annex_entsoe')   score *= 2.5;
     if (artifact.type === 'interactive')      score *= 2.0;
     if (artifact.type === 'table')            score *= 1.6;
   }
@@ -641,6 +644,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   }
   if (intent === 'general') {
     if (artifact.source === 'annex_d')        score *= 1.6;  // siempre preferir datos reales
+    if (artifact.source === 'annex_entsoe')   score *= 1.6;
     if (artifact.type === 'interactive')      score *= 1.3;
   }
 
@@ -660,8 +664,33 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     'nunez_balboa_precursores', 'precursor_overvoltage_22april',
     'hvdc_control_transition', 'intercambio_marruecos_topdown',
     'evolucion_mix_reenergizacion', 'scr_iberia',
+    'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5',
+    'chart-6', 'chart-8', 'chart-9', 'chart-11', 'chart-12',
+    'chart-13', 'chart-14', 'chart-18', 'chart-19', 'chart-20',
+    'chart-21', 'chart-23',
   ];
   if (ENTSOE_ESIOS_IDS.includes(artifact.id)) score *= 1.5;
+
+  const SEMANTIC_BOOSTS = {
+    'chart-1':  ['demanda', 'peninsular', 'mw', 'colapso', 'caida'],
+    'chart-2':  ['demanda', 'portugal', 'espana', 'iberico', 'total'],
+    'chart-8':  ['renovable', 'co2', 'ibr', 'penetracion', 'porcentaje'],
+    'chart-9':  ['precio', 'spot', 'omie', 'negativo', 'mercado'],
+    'chart-11': ['precio', 'europa', 'mercado', 'day-ahead', 'mibel'],
+    'chart-13': ['intercambio', 'frontera', 'p48', 'exportacion', 'saldo'],
+    'chart-14': ['flujo', 'fisico', 'frontera', 'francia', 'marruecos'],
+    'chart-18': ['desequilibrio', 'balance', 'generacion', 'demanda'],
+    'chart-19': ['imbalance', 'desvio', 'mw', 'deficit'],
+    'chart-20': ['precio', 'desvio', 'maximo', '9999', 'infarto'],
+    'chart-21': ['reserva', 'frr', 'afrr', 'mfrr', 'frecuencia'],
+    'chart-23': ['protocolo', 'emergencia', 'fallback', 'separacion', 'in'],
+  };
+
+  if (SEMANTIC_BOOSTS[artifact.id]) {
+    if (SEMANTIC_BOOSTS[artifact.id].some(kw => q.includes(kw))) {
+      score *= 3.0;
+    }
+  }
 
   const boostIds = (ids, factor) => {
     if (ids.some(target => id.includes(normalizeText(target)))) score *= factor;

@@ -504,10 +504,27 @@ export default function ChatFullscreen({
 
     // Figuras: del backend si hay, si no del texto
     const backendFigures = backendArtifacts
-      .filter(a => a.type === 'image')
+      .filter(a => a.type === 'image' || a.type === 'entsoe_chart')
       .map(a => {
-        const filename = (a.path || a.id || '').split('/').pop().replace(/\.\w+$/, '');
-        return FIGURE_INDEX.find(f => f.src.includes(filename) || f.src.includes(a.id)) || null;
+        const filename = (a.path || a.id || '').split('/').pop()
+          .replace(/\.\w+$/, '');
+        const found = FIGURE_INDEX.find(
+          f => f.src.includes(filename) || f.src.includes(a.id)
+        );
+        // Para entsoe_chart no hay entrada en FIGURE_INDEX
+        // Crear una entrada sintética
+        if (!found && a.type === 'entsoe_chart') {
+          return {
+            src: a.url || '',
+            caption: {
+              caption_es: a.description || a.title,
+              caption_en: a.description || a.title,
+            },
+            chapter: 'entsoe',
+            artifact: a,
+          };
+        }
+        return found || null;
       })
       .filter(Boolean);
     const textFigures = backendFigures.length > 0
@@ -990,20 +1007,62 @@ export default function ChatFullscreen({
             )}
           </div>
 
-          {/* Imagen */}
-          <img
-            src={fig.src}
-            alt={caption}
-            style={{
-              width: '100%',
-              maxWidth: 860,
-              borderRadius: 8,
+          {/* Imagen o enlace a gráfica ENTSO-E */}
+          {fig.artifact?.type === 'entsoe_chart' ? (
+            <div style={{
+              marginTop: 16,
+              padding: '20px 24px',
               border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
-              display: 'block',
-              margin: '0 auto',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
-            }}
-          />
+              borderRadius: 10,
+              textAlign: 'center',
+              backgroundColor: 'hsla(220,40%,6%,0.6)',
+            }}>
+              <div style={{
+                fontSize: 11,
+                color: 'var(--chart-text-2, #94a3b8)',
+                marginBottom: 12,
+                lineHeight: 1.6,
+              }}>
+                Gráfica construida con datos reales extraídos de las APIs
+                de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+              </div>
+              
+              <a
+                href={fig.artifact.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 20px',
+                  borderRadius: 8,
+                  backgroundColor: 'var(--ifm-color-primary)',
+                  color: 'var(--ifm-background-color)',
+                  textDecoration: 'none',
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                VER GRÁFICA COMPLETA ↗
+              </a>
+            </div>
+          ) : (
+            <img
+              src={fig.src}
+              alt={caption}
+              style={{
+                width: '100%',
+                maxWidth: 860,
+                borderRadius: 8,
+                border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+                display: 'block',
+                margin: '0 auto',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+              }}
+            />
+          )}
 
           {/* Leyenda / Fuente */}
           {caption && figureContexts[activeTab] !== caption && (
