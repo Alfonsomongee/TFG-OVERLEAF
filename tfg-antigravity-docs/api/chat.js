@@ -5,6 +5,7 @@ const path = require('path');
 
 let chunks = null;
 let miniSearch = null;
+let searchInitPromise = null;
 
 const rateLimiter = new Map();
 const RATE_LIMIT_WINDOW = 60_000;
@@ -31,22 +32,42 @@ if (typeof global.rateLimitInterval === 'undefined') {
 }
 
 function getSearch() {
-  if (!miniSearch) {
-    const t0 = Date.now();
+  // Si ya está cargado, devolver inmediatamente
+  if (miniSearch) return Promise.resolve(miniSearch);
+
+  // Si hay una carga en curso, esperar a la misma promesa
+  // (evita doble carga en cold starts concurrentes)
+  if (searchInitPromise) return searchInitPromise;
+
+  searchInitPromise = new Promise((resolve, reject) => {
     try {
-      const indexRaw = fs.readFileSync(path.join(__dirname, '..', 'static', 'search-index.json'), 'utf8');
-      chunks = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'static', 'chunks.json'), 'utf8'));
+      const t0 = Date.now();
+      const indexRaw = fs.readFileSync(
+        path.join(__dirname, '..', 'static', 'search-index.json'), 'utf8'
+      );
+      chunks = JSON.parse(
+        fs.readFileSync(
+          path.join(__dirname, '..', 'static', 'chunks.json'), 'utf8'
+        )
+      );
       miniSearch = MiniSearch.loadJSON(indexRaw, {
         fields: ['title', 'heading', 'subheading', 'text', 'keywordsText'],
-        storeFields: ['title', 'heading', 'subheading', 'text', 'slug', 'anchor', 'chunkType', 'keywords', 'keywordsText', 'chapterOrder', 'sourceFile', 'artifact']
+        storeFields: [
+          'title', 'heading', 'subheading', 'text', 'slug', 'anchor',
+          'chunkType', 'keywords', 'keywordsText', 'chapterOrder',
+          'sourceFile', 'artifact'
+        ]
       });
       console.log(`[api/chat] MiniSearch loaded in ${Date.now() - t0}ms, ${Object.keys(chunks).length} chunks`);
+      resolve(miniSearch);
     } catch (err) {
-      console.error('Error cargando los archivos estáticos del índice:', err);
-      throw new Error('IndexFilesMissing');
+      searchInitPromise = null; // reset para permitir reintento
+      console.error('Error cargando índice:', err);
+      reject(new Error('IndexFilesMissing'));
     }
-  }
-  return miniSearch;
+  });
+
+  return searchInitPromise;
 }
 
 async function callWithTimeout(url, options, timeoutMs = 8000) {
@@ -482,49 +503,111 @@ function rerankResultsByIntent(results, chunksData, intent, question) {
 }
 
 
-function selectContextChunks(rerankedResults, chunksData, maxChunks = 7) {
+function textSimilarity(a, b) {
+  const toks = (s) => new Set(
+    s.toLowerCase().split(/\W+/).filter(t => t.length > 2)
+  );
+  const A = toks(a);
+  const B = toks(b);
+  const inter = [...A].filter(x => B.has(x)).length;
+  const union = new Set([...A, ...B]).size || 1;
+  return inter / union;
+}
+
+function selectContextChunks(rerankedResults, chunksData, maxChunks = 9, lambda = 0.72) {
   if (rerankedResults.length === 0) return [];
-  const bestScore = rerankedResults[0].adjustedScore;
-  const selectedPairs = [];
+
+  const bestScore = rerankedResults[0].adjustedScore || 1;
+  const picked = [];
   const slugCount = {};
 
-  for (const r of rerankedResults) {
-    const chunk = chunksData[r.id];
-    if (!chunk) continue;
-    
-    const chunkType = chunk.chunkType || 'normal';
+  // Construir mapa id→chunk para acceso O(1)
+  const chunksMap = chunksData instanceof Map
+    ? chunksData
+    : new Map(Object.entries(chunksData));
 
-    if (r.adjustedScore < bestScore * 0.18 && chunkType !== 'master_data' && chunkType !== 'glossary') {
-      if (selectedPairs.length >= 3) break;
+  // Candidatos válidos (filtro básico de score mínimo)
+  const candidates = rerankedResults.filter(r => {
+    const chunk = chunksMap.get(String(r.id));
+    if (!chunk) return false;
+    const ct = chunk.chunkType || 'normal';
+    // Siempre incluir master_data y glossary en el pool
+    if (ct === 'master_data' || ct === 'glossary') return true;
+    return r.adjustedScore >= bestScore * 0.12;
+  });
+
+  // Garantizar que master_data esté en el pool
+  const hasMasterInPool = candidates.some(r => {
+    const c = chunksMap.get(String(r.id));
+    return c?.chunkType === 'master_data';
+  });
+  if (!hasMasterInPool) {
+    for (const [id, chunk] of chunksMap) {
+      if (chunk.chunkType === 'master_data') {
+        candidates.push({ id: Number(id) || id, adjustedScore: bestScore * 0.5 });
+        break;
+      }
+    }
+  }
+
+  // Selección MMR iterativa
+  while (candidates.length > 0 && picked.length < maxChunks) {
+    let bestCand = null;
+    let bestMMR = -Infinity;
+
+    for (const cand of candidates) {
+      if (picked.some(p => p.result.id === cand.id)) continue;
+
+      const chunk = chunksMap.get(String(cand.id));
+      if (!chunk) continue;
+
+      const ct = chunk.chunkType || 'normal';
+      const slug = chunk.slug || 'unknown';
+
+      // Límite de diversidad por slug (máx 2 del mismo slug,
+      // salvo master_data o glossary)
+      const slugUsed = slugCount[slug] || 0;
+      if (slugUsed >= 2 && ct !== 'master_data' && ct !== 'glossary') continue;
+
+      const relevance = cand.adjustedScore || 0;
+
+      // Penalización por similitud con chunks ya seleccionados
+      const redundancy = picked.length > 0
+        ? Math.max(...picked.map(p =>
+            textSimilarity(chunk.text || '', p.chunk.text || '')
+          ))
+        : 0;
+
+      // Boost extra para master_data: siempre entra si no está
+      const isMaster = ct === 'master_data';
+      const masterBoost = isMaster && !picked.some(p => p.chunk.chunkType === 'master_data')
+        ? 999
+        : 0;
+
+      const mmr = masterBoost + lambda * relevance - (1 - lambda) * redundancy;
+
+      if (mmr > bestMMR) {
+        bestMMR = mmr;
+        bestCand = { cand, chunk };
+      }
     }
 
-    const slug = chunk.slug || 'unknown';
+    if (!bestCand) break;
+
+    const slug = bestCand.chunk.slug || 'unknown';
     slugCount[slug] = (slugCount[slug] || 0) + 1;
-    if (slugCount[slug] > 2 && selectedPairs.length >= 2 && chunkType !== 'master_data') continue;
 
-    selectedPairs.push({ result: r, chunk });
-    if (selectedPairs.length >= maxChunks) break;
+    picked.push({
+      result: bestCand.cand,
+      chunk: bestCand.chunk,
+    });
+
+    // Eliminar el candidato seleccionado del pool
+    const idx = candidates.findIndex(c => c.id === bestCand.cand.id);
+    if (idx !== -1) candidates.splice(idx, 1);
   }
 
-  // Garantizar que master_data siempre está en el contexto
-  // para preguntas cuantitativas — contiene todas las cifras clave del 28-A
-  const hasMasterData = selectedPairs.some(
-    p => p.chunk.chunkType === 'master_data'
-  );
-  if (!hasMasterData) {
-    const masterEntry = Object.entries(chunksData).find(
-      ([, c]) => c.chunkType === 'master_data'
-    );
-    if (masterEntry) {
-      const [id, chunk] = masterEntry;
-      selectedPairs.push({
-        result: { id, adjustedScore: 1 },
-        chunk,
-      });
-    }
-  }
-
-  return selectedPairs;
+  return picked;
 }
 
 function buildChunkUrl(chunk) {
@@ -1103,7 +1186,12 @@ module.exports = async function handler(req, res) {
 
   try {
     let searcher;
-    try { searcher = getSearch(); } catch (e) { return errResponse(500, 'Error al buscar en el TFG.', 'Falta el archivo de índice.', intent); }
+    try {
+      searcher = await getSearch();
+    } catch (e) {
+      return errResponse(500, 'Error al buscar en el TFG.',
+        'Falta el archivo de índice.', intent);
+    }
 
     const SYNONYMS = {
       'prensa': ['media', 'medios', 'comunicación', 'periodistas', 'noticias', 'cobertura'],
