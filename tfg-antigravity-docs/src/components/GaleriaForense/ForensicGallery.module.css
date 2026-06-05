@@ -1,16 +1,78 @@
 .galleryContainer {
+  --fg-old-text-primary: #191814;
+  --fg-old-text-secondary: #4A4338;
+  --fg-old-text-muted: #7A7062;
+
+  --fg-old-bg-card: rgba(255, 252, 245, 0.84);
+  --fg-old-bg-card-hover: #FFFCF5;
+  --fg-old-bg-muted: rgba(25, 24, 20, 0.06);
+  --fg-old-bg-table: rgba(255, 252, 245, 0.72);
+
+  --fg-old-border: rgba(25, 24, 20, 0.14);
+  --fg-old-border-strong: rgba(25, 24, 20, 0.24);
+
+  --fg-old-accent: #1F6F78;
+  --fg-old-accent-soft: rgba(31, 111, 120, 0.10);
+  --fg-old-accent-border: rgba(31, 111, 120, 0.34);
+
+  --fg-old-warning: #A96000;
+  --fg-old-danger: #A13D36;
+  --fg-old-success: #2F6B4F;
+
+  --fg-old-cat-1: #A13D36;
+  --fg-old-cat-2: #A96000;
+  --fg-old-cat-3: #D9A441;
+  --fg-old-cat-4: #2F6B4F;
+  --fg-old-cat-5: #1F6F78;
+
+  --fg-old-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --fg-old-shadow-hover: 0 14px 34px rgba(25, 24, 20, 0.09);
+
   margin-top: 2rem;
   margin-bottom: 3rem;
+  color: var(--fg-old-text-primary);
+}
+
+html[data-theme='dark'] .galleryContainer {
+  --fg-old-text-primary: #F4F7FB;
+  --fg-old-text-secondary: #C7D2E3;
+  --fg-old-text-muted: #91A4BC;
+
+  --fg-old-bg-card: rgba(16, 29, 53, 0.76);
+  --fg-old-bg-card-hover: rgba(23, 39, 68, 0.88);
+  --fg-old-bg-muted: rgba(244, 247, 251, 0.06);
+  --fg-old-bg-table: rgba(7, 19, 38, 0.58);
+
+  --fg-old-border: rgba(226, 232, 240, 0.14);
+  --fg-old-border-strong: rgba(226, 232, 240, 0.24);
+
+  --fg-old-accent: #7DCDE3;
+  --fg-old-accent-soft: rgba(125, 205, 227, 0.12);
+  --fg-old-accent-border: rgba(125, 205, 227, 0.38);
+
+  --fg-old-warning: #E6B45C;
+  --fg-old-danger: #D98798;
+  --fg-old-success: #A6C67B;
+
+  --fg-old-cat-1: #D98798;
+  --fg-old-cat-2: #E6B45C;
+  --fg-old-cat-3: #D9C77C;
+  --fg-old-cat-4: #A6C67B;
+  --fg-old-cat-5: #7DCDE3;
+
+  --fg-old-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  --fg-old-shadow-hover: 0 16px 38px rgba(0, 0, 0, 0.34);
 }
 
 .loading {
   font-family: 'JetBrains Mono', monospace;
-  color: var(--chart-cyan);
+  color: var(--fg-old-accent);
   text-align: center;
   padding: 2rem;
-  border: 1px dashed color-mix(in srgb, var(--chart-cyan) 30%, transparent);
+  border: 1px dashed var(--fg-old-accent-border);
   border-radius: 8px;
   animation: pulse 2s infinite;
+  background: var(--fg-old-bg-card);
 }
 
 @keyframes pulse {
@@ -19,13 +81,10 @@
   100% { opacity: 0.6; }
 }
 
-/* Grid de botones principales */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  /* IMPORTANTE: alineamos elementos arriba para que al abrir uno,
-     los demás de la misma fila no se estiren */
   align-items: start;
 }
 
@@ -47,7 +106,6 @@
   gap: 1rem;
 }
 
-/* Botones estilo Neón/Forense */
 .categoryButton {
   display: flex;
   flex-direction: column;
@@ -55,26 +113,30 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1.5rem 1rem;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--fg-old-bg-card);
+  border: 1px solid var(--fg-old-border);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: none;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: var(--fg-old-shadow);
   width: 100%;
 }
 
 .categoryButton:hover {
-  background: rgba(6, 182, 212, 0.05);
-  border-color: var(--ifm-color-primary);
-  box-shadow: inset 0 0 0 1px var(--ifm-color-primary), 0 0 15px rgba(6, 182, 212, 0.4);
+  background: var(--fg-old-bg-card-hover);
+  border-color: var(--fg-old-accent-border);
+  box-shadow: var(--fg-old-shadow-hover);
   transform: translateY(-2px);
 }
 
 .categoryButton.active {
-  background: rgba(6, 182, 212, 0.1);
-  border-color: var(--ifm-color-primary);
-  box-shadow: inset 0 0 0 2px var(--ifm-color-primary), 0 0 20px rgba(6, 182, 212, 0.6);
+  background: var(--fg-old-accent-soft);
+  border-color: var(--fg-old-accent-border);
+  box-shadow: var(--fg-old-shadow-hover);
   transform: translateY(1px);
 }
 
@@ -89,20 +151,16 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-0);
+  color: var(--fg-old-text-primary);
   text-align: center;
   line-height: 1.3;
 }
 
 .categoryButton.active .catTitle {
-  color: var(--ifm-color-primary);
+  color: var(--fg-old-accent);
 }
 
-/* Lista de sub-botones / tablas (Acordeón) */
-/* Rompemos el grid para que ocupe todo el ancho visualmente debajo de la fila */
 .tableList {
-  /* Truco para que el acordeón ocupe el 100% del contenedor padre de la cuadrícula,
-     pero lo mantenemos simple: que se expanda dentro de su columna o use grid-column */
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -111,28 +169,23 @@
   transform-origin: top;
 }
 
-/* Si queremos que el acordeón ocupe TODA la fila, tendríamos que reestructurar el HTML.
-   Por ahora, se expandirá en su columna. Como el usuario pidió "debajo de él una lista de sub-botones... de 3 en 3, 3 en cada fila",
-   vamos a dejarlo dentro de su columna pero que ensanche si es necesario.
-   Para tablas grandes, aplicaremos un truco de grid-column si es posible, o dejaremos que se desborde con scroll. */
-
 @keyframes slideDown {
   from { opacity: 0; transform: scaleY(0.95); }
   to { opacity: 1; transform: scaleY(1); }
 }
 
 .tableItem {
-  background: hsl(220 40% 6%);
+  background: var(--fg-old-bg-card);
   border: 1px solid var(--cat-color);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: var(--fg-old-shadow);
 }
 
 .tableHeader {
-  background: linear-gradient(90deg, calc(var(--cat-color) / 0.15), transparent);
+  background: color-mix(in srgb, var(--cat-color) 10%, transparent);
   padding: 1rem;
-  border-bottom: 1px solid hsl(220 20% 25%);
+  border-bottom: 1px solid var(--fg-old-border);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -148,7 +201,7 @@
 
 .tableSource {
   font-size: 0.75rem;
-  color: hsl(220 12% 55%);
+  color: var(--fg-old-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -156,9 +209,9 @@
 .tableNote {
   padding: 1rem;
   font-size: 0.9rem;
-  color: hsl(220 12% 82%);
-  background: hsl(220 30% 11%);
-  border-bottom: 1px solid hsl(220 20% 25%);
+  color: var(--fg-old-text-secondary);
+  background: var(--fg-old-bg-table);
+  border-bottom: 1px solid var(--fg-old-border);
   line-height: 1.5;
   font-style: italic;
   border-left: 3px solid var(--cat-color);
@@ -173,21 +226,21 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
-  color: hsl(220 12% 82%);
+  color: var(--fg-old-text-secondary);
 }
 
 .dataTable th {
   text-align: left;
   padding: 0.75rem;
-  font-weight: 600;
-  color: hsl(220 12% 68%);
-  border-bottom: 1px solid hsl(220 20% 25%);
+  font-weight: 700;
+  color: var(--fg-old-text-muted);
+  border-bottom: 1px solid var(--fg-old-border-strong);
   white-space: nowrap;
 }
 
 .dataTable td {
   padding: 0.75rem;
-  border-bottom: 1px solid hsl(220 20% 15%);
+  border-bottom: 1px solid var(--fg-old-border);
   vertical-align: top;
 }
 
@@ -196,5 +249,5 @@
 }
 
 .dataTable tr:hover td {
-  background: hsl(220 30% 11%);
+  background: var(--fg-old-bg-muted);
 }

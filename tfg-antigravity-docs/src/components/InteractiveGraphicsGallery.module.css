@@ -1,9 +1,56 @@
 .galleryContainer {
+  --igg-text-primary: #191814;
+  --igg-text-secondary: #4A4338;
+  --igg-text-muted: #7A7062;
+
+  --igg-bg-panel: rgba(255, 252, 245, 0.84);
+  --igg-bg-panel-hover: #FFFCF5;
+  --igg-bg-stage: rgba(255, 252, 245, 0.52);
+  --igg-bg-muted: rgba(25, 24, 20, 0.06);
+
+  --igg-border: rgba(25, 24, 20, 0.14);
+  --igg-border-strong: rgba(25, 24, 20, 0.24);
+
+  --igg-accent: #1F6F78;
+  --igg-accent-soft: rgba(31, 111, 120, 0.10);
+  --igg-accent-border: rgba(31, 111, 120, 0.34);
+
+  --igg-title-accent: #64242E;
+  --igg-muted-accent: #636E4F;
+
+  --igg-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --igg-shadow-hover: 0 14px 34px rgba(25, 24, 20, 0.09);
+
   display: flex;
   flex-direction: column;
   gap: 2rem;
   margin: 2rem 0;
   min-height: 850px;
+  color: var(--igg-text-primary);
+}
+
+:global(html[data-theme='dark']) .galleryContainer {
+  --igg-text-primary: #F4F7FB;
+  --igg-text-secondary: #C7D2E3;
+  --igg-text-muted: #91A4BC;
+
+  --igg-bg-panel: rgba(16, 29, 53, 0.78);
+  --igg-bg-panel-hover: rgba(23, 39, 68, 0.88);
+  --igg-bg-stage: rgba(7, 19, 38, 0.58);
+  --igg-bg-muted: rgba(244, 247, 251, 0.06);
+
+  --igg-border: rgba(226, 232, 240, 0.14);
+  --igg-border-strong: rgba(226, 232, 240, 0.24);
+
+  --igg-accent: #7DCDE3;
+  --igg-accent-soft: rgba(125, 205, 227, 0.12);
+  --igg-accent-border: rgba(125, 205, 227, 0.38);
+
+  --igg-title-accent: #7DCDE3;
+  --igg-muted-accent: #A6C67B;
+
+  --igg-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  --igg-shadow-hover: 0 16px 38px rgba(0, 0, 0, 0.34);
 }
 
 @media (min-width: 996px) {
@@ -15,19 +62,19 @@
 
 .sidebar {
   flex: 0 0 240px;
-  background-color: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: var(--ifm-global-radius);
+  background-color: var(--igg-bg-panel);
+  border: 1px solid var(--igg-border);
+  border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: var(--igg-shadow);
 }
 
 .sidebarTitle {
   font-size: 1.1rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-  color: #636E4F; /* Pistacho */
+  border-bottom: 1px solid var(--igg-border);
+  color: var(--igg-muted-accent);
 }
 
 .graphicList {
@@ -49,11 +96,15 @@
   background: transparent;
   border: 1px solid transparent;
   border-left: 3px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   text-align: left;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  color: #41424A; /* Raven Gray */
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+  color: var(--igg-text-secondary);
   overflow: hidden;
   z-index: 1;
 }
@@ -61,19 +112,19 @@
 .graphicButton::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: 0%;
-  background: var(--ifm-color-primary-lightest);
+  background: var(--igg-accent-soft);
   z-index: -1;
-  transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-[data-theme='dark'] .graphicButton::before {
-  background: color-mix(in srgb, var(--ifm-color-primary) 15%, transparent);
+  transition: width 0.3s ease;
 }
 
 .graphicButton:hover {
-  border-left-color: color-mix(in srgb, var(--ifm-color-primary) 50%, transparent);
+  border-left-color: var(--igg-accent-border);
+  color: var(--igg-text-primary);
+  background: var(--igg-bg-muted);
 }
 
 .graphicButton:active {
@@ -81,18 +132,14 @@
 }
 
 .activeButton {
-  border-left-color: #64242E; /* Burdeos */
-  color: #64242E; /* Burdeos */
-  font-weight: 600;
+  border-left-color: var(--igg-accent);
+  color: var(--igg-accent);
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .activeButton::before {
   width: 100%;
-}
-
-[data-theme='dark'] .activeButton {
-  color: #64242E; /* Burdeos */
 }
 
 .icon {
@@ -112,27 +159,36 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: var(--ifm-global-radius);
+  background-color: var(--igg-bg-panel);
+  border: 1px solid var(--igg-border);
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: var(--igg-shadow);
 }
 
 .graphicHeader {
   padding: 1.5rem;
+  border-bottom: 1px solid var(--igg-border);
 }
 
 .graphicHeader h2 {
   margin: 0 0 0.5rem 0;
   font-size: 1.5rem;
-  color: #64242E;
+  color: var(--igg-title-accent);
 }
 
 .graphicHeader p {
   margin: 0;
-  color: var(--ifm-color-emphasis-700);
+  color: var(--igg-text-secondary);
   font-size: 0.95rem;
+}
+
+.graphicHeaderDesc {
+  color: var(--igg-text-secondary);
+}
+
+.graphicHeaderBrace {
+  color: var(--igg-muted-accent);
 }
 
 .graphicStage {
@@ -140,40 +196,16 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* Add min-height to prevent stage from collapsing */
   min-height: 750px;
-  background-color: var(--ifm-background-color);
+  background-color: var(--igg-bg-stage);
 }
 
-/* ==========================================================================
-   DARK MODE OVERRIDES
-   ========================================================================== */
-
-:global(html[data-theme='dark']) .sidebarTitle {
-  color: var(--accent-electric, #38bdf8);
-}
-
-:global(html[data-theme='dark']) .graphicButton {
-  color: #e2e8f0;
-}
-
-:global(html[data-theme='dark']) .graphicButton:hover {
-  border-left-color: color-mix(in srgb, var(--accent-electric) 50%, transparent);
-}
-
-:global(html[data-theme='dark']) .activeButton {
-  border-left-color: var(--accent-electric, #38bdf8);
-  color: var(--accent-electric, #38bdf8);
-}
-
-:global(html[data-theme='dark']) .activeButton::before {
-  background: color-mix(in srgb, var(--accent-electric) 15%, transparent);
-}
-
-:global(html[data-theme='dark']) .graphicHeader h2 {
-  color: var(--accent-electric, #38bdf8);
-}
-
-:global(html[data-theme='dark']) .graphicHeader p {
-  color: #cbd5e1;
+.galleryLoading {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--igg-text-muted);
+  font-family: monospace;
+  font-size: 13px;
 }

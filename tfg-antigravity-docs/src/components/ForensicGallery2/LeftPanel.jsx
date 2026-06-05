@@ -43,7 +43,7 @@ export default function LeftPanel({ activeChartId, activeCategoryId, onSelectCha
               <div
                 className={styles.categoryHeader}
                 onClick={() => handleCategoryHeaderClick(cat)}
-                style={isActiveCategory ? { background: cat.colorLight } : {}}
+                style={isActiveCategory ? { background: 'var(--fg-active-bg)' } : {}}
               >
                 <span
                   className={styles.categoryName}
@@ -70,9 +70,9 @@ export default function LeftPanel({ activeChartId, activeCategoryId, onSelectCha
                         className={`${styles.chartListItem} ${isActive ? styles.active : ''}`}
                         style={
                           isActive
-                            ? { borderLeftColor: cat.color, background: cat.colorLight }
+                            ? { borderLeftColor: 'var(--fg-accent)', background: 'var(--fg-active-bg)' }
                             : isHighlighted
-                            ? { background: 'rgba(255,200,0,0.08)' }
+                            ? { background: 'var(--fg-highlight-bg)' }
                             : {}
                         }
                         onClick={() => onSelectChart(chart.id)}

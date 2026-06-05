@@ -212,8 +212,8 @@ export default function InteractiveGraphicsGallery({ propLang }) {
       <div className={styles.mainContent}>
         <div className={styles.graphicHeader}>
           <h2>{activeGraphicContent.title}</h2>
-          <p style={{ color: '#41424A' }}>
-            <span style={{ color: '#636E4F' }}>&#123;</span> {activeGraphicContent.desc} <span style={{ color: '#636E4F' }}>&#125;</span>
+          <p className={styles.graphicHeaderDesc}>
+            <span className={styles.graphicHeaderBrace}>&#123;</span> {activeGraphicContent.desc} <span className={styles.graphicHeaderBrace}>&#125;</span>
           </p>
         </div>
         <div
@@ -225,15 +225,7 @@ export default function InteractiveGraphicsGallery({ propLang }) {
           <BrowserOnly fallback={<div>{getLoadingText(locale)}</div>}>
             {() => (
               <Suspense fallback={
-                <div style={{
-                  height: '400px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--text-1, #64748b)',
-                  fontFamily: 'monospace',
-                  fontSize: 13
-                }}>
+                <div className={styles.galleryLoading}>
                   Iniciando {activeGraphicContent.title}…
                 </div>
               }>

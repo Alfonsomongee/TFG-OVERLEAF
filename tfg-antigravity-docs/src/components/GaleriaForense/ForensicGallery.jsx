@@ -56,7 +56,7 @@ function ForensicGalleryInner() {
   return (
     <div className={styles.galleryContainer}>
       <div className={styles.grid}>
-        {categories.map((category) => (
+        {categories.map((category, categoryIndex) => (
           <div key={category.id} className={styles.categoryWrap}>
             <button
               className={`${styles.categoryButton} ${activeCategory === category.id ? styles.active : ''}`}
@@ -70,7 +70,12 @@ function ForensicGalleryInner() {
             {activeCategory === category.id && (
               <div className={styles.tableList}>
                 {category.tables.map((table) => (
-                  <div key={table.id} id={table.id} className={styles.tableItem} style={{ '--cat-color': category.color }}>
+                  <div
+                    key={table.id}
+                    id={table.id}
+                    className={styles.tableItem}
+                    style={{ '--cat-color': `var(--fg-old-cat-${(categoryIndex % 5) + 1})` }}
+                  >
                     <div className={styles.tableHeader}>
                       <span className={styles.tableTitle}>{translate({id: `forensic.table.${table.id}`, message: table.name})}</span>
                       <span className={styles.tableSource}>{table.source}</span>

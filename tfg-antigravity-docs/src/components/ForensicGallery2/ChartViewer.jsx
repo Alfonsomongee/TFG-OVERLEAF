@@ -181,7 +181,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
             <BrowserOnly>
               {() => (
                 <Suspense fallback={
-                  <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: '13px' }}>
+                  <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--fg-text-muted)', fontFamily: 'monospace', fontSize: '13px' }}>
                     Inicializando simulador…
                   </div>
                 }>
@@ -222,7 +222,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
         </div>
 
         {/* ── RELEVANCIA FORENSE ── */}
-        <div className={styles.relSection} style={{ borderLeftColor: cat.color, background: 'transparent' }}>
+        <div className={styles.relSection}>
           <div className={styles.relTitle}>
             &#123;{l.relevance}&#125;
           </div>
@@ -256,7 +256,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
           ) : nextCategoryFirst ? (
             <button
               className={`${styles.navBtn} ${styles.next} ${styles.nextCatBtn}`}
-              style={{ borderColor: getCategoryById(nextCategoryFirst.categoryId)?.color }}
+              style={{ borderColor: 'var(--fg-accent-border)' }}
               onClick={() => onSelectChart(nextCategoryFirst.id)}
             >
               {l.continueWith} {getCategoryById(nextCategoryFirst.categoryId)?.name} →

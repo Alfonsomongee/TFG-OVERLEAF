@@ -23,7 +23,7 @@ export default function CategoryGrid({ categoryId, onSelectChart, locale }) {
 
   return (
     <div className={styles.categoryGridView}>
-      <div className={styles.categoryGridTitle} style={{ color: cat.color }}>
+      <div className={styles.categoryGridTitle} style={{ color: 'var(--fg-title-accent)' }}>
         {cat.icon} {cat.name}
       </div>
       <div className={styles.categoryQuestion}>{cat.question}</div>
@@ -32,7 +32,7 @@ export default function CategoryGrid({ categoryId, onSelectChart, locale }) {
           <div
             key={chart.id}
             className={styles.gridCard}
-            style={{ '--cat-color': cat.color }}
+            style={{ '--cat-color': 'var(--fg-accent)' }}
             onClick={() => onSelectChart(chart.id)}
           >
             <div className={styles.gridCardNum}>#{idx + 1}</div>
