@@ -90,7 +90,7 @@ function AlertIcon() {
       width="20" height="20" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth="2" strokeLinecap="round"
       strokeLinejoin="round" aria-hidden="true"
-      style={{ flexShrink: 0, color: '#f59e0b' }}
+      style={{ flexShrink: 0 }}
     >
       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
       <line x1="12" y1="9" x2="12" y2="13" />
@@ -104,12 +104,12 @@ export default function Bloque2MixGeneracion() {
   const s = STRINGS[lang] || STRINGS.es;
 
   const GENERATION_DATA = [
-    { id: 'solar', name: s.solar, mw: 13428, percentage: 53.3, color: '#EF9F27', aportaInercia: false },
-    { id: 'nuclear', name: s.nuclear, mw: 2518, percentage: 10.0, color: '#378ADD', aportaInercia: true },
-    { id: 'wind', name: s.wind, mw: 3022, percentage: 12.0, color: '#5DCAA5', aportaInercia: false },
-    { id: 'hydro', name: s.hydro, mw: 1763, percentage: 7.0, color: '#888780', aportaInercia: true },
-    { id: 'ccgt', name: s.ccgt, mw: 756, percentage: 3.0, color: '#D85A30', aportaInercia: true },
-    { id: 'other', name: s.other, mw: 1008, percentage: 4.0, color: 'var(--text-1, #64748b)', aportaInercia: true },
+    { id: 'solar', name: s.solar, mw: 13428, percentage: 53.3, color: 'var(--mix-solar)', aportaInercia: false },
+    { id: 'nuclear', name: s.nuclear, mw: 2518, percentage: 10.0, color: 'var(--mix-nuclear)', aportaInercia: true },
+    { id: 'wind', name: s.wind, mw: 3022, percentage: 12.0, color: 'var(--mix-wind)', aportaInercia: false },
+    { id: 'hydro', name: s.hydro, mw: 1763, percentage: 7.0, color: 'var(--mix-hydro)', aportaInercia: true },
+    { id: 'ccgt', name: s.ccgt, mw: 756, percentage: 3.0, color: 'var(--mix-ccgt)', aportaInercia: true },
+    { id: 'other', name: s.other, mw: 1008, percentage: 4.0, color: 'var(--mix-other)', aportaInercia: true },
   ];
 
   const totalIBR    = GENERATION_DATA.filter(d => !d.aportaInercia).reduce((sum, d) => sum + d.percentage, 0);
@@ -132,19 +132,19 @@ export default function Bloque2MixGeneracion() {
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{
             width: `${totalIBR}%`,
-            background: 'rgba(245,158,11,0.75)',
+            background: 'var(--mix-ibr)',
             display: 'flex', alignItems: 'center',
             paddingLeft: 8, fontSize: 11,
-            fontFamily: 'monospace', color: '#0a0a0a', fontWeight: 700,
+            fontFamily: 'monospace', color: 'var(--color-background-primary)', fontWeight: 700,
           }}>
             {totalIBR.toFixed(0)}% IBR
           </div>
           <div style={{
             flex: 1,
-            background: 'rgba(59,130,246,0.6)',
+            background: 'var(--mix-sync)',
             display: 'flex', alignItems: 'center',
             paddingLeft: 6, fontSize: 11,
-            fontFamily: 'monospace', color: '#fff', fontWeight: 700,
+            fontFamily: 'monospace', color: 'var(--color-background-primary)', fontWeight: 700,
           }}>
             {totalSincro.toFixed(0)}% {s.syncShort}
           </div>
@@ -172,8 +172,9 @@ export default function Bloque2MixGeneracion() {
                     name,
                   ]}
                   contentStyle={{
-                    backgroundColor: 'var(--ifm-background-surface-color, #0a0f1c)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'var(--mix-tooltip-bg)',
+                    border: `1px solid var(--mix-tooltip-border)`,
+                    color: 'var(--mix-tooltip-text)',
                     borderRadius: 4, fontSize: 12,
                   }}
                 />
@@ -188,8 +189,8 @@ export default function Bloque2MixGeneracion() {
                 <span>
                   {item.name} ({item.percentage}%)
                   {item.aportaInercia
-                    ? <span style={{ color: '#60a5fa', fontSize: 10 }}> ⚙ {s.syncTag}</span>
-                    : <span style={{ color: '#f59e0b', fontSize: 10 }}> ⚡ {s.ibrTag}</span>}
+                    ? <span style={{ color: 'var(--mix-sync)', fontSize: 10 }}> ⚙ {s.syncTag}</span>
+                    : <span style={{ color: 'var(--mix-ibr)', fontSize: 10 }}> ⚡ {s.ibrTag}</span>}
                 </span>
               </div>
             ))}

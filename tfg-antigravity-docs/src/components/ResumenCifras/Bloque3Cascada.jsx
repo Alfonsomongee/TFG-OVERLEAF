@@ -130,12 +130,12 @@ const STRINGS = {
 };
 
 const BASE_EVENTS = [
-  { id: 'e1', timestamp: 0.0, timeISO: '12:32:57.120', color: '#EF9F27', mwLost: 355, mwAccum: 355, source: 'ENTSO-E Factual, p.28', verified: true },
-  { id: 'e2', timestamp: 19.34, timeISO: '12:33:16.460', color: '#E24B4A', mwLost: 730, mwAccum: 1082, source: 'Comité de Análisis, p.38 / REE, p.5', verified: true },
-  { id: 'e3', timestamp: 20.56, timeISO: '12:33:17–12:33:18 CEST', color: '#E24B4A', mwLost: 553, mwAccum: 1635, source: 'Comité de Análisis, p.38', verified: true },
-  { id: 'e4', timestamp: 23.53, timeISO: '12:33:21.535', color: '#378ADD', mwLost: 0, mwAccum: 1635, source: 'ENTSO-E Factual, pp.108-109', verified: true },
-  { id: 'e5', timestamp: 25.88, timeISO: '12:33:23–12:33:24 CEST', color: '#9F3EFF', mwLost: 0, mwAccum: 1635, source: 'ENTSO-E Factual, pp.108-109', verified: true },
-  { id: 'e6', timestamp: 30.0, timeISO: '12:33:27 CEST', color: '#E24B4A', mwLost: 0, mwAccum: 25200, source: 'ENTSO-E Final Report, mar. 2026 / Comité de Análisis, p.38', verified: true },
+  { id: 'e1', timestamp: 0.0, timeISO: '12:32:57.120', color: 'var(--timeline-amber)', mwLost: 355, mwAccum: 355, source: 'ENTSO-E Factual, p.28', verified: true },
+  { id: 'e2', timestamp: 19.34, timeISO: '12:33:16.460', color: 'var(--timeline-red)', mwLost: 730, mwAccum: 1082, source: 'Comité de Análisis, p.38 / REE, p.5', verified: true },
+  { id: 'e3', timestamp: 20.56, timeISO: '12:33:17–12:33:18 CEST', color: 'var(--timeline-red)', mwLost: 553, mwAccum: 1635, source: 'Comité de Análisis, p.38', verified: true },
+  { id: 'e4', timestamp: 23.53, timeISO: '12:33:21.535', color: 'var(--timeline-blue)', mwLost: 0, mwAccum: 1635, source: 'ENTSO-E Factual, pp.108-109', verified: true },
+  { id: 'e5', timestamp: 25.88, timeISO: '12:33:23–12:33:24 CEST', color: 'var(--timeline-purple)', mwLost: 0, mwAccum: 1635, source: 'ENTSO-E Factual, pp.108-109', verified: true },
+  { id: 'e6', timestamp: 30.0, timeISO: '12:33:27 CEST', color: 'var(--timeline-red)', mwLost: 0, mwAccum: 25200, source: 'ENTSO-E Final Report, mar. 2026 / Comité de Análisis, p.38', verified: true },
 ];
 
 const getEvents = (lang) => {
@@ -186,7 +186,7 @@ export default function Bloque3Cascada() {
                 style={{
                   left:            `${pct}%`,
                   backgroundColor: event.color,
-                  borderColor:     isActive ? event.color : 'var(--ifm-background-surface-color, #0a0f1c)',
+                  borderColor: isActive ? event.color : 'var(--timeline-marker-border)',
                 }}
                 onClick={() => setActiveIndex(index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
@@ -219,7 +219,7 @@ export default function Bloque3Cascada() {
         <div style={{
           marginTop: '0.6rem',
           fontSize: 10, fontFamily: 'monospace',
-          color: '#475569',
+          color: 'var(--timeline-source)',
         }}>
           📋 {activeEvent.source}
         </div>
@@ -228,10 +228,12 @@ export default function Bloque3Cascada() {
           <div style={{
             marginTop: '0.5rem',
             padding: '0.4rem 0.75rem',
-            background: 'rgba(245,158,11,0.08)',
-            border: '1px solid rgba(245,158,11,0.3)',
+            background: 'var(--timeline-warning-bg)',
+            border: '1px solid var(--timeline-warning-border)',
             borderRadius: 4,
-            fontSize: 11, color: '#f59e0b', fontFamily: 'monospace',
+            fontSize: 11,
+            color: 'var(--timeline-warning-text)',
+            fontFamily: 'monospace',
           }}>
             ⚠ {s.openNoteLabel}{activeEvent.openNote}
           </div>
@@ -262,7 +264,9 @@ export default function Bloque3Cascada() {
           {s.btnPrev}
         </button>
         <span style={{
-          fontFamily: 'monospace', fontSize: 11, color: 'var(--text-1, #64748b)',
+          fontFamily: 'monospace',
+          fontSize: 11,
+          color: 'var(--timeline-text-tertiary)',
           alignSelf: 'center',
         }}>
           {activeIndex + 1} / {TIMELINE_EVENTS.length}

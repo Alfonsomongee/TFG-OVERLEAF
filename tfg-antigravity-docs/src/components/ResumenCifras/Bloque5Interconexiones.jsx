@@ -87,7 +87,7 @@ const BASE_DATA = [
 ];
 
 const getUtilizationColor = (pct) =>
-  pct < 50 ? '#1D9E75' : pct < 75 ? '#EF9F27' : '#E24B4A';
+  pct < 50 ? 'var(--inter-safe)' : pct < 75 ? 'var(--inter-warning)' : 'var(--inter-danger)';
 
 const fmt = (n) => n.toLocaleString('es-ES');
 
@@ -97,14 +97,17 @@ function CustomTooltip({ active, payload, lang }) {
   const s = STRINGS[lang] || STRINGS.es;
   return (
     <div style={{
-      background: 'var(--ifm-background-surface-color, #0a0f1c)',
-      border: '1px solid rgba(255,255,255,0.1)',
-      borderRadius: 4, padding: '8px 12px',
-      fontSize: 11, fontFamily: 'monospace',
-    }}>
-      <p style={{ fontWeight: 'bold', marginBottom: 4, color: '#e2e8f0' }}>{d.name}</p>
-      <p style={{ color: '#378ADD', marginBottom: 2 }}>{s.tooltipFlow}: {d.flowReal.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW</p>
-      <p style={{ color: 'var(--text-1, #64748b)' }}>{s.tooltipCap}: {d.capacityMax.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW</p>
+  background: 'var(--inter-tooltip-bg)',
+  border: '1px solid var(--inter-tooltip-border)',
+  borderRadius: 4,
+  padding: '8px 12px',
+  fontSize: 11,
+  fontFamily: 'monospace',
+  color: 'var(--inter-tooltip-text)',
+}}>
+      <p style={{ fontWeight: 'bold', marginBottom: 4, color: 'var(--inter-tooltip-text)' }}>{d.name}</p>
+      <p style={{ color: 'var(--inter-flow)', marginBottom: 2 }}>{s.tooltipFlow}: {d.flowReal.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW</p>
+      <p style={{ color: 'var(--inter-text-secondary)' }}>{s.tooltipCap}: {d.capacityMax.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW</p>
     </div>
   );
 }
@@ -123,11 +126,11 @@ function UtilizationCard({ ic, lang }) {
       <p className={styles.observation}>{ic.observation}</p>
       <p className={styles.details}>
         {ic.flowReal.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} / {ic.capacityMax.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW
-        <span style={{ marginLeft: 6, fontSize: 10, color: '#475569' }}>
+        <span style={{ marginLeft: 6, fontSize: 10, color: 'var(--inter-text-tertiary)' }}>
           ({ic.direction})
         </span>
       </p>
-      <p style={{ fontSize: 9, color: '#374151', fontFamily: 'monospace', margin: 0 }}>
+      <p style={{ fontSize: 9, color: 'var(--inter-text-tertiary)', fontFamily: 'monospace', margin: 0 }}>
         📋 {ic.source}
       </p>
     </div>
@@ -175,22 +178,22 @@ export default function Bloque5Interconexiones() {
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height={380}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--inter-grid)" vertical={false} />
             <XAxis
               dataKey="name"
-              tick={{ fill: '#808080', fontSize: 11, fontFamily: 'monospace' }}
+              tick={{ fill: 'var(--inter-axis)', fontSize: 11, fontFamily: 'monospace' }}
               angle={-45} textAnchor="end" height={100}
               axisLine={false} tickLine={false}
             />
             <YAxis
-              tick={{ fill: '#808080', fontSize: 10, fontFamily: 'monospace' }}
+              tick={{ fill: 'var(--inter-axis)', fontSize: 10, fontFamily: 'monospace' }}
               tickFormatter={v => `${v.toLocaleString(lang === 'en' ? 'en-US' : 'es-ES')} MW`}
               axisLine={false} tickLine={false}
             />
-            <Tooltip content={<CustomTooltip lang={lang} />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-            <Bar dataKey="capacityMax" fill="rgba(100,116,139,0.4)"
+            <Tooltip content={<CustomTooltip lang={lang} />} cursor={{ fill: 'var(--inter-progress-bg)' }} />
+            <Bar dataKey="capacityMax" fill="var(--inter-capacity)"
                  radius={[3,3,0,0]} name={s.legendCap} />
-            <Bar dataKey="flowReal" fill="#378ADD"
+            <Bar dataKey="flowReal" fill="var(--inter-flow)"
                  radius={[3,3,0,0]} name={s.legendFlow} />
           </BarChart>
         </ResponsiveContainer>
@@ -216,10 +219,12 @@ export default function Bloque5Interconexiones() {
           <div style={{
             marginTop: '0.5rem',
             padding: '0.4rem 0.75rem',
-            background: 'rgba(245,158,11,0.08)',
-            border: '1px solid rgba(245,158,11,0.3)',
+            background: 'var(--inter-warning-bg)',
+            border: '1px solid var(--inter-warning-border)',
             borderRadius: 4,
-            fontSize: 11, color: '#f59e0b', fontFamily: 'monospace',
+            fontSize: 11,
+            color: 'var(--inter-warning-text)',
+            fontFamily: 'monospace',
           }}>
             {s.openNote}
           </div>

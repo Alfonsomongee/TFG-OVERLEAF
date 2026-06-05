@@ -1,28 +1,64 @@
 .container {
-  --color-background-primary: #1a1a1a;
-  --color-background-secondary: #2a2a2a;
-  --color-border-primary: #3a3a3a;
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #aaaaaa;
-  --color-text-tertiary: #666666;
-  --color-success: #4ade80;
-  
+  --chrono-text-primary: #191814;
+  --chrono-text-secondary: #4A4338;
+  --chrono-text-tertiary: #7A7062;
+
+  --chrono-bg-card: rgba(255, 252, 245, 0.82);
+  --chrono-bg-card-hover: #FFFCF5;
+  --chrono-bg-detail: rgba(255, 252, 245, 0.58);
+  --chrono-border: rgba(25, 24, 20, 0.14);
+  --chrono-border-strong: rgba(25, 24, 20, 0.24);
+
+  --chrono-red: #A13D36;
+  --chrono-red-soft: rgba(161, 61, 54, 0.10);
+  --chrono-red-glow: rgba(161, 61, 54, 0.26);
+
+  --chrono-amber: #A96000;
+  --chrono-amber-soft: rgba(169, 96, 0, 0.10);
+  --chrono-amber-glow: rgba(169, 96, 0, 0.24);
+
+  --chrono-green: #2F6B4F;
+  --chrono-green-soft: rgba(47, 107, 79, 0.10);
+  --chrono-green-glow: rgba(47, 107, 79, 0.24);
+
+  --chrono-progress-bg: rgba(25, 24, 20, 0.08);
+
+  --chrono-shadow: 0 8px 24px rgba(25, 24, 20, 0.045);
+
   background: transparent;
-  color: var(--color-text-primary);
+  color: var(--chrono-text-primary);
   padding: 24px 0;
   font-family: system-ui, -apple-system, sans-serif;
   max-width: 1000px;
   margin: 0 auto;
 }
 
-html[data-theme='light'] .container {
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f4f5f7;
-  --color-border-primary: #dadde1;
-  --color-text-primary: #1c1e21;
-  --color-text-secondary: #606770;
-  --color-text-tertiary: #8a94a2;
-  --color-success: #1D9E75;
+html[data-theme='dark'] .container {
+  --chrono-text-primary: #F4F7FB;
+  --chrono-text-secondary: #C7D2E3;
+  --chrono-text-tertiary: #91A4BC;
+
+  --chrono-bg-card: rgba(16, 29, 53, 0.72);
+  --chrono-bg-card-hover: rgba(23, 39, 68, 0.84);
+  --chrono-bg-detail: rgba(16, 29, 53, 0.56);
+  --chrono-border: rgba(226, 232, 240, 0.14);
+  --chrono-border-strong: rgba(226, 232, 240, 0.24);
+
+  --chrono-red: #D98798;
+  --chrono-red-soft: rgba(217, 135, 152, 0.10);
+  --chrono-red-glow: rgba(217, 135, 152, 0.26);
+
+  --chrono-amber: #E6B45C;
+  --chrono-amber-soft: rgba(230, 180, 92, 0.11);
+  --chrono-amber-glow: rgba(230, 180, 92, 0.24);
+
+  --chrono-green: #A6C67B;
+  --chrono-green-soft: rgba(166, 198, 123, 0.10);
+  --chrono-green-glow: rgba(166, 198, 123, 0.22);
+
+  --chrono-progress-bg: rgba(244, 247, 251, 0.08);
+
+  --chrono-shadow: 0 10px 28px rgba(0, 0, 0, 0.20);
 }
 
 @keyframes fadeInUp {
@@ -44,7 +80,7 @@ html[data-theme='light'] .container {
 .header {
   margin-bottom: 48px;
   padding-bottom: 32px;
-  border-bottom: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--chrono-border);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -56,29 +92,31 @@ html[data-theme='light'] .container {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 12px;
+  color: var(--chrono-text-primary);
 }
 
 .subtitle {
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   font-family: monospace;
 }
 
 .statusBadge {
-  background: var(--color-background-secondary);
+  background: var(--chrono-bg-card);
   padding: 12px 20px;
   border-radius: 8px;
-  border: 1px solid var(--color-border-primary);
+  border: 1px solid var(--chrono-border);
   display: flex;
   align-items: center;
   gap: 12px;
   width: fit-content;
+  box-shadow: var(--chrono-shadow);
 }
 
 .statusBadgeText {
   font-size: 11px;
-  font-weight: 600;
-  color: var(--color-success);
+  font-weight: 700;
+  color: var(--chrono-green);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -97,16 +135,16 @@ html[data-theme='light'] .container {
 .sectionLine {
   width: 4px;
   height: 20px;
-  background: var(--color-success);
+  background: var(--chrono-green);
   border-radius: 2px;
 }
 
 .sectionTitle {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   margin: 0;
 }
 
@@ -117,15 +155,20 @@ html[data-theme='light'] .container {
 
 .timelineCard {
   border-radius: 12px;
-  background: var(--color-background-secondary);
-  border: 1px solid var(--color-border-primary);
+  background: var(--chrono-bg-card);
+  border: 1px solid var(--chrono-border);
   border-left-width: 5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--chrono-shadow);
   padding: 20px;
   padding-left: 56px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.timelineCard:hover {
+  background: var(--chrono-bg-card-hover);
+  border-color: var(--chrono-border-strong);
 }
 
 @media (min-width: 640px) {
@@ -145,7 +188,7 @@ html[data-theme='light'] .container {
 
 @media (min-width: 640px) {
   .timelineTimeCol {
-    border-right: 1px solid var(--color-border-primary);
+    border-right: 1px solid var(--chrono-border);
   }
 }
 
@@ -159,12 +202,13 @@ html[data-theme='light'] .container {
 .timelineTimeText {
   font-family: monospace;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--chrono-text-primary);
 }
 
 .timelineDateText {
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
 }
 
 .timelineContentCol {
@@ -173,14 +217,15 @@ html[data-theme='light'] .container {
 
 .timelineContentTitle {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 8px;
   line-height: 1.3;
+  color: var(--chrono-text-primary);
 }
 
 .timelineContentDesc {
   font-size: 12px;
-  color: var(--color-text-secondary);
+  color: var(--chrono-text-secondary);
   line-height: 1.5;
 }
 
@@ -191,7 +236,7 @@ html[data-theme='light'] .container {
   align-items: center;
   justify-content: center;
   padding-top: 16px;
-  border-top: 1px solid var(--color-border-primary);
+  border-top: 1px solid var(--chrono-border);
 }
 
 @media (min-width: 640px) {
@@ -199,7 +244,7 @@ html[data-theme='light'] .container {
     padding-top: 0;
     padding-left: 16px;
     border-top: none;
-    border-left: 1px solid var(--color-border-primary);
+    border-left: 1px solid var(--chrono-border);
   }
 }
 
@@ -208,24 +253,25 @@ html[data-theme='light'] .container {
   font-weight: 700;
   margin-bottom: 8px;
   font-family: monospace;
+  color: var(--chrono-text-primary);
 }
 
 .timelineDemandLabel {
   font-size: 9px;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .timelineDemandBarBg {
   width: 100%;
   height: 16px;
-  background: rgba(128, 128, 128, 0.1);
+  background: var(--chrono-progress-bg);
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--color-border-primary);
+  border: 1px solid var(--chrono-border);
 }
 
 .timelineDemandBarFill {
@@ -242,7 +288,7 @@ html[data-theme='light'] .container {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 3px solid var(--color-background-primary);
+  border: 3px solid var(--chrono-bg-card);
   z-index: 10;
 }
 
@@ -260,17 +306,19 @@ html[data-theme='light'] .container {
 
 .blackstartCard {
   padding: 20px;
-  background: var(--color-background-secondary);
-  border: 1px solid var(--color-border-primary);
+  background: var(--chrono-bg-card);
+  border: 1px solid var(--chrono-border);
   border-left-width: 5px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  box-shadow: var(--chrono-shadow);
+  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
   cursor: pointer;
 }
 
 .blackstartCard:hover {
   transform: scale(1.02);
+  background: var(--chrono-bg-card-hover);
+  border-color: var(--chrono-border-strong);
 }
 
 .blackstartHeader {
@@ -279,7 +327,7 @@ html[data-theme='light'] .container {
   gap: 12px;
   padding-bottom: 16px;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--chrono-border);
 }
 
 .blackstartEmoji {
@@ -288,13 +336,14 @@ html[data-theme='light'] .container {
 
 .blackstartName {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
+  color: var(--chrono-text-primary);
 }
 
 .blackstartFlag {
   font-size: 9px;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   font-family: monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -316,31 +365,31 @@ html[data-theme='light'] .container {
 .blackstartItemLabel {
   font-size: 9px;
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   letter-spacing: 0.08em;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .blackstartItemValue {
   font-size: 12px;
-  color: var(--color-text-secondary);
+  color: var(--chrono-text-secondary);
   line-height: 1.4;
 }
 
 .blackstartDetail {
-  background: rgba(128, 128, 128, 0.05);
+  background: var(--chrono-bg-detail);
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid var(--color-border-primary);
+  border: 1px solid var(--chrono-border);
   margin-top: 8px;
 }
 
 .footer {
-  border-top: 1px solid var(--color-border-primary);
+  border-top: 1px solid var(--chrono-border);
   padding-top: 24px;
   text-align: center;
   font-size: 9px;
-  color: var(--color-text-tertiary);
+  color: var(--chrono-text-tertiary);
   font-family: monospace;
   letter-spacing: 0.05em;
 }
