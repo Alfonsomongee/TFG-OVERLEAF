@@ -76,9 +76,8 @@ function ExpandButton({ expanded,  onClick,  level}) {
         marginTop: '0.4rem',
         padding: '0.2rem 0.6rem',
         background: 'transparent',
-        border: 'none',
         borderRadius: 4,
-        color:  level === 2 ? '#636E4F' : '#8B2635',
+        color: level === 2 ? 'var(--fr-level2)' : 'var(--fr-level3)',
         cursor: 'pointer',
         fontFamily: 'monospace',
         fontSize: 11,
@@ -94,8 +93,8 @@ function ExpandButton({ expanded,  onClick,  level}) {
 // ─── Panel revelado ───────────────────────────────────────────────────────────
 function RevealPanel({ children, level, id }) {
   const colors = {
-    2: { left: '#636E4F' },
-    3: { left: '#8B2635' },
+    2: { left: 'var(--fr-level2)' },
+    3: { left: 'var(--fr-level3)' },
   };
   const c = colors[level];
 
@@ -106,13 +105,13 @@ function RevealPanel({ children, level, id }) {
       style={{
         marginTop: '0.6rem',
         padding: '0.75rem 1rem',
-        background: 'transparent',
-        border: 'none',
+        background: 'var(--fr-panel-bg)',
+        border: '1px solid var(--fr-panel-border-soft)',
         borderLeft: `3px solid ${c.left}`,
         borderRadius: '0 6px 6px 0',
         fontSize: '0.9rem',
         lineHeight: 1.7,
-        color: 'var(--text-1, #e2e8f0)',
+        color: 'var(--fr-text)',
         animation: 'forensicReveal 0.2s ease',
       }}
     >
@@ -135,9 +134,9 @@ function LevelBadge({ level}) {
   const lang = useDocLang();
   const isEs = lang === 'es';
   const badges = {
-    1: { label: isEs ? 'Síntesis'  : 'Summary',   color: '#636E4F' },
-    2: { label: isEs ? 'Técnico'   : 'Technical',  color: '#636E4F' },
-    3: { label: isEs ? 'Pericial'  : 'Expert',     color: '#8B2635' },
+    1: { label: isEs ? 'Síntesis' : 'Summary', color: 'var(--fr-level1)' },
+    2: { label: isEs ? 'Técnico' : 'Technical', color: 'var(--fr-level2)' },
+    3: { label: isEs ? 'Pericial' : 'Expert', color: 'var(--fr-level3)' },
   };
   const b = badges[level];
   return (
@@ -151,9 +150,9 @@ function LevelBadge({ level}) {
       fontWeight: 700,
       letterSpacing: '0.08em',
       textTransform: 'uppercase',
-      background: `${b.color}18`,
+      background: 'var(--fr-badge-bg)',
       color: b.color,
-      border: `1px solid ${b.color}40`,
+      border: '1px solid var(--fr-badge-border)',
       verticalAlign: 'middle',
     }}>
       {b.label}
@@ -188,7 +187,7 @@ export default function ForensicReveal({
       {/* L1 — siempre visible */}
       <div>
         <LevelBadge level={1} />
-        <span style={{ fontSize: '1rem', lineHeight: 1.65, color: 'var(--text-0, #f1f5f9)' }}>
+        <span style={{ fontSize: '1rem', lineHeight: 1.65, color: 'var(--fr-text)' }}>
           {l1}
         </span>
       </div>
@@ -234,7 +233,7 @@ export default function ForensicReveal({
         <div style={{
           marginTop: '0.6rem',
           fontSize: 10,
-          color: 'var(--text-1, #475569)',
+          color: 'var(--fr-text-muted)',
           fontFamily: 'monospace',
           fontStyle: 'italic',
         }}>

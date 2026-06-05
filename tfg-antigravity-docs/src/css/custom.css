@@ -318,6 +318,32 @@ div[class*='tableContainer'] {
   overflow-x: auto;
 }
 
+/* ── Global Markdown / Forensic Tables ─────────────────────────────── */
+:root,
+html[data-theme='light'] {
+  --table-text-head: #3C3830;
+  --table-text-body: #191814;
+  --table-text-muted: #6B6255;
+
+  --table-border-head: rgba(25, 24, 20, 0.18);
+  --table-border-row: rgba(25, 24, 20, 0.075);
+  --table-hover-bg: rgba(25, 24, 20, 0.035);
+
+  --table-accent: #1F6F78;
+}
+
+html[data-theme='dark'] {
+  --table-text-head: #C7D2E3;
+  --table-text-body: #F4F7FB;
+  --table-text-muted: #91A4BC;
+
+  --table-border-head: rgba(244, 247, 251, 0.16);
+  --table-border-row: rgba(244, 247, 251, 0.055);
+  --table-hover-bg: rgba(244, 247, 251, 0.035);
+
+  --table-accent: #7DCDE3;
+}
+
 /* ── The actual <table> element ─────────────────────────────── */
 .telemetry-table-container table,
 .forensic-table table,
@@ -329,11 +355,11 @@ article table {
   margin: 0 !important;
   border-collapse: collapse !important;
   border-spacing: 0 !important;
-  background: transparent !important;   /* no alien amber tint */
+  background: transparent !important;
   box-shadow: none !important;
   font-family: var(--font-body) !important;
   font-size: 0.9rem;
-  position: static !important;          /* disable relative positioning for scanline */
+  position: static !important;
 }
 
 /* Kill the scanline ::before pseudo-element — it adds visual noise */
@@ -349,27 +375,21 @@ table.forensic-table::before,
 .forensic-table th,
 table.forensic-table th,
 .markdown th,
+.theme-doc-markdown th,
 article th {
   font-family: var(--font-body) !important;
   font-size: 0.73rem !important;
   font-weight: 700 !important;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--text-2) !important;
+  color: var(--table-text-head) !important;
   background: transparent !important;
   padding: 0.55rem 0.85rem !important;
   border: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-bottom: 1px solid var(--table-border-head) !important;
   text-align: left;
   position: static !important;
   z-index: auto !important;
-}
-
-html[data-theme='light'] .telemetry-table-container th,
-html[data-theme='light'] .forensic-table th,
-html[data-theme='light'] article th {
-  color: var(--text-0) !important;
-  border-bottom-color: rgba(0, 0, 0, 0.14) !important;
 }
 
 /* ── Body cells ─────────────────────────────────────────────── */
@@ -377,34 +397,50 @@ html[data-theme='light'] article th {
 .forensic-table td,
 table.forensic-table td,
 .markdown td,
+.theme-doc-markdown td,
 article td {
   font-family: var(--font-body) !important;
   font-size: 0.88rem !important;
-  color: var(--text-1) !important;
+  color: var(--table-text-body) !important;
   padding: 0.5rem 0.85rem !important;
   background: transparent !important;
   border: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid var(--table-border-row) !important;
   border-right: none !important;
   font-variant-numeric: tabular-nums;
   position: static !important;
   z-index: auto !important;
 }
 
-html[data-theme='light'] .telemetry-table-container td,
-html[data-theme='light'] .forensic-table td,
-html[data-theme='light'] article td {
-  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+/* ── Muted table text helpers ───────────────────────────────── */
+.telemetry-table-container td small,
+.forensic-table td small,
+table.forensic-table td small,
+.markdown td small,
+.theme-doc-markdown td small,
+article td small {
+  color: var(--table-text-muted) !important;
 }
 
-/* Hover — barely-there, keeps the table legible without "widget" feel */
+/* ── Hover — subtle, readable, non-widget feel ───────────────── */
 .telemetry-table-container tr:hover td,
 .forensic-table tr:hover td,
+table.forensic-table tr:hover td,
+.markdown tr:hover td,
+.theme-doc-markdown tr:hover td,
 article tr:hover td {
-  background: rgba(255, 255, 255, 0.025) !important;
+  background: var(--table-hover-bg) !important;
 }
-html[data-theme='light'] article tr:hover td {
-  background: rgba(0, 0, 0, 0.025) !important;
+
+/* ── Links inside tables ────────────────────────────────────── */
+.telemetry-table-container td a,
+.forensic-table td a,
+table.forensic-table td a,
+.markdown td a,
+.theme-doc-markdown td a,
+article td a {
+  color: var(--table-accent) !important;
+  text-decoration-color: color-mix(in srgb, var(--table-accent) 45%, transparent);
 }
 
 /* ── Semantic row states (incident timeline tables) ─────────── */
@@ -2443,16 +2479,134 @@ html[data-theme='light'] details {
   color: #1a1a1a !important;
 }
 
-/* 2. Glitch Animation en Verde Barra Lateral (#636E4F) */
-html[data-theme='light'] [class*="glitch"].run::before,
-html[data-theme='light'] [class*="glitch"].run::after {
-  color: #636E4F !important;
-  text-shadow: 1px 0 #636E4F !important;
-  mix-blend-mode: normal !important; /* Screen no funciona bien en fondos claros */
+/* ============================================================
+   FORENSIC REVEAL TOKENS
+   ============================================================ */
+:root,
+html[data-theme='light'] {
+  --fr-level1: #636E4F;
+  --fr-level2: #1F6F78;
+  --fr-level3: #8B2635;
+
+  --fr-text: #3C3830;
+  --fr-text-muted: #6B6255;
+
+  --fr-panel-bg: rgba(255, 252, 245, 0.58);
+  --fr-panel-border-soft: rgba(25, 24, 20, 0.12);
+
+  --fr-badge-bg: rgba(255, 252, 245, 0.78);
+  --fr-badge-border: rgba(25, 24, 20, 0.14);
 }
-html[data-theme='light'] [class*="glitch"].run::after {
-  text-shadow: -1px 0 #636E4F !important;
+
+html[data-theme='dark'] {
+  --fr-level1: #A6C67B;
+  --fr-level2: #7DCDE3;
+  --fr-level3: #D98798;
+
+  --fr-text: #C7D2E3;
+  --fr-text-muted: #91A4BC;
+
+  --fr-panel-bg: rgba(16, 29, 53, 0.56);
+  --fr-panel-border-soft: rgba(226, 232, 240, 0.14);
+
+  --fr-badge-bg: rgba(16, 29, 53, 0.72);
+  --fr-badge-border: rgba(226, 232, 240, 0.14);
 }
+
+/* ============================================================
+   CHAT FULLSCREEN TOKENS
+   ============================================================ */
+
+:root,
+html[data-theme='light'] {
+  /* Fondo general del chat en pantalla completa */
+  --cfs-bg: rgba(255, 252, 245, 0.98);
+
+  /* Contenedor inferior de pestañas e input */
+  --cfs-surface-bg: rgba(255, 252, 245, 1);
+
+  /* Bordes y separadores */
+  --cfs-border-soft: rgba(25, 24, 20, 0.08);
+  --cfs-border: rgba(25, 24, 20, 0.16);
+
+  /* Jerarquía de textos */
+  --cfs-text-1: #191814;
+  --cfs-text-2: #4A4338;
+  --cfs-text-3: #7A7062;
+
+  /* Acentos principales */
+  --cfs-accent: #1F6F78;
+  --cfs-accent-soft: rgba(31, 111, 120, 0.10);
+  --cfs-accent-border: rgba(31, 111, 120, 0.34);
+  --cfs-accent-text: #FFFCF5;
+
+  /* Burbujas de mensaje */
+  --cfs-user-msg-bg: rgba(31, 111, 120, 0.09);
+  --cfs-user-msg-text: #191814;
+  --cfs-bot-msg-bg: rgba(25, 24, 20, 0.045);
+  --cfs-bot-msg-text: #191814;
+
+  /* Acento forense / tablas / evidencias */
+  --cfs-amber: #A96000;
+  --cfs-amber-soft: rgba(169, 96, 0, 0.10);
+  --cfs-amber-border: rgba(169, 96, 0, 0.30);
+
+  /* Estados */
+  --cfs-danger: #A13D36;
+  --cfs-danger-soft: rgba(161, 61, 54, 0.08);
+  --cfs-success: #2F6B4F;
+  --cfs-success-soft: rgba(47, 107, 79, 0.09);
+
+  /* Sombras */
+  --cfs-shadow-panel: 0 18px 48px rgba(25, 24, 20, 0.14);
+  --cfs-shadow-soft: 0 8px 24px rgba(25, 24, 20, 0.08);
+}
+
+html[data-theme='dark'] {
+  /* Fondo general del chat en pantalla completa */
+  --cfs-bg: rgba(16, 29, 53, 0.98);
+
+  /* Contenedor inferior de pestañas e input */
+  --cfs-surface-bg: rgba(16, 29, 53, 1);
+
+  /* Bordes y separadores */
+  --cfs-border-soft: rgba(226, 232, 240, 0.08);
+  --cfs-border: rgba(226, 232, 240, 0.16);
+
+  /* Jerarquía de textos */
+  --cfs-text-1: #F4F7FB;
+  --cfs-text-2: #C7D2E3;
+  --cfs-text-3: #91A4BC;
+
+  /* Acentos principales */
+  --cfs-accent: #7DCDE3;
+  --cfs-accent-soft: rgba(125, 205, 227, 0.12);
+  --cfs-accent-border: rgba(125, 205, 227, 0.42);
+  --cfs-accent-text: #071326;
+
+  /* Burbujas de mensaje */
+  --cfs-user-msg-bg: rgba(125, 205, 227, 0.13);
+  --cfs-user-msg-text: #F4F7FB;
+  --cfs-bot-msg-bg: rgba(226, 232, 240, 0.055);
+  --cfs-bot-msg-text: #F4F7FB;
+
+  /* Acento forense / tablas / evidencias */
+  --cfs-amber: #E6B45C;
+  --cfs-amber-soft: rgba(230, 180, 92, 0.11);
+  --cfs-amber-border: rgba(230, 180, 92, 0.34);
+
+  /* Estados */
+  --cfs-danger: #D98798;
+  --cfs-danger-soft: rgba(217, 135, 152, 0.10);
+  --cfs-success: #A6C67B;
+  --cfs-success-soft: rgba(166, 198, 123, 0.10);
+
+  /* Sombras */
+  --cfs-shadow-panel: 0 20px 56px rgba(0, 0, 0, 0.48);
+  --cfs-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+
 
 
 /* ============================================================
@@ -2599,50 +2753,108 @@ h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
 /* ============================================================
    COLLAPSIBLE SIMULATOR COMPONENT (A8)
    ============================================================ */
-.collapsible > summary {
-  cursor: pointer; 
-  user-select: none;
-  padding: 0.75rem 1rem;
-  background: rgba(255,165,0,0.06);
-  border: 1px solid rgba(255,165,0,0.2);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: var(--text-1);
-  list-style: none;
-  display: flex; 
-  align-items: center; 
-  gap: 0.5rem;
-  outline: none;
+:root,
+html[data-theme='light'] {
+  --collapsible-bg: rgba(255, 252, 245, 0.76);
+  --collapsible-bg-hover: rgba(255, 252, 245, 0.94);
+  --collapsible-bg-open: rgba(31, 111, 120, 0.08);
+
+  --collapsible-border: rgba(169, 96, 0, 0.28);
+  --collapsible-border-hover: rgba(31, 111, 120, 0.34);
+  --collapsible-border-open: rgba(31, 111, 120, 0.38);
+
+  --collapsible-text: #4A4338;
+  --collapsible-text-open: #191814;
+  --collapsible-accent: #1F6F78;
+
+  --collapsible-shadow: 0 8px 22px rgba(25, 24, 20, 0.045);
 }
 
-  /* Ocultar triángulo nativo en todos los navegadores */
-  details > summary {
-    list-style: none;
-  }
-  details > summary::-webkit-details-marker {
-    display: none;
-  }
+html[data-theme='dark'] {
+  --collapsible-bg: rgba(16, 29, 53, 0.58);
+  --collapsible-bg-hover: rgba(23, 39, 68, 0.78);
+  --collapsible-bg-open: rgba(125, 205, 227, 0.10);
 
-  /* Transición suave del contenido */
-  details[open] > summary {
-    margin-bottom: 0.75rem;
-  }
+  --collapsible-border: rgba(230, 180, 92, 0.30);
+  --collapsible-border-hover: rgba(125, 205, 227, 0.38);
+  --collapsible-border-open: rgba(125, 205, 227, 0.44);
 
-  /* Modo claro: asegurar que el ▶ del label sea visible */
-  html[data-theme='light'] details > summary {
-    color: var(--text-1);
-    opacity: 1;
-  }
+  --collapsible-text: #C7D2E3;
+  --collapsible-text-open: #F4F7FB;
+  --collapsible-accent: #7DCDE3;
 
-  html[data-theme='light'] details[open] > summary {
-    color: var(--text-0);
-  }
+  --collapsible-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+.collapsible > summary {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.75rem 1rem;
+  background: var(--collapsible-bg);
+  border: 1px solid var(--collapsible-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--collapsible-text);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  outline: none;
+  box-shadow: var(--collapsible-shadow);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.collapsible > summary:hover {
+  background: var(--collapsible-bg-hover);
+  border-color: var(--collapsible-border-hover);
+  color: var(--collapsible-text-open);
+}
+
+.collapsible > summary:focus-visible {
+  outline: 2px solid var(--collapsible-accent);
+  outline-offset: 3px;
+}
+
+/* Ocultar triángulo nativo en todos los navegadores */
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Transición suave del contenido */
+details[open] > summary {
+  margin-bottom: 0.75rem;
+}
+
+.collapsible[open] > summary {
+  background: var(--collapsible-bg-open);
+  border-color: var(--collapsible-border-open);
+  color: var(--collapsible-text-open);
+}
+
+/* Modo claro: asegurar que el label sea visible */
+html[data-theme='light'] details > summary {
+  color: var(--collapsible-text);
+  opacity: 1;
+}
+
+html[data-theme='light'] details[open] > summary {
+  color: var(--collapsible-text-open);
+}
 
 .collapsible > summary::-webkit-details-marker {
   display: none;
 }
-.collapsibleBody { 
-  margin-top: 1rem; 
+
+.collapsibleBody {
+  margin-top: 1rem;
 }
 
 /* Footer text color in light mode: PANTONE 19-0840 TCX */

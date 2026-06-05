@@ -320,18 +320,18 @@ const SUGGESTED_QUESTIONS = {
 function VisualArtifactCard({ artifact }) {
   if (artifact.type === 'table') {
     return (
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
-        <div style={{ fontSize: 10, color: 'var(--chart-amber, hsl(38 100% 56%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
+        <div style={{ fontSize: 10, color: 'var(--cfs-amber)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
-        {artifact.origin && <div style={{ fontSize: 11, color: 'var(--chart-text-3, #64748b)', marginBottom: 8 }}>{artifact.origin}</div>}
-        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        {artifact.origin && <div style={{ fontSize: 11, color: 'var(--cfs-text-3)', marginBottom: 8 }}>{artifact.origin}</div>}
+        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
         {artifact.sampleRows && artifact.sampleRows.length > 0 && artifact.columns && (
           <div style={{ overflowX: 'auto', marginTop: 12 }}>
             <table style={{
               width: '100%',
               borderCollapse: 'collapse',
               fontSize: 11,
-              color: 'var(--chart-text-2, #94a3b8)',
+              color: 'var(--cfs-text-2)',
             }}>
               <thead>
                 <tr>
@@ -339,8 +339,8 @@ function VisualArtifactCard({ artifact }) {
                     <th key={col.key} style={{
                       padding: '6px 10px',
                       textAlign: 'left',
-                      borderBottom: '1px solid var(--chart-amber, hsl(38 100% 56%))',
-                      color: 'var(--chart-amber, hsl(38 100% 56%))',
+                      borderBottom: '1px solid var(--cfs-amber)',
+                      color: 'var(--cfs-amber)',
                       fontWeight: 700,
                       fontSize: 10,
                       letterSpacing: '0.06em',
@@ -355,7 +355,7 @@ function VisualArtifactCard({ artifact }) {
               <tbody>
                 {artifact.sampleRows.map((row, i) => (
                   <tr key={i} style={{
-                    borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                    borderBottom: '1px solid var(--cfs-border-soft)',
                     backgroundColor: i % 2 === 0
                       ? 'rgba(255,255,255,0.02)'
                       : 'transparent',
@@ -375,27 +375,27 @@ function VisualArtifactCard({ artifact }) {
             </table>
           </div>
         )}
-        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--chart-amber, hsl(38 100% 56%))', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>
+        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--cfs-amber)', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>
       </div>
     );
   }
   if (artifact.type === 'image') {
     return (
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
         <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Gráfica de Datos Reales</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
-        {artifact.path && <img src={artifact.path} alt={artifact.title} style={{ width: '100%', borderRadius: 8, margin: '12px 0', border: '1px solid var(--chart-border, rgba(255,255,255,0.08))' }} />}
-        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        {artifact.path && <img src={artifact.path} alt={artifact.title} style={{ width: '100%', borderRadius: 8, margin: '12px 0', border: '1px solid var(--cfs-border-soft)' }} />}
+        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
         <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--accent-electric, hsl(200 100% 60%))', textDecoration: 'none', fontWeight: 600 }}>Ver figura en contexto ↗</a>
       </div>
     );
   }
   if (artifact.type === 'interactive') {
     return (
-      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))', color: 'var(--chart-text-1)' }}>
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
         <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Interactivo</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
-        <p style={{ fontSize: 13, color: 'var(--chart-text-2, #94a3b8)', lineHeight: 1.5 }}>{artifact.description}</p>
+        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
         <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>Abrir simulador ↗</a>
       </div>
     );
@@ -767,7 +767,7 @@ export default function ChatFullscreen({
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           height: '100%', gap: 16,
-          color: 'var(--chart-text-3, #64748b)', textAlign: 'center',
+          color: 'var(--cfs-text-3)', textAlign: 'center',
         }}>
           <svg width="52" height="52" viewBox="0 0 28 28" fill="none" opacity="0.25">
             <polygon points="15,4 9,15 14,15 11,26 21,13 15,13" fill="currentColor"/>
@@ -887,7 +887,7 @@ export default function ChatFullscreen({
           {label && (
             <div style={{
               padding: '14px 24px',
-              borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              borderBottom: '1px solid var(--cfs-border-soft)',
               backgroundColor: 'hsla(190,100%,60%,0.04)',
               flexShrink: 0,
             }}>
@@ -906,7 +906,7 @@ export default function ChatFullscreen({
               </div>
               <p style={{
                 fontSize: 13,
-                color: 'var(--chart-text-1, #e2e8f0)',
+                color: 'var(--cfs-text-1)',
                 lineHeight: 1.6,
                 margin: 0,
               }}>
@@ -917,7 +917,7 @@ export default function ChatFullscreen({
           <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
             <ColorModeProvider>
               <Suspense fallback={
-                <div style={{ textAlign: 'center', padding: 40, color: 'var(--chart-text-2)' }}>
+                <div style={{ textAlign: 'center', padding: 40, color: 'var(--cfs-text-2)' }}>
                   ⟳ {ui.loading}
                 </div>
               }>
@@ -987,7 +987,7 @@ export default function ChatFullscreen({
             </div>
             <p style={{
               fontSize: 13,
-              color: 'var(--chart-text-1, #e2e8f0)',
+              color: 'var(--cfs-text-1)',
               lineHeight: 1.7,
               margin: 0,
             }}>
@@ -1020,14 +1020,14 @@ export default function ChatFullscreen({
             <div style={{
               marginTop: 16,
               padding: '20px 24px',
-              border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              border: '1px solid var(--cfs-border-soft)',
               borderRadius: 10,
               textAlign: 'center',
               backgroundColor: 'hsla(220,40%,6%,0.6)',
             }}>
               <div style={{
                 fontSize: 11,
-                color: 'var(--chart-text-2, #94a3b8)',
+                color: 'var(--cfs-text-2)',
                 marginBottom: 12,
                 lineHeight: 1.6,
               }}>
@@ -1045,8 +1045,8 @@ export default function ChatFullscreen({
                   gap: 8,
                   padding: '10px 20px',
                   borderRadius: 8,
-                  backgroundColor: 'var(--ifm-color-primary)',
-                  color: 'var(--ifm-background-color)',
+                  backgroundColor: 'var(--cfs-accent)',
+                  color: 'var(--cfs-accent-text)',
                   textDecoration: 'none',
                   fontWeight: 700,
                   fontSize: 12,
@@ -1064,7 +1064,7 @@ export default function ChatFullscreen({
                 width: '100%',
                 maxWidth: 860,
                 borderRadius: 8,
-                border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+                border: '1px solid var(--cfs-border-soft)',
                 display: 'block',
                 margin: '0 auto',
                 boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
@@ -1077,7 +1077,7 @@ export default function ChatFullscreen({
             <p style={{
               marginTop: 12,
               fontSize: 11,
-              color: 'var(--chart-text-3, #64748b)',
+              color: 'var(--cfs-text-3)',
               textAlign: 'center',
               fontStyle: 'italic',
               lineHeight: 1.5,
@@ -1099,20 +1099,20 @@ export default function ChatFullscreen({
           <div style={{
             marginBottom: 16,
             padding: '14px 16px',
-            borderLeft: '3px solid var(--chart-amber, hsl(38 100% 56%))',
+            borderLeft: '3px solid var(--cfs-amber)',
             backgroundColor: 'hsla(38,100%,56%,0.05)',
             borderRadius: '0 8px 8px 0',
           }}>
             <div style={{
               fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
-              color: 'var(--chart-amber, hsl(38 100% 56%))',
+              color: 'var(--cfs-amber)',
               marginBottom: 6, textTransform: 'uppercase',
             }}>◈ TABLA FORENSE</div>
-            <p style={{ fontSize: 13, color: 'var(--chart-text-1, #e2e8f0)', lineHeight: 1.7, margin: 0 }}>
+            <p style={{ fontSize: 13, color: 'var(--cfs-text-1)', lineHeight: 1.7, margin: 0 }}>
               {table.description || table.title}
             </p>
             {table.origin && (
-              <div style={{ fontSize: 11, color: 'var(--chart-text-3, #64748b)', marginTop: 6 }}>
+              <div style={{ fontSize: 11, color: 'var(--cfs-text-3)', marginTop: 6 }}>
                 Fuente: {table.origin}
               </div>
             )}
@@ -1125,8 +1125,8 @@ export default function ChatFullscreen({
                     {table.columns.map(col => (
                       <th key={col.key} style={{
                         padding: '8px 12px', textAlign: 'left',
-                        borderBottom: '1px solid var(--chart-amber, hsl(38 100% 56%))',
-                        color: 'var(--chart-amber, hsl(38 100% 56%))',
+                        borderBottom: '1px solid var(--cfs-amber)',
+                        color: 'var(--cfs-amber)',
                         fontWeight: 700, fontSize: 10,
                         letterSpacing: '0.06em', textTransform: 'uppercase',
                         whiteSpace: 'nowrap',
@@ -1137,7 +1137,7 @@ export default function ChatFullscreen({
                 <tbody>
                   {table.sampleRows.map((row, i) => (
                     <tr key={i} style={{
-                      borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                      borderBottom: '1px solid var(--cfs-border-soft)',
                       backgroundColor: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
                     }}>
                       {table.columns.map(col => (
@@ -1154,7 +1154,7 @@ export default function ChatFullscreen({
           {table.url && (
             <a href={table.url} target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-block', marginTop: 16, fontSize: 12,
-                color: 'var(--chart-amber, hsl(38 100% 56%))',
+                color: 'var(--cfs-amber)',
                 textDecoration: 'none', fontWeight: 600 }}>
               Ver tabla completa ↗
             </a>
@@ -1169,7 +1169,7 @@ export default function ChatFullscreen({
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 99999,
-      backgroundColor: 'var(--ifm-background-color)',
+      backgroundColor: 'var(--cfs-accent-text)',
       display: 'flex', flexDirection: 'column',
       animation: 'fadeInUp 0.2s ease',
     }}>
@@ -1178,8 +1178,8 @@ export default function ChatFullscreen({
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
         padding: '10px 20px',
-        borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
-        backgroundColor: 'var(--chart-bg, rgba(10,15,30,0.97))',
+        borderBottom: '1px solid var(--cfs-border-soft)',
+        backgroundColor: 'var(--cfs-bg)',
         flexShrink: 0, minHeight: 48,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -1190,14 +1190,14 @@ export default function ChatFullscreen({
           </svg>
           <span style={{
             fontWeight: 700, fontSize: 14, letterSpacing: '0.06em',
-            color: 'var(--chart-text-1, #e2e8f0)',
+            color: 'var(--cfs-text-1)',
             textTransform: 'uppercase',
           }}>
             {t.header}
           </span>
           <span style={{
             fontSize: 9,
-            color: 'var(--chart-text-3, #64748b)',
+            color: 'var(--cfs-text-3)',
             letterSpacing: '0.06em',
             display: 'flex',
             gap: 8,
@@ -1205,25 +1205,25 @@ export default function ChatFullscreen({
             marginLeft: 12,
           }}>
             <span style={{
-              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>ESC</span>
             <span style={{
-              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>⌘M</span>
             <span style={{
-              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>⌘P</span>
             <span style={{
-              border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+              border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
@@ -1238,10 +1238,10 @@ export default function ChatFullscreen({
               : (lang === 'en' ? 'Presentation mode' : lang === 'de' ? 'Präsentationsmodus' : lang === 'zh-Hans' ? '演示模式' : 'Modo presentación')
             }
             style={{
-              background: presentationMode ? 'var(--ifm-color-primary)' : 'none',
-              border: '1px solid var(--ifm-color-primary)',
+              background: presentationMode ? 'var(--cfs-accent)' : 'none',
+              border: '1px solid var(--cfs-accent)',
               borderRadius: 8,
-              color: presentationMode ? 'var(--ifm-background-color)' : 'var(--ifm-color-primary)',
+              color: presentationMode ? 'var(--cfs-accent-text)' : 'var(--cfs-accent)',
               cursor: 'pointer',
               padding: '5px 14px',
               fontSize: 10,
@@ -1252,14 +1252,14 @@ export default function ChatFullscreen({
             }}
             onMouseEnter={e => {
               if (!presentationMode) {
-                e.currentTarget.style.background = 'var(--ifm-color-primary)';
-                e.currentTarget.style.color = 'var(--ifm-background-color)';
+                e.currentTarget.style.background = 'var(--cfs-accent)';
+                e.currentTarget.style.color = 'var(--cfs-accent-text)';
               }
             }}
             onMouseLeave={e => {
               if (!presentationMode) {
                 e.currentTarget.style.background = 'none';
-                e.currentTarget.style.color = 'var(--ifm-color-primary)';
+                e.currentTarget.style.color = 'var(--cfs-accent)';
               }
             }}
           >
@@ -1272,9 +1272,9 @@ export default function ChatFullscreen({
             onClick={onClose}
             style={{
               background: 'none',
-              border: '1px solid var(--ifm-color-primary)',
+              border: '1px solid var(--cfs-accent)',
               borderRadius: 8,
-              color: 'var(--ifm-color-primary)',
+              color: 'var(--cfs-accent)',
               cursor: 'pointer',
               padding: '5px 14px',
               fontSize: 10,
@@ -1283,12 +1283,12 @@ export default function ChatFullscreen({
               transition: 'all 0.15s ease',
             }}
             onMouseEnter={e => {
-              e.currentTarget.style.background = 'var(--ifm-color-primary)';
-              e.currentTarget.style.color = 'var(--ifm-background-color)';
+              e.currentTarget.style.background = 'var(--cfs-accent)';
+              e.currentTarget.style.color = 'var(--cfs-accent-text)';
             }}
             onMouseLeave={e => {
               e.currentTarget.style.background = 'none';
-              e.currentTarget.style.color = 'var(--ifm-color-primary)';
+              e.currentTarget.style.color = 'var(--cfs-accent)';
             }}
           >
             {ui.exit.toUpperCase()} ×
@@ -1309,12 +1309,12 @@ export default function ChatFullscreen({
         {/* ── LEFT: CHAT ── */}
         <div style={{
           display: 'flex', flexDirection: 'column',
-          borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+          borderRight: '1px solid var(--cfs-border-soft)',
           overflow: presentationMode ? 'hidden' : 'hidden',
           opacity: presentationMode ? 0 : 1,
           transition: 'opacity 0.3s ease',
           pointerEvents: presentationMode ? 'none' : 'auto',
-          backgroundColor: 'var(--chat-bg, rgba(10,15,30,0.97))',
+          backgroundColor: 'var(--cfs-bg)',
         }}>
           {/* Messages */}
           <div style={{
@@ -1330,11 +1330,11 @@ export default function ChatFullscreen({
               }}>
                 <div style={{
                   backgroundColor: m.role === 'user'
-                    ? 'var(--chat-user-msg-bg)'
-                    : 'var(--chat-assistant-msg-bg)',
+                    ? 'var(--cfs-user-msg-bg)'
+                    : 'var(--cfs-bot-msg-bg)',
                   color: m.role === 'user'
-                    ? 'var(--chat-user-msg-text)'
-                    : 'var(--chat-assistant-msg-text)',
+                    ? 'var(--cfs-user-msg-text)'
+                    : 'var(--cfs-bot-msg-text)',
                   padding: '10px 14px', borderRadius: 14,
                   fontSize: 13, lineHeight: 1.6,
                   whiteSpace: 'pre-wrap', wordBreak: 'break-word',
@@ -1351,8 +1351,8 @@ export default function ChatFullscreen({
                         }}
                         style={{
                           background: 'none',
-                          border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-                          borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                          border: '1px solid var(--cfs-border)',
+                          borderRadius: 8, color: 'var(--cfs-text-3)',
                           fontSize: 11, padding: '3px 8px',
                           cursor: 'pointer', transition: 'all 0.15s ease',
                         }}
@@ -1361,8 +1361,8 @@ export default function ChatFullscreen({
                           e.target.style.color = 'var(--accent-electric)';
                         }}
                         onMouseLeave={e => {
-                          e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                          e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                          e.target.style.borderColor = 'var(--cfs-border)';
+                          e.target.style.color = 'var(--cfs-text-3)';
                         }}
                       >
                         {ui.simplify}
@@ -1394,8 +1394,8 @@ export default function ChatFullscreen({
                           }}
                           style={{
                             background: 'none',
-                            border: '1px solid var(--chart-border, rgba(255,255,255,0.12))',
-                            borderRadius: 8, color: 'var(--ifm-color-primary, #64748b)',
+                            border: '1px solid var(--cfs-border)',
+                            borderRadius: 8, color: 'var(--cfs-text-3)',
                             fontSize: 11, padding: '3px 8px',
                             cursor: 'pointer', transition: 'all 0.15s ease',
                           }}
@@ -1404,8 +1404,8 @@ export default function ChatFullscreen({
                             e.target.style.color = 'var(--accent-electric)';
                           }}
                           onMouseLeave={e => {
-                            e.target.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.12))';
-                            e.target.style.color = 'var(--ifm-color-primary, #64748b)';
+                            e.target.style.borderColor = 'var(--cfs-border)';
+                            e.target.style.color = 'var(--cfs-text-3)';
                           }}
                         >
                           {lang === 'en' ? 'VIEW ASSOCIATED MEDIA' : lang === 'zh-Hans' ? '查看相关媒体' : lang === 'de' ? 'ZUGEHÖRIGE MEDIEN ANZEIGEN' : 'VER GRÁFICAS ASOCIADAS'}
@@ -1417,7 +1417,7 @@ export default function ChatFullscreen({
               </div>
             ))}
             {loading && (
-              <div style={{ color: '#94a3b8', fontSize: 12, fontStyle: 'italic' }}>
+              <div style={{ color: 'var(--cfs-text-3)', fontSize: 12, fontStyle: 'italic' }}>
                 {loadingStage === 'searching'
                   ? ui.searching
                   : loadingStage === 'synthesizing'
@@ -1435,18 +1435,18 @@ export default function ChatFullscreen({
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              color: 'var(--ifm-color-primary)',
+              color: 'var(--cfs-accent)',
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: '0.08em',
-              borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+              borderTop: '1px solid var(--cfs-border-soft)',
               animation: 'fadeInUp 0.2s ease',
             }}>
               <div style={{
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
-                backgroundColor: 'var(--ifm-color-primary)',
+                backgroundColor: 'var(--cfs-accent)',
                 animation: 'neonPulseChat 0.8s ease infinite',
                 flexShrink: 0,
               }}/>
@@ -1466,7 +1466,7 @@ export default function ChatFullscreen({
             return (
               <div style={{
                 padding: '8px 14px',
-                borderTop: '1px solid var(--chart-border, rgba(255,255,255,0.06))',
+                borderTop: '1px solid var(--cfs-border-soft)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 4,
@@ -1479,9 +1479,9 @@ export default function ChatFullscreen({
                     }}
                     style={{
                       background: 'none',
-                      border: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+                      border: '1px solid var(--cfs-border-soft)',
                       borderRadius: 8,
-                      color: 'var(--chart-text-2, #94a3b8)',
+                      color: 'var(--cfs-text-2)',
                       cursor: 'pointer',
                       padding: '5px 10px',
                       fontSize: 11,
@@ -1490,13 +1490,13 @@ export default function ChatFullscreen({
                       lineHeight: 1.4,
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = 'var(--ifm-color-primary)';
-                      e.currentTarget.style.color = 'var(--ifm-color-primary)';
+                      e.currentTarget.style.borderColor = 'var(--cfs-accent)';
+                      e.currentTarget.style.color = 'var(--cfs-accent)';
                       e.currentTarget.style.background = 'rgba(139,38,53,0.04)';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = 'var(--chart-border, rgba(255,255,255,0.08))';
-                      e.currentTarget.style.color = 'var(--chart-text-2, #94a3b8)';
+                      e.currentTarget.style.borderColor = 'var(--cfs-border-soft)';
+                      e.currentTarget.style.color = 'var(--cfs-text-2)';
                       e.currentTarget.style.background = 'none';
                     }}
                   >
@@ -1510,7 +1510,7 @@ export default function ChatFullscreen({
           {/* Input */}
           <div style={{
             padding: '12px 14px',
-            borderTop: '1px solid var(--chat-border)',
+            borderTop: '1px solid var(--cfs-border)',
             display: 'flex', gap: 8, flexShrink: 0,
           }}>
             <input
@@ -1527,9 +1527,9 @@ export default function ChatFullscreen({
               placeholder={t.placeholder}
               style={{
                 flex: 1, padding: '10px 14px', borderRadius: 10,
-                border: '1px solid var(--chat-border)',
-                backgroundColor: 'var(--chat-input-bg)',
-                color: 'var(--chat-input-text)',
+                border: '1px solid var(--cfs-border)',
+                backgroundColor: 'var(--cfs-surface-bg)',
+                color: 'var(--cfs-text-1)',
                 fontSize: 13, outline: 'none',
               }}
             />
@@ -1544,14 +1544,14 @@ export default function ChatFullscreen({
                 padding: '10px 12px',
                 borderRadius: 10,
                 border: isListening
-                  ? '1px solid var(--ifm-color-primary)'
-                  : '1px solid var(--chart-border, rgba(255,255,255,0.12))',
+                  ? '1px solid var(--cfs-accent)'
+                  : '1px solid var(--cfs-border)',
                 backgroundColor: isListening
-                  ? 'var(--ifm-color-primary)'
+                  ? 'var(--cfs-accent)'
                   : 'transparent',
                 color: isListening
-                  ? 'var(--ifm-background-color)'
-                  : 'var(--chart-text-2, #94a3b8)',
+                  ? 'var(--cfs-accent-text)'
+                  : 'var(--cfs-text-2)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -1583,9 +1583,9 @@ export default function ChatFullscreen({
               style={{
                 padding: '10px 16px', borderRadius: 10,
                 backgroundColor: loading || !question.trim()
-                  ? 'var(--chat-btn-bg-disabled)'
-                  : 'var(--chat-btn-bg)',
-                color: 'var(--chat-btn-text)',
+                  ? 'var(--cfs-border)'
+                  : 'var(--cfs-accent)',
+                color: 'var(--cfs-accent-text)',
                 border: 'none',
                 cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
                 fontSize: 14, fontWeight: 600,
@@ -1605,8 +1605,8 @@ export default function ChatFullscreen({
               width: 8,
               cursor: 'col-resize',
               backgroundColor: 'transparent',
-              borderLeft: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
-              borderRight: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              borderLeft: '1px solid var(--cfs-border-soft)',
+              borderRight: '1px solid var(--cfs-border-soft)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1616,7 +1616,7 @@ export default function ChatFullscreen({
             }}
             onMouseEnter={e => {
               e.currentTarget.style.backgroundColor = 
-                'var(--ifm-color-primary)';
+                'var(--cfs-accent)';
               e.currentTarget.style.opacity = '0.3';
             }}
             onMouseLeave={e => {
@@ -1628,7 +1628,7 @@ export default function ChatFullscreen({
               width: 2,
               height: 32,
               borderRadius: 2,
-              backgroundColor: 'var(--chart-text-3, #64748b)',
+              backgroundColor: 'var(--cfs-text-3)',
               opacity: 0.4,
             }} />
           </div>
@@ -1638,15 +1638,15 @@ export default function ChatFullscreen({
         <div style={{
           display: 'flex', flexDirection: 'column',
           overflow: 'hidden',
-          backgroundColor: 'var(--ifm-background-surface-color)',
+          backgroundColor: 'var(--cfs-surface-bg)',
         }}>
           {/* Tabs */}
           {allTabs.length > 0 && (
             <div style={{
               display: 'flex', gap: 6, padding: '8px 16px',
-              borderBottom: '1px solid var(--chart-border, rgba(255,255,255,0.08))',
+              borderBottom: '1px solid var(--cfs-border-soft)',
               flexShrink: 0, overflowX: 'auto',
-              backgroundColor: 'var(--chart-bg, rgba(10,15,30,0.97))',
+              backgroundColor: 'var(--cfs-bg)',
               alignItems: 'center',
             }}>
               {allTabs.map(tab => (
@@ -1666,8 +1666,8 @@ export default function ChatFullscreen({
                     border: `1px solid ${activeTab === tab.id
                       ? (tab.type === 'interactive' ? 'var(--accent-electric)'
                         : tab.type === 'entsoe' ? 'hsl(280 100% 70%)'
-                        : 'var(--chart-amber)')
-                      : 'var(--chart-border, rgba(255,255,255,0.12))'}`,
+                        : 'var(--cfs-amber)')
+                      : 'var(--cfs-border)'}`,
                     backgroundColor: activeTab === tab.id
                       ? (tab.type === 'interactive' ? 'hsla(190,100%,60%,0.1)'
                         : tab.type === 'entsoe' ? 'hsla(280,100%,70%,0.1)'
@@ -1676,8 +1676,8 @@ export default function ChatFullscreen({
                     color: activeTab === tab.id
                       ? (tab.type === 'interactive' ? 'var(--accent-electric)'
                         : tab.type === 'entsoe' ? 'hsl(280 100% 70%)'
-                        : 'var(--chart-amber)')
-                      : 'var(--chart-text-2, #94a3b8)',
+                        : 'var(--cfs-amber)')
+                      : 'var(--cfs-text-2)',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                     textTransform: 'uppercase',

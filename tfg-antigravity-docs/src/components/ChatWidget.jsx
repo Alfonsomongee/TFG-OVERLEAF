@@ -238,10 +238,44 @@ export default function ChatWidget() {
       {/* Panel del chat */}
       <style>
         {`
-          @keyframes neonPulseChat {
-            0%, 100% { filter: drop-shadow(0 0 6px rgba(59,130,246,0.5)); }
-            50% { filter: drop-shadow(0 0 12px rgba(59,130,246,0.8)); }
+          :root,
+          html[data-theme='light'] {
+            --chat-widget-bg: rgba(255, 252, 245, 0.96);
+            --chat-widget-border: rgba(25, 24, 20, 0.16);
+            --chat-widget-header: #191814;
+            --chat-widget-text: #3C3830;
+            --chat-widget-muted: #6B6255;
+
+            --chat-widget-accent: #1F6F78;
+            --chat-widget-accent-soft: rgba(31, 111, 120, 0.10);
+            --chat-widget-accent-border: rgba(31, 111, 120, 0.36);
+            --chat-widget-accent-text: #FFFCF5;
+
+            --chat-widget-shadow: 0 14px 38px rgba(25, 24, 20, 0.14);
+            --chat-widget-badge-shadow: 0 8px 24px rgba(25, 24, 20, 0.18);
           }
+
+          html[data-theme='dark'] {
+            --chat-widget-bg: rgba(16, 29, 53, 0.96);
+            --chat-widget-border: rgba(226, 232, 240, 0.16);
+            --chat-widget-header: #F4F7FB;
+            --chat-widget-text: #C7D2E3;
+            --chat-widget-muted: #91A4BC;
+
+            --chat-widget-accent: #7DCDE3;
+            --chat-widget-accent-soft: rgba(125, 205, 227, 0.12);
+            --chat-widget-accent-border: rgba(125, 205, 227, 0.42);
+            --chat-widget-accent-text: #071326;
+
+            --chat-widget-shadow: 0 16px 44px rgba(0, 0, 0, 0.42);
+            --chat-widget-badge-shadow: 0 10px 28px rgba(0, 0, 0, 0.38);
+          }
+
+          @keyframes subtlePulseChat {
+            0%, 100% { filter: drop-shadow(0 0 4px var(--chat-widget-accent-soft)); }
+            50% { filter: drop-shadow(0 0 8px var(--chat-widget-accent-border)); }
+          }
+
           @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
@@ -251,16 +285,16 @@ export default function ChatWidget() {
       {open && (
         <div style={{
           position: 'fixed', bottom: 160, right: 24, width: 380,
-          maxHeight: 520, backgroundColor: 'var(--chat-bg)',
-          border: '1px solid var(--chat-border)', borderRadius: 16,
+          maxHeight: 520, backgroundColor: 'var(--chat-widget-bg)',
+          border: '1px solid var(--chat-widget-border)', borderRadius: 16,
           display: 'flex', flexDirection: 'column',
-          zIndex: 9999, boxShadow: '0 8px 32px rgba(0,242,254,0.15)',
+          zIndex: 9999, boxShadow: 'var(--chat-widget-shadow)', backdropFilter: 'blur(14px)',
           animation: 'fadeInUp 0.3s ease',
         }}>
           {/* Cabecera */}
           <div style={{
-            padding: '12px 16px', borderBottom: '1px solid var(--chat-border)',
-            fontWeight: 600, color: 'var(--chat-header-color)', fontSize: 15,
+            padding: '12px 16px', borderBottom: '1px solid var(--chat-widget-border)',
+            fontWeight: 600, color: 'var(--chat-widget-header)', fontSize: 15,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -268,14 +302,13 @@ export default function ChatWidget() {
             </span>
             <button
               onClick={() => setFullscreen(true)}
-              onMouseEnter={() => preloadAllSimulators()}
               title="Pantalla completa"
               aria-label="Abrir en pantalla completa"
               style={{
-                background: 'none',
-                border: '1px solid var(--ifm-color-primary)',
+                background: 'transparent',
+                border: '1px solid var(--chat-widget-accent-border)',
                 borderRadius: 7,
-                color: 'var(--ifm-color-primary)',
+                color: 'var(--chat-widget-accent)',
                 cursor: 'pointer',
                 padding: '3px 10px',
                 display: 'flex',
@@ -288,12 +321,15 @@ export default function ChatWidget() {
                 letterSpacing: '0.1em',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = 'var(--ifm-color-primary)';
-                e.currentTarget.style.color = 'var(--ifm-background-color)';
+                preloadAllSimulators();
+                e.currentTarget.style.background = 'var(--chat-widget-accent)';
+                e.currentTarget.style.color = 'var(--chat-widget-accent-text)';
+                e.currentTarget.style.borderColor = 'var(--chat-widget-accent)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = 'none';
-                e.currentTarget.style.color = 'var(--ifm-color-primary)';
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'var(--chat-widget-accent)';
+                e.currentTarget.style.borderColor = 'var(--chat-widget-accent-border)';
               }}
             >
               <svg width="11" height="11" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -336,9 +372,9 @@ export default function ChatWidget() {
                   style={{
                     alignSelf: 'flex-start',
                     background: 'none',
-                    border: '1px solid var(--ifm-color-primary)',
+                    border: '1px solid var(--chat-widget-accent-border)',
                     borderRadius: 6,
-                    color: 'var(--ifm-color-primary)',
+                    color: 'var(--chat-widget-accent)',
                     fontSize: 10,
                     fontWeight: 700,
                     letterSpacing: '0.08em',
@@ -347,12 +383,12 @@ export default function ChatWidget() {
                     transition: 'all 0.15s ease',
                   }}
                   onMouseEnter={e => {
-                    e.target.style.background = 'var(--ifm-color-primary)';
-                    e.target.style.color = 'var(--ifm-background-color)';
+                    e.target.style.background = 'var(--chat-widget-accent)';
+                    e.target.style.color = 'var(--chat-widget-accent-text)';
                   }}
                   onMouseLeave={e => {
                     e.target.style.background = 'none';
-                    e.target.style.color = 'var(--ifm-color-primary)';
+                    e.target.style.color = 'var(--chat-widget-accent)';
                   }}
                 >
                   {t.simplify}
@@ -374,7 +410,7 @@ export default function ChatWidget() {
 
           {/* Input */}
           <div style={{
-            padding: '12px 16px', borderTop: '1px solid var(--chat-border)',
+            padding: '12px 16px', borderTop: '1px solid var(--chat-widget-border)',
             display: 'flex', gap: 8,
           }}>
             <input
@@ -391,7 +427,7 @@ export default function ChatWidget() {
               placeholder={t.placeholder}
               style={{
                 flex: 1, padding: '10px 14px', borderRadius: 10,
-                border: '1px solid var(--chat-border)', backgroundColor: 'var(--chat-input-bg)',
+                border: '1px solid var(--chat-widget-border)', backgroundColor: 'var(--chat-input-bg)',
                 color: 'var(--chat-input-text)', fontSize: 14, outline: 'none',
               }}
             />
@@ -420,8 +456,8 @@ export default function ChatWidget() {
             position: 'fixed',
             bottom: 170,
             right: 24,
-            backgroundColor: 'var(--ifm-color-primary)',
-            color: 'var(--ifm-background-color)',
+            backgroundColor: 'var(--chat-widget-accent)',
+            color: 'var(--chat-widget-accent-text)',
             borderRadius: 20,
             padding: '6px 14px',
             fontSize: 10,
@@ -429,22 +465,22 @@ export default function ChatWidget() {
             letterSpacing: '0.1em',
             cursor: 'pointer',
             zIndex: 10000,
-            boxShadow: '0 2px 16px rgba(0,0,0,0.25)',
+            boxShadow: 'var(--chat-widget-badge-shadow)',
             display: 'flex',
             alignItems: 'center',
             gap: 6,
             userSelect: 'none',
             animation: 'fadeInUp 0.3s ease',
-            border: '1px solid transparent',
+            border: '1px solid var(--chat-widget-accent-border)',
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={e => {
             e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.35)';
+            e.currentTarget.style.boxShadow = 'var(--chat-widget-shadow)';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.25)';
+            e.currentTarget.style.boxShadow = 'var(--chat-widget-badge-shadow)';
           }}
         >
           EXPAND

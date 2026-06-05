@@ -47,32 +47,83 @@ export default function NavigationGuide() {
     },
   ];
 
-  const pistachioGlow = `
-    @keyframes pistachioPulse {
-      0% { box-shadow: 0 0 4px rgba(99, 110, 79, 0.2), inset 0 0 2px rgba(99, 110, 79, 0.1); border-color: rgba(99, 110, 79, 0.3); }
-      50% { box-shadow: 0 0 12px rgba(99, 110, 79, 0.6), inset 0 0 4px rgba(99, 110, 79, 0.3); border-color: rgba(99, 110, 79, 0.8); }
-      100% { box-shadow: 0 0 4px rgba(99, 110, 79, 0.2), inset 0 0 2px rgba(99, 110, 79, 0.1); border-color: rgba(99, 110, 79, 0.3); }
+  const navGuideStyles = `
+    .nav-guide-shell {
+      --nav-guide-bg: rgba(255, 252, 245, 0.84);
+      --nav-guide-bg-hover: #FFFCF5;
+      --nav-guide-border: rgba(25, 24, 20, 0.14);
+      --nav-guide-border-hover: rgba(31, 111, 120, 0.34);
+      --nav-guide-text-primary: #191814;
+      --nav-guide-text-secondary: #4A4338;
+      --nav-guide-text-muted: #7A7062;
+      --nav-guide-title: #64242E;
+      --nav-guide-accent: #1F6F78;
+      --nav-guide-accent-soft: rgba(31, 111, 120, 0.10);
+      --nav-guide-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+      --nav-guide-shadow-hover: 0 14px 34px rgba(25, 24, 20, 0.09);
     }
+
+    html[data-theme='dark'] .nav-guide-shell {
+      --nav-guide-bg: rgba(16, 29, 53, 0.78);
+      --nav-guide-bg-hover: rgba(23, 39, 68, 0.88);
+      --nav-guide-border: rgba(226, 232, 240, 0.14);
+      --nav-guide-border-hover: rgba(125, 205, 227, 0.38);
+      --nav-guide-text-primary: #F4F7FB;
+      --nav-guide-text-secondary: #C7D2E3;
+      --nav-guide-text-muted: #91A4BC;
+      --nav-guide-title: #7DCDE3;
+      --nav-guide-accent: #7DCDE3;
+      --nav-guide-accent-soft: rgba(125, 205, 227, 0.12);
+      --nav-guide-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      --nav-guide-shadow-hover: 0 16px 38px rgba(0, 0, 0, 0.34);
+    }
+
+    @keyframes navGuidePulse {
+      0% {
+        box-shadow: var(--nav-guide-shadow);
+        border-color: var(--nav-guide-border);
+      }
+
+      50% {
+        box-shadow: var(--nav-guide-shadow-hover);
+        border-color: var(--nav-guide-border-hover);
+      }
+
+      100% {
+        box-shadow: var(--nav-guide-shadow);
+        border-color: var(--nav-guide-border);
+      }
+    }
+
     .nav-guide-btn {
-      animation: pistachioPulse 3s infinite alternate;
+      animation: navGuidePulse 3.4s infinite alternate;
     }
+
     .nav-guide-btn:hover {
       animation: none !important;
-      box-shadow: 0 0 20px rgba(99, 110, 79, 0.9), inset 0 0 8px rgba(99, 110, 79, 0.5) !important;
-      border-color: #636e4f !important;
-      background: rgba(99, 110, 79, 0.15) !important;
+      background: var(--nav-guide-bg-hover) !important;
+      border-color: var(--nav-guide-border-hover) !important;
+      box-shadow: var(--nav-guide-shadow-hover) !important;
       transform: translateY(-2px);
     }
+
+    .nav-guide-btn:focus-visible {
+      outline: 2px solid var(--nav-guide-accent);
+      outline-offset: 3px;
+    }
+
     .nav-guide-grid {
       display: grid;
       gap: 0.75rem;
       grid-template-columns: repeat(4, 1fr);
     }
+
     @media (max-width: 768px) {
       .nav-guide-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
+
     @media (max-width: 480px) {
       .nav-guide-grid {
         grid-template-columns: 1fr;
@@ -81,15 +132,20 @@ export default function NavigationGuide() {
   `;
 
   return (
-    <div style={{
-      margin: '2rem 0',
-      padding: '1.5rem',
-      border: '1px solid var(--ifm-color-emphasis-200)',
-      borderRadius: '12px',
-      background: 'var(--ifm-background-color)',
-      position: 'relative',
-    }}>
-      <style>{pistachioGlow}</style>
+    <div
+      className="nav-guide-shell"
+      style={{
+        margin: '2rem 0',
+        padding: '1.5rem',
+        border: '1px solid var(--nav-guide-border)',
+        borderRadius: '12px',
+        background: 'var(--nav-guide-bg)',
+        boxShadow: 'var(--nav-guide-shadow)',
+        position: 'relative',
+      }}
+    >
+      <style>{navGuideStyles}</style>
+
       <button
         onClick={dismiss}
         aria-label="Cerrar guía de navegación"
@@ -97,10 +153,10 @@ export default function NavigationGuide() {
           position: 'absolute',
           top: '0.75rem',
           right: '0.75rem',
-          background: 'none',
+          background: 'transparent',
           border: 'none',
           cursor: 'pointer',
-          color: 'var(--ifm-color-emphasis-500)',
+          color: 'var(--nav-guide-text-muted)',
           fontSize: '1.1rem',
           lineHeight: 1,
           padding: '0.25rem',
@@ -109,15 +165,16 @@ export default function NavigationGuide() {
         ✕
       </button>
 
-      <p style={{
-        fontFamily: 'var(--ifm-font-family-base)',
-        fontSize: '1.6rem',
-        fontWeight: '700',
-        color: '#636e4f',
-        textShadow: '0 0 10px rgba(99, 110, 79, 0.3)',
-        textAlign: 'center',
-        margin: '0 0 1.5rem 0',
-      }}>
+      <p
+        style={{
+          fontFamily: 'var(--ifm-font-family-base)',
+          fontSize: '1.6rem',
+          fontWeight: '700',
+          color: 'var(--nav-guide-title)',
+          textAlign: 'center',
+          margin: '0 0 1.5rem 0',
+        }}
+      >
         ¿Por dónde empezar?
       </p>
 
@@ -133,28 +190,34 @@ export default function NavigationGuide() {
               flexDirection: 'column',
               gap: '0.4rem',
               padding: '1rem',
-              border: '1px solid rgba(99, 110, 79, 0.3)',
+              border: '1px solid var(--nav-guide-border)',
               borderRadius: '8px',
+              background: 'transparent',
               textDecoration: 'none',
               color: 'inherit',
               transition: 'all 0.2s ease',
               cursor: 'pointer',
             }}
           >
-            <span style={{
-              fontWeight: 600,
-              fontSize: '1rem',
-              fontFamily: 'var(--ifm-font-family-base)',
-              color: 'var(--ifm-menu-color)',
-            }}>
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: '1rem',
+                fontFamily: 'var(--ifm-font-family-base)',
+                color: 'var(--nav-guide-text-primary)',
+              }}
+            >
               {r.label}
             </span>
-            <span style={{
-              fontSize: '0.85rem',
-              color: 'var(--ifm-color-emphasis-800)',
-              lineHeight: 1.4,
-              fontFamily: 'var(--ifm-font-family-base)',
-            }}>
+
+            <span
+              style={{
+                fontSize: '0.85rem',
+                color: 'var(--nav-guide-text-secondary)',
+                lineHeight: 1.4,
+                fontFamily: 'var(--ifm-font-family-base)',
+              }}
+            >
               {r.desc}
             </span>
           </a>
