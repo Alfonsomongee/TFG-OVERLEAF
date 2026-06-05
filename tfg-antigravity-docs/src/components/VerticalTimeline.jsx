@@ -34,10 +34,34 @@ import { timelineEvents } from '../data/timelineData';
 
 // ─── Categorías disponibles ───────────────────────────────────────────────────
 const CATEGORIES = {
-  todos:         { es: 'Todos',         en: 'All',            color: '#94a3b8' },
-  electrico:     { es: 'Eléctrico',     en: 'Electrical',     color: '#00d9ff' },
-  institucional: { es: 'Institucional', en: 'Institutional',  color: '#f59e0b' },
-  regulatorio:   { es: 'Regulatorio',   en: 'Regulatory',     color: '#10b981' },
+  todos: {
+    es: 'Todos',
+    en: 'All',
+    color: 'var(--vt-text-muted)',
+    soft: 'var(--vt-bg-chip)',
+    border: 'var(--vt-border)',
+  },
+  electrico: {
+    es: 'Eléctrico',
+    en: 'Electrical',
+    color: 'var(--vt-blue)',
+    soft: 'var(--vt-blue-soft)',
+    border: 'var(--vt-blue-border)',
+  },
+  institucional: {
+    es: 'Institucional',
+    en: 'Institutional',
+    color: 'var(--vt-amber)',
+    soft: 'var(--vt-amber-soft)',
+    border: 'var(--vt-amber-border)',
+  },
+  regulatorio: {
+    es: 'Regulatorio',
+    en: 'Regulatory',
+    color: 'var(--vt-green)',
+    soft: 'var(--vt-green-soft)',
+    border: 'var(--vt-green-border)',
+  },
 };
 
 // ─── Localización del evento ──────────────────────────────────────────────────
@@ -221,7 +245,7 @@ export default function VerticalTimeline({
   };
 
   return (
-    <div>
+    <div className={styles.timelineScope}>
       {/* ── Filtros de categoría ─────────────────────────────── */}
       <div
         role="group"
@@ -242,9 +266,9 @@ export default function VerticalTimeline({
               style={{
                 padding: '0.35rem 0.85rem',
                 borderRadius: 20,
-                border: `1px solid ${isActive ? cat.color : 'rgba(255,255,255,0.12)'}`,
-                background: isActive ? `${cat.color}22` : 'transparent',
-                color: isActive ? cat.color : '#94a3b8',
+                border: `1px solid ${isActive ? cat.border : 'var(--vt-border)'}`,
+                background: isActive ? cat.soft : 'transparent',
+                color: isActive ? cat.color : 'var(--vt-text-muted)',
                 cursor: 'pointer',
                 fontFamily: 'monospace',
                 fontSize: 12,
@@ -261,16 +285,16 @@ export default function VerticalTimeline({
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <div style={{
             width: 120, height: 4,
-            background: 'rgba(255,255,255,0.08)',
+            background: 'var(--vt-border)',
             borderRadius: 2, overflow: 'hidden',
           }}>
             <div style={{
               width: `${progressPct}%`, height: '100%',
-              background: 'var(--ifm-color-primary)',
+              background: 'var(--vt-blue)',
               transition: 'width 0.3s ease',
             }} />
           </div>
-          <span style={{ fontSize: 11, color: 'var(--text-1, #64748b)', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: 11, color: 'var(--vt-text-muted)', fontFamily: 'monospace' }}>
             {filteredEvents.length}/{timelineEvents.length}
           </span>
         </div>
@@ -285,11 +309,23 @@ export default function VerticalTimeline({
         {filteredEvents.map((event, index) => {
           const alignmentClass = index % 2 === 0 ? styles.leftEvent : styles.rightEvent;
 
-          let typeColor = 'var(--ifm-color-primary)';
-          if (event.type === 'warning')  typeColor = '#f39c12';
-          if (event.type === 'danger')   typeColor = '#e74c3c';
-          if (event.type === 'critical') typeColor = '#c0392b';
-          if (event.type === 'success')  typeColor = '#27ae60';
+          let typeColor = 'var(--vt-blue)';
+          let typeGlow = 'var(--vt-blue-glow)';
+
+          if (event.type === 'warning') {
+            typeColor = 'var(--vt-amber)';
+            typeGlow = 'var(--vt-amber-glow)';
+          }
+
+          if (event.type === 'danger' || event.type === 'critical') {
+            typeColor = 'var(--vt-red)';
+            typeGlow = 'var(--vt-red-glow)';
+          }
+
+          if (event.type === 'success') {
+            typeColor = 'var(--vt-green)';
+            typeGlow = 'var(--vt-green-glow)';
+          }
 
           const loc       = getLocalizedEvent(event, lang);
           const isActive  = activeEventId === event.id;
@@ -311,7 +347,7 @@ export default function VerticalTimeline({
                 className={`${styles.timelineDot} ${isActive ? styles.activeDot : ''}`}
                 style={{
                   backgroundColor: typeColor,
-                  boxShadow: `0 0 0 4px rgba(255,255,255,0.2), 0 0 0 8px ${typeColor}33`,
+                  boxShadow: `0 0 0 4px var(--vt-dot-ring), 0 0 0 8px ${typeGlow}`,
                 }}
               />
 
@@ -335,9 +371,9 @@ export default function VerticalTimeline({
                     borderRadius: 10,
                     fontSize: 10,
                     fontFamily: 'monospace',
-                    background: `${CATEGORIES[event.category]?.color || '#94a3b8'}22`,
-                    color: CATEGORIES[event.category]?.color || '#94a3b8',
-                    border: `1px solid ${CATEGORIES[event.category]?.color || '#94a3b8'}44`,
+                    background: CATEGORIES[event.category]?.soft || 'var(--vt-bg-chip)',
+                    color: CATEGORIES[event.category]?.color || 'var(--vt-text-muted)',
+                    border: `1px solid ${CATEGORIES[event.category]?.border || 'var(--vt-border)'}`,
                     textTransform: 'uppercase',
                     letterSpacing: '0.06em',
                   }}>
@@ -351,7 +387,12 @@ export default function VerticalTimeline({
       </div>
 
       {filteredEvents.length === 0 && (
-        <p style={{ textAlign: 'center', color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: 13 }}>
+        <p style={{
+          textAlign: 'center',
+          color: 'var(--vt-text-muted)',
+          fontFamily: 'monospace',
+          fontSize: 13,
+        }}>
           {isEs ? 'No hay eventos en esta categoría.' : 'No events in this category.'}
         </p>
       )}

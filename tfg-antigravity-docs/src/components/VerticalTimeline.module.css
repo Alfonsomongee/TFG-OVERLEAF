@@ -1,3 +1,91 @@
+.timelineScope {
+  --vt-text-primary: #191814;
+  --vt-text-secondary: #4A4338;
+  --vt-text-muted: #7A7062;
+
+  --vt-bg-card: rgba(255, 252, 245, 0.84);
+  --vt-bg-card-hover: #FFFCF5;
+  --vt-bg-chip: rgba(255, 252, 245, 0.78);
+
+  --vt-border: rgba(25, 24, 20, 0.14);
+  --vt-border-strong: rgba(25, 24, 20, 0.24);
+
+  --vt-line: rgba(25, 24, 20, 0.22);
+  --vt-dot-ring: #FFFCF5;
+
+  --vt-blue: #1F6F78;
+  --vt-blue-soft: rgba(31, 111, 120, 0.10);
+  --vt-blue-border: rgba(31, 111, 120, 0.34);
+  --vt-blue-glow: rgba(31, 111, 120, 0.22);
+
+  --vt-red: #A13D36;
+  --vt-red-soft: rgba(161, 61, 54, 0.10);
+  --vt-red-border: rgba(161, 61, 54, 0.34);
+  --vt-red-glow: rgba(161, 61, 54, 0.24);
+
+  --vt-amber: #A96000;
+  --vt-amber-soft: rgba(169, 96, 0, 0.10);
+  --vt-amber-border: rgba(169, 96, 0, 0.30);
+  --vt-amber-glow: rgba(169, 96, 0, 0.22);
+
+  --vt-green: #2F6B4F;
+  --vt-green-soft: rgba(47, 107, 79, 0.10);
+  --vt-green-border: rgba(47, 107, 79, 0.32);
+  --vt-green-glow: rgba(47, 107, 79, 0.22);
+
+  --vt-purple: #6E4D8B;
+  --vt-purple-soft: rgba(110, 77, 139, 0.10);
+  --vt-purple-border: rgba(110, 77, 139, 0.30);
+
+  --vt-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --vt-shadow-hover: 0 14px 34px rgba(25, 24, 20, 0.09);
+
+  color: var(--vt-text-primary);
+}
+
+html[data-theme='dark'] .timelineScope {
+  --vt-text-primary: #F4F7FB;
+  --vt-text-secondary: #C7D2E3;
+  --vt-text-muted: #91A4BC;
+
+  --vt-bg-card: rgba(16, 29, 53, 0.74);
+  --vt-bg-card-hover: rgba(23, 39, 68, 0.88);
+  --vt-bg-chip: rgba(16, 29, 53, 0.76);
+
+  --vt-border: rgba(226, 232, 240, 0.14);
+  --vt-border-strong: rgba(226, 232, 240, 0.24);
+
+  --vt-line: rgba(244, 247, 251, 0.24);
+  --vt-dot-ring: #101D35;
+
+  --vt-blue: #7DCDE3;
+  --vt-blue-soft: rgba(125, 205, 227, 0.12);
+  --vt-blue-border: rgba(125, 205, 227, 0.38);
+  --vt-blue-glow: rgba(125, 205, 227, 0.24);
+
+  --vt-red: #D98798;
+  --vt-red-soft: rgba(217, 135, 152, 0.10);
+  --vt-red-border: rgba(217, 135, 152, 0.36);
+  --vt-red-glow: rgba(217, 135, 152, 0.24);
+
+  --vt-amber: #E6B45C;
+  --vt-amber-soft: rgba(230, 180, 92, 0.11);
+  --vt-amber-border: rgba(230, 180, 92, 0.34);
+  --vt-amber-glow: rgba(230, 180, 92, 0.22);
+
+  --vt-green: #A6C67B;
+  --vt-green-soft: rgba(166, 198, 123, 0.10);
+  --vt-green-border: rgba(166, 198, 123, 0.34);
+  --vt-green-glow: rgba(166, 198, 123, 0.22);
+
+  --vt-purple: #C4A5E8;
+  --vt-purple-soft: rgba(196, 165, 232, 0.10);
+  --vt-purple-border: rgba(196, 165, 232, 0.34);
+
+  --vt-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  --vt-shadow-hover: 0 16px 38px rgba(0, 0, 0, 0.34);
+}
+
 .timelineContainer {
   position: relative;
   max-width: 800px;
@@ -5,7 +93,6 @@
   padding: 1rem 0;
 }
 
-/* Central vertical line */
 .timelineContainer::before {
   content: '';
   position: absolute;
@@ -14,7 +101,7 @@
   left: 50%;
   width: 4px;
   margin-left: -2px;
-  background-color: var(--ifm-color-emphasis-300);
+  background-color: var(--vt-line);
   border-radius: 4px;
 }
 
@@ -41,25 +128,31 @@
   margin-left: -10px;
   margin-top: -10px;
   z-index: 2;
-  box-shadow: 0 0 0 4px var(--ifm-background-color);
+  box-shadow: 0 0 0 4px var(--vt-dot-ring);
 }
 
 .timelineContent {
   width: 45%;
-  background-color: var(--ifm-background-surface-color);
+  background-color: var(--vt-bg-card);
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  border: 1px solid var(--vt-border);
+  box-shadow: var(--vt-shadow);
   position: relative;
-  transition: transform 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .timelineContent:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  background-color: var(--vt-bg-card-hover);
+  border-color: var(--vt-border-strong);
+  box-shadow: var(--vt-shadow-hover);
 }
 
-/* Arrows pointing to the line */
 .leftEvent .timelineContent::before {
   content: '';
   position: absolute;
@@ -68,7 +161,7 @@
   margin-top: -10px;
   border-width: 10px 0 10px 10px;
   border-style: solid;
-  border-color: transparent transparent transparent var(--ifm-background-surface-color);
+  border-color: transparent transparent transparent var(--vt-bg-card);
 }
 
 .rightEvent .timelineContent::before {
@@ -79,74 +172,77 @@
   margin-top: -10px;
   border-width: 10px 10px 10px 0;
   border-style: solid;
-  border-color: transparent var(--ifm-background-surface-color) transparent transparent;
+  border-color: transparent var(--vt-bg-card) transparent transparent;
 }
 
 .timeBadge {
   display: inline-block;
-  background-color: var(--ifm-color-emphasis-100);
-  color: var(--ifm-color-emphasis-800);
+  background-color: var(--vt-bg-chip);
+  color: var(--vt-text-secondary);
+  border: 1px solid var(--vt-border);
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .eventTitle {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
-  color: var(--ifm-heading-color);
+  color: var(--vt-text-primary);
   line-height: 1.3;
 }
 
 .eventDesc {
   font-size: 0.95rem;
-  color: var(--ifm-color-emphasis-700);
+  color: var(--vt-text-secondary);
   margin: 0;
   line-height: 1.5;
 }
 
-/* Responsive adjustments */
+.activeEvent .timelineContent {
+  transform: scale(1.03);
+  box-shadow: var(--vt-shadow-hover);
+  border-color: var(--vt-blue-border) !important;
+  background-color: var(--vt-bg-card-hover);
+}
+
+.activeEvent .eventTitle {
+  color: var(--vt-blue);
+}
+
+.activeDot {
+  transform: scale(1.3);
+  box-shadow:
+    0 0 0 4px var(--vt-dot-ring),
+    0 0 0 8px var(--vt-blue-soft),
+    0 0 18px var(--vt-blue-glow) !important;
+}
+
 @media (max-width: 768px) {
   .timelineContainer::before {
     left: 20px;
   }
-  
+
   .timelineBlock,
   .timelineBlock.rightEvent {
     justify-content: flex-end;
   }
-  
+
   .timelineDot {
     left: 20px;
   }
-  
+
   .timelineContent {
     width: calc(100% - 60px);
   }
-  
+
   .leftEvent .timelineContent::before,
   .rightEvent .timelineContent::before {
     left: -10px;
     right: auto;
     border-width: 10px 10px 10px 0;
-    border-color: transparent var(--ifm-background-surface-color) transparent transparent;
+    border-color: transparent var(--vt-bg-card) transparent transparent;
   }
-}
-
-.activeEvent .timelineContent {
-  transform: scale(1.03);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  border-color: var(--ifm-color-primary) !important;
-  background-color: var(--ifm-background-surface-color);
-}
-
-.activeEvent .eventTitle {
-  color: var(--ifm-color-primary);
-}
-
-.activeDot {
-  transform: scale(1.3);
-  box-shadow: 0 0 0 4px var(--ifm-color-primary), 0 0 20px var(--ifm-color-primary) !important;
 }
