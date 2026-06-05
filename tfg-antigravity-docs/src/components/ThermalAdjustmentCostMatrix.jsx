@@ -48,6 +48,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useDocLang } from '@site/src/hooks/useDocLang';
+import { useColorMode } from '@docusaurus/theme-common';
 
 const PROXY_URL  = '/api/redata-proxy?url=';
 const START_DATE = '2025-04-26T00:00';
@@ -164,6 +165,64 @@ function exportCSV(data, isEs) {
 function ThermalAdjustmentCostMatrixInner() {
   const lang = useDocLang();
   const isEs = lang === 'es';
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+    panelBg: '#071326',
+    cardBg: 'rgba(16, 29, 53, 0.72)',
+    cardBorder: 'rgba(226, 232, 240, 0.14)',
+    grid: 'rgba(244, 247, 251, 0.10)',
+    axis: '#C7D2E3',
+    warning: '#E6B45C',
+    warningSoft: 'rgba(230, 180, 92, 0.11)',
+    warningBorder: 'rgba(230, 180, 92, 0.34)',
+    danger: '#D98798',
+    dangerSoft: 'rgba(217, 135, 152, 0.10)',
+    dangerBorder: 'rgba(217, 135, 152, 0.42)',
+    active: '#7DCDE3',
+    activeSoft: 'rgba(125, 205, 227, 0.12)',
+    activeBorder: 'rgba(125, 205, 227, 0.42)',
+    buttonBorder: 'rgba(226, 232, 240, 0.16)',
+    noteBg: 'rgba(16, 29, 53, 0.56)',
+    heatmapScale: [
+      [0.00, '#101D35'],
+      [0.25, '#5E7FA8'],
+      [0.50, '#E6B45C'],
+      [0.75, '#D48A4A'],
+      [1.00, '#D98798'],
+    ],
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+    panelBg: '#F6F0E3',
+    cardBg: 'rgba(255, 252, 245, 0.78)',
+    cardBorder: 'rgba(25, 24, 20, 0.14)',
+    grid: 'rgba(25, 24, 20, 0.10)',
+    axis: '#7A7062',
+    warning: '#A96000',
+    warningSoft: 'rgba(169, 96, 0, 0.10)',
+    warningBorder: 'rgba(169, 96, 0, 0.30)',
+    danger: '#A13D36',
+    dangerSoft: 'rgba(161, 61, 54, 0.08)',
+    dangerBorder: 'rgba(161, 61, 54, 0.36)',
+    active: '#1F6F78',
+    activeSoft: 'rgba(31, 111, 120, 0.10)',
+    activeBorder: 'rgba(31, 111, 120, 0.36)',
+    buttonBorder: 'rgba(25, 24, 20, 0.16)',
+    noteBg: 'rgba(255, 252, 245, 0.58)',
+    heatmapScale: [
+      [0.00, '#FFFCF5'],
+      [0.25, '#DDE8C5'],
+      [0.50, '#D9A441'],
+      [0.75, '#A96000'],
+      [1.00, '#A13D36'],
+    ],
+  };
 
   const [plotData,     setPlotData]     = useState(null);
   const [loading,      setLoading]      = useState(true);
@@ -247,7 +306,7 @@ function ThermalAdjustmentCostMatrixInner() {
     return (
       <div
         style={{ height: 500, display: 'flex', alignItems: 'center',
-                 justifyContent: 'center', color: 'var(--text-1, #64748b)',
+                 justifyContent: 'center', color: colors.textMuted,
                  fontFamily: 'monospace', fontSize: 13 }}
         aria-busy="true"
         aria-live="polite"
@@ -261,7 +320,7 @@ function ThermalAdjustmentCostMatrixInner() {
 
   if (!displayData) {
     return (
-      <div style={{ textAlign: 'center', padding: '2rem', color: '#ef4444' }}>
+      <div style={{ textAlign: 'center', padding: '2rem', color: colors.danger }}>
         {isEs ? 'No hay datos disponibles.' : 'No data available.'}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.9rem', cursor: 'pointer' }}>
           {isEs ? 'Reintentar' : 'Retry'}
@@ -276,15 +335,15 @@ function ThermalAdjustmentCostMatrixInner() {
     x:          displayData.x,
     y:          displayData.y,
     type:       'heatmap',
-    colorscale: 'Magma',
+    colorscale: colors.heatmapScale,
     reversescale: false,
     showscale:  true,
     colorbar: {
       title:       '€/MWh',
       thickness:   18,
       tickformat:  ',.0f',
-      titlefont:   { color: '#94a3b8', size: 12 },
-      tickfont:    { color: '#94a3b8' },
+      titlefont:   { color: colors.textSecondary, size: 12 },
+      tickfont:    { color: colors.textSecondary },
     },
     hovertemplate: '<b>%{y}</b><br>%{x}<br><b>%{z:.2f} €/MWh</b><extra></extra>',
     // Anotación visual del 28-A
@@ -295,19 +354,22 @@ function ThermalAdjustmentCostMatrixInner() {
   const layout = {
     title: {
       text: isEs ? 'Costes de Servicios de Ajuste — Semana del 28-A (€/MWh)' : 'Adjustment Services Costs — April 28 Week (€/MWh)',
-      font: { size: 15, color: '#e0ddd5' },
+      font: { size: 15, color: colors.textPrimary },
     },
     xaxis: {
       title: isEs ? 'Fecha y hora (CEST)' : 'Date and time (CEST)',
       tickangle: -45,
       tickformat: '%d/%m %Hh',
-      gridcolor: 'rgba(255,255,255,0.07)',
-      tickfont: { color: 'var(--text-1, #64748b)', size: 10 },
+      gridcolor: colors.grid,
+      linecolor: colors.grid,
+      tickfont: { color: colors.axis, size: 10 },
+      titlefont: { color: colors.axis, size: 11 },
     },
     yaxis: {
       automargin: true,
-      gridcolor: 'rgba(255,255,255,0.07)',
-      tickfont: { color: '#94a3b8', size: 11 },
+      gridcolor: colors.grid,
+      linecolor: colors.grid,
+      tickfont: { color: colors.axis, size: 11 },
     },
     // Anotación del 28-A
     shapes: [{
@@ -315,19 +377,19 @@ function ThermalAdjustmentCostMatrixInner() {
       xref: 'x', yref: 'paper',
       x0: '2025-04-28 00:00', x1: '2025-04-29 00:00',
       y0: 0, y1: 1,
-      fillcolor: 'rgba(239,68,68,0.06)',
-      line: { color: 'rgba(239,68,68,0.4)', width: 1.5, dash: 'dot' },
+      fillcolor: colors.dangerSoft,
+      line: { color: colors.dangerBorder, width: 1.5, dash: 'dot' },
     }],
     annotations: [{
       xref: 'x', yref: 'paper',
       x: '2025-04-28 13:00', y: 1.04,
       text: '⚡ 28-A',
       showarrow: false,
-      font: { color: '#ef4444', size: 11, family: 'monospace' },
+      font: { color: colors.danger, size: 11, family: 'monospace' },
     }],
     plot_bgcolor:  'rgba(0,0,0,0)',
     paper_bgcolor: 'rgba(0,0,0,0)',
-    font:   { color: '#a0a0b0', family: 'Inter, sans-serif' },
+    font:   { color: colors.textSecondary, family: 'Inter, sans-serif' },
     height: activeService === 'all' ? 520 : 280,
     margin: { l: 220, r: 40, t: 72, b: 120 },
   };
@@ -340,10 +402,10 @@ function ThermalAdjustmentCostMatrixInner() {
         <div style={{
           marginBottom: '0.75rem',
           padding: '0.5rem 1rem',
-          background: 'rgba(245,158,11,0.08)',
-          border: '1px solid rgba(245,158,11,0.3)',
+          background: colors.warningSoft,
+          border: `1px solid ${colors.warningBorder}`,
           borderRadius: 6,
-          fontSize: 12, fontFamily: 'monospace', color: '#f59e0b',
+          fontSize: 12, fontFamily: 'monospace', color: colors.warning,
         }} aria-live="polite">
           {isEs 
             ? "⚠ API REData no disponible — datos estimados (fallback determinista). Los valores horarios son estimaciones coherentes con rangos verificados, no medidas directas de ESIOS. Ver nota metodológica."
@@ -369,9 +431,9 @@ function ThermalAdjustmentCostMatrixInner() {
               style={{
                 padding: '0.25rem 0.7rem',
                 borderRadius: 20,
-                border: `1px solid ${activeService === opt.id ? '#00d9ff' : 'rgba(255,255,255,0.1)'}`,
-                background: activeService === opt.id ? 'rgba(0,217,255,0.12)' : 'transparent',
-                color:  activeService === opt.id ? '#00d9ff' : 'var(--text-1, #64748b)',
+                border: `1px solid ${activeService === opt.id ? colors.activeBorder : colors.buttonBorder}`,
+                background: activeService === opt.id ? colors.activeSoft : 'transparent',
+                color:  activeService === opt.id ? colors.active : colors.textMuted,
                 cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
                 fontWeight: activeService === opt.id ? 700 : 400,
                 transition: 'all 0.15s ease',
@@ -389,8 +451,8 @@ function ThermalAdjustmentCostMatrixInner() {
           style={{
             padding: '0.25rem 0.7rem',
             background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: 6, color: 'var(--text-1, #64748b)',
+            border: `1px solid ${colors.buttonBorder}`,
+            borderRadius: 6, color: colors.textMuted,
             cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
           }}
         >
@@ -424,17 +486,17 @@ function ThermalAdjustmentCostMatrixInner() {
       {/* Footer metodológico */}
       <div style={{
         marginTop: '1rem',
-        fontSize: '0.8rem', color: 'rgba(160,155,140,0.75)',
-        borderLeft: '3px solid rgba(255,170,0,0.35)',
+        fontSize: '0.8rem', color: colors.textSecondary,
+        borderLeft: `3px solid ${colors.warningBorder}`,
         padding: '0.5rem 1rem', lineHeight: 1.65,
-        background: 'rgba(255,255,255,0.02)',
+        background: colors.noteBg,
         borderRadius: '0 6px 6px 0',
       }}>
         <p style={{ margin: '0 0 0.4rem' }} dangerouslySetInnerHTML={{ __html: isEs 
           ? `<b>Costes verificados (ISE-2025 REE / REE informe abril 2026):</b> El coste total de servicios de ajuste en 2025 se incrementó un <b>+43% respecto a 2024</b>, con restricciones técnicas acumulando entre <b>3.351 y 3.770 M€</b> por el despacho forzoso de ciclos combinados ("Operación Reforzada"). El coste acumulado de la Operación Reforzada hasta el 31 de marzo de 2026 fue de <b>666 M€</b> (REE, informe abril 2026 — dato verificado). En marzo de 2026, las restricciones representaron el <b>28% del término de energía en la factura PVPC</b>.`
           : `<b>Verified costs (ISE-2025 REE / REE April 2026 report):</b> Total adjustment service costs in 2025 increased by <b>+43% compared to 2024</b>, with technical constraints accumulating between <b>3,351 and 3,770 M€</b> due to the forced dispatch of combined cycles ("Reinforced Operation"). The cumulative cost of the Reinforced Operation up to March 31, 2026 was <b>666 M€</b> (REE, April 2026 report — verified data). In March 2026, constraints represented <b>28% of the energy term in the PVPC bill</b>.`
         }} />
-        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
+        <p style={{ margin: 0, fontSize: '0.72rem', color: colors.textMuted }}>
           {isFallback
             ? (isEs ? '⚠ Datos horarios: estimaciones deterministas coherentes con rangos ISE-2025 REE. No proceden de medidas directas ESIOS — los valores individuales son CUESTIÓN ABIERTA.' : '⚠ Hourly data: deterministic estimates consistent with ISE-2025 REE ranges. Not from direct ESIOS measurements — individual values are an OPEN QUESTION.')
             : (isEs ? 'Fuente: ESIOS / REE (Indicadores 680, 71-74, 638) · Período: 26 abr – 02 may 2025.' : 'Source: ESIOS / REE (Indicators 680, 71-74, 638) · Period: Apr 26 – May 02, 2025.')}
@@ -451,7 +513,7 @@ export default function ThermalAdjustmentCostMatrix() {
     <BrowserOnly fallback={
       <div style={{
         minHeight: 500, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#6B6255',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {isEs ? 'Inicializando matriz termográfica…' : 'Initializing thermographic matrix…'}

@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 
 const PROXY_URL = '/api/redata-proxy?url=';
 
@@ -27,6 +28,51 @@ function buildUnavailabilityUrl() {
 
 // Componente interno (solo cliente)
 function GridUnavailabilityGaugeInner() {
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    axis: '#C7D2E3',
+    gaugeBg: 'rgba(16, 29, 53, 0.46)',
+
+    safe: '#A6C67B',
+    warning: '#E6B45C',
+    danger: '#D98798',
+
+    safeSoft: 'rgba(166, 198, 123, 0.10)',
+    safeSoft2: 'rgba(166, 198, 123, 0.055)',
+    warningSoft: 'rgba(230, 180, 92, 0.12)',
+    dangerSoft: 'rgba(217, 135, 152, 0.12)',
+
+    threshold: '#D98798',
+    noteText: '#C7D2E3',
+    noteBorder: 'rgba(230, 180, 92, 0.34)',
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    axis: '#7A7062',
+    gaugeBg: 'rgba(255, 252, 245, 0.62)',
+
+    safe: '#2F6B4F',
+    warning: '#A96000',
+    danger: '#A13D36',
+
+    safeSoft: 'rgba(47, 107, 79, 0.10)',
+    safeSoft2: 'rgba(47, 107, 79, 0.055)',
+    warningSoft: 'rgba(169, 96, 0, 0.12)',
+    dangerSoft: 'rgba(161, 61, 54, 0.10)',
+
+    threshold: '#A13D36',
+    noteText: '#6B6255',
+    noteBorder: 'rgba(169, 96, 0, 0.30)',
+  };
+
   const [value, setValue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -81,14 +127,16 @@ function GridUnavailabilityGaugeInner() {
   if (loading) {
     return (
       <div style={{ height: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent' }}>
-        <span>Cargando índice de indisponibilidad...</span>
+        <span style={{ color: colors.textMuted }}>
+          Cargando índice de indisponibilidad...
+        </span>
       </div>
     );
   }
 
   if (value === null && error) {
     return (
-      <div style={{ textAlign: 'center', padding: '1rem', color: '#ef4444', background: 'transparent' }}>
+      <div style={{ textAlign: 'center', padding: '1rem', color: colors.danger, background: 'transparent' }}>
         Error: {error}
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>Reintentar</button>
       </div>
@@ -99,31 +147,31 @@ function GridUnavailabilityGaugeInner() {
   const gaugeValue = Math.min(100, Math.max(0, value));
 
   // Determinar color según nivel de indisponibilidad
-  let gaugeColor = '#10b981'; // verde
-  if (gaugeValue > 20) gaugeColor = '#f59e0b'; // ámbar
-  if (gaugeValue > 30) gaugeColor = '#ef4444'; // rojo
+  let gaugeColor = colors.safe;
+  if (gaugeValue > 20) gaugeColor = colors.warning;
+  if (gaugeValue > 30) gaugeColor = colors.danger;
 
   // Configuración del gauge con Plotly
   const gaugeTrace = {
     type: 'indicator',
     mode: 'gauge+number+delta',
     value: gaugeValue,
-    title: { text: 'Indisponibilidad de la red de 400 kV', font: { size: 16, color: '#e0ddd5' } },
-    number: { suffix: '%', font: { size: 40, color: '#e0ddd5' } },
-    delta: { reference: 10, valueformat: '.1f', suffix: '%', font: { size: 14 } },
+    title: { text: 'Indisponibilidad de la red de 400 kV', font: { size: 16, color: colors.textPrimary } },
+    number: { suffix: '%', font: { size: 40, color: colors.textPrimary } },
+    delta: { reference: 10, valueformat: '.1f', suffix: '%', font: { size: 14, color: colors.textSecondary } },
     gauge: {
-      axis: { range: [0, 100], tickcolor: '#a0a0b0', tickfont: { size: 10, color: '#a0a0b0' } },
+      axis: { range: [0, 100], tickcolor: colors.axis, tickfont: { size: 10, color: colors.axis } },
       bar: { color: gaugeColor, thickness: 0.3 },
-      bgcolor: 'rgba(255,255,255,0.04)',
+      bgcolor: colors.gaugeBg,
       borderwidth: 0,
       steps: [
-        { range: [0, 10], color: 'rgba(16,185,129,0.1)' },
-        { range: [10, 20], color: 'rgba(16,185,129,0.05)' },
-        { range: [20, 30], color: 'rgba(245,158,11,0.1)' },
-        { range: [30, 100], color: 'rgba(239,68,68,0.1)' }
+        { range: [0, 10], color: colors.safeSoft },
+        { range: [10, 20], color: colors.safeSoft2 },
+        { range: [20, 30], color: colors.warningSoft },
+        { range: [30, 100], color: colors.dangerSoft }
       ],
       threshold: {
-        line: { color: '#ef4444', width: 4 },
+        line: { color: colors.threshold, width: 4 },
         thickness: 0.75,
         value: 35.0
       }
@@ -133,15 +181,23 @@ function GridUnavailabilityGaugeInner() {
   const layout = {
     plot_bgcolor: 'rgba(0,0,0,0)',
     paper_bgcolor: 'rgba(0,0,0,0)',
-    font: { color: '#a0a0b0', family: 'Inter, sans-serif' },
+    font: { color: colors.textSecondary, family: 'Inter, sans-serif' },
     height: 320,
     margin: { t: 60, b: 20, l: 30, r: 30 }
   };
 
   return (
     <div style={{ padding: '1rem 0', background: 'transparent' }}>
-      <DynamicPlotlyWrapper data={[gaugeTrace]} layout={layout} />
-      <div style={{ marginTop: '1.25rem', fontSize: '0.8rem', color: 'rgba(160,155,140,0.7)', borderLeft: '3px solid rgba(255,170,0,0.3)', padding: '0.5rem 1rem', lineHeight: 1.6 }}>
+      <DynamicPlotlyWrapper data={[gaugeTrace]} layout={layout} colors={colors} />
+      <div style={{
+        marginTop: '1.25rem',
+        fontSize: '0.8rem',
+        color: colors.noteText,
+        borderLeft: `3px solid ${colors.noteBorder}`,
+        padding: '0.5rem 1rem',
+        lineHeight: 1.6,
+        background: 'transparent',
+      }}>
         El umbral de referencia (línea roja) marca el <strong>35,0%</strong> de indisponibilidad de la red de 400 kV registrado en las áreas Centro y Sur en la mañana del 28 de abril de 2025 (según informe pericial del IIT-Comillas). Esto contrasta con un baseline histórico habitual inferior al 1,5%, evidenciando la extrema debilidad estructural de la red de transporte horas antes de la cascada dinámica.
       </div>
     </div>
@@ -150,18 +206,18 @@ function GridUnavailabilityGaugeInner() {
 
 // Envoltorio con import dinámico de Plotly (SSR-safe)
 let PlotlyChart = null;
-function DynamicPlotlyWrapper({ data, layout }) {
+function DynamicPlotlyWrapper({ data, layout, colors }) {
   const [Plot, setPlot] = useState(null);
   useEffect(() => {
     import('react-plotly.js').then(mod => setPlot(() => mod.default));
   }, []);
-  if (!Plot) return <div style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando indicador...</div>;
+  if (!Plot) return <div style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: colors?.textMuted || '#6B6255' }}>Cargando indicador...</div>;
   return <Plot data={data} layout={layout} config={{ responsive: true, displayModeBar: false }} style={{ width: '100%', height: '100%' }} useResizeHandler />;
 }
 
 export default function GridUnavailabilityGauge() {
   return (
-    <BrowserOnly fallback={<div style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando componente...</div>}>
+    <BrowserOnly fallback={<div style={{ height: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B6255' }}>Cargando componente...</div>}>
       {() => (
         <GridUnavailabilityGaugeInner />
       )}

@@ -26,6 +26,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip,
   Legend, ResponsiveContainer,
@@ -46,23 +47,23 @@ const BLACKOUT_VALUES = [
 const BLACKOUT_PENETRACION = 82.0; // Comité de Análisis, p.38 (NO 84,5%)
 
 // ─── Tooltip personalizado para Recharts ─────────────────────────────────────
-function CustomPieTooltip({ active, payload }) {
+function CustomPieTooltip({ active, payload, colors }) {
   if (!active || !payload?.length) return null;
   const d = payload[0];
   return (
     <div style={{
-      background: 'var(--chart-bg, rgba(10,10,20,0.96))',
-      border: `1px solid ${d.payload.fill}60`,
+      background: colors.tooltipBg,
+      border: `1px solid ${d.payload.fill}66`,
       borderRadius: 6,
       padding: '8px 12px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: colors.tooltipText,
     }}>
       <p style={{ margin: '0 0 4px', fontWeight: 'bold', color: d.payload.fill }}>
         {d.name}
       </p>
-      <p style={{ margin: 0, color: '#94a3b8' }}>
+      <p style={{ margin: 0, color: colors.textMuted }}>
         {d.value.toLocaleString('es-ES')} MW
       </p>
     </div>
@@ -70,13 +71,13 @@ function CustomPieTooltip({ active, payload }) {
 }
 
 // ─── Donut individual ────────────────────────────────────────────────────────
-function DonutChart({ data, title, ariaLabel }) {
+function DonutChart({ data, title, ariaLabel, colors }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <p style={{
         margin: 0,
         fontSize: 12,
-        color: '#94a3b8',
+        color: colors.textMuted,
         fontFamily: 'monospace',
         textAlign: 'center',
         letterSpacing: '0.04em',
@@ -101,18 +102,21 @@ function DonutChart({ data, title, ariaLabel }) {
               isAnimationActive={false}
             >
               {data.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                <Cell key={i} fill={colors.mixColors[i % colors.mixColors.length]} />
               ))}
             </Pie>
-            <RechartsTooltip content={<CustomPieTooltip />} />
+            <RechartsTooltip content={<CustomPieTooltip colors={colors} />} />
             <Legend
               iconType="circle"
               iconSize={8}
               wrapperStyle={{
                 fontSize: 11,
-                color: '#94a3b8',
+                color: colors.textMuted,
                 fontFamily: 'monospace',
               }}
+              formatter={(value) => (
+                <span style={{ color: colors.textMuted }}>{value}</span>
+              )}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -179,43 +183,112 @@ function useEsiosData(pause, intervalMs = 300000) {
 }
 
 // ─── Pill de métrica ──────────────────────────────────────────────────────────
-const MetricPill = React.memo(({ label, value, accent = '#06b6d4', tooltip = '' }) => (
-  <div style={{
-    flex: 1,
-    minWidth: 140,
-    background: 'rgba(255,255,255,0.03)',
-    border: `1px solid ${accent}44`,
-    borderRadius: 8,
-    padding: '0.5rem 0.9rem',
-    textAlign: 'center',
-  }}>
-    <span style={{
-      display: 'block',
-      fontSize: '0.62rem',
-      color: '#a0a0b0',
-      letterSpacing: '0.08em',
-      textTransform: 'uppercase',
-      marginBottom: 4,
+const MetricPill = React.memo(({ label, value, accent, tooltip = '', colors }) => {
+  const pillAccent = accent ?? colors.active;
+
+  return (
+    <div style={{
+      flex: 1,
+      minWidth: 140,
+      background: colors.pillBg,
+      border: `1px solid ${colors.pillBorder}`,
+      borderRadius: 8,
+      padding: '0.5rem 0.9rem',
+      textAlign: 'center',
     }}>
-      {label}
-      {tooltip && (
-        <span title={tooltip} style={{
-          cursor: 'help',
-          fontSize: '0.6rem',
-          marginLeft: 4,
-          color: '#a0a0b0',
-          fontStyle: 'italic',
-        }}>ⓘ</span>
-      )}
-    </span>
-    <span style={{ fontSize: '1.05rem', fontWeight: 700, color: accent }}>
-      {value}
-    </span>
-  </div>
-));
+      <span style={{
+        display: 'block',
+        fontSize: '0.62rem',
+        color: colors.pillLabel,
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        marginBottom: 4,
+      }}>
+        {label}
+        {tooltip && (
+          <span title={tooltip} style={{
+            cursor: 'help',
+            fontSize: '0.6rem',
+            marginLeft: 4,
+            color: colors.textMuted,
+            fontStyle: 'italic',
+          }}>ⓘ</span>
+        )}
+      </span>
+      <span style={{ fontSize: '1.05rem', fontWeight: 700, color: pillAccent }}>
+        {value}
+      </span>
+    </div>
+  );
+});
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function MixGeneracionInner() {
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    active: '#7DCDE3',
+    activeText: '#071326',
+    activeSoft: 'rgba(125, 205, 227, 0.12)',
+    activeBorder: 'rgba(125, 205, 227, 0.42)',
+
+    success: '#A6C67B',
+    warning: '#E6B45C',
+    danger: '#D98798',
+
+    errorBg: 'rgba(217, 135, 152, 0.10)',
+    skeletonBg: 'rgba(244, 247, 251, 0.07)',
+
+    pillBg: 'rgba(16, 29, 53, 0.72)',
+    pillBorder: 'rgba(226, 232, 240, 0.14)',
+    pillLabel: '#91A4BC',
+
+    pauseBg: 'rgba(16, 29, 53, 0.76)',
+    pauseBorder: 'rgba(125, 205, 227, 0.38)',
+
+    footerMuted: '#91A4BC',
+
+    tooltipBg: '#101D35',
+    tooltipText: '#F4F7FB',
+
+    mixColors: ['#E6B45C', '#7DCDE3', '#C4A5E8', '#D98798', '#A6C67B'],
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    active: '#1F6F78',
+    activeText: '#FFFCF5',
+    activeSoft: 'rgba(31, 111, 120, 0.10)',
+    activeBorder: 'rgba(31, 111, 120, 0.36)',
+
+    success: '#2F6B4F',
+    warning: '#A96000',
+    danger: '#A13D36',
+
+    errorBg: 'rgba(161, 61, 54, 0.08)',
+    skeletonBg: 'rgba(25, 24, 20, 0.06)',
+
+    pillBg: 'rgba(255, 252, 245, 0.78)',
+    pillBorder: 'rgba(25, 24, 20, 0.14)',
+    pillLabel: '#8A7C6A',
+
+    pauseBg: 'rgba(255, 252, 245, 0.80)',
+    pauseBorder: 'rgba(31, 111, 120, 0.34)',
+
+    footerMuted: '#9B9285',
+
+    tooltipBg: '#FFFCF5',
+    tooltipText: '#191814',
+
+    mixColors: ['#D9A441', '#1F6F78', '#6E4D8B', '#A13D36', '#2F6B4F'],
+  };
+
   const [pause, setPause]   = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -261,7 +334,7 @@ function MixGeneracionInner() {
           {[0, 1].map(i => (
             <div key={i} style={{
               height: 200,
-              background: 'rgba(255,255,255,0.04)',
+              background: colors.skeletonBg,
               borderRadius: 8,
               animation: 'pulse 1.5s ease-in-out infinite',
             }} />
@@ -277,14 +350,14 @@ function MixGeneracionInner() {
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         gap: '1rem', minHeight: 260,
-        color: '#ef4444', background: 'rgba(239,68,68,0.05)',
+        color: colors.danger, background: colors.errorBg,
         borderRadius: 8, padding: '2rem', textAlign: 'center',
       }}>
         <span>No se pudieron obtener datos de ESIOS</span>
         <button
           onClick={retry}
           style={{
-            background: '#ef4444', border: 'none', color: '#fff',
+            background: colors.danger, border: 'none', color: colors.activeText,
             padding: '0.5rem 1rem', borderRadius: 8, cursor: 'pointer',
           }}
         >
@@ -305,6 +378,7 @@ function MixGeneracionInner() {
           data={BLACKOUT_VALUES}
           title="28 de abril de 2025 — Instante del colapso (12:30 CEST)"
           ariaLabel="Mix de generación del 28-A: 53,3% solar, 9,8% eólica, 10% nuclear, 3% gas, 5,5% hidráulica"
+          colors={colors}
         />
 
         {/* Donut ahora */}
@@ -312,6 +386,7 @@ function MixGeneracionInner() {
           data={hasValidData ? hoyData : BLACKOUT_VALUES}
           title={`Ahora · ${lastUpdate ? lastUpdate.toLocaleTimeString('es-ES') : '...'}`}
           ariaLabel="Mix de generación actual según ESIOS"
+          colors={colors}
         />
       </div>
 
@@ -325,18 +400,21 @@ function MixGeneracionInner() {
             label="Renovable ahora"
             value={`${penetracionHoy.toFixed(1)}%`}
             tooltip="(Solar + Eólica + Hidráulica) / Generación total. NOTA: renovable ≠ IBR. La hidráulica es renovable y síncrona."
+            colors={colors}
           />
           <MetricPill
             label="28-A (colapso)"
             value={`${BLACKOUT_PENETRACION.toFixed(1)}%`}
-            accent="#ef4444"
+            accent={colors.danger}
             tooltip="Fuente: Comité de Análisis del Gobierno, p.38. Base: generación renovable / total instantáneo."
+            colors={colors}
           />
           {delta !== null && (
             <MetricPill
               label="Diferencia"
               value={`${delta > 0 ? '+' : ''}${delta.toFixed(1)}%`}
-              accent={Math.abs(delta) < 5 ? '#f59e0b' : delta > 0 ? '#ef4444' : '#10b981'}
+              accent={Math.abs(delta) < 5 ? colors.warning : delta > 0 ? colors.danger : colors.success}
+              colors={colors}
             />
           )}
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -345,9 +423,9 @@ function MixGeneracionInner() {
               aria-pressed={pause}
               aria-label={pause ? 'Reanudar actualización automática' : 'Pausar actualización automática'}
               style={{
-                background: pause ? '#06b6d4' : 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(6,182,212,0.4)',
-                color: pause ? '#000' : '#06b6d4',
+                background: pause ? colors.active : colors.pauseBg,
+                border: `1px solid ${colors.pauseBorder}`,
+                color: pause ? colors.activeText : colors.active,
                 padding: '0.4rem 0.9rem',
                 borderRadius: 20,
                 cursor: 'pointer',
@@ -370,12 +448,12 @@ function MixGeneracionInner() {
       }}>
         <span style={{
           fontSize: '0.68rem', fontFamily: 'monospace', letterSpacing: '0.04em',
-          color: pause ? '#f59e0b' : '#10b981',
+          color: pause ? colors.warning : colors.success,
         }}>
           {pause ? '⏸ Actualización pausada' : '● Actualización cada 5 min'}
         </span>
         <span style={{
-          fontSize: '0.7rem', color: 'rgba(160,155,140,0.6)',
+          fontSize: '0.7rem', color: colors.footerMuted,
           letterSpacing: '0.04em', fontFamily: 'monospace',
         }}>
           {error
@@ -398,7 +476,7 @@ export default function MixGeneracion() {
       <div style={{
         minHeight: 300,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: 'var(--text-1, #64748b)', fontFamily: 'monospace', fontSize: 13,
+        color: '#6B6255', fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando mix de generación…
       </div>

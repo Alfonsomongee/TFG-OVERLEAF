@@ -25,6 +25,7 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
   PolarRadiusAxis, Tooltip, Legend, ResponsiveContainer,
@@ -106,27 +107,30 @@ function buildRadarData(lang) {
 }
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
-function RadarTooltip({ active,  payload}) {
+function RadarTooltip({ active, payload, colors }) {
   const lang = useDocLang();
   if (!active || !payload?.length) return null;
   const subject = payload[0]?.payload?.axis;
   const note    = payload[0]?.payload?.note;
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
-      border: '1px solid rgba(255,255,255,0.12)',
-      borderRadius: 8, padding: '10px 14px',
-      fontFamily: 'monospace', fontSize: 12, color: '#e2e8f0',
+      background: colors.tooltipBg,
+      border: `1px solid ${colors.tooltipBorder}`,
+      borderRadius: 8,
+      padding: '10px 14px',
+      fontFamily: 'monospace',
+      fontSize: 12,
+      color: colors.tooltipText,
       maxWidth: 220,
     }}>
-      <p style={{ margin: '0 0 6px', fontWeight: 'bold', color: '#94a3b8' }}>{subject}</p>
+      <p style={{ margin: '0 0 6px', fontWeight: 'bold', color: colors.textMuted }}>{subject}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ margin: '0 0 3px', color: p.color }}>
           {p.name}: <strong>{p.value?.toFixed(1)}%</strong>
         </p>
       ))}
       {note && (
-        <p style={{ margin: '6px 0 0', fontSize: 10, color: '#475569' }}>{note}</p>
+        <p style={{ margin: '6px 0 0', fontSize: 10, color: colors.textMuted }}>{note}</p>
       )}
     </div>
   );
@@ -153,6 +157,66 @@ function exportCSV(data, lang) {
 function RadarVulnerabilidadInner({}) {
   const lang = useDocLang();
   const isEs = lang === 'es';
+
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    grid: 'rgba(244, 247, 251, 0.14)',
+    radiusTick: '#91A4BC',
+
+    blackout: '#D98798',
+    blackoutFill: 'rgba(217, 135, 152, 0.16)',
+
+    post: '#E6B45C',
+    postFill: 'rgba(230, 180, 92, 0.13)',
+
+    optimal: '#A6C67B',
+    optimalFill: 'rgba(166, 198, 123, 0.12)',
+
+    buttonText: '#91A4BC',
+    buttonBorder: 'rgba(226, 232, 240, 0.16)',
+
+    footerBorder: 'rgba(226, 232, 240, 0.12)',
+    footerText: '#C7D2E3',
+    footerMuted: '#91A4BC',
+
+    tooltipBg: '#101D35',
+    tooltipBorder: 'rgba(226, 232, 240, 0.16)',
+    tooltipText: '#F4F7FB',
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    grid: 'rgba(25, 24, 20, 0.14)',
+    radiusTick: '#8A7C6A',
+
+    blackout: '#A13D36',
+    blackoutFill: 'rgba(161, 61, 54, 0.14)',
+
+    post: '#A96000',
+    postFill: 'rgba(169, 96, 0, 0.12)',
+
+    optimal: '#2F6B4F',
+    optimalFill: 'rgba(47, 107, 79, 0.12)',
+
+    buttonText: '#6B6255',
+    buttonBorder: 'rgba(25, 24, 20, 0.16)',
+
+    footerBorder: 'rgba(25, 24, 20, 0.14)',
+    footerText: '#3C3830',
+    footerMuted: '#6B6255',
+
+    tooltipBg: '#FFFCF5',
+    tooltipBorder: 'rgba(25, 24, 20, 0.16)',
+    tooltipText: '#191814',
+  };
+
   const data = useMemo(() => buildRadarData(lang), [lang]);
 
   const handleExport = useCallback(() => exportCSV(data, lang), [data, lang]);
@@ -167,8 +231,8 @@ function RadarVulnerabilidadInner({}) {
           style={{
             padding: '0.3rem 0.8rem',
             background: 'transparent',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 6, color: 'var(--text-1, #64748b)',
+            border: `1px solid ${colors.buttonBorder}`,
+            borderRadius: 6, color: colors.buttonText,
             cursor: 'pointer', fontFamily: 'monospace', fontSize: 11,
           }}
         >
@@ -186,42 +250,50 @@ function RadarVulnerabilidadInner({}) {
       >
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data} margin={{ top: 16, right: 40, left: 40, bottom: 16 }}>
-            <PolarGrid stroke="rgba(255,255,255,0.08)" />
+            <PolarGrid stroke={colors.grid} />
             <PolarAngleAxis
               dataKey="axis"
-              tick={{ fill: '#94a3b8', fontSize: 11, fontFamily: 'monospace' }}
+              tick={{ fill: colors.textSecondary, fontSize: 11, fontFamily: 'monospace' }}
             />
             <PolarRadiusAxis
               angle={90}
               domain={[0, 100]}
-              tick={{ fill: '#475569', fontSize: 10 }}
+              tick={{ fill: colors.radiusTick, fontSize: 10 }}
               tickCount={4}
             />
-            <Tooltip content={<RadarTooltip />} />
+            <Tooltip content={<RadarTooltip colors={colors} />} />
             <Legend
-              wrapperStyle={{ fontSize: 13, fontFamily: 'monospace', paddingTop: 8, color: '#cbd5e1' }}
+              wrapperStyle={{
+                fontSize: 13,
+                fontFamily: 'monospace',
+                paddingTop: 8,
+                color: colors.textSecondary,
+              }}
+              formatter={(value) => (
+                <span style={{ color: colors.textSecondary }}>{value}</span>
+              )}
             />
 
             <Radar
               name={SERIES.blackout28A.label[lang] || SERIES.blackout28A.label.es}
               dataKey="blackout28A"
-              stroke="#ef4444"
-              fill="rgba(239,68,68,0.15)"
+              stroke={colors.blackout}
+              fill={colors.blackoutFill}
               strokeWidth={2}
             />
             <Radar
               name={SERIES.postBlackout.label[lang] || SERIES.postBlackout.label.es}
               dataKey="postBlackout"
-              stroke="#f59e0b"
-              fill="rgba(245,158,11,0.10)"
+              stroke={colors.post}
+              fill={colors.postFill}
               strokeWidth={2}
               strokeDasharray="5 3"
             />
             <Radar
               name={SERIES.optimal.label[lang] || SERIES.optimal.label.es}
               dataKey="optimal"
-              stroke="#10b981"
-              fill="rgba(16,185,129,0.08)"
+              stroke={colors.optimal}
+              fill={colors.optimalFill}
               strokeWidth={2}
               strokeDasharray="3 5"
             />
@@ -232,16 +304,18 @@ function RadarVulnerabilidadInner({}) {
       {/* Interpretación */}
       <div style={{
         marginTop: '0.75rem',
-        fontSize: 12, color: 'var(--text-1, #64748b)',
-        fontFamily: 'monospace', lineHeight: 1.6,
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        fontSize: 12,
+        color: colors.footerText,
+        fontFamily: 'monospace',
+        lineHeight: 1.6,
+        borderTop: `1px solid ${colors.footerBorder}`,
         paddingTop: '0.75rem',
       }}>
         {isEs
           ? 'Área mayor = sistema más resiliente. El 28-A (rojo) muestra el colapso de las dimensiones de inercia, SCR e interconexión. La Operación Reforzada mejora parcialmente el perfil. El PNIEC 2030 con BESS-GFM recupera el equilibrio global.'
           : 'Larger area = more resilient system. April 28 (red) shows collapsed inertia, SCR and interconnection dimensions. Reinforced Operation partially improves the profile. PNIEC 2030 with BESS-GFM restores overall balance.'}
         <br />
-        <span style={{ fontSize: 10, color: '#374151' }}>
+        <span style={{ fontSize: 10, color: colors.footerMuted }}>
           {isEs
             ? 'Fuentes: ENTSO-E Factual p.36 (inercia), Comité de Análisis p.38 (IBR%), REE informe abr 2026 (post-28A), RD 997/2025 (PNIEC 2030).'
             : 'Sources: ENTSO-E Factual p.36 (inertia), Analysis Committee p.38 (IBR%), REE April 2026 report (post-28A), RD 997/2025 (PNIEC 2030).'}
@@ -257,7 +331,7 @@ export default function RadarVulnerabilidad({}) {
     <BrowserOnly fallback={
       <div style={{
         height: 380, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#6B6255',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando radar de vulnerabilidad…' : 'Loading vulnerability radar…'}

@@ -1,28 +1,57 @@
 .kpiDashboard {
-  --color-text-primary: #1c1e21;
-  --color-text-secondary: #606770;
-  --color-text-tertiary: #8a94a2;
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f4f5f7;
-  --color-border-tertiary: #dadde1;
+  --kpi-text-primary: #191814;
+  --kpi-text-secondary: #4A4338;
+  --kpi-text-tertiary: #7A7062;
+
+  --kpi-bg-card: rgba(255, 252, 245, 0.82);
+  --kpi-bg-card-hover: #FFFCF5;
+  --kpi-border: rgba(25, 24, 20, 0.14);
+  --kpi-border-hover: rgba(25, 24, 20, 0.26);
+
+  --kpi-red: #A13D36;
+  --kpi-amber: #A96000;
+  --kpi-green: #2F6B4F;
+
+  --kpi-tooltip-bg: #FFFCF5;
+  --kpi-tooltip-border: rgba(25, 24, 20, 0.16);
+  --kpi-tooltip-shadow: 0 10px 28px rgba(25, 24, 20, 0.10);
+
+  --kpi-warning-soft: rgba(169, 96, 0, 0.10);
+  --kpi-warning-border: rgba(169, 96, 0, 0.30);
+  --kpi-warning-text: #A96000;
+
   --border-radius-md: 8px;
   --transition-fast: 120ms ease;
   --transition-base: 180ms ease;
 
   padding: 24px 0;
   background: transparent;
-  color: var(--color-text-primary);
+  color: var(--kpi-text-primary);
   font-family: monospace;
   font-size: 11px;
 }
 
 html[data-theme='dark'] .kpiDashboard {
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #b0b0b0;
-  --color-text-tertiary: #808080;
-  --color-background-primary: #1a1a1a;
-  --color-background-secondary: #2d2d2d;
-  --color-border-tertiary: #404040;
+  --kpi-text-primary: #F4F7FB;
+  --kpi-text-secondary: #C7D2E3;
+  --kpi-text-tertiary: #91A4BC;
+
+  --kpi-bg-card: rgba(16, 29, 53, 0.72);
+  --kpi-bg-card-hover: rgba(23, 39, 68, 0.84);
+  --kpi-border: rgba(226, 232, 240, 0.14);
+  --kpi-border-hover: rgba(226, 232, 240, 0.26);
+
+  --kpi-red: #D98798;
+  --kpi-amber: #E6B45C;
+  --kpi-green: #A6C67B;
+
+  --kpi-tooltip-bg: #101D35;
+  --kpi-tooltip-border: rgba(226, 232, 240, 0.16);
+  --kpi-tooltip-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
+
+  --kpi-warning-soft: rgba(230, 180, 92, 0.11);
+  --kpi-warning-border: rgba(230, 180, 92, 0.34);
+  --kpi-warning-text: #E6B45C;
 }
 
 .kpiGrid {
@@ -45,8 +74,8 @@ html[data-theme='dark'] .kpiDashboard {
 
 .kpiCard {
   position: relative;
-  background: var(--color-background-secondary);
-  border: 1px solid var(--color-border-tertiary);
+  background: var(--kpi-bg-card);
+  border: 1px solid var(--kpi-border);
   border-left: 4px solid;
   border-radius: var(--border-radius-md);
   padding: 12px;
@@ -54,59 +83,69 @@ html[data-theme='dark'] .kpiDashboard {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color var(--transition-base), background-color var(--transition-base);
+  transition:
+    border-color var(--transition-base),
+    background-color var(--transition-base),
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
   cursor: help;
+  box-shadow: 0 8px 24px rgba(25, 24, 20, 0.045);
+}
+
+html[data-theme='dark'] .kpiCard {
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.20);
 }
 
 .kpiCard:hover {
-  background-color: var(--color-background-primary);
-  border-color: #606060;
+  background-color: var(--kpi-bg-card-hover);
+  border-color: var(--kpi-border-hover);
+  transform: translateY(-2px);
 }
 
 .kpiCard.red {
-  border-left-color: #E24B4A;
+  border-left-color: var(--kpi-red);
 }
 
 .kpiCard.amber {
-  border-left-color: #EF9F27;
+  border-left-color: var(--kpi-amber);
 }
 
 .kpiCard.green {
-  border-left-color: #1D9E75;
+  border-left-color: var(--kpi-green);
 }
 
 .kpiLabel {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-text-secondary);
+  color: var(--kpi-text-secondary);
   line-height: 1.5;
 }
 
 .kpiValue {
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 700;
   color: inherit;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
 
 .kpiCard.red .kpiValue {
-  color: #E24B4A;
+  color: var(--kpi-red);
 }
 
 .kpiCard.amber .kpiValue {
-  color: #EF9F27;
+  color: var(--kpi-amber);
 }
 
 .kpiCard.green .kpiValue {
-  color: #1D9E75;
+  color: var(--kpi-green);
 }
 
 .kpiContext {
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--kpi-text-tertiary);
   font-variant-numeric: tabular-nums;
   line-height: 1.5;
 }
@@ -116,19 +155,19 @@ html[data-theme='dark'] .kpiDashboard {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%) translateY(-12px);
-  background: var(--color-background-primary);
-  border: 1px solid var(--color-border-tertiary);
+  background: var(--kpi-tooltip-bg);
+  border: 1px solid var(--kpi-tooltip-border);
   border-radius: var(--border-radius-md);
   padding: 8px 12px;
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--kpi-text-secondary);
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-fast), visibility var(--transition-fast);
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--kpi-tooltip-shadow);
 }
 
 .kpiTooltip::after {
@@ -138,13 +177,14 @@ html[data-theme='dark'] .kpiDashboard {
   left: 50%;
   width: 8px;
   height: 8px;
-  background: var(--color-background-primary);
-  border-right: 1px solid var(--color-border-tertiary);
-  border-bottom: 1px solid var(--color-border-tertiary);
+  background: var(--kpi-tooltip-bg);
+  border-right: 1px solid var(--kpi-tooltip-border);
+  border-bottom: 1px solid var(--kpi-tooltip-border);
   transform: translateX(-50%) translateY(-5px) rotate(45deg);
 }
 
-.kpiCard:hover .kpiTooltip {
+.kpiCard:hover .kpiTooltip,
+.kpiCard:focus-within .kpiTooltip {
   opacity: 1;
   visibility: visible;
 }
@@ -152,9 +192,9 @@ html[data-theme='dark'] .kpiDashboard {
 .kpiFooter {
   margin-top: 24px;
   padding-top: 12px;
-  border-top: 1px solid var(--color-border-tertiary);
+  border-top: 1px solid var(--kpi-border);
   font-size: 10px;
-  color: var(--color-text-tertiary);
+  color: var(--kpi-text-tertiary);
   text-align: center;
   line-height: 1.6;
 }
@@ -164,18 +204,24 @@ html[data-theme='dark'] .kpiDashboard {
   margin: 0 auto;
 }
 
-/* PARCHE MÓVIL */
 @media (max-width: 768px) {
   .kpiGrid {
     grid-template-columns: 1fr !important;
     gap: 1rem;
   }
+
   .kpiCard {
     max-width: 100%;
     padding: 1rem;
     box-sizing: border-box;
   }
+
   .kpiValue {
     font-size: 1.8rem !important;
+  }
+
+  .kpiTooltip {
+    white-space: normal;
+    width: min(280px, calc(100vw - 48px));
   }
 }

@@ -6,6 +6,7 @@ import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import datos28A from '@site/static/data/datos28A.json';
+import { useColorMode } from '@docusaurus/theme-common';
 
 // Valores del 28-A en el instante del colapso (positivo = exportación desde España)
 const SNAPSHOT_28A = {
@@ -16,6 +17,48 @@ const SNAPSHOT_28A = {
 function BalanceIntercambiosInner() {
   const lang = useDocLang();
   const isEs = lang === 'es';
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    wrapperBg: '#071326',
+    wrapperBorder: 'rgba(226, 232, 240, 0.08)',
+    title: '#F4F7FB',
+    desc: '#E6EDF7',
+    secondary: '#91A4BC',
+    axes: '#C7D2E3',
+    grid: 'rgba(244, 247, 251, 0.10)',
+    zeroLine: 'rgba(244, 247, 251, 0.24)',
+    bar28A: '#D98798',
+    bar28AHover: '#C8798A',
+    barNow: '#7DCDE3',
+    barNowHover: '#8FB6FF',
+    chipBg: 'rgba(16, 29, 53, 0.76)',
+    chipBorder: 'rgba(230, 180, 92, 0.30)',
+    chipShadow: '0 10px 28px rgba(0, 0, 0, 0.26)',
+    chipLabel: '#91A4BC',
+    valPositive: '#E6B45C',
+    valNegative: '#7DCDE3',
+  } : {
+    wrapperBg: '#F6F0E3',
+    wrapperBorder: 'transparent',
+    title: '#2A2925',
+    desc: '#191814',
+    secondary: '#7A7062',
+    axes: '#7A7062',
+    grid: 'rgba(25, 24, 20, 0.10)',
+    zeroLine: 'rgba(25, 24, 20, 0.22)',
+    bar28A: '#A13D36',
+    bar28AHover: '#7A263A',
+    barNow: '#1F6F78',
+    barNowHover: '#155E66',
+    chipBg: 'rgba(230, 223, 209, 0.45)',
+    chipBorder: 'rgba(161, 61, 54, 0.18)',
+    chipShadow: 'none',
+    chipLabel: '#7A7062',
+    valPositive: '#1F6F78',
+    valNegative: '#A13D36',
+  };
 
   const [Plot, setPlot]   = useState(null);
   const [data, setData]   = useState(null);
@@ -52,14 +95,16 @@ function BalanceIntercambiosInner() {
       x: [isEs ? 'Francia' : 'France', isEs ? 'Portugal' : 'Portugal'],
       y: [SNAPSHOT_28A.Francia, SNAPSHOT_28A.Portugal],
       type: 'bar', name: isEs ? '28-A (colapso)' : '28-A (collapse)',
-      marker: { color: '#ef4444', opacity: 0.75, line: { color: '#ef4444', width: 1 } },
+      marker: { color: colors.bar28A, opacity: 0.95, line: { color: colors.bar28A, width: 1 } },
+      hoverlabel: { bgcolor: isDark ? '#071326' : '#E6DFD1', font: { color: isDark ? '#F4F7FB' : '#2A2925' } },
       hovertemplate: '<b>%{x}</b><br>28-A: %{y:.0f} MW<extra></extra>',
     },
     {
       x: [isEs ? 'Francia' : 'France', isEs ? 'Portugal' : 'Portugal'],
       y: [franciaHoy, portugalHoy],
       type: 'bar', name: isEs ? 'Ahora' : 'Now',
-      marker: { color: '#06b6d4', opacity: 0.85, line: { color: '#06b6d4', width: 1 } },
+      marker: { color: colors.barNow, opacity: 0.95, line: { color: colors.barNow, width: 1 } },
+      hoverlabel: { bgcolor: isDark ? '#071326' : '#E6DFD1', font: { color: isDark ? '#F4F7FB' : '#2A2925' } },
       hovertemplate: '<b>%{x}</b><br>' + (isEs ? 'Ahora' : 'Now') + ': %{y:.0f} MW<extra></extra>',
     },
   ];
@@ -67,26 +112,27 @@ function BalanceIntercambiosInner() {
   const layout = {
     barmode: 'group',
     plot_bgcolor: 'rgba(0,0,0,0)', paper_bgcolor: 'rgba(0,0,0,0)',
-    xaxis: { gridcolor: 'rgba(255,255,255,0.06)', color: '#a0a0b0' },
+    xaxis: { gridcolor: colors.grid, color: colors.axes },
     yaxis: {
       title: isEs ? 'MW (positivo = exportación desde España)' : 'MW (positive = export from Spain)',
-      gridcolor: 'rgba(255,255,255,0.06)', color: '#a0a0b0',
-      zeroline: true, zerolinecolor: 'rgba(255,255,255,0.15)',
+      gridcolor: colors.grid, color: colors.axes,
+      zeroline: true, zerolinecolor: colors.zeroLine,
     },
-    legend: { orientation: 'h', y: -0.22, font: { color: '#a0a0b0', size: 11 } },
+    legend: { orientation: 'h', y: -0.22, font: { color: colors.axes, size: 11 } },
     margin: { t: 20, b: 80, l: 70, r: 20 },
-    font: { family: 'Inter, sans-serif', color: '#a0a0b0' },
+    font: { family: 'Inter, sans-serif', color: colors.axes },
     height: 360,
     shapes: [{
       type: 'line', x0: -0.5, x1: 1.5, y0: 0, y1: 0,
-      line: { color: 'rgba(255,255,255,0.2)', width: 1 },
+      line: { color: colors.zeroLine, width: 1 },
     }],
+    hovermode: 'closest',
   };
 
   const neto = data?.intercambio_neto ?? null;
 
   return (
-    <div style={S.wrapper}>
+    <div style={{ ...S.wrapper, backgroundColor: colors.wrapperBg, border: colors.wrapperBorder === 'transparent' ? 'none' : `1px solid ${colors.wrapperBorder}`, borderRadius: '12px', padding: '1.5rem' }}>
       <Plot
         data={traces}
         layout={layout}
@@ -96,25 +142,25 @@ function BalanceIntercambiosInner() {
 
       {/* Métricas */}
       <div style={S.row}>
-        <FlowChip country={isEs ? "Francia" : "France"} value={franciaHoy} ref28A={SNAPSHOT_28A.Francia} isEs={isEs} />
-        <FlowChip country={isEs ? "Portugal" : "Portugal"} value={portugalHoy} ref28A={SNAPSHOT_28A.Portugal} isEs={isEs} />
+        <FlowChip country={isEs ? "Francia" : "France"} value={franciaHoy} ref28A={SNAPSHOT_28A.Francia} isEs={isEs} colors={colors} />
+        <FlowChip country={isEs ? "Portugal" : "Portugal"} value={portugalHoy} ref28A={SNAPSHOT_28A.Portugal} isEs={isEs} colors={colors} />
         {neto !== null && (
-          <div style={{ ...S.chip, borderColor: 'rgba(255,170,0,0.2)' }}>
-            <span style={S.chipLabel}>{isEs ? 'Saldo neto total' : 'Total net balance'}</span>
-            <span style={{ ...S.chipVal, color: neto < 0 ? '#10b981' : '#ef4444' }}>
+          <div style={{ ...S.chip, backgroundColor: colors.chipBg, borderColor: colors.chipBorder, boxShadow: colors.chipShadow }}>
+            <span style={{ ...S.chipLabel, color: colors.chipLabel }}>{isEs ? 'Saldo neto total' : 'Total net balance'}</span>
+            <span style={{ ...S.chipVal, color: neto < 0 ? colors.valPositive : colors.valNegative }}>
               {neto > 0 ? '+' : ''}{neto.toFixed(0)} MW
             </span>
-            <span style={S.chipSub}>{neto < 0 ? (isEs ? 'Exportador neto' : 'Net exporter') : (isEs ? 'Importador neto' : 'Net importer')}</span>
+            <span style={{ ...S.chipSub, color: colors.secondary }}>{neto < 0 ? (isEs ? 'Exportador neto' : 'Net exporter') : (isEs ? 'Importador neto' : 'Net importer')}</span>
           </div>
         )}
       </div>
 
-      <p style={S.note} dangerouslySetInnerHTML={{ __html: isEs 
+      <p style={{ ...S.note, color: colors.desc, borderLeft: `3px solid ${colors.valPositive}` }} dangerouslySetInnerHTML={{ __html: isEs 
         ? `El 28-A España era <b>exportador neto</b> hacia Francia y Portugal con 870 + 2.600 MW, vaciando sus propias reservas mientras el sistema oscilaba. Valores negativos = importación.`
         : `On 28-A Spain was a <b>net exporter</b> to France and Portugal with 870 + 2,600 MW, emptying its own reserves while the system oscillated. Negative values = import.` 
       }} />
 
-      <p style={S.caption}>
+      <p style={{ ...S.caption, color: colors.secondary }}>
         {lastUpdate
           ? (isEs ? 'Actualizado:' : 'Updated:') + ` ${lastUpdate.toLocaleTimeString()} · ` + (isEs ? 'Fuente: ESIOS (REE) · Refresco cada 5 min' : 'Source: ESIOS (REE) · Refreshed every 5 min')
           : (isEs ? 'Sin datos en tiempo real' : 'No real-time data')}
@@ -123,14 +169,14 @@ function BalanceIntercambiosInner() {
   );
 }
 
-function FlowChip({ country, value, ref28A, isEs }) {
+function FlowChip({ country, value, ref28A, isEs, colors }) {
   const isExport = value > 0;
-  const color = isExport ? '#f59e0b' : '#10b981';
+  const color = isExport ? colors.valPositive : colors.valNegative;
   return (
-    <div style={{ ...S.chip, borderColor: color + '44' }}>
-      <span style={S.chipLabel}>{country} {isEs ? 'ahora' : 'now'}</span>
+    <div style={{ ...S.chip, backgroundColor: colors.chipBg, borderColor: colors.chipBorder, boxShadow: colors.chipShadow }}>
+      <span style={{ ...S.chipLabel, color: colors.chipLabel }}>{country} {isEs ? 'ahora' : 'now'}</span>
       <span style={{ ...S.chipVal, color }}>{value > 0 ? '+' : ''}{value.toFixed(0)} MW</span>
-      <span style={S.chipSub}>28-A: +{ref28A} MW</span>
+      <span style={{ ...S.chipSub, color: colors.secondary }}>28-A: +{ref28A} MW</span>
     </div>
   );
 }

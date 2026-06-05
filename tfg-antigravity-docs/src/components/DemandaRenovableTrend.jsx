@@ -27,6 +27,7 @@
  */
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
@@ -53,16 +54,19 @@ const VARS = [
 ];
 
 // Tooltip personalizado
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, colors }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'var(--chart-bg, rgba(10,15,30,0.97))',
-      border: '1px solid rgba(255,255,255,0.1)',
-      borderRadius: 6, padding: '8px 12px',
-      fontFamily: 'monospace', fontSize: 12, color: '#e2e8f0',
+      background: colors.tooltipBg,
+      border: `1px solid ${colors.tooltipBorder}`,
+      borderRadius: 6,
+      padding: '8px 12px',
+      fontFamily: 'monospace',
+      fontSize: 12,
+      color: colors.tooltipText,
     }}>
-      <p style={{ margin: '0 0 5px', fontWeight: 'bold', color: '#94a3b8' }}>{label}</p>
+      <p style={{ margin: '0 0 5px', fontWeight: 'bold', color: colors.textMuted }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ margin: '0 0 2px', color: p.fill }}>
           {p.name}: {p.value?.toLocaleString('es-ES')} MW
@@ -72,16 +76,19 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-function Chip({ label, value, color }) {
+function Chip({ label, value, color, colors }) {
   return (
     <div style={{
-      flex: 1, minWidth: 160,
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${color}44`,
-      borderRadius: 8, padding: '0.5rem 0.8rem', textAlign: 'center',
+      flex: 1,
+      minWidth: 160,
+      background: colors.chipBg,
+      border: `1px solid ${colors.chipBorder}`,
+      borderRadius: 8,
+      padding: '0.5rem 0.8rem',
+      textAlign: 'center',
     }}>
       <span style={{
-        display: 'block', fontSize: '0.6rem', color: '#a0a0b0',
+        display: 'block', fontSize: '0.6rem', color: colors.chipLabel,
         letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.2rem',
         fontFamily: 'monospace',
       }}>
@@ -93,6 +100,67 @@ function Chip({ label, value, color }) {
 }
 
 function DemandaRenovableTrendInner() {
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    axis: '#C7D2E3',
+    grid: 'rgba(244, 247, 251, 0.10)',
+    axisLine: 'rgba(244, 247, 251, 0.24)',
+
+    bar28A: '#D98798',
+    barNow: '#7DCDE3',
+
+    danger: '#D98798',
+    success: '#A6C67B',
+    warning: '#E6B45C',
+
+    warningSoft: 'rgba(230, 180, 92, 0.11)',
+    warningBorder: 'rgba(230, 180, 92, 0.34)',
+
+    chipBg: 'rgba(16, 29, 53, 0.72)',
+    chipBorder: 'rgba(226, 232, 240, 0.14)',
+    chipLabel: '#91A4BC',
+
+    tooltipBg: '#101D35',
+    tooltipBorder: 'rgba(226, 232, 240, 0.16)',
+    tooltipText: '#F4F7FB',
+
+    footer: '#91A4BC',
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    axis: '#7A7062',
+    grid: 'rgba(25, 24, 20, 0.10)',
+    axisLine: 'rgba(25, 24, 20, 0.22)',
+
+    bar28A: '#A13D36',
+    barNow: '#1F6F78',
+
+    danger: '#A13D36',
+    success: '#2F6B4F',
+    warning: '#A96000',
+
+    warningSoft: 'rgba(169, 96, 0, 0.10)',
+    warningBorder: 'rgba(169, 96, 0, 0.30)',
+
+    chipBg: 'rgba(255, 252, 245, 0.78)',
+    chipBorder: 'rgba(25, 24, 20, 0.14)',
+    chipLabel: '#8A7C6A',
+
+    tooltipBg: '#FFFCF5',
+    tooltipBorder: 'rgba(25, 24, 20, 0.16)',
+    tooltipText: '#191814',
+
+    footer: '#9B9285',
+  };
+
   const [current,    setCurrent]    = useState(null);
   const [snapshot,   setSnapshot]   = useState(null);
   const [loading,    setLoading]    = useState(true);
@@ -150,7 +218,7 @@ function DemandaRenovableTrendInner() {
     return (
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        minHeight: 300, color: 'rgba(160,155,140,0.7)',
+        minHeight: 300, color: colors.textMuted,
         fontSize: '0.8rem', letterSpacing: '0.1em', textTransform: 'uppercase',
         fontFamily: 'monospace',
       }}
@@ -168,10 +236,10 @@ function DemandaRenovableTrendInner() {
       {apiError && (
         <div style={{
           marginBottom: '0.75rem', padding: '0.4rem 0.9rem',
-          background: 'rgba(245,158,11,0.08)',
-          border: '1px solid rgba(245,158,11,0.3)',
+          background: colors.warningSoft,
+          border: `1px solid ${colors.warningBorder}`,
           borderRadius: 6, fontSize: 11,
-          color: '#f59e0b', fontFamily: 'monospace',
+          color: colors.warning, fontFamily: 'monospace',
         }} aria-live="polite">
           ⚠ API ESIOS no disponible — columna "Ahora" mostrará ceros
         </div>
@@ -186,30 +254,30 @@ function DemandaRenovableTrendInner() {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 16, right: 20, left: 8, bottom: 40 }}
                     barCategoryGap="20%">
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
             <XAxis
               dataKey="name"
-              tick={{ fill: '#a0a0b0', fontSize: 11, fontFamily: 'monospace' }}
-              stroke="#404040"
+              tick={{ fill: colors.axis, fontSize: 11, fontFamily: 'monospace' }}
+              stroke={colors.axisLine}
             />
             <YAxis
-              tick={{ fill: '#a0a0b0', fontSize: 10, fontFamily: 'monospace' }}
-              stroke="#404040"
+              tick={{ fill: colors.axis, fontSize: 10, fontFamily: 'monospace' }}
+              stroke={colors.axisLine}
               tickFormatter={v => `${(v/1000).toFixed(0)}k`}
               label={{ value: 'MW', angle: -90, position: 'insideLeft',
-                       fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+                       fill: colors.axis, fontSize: 11 }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip colors={colors} />} />
             <Legend
               wrapperStyle={{ fontSize: 12, fontFamily: 'monospace', paddingTop: 8 }}
               formatter={(value) => (
-                <span style={{ color: value === '28-A' ? '#ef4444' : '#06b6d4' }}>
+                <span style={{ color: value === '28-A' ? colors.bar28A : colors.barNow }}>
                   {value === '28-A' ? '28-A (colapso, 12:30 CEST)' : `Ahora${lastUpdate ? ` · ${lastUpdate.toLocaleTimeString('es-ES')}` : ''}`}
                 </span>
               )}
             />
-            <Bar dataKey="28-A"   fill="#ef4444" opacity={0.75} radius={[3,3,0,0]} />
-            <Bar dataKey="Ahora" fill="#06b6d4" opacity={0.85} radius={[3,3,0,0]} />
+            <Bar dataKey="28-A" fill={colors.bar28A} opacity={0.82} radius={[3, 3, 0, 0]} />
+            <Bar dataKey="Ahora" fill={colors.barNow} opacity={0.88} radius={[3, 3, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -221,21 +289,24 @@ function DemandaRenovableTrendInner() {
             <Chip
               label="Δ Demanda vs 28-A"
               value={`${Number(demandaDelta) > 0 ? '+' : ''}${demandaDelta}%`}
-              color={Math.abs(Number(demandaDelta)) < 5 ? '#10b981' : '#f59e0b'}
+              color={Math.abs(Number(demandaDelta)) < 5 ? colors.success : colors.warning}
+              colors={colors}
             />
           )}
           {renovDelta && (
             <Chip
               label="Δ Renovable vs 28-A"
               value={`${Number(renovDelta) > 0 ? '+' : ''}${renovDelta}%`}
-              color={Number(renovDelta) > 10 ? '#ef4444' : Number(renovDelta) < -10 ? '#10b981' : '#f59e0b'}
+              color={Number(renovDelta) > 10 ? colors.danger : Number(renovDelta) < -10 ? colors.success : colors.warning}
+              colors={colors}
             />
           )}
           {penetracion && (
             <Chip
               label="Penetración renovable"
               value={`${penetracion.toFixed(1)}%`}
-              color={penetracion > 80 ? '#ef4444' : '#10b981'}
+              color={penetracion > 80 ? colors.danger : colors.success}
+              colors={colors}
             />
           )}
         </div>
@@ -243,7 +314,7 @@ function DemandaRenovableTrendInner() {
 
       <p style={{
         marginTop: '1.25rem', fontSize: '0.7rem',
-        color: 'rgba(160,155,140,0.6)',
+        color: colors.footer,
         letterSpacing: '0.04em', fontFamily: 'monospace',
       }}>
         {lastUpdate
@@ -259,7 +330,7 @@ export default function DemandaRenovableTrend() {
     <BrowserOnly fallback={
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        minHeight: 300, color: 'rgba(160,155,140,0.7)',
+        minHeight: 300, color: '#6B6255',
         fontSize: '0.8rem', fontFamily: 'monospace',
       }}>
         Cargando…
