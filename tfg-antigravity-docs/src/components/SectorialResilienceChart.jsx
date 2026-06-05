@@ -25,6 +25,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ReferenceLine,
@@ -61,19 +62,19 @@ const FALLBACK_DATA = [
 ];
 
 // ─── Tooltip personalizado ────────────────────────────────────────────────────
-function ResilienceTooltip({ active, payload, label }) {
+function ResilienceTooltip({ active, payload, label, colors }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'var(--chart-bg, rgba(10,15,30,0.97))',
-      border: '1px solid rgba(255,255,255,0.1)',
+      background: colors.tooltipBg,
+      border: `1px solid ${colors.tooltipBorder}`,
       borderRadius: 6,
       padding: '8px 12px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: colors.tooltipText,
     }}>
-      <p style={{ margin: '0 0 6px', color: '#94a3b8', fontWeight: 'bold' }}>{label}</p>
+      <p style={{ margin: '0 0 6px', color: colors.textMuted, fontWeight: 'bold' }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ margin: '0 0 2px', color: p.color }}>
           {p.name}: {p.value?.toFixed(1)}%
@@ -85,6 +86,67 @@ function ResilienceTooltip({ active, payload, label }) {
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function SectorialResilienceChartInner() {
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    axis: '#C7D2E3',
+    grid: 'rgba(244, 247, 251, 0.10)',
+    axisLine: 'rgba(244, 247, 251, 0.24)',
+
+    industry: '#D98798',
+    services: '#7DCDE3',
+    event: '#E6B45C',
+
+    referenceLine: 'rgba(226, 232, 240, 0.24)',
+    referenceLabel: '#C7D2E3',
+
+    dotFill: '#101D35',
+
+    noteText: '#C7D2E3',
+    noteMuted: '#91A4BC',
+    noteBg: 'rgba(16, 29, 53, 0.56)',
+    noteBorder: 'rgba(230, 180, 92, 0.34)',
+
+    tooltipBg: '#101D35',
+    tooltipBorder: 'rgba(226, 232, 240, 0.16)',
+    tooltipText: '#F4F7FB',
+
+    danger: '#D98798',
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    axis: '#7A7062',
+    grid: 'rgba(25, 24, 20, 0.10)',
+    axisLine: 'rgba(25, 24, 20, 0.22)',
+
+    industry: '#A13D36',
+    services: '#1F6F78',
+    event: '#A96000',
+
+    referenceLine: 'rgba(25, 24, 20, 0.24)',
+    referenceLabel: '#6B6255',
+
+    dotFill: '#FFFCF5',
+
+    noteText: '#3C3830',
+    noteMuted: '#6B6255',
+    noteBg: 'rgba(255, 252, 245, 0.58)',
+    noteBorder: 'rgba(169, 96, 0, 0.30)',
+
+    tooltipBg: '#FFFCF5',
+    tooltipBorder: 'rgba(25, 24, 20, 0.16)',
+    tooltipText: '#191814',
+
+    danger: '#A13D36',
+  };
+
   const [chartData, setChartData] = useState(null);
   const [loading,   setLoading]   = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
@@ -165,7 +227,7 @@ function SectorialResilienceChartInner() {
     return (
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: colors.textMuted,
         fontFamily: 'monospace', fontSize: 13,
       }}
         aria-busy="true" aria-live="polite"
@@ -177,7 +239,7 @@ function SectorialResilienceChartInner() {
 
   if (!chartData) {
     return (
-      <div style={{ textAlign: 'center', padding: '1.5rem', color: '#ef4444' }}>
+      <div style={{ textAlign: 'center', padding: '1.5rem', color: colors.danger }}>
         No se pudieron cargar los datos.
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.8rem', cursor: 'pointer' }}>
           Reintentar
@@ -196,60 +258,63 @@ function SectorialResilienceChartInner() {
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData} margin={{ top: 16, right: 32, left: 8, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
             <XAxis
               dataKey="date"
-              stroke="#475569"
-              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
-              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              stroke={colors.axisLine}
+              tick={{ fill: colors.axis, fontSize: 11 }}
+              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: colors.axis, fontSize: 11 }}
             />
             <YAxis
               domain={[0, 110]}
-              stroke="#475569"
-              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              stroke={colors.axisLine}
+              tick={{ fill: colors.axis, fontSize: 11 }}
               tickFormatter={v => `${v}%`}
-              label={{ value: 'Índice (base 100 = 28-A)', angle: -90, position: 'insideLeft', fill: 'var(--text-1, #64748b)', fontSize: 10 }}
+              label={{ value: 'Índice (base 100 = 28-A)', angle: -90, position: 'insideLeft', fill: colors.axis, fontSize: 10 }}
             />
-            <Tooltip content={<ResilienceTooltip />} />
+            <Tooltip content={<ResilienceTooltip colors={colors} />} />
             <Legend
               verticalAlign="top"
               align="right"
-              wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
+              wrapperStyle={{ fontSize: 12, paddingBottom: 8, color: colors.textSecondary }}
+              formatter={(value) => (
+                <span style={{ color: colors.textSecondary }}>{value}</span>
+              )}
             />
             {/* Nivel de referencia 100% */}
             <ReferenceLine
               y={100}
-              stroke="rgba(255,255,255,0.2)"
+              stroke={colors.referenceLine}
               strokeDasharray="4 4"
-              label={{ value: 'Nivel pre-colapso', position: 'insideTopRight', fill: 'var(--text-1, #64748b)', fontSize: 10 }}
+              label={{ value: 'Nivel pre-colapso', position: 'insideTopRight', fill: colors.referenceLabel, fontSize: 10 }}
             />
             {/* 50% a las 22:00 del 28-A — verificado RDL 7/2025 */}
             <ReferenceDot
               x="28 Abr"
               y={50}
               r={5}
-              fill="#f59e0b"
+              fill={colors.event}
               stroke="none"
-              label={{ value: '22:00 → 50%', position: 'top', fill: '#f59e0b', fontSize: 10 }}
+              label={{ value: '22:00 → 50%', position: 'top', fill: colors.event, fontSize: 10 }}
             />
 
             <Line
               type="monotone"
               dataKey="industry"
-              stroke="#ef4444"
+              stroke={colors.industry}
               strokeWidth={2.5}
               name="Industria (electrointensiva)"
-              dot={{ r: 4, fill: 'var(--chart-bg, #0a0f1c)', stroke: '#ef4444', strokeWidth: 2 }}
+              dot={{ r: 4, fill: colors.dotFill, stroke: colors.industry, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />
             <Line
               type="monotone"
               dataKey="services"
-              stroke="#06b6d4"
+              stroke={colors.services}
               strokeWidth={2.5}
               name="Servicios / Residencial"
-              dot={{ r: 4, fill: 'var(--chart-bg, #0a0f1c)', stroke: '#06b6d4', strokeWidth: 2 }}
+              dot={{ r: 4, fill: colors.dotFill, stroke: colors.services, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />
@@ -261,11 +326,11 @@ function SectorialResilienceChartInner() {
       <div style={{
         marginTop: '1rem',
         fontSize: '0.8rem',
-        color: 'rgba(160,155,140,0.75)',
-        borderLeft: '3px solid rgba(255,170,0,0.35)',
+        color: colors.noteText,
+        borderLeft: `3px solid ${colors.noteBorder}`,
         padding: '0.5rem 1rem',
         lineHeight: 1.65,
-        background: 'rgba(255,255,255,0.02)',
+        background: colors.noteBg,
         borderRadius: '0 6px 6px 0',
       }}>
         <p style={{ margin: '0 0 0.4rem' }}>
@@ -278,7 +343,7 @@ function SectorialResilienceChartInner() {
           La normalización al 99,95% se alcanzó a las 07:00 del 29 de abril.
           (ENTSO-E Factual, pp.12-13)
         </p>
-        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
+        <p style={{ margin: 0, fontSize: '0.72rem', color: colors.noteMuted }}>
           {usingFallback
             ? '⚠ Datos de fallback — API REData no disponible. Datos basados en RDL 7/2025 y ENTSO-E Factual.'
             : 'Fuente: Índice de Red Eléctrica (IRE) por sector — REData (REE). Base 100 = demanda del 28 de abril de 2025.'}
@@ -293,7 +358,7 @@ export default function SectorialResilienceChart() {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#6B6255',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando gráfico de resiliencia…
