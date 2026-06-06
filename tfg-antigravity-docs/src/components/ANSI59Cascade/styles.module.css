@@ -1,16 +1,85 @@
 .wrapper {
+  --ansi-bg-card: rgba(255, 252, 245, 0.84);
+  --ansi-bg-panel: rgba(255, 252, 245, 0.62);
+  --ansi-bg-console: rgba(25, 24, 20, 0.035);
+
+  --ansi-text-primary: #191814;
+  --ansi-text-secondary: #4A4338;
+  --ansi-text-muted: #7A7062;
+
+  --ansi-border: rgba(25, 24, 20, 0.14);
+  --ansi-border-strong: rgba(25, 24, 20, 0.24);
+
+  --ansi-accent: #1F6F78;
+  --ansi-accent-soft: rgba(31, 111, 120, 0.10);
+  --ansi-accent-border: rgba(31, 111, 120, 0.34);
+
+  --ansi-success: #2F6B4F;
+  --ansi-success-soft: rgba(47, 107, 79, 0.10);
+  --ansi-success-border: rgba(47, 107, 79, 0.30);
+
+  --ansi-warning: #A96000;
+  --ansi-warning-soft: rgba(169, 96, 0, 0.10);
+  --ansi-warning-border: rgba(169, 96, 0, 0.30);
+
+  --ansi-danger: #A13D36;
+  --ansi-danger-soft: rgba(161, 61, 54, 0.10);
+  --ansi-danger-border: rgba(161, 61, 54, 0.34);
+
+  --ansi-console-text: #2F6B4F;
+  --ansi-log-border: #2F6B4F;
+
+  --ansi-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --ansi-shadow-active: 0 12px 32px rgba(25, 24, 20, 0.10);
+
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(10, 15, 30, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ansi-bg-card);
+  border: 1px solid var(--ansi-border);
   border-radius: 16px;
   font-family: 'Inter', -apple-system, sans-serif;
-  color: #f8fafc;
+  color: var(--ansi-text-primary);
   margin: 1.5rem 0;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--ansi-shadow);
+}
+
+html[data-theme='dark'] .wrapper {
+  --ansi-bg-card: rgba(16, 29, 53, 0.76);
+  --ansi-bg-panel: rgba(7, 19, 38, 0.58);
+  --ansi-bg-console: rgba(7, 19, 38, 0.72);
+
+  --ansi-text-primary: #F4F7FB;
+  --ansi-text-secondary: #C7D2E3;
+  --ansi-text-muted: #91A4BC;
+
+  --ansi-border: rgba(226, 232, 240, 0.14);
+  --ansi-border-strong: rgba(226, 232, 240, 0.24);
+
+  --ansi-accent: #7DCDE3;
+  --ansi-accent-soft: rgba(125, 205, 227, 0.12);
+  --ansi-accent-border: rgba(125, 205, 227, 0.38);
+
+  --ansi-success: #A6C67B;
+  --ansi-success-soft: rgba(166, 198, 123, 0.10);
+  --ansi-success-border: rgba(166, 198, 123, 0.34);
+
+  --ansi-warning: #E6B45C;
+  --ansi-warning-soft: rgba(230, 180, 92, 0.11);
+  --ansi-warning-border: rgba(230, 180, 92, 0.34);
+
+  --ansi-danger: #D98798;
+  --ansi-danger-soft: rgba(217, 135, 152, 0.10);
+  --ansi-danger-border: rgba(217, 135, 152, 0.36);
+
+  --ansi-console-text: #A6C67B;
+  --ansi-log-border: #A6C67B;
+
+  --ansi-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --ansi-shadow-active: 0 16px 38px rgba(0, 0, 0, 0.34);
 }
 
 @media (max-width: 900px) {
@@ -26,7 +95,7 @@
   align-items: center;
   gap: 1.5rem;
   padding-bottom: 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--ansi-border);
 }
 
 @media (max-width: 900px) {
@@ -40,6 +109,7 @@
 .btnGroup {
   display: flex;
   gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .controlBtn {
@@ -53,28 +123,33 @@
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.04);
-  color: #e2e8f0;
+  border: 1px solid var(--ansi-border);
+  background: var(--ansi-bg-panel);
+  color: var(--ansi-text-secondary);
 }
 
 .controlBtn.primary {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+  background: var(--ansi-accent);
+  border-color: var(--ansi-accent);
+  color: #FFFCF5;
+  box-shadow: var(--ansi-shadow-active);
+}
+
+html[data-theme='dark'] .controlBtn.primary {
+  color: #071326;
 }
 
 .controlBtn.primary:hover {
-  background: #2563eb;
-  border-color: #2563eb;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.45);
+  background: var(--ansi-accent);
+  border-color: var(--ansi-accent);
+  box-shadow: var(--ansi-shadow-active);
+  transform: translateY(-1px);
 }
 
 .controlBtn:hover:not(.primary) {
-  background: rgba(255,255,255,0.08);
-  color: white;
-  border-color: rgba(255,255,255,0.18);
+  background: var(--ansi-accent-soft);
+  color: var(--ansi-accent);
+  border-color: var(--ansi-accent-border);
 }
 
 .sliderRow {
@@ -96,13 +171,13 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--ansi-text-muted);
 }
 
 .sliderValue {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #38bdf8;
+  color: var(--ansi-accent);
   font-family: monospace;
 }
 
@@ -111,8 +186,9 @@
   width: 100%;
   height: 5px;
   border-radius: 3px;
-  background: rgba(255,255,255,0.1);
+  background: var(--ansi-border);
   outline: none;
+  accent-color: var(--ansi-accent);
 }
 
 .rangeInput::-webkit-slider-thumb {
@@ -120,12 +196,11 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #38bdf8;
+  background: var(--ansi-accent);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 8px var(--ansi-accent-border);
 }
 
-/* LEFT SIDE: Nodes Grid */
 .nodesContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -139,8 +214,8 @@
 }
 
 .nodeCard {
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--ansi-bg-panel);
+  border: 1px solid var(--ansi-border);
   border-radius: 10px;
   padding: 0.85rem 1rem;
   display: flex;
@@ -151,8 +226,8 @@
 }
 
 .nodeCard.tripped {
-  border-color: rgba(239, 68, 68, 0.25);
-  background: rgba(239, 68, 68, 0.03);
+  border-color: var(--ansi-danger-border);
+  background: var(--ansi-danger-soft);
 }
 
 .nodeHeader {
@@ -167,7 +242,7 @@
   gap: 0.4rem;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--ansi-text-primary);
 }
 
 .badge {
@@ -179,21 +254,28 @@
 }
 
 .badge.active {
-  background: rgba(34, 197, 94, 0.12);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: var(--ansi-success-soft);
+  color: var(--ansi-success);
+  border: 1px solid var(--ansi-success-border);
 }
 
 .badge.tripped {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--ansi-danger-soft);
+  color: var(--ansi-danger);
+  border: 1px solid var(--ansi-danger-border);
   animation: flashTrip 1.5s infinite alternate;
 }
 
 @keyframes flashTrip {
-  0% { opacity: 0.6; box-shadow: 0 0 0 rgba(239,68,68,0); }
-  100% { opacity: 1; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+  0% {
+    opacity: 0.72;
+    box-shadow: 0 0 0 transparent;
+  }
+
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 8px var(--ansi-danger-soft);
+  }
 }
 
 .voltageMetricRow {
@@ -204,21 +286,29 @@
 }
 
 .voltageLabel {
-  color: #64748b;
+  color: var(--ansi-text-muted);
 }
 
 .voltageValue {
   font-weight: 700;
 }
 
-.voltageValue.green { color: #22c55e; }
-.voltageValue.amber { color: #eab308; }
-.voltageValue.red { color: #ef4444; }
+.voltageValue.green {
+  color: var(--ansi-success);
+}
+
+.voltageValue.amber {
+  color: var(--ansi-warning);
+}
+
+.voltageValue.red {
+  color: var(--ansi-danger);
+}
 
 .progressBarBg {
   width: 100%;
   height: 6px;
-  background: rgba(255,255,255,0.06);
+  background: var(--ansi-border);
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -230,23 +320,31 @@
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s ease;
 }
 
-.progressBarFill.green { background: #22c55e; }
-.progressBarFill.amber { background: #eab308; }
-.progressBarFill.red { background: #ef4444; }
+.progressBarFill.green {
+  background: var(--ansi-success);
+}
+
+.progressBarFill.amber {
+  background: var(--ansi-warning);
+}
+
+.progressBarFill.red {
+  background: var(--ansi-danger);
+}
 
 .nodeMeta {
   display: flex;
   justify-content: space-between;
+  gap: 0.75rem;
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--ansi-text-muted);
 }
 
 .metaTripTime {
-  color: #ef4444;
+  color: var(--ansi-danger);
   font-weight: 600;
 }
 
-/* RIGHT SIDE: Timeline and Live Stats */
 .dashboardSidebar {
   display: flex;
   flex-direction: column;
@@ -254,8 +352,8 @@
 }
 
 .statsCard {
-  background: rgba(15, 23, 42, 0.55);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--ansi-bg-panel);
+  border: 1px solid var(--ansi-border);
   border-radius: 12px;
   padding: 1rem;
   display: flex;
@@ -268,7 +366,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--ansi-text-muted);
   margin: 0 0 0.2rem 0;
 }
 
@@ -276,27 +374,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   font-size: 0.8rem;
 }
 
 .statLabel {
-  color: #94a3b8;
+  color: var(--ansi-text-secondary);
 }
 
 .statValue {
   font-family: monospace;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--ansi-text-primary);
 }
 
 .statValue.warning {
-  color: #ef4444;
+  color: var(--ansi-danger);
 }
 
-/* Event Log / Console Console styles */
 .consoleCard {
-  background: #090d16;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--ansi-bg-console);
+  border: 1px solid var(--ansi-border);
   border-radius: 12px;
   padding: 0.85rem;
   display: flex;
@@ -309,7 +407,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--ansi-border);
   padding-bottom: 0.4rem;
 }
 
@@ -318,28 +416,33 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #38bdf8;
+  color: var(--ansi-accent);
   font-family: monospace;
 }
 
 .consoleDot {
   width: 6px;
   height: 6px;
-  background: #ef4444;
+  background: var(--ansi-danger);
   border-radius: 50%;
   animation: pulseDot 1s infinite alternate;
 }
 
 @keyframes pulseDot {
-  0% { opacity: 0.4; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .consoleBody {
   font-family: monospace;
   font-size: 0.72rem;
   line-height: 1.4;
-  color: #a7f3d0;
+  color: var(--ansi-console-text);
   overflow-y: auto;
   flex: 1;
   display: flex;
@@ -348,7 +451,6 @@
   padding-right: 0.25rem;
 }
 
-/* Custom Scrollbar for console */
 .consoleBody::-webkit-scrollbar {
   width: 4px;
 }
@@ -358,35 +460,41 @@
 }
 
 .consoleBody::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.15);
+  background: var(--ansi-border-strong);
   border-radius: 2px;
 }
 
 .logEntry {
-  border-left: 2px solid #059669;
+  border-left: 2px solid var(--ansi-log-border);
   padding-left: 0.4rem;
   animation: slideInLog 0.2s ease-out;
 }
 
 @keyframes slideInLog {
-  0% { opacity: 0; transform: translateX(-4px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .logTime {
-  color: #f59e0b;
+  color: var(--ansi-warning);
   margin-right: 0.4rem;
   font-weight: bold;
 }
 
 .emptyLog {
-  color: #4b5563;
+  color: var(--ansi-text-muted);
   text-align: center;
   margin: auto;
   font-style: italic;
 }
 
-/* End Game Banner */
 .banner {
   grid-column: 1 / span 2;
   border-radius: 12px;
@@ -400,22 +508,29 @@
 }
 
 @keyframes fadeInBanner {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .banner.collapsed {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #fca5a5;
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.1);
+  background: var(--ansi-danger-soft);
+  border: 1px solid var(--ansi-danger-border);
+  color: var(--ansi-danger);
+  box-shadow: var(--ansi-shadow-active);
 }
 
 .banner.stabilized {
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #a7f3d0;
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.05);
+  background: var(--ansi-success-soft);
+  border: 1px solid var(--ansi-success-border);
+  color: var(--ansi-success);
+  box-shadow: var(--ansi-shadow);
 }
 
 @media (max-width: 900px) {

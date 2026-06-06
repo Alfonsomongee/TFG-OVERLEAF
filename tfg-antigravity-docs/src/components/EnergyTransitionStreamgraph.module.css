@@ -1,10 +1,79 @@
 .container {
+  --ets-bg-card: rgba(255, 252, 245, 0.84);
+  --ets-bg-card-hover: #FFFCF5;
+  --ets-bg-panel: rgba(255, 252, 245, 0.62);
+
+  --ets-text-primary: #191814;
+  --ets-text-secondary: #4A4338;
+  --ets-text-muted: #7A7062;
+
+  --ets-border: rgba(25, 24, 20, 0.14);
+  --ets-border-strong: rgba(25, 24, 20, 0.24);
+
+  --ets-grid: rgba(25, 24, 20, 0.10);
+  --ets-axis: #6B6255;
+  --ets-axis-line: rgba(25, 24, 20, 0.20);
+
+  --ets-tooltip-bg: #FFFCF5;
+  --ets-tooltip-border: rgba(31, 111, 120, 0.34);
+  --ets-tooltip-text: #191814;
+  --ets-tooltip-muted: #6B6255;
+
+  --ets-accent: #1F6F78;
+
+  --ets-carbon: #5F5B54;
+  --ets-gas: #A96000;
+  --ets-nuclear: #6E4D8B;
+  --ets-hydro: #2F6B4F;
+  --ets-wind: #1F6F78;
+  --ets-solar: #D9A441;
+  --ets-emissions: #A13D36;
+
+  --ets-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --ets-shadow-tooltip: 0 12px 32px rgba(25, 24, 20, 0.12);
+
   margin: 2rem 0;
   padding: 1.5rem;
-  background-color: var(--ifm-background-surface-color, #1b1b1d);
+  background: var(--ets-bg-card);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: var(--ets-shadow);
+  border: 1px solid var(--ets-border);
+  color: var(--ets-text-primary);
+}
+
+html[data-theme='dark'] .container {
+  --ets-bg-card: rgba(16, 29, 53, 0.76);
+  --ets-bg-card-hover: rgba(23, 39, 68, 0.88);
+  --ets-bg-panel: rgba(7, 19, 38, 0.58);
+
+  --ets-text-primary: #F4F7FB;
+  --ets-text-secondary: #C7D2E3;
+  --ets-text-muted: #91A4BC;
+
+  --ets-border: rgba(226, 232, 240, 0.14);
+  --ets-border-strong: rgba(226, 232, 240, 0.24);
+
+  --ets-grid: rgba(244, 247, 251, 0.10);
+  --ets-axis: #C7D2E3;
+  --ets-axis-line: rgba(244, 247, 251, 0.22);
+
+  --ets-tooltip-bg: #101D35;
+  --ets-tooltip-border: rgba(125, 205, 227, 0.38);
+  --ets-tooltip-text: #F4F7FB;
+  --ets-tooltip-muted: #91A4BC;
+
+  --ets-accent: #7DCDE3;
+
+  --ets-carbon: #A7ADB6;
+  --ets-gas: #E6B45C;
+  --ets-nuclear: #C4A5E8;
+  --ets-hydro: #A6C67B;
+  --ets-wind: #7DCDE3;
+  --ets-solar: #D9C77C;
+  --ets-emissions: #D98798;
+
+  --ets-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --ets-shadow-tooltip: 0 16px 38px rgba(0, 0, 0, 0.38);
 }
 
 .header {
@@ -15,14 +84,17 @@
 .header h3 {
   margin: 0;
   font-size: 1.5rem;
-  color: var(--ifm-color-primary);
+  color: var(--ets-accent);
 }
 
 .header p {
   margin: 0.5rem 0 0 0;
   font-size: 0.9rem;
-  color: var(--ifm-font-color-base);
-  opacity: 0.8;
+  color: var(--ets-text-secondary);
+}
+
+.header em {
+  color: var(--ets-text-muted);
 }
 
 .chartWrapper {
@@ -31,20 +103,21 @@
 }
 
 .customTooltip {
-  background-color: var(--ifm-background-surface-color, #242526);
-  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ets-tooltip-bg);
+  border: 1px solid var(--ets-tooltip-border);
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: var(--ets-shadow-tooltip);
   min-width: 250px;
+  color: var(--ets-tooltip-text);
 }
 
 .tooltipTitle {
   margin: 0 0 0.8rem 0;
   font-size: 1.1rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid var(--ets-border);
   padding-bottom: 0.5rem;
-  color: var(--ifm-font-color-base);
+  color: var(--ets-tooltip-text);
 }
 
 .tooltipGrid {
@@ -53,7 +126,8 @@
   gap: 0.4rem;
 }
 
-.techLabel, .emissionsLabel {
+.techLabel,
+.emissionsLabel {
   margin: 0;
   display: flex;
   align-items: center;
@@ -63,7 +137,7 @@
 .emissionsLabel {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px dashed var(--ifm-color-emphasis-300);
+  border-top: 1px dashed var(--ets-border-strong);
 }
 
 .dot {
@@ -78,7 +152,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 1rem;
 }
 
@@ -86,18 +160,24 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease,
+    filter 0.2s ease;
   user-select: none;
 }
 
 .legendItem:hover {
-  background-color: var(--ifm-color-emphasis-200);
+  background: var(--ets-bg-panel);
+  border-color: var(--ets-border-strong);
 }
 
 .legendItem.inactive {
-  opacity: 0.4;
+  opacity: 0.38;
   filter: grayscale(100%);
 }
 
@@ -110,6 +190,6 @@
 
 .legendLabel {
   font-size: 0.85rem;
-  color: var(--ifm-font-color-base);
+  color: var(--ets-text-secondary);
   font-weight: 500;
 }

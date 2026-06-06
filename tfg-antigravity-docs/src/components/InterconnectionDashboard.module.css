@@ -1,10 +1,85 @@
 .dashboardContainer {
+  --int-bg-card: rgba(255, 252, 245, 0.84);
+  --int-bg-panel: rgba(255, 252, 245, 0.62);
+  --int-bg-tooltip: #FFFCF5;
+
+  --int-text-primary: #191814;
+  --int-text-secondary: #4A4338;
+  --int-text-muted: #7A7062;
+
+  --int-border: rgba(25, 24, 20, 0.14);
+  --int-border-strong: rgba(25, 24, 20, 0.24);
+
+  --int-grid: rgba(25, 24, 20, 0.10);
+  --int-axis: #6B6255;
+  --int-axis-line: rgba(25, 24, 20, 0.20);
+
+  --int-accent: #1F6F78;
+  --int-export: #1F6F78;
+  --int-import: #8B2635;
+  --int-net: #A96000;
+
+  --int-renewable: #2F6B4F;
+  --int-renewable-soft: rgba(47, 107, 79, 0.12);
+  --int-ratio: #A13D36;
+  --int-ratio-soft: rgba(161, 61, 54, 0.10);
+
+  --int-france: #1F6F78;
+  --int-portugal: #2F6B4F;
+  --int-morocco: #A96000;
+
+  --int-alert-bg: rgba(161, 61, 54, 0.08);
+  --int-alert-border: rgba(161, 61, 54, 0.34);
+  --int-alert-text: #8B2635;
+
+  --int-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --int-shadow-tooltip: 0 12px 32px rgba(25, 24, 20, 0.12);
+
   display: flex;
   flex-direction: column;
   gap: 2rem;
   width: 100%;
   margin: 2rem 0;
   font-family: 'Inter', -apple-system, sans-serif;
+  color: var(--int-text-primary);
+}
+
+html[data-theme='dark'] .dashboardContainer {
+  --int-bg-card: rgba(16, 29, 53, 0.76);
+  --int-bg-panel: rgba(7, 19, 38, 0.58);
+  --int-bg-tooltip: #101D35;
+
+  --int-text-primary: #F4F7FB;
+  --int-text-secondary: #C7D2E3;
+  --int-text-muted: #91A4BC;
+
+  --int-border: rgba(226, 232, 240, 0.14);
+  --int-border-strong: rgba(226, 232, 240, 0.24);
+
+  --int-grid: rgba(244, 247, 251, 0.10);
+  --int-axis: #C7D2E3;
+  --int-axis-line: rgba(244, 247, 251, 0.22);
+
+  --int-accent: #7DCDE3;
+  --int-export: #7DCDE3;
+  --int-import: #D98798;
+  --int-net: #E6B45C;
+
+  --int-renewable: #A6C67B;
+  --int-renewable-soft: rgba(166, 198, 123, 0.10);
+  --int-ratio: #D98798;
+  --int-ratio-soft: rgba(217, 135, 152, 0.10);
+
+  --int-france: #7DCDE3;
+  --int-portugal: #A6C67B;
+  --int-morocco: #E6B45C;
+
+  --int-alert-bg: rgba(217, 135, 152, 0.10);
+  --int-alert-border: rgba(217, 135, 152, 0.36);
+  --int-alert-text: #D98798;
+
+  --int-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --int-shadow-tooltip: 0 16px 38px rgba(0, 0, 0, 0.38);
 }
 
 .dashboardHeader {
@@ -13,7 +88,7 @@
 }
 
 .dashboardHeader h3 {
-  color: #00f0ff;
+  color: var(--int-accent);
   font-size: 1.8rem;
   margin: 0 0 0.5rem 0;
   text-transform: uppercase;
@@ -21,7 +96,7 @@
 }
 
 .dashboardHeader p {
-  color: #94a3b8;
+  color: var(--int-text-muted);
   font-size: 1rem;
   margin: 0;
 }
@@ -36,23 +111,24 @@
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .fullWidth {
     grid-column: 1 / -1;
   }
 }
 
 .card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--int-bg-card);
+  border: 1px solid var(--int-border);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--int-shadow);
   display: flex;
   flex-direction: column;
 }
 
 .cardTitle {
-  color: #e2e8f0;
+  color: var(--int-text-primary);
   font-size: 1.2rem;
   font-weight: 600;
   margin-top: 0;
@@ -60,7 +136,7 @@
 }
 
 .cardDesc {
-  color: #cbd5e1;
+  color: var(--int-text-secondary);
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
 }
@@ -73,27 +149,28 @@
 
 /* Tooltip custom */
 .customTooltip {
-  background: rgba(15, 23, 42, 0.95) !important;
-  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  background: var(--int-bg-tooltip) !important;
+  border: 1px solid var(--int-border-strong) !important;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--int-shadow-tooltip);
+  color: var(--int-text-primary);
 }
 
 .tooltipTitle {
-  color: #00f0ff;
+  color: var(--int-accent);
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--int-border);
   padding-bottom: 0.25rem;
 }
 
 .tooltipEvent {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-  color: #f87171;
+  border-top: 1px dashed var(--int-border);
+  color: var(--int-net);
   font-style: italic;
   font-size: 0.9rem;
   max-width: 250px;
@@ -104,12 +181,14 @@
   .grid {
     grid-template-columns: 1fr !important;
   }
+
   .card {
     max-width: 100vw;
     box-sizing: border-box;
     padding: 1rem;
     overflow-x: hidden;
   }
+
   .chartContainer {
     min-height: 350px !important;
     width: 100% !important;

@@ -84,17 +84,52 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
   const isDark = colorMode === 'dark';
 
   const palette = {
-    landGradientStart: isDark ? '#142c4a' : '#f0ece1',
-    landGradientEnd: isDark ? '#0b1827' : '#d6cebc',
-    landStroke: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(100, 116, 139, 0.3)',
-    reliefLight: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
-    reliefDark: isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)',
-    arcStroke: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(100, 116, 139, 0.4)',
-    nodeStroke: isDark ? '#0a1128' : '#fcfcfc',
-    textFill: isDark ? '#e2e8f0' : '#1e293b',
-    textBg: isDark ? 'rgba(10, 17, 40, 0.8)' : 'rgba(252, 252, 252, 0.85)',
-    textBorder: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
-    gridLine: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+    landGradientStart: isDark ? '#142C4A' : '#ECE3CF',
+    landGradientEnd: isDark ? '#0B1827' : '#D6C9AE',
+
+    landStroke: isDark
+      ? 'rgba(125, 205, 227, 0.30)'
+      : 'rgba(25, 24, 20, 0.18)',
+
+    reliefLight: isDark
+      ? 'rgba(244, 247, 251, 0.055)'
+      : 'rgba(255, 252, 245, 0.62)',
+
+    reliefDark: isDark
+      ? 'rgba(0, 0, 0, 0.32)'
+      : 'rgba(25, 24, 20, 0.10)',
+
+    arcStroke: isDark
+      ? 'rgba(125, 205, 227, 0.42)'
+      : 'rgba(31, 111, 120, 0.34)',
+
+    nodeStroke: isDark ? '#071326' : '#FFFCF5',
+
+    textFill: isDark ? '#F4F7FB' : '#191814',
+
+    textBg: isDark
+      ? 'rgba(16, 29, 53, 0.84)'
+      : 'rgba(255, 252, 245, 0.88)',
+
+    textBorder: isDark
+      ? 'rgba(226, 232, 240, 0.16)'
+      : 'rgba(25, 24, 20, 0.14)',
+
+    gridLine: isDark
+      ? 'rgba(244, 247, 251, 0.055)'
+      : 'rgba(25, 24, 20, 0.045)',
+
+    portugalFill: isDark
+      ? 'rgba(230, 180, 92, 0.10)'
+      : 'rgba(169, 96, 0, 0.10)',
+
+    portugalStroke: isDark
+      ? 'rgba(230, 180, 92, 0.38)'
+      : 'rgba(169, 96, 0, 0.30)',
+
+    svgShadow: isDark
+      ? 'drop-shadow(0 0 28px rgba(125, 205, 227, 0.14))'
+      : 'drop-shadow(0 8px 24px rgba(25, 24, 20, 0.08))',
   };
 
   // FIX 3 — IDs únicos por instancia (React 17 compatible)
@@ -107,12 +142,12 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
   };
 
   const typeColors = {
-    trigger: isDark ? '#ef4444' : '#dc2626',
-    cascade: isDark ? '#f59e0b' : '#d97706',
-    nuclear: isDark ? '#06b6d4' : '#0891b2',
-    substation: isDark ? '#8b5cf6' : '#7c3aed',
-    capital: isDark ? '#10b981' : '#059669',
-    interconnection: isDark ? '#d946ef' : '#c026d3',
+    trigger: isDark ? '#D98798' : '#A13D36',
+    cascade: isDark ? '#E6B45C' : '#A96000',
+    nuclear: isDark ? '#7DCDE3' : '#1F6F78',
+    substation: isDark ? '#C4A5E8' : '#6E4D8B',
+    capital: isDark ? '#A6C67B' : '#2F6B4F',
+    interconnection: isDark ? '#D9C77C' : '#8A6A12',
   };
 
   // Proyectar nodos
@@ -153,9 +188,7 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
           maxWidth: '800px',
           height: 'auto',
           background: 'transparent',
-          filter: isDark
-            ? 'drop-shadow(0 0 40px rgba(14, 165, 233, 0.15)) drop-shadow(0 0 8px rgba(56, 189, 248, 0.25))'
-            : 'drop-shadow(0 8px 24px rgba(0,0,0,0.08))',
+          filter: palette.svgShadow,
         }}
         preserveAspectRatio="xMidYMid meet"
       >
@@ -226,7 +259,7 @@ export default function IberianGridMap({ showLabels = true, showArcs = true }) {
         {/* Masa terrestre con relieve */}
         <g filter={`url(#${ids.relief})`}>
           <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
-          <path d={PORTUGAL_PATH} fill={isDark ? 'rgba(255,170,0,0.08)' : 'rgba(200,140,0,0.08)'} stroke={isDark ? 'rgba(255,170,0,0.4)' : 'rgba(180,120,0,0.4)'} strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
+          <path d={PORTUGAL_PATH} fill={palette.portugalFill} stroke={palette.portugalStroke} strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
           <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
         </g>
 

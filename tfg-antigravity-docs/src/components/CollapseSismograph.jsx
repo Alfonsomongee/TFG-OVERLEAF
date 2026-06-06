@@ -58,17 +58,17 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
             <p className={styles.tooltipEvent}><strong>{isEs ? 'Falla:' : 'Fault:'}</strong> {data.event}</p>
             <div className={styles.metricsGrid}>
               <div className={styles.metricRow}>
-                <span className={styles.dot} style={{background: '#06b6d4'}}></span>
+                <span className={styles.dot} style={{background: 'var(--sis-frequency)'}}></span>
                 <span className={styles.metricLabel}>{isEs ? 'Frecuencia:' : 'Frequency:'}</span>
                 <span className={styles.metricValue}>{data.freq.toFixed(2)} Hz</span>
               </div>
               <div className={styles.metricRow}>
-                <span className={styles.dot} style={{background: '#ef4444'}}></span>
+                <span className={styles.dot} style={{background: 'var(--sis-voltage)'}}></span>
                 <span className={styles.metricLabel}>{isEs ? 'Tensión 400kV:' : 'Voltage 400kV:'}</span>
                 <span className={styles.metricValue}>{data.volt.toFixed(0)} kV</span>
               </div>
               <div className={styles.metricRow}>
-                <span className={styles.dot} style={{background: '#f59e0b'}}></span>
+                <span className={styles.dot} style={{background: 'var(--sis-lost)'}}></span>
                 <span className={styles.metricLabel}>{isEs ? 'Pot. Perdida:' : 'Lost Gen.:'}</span>
                 <span className={styles.metricValue}>{data.lostMW} MW</span>
               </div>
@@ -104,21 +104,21 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
       fontFamily: 'var(--font-mono, JetBrains Mono, monospace)',
       borderRadius: '6px',
       overflow: 'hidden',
-      border: '1px solid rgba(0,217,255,0.12)',
+      border: '1px solid var(--sis-border)',
     }}>
       {/* Frecuencia */}
       <div style={{
         flex: 1,
         padding: '10px 14px',
         background: isCollapsing
-          ? 'rgba(239,68,68,0.08)'
-          : 'rgba(6,182,212,0.06)',
-        borderRight: '1px solid rgba(0,217,255,0.1)',
+          ? 'var(--sis-voltage-soft)'
+          : 'var(--sis-frequency-soft)',
+        borderRight: '1px solid var(--sis-border)',
       }}>
         <div style={{
           fontSize: '9px',
           letterSpacing: '0.12em',
-          color: '#4b5563',
+          color: 'var(--sis-text-muted)',
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
@@ -128,18 +128,18 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           fontSize: '1.6rem',
           fontWeight: 700,
           lineHeight: 1,
-          color: isCollapsing ? '#ef4444' : '#06b6d4',
+          color: isCollapsing ? 'var(--sis-voltage)' : 'var(--sis-frequency)',
           transition: 'color 0.3s ease',
         }}>
           {current.freq.toFixed(2)}
-          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+          <span style={{ fontSize: '0.65rem', color: 'var(--sis-text-muted)', marginLeft: 4 }}>
             Hz
           </span>
         </div>
         <div style={{
           fontSize: '9px',
           marginTop: '4px',
-          color: isCollapsing ? '#ef444480' : '#06b6d440',
+          color: isCollapsing ? 'var(--sis-voltage)' : 'var(--sis-frequency)',
         }}>
           {isCollapsing
             ? (isEs ? `▼ ${(50 - current.freq).toFixed(2)} Hz bajo nominal` : `▼ ${(50 - current.freq).toFixed(2)} Hz under nominal`)
@@ -152,14 +152,14 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
         flex: 1,
         padding: '10px 14px',
         background: isVoltCritical
-          ? 'rgba(239,68,68,0.08)'
-          : 'rgba(239,68,68,0.04)',
-        borderRight: '1px solid rgba(0,217,255,0.1)',
+          ? 'var(--sis-voltage-soft)'
+          : 'rgba(161, 61, 54, 0.045)',
+        borderRight: '1px solid var(--sis-border)',
       }}>
         <div style={{
           fontSize: '9px',
           letterSpacing: '0.12em',
-          color: '#4b5563',
+          color: 'var(--sis-text-muted)',
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
@@ -169,18 +169,18 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           fontSize: '1.6rem',
           fontWeight: 700,
           lineHeight: 1,
-          color: isVoltCritical ? '#ef4444' : '#f87171',
+          color: 'var(--sis-voltage)',
           transition: 'color 0.3s ease',
         }}>
           {current.volt > 0 ? current.volt.toFixed(0) : '—'}
-          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+          <span style={{ fontSize: '0.65rem', color: 'var(--sis-text-muted)', marginLeft: 4 }}>
             kV
           </span>
         </div>
         <div style={{
           fontSize: '9px',
           marginTop: '4px',
-          color: isVoltCritical ? '#ef444480' : '#ef444430',
+          color: isVoltCritical ? 'var(--sis-voltage)' : 'var(--sis-frequency)',
         }}>
           {isVoltCritical
             ? (isEs ? `▲ ${(current.volt - 420).toFixed(0)} kV sobre nominal` : `▲ ${(current.volt - 420).toFixed(0)} kV over nominal`)
@@ -192,12 +192,12 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
       <div style={{
         flex: 1,
         padding: '10px 14px',
-        background: 'rgba(245,158,11,0.05)',
+        background: 'var(--sis-lost-soft)',
       }}>
         <div style={{
           fontSize: '9px',
           letterSpacing: '0.12em',
-          color: '#4b5563',
+          color: 'var(--sis-text-muted)',
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
@@ -207,20 +207,20 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           fontSize: '1.6rem',
           fontWeight: 700,
           lineHeight: 1,
-          color: current.lostMW > 10000 ? '#ef4444'
-               : current.lostMW > 3000  ? '#f59e0b'
-               : '#fbbf24',
+          color: current.lostMW > 10000 ? 'var(--sis-voltage)'
+               : current.lostMW > 3000  ? 'var(--sis-lost)'
+               : 'var(--sis-success)',
           transition: 'color 0.3s ease',
         }}>
           {(current.lostMW / 1000).toFixed(1)}
-          <span style={{ fontSize: '0.65rem', color: '#4b5563', marginLeft: 4 }}>
+          <span style={{ fontSize: '0.65rem', color: 'var(--sis-text-muted)', marginLeft: 4 }}>
             GW
           </span>
         </div>
         <div style={{
           fontSize: '9px',
           marginTop: '4px',
-          color: '#f59e0b40',
+          color: 'var(--sis-lost)',
         }}>
           {current.lostMW > 0
             ? (isEs ? `${((current.lostMW / 29600) * 100).toFixed(0)}% cap. peninsular` : `${((current.lostMW / 29600) * 100).toFixed(0)}% peninsular cap.`)
@@ -232,12 +232,12 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
       <div style={{
         flex: 2,
         padding: '10px 14px',
-        background: 'rgba(0,0,0,0.2)',
+        background: 'var(--sis-bg-panel)',
       }}>
         <div style={{
           fontSize: '9px',
           letterSpacing: '0.12em',
-          color: '#4b5563',
+          color: 'var(--sis-text-muted)',
           marginBottom: '4px',
           textTransform: 'uppercase',
         }}>
@@ -245,7 +245,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
         </div>
         <div style={{
           fontSize: '0.78rem',
-          color: 'var(--ifm-color-emphasis-600)',
+          color: 'var(--sis-text-secondary)',
           lineHeight: 1.4,
         }}>
           {current.event}
@@ -259,8 +259,10 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           <div style={{
             width: 6, height: 6,
             borderRadius: '50%',
-            background: isCollapsing ? '#ef4444' : '#10b981',
-            boxShadow: isCollapsing ? '0 0 6px #ef4444' : '0 0 6px #10b981',
+            background: isCollapsing ? 'var(--sis-voltage)' : 'var(--sis-success)',
+            boxShadow: isCollapsing
+              ? '0 0 6px var(--sis-voltage)'
+              : '0 0 6px var(--sis-success)',
           }}>
             {isCollapsing && (
               <style>{`
@@ -274,7 +276,7 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
           <span style={{
             fontSize: '9px',
             fontFamily: 'var(--font-mono, monospace)',
-            color: isCollapsing ? '#ef4444' : '#10b981',
+            color: isCollapsing ? 'var(--sis-voltage)' : 'var(--sis-success)',
             letterSpacing: '0.08em',
           }}>
             {isCollapsing ? (isEs ? 'COLAPSO EN CURSO' : 'COLLAPSE IN PROGRESS') : (isEs ? 'SISTEMA OPERATIVO' : 'SYSTEM OPERATIONAL')}
@@ -292,49 +294,49 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
               <ComposedChart data={cascadeData} margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
                 <defs>
                   <linearGradient id="colorLost" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.15}/>
-                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.02}/>
+                    <stop offset="5%" stopColor="var(--sis-lost)" stopOpacity={0.16}/>
+                    <stop offset="95%" stopColor="var(--sis-lost)" stopOpacity={0.02}/>
                   </linearGradient>
                 </defs>
                 
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--sis-grid)" vertical={false} />
                 
                 <XAxis 
                   dataKey="time" 
                   type="number"
                   domain={[0, 33]}
-                  tick={{ fill: 'var(--text-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  tick={{ fill: 'var(--sis-axis)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
                   tickFormatter={(val) => `${val}s`}
-                  stroke="rgba(255,255,255,0.1)"
+                  stroke="var(--sis-axis-line)"
                 />
                 
                 <YAxis 
                   yAxisId="freq"
                   domain={[46, 50.5]}
-                  tick={{ fill: '#06b6d4', fontSize: 12, fontFamily: 'var(--font-mono)' }}
-                  stroke="rgba(6, 182, 212, 0.3)"
+                  tick={{ fill: 'var(--sis-frequency)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  stroke="var(--sis-frequency-border)"
                   orientation="left"
-                  label={{ value: isEs ? 'Frecuencia (Hz)' : 'Frequency (Hz)', angle: -90, position: 'insideLeft', fill: '#06b6d4', style: {textAnchor: 'middle'} }}
+                  label={{ value: isEs ? 'Frecuencia (Hz)' : 'Frequency (Hz)', angle: -90, position: 'insideLeft', fill: 'var(--sis-frequency)', style: {textAnchor: 'middle'} }}
                 />
                 
                 <YAxis 
                   yAxisId="volt"
                   domain={[400, 450]}
-                  tick={{ fill: '#ef4444', fontSize: 12, fontFamily: 'var(--font-mono)' }}
-                  stroke="rgba(239, 68, 68, 0.3)"
+                  tick={{ fill: 'var(--sis-voltage)', fontSize: 12, fontFamily: 'var(--font-mono)' }}
+                  stroke="var(--sis-voltage-border)"
                   orientation="right"
-                  label={{ value: isEs ? 'Tensión (kV)' : 'Voltage (kV)', angle: 90, position: 'insideRight', fill: '#ef4444', style: {textAnchor: 'middle'} }}
+                  label={{ value: isEs ? 'Tensión (kV)' : 'Voltage (kV)', angle: 90, position: 'insideRight', fill: 'var(--sis-voltage)', style: {textAnchor: 'middle'} }}
                 />
 
-                <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--sis-axis-line)', strokeWidth: 2, strokeDasharray: '4 4' }} />
 
                 {/* Línea horizontal de UFLS */}
                 <ReferenceLine 
                   yAxisId="freq" 
                   y={49.0} 
-                  stroke="rgba(245, 158, 11, 0.6)" 
+                  stroke="var(--sis-lost)" 
                   strokeDasharray="4 4"
-                  label={{ position: 'insideBottomLeft', value: isEs ? 'Umbral UFLS Demanda (49.0 Hz)' : 'Load UFLS Threshold (49.0 Hz)', fill: '#f59e0b', fontSize: 11, fontWeight: 'bold' }}
+                  label={{ position: 'insideBottomLeft', value: isEs ? 'Umbral UFLS Demanda (49.0 Hz)' : 'Load UFLS Threshold (49.0 Hz)', fill: 'var(--sis-lost)', fontSize: 11, fontWeight: 'bold' }}
                 />
 
                 {/* Área Fantasma (Generación Perdida escalada en background) */}
@@ -351,11 +353,11 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
                   yAxisId="volt"
                   type="monotone"
                   dataKey="volt"
-                  stroke="#ef4444"
+                  stroke="var(--sis-voltage)"
                   strokeWidth={2}
                   strokeDasharray="5 5"
-                  dot={{ r: 4, fill: '#ef4444', strokeWidth: 0 }}
-                  activeDot={{ r: 6, fill: '#fff', stroke: '#ef4444', strokeWidth: 2 }}
+                  dot={{ r: 4, fill: 'var(--sis-voltage)', strokeWidth: 0 }}
+                  activeDot={{ r: 6, fill: 'var(--sis-bg-card)', stroke: 'var(--sis-voltage)', strokeWidth: 2 }}
                   isAnimationActive={true}
                   animationDuration={2000}
                 />
@@ -365,10 +367,10 @@ export default function CollapseSismograph({ playbackT = 32.7,  isGallery }) {
                   yAxisId="freq"
                   type="stepAfter"
                   dataKey="freq"
-                  stroke="#06b6d4"
+                  stroke="var(--sis-frequency)"
                   strokeWidth={3}
-                  dot={{ r: 4, fill: '#06b6d4', strokeWidth: 0 }}
-                  activeDot={{ r: 8, fill: '#fff', stroke: '#06b6d4', strokeWidth: 2 }}
+                  dot={{ r: 4, fill: 'var(--sis-frequency)', strokeWidth: 0 }}
+                  activeDot={{ r: 8, fill: 'var(--sis-bg-card)', stroke: 'var(--sis-frequency)', strokeWidth: 2 }}
                   isAnimationActive={true}
                   animationDuration={2000}
                 />

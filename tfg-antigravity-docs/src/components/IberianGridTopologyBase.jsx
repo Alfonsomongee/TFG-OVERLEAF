@@ -1,6 +1,7 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 
 // ─── Proyección geográfica simplificada ──────────────────────────────────────
 // Convierte coordenadas lon/lat reales a píxeles en un viewBox 800×560
@@ -145,26 +146,78 @@ const EVENT_LOG = [
 ];
 
 // ─── Colores por grupo ────────────────────────────────────────────────────────
-const GROUP_COLORS = {
-  collapse:  { fill: '#ef4444', stroke: '#fca5a5', pulse: true },
-  stable:    { fill: '#10b981', stroke: '#6ee7b7', pulse: false },
-  portugal:  { fill: '#f59e0b', stroke: '#fcd34d', pulse: false },
-  france:    { fill: '#3b82f6', stroke: '#93c5fd', pulse: false },
-};
+function getGroupColors(isDark) {
+  return {
+    collapse: {
+      fill: isDark ? '#D98798' : '#A13D36',
+      stroke: isDark ? '#F0B4C0' : '#C8798A',
+      pulse: true,
+    },
+    stable: {
+      fill: isDark ? '#A6C67B' : '#2F6B4F',
+      stroke: isDark ? '#D3E7B0' : '#6FA784',
+      pulse: false,
+    },
+    portugal: {
+      fill: isDark ? '#E6B45C' : '#A96000',
+      stroke: isDark ? '#F3D38A' : '#D9A441',
+      pulse: false,
+    },
+    france: {
+      fill: isDark ? '#7DCDE3' : '#1F6F78',
+      stroke: isDark ? '#B7EAF4' : '#5AA7B2',
+      pulse: false,
+    },
+  };
+}
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 function TopologyContent({}) {
   const lang = useDocLang();
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
 
-  const isDark = true; // Topology is always dark-themed
   const palette = {
-    landGradientStart: '#142c4a',
-    landGradientEnd: '#0b1827',
-    landStroke: 'rgba(56, 189, 248, 0.25)',
-    gridLine: 'rgba(255, 255, 255, 0.03)',
-    reliefLight: 'rgba(255, 255, 255, 0.04)',
-    reliefDark: 'rgba(0, 0, 0, 0.2)',
+    bg: isDark ? '#071326' : '#F6F0E3',
+    bgOverlay: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(255, 252, 245, 0.54)',
+    panelBg: isDark ? 'rgba(16, 29, 53, 0.92)' : 'rgba(255, 252, 245, 0.88)',
+    logBg: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(25, 24, 20, 0.035)',
+
+    border: isDark ? 'rgba(226, 232, 240, 0.14)' : 'rgba(25, 24, 20, 0.14)',
+    borderStrong: isDark ? 'rgba(125, 205, 227, 0.34)' : 'rgba(31, 111, 120, 0.30)',
+
+    landGradientStart: isDark ? '#142C4A' : '#ECE3CF',
+    landGradientEnd: isDark ? '#0B1827' : '#D6C9AE',
+    landStroke: isDark ? 'rgba(125, 205, 227, 0.30)' : 'rgba(25, 24, 20, 0.18)',
+
+    portugalFill: isDark ? 'rgba(230, 180, 92, 0.10)' : 'rgba(169, 96, 0, 0.10)',
+    portugalStroke: isDark ? 'rgba(230, 180, 92, 0.38)' : 'rgba(169, 96, 0, 0.30)',
+
+    gridLine: isDark ? 'rgba(244, 247, 251, 0.055)' : 'rgba(25, 24, 20, 0.045)',
+    reliefLight: isDark ? 'rgba(244, 247, 251, 0.055)' : 'rgba(255, 252, 245, 0.62)',
+    reliefDark: isDark ? 'rgba(0, 0, 0, 0.26)' : 'rgba(25, 24, 20, 0.10)',
+
+    textPrimary: isDark ? '#F4F7FB' : '#191814',
+    textSecondary: isDark ? '#C7D2E3' : '#4A4338',
+    textMuted: isDark ? '#91A4BC' : '#7A7062',
+
+    accent: isDark ? '#7DCDE3' : '#1F6F78',
+    accentSoft: isDark ? 'rgba(125, 205, 227, 0.12)' : 'rgba(31, 111, 120, 0.10)',
+    accentBorder: isDark ? 'rgba(125, 205, 227, 0.38)' : 'rgba(31, 111, 120, 0.34)',
+
+    warning: isDark ? '#E6B45C' : '#A96000',
+    danger: isDark ? '#D98798' : '#A13D36',
+    success: isDark ? '#A6C67B' : '#2F6B4F',
+
+    linkIdle: isDark ? 'rgba(125, 205, 227, 0.10)' : 'rgba(31, 111, 120, 0.14)',
+    linkActive: isDark ? 'rgba(125, 205, 227, 0.34)' : 'rgba(31, 111, 120, 0.36)',
+    linkCritical: isDark ? '#D98798' : '#A13D36',
+
+    inactiveNodeFill: isDark ? 'rgba(16, 29, 53, 0.90)' : 'rgba(255, 252, 245, 0.90)',
+    inactiveNodeStroke: isDark ? 'rgba(226, 232, 240, 0.16)' : 'rgba(25, 24, 20, 0.16)',
   };
+
+  const groupColors = useMemo(() => getGroupColors(isDark), [isDark]);
 
   // FIX 3 — IDs únicos por instancia (React 17 compatible)
   const uid = useRef(`topo-${Math.random().toString(36).slice(2, 7)}`).current;
@@ -210,9 +263,9 @@ function TopologyContent({}) {
   return (
     <div style={{
       width: '100%',
-      background: 'var(--bg-0, var(--chart-bg, #050a14))',
+      background: palette.bg,
       borderRadius: 12,
-      border: '1px solid rgba(0,217,255,0.15)',
+      border: `1px solid ${palette.border}`,
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
@@ -260,12 +313,12 @@ function TopologyContent({}) {
         </defs>
 
         {/* Mar de fondo */}
-        <rect width="1000" height="800" fill="var(--bg-0, var(--chart-bg, #050a14))" />
-        <rect width="1000" height="800" fill="rgba(0,40,80,0.15)" />
+        <rect width="1000" height="800" fill={palette.bg} />
+        <rect width="1000" height="800" fill={palette.bgOverlay} />
 
         <g filter={`url(#${ids.relief})`}>
           <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
-          <path d={PORTUGAL_PATH} fill="rgba(200,140,0,0.08)" stroke="rgba(180,120,0,0.4)" strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
+          <path d={PORTUGAL_PATH} fill={palette.portugalFill} stroke={palette.portugalStroke} strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
           <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
         </g>
 
@@ -295,14 +348,14 @@ function TopologyContent({}) {
           const isCollapsing = link.isCritical && isActive && simTime < 12;
           const isLost = link.isCritical && simTime >= 10 && link.target === 'FR';
 
-          let stroke = 'rgba(0,217,255,0.08)';
+          let stroke = palette.linkIdle;
           let strokeWidth = 1;
           let dashArray = '4 4';
 
           if (isActive && !isLost) {
             stroke = link.isCritical
-              ? (isCollapsing ? '#ef4444' : 'rgba(0,217,255,0.35)')
-              : 'rgba(0,217,255,0.25)';
+              ? (isCollapsing ? palette.linkCritical : palette.linkActive)
+              : palette.linkActive;
             strokeWidth = link.isCritical ? 2.5 : 1.5;
             dashArray = link.isCritical ? 'none' : '4 3';
           }
@@ -327,7 +380,7 @@ function TopologyContent({}) {
               {link.label && isActive && (
                 <text
                   x={mx} y={my - 6}
-                  fill={link.isCritical ? '#f59e0b' : 'rgba(0,217,255,0.5)'}
+                  fill={link.isCritical ? palette.warning : palette.accent}
                   fontSize="9"
                   fontFamily="var(--font-mono, monospace)"
                   textAnchor="middle"
@@ -341,7 +394,7 @@ function TopologyContent({}) {
 
         {/* ── NODOS ─────────────────────────────────────────────────── */}
         {nodes.map(node => {
-          const colors = GROUP_COLORS[node.group] || GROUP_COLORS.stable;
+          const colors = groupColors[node.group] || groupColors.stable;
           const isHovered = hoveredNode === node.id;
           const r = node.group === 'france' ? 14 : (node.group === 'collapse' && node.isActive ? 13 : 10);
 
@@ -371,8 +424,8 @@ function TopologyContent({}) {
               {/* Nodo principal */}
               <circle
                 cx={node.x} cy={node.y} r={r}
-                fill={node.isActive ? colors.fill : 'rgba(15,30,55,0.9)'}
-                stroke={node.isActive ? colors.stroke : 'rgba(0,217,255,0.15)'}
+                fill={node.isActive ? colors.fill : palette.inactiveNodeFill}
+                stroke={node.isActive ? colors.stroke : palette.inactiveNodeStroke}
                 strokeWidth={isHovered ? 2.5 : 1.5}
                 filter={node.isCollapsing ? `url(#${ids.glowRed})` : (node.isActive ? `url(#${ids.glow})` : 'none')}
               />
@@ -382,7 +435,7 @@ function TopologyContent({}) {
                 <text
                   x={node.x} y={node.y + 4}
                   textAnchor="middle" fontSize="10"
-                  fill="#fff" fontWeight="bold"
+                  fill={isDark ? '#071326' : '#FFFCF5'} fontWeight="bold"
                 >
                   !</text>
               )}
@@ -396,7 +449,7 @@ function TopologyContent({}) {
                   textAnchor="middle"
                   fontSize={li === 0 ? 10 : 8.5}
                   fontFamily="var(--font-mono, monospace)"
-                  fill={node.isActive ? '#e2e8f0' : '#475569'}
+                  fill={node.isActive ? palette.textPrimary : palette.textMuted}
                   fontWeight={li === 0 ? '600' : '400'}
                 >
                   {line}
@@ -424,8 +477,8 @@ function TopologyContent({}) {
                 width={tw + 12}
                 height={lines.length * 15 + 18}
                 rx="4"
-                fill="var(--chart-bg, rgba(5,10,20,0.95))"
-                stroke="rgba(0,217,255,0.3)"
+                fill={palette.panelBg}
+                stroke={palette.accentBorder}
                 strokeWidth="1"
               />
               {lines.map((line, li) => (
@@ -433,7 +486,7 @@ function TopologyContent({}) {
                   key={li}
                   x={tx} y={ty + li * 15}
                   fontSize={li === 0 ? 10 : 9}
-                  fill={li === 0 ? '#00d9ff' : '#94a3b8'}
+                  fill={li === 0 ? palette.accent : palette.textMuted}
                   fontFamily="var(--font-mono, monospace)"
                   fontWeight={li === 0 ? '700' : '400'}
                 >
@@ -448,8 +501,8 @@ function TopologyContent({}) {
 
       {/* ── PANEL INFERIOR ─────────────────────────────────────────── */}
       <div style={{
-        background: 'var(--chart-bg, rgba(5,10,20,0.95))',
-        borderTop: '1px solid rgba(0,217,255,0.2)',
+        background: palette.panelBg,
+        borderTop: `1px solid ${palette.border}`,
         padding: '16px 20px',
         display: 'grid',
         gridTemplateColumns: '1fr 1.5fr',
@@ -465,19 +518,24 @@ function TopologyContent({}) {
             <span style={{
               fontFamily: 'var(--font-mono, monospace)',
               fontSize: 12, letterSpacing: '0.1em',
-              color: '#00d9ff', fontWeight: 700,
+              color: palette.accent, fontWeight: 700,
             }}>
               TOPOLOGÍA RED IBÉRICA
             </span>
             <button
               onClick={handlePlayPause}
               style={{
-                background: simTime >= MAX_TIME ? '#10b981' :
-                            (isPlaying ? 'rgba(239,68,68,0.2)' : 'rgba(0,217,255,0.15)'),
-                border: `1px solid ${simTime >= MAX_TIME ? '#10b981' :
-                         (isPlaying ? '#ef4444' : '#00d9ff')}`,
-                color: simTime >= MAX_TIME ? '#fff' :
-                       (isPlaying ? '#ef4444' : '#00d9ff'),
+                background: simTime >= MAX_TIME
+                  ? palette.success
+                  : (isPlaying ? `${palette.danger}22` : palette.accentSoft),
+                border: `1px solid ${
+                  simTime >= MAX_TIME
+                    ? palette.success
+                    : (isPlaying ? palette.danger : palette.accent)
+                }`,
+                color: simTime >= MAX_TIME
+                  ? (isDark ? '#071326' : '#FFFCF5')
+                  : (isPlaying ? palette.danger : palette.accent),
                 padding: '4px 12px', borderRadius: 4,
                 cursor: 'pointer', fontSize: 12,
                 fontFamily: 'var(--font-mono, monospace)',
@@ -492,22 +550,22 @@ function TopologyContent({}) {
           <div style={{ marginBottom: 12 }}>
             <div style={{
               display: 'flex', justifyContent: 'space-between',
-              fontSize: 10, color: '#4b5563',
+              fontSize: 10, color: palette.textMuted,
               fontFamily: 'var(--font-mono, monospace)', marginBottom: 4,
             }}>
               <span>12:32:57</span>
               <span>12:33:27 CEST</span>
             </div>
             <div style={{
-              height: 4, background: 'rgba(0,217,255,0.1)',
+              height: 4, background: palette.accentSoft,
               borderRadius: 2, overflow: 'hidden',
             }}>
               <div style={{
                 height: '100%',
                 width: `${(simTime / MAX_TIME) * 100}%`,
                 background: simTime >= 10
-                  ? 'linear-gradient(90deg, #f59e0b, #ef4444)'
-                  : 'linear-gradient(90deg, #00d9ff, #10b981)',
+                  ? `linear-gradient(90deg, ${palette.warning}, ${palette.danger})`
+                  : `linear-gradient(90deg, ${palette.accent}, ${palette.success})`,
                 borderRadius: 2,
                 transition: 'width 0.9s ease, background 0.3s ease',
               }} />
@@ -521,15 +579,15 @@ function TopologyContent({}) {
             fontFamily: 'var(--font-mono, monospace)',
           }}>
             {[
-              { color: '#ef4444', label: 'Nodo en colapso' },
-              { color: '#10b981', label: 'Nodo estable' },
-              { color: '#f59e0b', label: 'Portugal' },
-              { color: '#3b82f6', label: 'Francia' },
+              { color: groupColors.collapse.fill, label: 'Nodo en colapso' },
+              { color: groupColors.stable.fill, label: 'Nodo estable' },
+              { color: groupColors.portugal.fill, label: 'Portugal' },
+              { color: groupColors.france.fill, label: 'Francia' },
             ].map(({ color, label }) => (
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%',
                               background: color, flexShrink: 0 }} />
-                <span style={{ color: '#6b7280' }}>{label}</span>
+                <span style={{ color: palette.textMuted }}>{label}</span>
               </div>
             ))}
           </div>
@@ -537,8 +595,8 @@ function TopologyContent({}) {
 
         {/* COLUMNA DERECHA: Log de eventos */}
         <div style={{
-          background: 'rgba(0,0,0,0.2)',
-          border: '1px solid rgba(0,217,255,0.05)',
+          background: palette.logBg,
+          border: `1px solid ${palette.border}`,
           borderRadius: 6,
           padding: '10px 12px',
           height: '100%',
@@ -550,7 +608,7 @@ function TopologyContent({}) {
           justifyContent: 'flex-start',
         }}>
           {visibleLogs.length === 0 ? (
-            <p style={{ color: '#4b5563', fontSize: 11,
+            <p style={{ color: palette.textMuted, fontSize: 11,
                         fontFamily: 'var(--font-mono, monospace)', margin: 0 }}>
               Pulsa ▶ para iniciar la simulación
             </p>
@@ -559,8 +617,8 @@ function TopologyContent({}) {
               <div key={i} style={{
                 fontSize: 11,
                 fontFamily: 'var(--font-mono, monospace)',
-                color: i === 0 ? '#e2e8f0' : '#4b5563',
-                borderLeft: `2px solid ${i === 0 ? '#00d9ff' : 'transparent'}`,
+                color: i === 0 ? palette.textPrimary : palette.textMuted,
+                borderLeft: `2px solid ${i === 0 ? palette.accent : 'transparent'}`,
                 paddingLeft: 8, marginBottom: 8,
                 transition: 'all 0.3s ease',
               }}>
@@ -579,9 +637,9 @@ export default function IberianGridTopology({}) {
   return (
     <BrowserOnly fallback={
       <div style={{
-        height: 480, background: 'var(--chart-bg, #050a14)', borderRadius: 12,
+        height: 480, background: '#071326', borderRadius: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: '#00d9ff', fontFamily: 'monospace', fontSize: 12,
+        color: '#7DCDE3', fontFamily: 'monospace', fontSize: 12,
       }}>
         Cargando topología de red ibérica…
       </div>

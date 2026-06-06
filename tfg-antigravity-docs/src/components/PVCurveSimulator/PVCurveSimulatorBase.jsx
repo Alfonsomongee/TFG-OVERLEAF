@@ -49,7 +49,7 @@ function NoseLabel({ viewBox, noseP, noseV }) {
   const alignLeft = noseP > 1.5;
   return (
     <g>
-      <text x={alignLeft ? x - 10 : x + 8} y={y - 10} fill="#ef4444" fontSize={11} fontFamily="monospace" textAnchor={alignLeft ? 'end' : 'start'}>
+      <text x={alignLeft ? x - 10 : x + 8} y={y - 10} fill="var(--pv-danger)" fontSize={11} fontFamily="monospace" textAnchor={alignLeft ? 'end' : 'start'}>
         Nose point ({noseP.toFixed(2)}, {noseV.toFixed(3)})
       </text>
     </g>
@@ -120,30 +120,30 @@ export default function PVCurveSimulator() {
       {/* ── GRÁFICO ──────────────────────────────────────────────────────── */}
       <div className={styles.chartContainer}>
         {isMounted ? (
-          <ResponsiveContainer width="100%" height={340}>
-            <ComposedChart margin={{ top: 24, right: 120, left: 16, bottom: 32 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <ResponsiveContainer width="100%" height={460}>
+            <ComposedChart margin={{ top: 24, right: 28, bottom: 42, left: 46 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--pv-grid)" />
 
               <XAxis
                 type="number"
                 dataKey="P"
                 domain={[0, Math.max(1.8, noseP + 0.3)]}
                 allowDataOverflow
-                stroke='var(--text-1, #64748b)'
-                tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+                stroke="var(--pv-axis-line)"
+                tick={{ fill: 'var(--pv-axis)', fontSize: 11 }}
               >
                 <Label value={isEs ? 'Potencia activa P (p.u.)' : 'Active power P (p.u.)'} position="bottom" offset={16}
-                       fill="#94a3b8" fontSize={12} />
+                       fill="var(--pv-axis)" fontSize={12} />
               </XAxis>
 
               <YAxis
                 type="number"
                 domain={[0, 1.2]}
-                stroke='var(--text-1, #64748b)'
-                tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+                stroke="var(--pv-axis-line)"
+                tick={{ fill: 'var(--pv-axis)', fontSize: 11 }}
               >
                 <Label value={isEs ? 'Tensión V (p.u.)' : 'Voltage V (p.u.)'} angle={-90} position="insideLeft"
-                       offset={8} fill="#94a3b8" fontSize={12} />
+                       offset={8} fill="var(--pv-axis)" fontSize={12} />
               </YAxis>
 
               <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: false }} />
@@ -154,7 +154,7 @@ export default function PVCurveSimulator() {
                 align="right"
                 wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
                 formatter={(value) => (
-                  <span style={{ color: '#94a3b8' }}>{value}</span>
+                  <span style={{ color: 'var(--pv-text-secondary)' }}>{value}</span>
                 )}
               />
 
@@ -163,7 +163,7 @@ export default function PVCurveSimulator() {
                 <ReferenceArea
                   x1={P_op} x2={noseP}
                   y1={0}    y2={1.2}
-                  fill="rgba(239, 68, 68, 0.10)"
+                  fill="var(--pv-danger-soft)"
                   stroke="none"
                 />
               )}
@@ -171,17 +171,17 @@ export default function PVCurveSimulator() {
               {/* Límite operativo V=0.95 p.u. */}
               <ReferenceLine
                 y={0.95}
-                stroke="rgba(239,68,68,0.45)"
+                stroke="var(--pv-danger)"
                 strokeDasharray="4 4"
                 label={{ value: isEs ? 'Mínimo operativo (0.95 p.u.)' : 'Operating minimum (0.95 p.u.)',
-                         fill: '#f87171', position: 'insideTopRight', fontSize: 10 }}
+                         fill: 'var(--pv-danger)', position: 'insideTopRight', fontSize: 10 }}
               />
 
               {/* Línea vertical en el punto de operación */}
               {!isCollapsed && (
                 <ReferenceLine
                   x={P_op}
-                  stroke="rgba(255,255,255,0.18)"
+                  stroke="var(--pv-axis-line)"
                   strokeDasharray="3 3"
                 />
               )}
@@ -191,7 +191,7 @@ export default function PVCurveSimulator() {
                 data={upper}
                 type="monotone"
                 dataKey="V"
-                stroke="#00d9ff"
+                stroke="var(--pv-stable)"
                 strokeWidth={2.5}
                 dot={false}
                 activeDot={false}
@@ -204,7 +204,7 @@ export default function PVCurveSimulator() {
                 data={lower}
                 type="monotone"
                 dataKey="V"
-                stroke="#ffb000"
+                stroke="var(--pv-unstable)"
                 strokeWidth={2}
                 strokeDasharray="5 4"
                 dot={false}
@@ -218,8 +218,8 @@ export default function PVCurveSimulator() {
                 x={noseP}
                 y={noseV}
                 r={7}
-                fill="#ef4444"
-                stroke="#ffffff"
+                fill="var(--pv-danger)"
+                stroke="var(--pv-bg-tooltip)"
                 strokeWidth={2}
                 label={<NoseLabel noseP={noseP} noseV={noseV} />}
               />
@@ -230,8 +230,8 @@ export default function PVCurveSimulator() {
                   x={P_op}
                   y={opV}
                   r={5}
-                  fill="#ffffff"
-                  stroke="#00d9ff"
+                  fill="var(--pv-bg-tooltip)"
+                  stroke="var(--pv-stable)"
                   strokeWidth={2}
                 />
               )}
@@ -341,8 +341,8 @@ export default function PVCurveSimulator() {
       {/* ── EXPLICACIÓN TÉCNICA ───────────────────────────────────────────── */}
       <div className={styles.footer}>
         <p style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: isEs 
-          ? `<b>Mecanismo de colapso de tensión (curva nariz P-V):</b> La rama estable (azul) representa la operación normal del sistema. El <em>nose point</em> (punto rojo) es la máxima cargabilidad: más allá, no existe solución estable para la ecuación de flujo de potencia reactiva. El 28-A, la zona sur peninsular operó con SCR ≈ 1,8 y una carga equivalente al 91% de la capacidad máxima del corredor reactivo, dejando un margen negativo antes del primer disparo.<br/><small style="color:var(--text-1, #64748b)">Modelo: sistema de 2 nudos (Van Cutsem & Vournas, 1998). Parámetros anclados a ENTSO-E Factual Report, Tabla 2-4, p. 36.</small>`
-          : `<b>Voltage collapse mechanism (P-V nose curve):</b> The stable branch (blue) represents the normal operation of the system. The <em>nose point</em> (red dot) is the maximum loadability: beyond this, there is no stable solution for the reactive power flow equation. On April 28, the southern peninsular zone operated with an SCR ≈ 1.8 and a load equivalent to 91% of the maximum capacity of the reactive corridor, leaving a negative margin before the first trip.<br/><small style="color:var(--text-1, #64748b)">Model: 2-bus system (Van Cutsem & Vournas, 1998). Parameters anchored to ENTSO-E Factual Report, Table 2-4, p. 36.</small>`
+          ? `<b>Mecanismo de colapso de tensión (curva nariz P-V):</b> La rama estable (azul) representa la operación normal del sistema. El <em>nose point</em> (punto rojo) es la máxima cargabilidad: más allá, no existe solución estable para la ecuación de flujo de potencia reactiva. El 28-A, la zona sur peninsular operó con SCR ≈ 1,8 y una carga equivalente al 91% de la capacidad máxima del corredor reactivo, dejando un margen negativo antes del primer disparo.<br/><small style="color:var(--pv-text-muted)">Modelo: sistema de 2 nudos (Van Cutsem & Vournas, 1998). Parámetros anclados a ENTSO-E Factual Report, Tabla 2-4, p. 36.</small>`
+          : `<b>Voltage collapse mechanism (P-V nose curve):</b> The stable branch (blue) represents the normal operation of the system. The <em>nose point</em> (red dot) is the maximum loadability: beyond this, there is no stable solution for the reactive power flow equation. On April 28, the southern peninsular zone operated with an SCR ≈ 1.8 and a load equivalent to 91% of the maximum capacity of the reactive corridor, leaving a negative margin before the first trip.<br/><small style="color:var(--pv-text-muted)">Model: 2-bus system (Van Cutsem & Vournas, 1998). Parameters anchored to ENTSO-E Factual Report, Table 2-4, p. 36.</small>`
         }} />
       </div>
 

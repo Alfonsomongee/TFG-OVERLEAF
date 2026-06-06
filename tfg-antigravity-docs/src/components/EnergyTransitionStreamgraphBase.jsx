@@ -24,12 +24,13 @@ const data = [
 ];
 
 const COLORS = {
-  carbon: '#4a4a4a',          // Gris oscuro/antracita
-  cicloCombinado: '#e67e22',  // Naranja gas
-  nuclear: '#9b59b6',         // Púrpura
-  hidraulica: '#1abc9c',      // Verde turquesa
-  eolica: '#3498db',          // Azul eólica
-  solar: '#f1c40f'            // Amarillo solar
+  carbon: 'var(--ets-carbon)',
+  cicloCombinado: 'var(--ets-gas)',
+  nuclear: 'var(--ets-nuclear)',
+  hidraulica: 'var(--ets-hydro)',
+  eolica: 'var(--ets-wind)',
+  solar: 'var(--ets-solar)',
+  emisiones: 'var(--ets-emissions)',
 };
 
 const CustomTooltip = ({ active, payload, label, strings }) => {
@@ -124,10 +125,10 @@ export default function EnergyTransitionStreamgraph({}) {
             data={data}
             margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--ets-grid)" />
             <XAxis 
               dataKey="year" 
-              tick={{ fill: 'var(--ifm-font-color-base)', opacity: 0.8 }}
+              tick={{ fill: 'var(--ets-axis)', fontSize: 11 }}
               tickLine={false}
             />
             
@@ -135,7 +136,7 @@ export default function EnergyTransitionStreamgraph({}) {
             <YAxis 
               yAxisId="left" 
               tickFormatter={(val) => `${val}%`}
-              tick={{ fill: 'var(--ifm-font-color-base)', opacity: 0.8 }}
+              tick={{ fill: 'var(--ets-axis)', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
             />
@@ -145,12 +146,12 @@ export default function EnergyTransitionStreamgraph({}) {
               yAxisId="right" 
               orientation="right" 
               tickFormatter={(val) => `${val} Mt`}
-              tick={{ fill: '#ff4757', fontWeight: 'bold' }}
+              tick={{ fill: 'var(--ets-emissions)', fontWeight: 700, fontSize: 11 }}
               tickLine={false}
               axisLine={false}
             />
             
-            <Tooltip content={<CustomTooltip strings={strings} />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2 }} />
+            <Tooltip content={<CustomTooltip strings={strings} />} cursor={{ stroke: 'var(--ets-axis-line)', strokeWidth: 2 }} />
             <Legend content={renderLegend} verticalAlign="bottom" height={36}/>
 
             {/* Áreas Apiladas (Streamgraph) */}
@@ -180,10 +181,10 @@ export default function EnergyTransitionStreamgraph({}) {
                 type="monotone" 
                 dataKey="emisiones" 
                 name="Emisiones CO2" 
-                stroke="#ff4757" 
+                stroke={COLORS.emisiones} 
                 strokeWidth={4} 
-                dot={{ r: 6, fill: '#ff4757', stroke: 'var(--ifm-background-color)' }}
-                activeDot={{ r: 8, strokeWidth: 0 }}
+                dot={{ r: 6, fill: COLORS.emisiones, stroke: 'var(--ets-bg-card)', strokeWidth: 2 }}
+                activeDot={{ r: 8, fill: COLORS.emisiones, stroke: 'var(--ets-bg-card)', strokeWidth: 2 }}
               />
             )}
           </ComposedChart>

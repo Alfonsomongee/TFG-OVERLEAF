@@ -39,7 +39,7 @@ export default function ANSI59Cascade() {
 
   if (!isMounted) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', color: '#94a3b8' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px', color: '#7A7062' }}>
         {isEs ? 'Cargando simulador de cascada...' : 'Loading cascade simulator...'}
       </div>
     );
@@ -106,7 +106,7 @@ export default function ANSI59Cascade() {
             className={styles.rangeInput}
             aria-label="Sensibilidad de propagación (ANSI 59)"
           />
-          <span style={{ fontSize: '0.62rem', color: 'var(--text-1, #64748b)', marginTop: '0.1rem' }}>
+          <span style={{ fontSize: '0.62rem', color: 'var(--ansi-text-muted)', marginTop: '0.1rem' }}>
             {sensitivity <= 0.05 
               ? (isEs ? '🛡️ Calibración óptima (Cascada contenida)' : '🛡️ Optimal calibration (Cascade contained)')
               : sensitivity <= 0.09 

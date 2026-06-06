@@ -1,16 +1,87 @@
 .sismographContainer {
+  --sis-bg-card: rgba(255, 252, 245, 0.84);
+  --sis-bg-panel: rgba(255, 252, 245, 0.62);
+  --sis-bg-header: linear-gradient(180deg, rgba(255, 252, 245, 0.94), rgba(246, 240, 227, 0.64));
+  --sis-bg-tooltip: #FFFCF5;
+
+  --sis-text-primary: #191814;
+  --sis-text-secondary: #4A4338;
+  --sis-text-muted: #7A7062;
+
+  --sis-border: rgba(25, 24, 20, 0.14);
+  --sis-border-strong: rgba(25, 24, 20, 0.24);
+
+  --sis-grid: rgba(25, 24, 20, 0.10);
+  --sis-axis: #6B6255;
+  --sis-axis-line: rgba(25, 24, 20, 0.20);
+
+  --sis-frequency: #1F6F78;
+  --sis-frequency-soft: rgba(31, 111, 120, 0.10);
+  --sis-frequency-border: rgba(31, 111, 120, 0.34);
+
+  --sis-voltage: #A13D36;
+  --sis-voltage-soft: rgba(161, 61, 54, 0.10);
+  --sis-voltage-border: rgba(161, 61, 54, 0.34);
+
+  --sis-lost: #A96000;
+  --sis-lost-soft: rgba(169, 96, 0, 0.10);
+  --sis-lost-border: rgba(169, 96, 0, 0.30);
+
+  --sis-success: #2F6B4F;
+  --sis-success-soft: rgba(47, 107, 79, 0.10);
+
+  --sis-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --sis-shadow-tooltip: 0 12px 32px rgba(25, 24, 20, 0.12);
+
   margin: 2rem 0;
-  background: var(--bg-1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--sis-bg-card);
+  border: 1px solid var(--sis-border);
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  overflow: visible;
+  box-shadow: var(--sis-shadow);
+  color: var(--sis-text-primary);
+}
+
+html[data-theme='dark'] .sismographContainer {
+  --sis-bg-card: rgba(16, 29, 53, 0.76);
+  --sis-bg-panel: rgba(7, 19, 38, 0.58);
+  --sis-bg-header: linear-gradient(180deg, rgba(23, 39, 68, 0.88), rgba(16, 29, 53, 0.76));
+  --sis-bg-tooltip: #101D35;
+
+  --sis-text-primary: #F4F7FB;
+  --sis-text-secondary: #C7D2E3;
+  --sis-text-muted: #91A4BC;
+
+  --sis-border: rgba(226, 232, 240, 0.14);
+  --sis-border-strong: rgba(226, 232, 240, 0.24);
+
+  --sis-grid: rgba(244, 247, 251, 0.10);
+  --sis-axis: #C7D2E3;
+  --sis-axis-line: rgba(244, 247, 251, 0.22);
+
+  --sis-frequency: #7DCDE3;
+  --sis-frequency-soft: rgba(125, 205, 227, 0.12);
+  --sis-frequency-border: rgba(125, 205, 227, 0.38);
+
+  --sis-voltage: #D98798;
+  --sis-voltage-soft: rgba(217, 135, 152, 0.10);
+  --sis-voltage-border: rgba(217, 135, 152, 0.36);
+
+  --sis-lost: #E6B45C;
+  --sis-lost-soft: rgba(230, 180, 92, 0.11);
+  --sis-lost-border: rgba(230, 180, 92, 0.34);
+
+  --sis-success: #A6C67B;
+  --sis-success-soft: rgba(166, 198, 123, 0.10);
+
+  --sis-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  --sis-shadow-tooltip: 0 16px 38px rgba(0, 0, 0, 0.38);
 }
 
 .header {
   padding: 1.25rem 1.5rem;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--sis-bg-header);
+  border-bottom: 1px solid var(--sis-border);
 }
 
 .title {
@@ -20,7 +91,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.1rem;
-  color: var(--text-0);
+  color: var(--sis-text-primary);
   letter-spacing: 0.02em;
 }
 
@@ -29,20 +100,20 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--ifm-color-primary);
-  box-shadow: 0 0 10px var(--ifm-color-primary);
+  background-color: var(--sis-frequency);
+  box-shadow: 0 0 10px var(--sis-frequency-border);
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% { opacity: 1; box-shadow: 0 0 10px var(--ifm-color-primary); }
-  50% { opacity: 0.5; box-shadow: 0 0 5px var(--ifm-color-primary); }
-  100% { opacity: 1; box-shadow: 0 0 10px var(--ifm-color-primary); }
+  0% { opacity: 1; box-shadow: 0 0 10px var(--sis-frequency-border); }
+  50% { opacity: 0.5; box-shadow: 0 0 5px var(--sis-frequency-border); }
+  100% { opacity: 1; box-shadow: 0 0 10px var(--sis-frequency-border); }
 }
 
 .chartWrapper {
   padding: 1rem;
-  background: var(--bg-0);
+  background: var(--sis-bg-panel);
 }
 
 .loading {
@@ -50,20 +121,20 @@
   align-items: center;
   justify-content: center;
   height: 400px;
-  color: var(--ifm-color-primary);
+  color: var(--sis-frequency);
   font-family: var(--font-mono);
   animation: pulse 1.5s infinite;
 }
 
-/* Tooltip */
 .customTooltip {
-  background: var(--bg-2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--sis-bg-tooltip);
+  border: 1px solid var(--sis-border-strong);
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--sis-shadow-tooltip);
   backdrop-filter: blur(8px);
   min-width: 250px;
+  color: var(--sis-text-primary);
 }
 
 .tooltipHeader {
@@ -72,20 +143,20 @@
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--sis-border);
 }
 
 .tooltipTime {
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: bold;
-  color: var(--text-0);
+  color: var(--sis-text-primary);
 }
 
 .tooltipSec {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: var(--text-3);
+  color: var(--sis-text-muted);
 }
 
 .tooltipBody {
@@ -96,7 +167,7 @@
 
 .tooltipEvent {
   margin: 0 0 0.5rem 0;
-  color: var(--ifm-color-warning);
+  color: var(--sis-lost);
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -123,16 +194,12 @@
 }
 
 .metricLabel {
-  color: var(--text-2);
+  color: var(--sis-text-secondary);
 }
 
 .metricValue {
   font-family: var(--font-mono);
   font-weight: bold;
-  color: var(--text-0);
+  color: var(--sis-text-primary);
   text-align: right;
-}
-
-.sismographContainer {
-  overflow: visible;
 }

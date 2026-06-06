@@ -40,20 +40,40 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useCallback, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 
-// ─── Paleta forense ───────────────────────────────────────────────────────────
-const C = {
-  bg:       'var(--chart-bg, #060d1a)',
-  grid:     'rgba(0,217,255,0.06)',
-  normal:   '#00d9ff',   // tensión normal
-  warning:  '#f59e0b',   // tensión en alerta
-  critical: '#ef4444',   // tensión crítica / disparo
-  scada:    '#10b981',   // lo que ve el SCADA (400 kV)
-  hidden:   '#a78bfa',   // lo que NO ve el SCADA (220 kV colector)
-  text:     'var(--ifm-font-color-base)',
-  dim:      'var(--ifm-color-emphasis-400)',
-  border:   'rgba(0,217,255,0.15)',
-};
+// ─── Paleta light/dark ────────────────────────────────────────────────────────
+function getTapLagPalette(isDark) {
+  return {
+    bg: isDark ? '#071326' : '#FFFCF5',
+    bgPanel: isDark ? 'rgba(16, 29, 53, 0.78)' : 'rgba(255, 252, 245, 0.82)',
+    bgPanelSoft: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(25, 24, 20, 0.035)',
+
+    grid: isDark ? 'rgba(244, 247, 251, 0.07)' : 'rgba(25, 24, 20, 0.06)',
+
+    normal: isDark ? '#7DCDE3' : '#1F6F78',
+    warning: isDark ? '#E6B45C' : '#A96000',
+    critical: isDark ? '#D98798' : '#A13D36',
+    scada: isDark ? '#A6C67B' : '#2F6B4F',
+    hidden: isDark ? '#C4A5E8' : '#6E4D8B',
+
+    text: isDark ? '#F4F7FB' : '#191814',
+    secondary: isDark ? '#C7D2E3' : '#4A4338',
+    dim: isDark ? '#91A4BC' : '#7A7062',
+
+    border: isDark ? 'rgba(226, 232, 240, 0.14)' : 'rgba(25, 24, 20, 0.14)',
+    borderStrong: isDark ? 'rgba(226, 232, 240, 0.24)' : 'rgba(25, 24, 20, 0.24)',
+
+    scadaSoft: isDark ? 'rgba(166, 198, 123, 0.12)' : 'rgba(47, 107, 79, 0.10)',
+    hiddenSoft: isDark ? 'rgba(196, 165, 232, 0.12)' : 'rgba(110, 77, 139, 0.10)',
+    warningSoft: isDark ? 'rgba(230, 180, 92, 0.11)' : 'rgba(169, 96, 0, 0.10)',
+    criticalSoft: isDark ? 'rgba(217, 135, 152, 0.10)' : 'rgba(161, 61, 54, 0.10)',
+
+    shadow: isDark
+      ? '0 10px 28px rgba(0, 0, 0, 0.24)'
+      : '0 8px 24px rgba(25, 24, 20, 0.055)',
+  };
+}
 
 // ─── Datos de cada paso ───────────────────────────────────────────────────────
 function getSteps(lang) {
@@ -148,7 +168,8 @@ function getSteps(lang) {
 }
 
 // ─── SVG principal ────────────────────────────────────────────────────────────
-function DiagramSVG({ step, prefersReduced }) {
+function DiagramSVG({ step, prefersReduced, C }) {
+  const isDark = C.bg === '#071326';
   const W = 780, H = 460;
   const isLast = step.cascade;
 
@@ -207,7 +228,7 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* Barra 400 kV */}
       <rect x="20" y="35" width="180" height="8" rx="2"
-            fill="rgba(16,185,129,0.15)" stroke={C.scada} strokeWidth="1" />
+            fill={C.scadaSoft} stroke={C.scada} strokeWidth="1" />
       <rect x="20" y="35" width={Math.min(180, Math.round(step.v400 * 180))} height="8" rx="2"
             fill={colorBar(step.v400)} opacity="0.9">
         {!prefersReduced && (
@@ -232,7 +253,7 @@ function DiagramSVG({ step, prefersReduced }) {
       {/* ── TRANSFORMADOR OLTC (centro) ── */}
       {/* Cuerpo del transformador */}
       <rect x="265" y="100" width="90" height="100" rx="4"
-            fill="rgba(0,217,255,0.04)" stroke={step.ansi59 ? C.critical : C.border}
+            fill={C.bgPanelSoft} stroke={step.ansi59 ? C.critical : C.border}
             strokeWidth={step.ansi59 ? 2 : 1}
             filter={step.ansi59 ? 'url(#glow-red)' : 'none'} />
 
@@ -248,7 +269,7 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* Indicador de posición OLTC */}
       <rect x="285" y="140" width="40" height="50" rx="2"
-            fill="rgba(255,255,255,0.03)" stroke={C.border} strokeWidth="1" />
+            fill={C.bgPanelSoft} stroke={C.border} strokeWidth="1" />
       <text x="310" y="153" fill={C.dim} fontSize="13" fontFamily="monospace"
             textAnchor="middle">Toma</text>
       {/* Aguja de posición */}
@@ -269,7 +290,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 values="1;0.2;1" dur="0.75s" repeatCount="indefinite" />
             )}
           </rect>
-          <text x="310" y="209" fill="#fff" fontSize="15"
+          <text x="310" y="209" fill={isDark ? '#071326' : '#FFFCF5'} fontSize="15"
                 fontFamily="monospace" textAnchor="middle" fontWeight="bold">
             ⚡ ANSI 59
           </text>
@@ -284,7 +305,7 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* Barra 220 kV colector */}
       <rect x="390" y="35" width="180" height="8" rx="2"
-            fill="rgba(167,139,250,0.1)" stroke={C.hidden} strokeWidth="1" />
+            fill={C.hiddenSoft} stroke={C.hidden} strokeWidth="1" />
       <rect x="390" y="35" width={isLast ? 0 : Math.min(180, Math.round(step.v220 * 180))} height="8" rx="2"
             fill={colorBar(step.v220)} opacity="0.9">
         {!prefersReduced && (
@@ -309,7 +330,7 @@ function DiagramSVG({ step, prefersReduced }) {
                   strokeWidth="1.5" strokeDasharray={fallen ? '4 3' : 'none'} />
             {/* Panel FV */}
             <rect x={x} y="90" width="24" height="14" rx="1"
-                  fill={fallen ? 'rgba(71,85,105,0.3)' : 'rgba(167,139,250,0.2)'}
+                  fill={fallen ? C.bgPanelSoft : C.hiddenSoft}
                   stroke={fallen ? C.dim : C.hidden} strokeWidth="1" />
             {/* Líneas del panel */}
             {[4, 8, 12].map(lx => (
@@ -334,7 +355,7 @@ function DiagramSVG({ step, prefersReduced }) {
         <>
           {/* Zona ciega */}
           <rect x="265" y="55" width="350" height="35" rx="3"
-                fill="rgba(245,158,11,0.07)"
+                fill={C.warningSoft}
                 stroke={C.warning} strokeWidth="1" strokeDasharray="5 3"
                 opacity={step.id >= 3 ? 1 : 0}>
             {!prefersReduced && (
@@ -359,7 +380,7 @@ function DiagramSVG({ step, prefersReduced }) {
         V₄₀₀ (p.u.)
       </text>
       <rect x="20" y="180" width="14" height="110" rx="2"
-            fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
+            fill={C.bgPanelSoft} stroke={C.border} strokeWidth="1" />
       <rect x="20" y={180 + 110 - bar400H} width="14" height={bar400H} rx="2"
             fill={colorBar(step.v400)} />
       {/* Marcas */}
@@ -380,7 +401,7 @@ function DiagramSVG({ step, prefersReduced }) {
       <text x="710" y="165" fill={C.dim} fontSize="13" fontFamily="monospace"
             textAnchor="end">V₂₂₀ (p.u.)</text>
       <rect x="726" y="180" width="14" height="110" rx="2"
-            fill="rgba(255,255,255,0.04)" stroke={C.border} strokeWidth="1" />
+            fill={C.bgPanelSoft} stroke={C.border} strokeWidth="1" />
       <rect x="726" y={isLast ? 290 : 180 + 110 - bar220H} width="14"
             height={isLast ? 0 : bar220H} rx="2"
             fill={colorBar(step.v220)} />
@@ -411,7 +432,7 @@ function DiagramSVG({ step, prefersReduced }) {
       {isLast && (
         <>
           <rect x="40" y="145" width="680" height="95" rx="4"
-                fill="rgba(239,68,68,0.08)"
+                fill={C.criticalSoft}
                 stroke={C.critical} strokeWidth="1.5"
                 filter="url(#glow-red)" />
           <text x="380" y="178" fill={C.critical} fontSize="18"
@@ -423,7 +444,7 @@ function DiagramSVG({ step, prefersReduced }) {
                 fontFamily="monospace" textAnchor="middle">
             −15 GW en 30 segundos · 25.184 MW de demanda sin suministro
           </text>
-          <text x="380" y="217" fill="#f87171" fontSize="13"
+          <text x="380" y="217" fill={C.critical} fontSize="13"
                 fontFamily="monospace" textAnchor="middle" opacity="0.8">
             ~60 millones de personas · primer colapso por sobretensión en Europa Continental
           </text>
@@ -432,7 +453,7 @@ function DiagramSVG({ step, prefersReduced }) {
 
       {/* ── NOTA INFERIOR ── */}
       <rect x="20" y="360" width="720" height="44" rx="3"
-            fill="rgba(255,255,255,0.02)" stroke={C.border} strokeWidth="1" />
+            fill={C.bgPanelSoft} stroke={C.border} strokeWidth="1" />
       <text x="36" y="378" fill={step.ansi59 ? C.critical : C.dim}
             fontSize="13" fontFamily="monospace">
         {step.note}
@@ -447,6 +468,9 @@ function DiagramSVG({ step, prefersReduced }) {
 // ─── Componente principal ─────────────────────────────────────────────────────
 function TapLagSequenceInner({}) {
   const lang = useDocLang();
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+  const C = useMemo(() => getTapLagPalette(isDark), [isDark]);
   const [activeStep, setActiveStep] = useState(0);
   const steps = useMemo(() => getSteps(lang), [lang]);
   const step  = steps[activeStep];
@@ -464,7 +488,7 @@ function TapLagSequenceInner({}) {
   const phaseColor = step.cascade ? C.critical : step.ansi59 ? C.critical : step.id >= 3 ? C.warning : C.normal;
 
   return (
-    <div style={{ fontFamily: 'monospace' }}>
+    <div style={{ fontFamily: 'monospace', color: C.text }}>
 
       {/* Título del paso */}
       <div style={{
@@ -482,7 +506,7 @@ function TapLagSequenceInner({}) {
           <h4 style={{ margin: '4px 0 0', fontSize: 15, color: phaseColor }}>
             {step.title}
           </h4>
-          <p style={{ margin: '3px 0 0', fontSize: 12, color: 'var(--ifm-color-emphasis-600)', lineHeight: 1.5 }}>
+          <p style={{ margin: '3px 0 0', fontSize: 12, color: C.secondary, lineHeight: 1.5 }}>
             {step.subtitle}
           </p>
         </div>
@@ -544,7 +568,7 @@ function TapLagSequenceInner({}) {
               style={{
                 flex: isActive ? 2 : 1,
                 height: 4,
-                background: isActive ? c : i < activeStep ? `${c}66` : 'rgba(255,255,255,0.08)',
+                background: isActive ? c : i < activeStep ? `${c}66` : C.border,
                 border: 'none',
                 borderRadius: 2,
                 cursor: 'pointer',
@@ -560,18 +584,19 @@ function TapLagSequenceInner({}) {
       <div style={{
         background: C.bg,
         borderRadius: 10,
-        border: `1px solid ${phaseColor}30`,
+        border: `1px solid ${phaseColor}44`,
         overflow: 'hidden',
         transition: 'border-color 0.3s ease',
+        boxShadow: C.shadow,
       }}>
-        <DiagramSVG step={step} prefersReduced={prefersReduced} />
+        <DiagramSVG step={step} prefersReduced={prefersReduced} C={C} />
       </div>
 
       {/* Leyenda */}
       <div style={{
         marginTop: '0.75rem',
         display: 'flex', flexWrap: 'wrap', gap: '1rem',
-        fontSize: 11, color: C.dim,
+        fontSize: 11, color: C.secondary,
       }}>
         {[
           { color: C.scada,    label: isEs ? 'Visible para SCADA REE (400 kV)' : 'Visible to REE SCADA (400 kV)' },
@@ -589,8 +614,9 @@ function TapLagSequenceInner({}) {
       {/* Footer */}
       <div style={{
         marginTop: '0.75rem',
-        fontSize: 11, color: '#374151',
-        borderTop: '1px solid rgba(255,255,255,0.05)',
+        fontSize: 11,
+        color: C.dim,
+        borderTop: `1px solid ${C.border}`,
         paddingTop: '0.6rem',
       }}>
         {isEs
@@ -607,9 +633,9 @@ export default function TapLagSequence({}) {
     <BrowserOnly fallback={
       <div style={{
         height: 380, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--ifm-color-emphasis-400)',
+        justifyContent: 'center', color: '#7A7062',
         fontFamily: 'monospace', fontSize: 13,
-        background: 'var(--chart-bg, #060d1a)', borderRadius: 10,
+        background: '#FFFCF5', borderRadius: 10,
       }}>
         {lang === 'es' ? 'Inicializando diagrama Tap-Lag…' : 'Initializing Tap-Lag diagram…'}
       </div>

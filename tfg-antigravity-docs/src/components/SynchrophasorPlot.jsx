@@ -24,6 +24,7 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
 import * as echarts from 'echarts/core';
 import { PolarComponent, TooltipComponent, TitleComponent } from 'echarts/components';
@@ -45,7 +46,7 @@ function lcg(seed) {
 }
 
 // ─── Datos fasoriales ─────────────────────────────────────────────────────────
-function generatePhasorData(progress) {
+function generatePhasorData(progress, palette) {
   const rand = lcg(Math.floor(progress * 100));
   const data = [];
 
@@ -56,28 +57,28 @@ function generatePhasorData(progress) {
     if (progress < 30) {
       angle = (isSouth ? 25 : 15) + (rand() * 4 - 2);
       mag   = 1.0 + (rand() * 0.02 - 0.01);
-      color = isSouth ? '#f59e0b' : '#3b82f6';
+      color = isSouth ? palette.south : palette.north;
     } else if (progress < 60) {
       const inst = (progress - 30) / 30;
       if (isSouth) {
         angle = 25 + Math.sin(progress * i * 0.5) * 180 * inst;
         mag   = Math.max(0.3, 1.0 - inst * 0.3 + rand() * 0.15 - 0.075);
-        color = '#ef4444';
+        color = palette.collapse;
       } else {
         angle = 15 + Math.sin(progress * i * 0.2) * 45 * inst;
         mag   = Math.max(0.6, 1.0 - inst * 0.1);
-        color = '#3b82f6';
+        color = palette.north;
       }
     } else {
       const collapse = (progress - 60) / 40;
       if (isSouth) {
         angle = rand() * 360;
         mag   = Math.max(0, 0.7 - collapse * 0.7);
-        color = '#ef4444';
+        color = palette.collapse;
       } else {
         angle = 15 + Math.sin(progress * 10) * 10;
         mag   = Math.max(0, 0.9 - collapse * 0.9);
-        color = collapse > 0.7 ? '#ef4444' : '#3b82f6';
+        color = collapse > 0.7 ? palette.collapse : palette.north;
       }
     }
 
@@ -95,6 +96,59 @@ const MILESTONES = [
   { threshold: 60, es: '12:33:21 CEST — Pérdida de sincronismo ES-FR. Sistema ibérico aislado.', en: '12:33:21 CEST — Loss of synchronism ES-FR. Iberian system isolated.' },
 ];
 
+function getPhasorPalette(isDark) {
+  return {
+    bgPanel: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(255, 252, 245, 0.62)',
+    bgChart: isDark ? '#071326' : '#FFFCF5',
+    bgTooltip: isDark ? 'rgba(16, 29, 53, 0.97)' : 'rgba(255, 252, 245, 0.97)',
+
+    textPrimary: isDark ? '#F4F7FB' : '#191814',
+    textSecondary: isDark ? '#C7D2E3' : '#4A4338',
+    textMuted: isDark ? '#91A4BC' : '#7A7062',
+
+    border: isDark ? 'rgba(226, 232, 240, 0.14)' : 'rgba(25, 24, 20, 0.14)',
+    borderStrong: isDark ? 'rgba(226, 232, 240, 0.24)' : 'rgba(25, 24, 20, 0.24)',
+
+    grid: isDark ? 'rgba(244, 247, 251, 0.12)' : 'rgba(25, 24, 20, 0.10)',
+    axisLine: isDark ? 'rgba(244, 247, 251, 0.24)' : 'rgba(25, 24, 20, 0.20)',
+
+    north: isDark ? '#7DCDE3' : '#1F6F78',
+    south: isDark ? '#E6B45C' : '#A96000',
+    collapse: isDark ? '#D98798' : '#A13D36',
+
+    northSoft: isDark ? 'rgba(125, 205, 227, 0.12)' : 'rgba(31, 111, 120, 0.10)',
+    southSoft: isDark ? 'rgba(230, 180, 92, 0.11)' : 'rgba(169, 96, 0, 0.10)',
+    collapseSoft: isDark ? 'rgba(217, 135, 152, 0.10)' : 'rgba(161, 61, 54, 0.10)',
+
+    accent: isDark ? '#7DCDE3' : '#1F6F78',
+    accentSoft: isDark ? 'rgba(125, 205, 227, 0.12)' : 'rgba(31, 111, 120, 0.10)',
+    accentBorder: isDark ? 'rgba(125, 205, 227, 0.38)' : 'rgba(31, 111, 120, 0.34)',
+
+    shadowInset: isDark
+      ? 'inset 0 0 50px rgba(0, 0, 0, 0.42)'
+      : 'inset 0 0 30px rgba(25, 24, 20, 0.045)',
+  };
+}
+
+function getPhaseVisual(progress, palette) {
+  if (progress < 30) {
+    return {
+      color: palette.north,
+      soft: palette.northSoft,
+    };
+  }
+  if (progress < 60) {
+    return {
+      color: palette.south,
+      soft: palette.southSoft,
+    };
+  }
+  return {
+    color: palette.collapse,
+    soft: palette.collapseSoft,
+  };
+}
+
 function getPhaseLabel(progress, lang) {
   if (progress < 30)  return lang === 'es' ? 'Fase 1: Operación estable' : 'Phase 1: Stable operation';
   if (progress < 60)  return lang === 'es' ? 'Fase 2: Cascada de sobretensiones' : 'Phase 2: Overvoltage cascade';
@@ -104,11 +158,15 @@ function getPhaseLabel(progress, lang) {
 // ─── Componente interno ───────────────────────────────────────────────────────
 function SynchrophasorPlotInner({ presentationMode = false }) {
   const lang = useDocLang();
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+  const palette = useMemo(() => getPhasorPalette(isDark), [isDark]);
   const chartRef = useRef(null);
   const [isPlaying, setIsPlaying]     = useState(false);
   const [progress,  setProgress]      = useState(0);
   const [speed,     setSpeed]         = useState(1);
   const [milestone, setMilestone]     = useState(null); // banner de hito activo
+  const phaseVisual = useMemo(() => getPhaseVisual(progress, palette), [progress, palette]);
   const pauseTimerRef = useRef(null);
   const lastMilestone = useRef(-1);
 
@@ -154,8 +212,8 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
   useEffect(() => {
     if (!chartRef.current) return;
     chartRef.current.getEchartsInstance()
-      .setOption({ series: [{ data: generatePhasorData(progress) }] });
-  }, [progress]);
+      .setOption({ series: [{ data: generatePhasorData(progress, palette) }] });
+  }, [progress, palette]);
 
   const handleReset = useCallback(() => {
     if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current);
@@ -186,34 +244,39 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
         ? 'Transformador Granada 400/220 kV · 12:32:57–12:33:27 CEST'
         : 'Granada 400/220 kV Transformer · 12:32:57–12:33:27 CEST',
       left: 'center', top: '3%',
-      textStyle: { color: '#fff', fontSize: 17, fontWeight: '700',
-        textShadowBlur: 10, textShadowColor: 'rgba(255,255,255,0.3)' },
-      subtextStyle: { color: '#94a3b8', fontSize: 12 },
+      textStyle: {
+        color: palette.textPrimary,
+        fontSize: 17,
+        fontWeight: '700',
+        textShadowBlur: isDark ? 8 : 0,
+        textShadowColor: isDark ? 'rgba(244, 247, 251, 0.22)' : 'transparent',
+      },
+      subtextStyle: { color: palette.textMuted, fontSize: 12 },
     },
     polar: { center: ['50%', '58%'], radius: '62%' },
     angleAxis: {
       type: 'value', min: 0, max: 360, boundaryGap: false,
-      splitLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.12)', type: 'dashed' } },
-      axisLabel: { formatter: '{value}°', color: '#94a3b8', fontSize: 12 },
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.25)' } },
+      splitLine: { show: true, lineStyle: { color: palette.grid, type: 'dashed' } },
+      axisLabel: { formatter: '{value}°', color: palette.textMuted, fontSize: 12 },
+      axisLine: { lineStyle: { color: palette.axisLine } },
     },
     radiusAxis: {
       type: 'value', min: 0, max: 1.2,
-      splitLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.12)' } },
-      axisLabel: { formatter: '{value} p.u.', color: '#94a3b8', fontSize: 11 },
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.25)' } },
+      splitLine: { show: true, lineStyle: { color: palette.grid } },
+      axisLabel: { formatter: '{value} p.u.', color: palette.textMuted, fontSize: 11 },
+      axisLine: { lineStyle: { color: palette.axisLine } },
     },
     tooltip: {
       trigger: 'item',
-      backgroundColor: 'rgba(10,15,30,0.97)',
-      borderColor: 'rgba(56,189,248,0.4)',
+      backgroundColor: palette.bgTooltip,
+      borderColor: palette.accentBorder,
       borderWidth: 1,
-      textStyle: { color: '#e2e8f0', fontFamily: 'monospace', fontSize: 12 },
+      textStyle: { color: palette.textPrimary, fontFamily: 'monospace', fontSize: 12 },
       formatter: (p) => {
         const [mag, ang] = p.value;
-        return `<b style="color:#94a3b8">PMU</b><br/>
-          ${lang === 'es' ? 'Tensión' : 'Voltage'}: <b style="color:#38bdf8">${mag.toFixed(3)} p.u.</b><br/>
-          ${lang === 'es' ? 'Ángulo' : 'Angle'}: <b style="color:#f472b6">${ang.toFixed(1)}°</b>`;
+        return `<b style="color:${palette.textMuted}">PMU</b><br/>
+          ${lang === 'es' ? 'Tensión' : 'Voltage'}: <b style="color:${palette.accent}">${mag.toFixed(3)} p.u.</b><br/>
+          ${lang === 'es' ? 'Ángulo' : 'Angle'}: <b style="color:${palette.collapse}">${ang.toFixed(1)}°</b>`;
       },
     },
     series: [{
@@ -236,7 +299,7 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
       },
       data: [],
     }],
-  }), [lang]);
+  }), [lang, palette, isDark]);
 
   const isEs = lang === 'es';
   const phaseLabel = getPhaseLabel(progress, lang);
@@ -250,12 +313,12 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
         <div style={{
           marginBottom: '0.5rem',
           padding: '0.75rem 1rem',
-          background: 'rgba(239,68,68,0.12)',
-          border: '2px solid #ef4444',
+          background: palette.collapseSoft,
+          border: `2px solid ${palette.collapse}`,
           borderRadius: 8,
           fontFamily: 'monospace',
           fontSize: 14,
-          color: '#fca5a5',
+          color: palette.collapse,
           textAlign: 'center',
           fontWeight: 'bold',
         }} aria-live="assertive" role="alert">
@@ -271,10 +334,10 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
           : `PMU phasor diagram. ${phaseLabel}. ${timeLabel}`}
         style={{
           flex: 1, minHeight: 600,
-          backgroundColor: '#0a0f1c',
+          backgroundColor: palette.bgChart,
           borderRadius: 12,
-          border: '1px solid rgba(255,255,255,0.06)',
-          boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)',
+          border: `1px solid ${palette.border}`,
+          boxShadow: palette.shadowInset,
           overflow: 'hidden',
           position: 'relative',
         }}
@@ -284,7 +347,7 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
           echarts={echarts}
           option={baseOption}
           style={{ height: '100%', minHeight: 600, width: '100%' }}
-          theme="dark"
+          theme={undefined}
           notMerge={false}
           lazyUpdate
         />
@@ -294,14 +357,14 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
       <div style={{
         marginTop: '0.5rem',
         height: 4,
-        background: 'rgba(255,255,255,0.06)',
+        background: palette.border,
         borderRadius: 2,
         overflow: 'hidden',
       }}>
         <div style={{
           width: `${progress}%`,
           height: '100%',
-          background: progress < 30 ? '#3b82f6' : progress < 60 ? '#f59e0b' : '#ef4444',
+          background: phaseVisual.color,
           transition: 'width 0.1s linear, background 0.3s ease',
         }} />
       </div>
@@ -310,9 +373,9 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
       <div style={{
         marginTop: '0.5rem',
         padding: '0.75rem 1rem',
-        background: 'rgba(15,23,42,0.5)',
+        background: palette.bgPanel,
         borderRadius: 8,
-        border: '1px solid rgba(255,255,255,0.1)',
+        border: `1px solid ${palette.border}`,
         display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap',
       }}>
         <button
@@ -322,7 +385,7 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
             ? (isEs ? 'Pausar' : 'Pause')
             : (isEs ? 'Reproducir' : 'Play')}
           style={{
-            background: 'var(--ifm-color-primary)', color: '#fff',
+            background: palette.accent, color: isDark ? '#071326' : '#FFFCF5',
             border: 'none', borderRadius: 4, padding: '0.45rem 1rem',
             cursor: 'pointer', fontWeight: 'bold', minWidth: 72, fontFamily: 'monospace',
           }}
@@ -334,8 +397,8 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
           onClick={handleReset}
           aria-label={isEs ? 'Reiniciar' : 'Reset'}
           style={{
-            background: 'transparent', color: 'var(--ifm-color-primary)',
-            border: '1px solid var(--ifm-color-primary)',
+            background: 'transparent', color: palette.accent,
+            border: `1px solid ${palette.accentBorder}`,
             borderRadius: 4, padding: '0.45rem 0.8rem',
             cursor: 'pointer', fontWeight: 'bold', fontFamily: 'monospace',
           }}
@@ -354,9 +417,9 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
               style={{
                 padding: '0.25rem 0.6rem',
                 borderRadius: 4,
-                border: `1px solid ${speed === s ? 'var(--ifm-color-primary)' : 'rgba(255,255,255,0.12)'}`,
-                background: speed === s ? 'rgba(0,217,255,0.12)' : 'transparent',
-                color: speed === s ? 'var(--ifm-color-primary)' : 'var(--text-1, #64748b)',
+                border: `1px solid ${speed === s ? palette.accentBorder : palette.border}`,
+                background: speed === s ? palette.accentSoft : 'transparent',
+                color: speed === s ? palette.accent : palette.textSecondary,
                 cursor: 'pointer', fontSize: 11, fontFamily: 'monospace',
               }}
             >
@@ -380,7 +443,7 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
           style={{ flex: 1, cursor: 'pointer', minWidth: 100 }}
         />
 
-        <div style={{ fontFamily: 'monospace', color: '#94a3b8', minWidth: 120, textAlign: 'right', fontSize: 12 }}>
+        <div style={{ fontFamily: 'monospace', color: palette.textMuted, minWidth: 120, textAlign: 'right', fontSize: 12 }}>
           {timeLabel}
         </div>
 
@@ -390,8 +453,9 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
           title={isEs ? 'Descargar frame actual como PNG' : 'Download current frame as PNG'}
           aria-label={isEs ? 'Capturar frame actual' : 'Capture current frame'}
           style={{
-            background: 'transparent', color: 'var(--text-1, #64748b)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'transparent',
+            color: palette.textSecondary,
+            border: `1px solid ${palette.border}`,
             borderRadius: 4, padding: '0.45rem 0.6rem',
             cursor: 'pointer', fontSize: 14,
           }}
@@ -406,19 +470,17 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
         style={{
           marginTop: '0.5rem',
           padding: '0.4rem 0.9rem',
-          background: progress < 30
-            ? 'rgba(59,130,246,0.08)'
-            : progress < 60
-              ? 'rgba(245,158,11,0.08)'
-              : 'rgba(239,68,68,0.08)',
+          background: phaseVisual.soft,
           borderRadius: 6,
-          borderLeft: `3px solid ${progress < 30 ? '#3b82f6' : progress < 60 ? '#f59e0b' : '#ef4444'}`,
-          fontFamily: 'monospace', fontSize: 13, color: '#e2e8f0',
+          borderLeft: `3px solid ${phaseVisual.color}`,
+          fontFamily: 'monospace',
+          fontSize: 13,
+          color: palette.textPrimary,
         }}
       >
         {phaseLabel}
         {presentationMode && (
-          <span style={{ marginLeft: '0.75rem', fontSize: 11, color: 'var(--text-1, #64748b)' }}>
+          <span style={{ marginLeft: '0.75rem', fontSize: 11, color: palette.textMuted }}>
             {isEs ? '(modo presentación — pausa automática en hitos)' : '(presentation mode — auto-pause at milestones)'}
           </span>
         )}
@@ -428,12 +490,12 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
       <div style={{
         marginTop: '0.75rem',
         padding: '1.25rem',
-        background: 'rgba(15,23,42,0.5)',
+        background: palette.bgPanel,
         borderRadius: 8,
-        border: '1px solid rgba(56,189,248,0.2)',
-        color: '#e2e8f0', fontSize: '0.9rem', lineHeight: 1.65,
+        border: `1px solid ${palette.accentBorder}`,
+        color: palette.textSecondary, fontSize: '0.9rem', lineHeight: 1.65,
       }}>
-        <h4 style={{ color: '#38bdf8', margin: '0 0 0.6rem' }}>
+        <h4 style={{ color: palette.accent, margin: '0 0 0.6rem' }}>
           {isEs ? '¿Qué muestra este diagrama?' : 'What does this diagram show?'}
         </h4>
         <p style={{ margin: '0 0 0.5rem' }}>
@@ -443,20 +505,20 @@ function SynchrophasorPlotInner({ presentationMode = false }) {
         </p>
         <ul style={{ margin: 0, paddingLeft: '1.2rem' }}>
           <li style={{ marginBottom: '0.25rem' }}>
-            <strong style={{ color: '#3b82f6' }}>{isEs ? 'Azul (Norte):' : 'Blue (North):'}</strong>
+            <strong style={{ color: palette.north }}>{isEs ? 'Azul (Norte):' : 'Blue (North):'}</strong>
             {' '}{isEs ? 'Nudos del centro/norte. Más estables (mayor masa síncrona).' : 'Center/north nodes. More stable (greater synchronous mass).'}
           </li>
           <li style={{ marginBottom: '0.25rem' }}>
-            <strong style={{ color: '#f59e0b' }}>{isEs ? 'Ámbar (Sur, estable):' : 'Amber (South, stable):'}</strong>
+            <strong style={{ color: palette.south }}>{isEs ? 'Ámbar (Sur, estable):' : 'Amber (South, stable):'}</strong>
             {' '}{isEs ? 'Nudos del sur antes del fallo. Alta penetración FV.' : 'Southern nodes before fault. High PV penetration.'}
           </li>
           <li>
-            <strong style={{ color: '#ef4444' }}>{isEs ? 'Rojo (colapso):' : 'Red (collapse):'}</strong>
+            <strong style={{ color: palette.collapse }}>{isEs ? 'Rojo (colapso):' : 'Red (collapse):'}</strong>
             {' '}{isEs ? 'Vectores sin control = pérdida de sincronismo. Encogimiento → 0 V.' : 'Uncontrolled vectors = loss of synchronism. Shrinking → 0 V.'}
           </li>
         </ul>
         {prefersReduced && (
-          <p style={{ marginTop: '0.6rem', color: '#f59e0b', fontSize: '0.8rem' }}>
+          <p style={{ marginTop: '0.6rem', color: palette.south, fontSize: '0.8rem' }}>
             {isEs ? 'Animación desactivada. Use el slider.' : 'Animation disabled. Use the slider.'}
           </p>
         )}
@@ -471,7 +533,7 @@ export default function SynchrophasorPlot({ presentationMode = false }) {
     <BrowserOnly fallback={
       <div style={{
         height: 650, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#7A7062',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Inicializando diagrama fasorial…' : 'Initializing phasor diagram…'}

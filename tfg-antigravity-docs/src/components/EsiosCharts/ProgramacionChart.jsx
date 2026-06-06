@@ -1,30 +1,114 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
+import { useColorMode } from '@docusaurus/theme-common';
 import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import styles from './EsiosCharts.module.css';
 
-const CustomTooltip = ({ active, payload, label }) => {
+function getProgrammingPalette(isDark) {
+  return {
+    bgCard: isDark ? 'rgba(16, 29, 53, 0.76)' : 'rgba(255, 252, 245, 0.84)',
+    bgTooltip: isDark ? '#101D35' : '#FFFCF5',
+
+    textPrimary: isDark ? '#F4F7FB' : '#191814',
+    textSecondary: isDark ? '#C7D2E3' : '#4A4338',
+    textMuted: isDark ? '#91A4BC' : '#7A7062',
+
+    border: isDark ? 'rgba(226, 232, 240, 0.14)' : 'rgba(25, 24, 20, 0.14)',
+    borderStrong: isDark ? 'rgba(226, 232, 240, 0.24)' : 'rgba(25, 24, 20, 0.24)',
+
+    grid: isDark ? 'rgba(244, 247, 251, 0.10)' : 'rgba(25, 24, 20, 0.10)',
+    axis: isDark ? '#C7D2E3' : '#6B6255',
+    axisMuted: isDark ? '#91A4BC' : '#7A7062',
+    axisLine: isDark ? 'rgba(244, 247, 251, 0.22)' : 'rgba(25, 24, 20, 0.20)',
+
+    title: isDark ? '#7DCDE3' : '#1F6F78',
+
+    production: isDark ? '#A6C67B' : '#2F6B4F',
+
+    shadow: isDark
+      ? '0 10px 28px rgba(0, 0, 0, 0.24)'
+      : '0 8px 24px rgba(25, 24, 20, 0.055)',
+
+    tooltipShadow: isDark
+      ? '0 16px 38px rgba(0, 0, 0, 0.38)'
+      : '0 12px 32px rgba(25, 24, 20, 0.12)',
+  };
+}
+
+const CustomTooltip = ({ active, payload, label, palette }) => {
   if (active && payload && payload.length) {
     return (
-      <div className={styles.customTooltip}>
-        <div className={styles.tooltipLabel} style={{ fontWeight: 'bold', marginBottom: '5px' }}>{label}</div>
+      <div
+        className={styles.customTooltip}
+        style={{
+          backgroundColor: palette.bgTooltip,
+          border: `1px solid ${palette.borderStrong}`,
+          boxShadow: palette.tooltipShadow,
+          color: palette.textPrimary,
+        }}
+      >
+        <div
+          className={styles.tooltipLabel}
+          style={{
+            fontWeight: 'bold',
+            marginBottom: '5px',
+            color: palette.textPrimary,
+            borderBottom: `1px solid ${palette.border}`,
+          }}
+        >
+          {label}
+        </div>
+
         {payload.map((p, index) => (
           <div key={index} className={styles.tooltipItem} style={{ color: p.color }}>
             <span>Valor:</span>
-            <span>{p.value !== undefined && p.value !== null ? p.value.toLocaleString('es-ES', { maximumFractionDigits: 1 }) : 0} MWh</span>
+            <span>
+              {p.value !== undefined && p.value !== null
+                ? p.value.toLocaleString('es-ES', { maximumFractionDigits: 1 })
+                : 0} MWh
+            </span>
           </div>
         ))}
       </div>
     );
   }
+
   return null;
 };
+
+function CategoryAxisTick({ x, y, payload, palette, maxChars = 34 }) {
+  const fullLabel = String(payload?.value ?? '');
+  const shortLabel =
+    fullLabel.length > maxChars
+      ? `${fullLabel.slice(0, maxChars - 1)}…`
+      : fullLabel;
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <title>{fullLabel}</title>
+      <text
+        x={0}
+        y={0}
+        dy={4}
+        textAnchor="end"
+        fill={palette.axisMuted || palette.axis || '#6B6255'}
+        fontSize={11}
+        fontFamily="Inter, sans-serif"
+      >
+        {shortLabel}
+      </text>
+    </g>
+  );
+}
 
 export default function ProgramacionChart() {
   const lang = useDocLang();
   const isEs = lang === 'es';
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+  const palette = getProgrammingPalette(isDark);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,25 +147,65 @@ export default function ProgramacionChart() {
     return () => controller.abort();
   }, []);
 
-  if (loading) return <div style={{ color: '#ff4a4a', textAlign: 'center', fontFamily: 'Space Mono' }}>Analizando archivos locales...</div>;
-  if (!data || data.length === 0) return <div style={{ color: '#ff4a4a', textAlign: 'center' }}>No hay datos.</div>;
+  if (loading) {
+    return (
+      <div
+        style={{
+          color: '#7A7062',
+          textAlign: 'center',
+          fontFamily: 'Space Mono',
+        }}
+      >
+        Analizando archivos locales...
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div
+        style={{
+          color: '#7A7062',
+          textAlign: 'center',
+        }}
+      >
+        No hay datos.
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.chartContainer} style={{ height: '500px' }}>
-      <h3 className={styles.chartTitle}>{isEs ? 'Programación Mercado Producción (28 Abril)' : 'Production Market Schedule (Apr 28)'}</h3>
+    <div
+      className={styles.chartContainer}
+      style={{
+        height: '500px',
+        background: palette.bgCard,
+        borderColor: palette.border,
+        boxShadow: palette.shadow,
+      }}
+    >
+      <h3
+        className={styles.chartTitle}
+        style={{
+          color: palette.title,
+          textShadow: 'none',
+        }}
+      >
+        {isEs ? 'Programación Mercado Producción (28 Abril)' : 'Production Market Schedule (Apr 28)'}
+      </h3>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart data={data} layout="vertical" margin={{ top: 10, right: 30, left: 200, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" horizontal={true} vertical={true} />
-          <XAxis type="number" stroke="rgba(255, 255, 255, 0.5)" tick={{ fill: 'rgba(255, 255, 255, 0.5)', fontSize: 12, fontFamily: 'Space Mono' }} unit=" MWh" />
-          <YAxis 
-            type="category" 
-            dataKey="category" 
-            stroke="rgba(255, 255, 255, 0.5)" 
-            tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 11, fontFamily: 'Inter' }} 
-            width={190}
+        <BarChart data={data} layout="vertical" margin={{ top: 20, right: 36, left: 8, bottom: 28 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={palette.grid} horizontal={true} vertical={true} />
+          <XAxis type="number" stroke={palette.axisLine} tick={{ fill: palette.axis, fontSize: 12, fontFamily: 'Space Mono' }} unit=" MWh" />
+          <YAxis
+            type="category"
+            dataKey="category"
+            stroke={palette.axisLine}
+            tick={<CategoryAxisTick palette={palette} maxChars={34} />}
+            width={220}
           />
-          <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="28 Abril" fill="#4ae2a0" radius={[0, 4, 4, 0]} barSize={15} />
+          <Tooltip content={<CustomTooltip palette={palette} />} />
+          <Bar dataKey="28 Abril" fill={palette.production} radius={[0, 4, 4, 0]} barSize={15} />
         </BarChart>
       </ResponsiveContainer>
     </div>

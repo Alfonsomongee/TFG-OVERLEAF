@@ -44,9 +44,9 @@ import {
 // La capacidad máxima de importación física lleva estancada en ~4.200 MW
 // desde 2015, mientras la potencia instalada renovable se multiplicó por 3.
 const BORDER_CAPACITY = [
-  { name: 'Francia', value: 2800, color: '#3b82f6' },
-  { name: 'Portugal', value: 1200, color: '#10b981' },
-  { name: 'Marruecos', value: 200,  color: '#f59e0b' },
+  { name: 'Francia', value: 2800, color: 'var(--int-france)' },
+  { name: 'Portugal', value: 1200, color: 'var(--int-portugal)' },
+  { name: 'Marruecos', value: 200, color: 'var(--int-morocco)' },
 ];
 
 // ─── Tooltip personalizado ────────────────────────────────────────────────────
@@ -55,28 +55,29 @@ function CustomTooltip({ active, payload, label, isEs }) {
   const yearData = interconnectionData.find(d => d.anio === label);
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
-      border: '1px solid rgba(59,130,246,0.4)',
+      background: 'var(--int-bg-tooltip)',
+      border: '1px solid var(--int-border-strong)',
       borderRadius: 8,
       padding: '10px 14px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: 'var(--int-text-primary)',
       maxWidth: 260,
+      boxShadow: 'var(--int-shadow-tooltip)',
     }}>
-      <p style={{ margin: '0 0 6px', fontWeight: 'bold', color: '#94a3b8' }}>{label}</p>
+      <p style={{ margin: '0 0 6px', fontWeight: 'bold', color: 'var(--int-text-muted)' }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ margin: '0 0 3px', color: p.color }}>
           {p.name}: <strong>{p.value?.toLocaleString()}</strong>
         </p>
       ))}
       {yearData?.evento && isEs && (
-        <p style={{ margin: '6px 0 0', color: '#f59e0b', fontSize: 11, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 6 }}>
+        <p style={{ margin: '6px 0 0', color: 'var(--int-net)', fontSize: 11, borderTop: '1px solid var(--int-border)', paddingTop: 6 }}>
           {yearData.evento}
         </p>
       )}
       {yearData?.evento_en && !isEs && (
-        <p style={{ margin: '6px 0 0', color: '#f59e0b', fontSize: 11, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 6 }}>
+        <p style={{ margin: '6px 0 0', color: 'var(--int-net)', fontSize: 11, borderTop: '1px solid var(--int-border)', paddingTop: 6 }}>
           {yearData.evento_en}
         </p>
       )}
@@ -115,11 +116,11 @@ function InterconnectionDashboardInner({}) {
           <div style={{
             marginTop: '0.5rem',
             padding: '0.5rem 1rem',
-            background: 'rgba(239,68,68,0.1)',
-            border: '1px solid rgba(239,68,68,0.4)',
+            background: 'var(--int-alert-bg)',
+            border: '1px solid var(--int-alert-border)',
             borderRadius: 6,
             fontSize: 12,
-            color: '#fca5a5',
+            color: 'var(--int-alert-text)',
             fontFamily: 'monospace',
           }}>
             ⚠ {isEs
@@ -150,20 +151,20 @@ function InterconnectionDashboardInner({}) {
           >
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={interconnectionData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                <XAxis dataKey="anio" stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#94a3b8" tickFormatter={v => `${(v/1000).toFixed(0)}k`} tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--int-grid)" />
+                <XAxis dataKey="anio" stroke="var(--int-axis-line)" tick={{ fill: 'var(--int-axis)', fontSize: 11 }} />
+                <YAxis stroke="var(--int-axis-line)" tickFormatter={v => `${(v/1000).toFixed(0)}k`} tick={{ fill: 'var(--int-axis)', fontSize: 11 }} />
                 <Tooltip {...tooltipProps} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: 'var(--int-text-secondary)' }} />
                 <Bar dataKey="exportacion_gwh"
                      name={isEs ? 'Exportación' : 'Export'}
-                     fill="#00d9ff" barSize={20} radius={[4,4,0,0]} />
+                     fill="var(--int-export)" barSize={20} radius={[4,4,0,0]} />
                 <Bar dataKey="importacion_gwh"
                      name={isEs ? 'Importación' : 'Import'}
-                     fill="#f472b6" barSize={20} radius={[4,4,0,0]} />
+                     fill="var(--int-import)" barSize={20} radius={[4,4,0,0]} />
                 <Line type="monotone" dataKey="saldo_neto_gwh"
                       name={isEs ? 'Saldo Neto' : 'Net Balance'}
-                      stroke="#f59e0b" strokeWidth={3} dot={{ r: 4 }} />
+                      stroke="var(--int-net)" strokeWidth={3} dot={{ r: 4 }} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -188,29 +189,33 @@ function InterconnectionDashboardInner({}) {
           >
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={interconnectionData} margin={{ top: 20, right: 10, bottom: 20, left: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                <XAxis dataKey="anio" stroke="#94a3b8" tick={{ fontSize: 11 }} />
-                <YAxis yAxisId="left" stroke="#94a3b8"
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--int-grid)" />
+                <XAxis dataKey="anio" stroke="var(--int-axis-line)" tick={{ fill: 'var(--int-axis)', fontSize: 11 }} />
+                <YAxis yAxisId="left" stroke="var(--int-axis-line)"
                        tickFormatter={v => `${(v/1000).toFixed(0)}k`}
-                       tick={{ fontSize: 11 }} />
-                <YAxis yAxisId="right" orientation="right" stroke="#ef4444"
+                       tick={{ fill: 'var(--int-axis)', fontSize: 11 }} />
+                <YAxis yAxisId="right" orientation="right" stroke="var(--int-ratio)"
                        domain={[0, 20]} tickFormatter={v => `${v}%`}
-                       tick={{ fontSize: 11 }} />
+                       tick={{ fill: 'var(--int-ratio)', fontSize: 11 }} />
                 <Tooltip {...tooltipProps} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: 'var(--int-text-secondary)' }} />
                 {/* Objetivo mínimo UE 10% */}
                 <ReferenceLine
                   yAxisId="right" y={10}
-                  stroke="rgba(239,68,68,0.5)" strokeDasharray="4 4"
-                  label={{ value: isEs ? 'Objetivo UE 10%' : 'EU target 10%',
-                           fill: 'rgba(239,68,68,0.7)', fontSize: 10, position: 'insideTopRight' }}
+                  stroke="var(--int-ratio)" strokeDasharray="4 4"
+                  label={{
+                    value: isEs ? 'Objetivo UE 10%' : 'EU target 10%',
+                    fill: 'var(--int-ratio)',
+                    fontSize: 10,
+                    position: 'insideTopRight'
+                  }}
                 />
                 <Area yAxisId="left" type="monotone" dataKey="potencia_instalada_total_mw"
                       name={isEs ? 'Potencia Total Instalada' : 'Total Installed Power'}
-                      fill="rgba(16,185,129,0.15)" stroke="#10b981" />
+                      fill="var(--int-renewable-soft)" stroke="var(--int-renewable)" />
                 <Line yAxisId="right" type="stepAfter" dataKey="ratio_interconexion_pct"
                       name={isEs ? 'Ratio Interconexión (%)' : 'Interconnection Ratio (%)'}
-                      stroke="#ef4444" strokeWidth={3} dot={{ r: 5 }} />
+                      stroke="var(--int-ratio)" strokeWidth={3} dot={{ r: 5 }} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
@@ -250,23 +255,24 @@ function InterconnectionDashboardInner({}) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: 'rgba(10,15,30,0.97)',
-                    borderColor: '#3b82f6',
+                    backgroundColor: 'var(--int-bg-tooltip)',
+                    border: '1px solid var(--int-border-strong)',
                     borderRadius: 8,
-                    color: '#e2e8f0',
+                    color: 'var(--int-text-primary)',
                     fontFamily: 'monospace',
                     fontSize: 12,
+                    boxShadow: 'var(--int-shadow-tooltip)',
                   }}
                   formatter={(v, name) => [`${v.toLocaleString()} MW`, name]}
                 />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: 'var(--int-text-secondary)' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
           <p style={{
             margin: '0.5rem 0 0',
             fontSize: 10,
-            color: 'rgba(148,163,184,0.6)',
+            color: 'var(--int-text-muted)',
             fontFamily: 'monospace',
             textAlign: 'center',
           }}>
@@ -288,7 +294,7 @@ export default function InterconnectionDashboard({}) {
     <BrowserOnly fallback={
       <div style={{
         minHeight: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#7A7062',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Cargando dashboard de interconexiones…' : 'Loading interconnection dashboard…'}

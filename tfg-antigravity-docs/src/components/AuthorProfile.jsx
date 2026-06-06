@@ -77,8 +77,26 @@ export default function AuthorProfile() {
           }
           
           .author-container {
+            --author-bg: rgba(255, 252, 245, 0.92);
+            --author-surface: rgba(255, 252, 245, 0.78);
+            --author-surface-soft: rgba(25, 24, 20, 0.035);
+
+            --author-text-1: #191814;
+            --author-text-2: #4A4338;
+            --author-text-3: #7A7062;
+
+            --author-border: rgba(25, 24, 20, 0.12);
+            --author-border-strong: rgba(25, 24, 20, 0.20);
+
+            --author-accent: #41424a;
+            --author-accent-hover: #2a2b30;
+            --author-accent-contrast: #ffffff;
+            --author-accent-soft: rgba(65, 66, 74, 0.10);
+
+            --author-shadow: 0 8px 24px rgba(25, 24, 20, 0.06);
+
             font-family: 'Inter', sans-serif;
-            color: var(--ifm-font-color-base);
+            color: var(--author-text-1);
             max-width: 1050px;
             margin: 0 auto;
             width: 100%;
@@ -86,17 +104,37 @@ export default function AuthorProfile() {
             padding: 1.5rem 0;
           }
 
+          html[data-theme='dark'] .author-container {
+            --author-bg: rgba(16, 29, 53, 0.82);
+            --author-surface: rgba(7, 19, 38, 0.54);
+            --author-surface-soft: rgba(226, 232, 240, 0.045);
+
+            --author-text-1: #F4F7FB;
+            --author-text-2: #C7D2E3;
+            --author-text-3: #91A4BC;
+
+            --author-border: rgba(226, 232, 240, 0.12);
+            --author-border-strong: rgba(226, 232, 240, 0.22);
+
+            --author-accent: #7DCDE3;
+            --author-accent-hover: #A6C67B;
+            --author-accent-contrast: #071326;
+            --author-accent-soft: rgba(125, 205, 227, 0.12);
+
+            --author-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+          }
+
           .author-header {
             text-align: left;
             margin-bottom: 2.5rem;
-            border-bottom: 1px solid rgba(65, 66, 74, 0.3);
+            border-bottom: 1px solid var(--author-border-strong);
             padding-bottom: 1.5rem;
           }
 
           .author-subtitle {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: #41424a;
+            color: var(--author-text-2);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-top: 0.75rem;
@@ -112,7 +150,7 @@ export default function AuthorProfile() {
           .author-text p {
             font-size: 0.95rem;
             line-height: 1.65;
-            color: #636E4F;
+            color: var(--author-text-2);
             margin-bottom: 1.2rem;
             text-align: justify;
           }
@@ -120,11 +158,11 @@ export default function AuthorProfile() {
           .author-section-title {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
-            color: #41424a;
+            color: var(--author-accent);
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-bottom: 1.2rem;
-            border-left: 2px solid #41424a;
+            border-left: 2px solid var(--author-accent);
             padding-left: 0.75rem;
           }
 
@@ -136,9 +174,9 @@ export default function AuthorProfile() {
           }
 
           .author-skill-tag {
-            background: rgba(65, 66, 74, 0.1);
-            border: 1px solid #41424a;
-            color: #41424a;
+            background: var(--author-accent-soft);
+            border: 1px solid var(--author-border);
+            color: var(--author-accent);
             padding: 0.4rem 0.8rem;
             border-radius: 4px;
             font-size: 0.8rem;
@@ -146,13 +184,13 @@ export default function AuthorProfile() {
           }
 
           .author-blockquote {
-            background: rgba(65, 66, 74, 0.05);
-            border-left: 3px solid #41424a;
+            background: var(--author-surface-soft);
+            border-left: 3px solid var(--author-accent);
             padding: 1.2rem 1.5rem;
             font-style: italic;
             font-size: 0.95rem;
             line-height: 1.6;
-            color: #41424a;
+            color: var(--author-text-2);
           }
 
           .author-cta {
@@ -160,13 +198,13 @@ export default function AuthorProfile() {
             gap: 1rem;
             margin-top: 2.5rem;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid var(--author-border);
           }
 
           .btn-primary {
-            background: #41424a;
-            border: 1px solid #41424a;
-            color: #ffffff;
+            background: var(--author-accent);
+            border: 1px solid var(--author-accent);
+            color: var(--author-accent-contrast);
             padding: 0.7rem 1.4rem;
             text-decoration: none;
             border-radius: 6px;
@@ -175,15 +213,16 @@ export default function AuthorProfile() {
             transition: all 0.2s;
           }
           .btn-primary:hover {
-            background: #2a2b30;
+            background: var(--author-accent-hover);
+            border-color: var(--author-accent-hover);
             text-decoration: none;
-            color: #ffffff;
+            color: var(--author-accent-contrast);
           }
 
           .btn-secondary {
             background: transparent;
-            border: 1px solid #41424a;
-            color: #41424a;
+            border: 1px solid var(--author-border-strong);
+            color: var(--author-accent);
             padding: 0.7rem 1.4rem;
             text-decoration: none;
             border-radius: 6px;
@@ -191,9 +230,9 @@ export default function AuthorProfile() {
             transition: all 0.2s;
           }
           .btn-secondary:hover {
-            background: rgba(65, 66, 74, 0.1);
-            border-color: #41424a;
-            color: #41424a;
+            background: var(--author-accent-soft);
+            border-color: var(--author-accent);
+            color: var(--author-accent);
             text-decoration: none;
           }
 

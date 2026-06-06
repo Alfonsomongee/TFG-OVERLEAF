@@ -96,13 +96,14 @@ function PhaseTooltip({ active, payload }) {
   if (!d) return null;
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
-      border: '1px solid rgba(255,255,255,0.1)',
+      background: 'var(--pp-bg-tooltip)',
+      border: '1px solid var(--pp-border-strong)',
       borderRadius: 6,
       padding: '8px 12px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: 'var(--pp-text-primary)',
+      boxShadow: 'var(--pp-shadow-tooltip)',
     }}>
       <p style={{ margin: '0 0 3px' }}>δ = {d.delta?.toFixed(3)} rad</p>
       <p style={{ margin: 0 }}>ω = {d.omega?.toFixed(3)} rad/s</p>
@@ -162,11 +163,68 @@ function PhasePlanePlotInner({}) {
   const tLabel = `T = ${currentTime.toFixed(2)} s`;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <div className="phase-plane-scope" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <style>{`
+        .phase-plane-scope {
+          --pp-bg-panel: rgba(255, 252, 245, 0.62);
+          --pp-bg-tooltip: #FFFCF5;
+          --pp-text-primary: #191814;
+          --pp-text-secondary: #4A4338;
+          --pp-text-muted: #7A7062;
+          --pp-border: rgba(25, 24, 20, 0.14);
+          --pp-border-strong: rgba(25, 24, 20, 0.24);
+          --pp-grid: rgba(25, 24, 20, 0.10);
+          --pp-axis: #6B6255;
+          --pp-axis-line: rgba(25, 24, 20, 0.20);
+          --pp-equilibrium: rgba(25, 24, 20, 0.22);
+
+          --pp-gfm: #2F6B4F;
+          --pp-gfm-soft: rgba(47, 107, 79, 0.10);
+          --pp-sg: #A96000;
+          --pp-sg-soft: rgba(169, 96, 0, 0.10);
+          --pp-gfl: #A13D36;
+          --pp-gfl-soft: rgba(161, 61, 54, 0.10);
+
+          --pp-accent: #1F6F78;
+          --pp-accent-soft: rgba(31, 111, 120, 0.10);
+          --pp-accent-border: rgba(31, 111, 120, 0.34);
+
+          --pp-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+          --pp-shadow-tooltip: 0 12px 32px rgba(25, 24, 20, 0.12);
+        }
+
+        html[data-theme='dark'] .phase-plane-scope {
+          --pp-bg-panel: rgba(7, 19, 38, 0.58);
+          --pp-bg-tooltip: #101D35;
+          --pp-text-primary: #F4F7FB;
+          --pp-text-secondary: #C7D2E3;
+          --pp-text-muted: #91A4BC;
+          --pp-border: rgba(226, 232, 240, 0.14);
+          --pp-border-strong: rgba(226, 232, 240, 0.24);
+          --pp-grid: rgba(244, 247, 251, 0.10);
+          --pp-axis: #C7D2E3;
+          --pp-axis-line: rgba(244, 247, 251, 0.22);
+          --pp-equilibrium: rgba(244, 247, 251, 0.24);
+
+          --pp-gfm: #A6C67B;
+          --pp-gfm-soft: rgba(166, 198, 123, 0.10);
+          --pp-sg: #E6B45C;
+          --pp-sg-soft: rgba(230, 180, 92, 0.11);
+          --pp-gfl: #D98798;
+          --pp-gfl-soft: rgba(217, 135, 152, 0.10);
+
+          --pp-accent: #7DCDE3;
+          --pp-accent-soft: rgba(125, 205, 227, 0.12);
+          --pp-accent-border: rgba(125, 205, 227, 0.38);
+
+          --pp-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+          --pp-shadow-tooltip: 0 16px 38px rgba(0, 0, 0, 0.38);
+        }
+      `}</style>
 
       <p style={{
         margin: '0 0 8px',
-        fontSize: 14, fontWeight: 600, color: '#e2e8f0', textAlign: 'center',
+        fontSize: 14, fontWeight: 600, color: 'var(--pp-text-primary)', textAlign: 'center',
       }}>
         {texts.title}
       </p>
@@ -182,25 +240,25 @@ function PhasePlanePlotInner({}) {
           <ScatterChart margin={{ top: 16, right: 24, left: 8, bottom: 40 }}>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="rgba(255,255,255,0.06)"
+              stroke="var(--pp-grid)"
             />
             <XAxis
               type="number"
               dataKey="delta"
               domain={[-4, 4]}
               name="δ"
-              stroke="#475569"
-              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
-              label={{ value: texts.xaxis, position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              stroke="var(--pp-axis-line)"
+              tick={{ fill: 'var(--pp-axis)', fontSize: 11 }}
+              label={{ value: texts.xaxis, position: 'insideBottom', offset: -20, fill: 'var(--pp-axis)', fontSize: 11 }}
             />
             <YAxis
               type="number"
               dataKey="omega"
               domain={[-4, 4]}
               name="ω"
-              stroke="#475569"
-              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
-              label={{ value: texts.yaxis, angle: -90, position: 'insideLeft', fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              stroke="var(--pp-axis-line)"
+              tick={{ fill: 'var(--pp-axis)', fontSize: 11 }}
+              label={{ value: texts.yaxis, angle: -90, position: 'insideLeft', fill: 'var(--pp-axis)', fontSize: 11 }}
             />
             <Tooltip content={<PhaseTooltip />} cursor={false} />
             <Legend
@@ -209,16 +267,16 @@ function PhasePlanePlotInner({}) {
               wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
             />
             {/* Punto de equilibrio */}
-            <ReferenceLine x={0} stroke="rgba(255,255,255,0.15)" />
-            <ReferenceLine y={0} stroke="rgba(255,255,255,0.15)" />
+            <ReferenceLine x={0} stroke="var(--pp-equilibrium)" />
+            <ReferenceLine y={0} stroke="var(--pp-equilibrium)" />
 
             {/* GFL — divergente */}
             <Scatter
               name={texts.gfl}
               data={gflData}
-              line={{ stroke: '#ef4444', strokeWidth: 2.5 }}
+              line={{ stroke: 'var(--pp-gfl)', strokeWidth: 2.5 }}
               lineType="joint"
-              fill="#ef4444"
+              fill="var(--pp-gfl)"
               shape={() => null}
             />
 
@@ -226,9 +284,9 @@ function PhasePlanePlotInner({}) {
             <Scatter
               name={texts.gfm}
               data={gfmData}
-              line={{ stroke: '#10b981', strokeWidth: 2.5 }}
+              line={{ stroke: 'var(--pp-gfm)', strokeWidth: 2.5 }}
               lineType="joint"
-              fill="#10b981"
+              fill="var(--pp-gfm)"
               shape={() => null}
             />
 
@@ -236,9 +294,9 @@ function PhasePlanePlotInner({}) {
             <Scatter
               name={texts.sg}
               data={sgData}
-              line={{ stroke: '#f59e0b', strokeWidth: 2, strokeDasharray: '5 3' }}
+              line={{ stroke: 'var(--pp-sg)', strokeWidth: 2, strokeDasharray: '5 3' }}
               lineType="joint"
-              fill="#f59e0b"
+              fill="var(--pp-sg)"
               shape={() => null}
             />
           </ScatterChart>
@@ -249,9 +307,9 @@ function PhasePlanePlotInner({}) {
       <div style={{
         marginTop: '0.75rem',
         padding: '0.75rem 1rem',
-        background: 'rgba(15,23,42,0.5)',
+        background: 'var(--pp-bg-panel)',
         borderRadius: 8,
-        border: '1px solid rgba(255,255,255,0.1)',
+        border: '1px solid var(--pp-border)',
         display: 'flex', alignItems: 'center', gap: '0.75rem',
         flexWrap: 'wrap',
       }}>
@@ -260,8 +318,8 @@ function PhasePlanePlotInner({}) {
           aria-pressed={isPlaying}
           aria-label={isPlaying ? texts.pause : texts.play}
           style={{
-            background: 'var(--ifm-color-primary)',
-            color: '#fff', border: 'none',
+            background: 'var(--pp-accent)',
+            color: '#FFFCF5', border: 'none',
             borderRadius: 4, padding: '0.4rem 0.9rem',
             cursor: 'pointer', fontWeight: 'bold', minWidth: 80,
           }}
@@ -273,8 +331,8 @@ function PhasePlanePlotInner({}) {
           aria-label={texts.reset}
           style={{
             background: 'transparent',
-            color: 'var(--ifm-color-primary)',
-            border: '1px solid var(--ifm-color-primary)',
+            color: 'var(--pp-accent)',
+            border: '1px solid var(--pp-accent-border)',
             borderRadius: 4, padding: '0.4rem 0.9rem',
             cursor: 'pointer', fontWeight: 'bold',
           }}
@@ -290,7 +348,7 @@ function PhasePlanePlotInner({}) {
           aria-valuetext={tLabel}
           style={{ flex: 1, cursor: 'pointer', minWidth: 100 }}
         />
-        <div style={{ fontFamily: 'monospace', color: '#94a3b8', minWidth: 100, textAlign: 'right', fontSize: 13 }}>
+        <div style={{ fontFamily: 'monospace', color: 'var(--pp-text-muted)', minWidth: 100, textAlign: 'right', fontSize: 13 }}>
           {tLabel}
         </div>
       </div>
@@ -299,14 +357,14 @@ function PhasePlanePlotInner({}) {
       <div style={{
         marginTop: '0.75rem',
         padding: '1.25rem',
-        background: 'rgba(15,23,42,0.5)',
+        background: 'var(--pp-bg-panel)',
         borderRadius: 8,
-        border: '1px solid rgba(56,189,248,0.2)',
-        color: '#e2e8f0',
+        border: '1px solid var(--pp-accent-border)',
+        color: 'var(--pp-text-secondary)',
         fontSize: '0.9rem',
         lineHeight: 1.65,
       }}>
-        <h4 style={{ color: '#38bdf8', margin: '0 0 0.5rem' }}>
+        <h4 style={{ color: 'var(--pp-accent)', margin: '0 0 0.5rem' }}>
           {isEs ? '¿Qué significa este diagrama?' : 'What does this diagram mean?'}
         </h4>
         <p style={{ margin: '0 0 0.5rem' }}>
@@ -316,7 +374,7 @@ function PhasePlanePlotInner({}) {
         </p>
         <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
           <li style={{ marginBottom: '0.25rem' }}>
-            <strong style={{ color: '#10b981' }}>
+            <strong style={{ color: 'var(--pp-gfm)' }}>
               {isEs ? 'Verde (GFM):' : 'Green (GFM):'}
             </strong>
             {' '}{isEs
@@ -324,7 +382,7 @@ function PhasePlanePlotInner({}) {
               : 'Grid-Forming inverter. Active damping via droop control — converges quickly to the origin.'}
           </li>
           <li style={{ marginBottom: '0.25rem' }}>
-            <strong style={{ color: '#f59e0b' }}>
+            <strong style={{ color: 'var(--pp-sg)' }}>
               {isEs ? 'Ámbar (SG):' : 'Amber (SG):'}
             </strong>
             {' '}{isEs
@@ -332,7 +390,7 @@ function PhasePlanePlotInner({}) {
               : 'Classic synchronous generator. Natural mechanical inertia — converges in damped spiral.'}
           </li>
           <li>
-            <strong style={{ color: '#ef4444' }}>
+            <strong style={{ color: 'var(--pp-gfl)' }}>
               {isEs ? 'Rojo (GFL):' : 'Red (GFL):'}
             </strong>
             {' '}{isEs
@@ -340,7 +398,7 @@ function PhasePlanePlotInner({}) {
               : 'Grid-Following inverter in weak grid (SCR < 2). PLL loses phase tracking — trajectory diverges. This is the mechanism behind April 28.'}
           </li>
         </ul>
-        <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', color: 'var(--text-1, #64748b)' }}>
+        <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', color: 'var(--pp-text-muted)' }}>
           {isEs
             ? 'Modelo: oscilador no lineal amortiguado (RK4, dt=10 ms). Referencia: Rocabert et al. (2012), IEEE Trans. Power Electron. ζ_GFL = -0.12 (red débil), ζ_GFM = +0.85, ζ_SG = +0.35.'
             : 'Model: nonlinear damped oscillator (RK4, dt=10 ms). Reference: Rocabert et al. (2012), IEEE Trans. Power Electron. ζ_GFL = -0.12 (weak grid), ζ_GFM = +0.85, ζ_SG = +0.35.'}
@@ -356,7 +414,7 @@ export default function PhasePlanePlot({}) {
     <BrowserOnly fallback={
       <div style={{
         height: 500, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#7A7062',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         {lang === 'es' ? 'Inicializando diagrama de fase…' : 'Initializing phase diagram…'}
