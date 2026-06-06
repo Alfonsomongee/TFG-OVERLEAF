@@ -1,39 +1,107 @@
+.frequencyScope {
+  --freq-bg-card: rgba(255, 252, 245, 0.84);
+  --freq-bg-card-hover: #FFFCF5;
+  --freq-bg-panel: rgba(255, 252, 245, 0.62);
+  --freq-bg-note: rgba(161, 61, 54, 0.075);
+
+  --freq-text-primary: #191814;
+  --freq-text-secondary: #4A4338;
+  --freq-text-muted: #7A7062;
+
+  --freq-border: rgba(25, 24, 20, 0.14);
+  --freq-border-strong: rgba(25, 24, 20, 0.24);
+
+  --freq-grid: rgba(25, 24, 20, 0.10);
+  --freq-axis: #7A7062;
+  --freq-axis-line: rgba(25, 24, 20, 0.22);
+
+  --freq-line: #A13D36;
+  --freq-line-soft: rgba(161, 61, 54, 0.16);
+  --freq-line-dot-bg: #FFFCF5;
+
+  --freq-warning: #A96000;
+  --freq-danger: #A13D36;
+  --freq-critical: #7A263A;
+
+  --freq-accent: #1F6F78;
+  --freq-accent-soft: rgba(31, 111, 120, 0.10);
+  --freq-accent-border: rgba(31, 111, 120, 0.34);
+
+  --freq-tooltip-bg: #FFFCF5;
+  --freq-tooltip-border: rgba(161, 61, 54, 0.34);
+  --freq-tooltip-text: #191814;
+  --freq-tooltip-muted: #6B6255;
+
+  --freq-shadow: 0 8px 24px rgba(25, 24, 20, 0.055);
+  --freq-shadow-active: 0 14px 34px rgba(161, 61, 54, 0.13);
+
+  color: var(--freq-text-primary);
+}
+
+html[data-theme='dark'] .frequencyScope {
+  --freq-bg-card: rgba(16, 29, 53, 0.76);
+  --freq-bg-card-hover: rgba(23, 39, 68, 0.88);
+  --freq-bg-panel: rgba(7, 19, 38, 0.58);
+  --freq-bg-note: rgba(217, 135, 152, 0.10);
+
+  --freq-text-primary: #F4F7FB;
+  --freq-text-secondary: #C7D2E3;
+  --freq-text-muted: #91A4BC;
+
+  --freq-border: rgba(226, 232, 240, 0.14);
+  --freq-border-strong: rgba(226, 232, 240, 0.24);
+
+  --freq-grid: rgba(244, 247, 251, 0.10);
+  --freq-axis: #C7D2E3;
+  --freq-axis-line: rgba(244, 247, 251, 0.24);
+
+  --freq-line: #D98798;
+  --freq-line-soft: rgba(217, 135, 152, 0.18);
+  --freq-line-dot-bg: #101D35;
+
+  --freq-warning: #E6B45C;
+  --freq-danger: #D98798;
+  --freq-critical: #C8798A;
+
+  --freq-accent: #7DCDE3;
+  --freq-accent-soft: rgba(125, 205, 227, 0.12);
+  --freq-accent-border: rgba(125, 205, 227, 0.38);
+
+  --freq-tooltip-bg: #101D35;
+  --freq-tooltip-border: rgba(217, 135, 152, 0.36);
+  --freq-tooltip-text: #F4F7FB;
+  --freq-tooltip-muted: #91A4BC;
+
+  --freq-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  --freq-shadow-active: 0 16px 38px rgba(0, 0, 0, 0.34);
+}
+
 .wrapper {
   margin: 2rem 0;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--ifm-color-emphasis-200);
-  background: var(--ifm-background-surface-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid var(--freq-border);
+  background: var(--freq-bg-card);
+  box-shadow: var(--freq-shadow);
   font-family: var(--ifm-font-family-base);
-}
-
-html[data-theme='dark'] .wrapper {
-  border-color: rgba(255,255,255,0.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .header {
   padding: 1.5rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-  background: var(--ifm-color-emphasis-50);
-}
-
-html[data-theme='dark'] .header {
-  border-bottom-color: rgba(255,255,255,0.1);
-  background: rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid var(--freq-border);
+  background: var(--freq-bg-panel);
 }
 
 .header h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.25rem;
-  color: var(--ifm-color-primary);
+  color: var(--freq-accent);
 }
 
 .header p {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--ifm-color-emphasis-600);
+  color: var(--freq-text-secondary);
 }
 
 .chartContainer {
@@ -42,72 +110,53 @@ html[data-theme='dark'] .header {
   padding: 1rem 1rem 1rem 0;
 }
 
-/* Tooltip Customization */
 .tooltipContainer {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--freq-tooltip-bg);
+  border: 1px solid var(--freq-tooltip-border);
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--freq-shadow);
   min-width: 180px;
 }
 
-html[data-theme='dark'] .tooltipContainer {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255,255,255,0.2);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
 .tooltipCritical {
-  border-left: 4px solid #ef4444 !important;
+  border-left: 4px solid var(--freq-danger) !important;
 }
 
 .tooltipTime {
   margin: 0 0 6px 0;
   font-size: 0.85rem;
-  color: var(--ifm-color-emphasis-600);
+  color: var(--freq-tooltip-muted);
   font-family: var(--ifm-font-family-monospace);
 }
 
 .tooltipFreq {
   margin: 0 0 8px 0;
   font-size: 1.1rem;
-  color: var(--ifm-color-emphasis-900);
-}
-
-html[data-theme='dark'] .tooltipFreq {
-  color: #fff;
+  color: var(--freq-tooltip-text);
 }
 
 .tooltipFreq strong {
-  color: var(--ifm-color-primary);
+  color: var(--freq-accent);
 }
 
 .tooltipCritical .tooltipFreq strong {
-  color: #ef4444;
+  color: var(--freq-danger);
 }
 
 .tooltipNotes {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px dashed var(--ifm-color-emphasis-200);
-}
-
-html[data-theme='dark'] .tooltipNotes {
-  border-top-color: rgba(255,255,255,0.1);
+  border-top: 1px dashed var(--freq-border);
 }
 
 .badge {
   display: inline-block;
-  background: var(--ifm-color-primary-lightest);
-  color: var(--ifm-color-primary-darkest);
+  background: var(--freq-accent-soft);
+  color: var(--freq-accent);
+  border: 1px solid var(--freq-accent-border);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 700;
-}
-
-html[data-theme='dark'] .badge {
-  background: rgba(239, 68, 68, 0.2);
-  color: #fca5a5;
 }

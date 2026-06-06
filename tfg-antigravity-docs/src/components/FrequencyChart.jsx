@@ -130,18 +130,19 @@ function FrequencyTooltip({ active, payload, label, strings }) {
   if (f == null) return null;
   return (
     <div style={{
-      background: 'var(--chart-bg, rgba(10,10,20,0.96))',
-      border: '1px solid rgba(255,77,77,0.4)',
+      background: 'var(--freq-tooltip-bg)',
+      border: '1px solid var(--freq-tooltip-border)',
       borderRadius: 6,
       padding: '8px 12px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: 'var(--freq-tooltip-text)',
+      boxShadow: 'var(--freq-shadow)',
     }}>
-      <p style={{ margin: '0 0 4px', color: '#94a3b8' }}>
+      <p style={{ margin: '0 0 4px', color: 'var(--freq-tooltip-muted)' }}>
         t = {label} s
       </p>
-      <p style={{ margin: 0, color: '#FF4D4D', fontWeight: 'bold' }}>
+      <p style={{ margin: 0, color: 'var(--freq-line)', fontWeight: 'bold' }}>
         f = {f.toFixed(3)} Hz
       </p>
     </div>
@@ -160,27 +161,27 @@ function FrequencyLineChart({ data, strings, animated = false }) {
       <LineChart data={data} margin={{ top: 20, right: 30, left: 10, bottom: 24 }}>
         <CartesianGrid
           strokeDasharray="3 3"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="var(--freq-grid)"
           vertical={false}
         />
         <XAxis
           dataKey="tiempoS"
           domain={[0, 30]}
           type="number"
-          stroke="#475569"
-          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+          stroke="var(--freq-axis-line)"
+          tick={{ fill: 'var(--freq-axis)', fontSize: 11 }}
           label={{
             value: strings.xaxis,
             position: 'insideBottom',
             offset: -12,
-            fill: 'var(--text-1, #64748b)',
+            fill: 'var(--freq-axis)',
             fontSize: 11,
           }}
         />
         <YAxis
           domain={[46, 50.2]}
-          stroke="#475569"
-          tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+          stroke="var(--freq-axis-line)"
+          tick={{ fill: 'var(--freq-axis)', fontSize: 11 }}
           unit=" Hz"
         />
         <Tooltip content={<FrequencyTooltip strings={strings} />} />
@@ -188,36 +189,36 @@ function FrequencyLineChart({ data, strings, animated = false }) {
         {/* Umbral deslastre bombeo (49,5 Hz) — P.O. 1.6 */}
         <ReferenceLine
           y={49.5}
-          stroke="#f59e0b"
+          stroke="var(--freq-warning)"
           strokeDasharray="4 4"
           label={{
             position: 'insideBottomRight',
             value: strings.ufls,
-            fill: '#f59e0b',
+            fill: 'var(--freq-warning)',
             fontSize: 10,
           }}
         />
         {/* Umbral deslastre demanda (49,0 Hz) — P.O. 1.6 */}
         <ReferenceLine
           y={49.0}
-          stroke="#ef4444"
+          stroke="var(--freq-danger)"
           strokeDasharray="3 5"
           label={{
             position: 'insideBottomRight',
             value: strings.uflsDemand,
-            fill: '#ef4444',
+            fill: 'var(--freq-danger)',
             fontSize: 10,
           }}
         />
         {/* Pérdida de sincronismo (48,46 Hz) — ENTSO-E Factual */}
         <ReferenceLine
           y={48.46}
-          stroke="#dc2626"
+          stroke="var(--freq-critical)"
           strokeDasharray="4 4"
           label={{
             position: 'insideTopRight',
             value: strings.iso,
-            fill: '#dc2626',
+            fill: 'var(--freq-critical)',
             fontSize: 10,
           }}
         />
@@ -225,12 +226,12 @@ function FrequencyLineChart({ data, strings, animated = false }) {
         <Line
           type="stepAfter"
           dataKey="frecuencia"
-          stroke="#FF4D4D"
+          stroke="var(--freq-line)"
           strokeWidth={3}
           isAnimationActive={animated && !prefersReduced}
           animationDuration={600}
-          dot={{ r: 4, fill: 'var(--ifm-background-surface-color)', stroke: '#FF4D4D', strokeWidth: 2 }}
-          activeDot={{ r: 6, fill: '#FF4D4D' }}
+          dot={{ r: 4, fill: 'var(--freq-line-dot-bg)', stroke: 'var(--freq-line)', strokeWidth: 2 }}
+          activeDot={{ r: 6, fill: 'var(--freq-line)' }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -302,7 +303,7 @@ export default function FrequencyChartScrolly({ isGallery = false}) {
 
   return (
     <BrowserOnly fallback={
-      <div style={{ color: 'var(--text-1, #64748b)', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
+      <div className={styles.frequencyScope} style={{ color: 'var(--freq-text-muted)', fontFamily: 'monospace', padding: '2rem', textAlign: 'center' }}>
         {loadingText}
       </div>
     }>
@@ -332,13 +333,14 @@ function FrequencyChartScrollyContent({ isGallery}) {
   // ── Modo galería ──────────────────────────────────────────────────────────
   if (isGallery) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className={styles.frequencyScope} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div style={{
           height: 380,
-          background: 'var(--ifm-background-surface-color)',
+          background: 'var(--freq-bg-card)',
           borderRadius: 12,
           padding: '1rem',
-          border: '1px solid var(--ifm-color-emphasis-200)',
+          border: '1px solid var(--freq-border)',
+          boxShadow: 'var(--freq-shadow)',
         }}>
           <FrequencyLineChart data={visibleData} strings={strings} animated={false} />
         </div>
@@ -358,11 +360,9 @@ function FrequencyChartScrollyContent({ isGallery}) {
                   padding: '8px 14px',
                   borderRadius: 4,
                   border: 'none',
-                  borderLeft: isActive ? '3px solid var(--ifm-color-primary)' : '3px solid transparent',
-                  backgroundColor: isActive
-                    ? 'color-mix(in srgb, var(--ifm-color-primary) 15%, transparent)'
-                    : 'transparent',
-                  color: isActive ? 'var(--ifm-color-primary)' : 'var(--ifm-font-color-base)',
+                  borderLeft: isActive ? '3px solid var(--freq-accent)' : '3px solid transparent',
+                  backgroundColor: isActive ? 'var(--freq-accent-soft)' : 'transparent',
+                  color: isActive ? 'var(--freq-accent)' : 'var(--freq-text-secondary)',
                   cursor: 'pointer',
                   fontWeight: isActive ? 'bold' : 'normal',
                   transition: 'all 0.25s ease',
@@ -378,15 +378,15 @@ function FrequencyChartScrollyContent({ isGallery}) {
         {/* Panel de texto */}
         <div style={{
           padding: '1rem',
-          background: 'rgba(255,77,77,0.05)',
-          border: '1px solid rgba(255,77,77,0.15)',
+          background: 'var(--freq-bg-note)',
+          border: '1px solid var(--freq-border)',
           borderRadius: 8,
           minHeight: 80,
         }}>
-          <h4 style={{ color: 'var(--ifm-color-primary)', margin: '0 0 8px' }}>
+          <h4 style={{ color: 'var(--freq-line)', margin: '0 0 8px' }}>
             {currentStep.title}
           </h4>
-          <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
+          <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: 1.6, color: 'var(--freq-text-secondary)' }}>
             {currentStep.text}
           </p>
         </div>
@@ -397,7 +397,7 @@ function FrequencyChartScrollyContent({ isGallery}) {
   // ── Modo scrollytelling (página MDX) ─────────────────────────────────────
   return (
     <div
-      className={styles.scrollyWrapper}
+      className={`${styles.scrollyWrapper || ''} ${styles.frequencyScope}`}
       style={{ position: 'relative', margin: '2rem 0' }}
     >
       <div style={{
@@ -416,27 +416,29 @@ function FrequencyChartScrollyContent({ isGallery}) {
                 <div style={{
                   margin: '48vh 0',
                   padding: '1.5rem',
-                  backgroundColor: 'var(--ifm-background-surface-color)',
+                  backgroundColor: currentStepIndex === s.stepIndex
+                    ? 'var(--freq-bg-card-hover)'
+                    : 'var(--freq-bg-card)',
                   border: currentStepIndex === s.stepIndex
-                    ? '2px solid var(--ifm-color-primary)'
-                    : '1px solid var(--ifm-color-emphasis-200)',
+                    ? '2px solid var(--freq-accent-border)'
+                    : '1px solid var(--freq-border)',
                   borderRadius: 8,
                   boxShadow: currentStepIndex === s.stepIndex
-                    ? '0 8px 30px rgba(255,77,77,0.1)'
-                    : 'none',
+                    ? 'var(--freq-shadow-active)'
+                    : 'var(--freq-shadow)',
                   opacity: currentStepIndex === s.stepIndex ? 1 : 0.35,
                   transform: currentStepIndex === s.stepIndex
                     ? 'scale(1.02)' : 'scale(1)',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}>
                   <h4 style={{
-                    color: 'var(--ifm-color-primary)',
+                    color: 'var(--freq-accent)',
                     fontSize: '1.1rem',
                     marginBottom: '0.75rem',
                   }}>
                     {s.title}
                   </h4>
-                  <p style={{ fontSize: '1rem', lineHeight: 1.65, margin: 0 }}>
+                  <p style={{ fontSize: '1rem', lineHeight: 1.65, margin: 0, color: 'var(--freq-text-secondary)' }}>
                     {s.text}
                   </p>
                 </div>
@@ -454,19 +456,20 @@ function FrequencyChartScrollyContent({ isGallery}) {
           zIndex: 10,
         }}>
           <div style={{ marginBottom: '0.75rem' }}>
-            <h3 style={{ margin: 0, color: 'var(--ifm-color-primary)', fontSize: '1rem' }}>
+            <h3 style={{ margin: 0, color: 'var(--freq-accent)', fontSize: '1rem' }}>
               {currentStep.title}
             </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--ifm-color-emphasis-700)', margin: '4px 0 0' }}>
+            <p style={{ fontSize: '0.82rem', color: 'var(--freq-text-muted)', margin: '4px 0 0' }}>
               {strings.dyn}
             </p>
           </div>
           <div style={{
             height: 'calc(100% - 52px)',
-            background: 'var(--ifm-background-surface-color)',
+            background: 'var(--freq-bg-card)',
             borderRadius: 12,
             padding: '0.75rem',
-            border: '1px solid var(--ifm-color-emphasis-200)',
+            border: '1px solid var(--freq-border)',
+            boxShadow: 'var(--freq-shadow)',
           }}>
             <FrequencyLineChart data={visibleData} strings={strings} animated />
           </div>
