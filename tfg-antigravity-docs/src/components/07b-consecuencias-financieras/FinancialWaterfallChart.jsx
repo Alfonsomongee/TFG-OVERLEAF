@@ -287,6 +287,13 @@ export default function FinancialWaterfallChart() {
         a abril de 2026 son lineales bajo precio de gas constante.
       </div>
 
+      <figcaption className={styles.caption} style={{ color: p.text3, borderColor: p.border }}>
+        Figura 37. OPEX acumulado de la Operación Reforzada frente a la banda de CAPEX
+        estructural (BESS grid-forming, 1.000–2.000 MW). El cruce de la curva auditada
+        con la banda baja se produce antes de los 18 meses. Referencia paramétrica:
+        proyecto Engie-Rolwind (0,86 M€/MW). Elaboración propia a partir de REE/Redeia,
+        PwC, NERA y CNMC.
+      </figcaption>
     </figure>
   );
 }

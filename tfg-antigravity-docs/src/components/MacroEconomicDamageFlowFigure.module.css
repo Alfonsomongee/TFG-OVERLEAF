@@ -1,0 +1,354 @@
+/* ─── MacroEconomicDamageFlowFigure ─────────────────────────────────────────
+   Prefix: --mdf-
+   Tema: flujo causal compacto, estética editorial técnica
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.figure {
+  --mdf-bg:            rgba(255, 252, 245, 0.94);
+  --mdf-surface:       rgba(250, 247, 240, 0.90);
+  --mdf-surface-2:     rgba(244, 240, 230, 0.88);
+  --mdf-border:        rgba(58, 49, 35, 0.13);
+  --mdf-border-strong: rgba(58, 49, 35, 0.22);
+
+  --mdf-text-1: #191814;
+  --mdf-text-2: #4a4338;
+  --mdf-text-3: #7a7062;
+
+  --mdf-main:       #145c63;
+  --mdf-main-soft:  rgba(20, 92, 99, 0.10);
+  --mdf-amber:      #9a7044;
+  --mdf-amber-soft: rgba(154, 112, 68, 0.10);
+  --mdf-red:        #963530;
+  --mdf-red-soft:   rgba(150, 53, 48, 0.08);
+
+  --mdf-node-bg:       rgba(255, 252, 245, 0.96);
+  --mdf-node-hover:    rgba(20, 92, 99, 0.07);
+  --mdf-node-active-border: #145c63;
+
+  --mdf-radius: 6px;
+  --mdf-shadow: 0 2px 12px rgba(58, 49, 35, 0.07), 0 1px 3px rgba(58, 49, 35, 0.05);
+  --mdf-shadow-card: 0 4px 20px rgba(58, 49, 35, 0.09);
+
+  margin: 2.5rem 0;
+  padding: 1.75rem 1.75rem 1.25rem;
+  background: var(--mdf-bg);
+  border: 1px solid var(--mdf-border);
+  border-radius: 10px;
+  box-shadow: var(--mdf-shadow-card);
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+}
+
+html[data-theme='dark'] .figure {
+  --mdf-bg:            rgba(16, 29, 53, 0.92);
+  --mdf-surface:       rgba(10, 20, 42, 0.80);
+  --mdf-surface-2:     rgba(12, 24, 48, 0.84);
+  --mdf-border:        rgba(190, 209, 230, 0.13);
+  --mdf-border-strong: rgba(190, 209, 230, 0.22);
+
+  --mdf-text-1: #f4f7fb;
+  --mdf-text-2: #c7d2e3;
+  --mdf-text-3: #91a4bc;
+
+  --mdf-main:       #83bdc2;
+  --mdf-main-soft:  rgba(131, 189, 194, 0.13);
+  --mdf-amber:      #d2a24d;
+  --mdf-amber-soft: rgba(210, 162, 77, 0.12);
+  --mdf-red:        #d86a64;
+  --mdf-red-soft:   rgba(216, 106, 100, 0.10);
+
+  --mdf-node-bg:       rgba(18, 32, 58, 0.90);
+  --mdf-node-hover:    rgba(131, 189, 194, 0.08);
+  --mdf-node-active-border: #83bdc2;
+}
+
+/* Header */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.kicker {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--mdf-main);
+  margin-bottom: 0.4rem;
+}
+
+.title {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--mdf-text-1);
+  line-height: 1.3;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--mdf-text-3);
+  line-height: 1.55;
+}
+
+/* Flow wrapper */
+.flowWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Main chain */
+.chain {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+/* Node */
+.node {
+  flex: 1;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--mdf-node-bg);
+  border: 1px solid var(--mdf-border);
+  border-radius: var(--mdf-radius);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+  box-shadow: var(--mdf-shadow);
+  font-family: inherit;
+}
+
+.node:hover {
+  background: var(--mdf-node-hover);
+  border-color: var(--mdf-main);
+}
+
+.nodeActive {
+  border-color: var(--mdf-node-active-border) !important;
+  background: var(--mdf-main-soft) !important;
+  box-shadow: 0 0 0 2px var(--mdf-main-soft), var(--mdf-shadow) !important;
+}
+
+.nodeIndex {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--mdf-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.nodeLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mdf-text-1);
+  line-height: 1.35;
+  white-space: pre-line;
+}
+
+.nodeSub {
+  font-size: 0.68rem;
+  color: var(--mdf-text-3);
+  line-height: 1.4;
+  margin-top: 0.1rem;
+}
+
+.nodeMetric {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--mdf-amber);
+  margin-top: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.nodeMetricLabel {
+  font-size: 0.63rem;
+  color: var(--mdf-text-3);
+  line-height: 1.3;
+}
+
+/* Arrow */
+.arrow {
+  display: flex;
+  align-items: center;
+  padding: 0 0.3rem;
+  color: var(--mdf-border-strong);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Amplifier */
+.amplifierRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.amplifierConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.6rem;
+  flex-shrink: 0;
+}
+
+.amplifierConnectorLine {
+  display: block;
+  width: 1px;
+  height: 28px;
+  background: var(--mdf-border-strong);
+  margin-bottom: 0.2rem;
+}
+
+.amplifierConnectorLabel {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mdf-text-3);
+  writing-mode: horizontal-tb;
+}
+
+.amplifier {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--mdf-surface-2);
+  border: 1px solid var(--mdf-border);
+  border-left: 3px solid var(--mdf-red);
+  border-radius: var(--mdf-radius);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.amplifier:hover {
+  background: var(--mdf-red-soft);
+}
+
+.amplifierActive {
+  background: var(--mdf-red-soft) !important;
+  border-color: var(--mdf-red) !important;
+}
+
+.amplifierTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mdf-red);
+}
+
+.amplifierItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.amplifierItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.amplifierGeo {
+  font-size: 0.68rem;
+  color: var(--mdf-text-3);
+}
+
+.amplifierValue {
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: var(--mdf-red);
+  font-variant-numeric: tabular-nums;
+}
+
+.amplifierNote {
+  font-size: 0.62rem;
+  color: var(--mdf-text-3);
+}
+
+/* Detail panel */
+.detail {
+  margin-top: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--mdf-surface);
+  border: 1px solid var(--mdf-border);
+  border-left: 3px solid var(--mdf-main);
+  border-radius: var(--mdf-radius);
+  animation: mdfFadeIn 0.18s ease;
+}
+
+@keyframes mdfFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.detailText {
+  margin: 0;
+  font-size: 0.79rem;
+  color: var(--mdf-text-2);
+  line-height: 1.6;
+}
+
+/* Method note */
+.methodNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--mdf-amber-soft);
+  border: 1px solid rgba(154, 112, 68, 0.18);
+  border-radius: var(--mdf-radius);
+  font-size: 0.71rem;
+  color: var(--mdf-amber);
+  line-height: 1.55;
+}
+
+.methodNoteIcon {
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+  font-style: normal;
+}
+
+/* Caption */
+.caption {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  color: var(--mdf-text-3);
+  line-height: 1.6;
+  font-style: italic;
+  border-top: 1px solid var(--mdf-border);
+  padding-top: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .figure {
+    padding: 1.25rem 1rem 1rem;
+  }
+  .chain {
+    flex-direction: column;
+  }
+  .arrow {
+    transform: rotate(90deg);
+    padding: 0.2rem 0;
+    justify-content: center;
+  }
+  .amplifierItems {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

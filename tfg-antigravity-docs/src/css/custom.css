@@ -2740,6 +2740,127 @@ html[data-theme='light'] .table-of-contents__link--active {
 }
 
 /* ============================================================
+   SIDEBAR: CONTRASTE Y JERARQUIA DE NAVEGACION
+   ============================================================ */
+.theme-doc-sidebar-container .menu,
+.theme-doc-sidebar-menu {
+  --ifm-menu-color-background-hover: rgba(255, 252, 245, 0.10);
+  --ifm-menu-color-background-active: rgba(63, 154, 162, 0.18);
+  --ifm-menu-color-active: #fffaf0;
+}
+
+.theme-doc-sidebar-container .menu__link {
+  color: rgba(255, 252, 245, 0.80) !important;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.theme-doc-sidebar-container .menu__link:hover {
+  color: #fffaf0 !important;
+  background: rgba(255, 252, 245, 0.10) !important;
+  transform: translateX(2px);
+}
+
+.theme-doc-sidebar-container .menu__link--active {
+  color: #fffaf0 !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 92, 99, 0.28),
+      rgba(20, 92, 99, 0.10)
+    ) !important;
+  border-left-color: #3f9aa2 !important;
+  font-weight: 750 !important;
+  text-shadow: none !important;
+  box-shadow: inset 18px 0 24px -22px rgba(63, 154, 162, 0.65) !important;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible > .menu__link,
+.theme-doc-sidebar-container .menu__link.menu__link--sublist-caret {
+  color: #fffaf0 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+}
+
+.theme-doc-sidebar-container .menu__list .menu__list {
+  border-left: 1px solid rgba(255, 252, 245, 0.16);
+  margin-left: 0.65rem;
+  padding-left: 0.45rem;
+}
+
+.theme-doc-sidebar-container .menu__list .menu__list .menu__link {
+  color: rgba(255, 252, 245, 0.78) !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.theme-doc-sidebar-container .menu__list .menu__list .menu__link:hover {
+  color: #fffaf0 !important;
+  background: rgba(255, 252, 245, 0.10) !important;
+}
+
+.theme-doc-sidebar-container .menu__list .menu__list .menu__link--active {
+  color: #fffaf0 !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(63, 154, 162, 0.28),
+      rgba(63, 154, 162, 0.08)
+    ) !important;
+  border-left-color: #3f9aa2 !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu,
+html[data-theme='dark'] .theme-doc-sidebar-menu {
+  --ifm-menu-color-background-hover: rgba(131, 189, 194, 0.10);
+  --ifm-menu-color-background-active: rgba(131, 189, 194, 0.16);
+  --ifm-menu-color-active: #f4f7fb;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__link {
+  color: rgba(199, 210, 227, 0.82) !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__link:hover {
+  color: #f4f7fb !important;
+  background: rgba(131, 189, 194, 0.10) !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__link--active {
+  color: #f4f7fb !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(131, 189, 194, 0.20),
+      rgba(131, 189, 194, 0.07)
+    ) !important;
+  border-left-color: #83bdc2 !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__list-item-collapsible > .menu__link,
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__link.menu__link--sublist-caret {
+  color: #f4f7fb !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__list .menu__list {
+  border-left-color: rgba(199, 210, 227, 0.14);
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__list .menu__list .menu__link {
+  color: rgba(199, 210, 227, 0.82) !important;
+}
+
+html[data-theme='dark'] .theme-doc-sidebar-container .menu__list .menu__list .menu__link--active {
+  color: #f4f7fb !important;
+  border-left-color: #83bdc2 !important;
+}
+
+/* ============================================================
    OVERRIDE: DESACTIVAR ANIMACIÓN :TARGET EN LOS HEADINGS
    ============================================================ */
 h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
@@ -3647,3 +3768,6 @@ html.theme-doc-sidebar-hidden .theme-doc-sidebar-container {
 .theme-doc-sidebar-container {
   will-change: width, min-width, opacity;
 }
+
+html[data-theme='dark']  .img-light-only { display: none; }
+html:not([data-theme='dark']) .img-dark-only { display: none; }

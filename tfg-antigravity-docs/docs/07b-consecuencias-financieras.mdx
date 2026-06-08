@@ -5,6 +5,9 @@ title: "Consecuencias Financieras y Costes de Resiliencia"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
+import MacroEconomicDamageFlowFigure from "@site/src/components/MacroEconomicDamageFlowFigure";
+import MarketDistortionPvpcFigure from '@site/src/components/MarketDistortionPvpcFigure';
+import HuenejaRegulatoryRiskFigure from '@site/src/components/HuenejaRegulatoryRiskFigure';
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
 
@@ -37,6 +40,10 @@ El estándar regulatorio para cuantificar el daño de una interrupción eléctri
 
 Integrando la curva de demanda real desde las 12:33 CEST del 28 de abril hasta la restitución del 99,95 % a las 07:05 del 29 de abril, la **Energía No Suministrada (ENS) agregada** para el sistema ibérico se estima entre <CuestionAbierta metricKey="reposicion.ens_espana_total">150 y 180 GWh</CuestionAbierta>. El límite inferior asume recuperación parcial de carga industrial nocturna; el superior, destrucción neta por parada fría de procesos.
 
+<MacroEconomicDamageFlowFigure />
+
+_Figura 35. Del cero de tensión a la factura macroeconómica. Cadena causal que transforma el colapso eléctrico en energía no suministrada, pérdida de conectividad y daño económico agregado. Las estimaciones CEOE y ATA se muestran como perímetros de impacto distintos, no como magnitudes aditivas. Elaboración propia a partir de Funcas, CEOE, ATA, Cloudflare Radar, Ookla y referencias ACER/CEER sobre VoLL._
+
 Aplicando un VoLL medio ponderado sobre el conjunto del tejido productivo afectado —con el incidente en lunes laborable y los tres sectores activos simultáneamente—, la CEOE y ATA estimaron en sus auditorías preliminares una destrucción de valor directa e indirecta de entre **1.000 y 1.500 millones de euros**. La cifra es coherente con el modelo: un bien que el mercado diario valorizaba en apenas 18,50 €/MWh la mañana del 28-A generó, al ausentarse, externalidades negativas multimillonarias.
 
 El impacto se amplificó por el colapso paralelo de las telecomunicaciones. El tráfico de internet en Portugal continental cayó un 90 % en las cinco horas posteriores al cero de tensión, arrastrando sistemas bancarios, plataformas de pago y operativas cloud transnacionales. El lucro cesante de la economía digital, aunque de difícil cuantificación exacta, contribuye al rango superior de la estimación VoLL.
@@ -47,11 +54,20 @@ La mañana del 28-A el mercado diario cerraba en 5,79 €/MWh, con tramos de pre
 
 El sobrecoste se trasladó a los consumidores indexados al **Precio Voluntario para el Pequeño Consumidor (PVPC)**. Las restricciones técnicas necesarias para sostener el sistema tras el apagón provocaron un <CuestionAbierta metricKey="pvpc.incremento_restricciones_pct">incremento del 125 %</CuestionAbierta> en el componente de restricciones de la factura regulada, equivalente a más de 3 euros mensuales por hogar. El coste sistémico de la fragilidad de red se trasladó, como es habitual, a los consumidores más expuestos a la tarifa regulada.
 
+<MarketDistortionPvpcFigure />
+
+_Figura 36. Distorsión OMIE/PVPC: el precio del mercado diario cayó hasta 5,79 €/MWh el día posterior al apagón, mientras el coste de las restricciones técnicas crecía un 125 % para los consumidores PVPC. Elaboración propia a partir de OMIE, ESIOS/REE, PwC/ConsumES y NERA._
+
 ---
 
 ## 2. Sector electrointensivo: daños directos y lucro cesante
 
 El deslastre automático de carga —mecanismo de defensa diseñado para proteger la red de transporte, no el proceso industrial— desconectó de forma abrupta y sin rampa de parada a los grandes consumidores industriales. La Asociación de Empresas con Gran Consumo de Energía (AEGE), que agrupa a Acerinox, ArcelorMittal, Asturiana de Zinc, Ercros y Grupo Gallardo Balboa, documentó pérdidas auditadas superiores a **25 millones de euros**, estructuradas en dos vectores:
+
+<img className="img-light-only" src="/figuras/aege_arc_furnace_light.png" alt="Horno de arco eléctrico en industria electrointensiva durante una interrupción de suministro" />
+<img className="img-dark-only" src="/figuras/aege_arc_furnace_dark.png" alt="Horno de arco eléctrico en industria electrointensiva durante una interrupción de suministro" />
+
+_Figura 38. Daño operativo en industria electrointensiva: interrupción sin rampa de parada en horno de arco eléctrico y riesgo de solidificación de metal líquido. Imagen DALL·E de elaboración propia._
 
 **Daños operativos directos (>13 M€).** La interrupción sin rampa de parada provocó solidificación de metales líquidos en hornos de arco eléctrico, destruyendo revestimientos refractarios. La reactivación exigió jornadas completas de limpieza industrial, retirada de escoria solidificada y sustitución de equipos dañados por los transitorios de tensión generados en el instante del deslastre.
 
@@ -66,6 +82,19 @@ Desde la perspectiva de la política industrial, el episodio evidenció que la p
 ### Expedientes CNMC
 
 La Dirección de Instrucción de Energía de la CNMC incoó hasta **66 expedientes sancionadores** contra operadores del mercado, sustentados en el análisis de telemetría operativa de los dos años previos al evento. Los afectados incluyen Iberdrola, Endesa, Naturgy, Repsol y la propia Red Eléctrica de España. Los cargos principales refieren a incumplimientos en las consignas de control dinámico de tensión y a la deficiente inyección o absorción de potencia reactiva exigida por el P.O. 7.4 entonces vigente.
+
+<HuenejaRegulatoryRiskFigure />
+
+<p className="figure-caption">
+  Figura 39. Nodo de evacuación de Huéneja (Granada) y marco sancionador
+  de la CNMC. Izquierda: topología abstracta del hub renovable (~668 MW,
+  400 kV) con los parques fotovoltaicos, eólicos y termosolares conectados.
+  Derecha: escalón sancionador de la Ley 24/2013 del Sector Eléctrico
+  (infracción grave → hasta 6 M€; muy grave → hasta 60 M€) y los
+  66 expedientes incoados contra múltiples operadores. Los expedientes
+  son procedimientos administrativos abiertos, no sentencias firmes.
+  Elaboración propia a partir de CNMC, BOE-A-2025 y Ley 24/2013.
+</p>
 
 De especial relevancia técnica fue el expediente calificado como **«grave»** contra Mercuria Sostenible, gestora de la Infraestructura Común de Evacuación (ICE) en la subestación de Huéneja (Granada). El análisis topológico del colapso situó esa subestación como el nudo de origen de la primera cascada de desconexiones masivas de plantas fotovoltaicas, eólicas y termosolares, por ausencia de mitigación de sobretensiones adecuada.
 
@@ -128,7 +157,7 @@ El argumento financiero para acometer esta inversión es directo. Con la Operaci
 <div style={{marginTop:'1rem'}}>
 <FinancialWaterfallChart />
 
-*Cascada financiera: destrucción de valor por el apagón vs. coste del CAPEX de resiliencia. Elaboración propia.*
+_Figura 37. OPEX acumulado de la Operación Reforzada frente a la banda de CAPEX estructural (BESS grid-forming, 1.000–2.000 MW). El cruce de la curva auditada con la banda baja se produce antes de los 18 meses. Referencia paramétrica: proyecto Engie-Rolwind (0,86 M€/MW). Elaboración propia a partir de REE/Redeia, PwC, NERA y CNMC._
 </div>
 </Collapsible>
 

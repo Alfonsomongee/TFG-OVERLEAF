@@ -298,14 +298,30 @@ function classifyIntent(question, mode = 'normal') {
 
 function getIntentInstruction(intent) {
   const map = {
-    causal: "Estructura la respuesta como cadena causal: causa raíz → mecanismo → consecuencia. Distingue entre detonante principal, factor agravante y síntoma.",
-    quantitative: "Prioriza cifras exactas, unidades y comparación entre magnitudes. Da número, unidad e interpretación. No redondees si el contexto da cifras precisas.",
-    comparison: "Organiza por posiciones institucionales. Separa la versión del Gobierno/REE, ICAI/AELEC y ENTSO-E. Identifica de forma muy clara cuál es el consenso y cuál la discrepancia.",
-    timeline: "Ordena cronológicamente. Usa timestamps si aparecen en el contexto.",
-    glossary: "Define primero el concepto de forma rigurosa, luego explica inmediatamente su papel o utilidad concreta en el colapso del 28-A.",
-    visual: "Relaciona activamente la respuesta con figuras, mapas, tablas o simuladores si aparecen en el contexto recuperado.",
-    simple: "Explica con lenguaje sumamente claro, sin perder exactitud física. Usa una analogía técnica breve solo si ayuda sustancialmente. Evita jerga innecesaria.",
-    general: "Responde de forma técnica, directa y conversacional."
+    causal: `Estructura como cadena causal compacta: detonante → mecanismo físico → consecuencia medible.
+Distingue causa raíz de factores agravantes. Una frase por eslabón.`,
+
+    quantitative: `Prioriza cifras exactas con unidades. Para cada dato: valor, unidad, fuente y qué implica físicamente.
+No redondees si el contexto da cifras precisas. Compara magnitudes cuando sea relevante.`,
+
+    comparison: `Organiza por posición institucional en este orden: REE/Gobierno → ICAI/AELEC → ENTSO-E.
+Para cada una: qué sostiene, en qué difiere de las otras, y si el TFG toma posición.`,
+
+    timeline: `Ordena cronológicamente con timestamps exactos si el contexto los da.
+Formato: HH:MM:SS CEST — evento — consecuencia inmediata. Sin narrativa entre hitos.`,
+
+    glossary: `Primero: definición técnica rigurosa en 1-2 frases.
+Segundo: papel concreto de ese concepto en el colapso del 28-A con dato numérico si existe.`,
+
+    visual: `El usuario quiere ver algo. PRIMERO: describe en 1-2 frases qué muestra el simulador o figura
+y qué elemento concreto debe buscar (curva, valor, zona, timestamp).
+DESPUÉS: explica el concepto técnico que ilustra ese elemento.`,
+
+    simple: `Explica el mecanismo físico con lenguaje claro, sin perder exactitud.
+Una sola analogía técnica breve si ayuda. Ningún término sin definir. Máximo 3 párrafos cortos.`,
+
+    general: `Técnico, directo y conversacional. Sin listas a menos que el usuario las pida.
+Párrafos cortos, conectores causales ("por tanto", "el mecanismo fue", "esto implica").`,
   };
   return map[intent] || map.general;
 }
@@ -1328,111 +1344,57 @@ module.exports = async function handler(req, res) {
     const intentInstruction = getIntentInstruction(intent);
     const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
 
-    const prompt = `Eres el asistente pericial-documental oficial del TFG sobre el apagón ibérico del 28 de abril de 2025.
-Responde ÚNICAMENTE basándote en el CONTEXTO proporcionado.
-
-REGLAS DE TONO Y ESTILO (OBLIGATORIAS):
-1. Sé preciso, claro, técnico y natural. No seas pedante ni burocrático. No suenes robótico.
-2. PROHIBIDO usar notación LaTeX o matemática ($H$, $f$, \frac, etc.). Escribe las magnitudes en texto plano: "H = 2,3 s", "ΔP/Δt", "50 Hz". El chat no renderiza LaTeX.
-3. Evita las respuestas tipo lista, a menos que el usuario pida explícitamente comparar, listar cronología o cifras. Prefiere párrafos fluidos.
-4. Usa conectores lógicos ("por tanto", "la clave física fue", "esto implica", "el mecanismo raíz es").
-5. NUNCA empieces con frases como "Según el contexto", "Basado en la información". Tampoco uses "es importante destacar". Ve directo al grano.
-6. Si no hay información suficiente en el contexto, dilo directamente.
-7. Responde siempre en ${langName}. Máximo 280 palabras.
-
-INSTRUCCIÓN ESPECÍFICA SEGÚN LA INTENCIÓN DEL USUARIO:
+    const prompt = `INSTRUCCIÓN DE RESPUESTA:
 ${intentInstruction}
 
-ENLACES EN EL TEXTO (REGLAS ABSOLUTAS):
-1. Usa EXACTAMENTE la [URL interna a citar] que aparece en el CONTEXTO, incluyendo siempre el #anchor si lo tiene. NUNCA elimines el fragmento #anchor de una URL.
-2. Ejemplos de formato correcto:
-   - [Tap-Lag](analisis-incidente#tap-lag) ← concepto de glosario
-   - [oscilograma del disparo raíz](anexo-figuras#aluvion_alertas_sobretension_sur) ← figura
-   - [tabla de escalones UFLS](anexo-tablas#escalones-ufls) ← tabla
-   - [sección de análisis](analisis-incidente#cascada-ibr) ← capítulo
-3. Integra el enlace en la frase, no al final como nota.
-4. Enlaza 2-3 conceptos o recursos por respuesta máximo. No enlaces todo.
-5. PROHIBIDO inventar URLs. Solo usa las que aparecen en [URL interna a citar].
+IDIOMA: Responde en ${langName}. Máximo 220 palabras. Sin LaTeX. Sin listas salvo que el usuario las pida explícitamente.
 
-CIERRE Y ANCLAJE DOCUMENTAL:
-Cierra con una frase que:
-1. Enlace a la sección más relevante del TFG con una justificación explícita de por qué ir ahí ayuda a entender mejor la respuesta. Ejemplo: "Para ver cómo evolucionó la tensión segundo a segundo durante la cascada, la [sección de análisis del incidente](analisis-incidente#cascada-ibr) reconstruye los 27 segundos con datos del WAMS."
-2. Termine con una pregunta proactiva de continuación lógica.
+PROHIBIDO:
+- Empezar con "Según el contexto", "Basado en", "Es importante destacar", "En resumen".
+- Repetir literalmente frases del CONTEXTO.
+- Inventar URLs o citas no presentes en el CONTEXTO.
+- Usar notación matemática ($H$, \\frac, etc.).
 
-No uses fórmulas genéricas como "¿quieres preguntar otra cosa?" ni "espero haberte ayudado".
+${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL DISPONIBLE EN EL PANEL DERECHO:
+"${visualArtifacts[0].title}" — ${(visualArtifacts[0].description || '').substring(0, 120)}
+→ Integra una referencia a este recurso dentro de tu respuesta, NO al final.
+   Indica exactamente qué debe buscar el usuario en él y qué verá que confirma tu explicación.
+` : ''}
+ENLACES (solo si la URL aparece en el CONTEXTO):
+- Formato: [texto descriptivo](url-con-anchor)
+- Integra 1-2 enlaces máximo dentro del texto, no al final.
+- Ancla al capítulo o figura más relevante para la pregunta.
 
-RECURSO VISUAL PRINCIPAL (si hay uno disponible):
-${visualArtifacts && visualArtifacts.length > 0
-  ? `Hay ${visualArtifacts.length} recurso(s) visual(es) disponible(s) en el panel derecho:
-${visualArtifacts.map((a, i) =>
-  `${i+1}. [${a.type === 'interactive' ? 'SIMULADOR' : a.type === 'table' ? 'TABLA' : a.type === 'entsoe_chart' ? 'GRÁFICA DATOS REALES' : 'FIGURA'}] "${a.title}"
-   Descripción: ${(a.description||'').substring(0,150)}
-   Por qué es relevante: conéctalo directamente con un dato concreto de tu respuesta.`
-).join('\n')}
+CIERRE:
+Termina con UNA frase que dé al usuario el siguiente paso lógico de comprensión.
+No uses fórmulas como "¿quieres saber más?" ni "espero haber aclarado".
+Si la pregunta tiene continuación natural obvia, formula esa pregunta de forma específica y técnica.
+Si no, cierra con la implicación más importante del argumento.
 
-Menciona el recurso MÁS relevante en la respuesta con una frase que diga
-QUÉ debe buscar el usuario en ese recurso y QUÉ verá que confirma tu explicación.
-Ejemplo: "En la tabla de escalones UFLS del panel derecho, observa cómo el
-escalón 3 se activa exactamente cuando la frecuencia cruza 48,8 Hz — ese es
-el momento en que el sistema pierde los últimos sumideros de reactiva."
-NO menciones recursos que no estén en esta lista.`
-  : 'No hay recursos visuales disponibles para esta respuesta.'}
-
-SUGERENCIAS CONTEXTUALES POSIBLES (elige una para el cierre):
-${followUps.map(q => `- ${q}`).join('\n')}
-
-CONTEXTO RECUPERADO:
+CONTEXTO RECUPERADO DEL TFG:
 ${context}
 
-PREGUNTA DEL USUARIO:
+PREGUNTA:
 ${question}
 
-RESPUESTA DEL ASISTENTE:`;
+RESPUESTA:`;
 
-    const systemPrompt = `Eres el asistente pericial-documental del TFG \\
-"Análisis Forense del Apagón Ibérico del 28 de abril de 2025".
-
-El TFG tiene esta estructura:
-- /contexto → Contexto técnico previo al 28-A
-- /analisis-incidente → Las 4 fases del colapso (12:32:57-12:33:27 CEST)
-- /analisis-informes → Comparativa REE vs ICAI/AELEC vs ENTSO-E
-- /resumen-de-cifras → Cifras consolidadas verificadas
-- /resiliencia-futuro → GFM, BESS, ERS, propuestas regulatorias
-- /reaccion-reposicion → Black start, reposición ES y PT
-- /dimension-europea → Coordinación ENTSO-E, Francia, Portugal
-- /glosario → 119 términos técnicos definidos
-- /anexo-tablas → 42 tablas forenses con datos del evento
-- /anexo-figuras → 41 gráficas PNG con datos reales
-- /anexo-entsoe → 35 gráficas interactivas con datos ESIOS/ENTSO-E/OMIE
-- /anexo-interactivos → 18 simuladores React interactivos
-
-Cifras maestras verificadas del 28-A:
-- Inicio cascada: 12:32:56.993 CEST (disparo raíz Granada, 355 MW)
-- Duración cascada: ~30 segundos
-- Nadir frecuencia: 47,79 Hz
-- RoCoF máximo: ~1,5 Hz/s en ventanas de 100 ms
-- Tensión máxima barras colectoras: >440 kV (umbral LVRT: 435 kV)
-- Inercia H_tot ibérica: 2,21-2,71 s
-- Pérdida generación cascada: ~15.000 MW
-- Demanda sin suministro España: 25.184 MW (33,8%)
-- Demanda sin suministro Portugal: 1.955 MW (33,3%)
-- Total ibérico: ~31.000 MW
-- Reposición Portugal transporte: ~12 h (00:22 del 29-A)
-- Reposición España transporte: ~16 h (04:00 del 29-A)
-- Separación con Francia: 12:33:21,535 CEST
-- HVDC Santa Llogaia en PMODE1 (1.000 MW, sin frequency response)
-- Coste Operación Reforzada: 666 M€/año
-
-Responde siempre anclado en los datos del TFG. No inventes cifras.
-Si el contexto contradice las cifras maestras anteriores, usa las del contexto.`;
+    const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
+Respondes ÚNICAMENTE con información del CONTEXTO proporcionado.
+Eres técnico, directo y preciso. No usas LaTeX. No inventas cifras.
+Si el contexto no cubre la pregunta, lo dices explícitamente.
+Cifras maestras verificadas (úsalas si el contexto no especifica):
+  Inicio cascada: 12:32:56.993 CEST · Nadir: 47,79 Hz · RoCoF: ~1,5 Hz/s (100 ms)
+  Pérdida generación: ~15.000 MW · H_eq ibérico: 2,21–2,71 s
+  Separación Francia: 12:33:21,535 CEST · Coste Op. Reforzada: 666 M€/año`;
 
     let llmResult;
     try {
       llmResult = await callLLM({
         prompt,
         systemPrompt,
-        temperature: 0.2,
-        maxTokens: 650,
+        temperature: 0.18,
+        maxTokens: 380,
       });
     } catch (llmError) {
       console.error('[api/chat] LLM provider error:', llmError?.message);

@@ -3,12 +3,20 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { ColorModeProvider } from '@docusaurus/theme-common/internal';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
-async function fetchFigureContext(question, answer, caption, figureTitle, figureId) {
+async function fetchFigureContext(question, answer, caption, figureTitle, figureId, fig) {
   try {
     const res = await fetch('/api/figure-context', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, answer, caption, figureTitle, figureId }),
+      body: JSON.stringify({
+        question,
+        answer,
+        caption,
+        figureTitle,
+        figureId,
+        figureDescription: fig.artifact?.whyMatters || fig.artifact?.description || '',
+        keyElements: fig.artifact?.keyElements || [],
+      }),
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
@@ -593,7 +601,7 @@ export default function ChatFullscreen({
 
     setFigureContexts(prev => ({ ...prev, [activeTab]: 'loading' }));
     
-    fetchFigureContext(questionMsg, answerMsg, caption, figureTitle, figureId).then(ctx => {
+    fetchFigureContext(questionMsg, answerMsg, caption, figureTitle, figureId, fig).then(ctx => {
       if (ctx) {
         setFigureContexts(prev => ({ ...prev, [activeTab]: ctx }));
         try { localStorage.setItem(cacheKey, ctx); } catch(e) {}
