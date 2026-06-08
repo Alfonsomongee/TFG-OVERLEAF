@@ -28,6 +28,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
@@ -102,6 +103,7 @@ function Chip({ label, value, color, colors }) {
 function DemandaRenovableTrendInner() {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('solar');
 
   const colors = isDark ? {
     textPrimary: '#F4F7FB',
@@ -309,6 +311,20 @@ function DemandaRenovableTrendInner() {
               colors={colors}
             />
           )}
+        </div>
+      )}
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
         </div>
       )}
 

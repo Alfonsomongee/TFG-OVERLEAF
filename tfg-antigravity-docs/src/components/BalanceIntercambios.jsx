@@ -7,6 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import datos28A from '@site/static/data/datos28A.json';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 
 // Valores del 28-A en el instante del colapso (positivo = exportación desde España)
 const SNAPSHOT_28A = {
@@ -19,6 +20,7 @@ function BalanceIntercambiosInner() {
   const isEs = lang === 'es';
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('intercambio_neto');
 
   const colors = isDark ? {
     wrapperBg: '#071326',
@@ -159,6 +161,20 @@ function BalanceIntercambiosInner() {
         ? `El 28-A España era <b>exportador neto</b> hacia Francia y Portugal con 870 + 2.600 MW, vaciando sus propias reservas mientras el sistema oscilaba. Valores negativos = importación.`
         : `On 28-A Spain was a <b>net exporter</b> to France and Portugal with 870 + 2,600 MW, emptying its own reserves while the system oscillated. Negative values = import.` 
       }} />
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
+        </div>
+      )}
 
       <p style={{ ...S.caption, color: colors.secondary }}>
         {lastUpdate

@@ -1360,10 +1360,19 @@ ${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL DISPONIBLE EN 
 → Integra una referencia a este recurso dentro de tu respuesta, NO al final.
    Indica exactamente qué debe buscar el usuario en él y qué verá que confirma tu explicación.
 ` : ''}
-ENLACES (solo si la URL aparece en el CONTEXTO):
-- Formato: [texto descriptivo](url-con-anchor)
-- Integra 1-2 enlaces máximo dentro del texto, no al final.
-- Ancla al capítulo o figura más relevante para la pregunta.
+ENLACES EN EL TEXTO (REGLAS ABSOLUTAS):
+1. Usa EXACTAMENTE la [URL interna a citar] que aparece en el CONTEXTO,
+   incluyendo siempre el #anchor si lo tiene. NUNCA elimines el fragmento
+   #anchor de una URL.
+2. Ejemplos de formato correcto:
+   - [Tap-Lag](analisis-incidente#tap-lag) ← concepto de glosario
+   - [oscilograma del disparo raíz](anexo-figuras#aluvion_alertas_sobretension_sur) ← figura
+   - [tabla de escalones UFLS](anexo-tablas#escalones-ufls) ← tabla
+   - [sección de análisis](analisis-incidente#cascada-ibr) ← capítulo
+3. Integra el enlace en la frase, no al final como nota.
+4. Enlaza 2-3 conceptos o recursos por respuesta máximo. No enlaces todo.
+5. PROHIBIDO inventar URLs. Solo usa las que aparecen en
+   [URL interna a citar] dentro del CONTEXTO RECUPERADO DEL TFG.
 
 CIERRE:
 Termina con UNA frase que dé al usuario el siguiente paso lógico de comprensión.

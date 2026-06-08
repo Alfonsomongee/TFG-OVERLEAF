@@ -34,6 +34,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 
 // Trayectoria horaria 28-A (00:00 → 12:33 CEST)
 // [demanda_MW, precio_SPOT_EUR/MWh]
@@ -49,6 +50,7 @@ const HISTORICAL_28A = [
 function PrecioSpotScatterInner() {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('precio_spot');
 
   const colors = isDark ? {
     textPrimary: '#F4F7FB',
@@ -341,6 +343,20 @@ function PrecioSpotScatterInner() {
         basada en datos cualitativos — los datos OMIE verificados hora a hora no están
         disponibles en fuente primaria consultada.
       </p>
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
+        </div>
+      )}
 
       <p style={{ ...S.caption, color: colors.noteMuted }}>
         {lastUpdate

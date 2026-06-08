@@ -27,6 +27,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip,
   Legend, ResponsiveContainer,
@@ -226,6 +227,7 @@ const MetricPill = React.memo(({ label, value, accent, tooltip = '', colors }) =
 function MixGeneracionInner() {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('penetracion_renovable');
 
   const colors = isDark ? {
     textPrimary: '#F4F7FB',
@@ -438,6 +440,20 @@ function MixGeneracionInner() {
               {pause ? 'Reanudar' : 'Pausar'}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
         </div>
       )}
 

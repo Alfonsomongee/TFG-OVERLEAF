@@ -30,6 +30,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 
 // CORRECCIÓN: 82% (Comité de Análisis, p.38) — NO 84,5%
 const BLACKOUT_PENETRACION = 82.0;
@@ -40,6 +41,7 @@ const BLACKOUT_INERCIA = 2.4;
 function TermometroRiesgoInner() {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('penetracion_renovable');
 
   const colors = isDark ? {
     textPrimary: '#F4F7FB',
@@ -299,6 +301,20 @@ function TermometroRiesgoInner() {
         A mayor H, más tiempo tiene el sistema para reaccionar ante una perturbación.
         El 28-A, H ibérica era 2,21–2,71 s — dentro del rango operativo, pero en el límite inferior.
       </div>
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
+        </div>
+      )}
 
       <p style={{ ...S.caption, color: colors.caption }}>
         {lastUpdate

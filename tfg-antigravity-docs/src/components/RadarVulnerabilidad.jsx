@@ -26,6 +26,7 @@ import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useMemo, useCallback } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import { useEsiosAnalysis } from '@site/src/hooks/useEsiosAnalysis';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
   PolarRadiusAxis, Tooltip, Legend, ResponsiveContainer,
@@ -160,6 +161,7 @@ function RadarVulnerabilidadInner({}) {
 
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
+  const { analysis, loading: analysisLoading } = useEsiosAnalysis('inercia_estimada');
 
   const colors = isDark ? {
     textPrimary: '#F4F7FB',
@@ -321,6 +323,20 @@ function RadarVulnerabilidadInner({}) {
             : 'Sources: ENTSO-E Factual p.36 (inertia), Analysis Committee p.38 (IBR%), REE April 2026 report (post-28A), RD 997/2025 (PNIEC 2030).'}
         </span>
       </div>
+
+      {/* Análisis comparativo 28-A */}
+      {analysis && (
+        <div className="esios-analysis-block">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <p className="esios-analysis-text">{analysis}</p>
+        </div>
+      )}
+      {analysisLoading && !analysis && (
+        <div className="esios-analysis-block esios-analysis-loading">
+          <span className="esios-analysis-label">Análisis comparativo 28-A</span>
+          <span className="esios-analysis-skeleton">Generando análisis...</span>
+        </div>
+      )}
     </div>
   );
 }
