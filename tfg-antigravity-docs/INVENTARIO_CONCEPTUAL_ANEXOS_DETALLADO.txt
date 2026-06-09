@@ -1,0 +1,567 @@
+================================================================================
+INVENTARIO CONCEPTUAL DETALLADO Y VERIFICABLE DE ANEXOS
+================================================================================
+Fecha de elaboración: 2026-06-08
+TFG: Apagón Ibérico 28-A — Análisis Forense
+Fuente de datos: Inspección directa de archivos de código y datos.
+================================================================================
+
+1. Resumen ejecutivo
+--------------------
+El TFG contiene cuatro anexos organizados exclusivamente por tipo de soporte.
+Tras la inspección exhaustiva de todos los archivos de datos y componentes, los
+conteos reales difieren significativamente del informe preliminar (INVENTARIO_
+CONCEPTUAL_ANEXOS.txt). Las discrepancias más relevantes son:
+
+  - Anexo A (Figuras): 41 imágenes reales (7 capítulos), NO 7.
+  - Anexo B (Tablas): 42 tablas numéricas reales en 7 categorías, NO "cientos
+    de métricas en categorías operativas".
+  - Anexo C (Interactivos): 18 simuladores reales (confirmado).
+  - Anexo D (Series ENTSO-E): 23 gráficas reales en 5 categorías, NO 35.
+
+El informe preliminar confundía "número de items en forensicCharts.js" (que
+incluye IDs de marcadores de cronología y categorías además de gráficas) con
+el conteo real de gráficas renderizadas (23). Los TIMELINE_MARKERS (7 items)
+y las CATEGORIES (5) se contabilizaron erróneamente como gráficas.
+
+
+2. Discrepancias respecto al informe preliminar
+-----------------------------------------------
+DISCREPANCIA 1 [CRÍTICA]:
+  Informe preliminar: "Número aprox. de elementos [Anexo A]: 7 figuras".
+  Conteo real: 41 imágenes en 7 grupos/capítulos.
+  Causa: Se contó el número de capítulos (ch1-ch7) en vez de imágenes totales.
+
+DISCREPANCIA 2 [CRÍTICA]:
+  Informe preliminar: "Número aprox. de elementos [Anexo D]: 35 gráficas".
+  Conteo real: 23 gráficas (CHARTS array en forensicCharts.js).
+  Causa: Se contabilizaron adicionalmente los 7 TIMELINE_MARKERS y las 5
+  CATEGORIES del mismo archivo, sumando 35 items en total del JS. La distinción
+  entre datos y gráficas renderizables no se hizo correctamente.
+
+DISCREPANCIA 3 [MENOR]:
+  Informe preliminar: "Número aprox. de elementos [Anexo B]: cientos de
+  parámetros en múltiples categorías operativas".
+  Conteo real: 42 tablas numéricas en 7 categorías, con un total de ~180 filas
+  de datos acumuladas. Los "cientos de métricas" del datosForenses.json son la
+  base de verdad numérica del TFG pero NO se renderizan en ForensicGallery.
+  TablaMaestra28A consume datosForenses.json pero tampoco genera "cientos" de
+  tablas separadas visibles.
+
+DISCREPANCIA 4 [MENOR]:
+  Informe preliminar: "Número de interactivos [Anexo C]: 18 widgets (confirmado)".
+  Estado: Confirmado correcto. 18 items en graphicsData[].
+
+
+3. Conteos reales por anexo
+----------------------------
++----------+-------------------------------+------------+--------------------+
+| Anexo    | Componente principal          | Nº real    | Categorías         |
++----------+-------------------------------+------------+--------------------+
+| A Figuras| ImageGallery                  | 41 imágenes| 7 capítulos        |
+| B Tablas | ForensicGallery (tab 1)       | 42 tablas  | 7 categorías       |
+|          | TablaMaestra28A (tab 2)       | 1 tabla    | (base única maest.)|
+| C Interac| InteractiveGraphicsGallery    | 18 widgets | 0 (sin categoría)  |
+| D ENTSO-E| ForensicGallery2              | 23 gráficas| 5 categorías       |
++----------+-------------------------------+------------+--------------------+
+
+
+4. Categorías reales detectadas
+---------------------------------
+
+ANEXO A — ImageGallery (imageGalleryData.js)
+  Organización: 7 capítulos del TFG (agrupación narrativa, no temática)
+  [ch1] Cap.1: Introducción a un Nuevo Paradigma de Fallo Sistémico — 3 imgs
+  [ch2] Cap.2: Contexto Energético y Vulnerabilidad Estructural    — 7 imgs
+  [ch3] Cap.3: Análisis del Incidente                               — 7 imgs
+  [ch4] Cap.4: Reacción y Reposición                                — 7 imgs
+  [ch5] Cap.5: Análisis de los Informes                             — 5 imgs
+  [ch6] Cap.6: Impacto Comunicativo                                 — 5 imgs
+  [ch7] Cap.7: Resiliencia y Futuro                                 — 7 imgs
+  TOTAL: 41 imágenes
+
+ANEXO B — ForensicGallery (static/data/processed/forensic_categories.json)
+  [structural-context]       Contexto Estructural y Mercado         — 5 tablas
+  [oscillations-dynamics]    Oscilaciones y Estabilidad Dinámica    — 5 tablas
+  [reactive-power-distribution] Maniobras de Tensión y Red         — 8 tablas
+  [cascade-collapse]         Colapso en Cascada                     — 7 tablas
+  [demand-load]              Demanda y Carga                        — 7 tablas
+  [recovery-blackstart]      Recuperación y Black-Start             — 5 tablas
+  [socioeconomic-impact]     Impacto Socioeconómico y Lecciones     — 5 tablas
+  TOTAL: 42 tablas numéricas
+
+ANEXO C — InteractiveGraphicsGalleryBase (graphicsData[])
+  SIN categorías estructurales. Lista plana de 18 simuladores.
+  (Ver sección 5 para lista completa)
+
+ANEXO D — ForensicGallery2 (forensicCharts.js / CATEGORIES + CHARTS)
+  [cat1] Demanda y Sistema              — 3 gráficas (chart-1, chart-2, chart-3)
+  [cat2] Generación y Capacidad         — 3 gráficas (chart-4, chart-5, chart-6)
+  [cat3] Mercados y Precios             — 6 gráficas (chart-7..chart-12)
+  [cat4] Interconexiones y Flujos       — 6 gráficas (chart-13..chart-18)
+  [cat5] Balance, Estabilidad y Respuesta — 5 gráficas (chart-19..chart-23)
+  TOTAL: 23 gráficas históricas
+
+
+5. Inventario exhaustivo por elemento
+---------------------------------------
+
+══════════════════════════════════════════════════════════════════════════════
+ANEXO A — 41 FIGURAS ESTÁTICAS
+══════════════════════════════════════════════════════════════════════════════
+
+ID                           | Título/Contenido                              | Cap | Tema T | Naturaleza         | Dato vivo | Didáctico | Rec. hist. | Prio
+-----------------------------|-----------------------------------------------|-----|--------|--------------------|-----------|-----------|------------|------
+albustami_ieee39_secuencia   | Secuencia colapso OA vs AA — Albustami 2025  | 1   | T3     | Evidencia docum.   | No        | No        | Sí         | Alto
+futured_grid_evolution       | Desplazamiento rotación→IBR (FutuRed 2024)   | 1   | T2/T9  | Ilustr. conceptual | No        | Sí        | No         | Medio
+pmu_sensors_europe           | Densidad PMU en Europa (NREL)                 | 1   | T2/T9  | Esquema instituc.  | No        | Sí        | No         | Medio
+mix_comparativo_2010_2024    | Mix generación ES 2010 vs 2024               | 2   | T1     | Dato histórico     | No        | No        | Sí         | Alto
+capacidad_instalada_2025     | Capacidad instalada 31/01/2025               | 2   | T1     | Dato histórico     | No        | No        | Sí         | Alto
+ree_generation_mix_28april   | Perfil generación 28-A (NREL/REE)            | 2   | T1     | Dato histórico     | No        | No        | Sí         | Alto
+precursor_overvoltage_22april| Oscilaciones tensión 22 abril (IIT-ICAI)     | 2   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+entsoe_flow_deviation        | Desviación NTC vs flujo físico FR (ENTSO-E)  | 2   | T4     | Evidencia docum.   | No        | No        | Sí         | Alto
+hvdc_control_transition      | Transición PMODE3→PMODE1 12:08 CEST          | 2   | T4/T3  | Evidencia docum.   | No        | No        | Sí         | Alto
+frequency_voltage_carmona    | Frecuencia y tensión Carmona durante colapso | 2   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+nunez_balboa_precursores     | Tensiones NúñezBalboa 22/24/28 abril         | 3   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+wams_oscilaciones_carmona    | WAMS oscilación 0,6 Hz Carmona 12:03         | 3   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+tap_lag_decoupling           | Desacoplamiento Tap-Lag 400kV/colector       | 3   | T3     | Evidencia docum.   | No        | No        | Sí         | Alto
+heatmap_propagation          | Heatmap propagación sobretensiones Fase 2    | 3   | T3     | Evidencia docum.   | No        | No        | Sí         | Alto
+cascada_desconexiones        | Propagación geográfica cascada Fase 3        | 3   | T3     | Evidencia docum.   | No        | No        | Sí         | Alto
+tension_frecuencia_colapso   | Acoplamiento V/f durante Fase 3              | 3   | T2/T3  | Evidencia docum.   | No        | No        | Sí         | Alto
+interconexion_francia_colapso| Inversión flujos frontera pirenaica Fase 3   | 3   | T4     | Evidencia docum.   | No        | No        | Sí         | Alto
+islas_reposicion_entsoe      | Fragmentación topológica PO 1.6              | 4   | T6     | Evidencia docum.   | No        | No        | Sí         | Alto
+estrategia_reenergizacion_dual| Estrategia dual Top-Down + Bottom-Up        | 4   | T6     | Evidencia docum.   | No        | No        | Sí         | Alto
+black_start_hidroelectrico   | Intentos black start hidroeléctrico Fase 4   | 4   | T6     | Evidencia docum.   | No        | No        | Sí         | Alto
+evolucion_carga_repuesta_fr  | Soporte transfronterizo Francia en reposic.  | 4   | T6/T4  | Evidencia docum.   | No        | No        | Sí         | Alto
+intercambio_marruecos_topdown| Soporte Top-Down frontera sur ONEE           | 4   | T6/T4  | Evidencia docum.   | No        | No        | Sí         | Alto
+evolucion_mix_reenergizacion | Mix tecnológico durante re-energización      | 4   | T6/T1  | Evidencia docum.   | No        | No        | Sí         | Alto
+recuperacion_demanda_peninsular| Desplome y recuperación demanda peninsular | 4   | T6     | Evidencia docum.   | No        | No        | Sí         | Alto
+mapas_termicos_tension_ree   | Cartografía tensión 400kV 12:30-12:32:57    | 5   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+fluctuaciones_tension_previas| Curvas Q-V estabilidad Carmona (IIT-ICAI)   | 5   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+aluvion_alertas_sobretension | Oscilograma disparo raíz Granada 12:32:57   | 5   | T3     | Evidencia docum.   | No        | No        | Sí         | Alto
+asimetria_balance_reactiva   | Balance potencia reactiva 12:30 CEST         | 5   | T2     | Evidencia docum.   | No        | No        | Sí         | Alto
+perdida_sincronismo_frontera | Intercambio activo ES-FR durante Fase 3      | 5   | T4     | Evidencia docum.   | No        | No        | Sí         | Alto
+collage_conservador          | Cobertura mediática crítica/conservadora     | 6   | T8     | Figura propia      | No        | No        | Sí         | Medio
+collage_progresista          | Cobertura mediática progresista/oficial      | 6   | T8     | Figura propia      | No        | No        | Sí         | Medio
+collage_internacional        | Cobertura mediática internacional            | 6   | T8     | Figura propia      | No        | No        | Sí         | Medio
+collage_ciudadanos           | Cobertura mediática ciudadana/RRSS           | 6   | T8     | Figura propia      | No        | No        | Sí         | Medio
+collage_politicos            | Cobertura mediática político-institucional   | 6   | T8     | Figura propia      | No        | No        | Sí         | Medio
+scr_iberia                   | Short-Circuit Ratio Iberia (SCR)             | 7   | T2/T9  | Esquema instituc.  | No        | Sí        | No         | Medio
+conventionalunits            | Unidades convencionales en mix 2025          | 7   | T1     | Esquema instituc.  | No        | No        | No         | Bajo
+gfl_vs_gfm_circuit1         | Grid-Following vs Grid-Forming (circuito)    | 7   | T9     | Ilustr. conceptual | No        | Sí        | No         | Medio
+hitachi_hybrid               | Solución híbrida Hitachi Energy              | 7   | T9     | Esquema instituc.  | No        | Sí        | No         | Bajo
+coste_optimo_ers             | Coste óptimo ERS por tecnología              | 7   | T5/T9  | Dato histórico     | No        | No        | No         | Medio
+po74_banda_muerta            | Zona muerta PO 7.4 — diagrama                | 7   | T9     | Esquema normat.    | No        | Sí        | No         | Medio
+ers_revenue_stacking         | Revenue stacking ERS (pilas de ingresos)     | 7   | T5/T9  | Esquema instituc.  | No        | Sí        | No         | Bajo
+
+══════════════════════════════════════════════════════════════════════════════
+ANEXO B — 42 TABLAS NUMÉRICAS (ForensicGallery)
+══════════════════════════════════════════════════════════════════════════════
+
+CATEGORÍA: structural-context | Contexto Estructural y Mercado
+ID                              | Título                                           | Filas | Tema | Naturaleza
+--------------------------------|--------------------------------------------------|-------|------|------------
+mix-generacion-12-30            | Mix generación a las 12:30 CEST del 28-A        | 8     | T1   | Dato histórico
+indisponibilidad-generacion-c   | Indisponibilidad por tecnología 28-A            | 6     | T1   | Dato histórico
+inercia-sistema-htot            | Inercia H_tot el 28-A (segundos)                | 3     | T2   | Dato histórico
+precios-marginales-omie         | Precios marginales horarios OMIE 28-A vs 29-A   | 8     | T5   | Dato histórico
+programa-intercambios-pre       | Intercambios internacionales pre-apagón (MW)    | 4     | T4   | Dato histórico
+
+CATEGORÍA: oscillations-dynamics | Oscilaciones y Estabilidad Dinámica
+modos-oscilatorios              | Modos oscilatorios identificados antes colap.   | 7     | T2   | Dato histórico
+evolucion-frecuencia-rocof      | Frecuencia y RoCoF durante 27 segundos crít.   | 16    | T2   | Dato histórico
+tensiones-nudos-criticos        | Tensiones en nudos críticos 400 kV cascada      | 9     | T2   | Dato histórico
+hvdc-santa-llogaia-parametros   | Enlace HVDC Santa Llogaia–Baixas: parámetros   | 6     | T4   | Dato histórico
+intercambios-internacionales-m  | Intercambios internacionales min a min T±30     | 11    | T4   | Dato histórico
+
+CATEGORÍA: reactive-power-distribution | Maniobras de Tensión y Red
+maniobras-compensacion-reactiva | Maniobras compensación reactiva REE 12:00-12:30| 8     | T2   | Dato histórico
+inyeccion-reactiva-distribucion | Inyección reactiva anómala redes distribución   | 4     | T2   | Dato histórico
+variacion-demanda-desconexion-gd| Variación demanda por desconex. generación GD  | 6     | T1   | Dato histórico
+re-voltage-manoeuvres           | Maniobras Control Voltaje (Red Eléctrica)       | 3     | T2   | Dato histórico
+re-topological-manoeuvres       | Maniobras Topológicas Red Eléctrica             | 13    | T3   | Dato histórico
+ren-topological-manoeuvres      | Maniobras Topológicas REN (Portugal)            | 11    | T3   | Dato histórico
+lines-outage-icai               | Líneas Abiertas por Área (9:00 CEST)            | 5     | T3   | Dato histórico
+km-percentage-icai              | % km Líneas Abiertas por Área                   | 5     | T3   | Dato histórico
+
+CATEGORÍA: cascade-collapse | Colapso en Cascada
+secuencia-desconexion-suroeste  | Secuencia desconexión generación (suroeste)    | 16    | T3   | Dato histórico
+escalones-ufls                  | Escalones de UFLS aplicados                     | 9     | T3   | Dato histórico
+estado-centrales-nucleares      | Estado centrales nucleares antes/durante colap. | 7     | T3   | Dato histórico
+desconexion-bombeo-hidraulica   | Desconexión bombeo y centrales hidráulicas      | 4     | T3   | Dato histórico
+pump-storage-es                 | Desconexión Bombeo España                       | 2     | T3   | Dato histórico
+pump-storage-pt                 | Desconexión Bombeo Portugal                     | 2     | T3   | Dato histórico
+eventos-proteccion-maniobras    | Eventos de protección durante la cascada        | 5     | T3   | Dato histórico
+
+CATEGORÍA: demand-load | Demanda y Carga
+demand-shedding-es              | Desconexión Demanda España                      | 6     | T1   | Dato histórico
+demand-shedding-pt              | Desconexión Demanda Portugal (LFDD)             | 6     | T1   | Dato histórico
+electro-intensive-pt            | Desconexión Consumidores Electro-intensivos PT  | 1     | T1   | Dato histórico
+load-shedding-es-pt             | Resumen Desconexión Carga ES + PT               | 7     | T1   | Dato histórico
+dso-load-shedding               | Desconexión por Distribuidora (DSO)             | 7     | T1   | Dato histórico
+spanish-demand-forecast         | Previsión Demanda Española 28-A                 | 14    | T1   | Dato histórico
+portuguese-demand-forecast      | Previsión Demanda Portuguesa 28-A               | 14    | T1   | Dato histórico
+
+CATEGORÍA: recovery-blackstart | Recuperación y Black-Start
+recuperacion-demanda-espana     | Recuperación demanda España post-apagón         | 10    | T6   | Dato histórico
+tiempos-restauracion-islas      | Tiempos restauración por isla geográfica        | 9     | T6   | Dato histórico
+recuperacion-portugal           | Recuperación demanda Portugal (REN)             | 7     | T6   | Dato histórico
+centrales-black-start           | Centrales black-start activadas 28-A            | 6     | T6   | Dato histórico
+eas-state-changes               | Cambios de Estado ENTSO-E EAS                   | 17    | T6   | Dato histórico
+
+CATEGORÍA: socioeconomic-impact | Impacto Socioeconómico y Lecciones
+costes-economicos               | Costes económicos estimados apagón 28-A         | 10    | T7   | Dato histórico
+comparativa-blackouts-historicos| Comparativa blackouts históricos europeos       | 4     | T7   | Dato histórico
+comparativa-conclusiones-ent.   | Comparativa conclusiones por entidad investig.  | 5     | T7   | Dato histórico
+unavailable-capacity            | Potencia Indisponible e Instalada por Tecnolog. | 5     | T1   | Dato histórico
+compass-lexecon                 | Comparativa conclusiones Compass Lexecon/INESC  | 3     | T7   | Dato histórico
+
+COMPONENTE: TablaMaestra28A — Base maestra de datos
+  Consume: datosForenses.json (ES) + datosForenses_{lang}.json
+  Naturaleza: Fuente única de verdad para todas las cifras numéricas del TFG.
+  Contiene: ~40 parámetros agrupados en bloques temáticos (sistema_operativo_1230,
+            inercia, cronologia_cascada, potencias_cascada, hvdc_inelfe, rocof,
+            reposicion, impacto_economico, normativa, pvpc, impacto_social).
+  Tipo: Base documental de referencia numérica, no tabla visual independiente.
+
+══════════════════════════════════════════════════════════════════════════════
+ANEXO C — 18 SIMULADORES INTERACTIVOS
+══════════════════════════════════════════════════════════════════════════════
+
+ID                  | Título ES                             | Componente                  | Tema | Naturaleza           | Dato vivo | Didáctico | Rec. hist.
+--------------------|---------------------------------------|-----------------------------|------|----------------------|-----------|-----------|------------
+frequency           | Caída de Frecuencia (Hz)              | FrequencyChart              | T2   | Reconstrucción hist. | No        | No        | Sí
+map                 | Mapa Animado del Colapso              | AnimatedMap                 | T3   | Reconstrucción hist. | No        | No        | Sí
+timeline            | Cronograma del Incidente              | VerticalTimeline            | T3   | Reconstrucción hist. | No        | No        | Sí
+streamgraph         | Transición y Emisiones                | EnergyTransitionStreamgraph | T1/T9| Dato histórico       | No        | Sí        | No
+waterfall           | Auditoría Económica                   | FinancialWaterfallChart     | T7   | Dato histórico       | No        | No        | Sí
+blackout3d          | Mapa 3D del Apagón (WebGL)            | BlackoutPropagationMap      | T3   | Reconstrucción hist. | No        | No        | Sí
+topology            | Topología de Red                      | IberianGridTopology         | T4   | Reconstrucción hist. | No        | Sí        | Sí
+sismograph          | Sismógrafo del Colapso                | CollapseSismograph          | T2/T3| Reconstrucción hist. | No        | No        | Sí
+phasor              | Gráfico Fasorial Transitorio          | SynchrophasorPlot           | T2   | Reconstrucción hist. | No        | No        | Sí
+phaseplane          | Diagrama Plano de Fase GFM vs GFL    | PhasePlanePlot              | T2/T9| Modelo didáctico     | No        | Sí        | No
+interconnection     | Dashboard de Interconexiones          | InterconnectionDashboard    | T4   | Reconstrucción hist. | No        | No        | Sí
+swing               | Simulador Ecuación del Swing          | SwingEquationSimulator      | T2/T9| Modelo didáctico     | No        | Sí        | No
+matrix              | Matriz de Costes de Inacción          | ThermalAdjustmentCostMatrix | T7/T9| Dato histórico/model | No        | Sí        | No
+pvcurve             | Curva Nariz P-V                       | PVCurveSimulator            | T2/T9| Modelo didáctico     | No        | Sí        | No
+ansi59              | Bucle Cascada ANSI 59                 | ANSI59Cascade               | T3/T9| Modelo didáctico     | No        | Sí        | No
+sticky-collapse     | Anatomía del Colapso — 30 Segundos   | StickyCollapse              | T3   | Reconstrucción hist. | No        | No        | Sí
+comparador-28a      | Sistema Ahora vs 28-A                 | Comparador28A               | T1/T9| Dato vivo + hist.    | SÍ        | No        | Sí
+radar-vulnerabilidad| Radar de Vulnerabilidad Sistémica    | RadarVulnerabilidad         | T1/T9| Dato vivo + hist.    | SÍ        | No        | Sí
+tap-lag-sequence    | Mecanismo Tap-Lag — 5 Pasos          | TapLagSequence              | T3   | Modelo didáctico     | No        | Sí        | No
+
+NOTA IMPORTANTE: 2 interactivos tienen componente de DATO VIVO (comparador-28a
+y radar-vulnerabilidad). El resto son estrictamente históricos o didácticos.
+
+══════════════════════════════════════════════════════════════════════════════
+ANEXO D — 23 GRÁFICAS HISTÓRICAS ENTSO-E / ESIOS
+══════════════════════════════════════════════════════════════════════════════
+
+ID        | Título                            | Categoría | Fuente   | Tema | Naturaleza
+----------|-----------------------------------|-----------|----------|------|------------
+chart-1   | Demanda Peninsular               | cat1      | ESIOS    | T1   | Dato histórico
+chart-2   | Total Load ES + PT               | cat1      | ENTSO-E  | T1   | Dato histórico
+chart-3   | Programa de Producción           | cat1      | ESIOS    | T1   | Dato histórico
+chart-4   | Potencia Disponible por Tecnolog.| cat2      | ESIOS    | T1   | Dato histórico
+chart-5   | Installed Capacity per Type      | cat2      | ENTSO-E  | T1   | Dato histórico
+chart-6   | Actual Generation per Unit       | cat2      | ENTSO-E  | T1   | Dato histórico
+chart-7   | Precio SPOT 28-A                 | cat3      | ESIOS    | T5   | Dato histórico
+chart-8   | Precio Final Desglosado          | cat3      | ESIOS    | T5   | Dato histórico
+chart-9   | OMIE Day-Ahead Prices            | cat3      | OMIE     | T5   | Dato histórico
+chart-10  | Energy Prices — Europa           | cat3      | ENTSO-E  | T5   | Dato histórico
+chart-11  | Precios España y Portugal 28-29A | cat3      | ESIOS    | T5   | Dato histórico
+chart-12  | Precios de Desvíos Tiempo Real   | cat3      | ESIOS    | T5   | Dato histórico
+chart-13  | Saldos por Frontera P48          | cat4      | ESIOS    | T4   | Dato histórico
+chart-14  | España con FR/PT/MA/AND (MW/h)   | cat4      | ESIOS    | T4   | Dato histórico
+chart-15  | Saldos Horarios por Frontera     | cat4      | ESIOS    | T4   | Dato histórico
+chart-16  | Cross-Border Physical Flows      | cat4      | ENTSO-E  | T4   | Dato histórico
+chart-17  | ES-FR y ES-PT 28-29A (MW)        | cat4      | ENTSO-E  | T4   | Dato histórico
+chart-18  | Scheduled Commercial Exchanges   | cat4      | ENTSO-E  | T4   | Dato histórico
+chart-19  | ES-FR y ES-PT 28A (15 min res.)  | cat5      | ESIOS    | T4   | Dato histórico
+chart-20  | Subastas Explícitas Capacidad    | cat5      | ENTSO-E  | T4   | Dato histórico
+chart-21  | ES-FR y ES-PT abril 2025         | cat5      | ENTSO-E  | T4   | Dato histórico
+chart-22  | Water Reservoirs & Hydro         | cat5      | ENTSO-E  | T1   | Dato histórico
+chart-23  | MWh por semana                   | cat5      | ENTSO-E  | T1   | Dato histórico
+
+NOTA: Las 23 gráficas son TODAS datos históricos (sin componente de tiempo real).
+La combinación de fuentes ESIOS (operacional español) y ENTSO-E (estadístico
+europeo) es la principal distinción de granularidad.
+
+
+6. Matriz conceptual T1-T9
+----------------------------
+Distribución de los 124 elementos totales del TFG por tema conceptual:
+
+T1. Demanda, generación y balance:   ~32 elementos
+    (ch2×5 imgs, 7 tablas demand-load, 5 tablas structural-context/gen,
+     chart-1..6, chart-22, chart-23, tabla unavailable-capacity)
+
+T2. Estabilidad dinámica, frec/tens: ~28 elementos
+    (ch2×2, ch3×4, ch5×2 imgs; 5 tablas osc-dynamics; 5 tablas reactive-power;
+     interactivos: frequency, sismograph, phasor, phaseplane, pvcurve, swing)
+
+T3. Protecciones, cascada, desconex: ~23 elementos
+    (ch3×7 imgs; 7 tablas cascade-collapse; 6 tablas re-topologic/km/lines;
+     interactivos: map, timeline, blackout3d, ansi59, sticky-collapse, tap-lag)
+
+T4. Interconexiones y flujos:         ~18 elementos
+    (ch2×2, ch3×1, ch4×2, ch5×1 imgs; 2 tablas osc-dynamics/HVDC; chart-13..21;
+     interactivo: topology, interconnection)
+
+T5. Mercado eléctrico y precios:      ~9 elementos
+    (1 tabla precios-marginales-omie; chart-7..12;
+     interactivos: waterfall, matrix)
+
+T6. Reposición, Black Start:           ~10 elementos
+    (ch4×7 imgs; 5 tablas recovery-blackstart)
+
+T7. Impacto socioeconómico:            ~6 elementos
+    (5 tablas socioeconomic-impact; interactivo: waterfall)
+
+T8. Comunicación y percepción pública: ~5 elementos
+    (ch6×5 imgs: collage_conservador, _progresista, _internacional, _ciudadanos,
+     _politicos)
+
+T9. Metodología, datos vivos, modelos: ~8 elementos
+    (ch7×7 imgs en part.; interactivos: pvcurve, swing, phaseplane, ansi59,
+     tap-lag-sequence, streamgraph; datos vivos: comparador-28a, radar-vuln.)
+
+
+7. Duplicidades conceptuales entre anexos
+-------------------------------------------
+DUPLICIDAD 1 — Demanda/Carga
+  Concepto: Curva de demanda y colapso del 28-A
+  Aparece en:
+    - Anexo A: ch2-ch4 (8 figuras sobre demanda/generación)
+    - Anexo B: categoría demand-load (7 tablas numéricas)
+    - Anexo D: cat1 (chart-1, chart-2: curvas de demanda ESIOS/ENTSO-E)
+  Problema: Tres representaciones distintas de la misma magnitud (demanda MW)
+  sin vinculación cruzada entre anexos.
+  Solución recomendada: Crear anclas o notas de "ver también" entre elementos.
+
+DUPLICIDAD 2 — Interconexiones / Flujos FR
+  Concepto: Comportamiento frontera España-Francia durante el colapso
+  Aparece en:
+    - Anexo A: hvdc_control_transition, interconexion_francia_colapso,
+               evolucion_carga_repuesta_fr, perdida_sincronismo_frontera (4 imgs)
+    - Anexo B: programa-intercambios-pre, intercambios-internacionales-m,
+               hvdc-santa-llogaia-parametros (3 tablas)
+    - Anexo C: interconnection (InterconnectionDashboard)
+    - Anexo D: chart-13..chart-21 (9 gráficas)
+  Problema: El mismo fenómeno físico (flujo de potencia en frontera pirenaica)
+  tiene representación en los 4 anexos sin cohesión.
+  Solución recomendada: Crear sección propia T4 con referencias cruzadas.
+
+DUPLICIDAD 3 — Colapso en Cascada
+  Concepto: Los 30 segundos del colapso (12:32:57–12:33:27 CEST)
+  Aparece en:
+    - Anexo A: tap_lag_decoupling, heatmap_propagation, cascada_desconexiones,
+               tension_frecuencia_colapso, interconexion_francia_colapso (5 imgs)
+    - Anexo B: cascade-collapse (7 tablas), oscillations-dynamics (5 tablas)
+    - Anexo C: CollapseSismograph, sticky-collapse, AnimatedMap, ANSI59Cascade,
+               TapLagSequence (5 interactivos)
+  Problema: El evento central del TFG está fragmentado en 17+ elementos sin
+  hilo conductor explícito que los unifique.
+  Solución recomendada: Es el candidato natural para un índice conceptual
+  transversal o una sección dedicada "30 segundos — documentación completa".
+
+DUPLICIDAD 4 — Precios y Mercado PVPC/SPOT
+  Concepto: Señales económicas del mercado eléctrico 28-A
+  Aparece en:
+    - Anexo B: precios-marginales-omie (tabla), costes-economicos (tabla)
+    - Anexo C: FinancialWaterfallChart, ThermalAdjustmentCostMatrix
+    - Anexo D: chart-7..chart-12 (6 gráficas)
+  Problema: Los impactos de mercado están dispersos entre tablas, interactivos
+  y series históricas sin un punto de entrada unificado.
+
+DUPLICIDAD 5 — Black Start / Reposición
+  Concepto: La recuperación del sistema tras el colapso
+  Aparece en:
+    - Anexo A: ch4 (7 figuras: islas, estrategia, black_start, soporte, etc.)
+    - Anexo B: recovery-blackstart (5 tablas)
+    - (No en Anexo C ni D directamente)
+  Problema: Concentración solo en Anexos A y B, sin interactivos ni series
+  que permitan exploración cuantitativa de la reposición. Cobertura asimétrica.
+
+
+8. Saturación por anexo
+-------------------------
+Anexo A: BAJA  — 41 imágenes, 7 grupos. Bien estructurado. El problema es que
+  los grupos son capítulos narrativos, no temas conceptuales. Las imágenes de
+  ch2, ch3 y ch4 son las más densas (7 cada una). El Anexo A es internamente
+  coherente pero su navegación requiere saber qué capítulo contiene qué.
+
+Anexo B: MEDIA — 42 tablas, 7 categorías bien definidas. Es el anexo mejor
+  organizado conceptualmente: sus categorías ya siguen el hilo causal del
+  incidente. ForensicGallery renderiza las tablas de una en una (acordeón),
+  por lo que la saturación de renderizado es baja. La categoría
+  reactive-power-distribution (8 tablas) es la más densa.
+
+Anexo C: MUY ALTA — 18 interactivos, 0 categorías. La galería renderiza una
+  única vista activa cada vez (sidebar + panel), por lo que el DOM no se satura,
+  pero la LISTA de acceso al sidebar muestra todos los 18 simuladores de golpe
+  sin agrupación temática. El usuario no puede discernir de un vistazo cuáles
+  son históricos, cuáles didácticos y cuáles de datos vivos.
+  PROBLEMA PRINCIPAL: 2 de los 18 tienen datos vivos (comparador-28a y
+  radar-vulnerabilidad) mezclados con 16 históricos/didácticos sin aviso.
+
+Anexo D: ALTA — 23 gráficas en 5 categorías. ForensicGallery2 usa un sistema
+  de filtros (categorías), pero las 23 gráficas cubren un rango temático muy
+  amplio (demanda, generación, precios, interconexiones, balance). Cada
+  gráfica tiene descripciones extensas en 6 idiomas, lo que hace el archivo
+  de datos (forensicCharts.js: 954 líneas, 183KB) extremadamente pesado.
+  PROBLEMA PRINCIPAL: cat4 (Interconexiones y Flujos) concentra 9 de las 23
+  gráficas (39%), creando un desequilibrio interno.
+
+
+9. Alternativa A: mantener anexos por formato con filtros internos
+-------------------------------------------------------------------
+Descripción: Conservar docs/anexo-*.mdx y sidebars.js intactos. Añadir
+  tabs/filtros conceptuales (T1-T9) dentro de las galerías mediante un campo
+  'tema' en los archivos de datos y lógica de filtrado en los componentes.
+
+Implementación concreta:
+  - imageGalleryData.js: añadir campo 'tema' a cada imagen.
+  - forensic_categories.json: añadir campo 'tema' a cada tabla (ya agrupadas
+    conceptualmente en gran medida).
+  - forensicCharts.js: añadir campo 'tema' a cada chart (ya tiene categoryId).
+  - InteractiveGraphicsGalleryBase: añadir campo 'tema' a graphicsData[].
+  - Modificar galerías para renderizar un selector de temas.
+
+Riesgo técnico: BAJO — no se tocan rutas, slugs ni sidebars.
+Impacto lector: MEDIO-ALTO — el usuario puede explorar por tema sin perder
+  la organización por formato.
+Impacto i18n: BAJO — solo se añaden campos de datos, no se cambian MDX.
+Riesgo enlaces rotos: NULO.
+Dificultad: MEDIA (2-3 fases de trabajo).
+Tiempo estimado: 2 fases de refactor de componentes + 1 fase de datos.
+
+
+10. Alternativa B: reorganizar anexos por conceptos
+-----------------------------------------------------
+Descripción: Crear nuevos MDX temáticos (anexo-demanda.mdx, anexo-cascada.mdx,
+  etc.), redistribuir componentes y datos, actualizar sidebars.js, borrar los
+  4 MDX actuales y replicar el proceso en i18n (4 idiomas).
+
+Riesgo técnico: MUY ALTO.
+  - 4 archivos MDX de docs a eliminar/renombrar.
+  - 16 archivos MDX de i18n a replicar.
+  - Todos los enlaces href="#" y rutas relativas en capítulos a actualizar.
+  - sidebars.js: restructuración total del bloque de anexos.
+Impacto lector: ALTO — navegación conceptual directa.
+Impacto i18n: MUY ALTO — sincronización completa necesaria.
+Riesgo enlaces rotos: MUY ALTO — cualquier URL publicada quedaría rota.
+Dificultad: MUY ALTA (5-8 fases de trabajo).
+Tiempo estimado: 5+ semanas de trabajo sin errores.
+
+
+11. Alternativa C: solución híbrida con índice conceptual transversal
+-----------------------------------------------------------------------
+Descripción: Conservar los 4 MDX actuales y sus rutas. Crear un nuevo archivo:
+
+  docs/anexo-indice-conceptual.mdx
+
+  Este MDX actúa como una página de índice que:
+    1. No renderiza contenido propio.
+    2. Lista todos los elementos del TFG por tema (T1-T9).
+    3. Proporciona enlaces directos a los elementos en sus anexos originales
+       (usando anclas como /anexo-tablas#mix-generacion-12-30).
+    4. Puede ser el punto de entrada recomendado para el lector no técnico.
+
+  Paralelamente, cada galería incorpora un selector T1-T9 (Alternativa A)
+  para filtrar sus elementos internamente.
+
+Riesgo técnico: BAJO — solo se crea un nuevo MDX y se añaden anclas.
+Impacto lector: ALTO — el lector tiene un mapa conceptual sin perder
+  la navegación por formato.
+Impacto i18n: MEDIO — el índice conceptual necesita traducción, pero los
+  4 anexos base no cambian.
+Riesgo enlaces rotos: MUY BAJO — solo se añaden rutas nuevas, no se borran.
+Dificultad: BAJA-MEDIA (1-2 fases de trabajo).
+Tiempo estimado: 1-2 semanas.
+
+
+12. Riesgos técnicos
+---------------------
+R1 (ALTO): Alternativa B rompería masivamente los backlinks de los capítulos
+  hacia los anexos. Actualmente existen anclas tipo #eas-state-changes o
+  #mix-generacion-12-30 citadas en capítulos. Si los MDX cambian de ruta,
+  esas anclas quedan rotas y el build fallará.
+
+R2 (MEDIO): El archivo forensicCharts.js (183KB, 954 líneas) ya es problemático
+  de mantener. Cualquier refactor que implique dividirlo por tema requiere
+  también actualizar la lógica de importación dinámica en ForensicGallery2.
+
+R3 (BAJO): datosForenses.json es la fuente de verdad única del TFG. Cualquier
+  reorganización que implique copiar parcialmente ese JSON en otros archivos
+  crea el riesgo de divergencia entre instancias.
+
+R4 (BAJO): Los 2 interactivos con datos vivos (comparador-28a, radar-vuln.)
+  usan APIs externas (ESIOS/ENTSO-E). Cualquier reorganización que los mueva
+  a un nuevo MDX debe mantener el BrowserOnly wrapping y el fallback.
+
+
+13. Riesgos metodológicos
+--------------------------
+RM1: Mezcla de naturaleza en Anexo C. La galería interactiva agrupa sin distinción
+  simuladores didácticos (PVCurveSimulator, SwingEquationSimulator), reconstruc-
+  ciones históricas (FrequencyChart, CollapseSismograph) y comparadores en tiempo
+  real (comparador-28a). Sin etiquetado visible, el lector puede confundir un
+  modelo didáctico calibrado para el apagón con un registro real del mismo.
+
+RM2: El campo 'stars' de forensicCharts.js (de 1 a 5 estrellas) es un indicador
+  de relevancia pericial no documentado formalmente en la metodología del TFG.
+  Su uso interno en el componente puede generar malentendidos sobre la
+  jerarquía de evidencias.
+
+RM3: datosForenses.json contiene campos 'valorAlternativo' y 'notaDiscrepancia'
+  para valores con discrepancias documentadas entre fuentes (p.ej. la constante
+  H: 2,14 vs 2,17 s). Si el TFG reorganiza la presentación de datos sin revisar
+  estos campos, podría presentar el valor incorrecto como canónico.
+
+
+14. Recomendación final
+------------------------
+Se recomienda la ALTERNATIVA C (solución híbrida) como arquitectura objetivo.
+Motivos:
+  1. No rompe ninguna ruta existente ni ningún enlace desde capítulos.
+  2. El índice conceptual transversal puede crearse sin tocar i18n en una
+     primera fase.
+  3. La incorporación de filtros temáticos en las galerías (Alternativa A
+     integrada en C) mejora la navegación sin cambiar la arquitectura MDX.
+  4. El riesgo técnico es el más bajo de las tres alternativas.
+  5. Permite comunicar la mejora conceptual al lector desde el día 1 del
+     deployment, sin esperar una reestructuración completa.
+
+
+15. Fase inicial recomendada
+-----------------------------
+FASE 2R-1: Corregir el broken link #eas-falsa-normalidad (0 riesgo).
+  → Prerrequisito técnico antes de cualquier refactor de anexos.
+
+FASE 2R-2: Crear el campo 'tema' (T1-T9) en los archivos de datos:
+  - imageGalleryData.js: campo 'tema' por imagen.
+  - forensicCharts.js: confirmar/ajustar tema por chart (ya tiene categoryId).
+  - graphicsData[] en InteractiveGraphicsGalleryBase: campo 'tema' por widget.
+  - No modifica MDX, rutas, ni componentes.
+
+FASE 2R-3: Crear docs/anexo-indice-conceptual.mdx (Alternativa C, índice).
+  - Solo lectura + enlaces de anclas a los 4 anexos existentes.
+  - Sin borrar nada ni mover datos.
+
+FASE 2R-4: Añadir selector de temas T1-T9 en InteractiveGraphicsGallery.
+  - Solo modifica el componente C para filtrar por 'tema'.
+  - No toca MDX ni rutas.
+
+
+16. Cambios que NO deben hacerse todavía
+-----------------------------------------
+- NO renombrar ni eliminar docs/anexo-*.mdx.
+- NO modificar sidebars.js hasta tener la arquitectura definitiva aprobada.
+- NO crear anexos conceptuales nuevos en paralelo a los existentes sin la
+  decisión de si los actuales se borran o se mantienen.
+- NO dividir forensicCharts.js en sub-archivos por tema sin refactorizar
+  primero el componente ForensicGallery2.
+- NO añadir datos vivos en ForensicGallery2 sin etiquetado metodológico
+  explícito visible para el lector.
+- NO sincronizar traducciones i18n hasta tener el español estabilizado.

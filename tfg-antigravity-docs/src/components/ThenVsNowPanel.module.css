@@ -1,0 +1,277 @@
+/* ── ThenVsNowPanel ── */
+
+.figure {
+  --fig-bg: #f8f4ea;
+  --fig-surface: #fffdf7;
+  --fig-text: #1f2933;
+  --fig-muted: #64707d;
+  --fig-border: rgba(31, 41, 51, 0.14);
+  --fig-track: rgba(31, 41, 51, 0.06);
+  --fig-hover: rgba(31, 41, 51, 0.04);
+  --fig-stripe: rgba(31, 41, 51, 0.025);
+
+  max-width: 740px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.25rem;
+  background: var(--fig-bg);
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--fig-text);
+  line-height: 1.5;
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #13263f;
+  --fig-text: #e5edf5;
+  --fig-muted: #a9b6c7;
+  --fig-border: rgba(180, 198, 220, 0.16);
+  --fig-track: rgba(180, 198, 220, 0.08);
+  --fig-hover: rgba(180, 198, 220, 0.06);
+  --fig-stripe: rgba(180, 198, 220, 0.03);
+}
+
+/* ── Header ── */
+
+.header {
+  margin-bottom: 0.6rem;
+}
+
+.kicker {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fig-muted);
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+  color: var(--fig-text);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--fig-muted);
+  line-height: 1.45;
+}
+
+/* ── Legend ── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--fig-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Table ── */
+
+.table {
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 180px 1fr 50px;
+  gap: 0.5rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fig-muted);
+  border-bottom: 1px solid var(--fig-border);
+}
+
+.colLabel,
+.colBar,
+.colConf {
+  display: block;
+}
+
+.colConf {
+  text-align: right;
+}
+
+/* ── Metric row ── */
+
+.metricRow {
+  display: grid;
+  grid-template-columns: 180px 1fr 50px;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  margin: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--fig-border);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.metricRow:last-child {
+  border-bottom: none;
+}
+
+.metricRow:nth-child(odd) {
+  background: var(--fig-stripe);
+}
+
+.metricRow:hover {
+  background: var(--fig-hover);
+}
+
+.metricRow:focus-visible {
+  outline: 2px solid var(--fig-muted);
+  outline-offset: -2px;
+}
+
+.rowActive {
+  background: var(--fig-hover);
+}
+
+.metricLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fig-text);
+}
+
+/* ── Bar block (two stacked bars) ── */
+
+.barBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.barLine {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.barTag {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--fig-muted);
+  text-align: right;
+}
+
+.barTrack {
+  flex: 1;
+  height: 8px;
+  background: var(--fig-track);
+  border-radius: 1.5px;
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: 1.5px;
+  transition: width 0.3s ease;
+}
+
+.barVal {
+  flex-shrink: 0;
+  min-width: 52px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ── Confidence ── */
+
+.confidence {
+  font-size: 0.65rem;
+  color: var(--fig-muted);
+  text-align: right;
+  line-height: 1.3;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 680px) {
+  .figure {
+    padding: 0.75rem 0.9rem;
+    margin: 1rem 0;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .tableHead {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .colBar,
+  .colConf {
+    display: none;
+  }
+
+  .metricRow {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .confidence {
+    text-align: left;
+    font-size: 0.62rem;
+    opacity: 0.7;
+  }
+
+  .barVal {
+    min-width: 45px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .metricLabel {
+    font-size: 0.74rem;
+  }
+
+  .barTag {
+    width: 24px;
+    font-size: 0.58rem;
+  }
+}

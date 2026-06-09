@@ -8,26 +8,104 @@ pagination_prev: null
 pagination_next: null
 ---
 
-import { useState } from 'react';
-import GlitchTitle from "@site/src/components/GlitchTitle";
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexTabs from '@site/src/components/annex/AnnexTabs';
 import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
 import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
-import TabSelector from '@site/src/components/TabSelector';
 
-<GlitchTitle>Anexo B — Tablas y Registros Documentales</GlitchTitle>
+export const AnexoB = () => (
+  <AnnexTabs
+    tabs={[
+      {
+        id: 'tablas',
+        label: 'Tablas numeradas',
+        content: <ForensicGallery />,
+      },
+      {
+        id: 'base-maestra',
+        label: 'Base de datos maestra',
+        content: <TablaMaestra28A />,
+      },
+    ]}
+    defaultTab="tablas"
+    ariaLabel="Tablas y base maestra del Anexo B"
+  />
+);
 
-Todas las tablas numeradas del trabajo (TABLA 1 – TABLA 27) y la base de datos 
-maestra con los registros técnicos completos del incidente del 28 de abril.
+<AnnexLayout
+  kicker="Anexo B"
+  title="Tablas maestras y registros documentales"
+  description="Repositorio tabular del TFG: tablas de contexto, secuencias operativas, registros técnicos, impactos socioeconómicos y base maestra de datos del apagón ibérico del 28 de abril de 2025."
+  meta={[
+    { label: 'Contenido', value: 'Tablas y registros' },
+    { label: 'Uso', value: 'Contraste documental' },
+    { label: 'Naturaleza', value: 'Datos históricos y síntesis analíticas' },
+  ]}
+>
 
-export const AnexoB = () => {
-  const [tab, setTab] = useState(0);
-  return (
-    <>
-      <TabSelector active={tab} onSelect={setTab} labels={['Tablas numeradas', 'Base de datos maestra']} />
-      {tab === 0 && <ForensicGallery />}
-      {tab === 1 && <TablaMaestra28A />}
-    </>
-  );
-};
+<AnnexMethodNote type="dato-historico">
+  Las tablas de este anexo reúnen datos históricos, registros operativos y magnitudes documentales asociadas al apagón del 28 de abril de 2025.
+</AnnexMethodNote>
+
+<AnnexMethodNote type="reconstruccion">
+  Algunas tablas son síntesis analíticas elaboradas para comparar informes, ordenar secuencias o agrupar evidencias. Deben leerse como reconstrucción documentada, no como medición primaria.
+</AnnexMethodNote>
+
+<AnnexSection
+  id="lectura-tablas"
+  eyebrow="Lectura del anexo"
+  title="Cómo interpretar las tablas"
+  description="Las tablas combinan registros históricos, síntesis analíticas y una base maestra de datos."
+  defaultOpen={true}
+>
+
+Cinco criterios de lectura para este banco tabular:
+
+- **Dato medido frente a reconstrucción.** Algunas magnitudes proceden directamente de mediciones instrumentales (PMU, SCADA, oscilógrafos); otras son valores inferidos o reconstruidos a partir de varios informes. Las tablas indican la fuente primaria cuando el valor es medido directamente.
+
+- **Magnitudes con incertidumbre.** Varios valores presentan discrepancias entre fuentes (p. ej., potencia perdida en el inicio de la cascada). En la base maestra, el campo *Nota de Discrepancia* documenta estos casos con el valor alternativo registrado.
+
+- **N/A no significa cero.** El valor N/A indica que el dato no está disponible o no es aplicable en el contexto de esa fila. No debe interpretarse como ausencia de fenómeno ni como valor nulo.
+
+- **MW, MWh, MVAr y euros no son intercambiables.** Cada tabla usa la unidad del sistema de medida pertinente. Mezclar potencia activa (MW), energía (MWh), potencia reactiva (MVAr) e impacto económico (€) sin conversión genera errores de interpretación.
+
+- **Las tablas largas se conservan en este anexo.** Para no saturar los capítulos principales, las tablas con más de 10 filas o con datos de contraste detallados se extraen aquí. Los capítulos incluyen solo las magnitudes clave, con referencia explícita a las tablas del Anexo B.
+
+</AnnexSection>
+
+<AnnexSection
+  id="indice-tablas"
+  eyebrow="Estructura documental"
+  title="Familias de tablas y registros"
+  description="El anexo se interpreta mediante ocho familias documentales. La galería de tablas numeradas organiza internamente las series por categoría temática."
+  defaultOpen={true}
+>
+
+| Familia | Descripción |
+| :--- | :--- |
+| **B.1** | Contexto estructural y mercado |
+| **B.2** | Oscilaciones, frecuencia y estabilidad dinámica |
+| **B.3** | Maniobras de tensión y topología |
+| **B.4** | Cascada de desconexiones y protecciones |
+| **B.5** | Demanda, carga y previsiones |
+| **B.6** | Recuperación, Black Start y estados operativos |
+| **B.7** | Impacto socioeconómico e informes comparativos |
+| **B.8** | Base de datos maestra 28-A |
+
+</AnnexSection>
+
+<AnnexSection
+  id="repositorio-tabular"
+  eyebrow="Banco tabular"
+  title="Tablas y base maestra"
+  description="Repositorio completo de tablas, registros y base de datos maestra utilizados como soporte documental del análisis."
+  defaultOpen={true}
+>
 
 <AnexoB />
+
+</AnnexSection>
+
+</AnnexLayout>

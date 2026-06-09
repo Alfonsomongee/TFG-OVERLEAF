@@ -1,0 +1,57 @@
+================================================================================
+PLAN DE MIGRACIÓN DE ANEXOS: DE FORMATO A CONCEPTO
+================================================================================
+
+1. Estado actual de anexos
+Actualmente los anexos están divididos de forma agnóstica por formato/soporte tecnológico:
+- Anexo A: Figuras estáticas (ImageGallery)
+- Anexo B: Tablas y registros (ForensicGallery)
+- Anexo C: Herramientas interactivas (InteractiveGraphicsGallery)
+- Anexo D: Base de datos ENTSO-E / ESIOS (ForensicGallery2)
+La página `anexo-indice-conceptual.mdx` existe pero no está enlazada en el sidebar.
+
+2. Objetivo final de navegación
+Transicionar la documentación técnica de una clasificación basada en contenedores de React (formato) a una clasificación puramente temática (Anexos I a IX). De este modo, un lector consultará toda la evidencia (imágenes, tablas y gráficos) de una disciplina en un solo lugar.
+
+3. Nuevos archivos MDX conceptuales propuestos
+Se proponen 9 anexos temáticos:
+- docs/anexo-demanda-generacion-balance.mdx
+- docs/anexo-estabilidad-dinamica-tension.mdx
+- docs/anexo-cascada-protecciones-desconexiones.mdx
+- docs/anexo-interconexiones-flujos.mdx
+- docs/anexo-mercado-costes.mdx
+- docs/anexo-reposicion-blackstart.mdx
+- docs/anexo-impacto-resiliencia.mdx
+- docs/anexo-comunicacion-fuentes.mdx
+- docs/anexo-metodologia-modelos-datos-vivos.mdx
+
+4. Qué contenido de A/B/C/D alimentará cada anexo conceptual
+Cada nuevo anexo importará o embeberá vistas filtradas de los datos originales en lugar de replicarlos. Por ejemplo, el MDX de T2 (Estabilidad) solicitará renderizar las figuras de T2, las tablas de T2, los interactivos de T2 y las series de T2 de forma consecutiva, componiendo un anexo multimedia unificado.
+
+5. Qué componentes se pueden reutilizar
+- `AnnexLayout` y `AnnexSection` (fundamentales para la estructura general).
+- Las funciones parseadoras de hash y deep links.
+- La base de componentes individuales (`ChartViewer`, `ImageGallery` a nivel de tarjeta, `InteractiveGraphicsGalleryBase` sin el sidebar lateral forzado).
+
+6. Qué componentes nuevos harían falta
+Hará falta un componente puente o adaptador, por ejemplo, un `AnnexFilteredSection` o refactorizar los componentes de galería actuales para que acepten un `filterTheme="T2"` prop, que discrimine los arrays originales de imágenes/tablas/gráficos y solo pinte los del tema solicitado.
+
+7. Cómo evitar duplicar datos
+Las fuentes de verdad en JS y JSON (`imageGalleryData.js`, `forensic_categories.json`, `forensicCharts.js`, `InteractiveGraphicsGalleryBase.jsx`) NO se tocarán, ni se crearán nuevos diccionarios temáticos rígidos. Los metadatos `tema` inyectados en la fase 2R-2 servirán como filtro sobre las colecciones inmutables en tiempo de render.
+
+8. Qué hacer temporalmente con A/B/C/D
+Se mantendrán vivos y funcionando de forma paralela como un "Catálogo de evidencias por formato" hasta el final de la migración. Permanecerán en el sidebar bajo un desplegable separado o al final de la lista, para luego ocultarse o eliminarse definitivamente cuando la arquitectura conceptual I-IX haya absorbido por completo su funcionalidad.
+
+9. Riesgo de enlaces rotos desde capítulos
+ELEVADO. Todos los capítulos de análisis y contexto apuntan actualmente a rutas absolutas nativas tipo `/anexo-figuras#fig-...`. Si se eliminan o renombran repentinamente los MDX originales, habrá decenas de warnings o errores SSR. Para mitigarlo, mantendremos las rutas de A/B/C/D intactas, aplicando redirecciones estáticas automáticas en Docusaurus, o inyectaremos las anclas compatibles dentro de los nuevos anexos conceptuales.
+
+10. Plan de migración en fases
+- FASE 1: Creación de un componente o wrapper React universal que filtre por campo `tema` (FilteredThemeGallery).
+- FASE 2: Creación de los 9 MDX conceptuales en `docs/` montando los componentes con el prop de filtro correspondiente.
+- FASE 3: Introducción al sidebar y convivencia paralela (Anexos Conceptuales I-IX vs Catálogos por Soporte).
+- FASE 4: Auditoría y recableado de enlaces (`href="/anexo-figuras..."` -> `href="/anexo-estabilidad..."`).
+- FASE 5: Deprecación/Ocultación final de A/B/C/D del sidebar.
+
+11. Orden exacto recomendado
+La opción recomendada para el `anexo-indice-conceptual.mdx` actual es la **Opción B**: Convertirlo en un futuro en la página de portada / landing page de los anexos conceptuales I-IX (ej. `docs/anexos-conceptuales.mdx` u `docs/anexos.mdx`).
+Por el momento, debe mantenerse temporalmente sin enlazar en `sidebars.js` hasta que nazcan los verdaderos MDX temáticos.

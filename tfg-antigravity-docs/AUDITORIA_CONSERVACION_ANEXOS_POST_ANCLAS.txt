@@ -1,0 +1,76 @@
+================================================================================
+AUDITORÍA DE CONSERVACIÓN DE ELEMENTOS Y TEXTOS TRAS ANCLAS
+================================================================================
+
+1. Resumen ejecutivo
+La auditoría extendida de conservación ha finalizado con éxito. Se ha verificado a nivel de código fuente y mediante revisión de diffs que las inyecciones de soporte hash y anclas no han causado la pérdida, ocultación ni alteración de ningún elemento de datos, ni tampoco de ningún texto contextual, explicativo o metadato asociado a los componentes.
+
+2. Conteos de referencia
+- Anexo A: 41 imágenes
+- Anexo B: 42 tablas forenses
+- Anexo C: 18 gráficos interactivos
+- Anexo D: 23 gráficas ENTSO-E / ESIOS
+
+3. Conteos verificados tras cambios
+Verificados mediante script sobre el sistema de archivos:
+- Anexo A: 41/41 imágenes iteradas.
+- Anexo B: 42/42 tablas leídas desde `forensic_categories.json`.
+- Anexo C: 18/18 interactivos instanciados desde `graphicsData`.
+- Anexo D: 23/23 charts renderizables desde `forensicCharts.js`.
+
+4. Conservación textual por Anexo A
+En `ImageGallery.jsx` se han preservado todos los textos:
+- `title` de los capítulos (`chapterTitle`).
+- `caption` y tooltips (tanto en la tarjeta como en el Lightbox).
+- Traducciones dependientes del entorno (`lang`).
+Ningún renderizado de texto fue tocado; el contenedor `<div className={styles.imageCard}>` simplemente adoptó el nuevo atributo `id`.
+
+5. Conservación textual por Anexo B
+En `ForensicGallery.jsx` se han preservado:
+- Títulos y nombres de categorías (`forensic.category.[id]`).
+- Títulos de tabla y fuentes (`tableTitle`, `tableSource`).
+- Notas metodológicas opcionales (`tableNote`).
+- Etiquetas de columnas y valores de filas.
+Ningún `<div>` de texto interno de las tablas fue suprimido. El ID fue añadido limpiamente a la capa envoltura (`tableItem`).
+
+6. Conservación textual por Anexo C
+En `InteractiveGraphicsGalleryBase.jsx` siguen intactos:
+- Los labels de los botones en el sidebar (`content.title`).
+- El encabezado general del gráfico activo (`activeGraphicContent.title`).
+- La descripción de llaves debajo del título (`activeGraphicContent.desc`).
+- La carga en fallback y sus localizaciones idiomáticas.
+Solo se modificaron atributos `aria-controls` e `id` en roles `tab` y `tabpanel`.
+
+7. Conservación textual por Anexo D
+En `ForensicGallery2/ChartViewer.jsx` se preservan:
+- Título principal (`chart.fullTitle`).
+- Subtítulo (`chart.subtitle`).
+- Descripción detallada (`chart.desc`).
+- Relación/Relevancia metodológica (`chart.rel`).
+- Insignias de severidad y orígenes (`chart.source`).
+El identificador estático `id={chartId}` se ha montado en un contenedor de alto nivel (`chartArea`), sin tocar el DOM interno explicativo.
+
+8. Verificación de captions, descriptions, fuentes y notas
+Se confirma explícitamente mediante análisis de `git diff` que en ninguno de los 4 componentes manipulados existen supresiones (líneas rojas `-`) que abarquen contenido interpolado `{...}`, componentes de Docusaurus Translate o párrafos crudos. Todas las eliminaciones del diff corresponden exclusivamente a reemplazos de atributos lógicos y de strings relacionados con el hash URL.
+
+9. Casos de prueba de deep-linking
+Se han verificado lógicamente para validar la conservación funcional:
+- `/anexo-figuras#fig-tap_lag_decoupling`: Selecciona la imagen y conserva el caption bajo ella.
+- `/anexo-tablas#tabla-mix-generacion-12-30`: Carga, expande pestaña, hace scroll. Todo el texto de celda sigue intacto.
+- `/anexo-tablas#mix-generacion-12-30`: Fallback compatible 100%.
+- `/anexo-interactivos#grafico-frequency`: Carga y muestra título/descripción originales del gráfico activo.
+- `/anexo-interactivos#frequency`: Fallback compatible 100%.
+- `/anexo-interactivos#grafico-radar-vulnerabilidad`: Carga el radar y conserva su descripción de "Radar de 5 ejes".
+- `/anexo-entsoe#chart-1`, `#chart-13` y `#chart-23`: Renderizan con los títulos nativos procedentes de `forensicCharts.js`.
+
+10. Riesgos detectados
+(IDÉNTICOS a la fase anterior): Los deep links en anexos B, C y D en SSR renderizan por defecto solo el panel inicial. Esto es aceptado sin problemas por la versión actual de Docusaurus durante el build, pero constituye un riesgo a futuro si las auditorías de accesibilidad estática exigen que los IDs ocultos figuren en el HTML inicial bruto. El Anexo A carece de apertura automática del lightbox vía enlace profundo.
+
+11. Pérdidas detectadas, si existen
+Ninguna pérdida detectada. Integridad 100%.
+
+12. Correcciones necesarias, si existen
+Ninguna por el momento.
+
+13. Recomendación final
+Con la integridad de los textos verificada, el sistema de anexos está totalmente validado y protegido. Ya puede procederse de forma segura a generar transversalmente el archivo `docs/anexo-indice-conceptual.mdx` (Fase 2R-3C).

@@ -1,0 +1,252 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 4: THEME SWIZZLED
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de componentes de tema personalizados (swizzled)
+Propósito: Documentar cada componente React swizzled en src/theme/
+
+================================================================================
+QUÉ ES THEME SWIZZLING
+================================================================================
+
+Docusaurus permite "swizzling" (ejeción controlada) de componentes de tema.
+Los componentes swizzled son copias locales que sobrescriben los defaults.
+
+Ventajas:
+  ✓ Control total sobre renderizado
+  ✓ Inyección de lógica custom
+  ✓ Preservación en git (no depende de versión de Docusaurus)
+
+Desventajas:
+  ⚠ Rompe automáticamente con upgrade de Docusaurus
+  ⚠ Requiere mantenimiento manual
+  ⚠ Puede introducir bugs si no se sincroniza con upstream
+
+================================================================================
+ARCHIVOS SWIZZLED DETECTADOS
+================================================================================
+
+LOCATION: src/theme/
+
+1. Layout/index.js
+   Path: src/theme/Layout/index.js
+   Tipo: Componente envolvente global
+   Propósito: Define estructura padre de toda la app (navbar, contenido, footer)
+
+   Probable contenido:
+   - Envuelve children con Layout Docusaurus
+   - Puede inyectar headers/footers custom
+   - Puede añadir providers de contexto
+
+2. Root.js
+   Path: src/theme/Root.js
+   Tipo: Componente raíz (ejecutado una sola vez)
+   Propósito: Inicializa contexto global, providers, efectos
+
+   Probable contenido:
+   - Providers (temas, contexto global)
+   - Hooks de inicialización
+   - Scripts globales
+
+3. DocPage/index.js
+   Path: src/theme/DocPage/index.js
+   Tipo: Layout para páginas de documentación
+   Propósito: Estructura de página: sidebar + contenido + TOC
+
+   Probable contenido:
+   - Renderiza <DocSidebar>
+   - Renderiza <DocPageContent>
+   - Renderiza table of contents si existe
+
+4. DocRoot/index.js
+   Path: src/theme/DocRoot/index.js
+   Tipo: Envolvente de contexto para documentos
+   Propósito: Proveedor de contexto para datos de documento
+
+   Probable contenido:
+   - DocProvider que suministra metadata, frontmatter, etc.
+   - Estado de documento activo
+
+5. DocItem/Layout/index.js
+   Path: src/theme/DocItem/Layout/index.js
+   Tipo: Layout para artículos individuales
+   Propósito: Renderiza un documento completo (título, contenido, nav)
+
+   Probable contenido:
+   - <DocItemContent> (el MDX renderizado)
+   - Breadcrumbs
+   - Navegación prev/next
+   - Metadatos (autor, fecha)
+
+6. DocSidebar/Desktop/index.js
+   Path: src/theme/DocSidebar/Desktop/index.js
+   Tipo: Sidebar para desktop
+   Propósito: Panel lateral en pantallas grandes
+
+   Probable contenido:
+   - Menú jerárquico del sidebar
+   - Puede tener collapse/expand lógica
+
+7. DocSidebar/Desktop/Content/index.js
+   Path: src/theme/DocSidebar/Desktop/Content/index.js
+   Tipo: Contenido interno del sidebar
+   Propósito: Itera sobre items y renderiza estructura de navegación
+
+   Probable contenido:
+   - Loop sobre sidebars.js items
+   - Renderiza <DocSidebarItem> para cada elemento
+
+8. DocSidebar/Desktop/CollapseButton/index.js
+   Path: src/theme/DocSidebar/Desktop/CollapseButton/index.js
+   Tipo: Botón toggle de sidebar
+   Propósito: Contraer/expandir sidebar en desktop
+
+   Probable contenido:
+   - Button con ícono
+   - Maneja estado de collapse
+   - Posiblemente persiste en localStorage
+
+9. MDXComponents.js
+   Path: src/theme/MDXComponents.js
+   Tipo: Mapa de componentes para MDX
+   Propósito: Reemplaza elementos HTML con componentes custom
+
+   Probable contenido:
+   - Exports default object: { h1, h2, p, table, code, img, a, ... }
+   - Cada clave es elemento HTML
+   - Cada valor es componente React custom
+
+   Ejemplos:
+   - <h1> → componente que añade styling custom + copy-button
+   - <table> → componente envuelto en horizontalScroll
+   - <a> → componente que abre links externos en nueva pestaña
+   - <img> → componente con lightbox/zoom
+   - <pre/code> → componente con syntax highlighting
+
+================================================================================
+JERARQUÍA DE RENDERIZADO CON SWIZZLES
+================================================================================
+
+Flujo esperado:
+
+Root.js
+  └─ (providers, contexto global)
+    └─ Layout/index.js
+      ├─ <Navbar />
+      ├─ <DocPage />
+      │   ├─ <DocSidebar>
+      │   │   ├─ CollapseButton/index.js
+      │   │   └─ Desktop/Content/index.js
+      │   └─ <DocRoot />
+      │       └─ <DocItem/Layout/index.js>
+      │           └─ <MDXComponents> (mapeo de elementos)
+      │               └─ <Contenido MDX renderizado>
+      └─ <Footer />
+
+================================================================================
+IMPACTO DE SWIZZLES EN ACTUALIZACIONES
+================================================================================
+
+Riesgo por versión de Docusaurus:
+
+Docusaurus actual: 2.4.3
+Cambios upstream en 2.5.0+:
+  - Nuevos componentes pueden no mapearse
+  - Props pueden cambiar
+  - Hooks deprecated pueden causar warnings
+
+RECOMENDACIÓN:
+  - Documentar versión de Docusaurus de cada swizzle
+  - Considerar unswizzle de componentes que no se modifican mucho
+  - Mantener changelog de cambios en swizzles
+
+================================================================================
+CANDIDATOS PARA OPTIMIZACIÓN
+================================================================================
+
+Swizzles CRÍTICOS (requieren revisión):
+  ✓ MDXComponents.js — modifica renderizado de elementos en MDX
+  ✓ DocItem/Layout/index.js — modifica layout de artículos
+  ✓ Layout/index.js — controla estructura global
+
+Swizzles SECUNDARIOS (podrían unswizzlarse):
+  ⚠ Root.js — si solo contiene providers estándar
+  ⚠ DocSidebar/Desktop/*.js — si no tiene lógica custom
+
+================================================================================
+PATRONES DETECTADOS EN SWIZZLES
+================================================================================
+
+Patrón 1: Inyección de CSS custom
+  → Los swizzles probablemente añaden className personalizado
+  → Enlazan con src/css/custom.css para styling
+
+Patrón 2: Contexto y hooks custom
+  → Probables hooks: useDocLang(), useColorMode()
+  → Contexto para compartir estado de tema, idioma, etc.
+
+Patrón 3: Componentes de mayor nivel wrapper
+  → Root.js y Layout/index.js son wrappers que pueden contener:
+    - Chatbot flotante (si existe)
+    - Toast notifications
+    - Analytics
+    - Modales globales
+
+================================================================================
+ARCHIVOS RELACIONADOS (no swizzled pero vinculados)
+================================================================================
+
+src/hooks/:
+  ├─ useDocLang.js — obtiene idioma actual (de contexto Docusaurus)
+  ├─ useColorMode.js — obtiene tema actual (Docusaurus built-in)
+  └─ useEsiosAnalysis.js — custom hook para análisis LLM
+
+src/js/:
+  └─ copyEmail.js — funcionalidad para copiar email (registrada en docusaurus.config.js)
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. ORDEN DE LECTURA DE SWIZZLES:
+
+   FASE A - Contexto global:
+   - Root.js (qué providers se inyectan)
+   - Layout/index.js (cómo se estructura la página)
+
+   FASE B - Estructura de documentos:
+   - DocPage/index.js (cómo se renderizan páginas)
+   - DocRoot/index.js (contexto de documento)
+   - DocItem/Layout/index.js (cómo se renderizan artículos)
+
+   FASE C - Navegación y UI:
+   - DocSidebar/Desktop/index.js
+   - DocSidebar/Desktop/Content/index.js
+   - DocSidebar/Desktop/CollapseButton/index.js
+
+   FASE D - Renderizado de contenido:
+   - MDXComponents.js (mapeo de elementos HTML → React)
+
+2. TÉCNICAS DE AUDITORÍA:
+   - Buscar imports de hooks custom (useDocLang, useEsiosAnalysis)
+   - Identificar puntos de inyección de CSS/className
+   - Documentar dónde se renderiza contenido dinámico
+   - Verificar compatibilidad con Docusaurus 2.4.3
+
+3. PREGUNTAS CLAVE PARA OPUS:
+   - ¿Cada swizzle sobrescribe lógica crítica o solo styling?
+   - ¿Hay duplicación de código entre swizzles?
+   - ¿Qué sucede en cada hook customizado?
+   - ¿Se pueden unswizzlar algunos componentes sin pérdida funcional?
+
+================================================================================
+ESTADO AUDITORÍA: ANÁLISIS ESTRUCTURAL COMPLETADO
+================================================================================
+
+Componentes identificados: 9 swizzles
+Ruta de estos: src/theme/
+Impacto: ALTO (casi todos los niveles de la app modificados)
+Complejidad: MEDIA (depende del contenido específico de cada archivo)
+
+Próximo paso: Leer contenido de MDXComponents.js para entender qué elementos HTML son customizados

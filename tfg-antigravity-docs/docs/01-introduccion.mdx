@@ -7,6 +7,9 @@ title: "Introducción"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import ExecutiveHook from "@site/src/components/ExecutiveHook";
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import MetamorfosisIBR from '@site/src/components/MetamorfosisIBR/MetamorfosisIBR';
+import NarrativasInstitucionales from '@site/src/components/NarrativasInstitucionales/NarrativasInstitucionales';
 <ExecutiveHook />
 
 <NavigationGuide />
@@ -50,13 +53,10 @@ Visión del gestor europeo (ENTSO-E). El informe factual de ENTSO-E adopta una p
 fenómenos dinámicos ultrarrápidos propios de sistemas dominados por electrónica
 de potencia.
 
-![Replicación de la secuencia del colapso](/figuras/albustami_ieee39_secuencia.png) _Figura 1. Replicación de la secuencia del colapso (interacción OA/AA). Fuente: Albustami et al., 2025._
 
-El alcance del trabajo se articula sobre el contraste de estas tres narrativas con los _Network Codes_ europeos —en particular el Reglamento RfG— y con los principios
-modernos de estabilidad de tensión en sistemas dominados por inversores, con el propósito de identificar lecciones
-estructurales, limitaciones metodológicas y vacíos regulatorios que condicionan
-la resiliencia del sistema eléctrico europeo en la transición hacia la
-descarbonización. El análisis narrativo se fundamenta en una reconstrucción electromagnética del transitorio, construida sobre los registros PMU y WAMS, y es compatible con la evidencia oscilográfica publicada por los cuatro agentes.
+
+El alcance del trabajo se articula sobre el contraste de estas tres narrativas con los _Network Codes_ europeos —en particular el Reglamento RfG— y con los principios modernos de estabilidad de tensión en sistemas dominados por inversores, con el propósito de identificar lecciones estructurales, limitaciones metodológicas y vacíos regulatorios que condicionan la resiliencia del sistema eléctrico europeo en la transición hacia la descarbonización. El análisis narrativo se fundamenta en una reconstrucción electromagnética del transitorio, construida sobre los registros PMU y WAMS, y es compatible con la evidencia oscilográfica publicada por los cuatro agentes.
+
 
 ## La vulnerabilidad estructural del sistema ibérico
 
@@ -69,7 +69,16 @@ forma crítica la capacidad del sistema para absorber dinámicamente potencia
 reactiva y sostener la tensión ante transitorios rápidos, que es precisamente el
 eje sobre el que se articuló el colapso.
 
-![Metamorfosis electromecánica del sistema de potencia](/figura2.png) _Figura 2. Metamorfosis electromecánica del sistema de potencia (desplazamiento IBR). El reemplazo de grandes masas rotatorias reduce drásticamente la inercia total del sistema. Fuente: FutuRed, 2024._
+<BrowserOnly fallback={<div style={{height: 220}} />}>
+  {() => <MetamorfosisIBR />}
+</BrowserOnly>
+
+Esta metamorfosis no fue gradual ni imperceptible: tuvo consecuencias operativas
+concretas. La potencia de cortocircuito disponible cayó en paralelo a la pérdida de
+masa síncrona —los inversores solo aportan 1,1–1,2 veces su potencia nominal frente
+a las 5–7 veces de los generadores síncronos— y el margen dinámico de absorción de
+reactiva quedó limitado precisamente en los momentos de mayor penetración solar,
+como el mediodía del 28 de abril de 2025.
 
 La mañana del incidente, el sistema operaba con una elevada penetración de generación renovable no síncrona (cuya estructura en detalle se describe en el apartado de Contexto Técnico) en condiciones de demanda valle. Para equilibrar la generación, REE desacopló la práctica totalidad de los grupos térmicos disponibles, llevando el número de generadores síncronos a mínimos históricos. El parque IBR operaba prácticamente en su totalidad en modo grid-following:
 inversores que necesitan una tensión y frecuencia externas estables como
@@ -84,7 +93,7 @@ El colapso afectó simultáneamente a España y Portugal. El sistema de REN (Red
 :::
 
 <ForensicTable 
-  title="TABLA 1 | GRID INTERCONNECTION SNAPSHOT"
+  title="TABLA A1 | GRID INTERCONNECTION SNAPSHOT"
   source="MIT CEEPR / Comisión Europea, 2025"
   confidence="HIGH"
 >
@@ -98,7 +107,9 @@ El colapso afectó simultáneamente a España y Portugal. El sistema de REN (Red
 
 </ForensicTable>
 
-
+<BrowserOnly fallback={<div style={{height: 280}} />}>
+  {() => <NarrativasInstitucionales />}
+</BrowserOnly>
 
 ## Metodología: triangulación forense y validación cruzada
 
@@ -111,7 +122,6 @@ La investigación adopta un enfoque de análisis forense comparativo, estructura
 3. Validación técnica cruzada. Cotejo de las secuencias cronológicas con el análisis independiente del NREL sobre oscilaciones inter-área, obtenido a partir de registros de Unidades de Medición Fasorial (PMU) de cobertura continental —datos cuya independencia institucional permite
 arbitrar entre versiones divergentes.
 
-![Localización topológica de las PMU en el sistema síncrono europeo](/figura3.png) _Figura 3. Localización topológica de las PMU en el sistema síncrono europeo. La densidad de cobertura fue determinante para la verificación independiente de las oscilaciones inter-área. Fuente: NREL._
 
 Los modelos de lenguaje de gran escala se han empleado como herramienta de asistencia documental —clasificación, síntesis y extracción de datos críticos— dado el volumen excepcional de documentación técnica generada tras el incidente. Su aplicación se ha circunscrito estrictamente a la organización documental: presentan limitaciones conocidas ante fenómenos de dinámica rápida como el mecanismo del Tap-Lag o la paradoja del UFLS. La
 comparación técnica, la evaluación de causalidad y las conclusiones del trabajo
@@ -120,3 +130,11 @@ son responsabilidad exclusiva del criterio del autor.
 :::tip Glosario Técnico
 Los términos técnicos empleados en este trabajo (IBR, SCR, GFM, UFLS, ANSI 59, etc.) se definen con rigor normativo IEEE/ENTSO-E/CIGRE en el [Glosario Técnico](/glosario).
 :::
+
+---
+
+El marco está fijado: un sistema en transición estructural, tres lecturas institucionales
+sobre sus consecuencias y un método de triangulación forense para navegar entre ellas.
+El [Capítulo 2](/contexto) describe en detalle la condición técnica del sistema ibérico
+en el momento del incidente —la paradoja de la abundancia renovable y la fragilidad
+oculta— que convirtió el 28 de abril de 2025 en el día del colapso.

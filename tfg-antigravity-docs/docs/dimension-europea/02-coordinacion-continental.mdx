@@ -5,6 +5,9 @@ title: "Coordinación Continental"
 ---
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import CoordinationTimeline from '@site/src/components/CoordinationTimeline';
+import CommandArchitectureGraph from '@site/src/components/CommandArchitectureGraph';
+import EASStateTransition from '@site/src/components/EASStateTransition';
 
 <GlitchTitle>Coordinación Continental</GlitchTitle>
 
@@ -17,7 +20,7 @@ La arquitectura de gobernanza de ENTSO-E designa a los Monitores del Área Sínc
 El ENTSO-E Awareness System (EAS) — una plataforma de comunicaciones encriptada y centralizada — operó como el sistema nervioso de la gestión de la crisis. La cronología de los despachos revela la velocidad a la que se estructuró un mando unificado supranacional:
 
 <ForensicTable 
-  title="TABLA 11 | ENTSO-E EAS: REGISTRO DE COMUNICACIONES"
+  title="TABLA K1 | ENTSO-E EAS: REGISTRO DE COMUNICACIONES"
   source="Elaboración propia"
 >
 
@@ -33,6 +36,13 @@ El ENTSO-E Awareness System (EAS) — una plataforma de comunicaciones encriptad
 
 </ForensicTable>
 
+<figure id="fig-k1-cronologia-eas-sam">
+  <CoordinationTimeline />
+  <figcaption>
+    <strong>Figura K1 — Cronología EAS/SAM: de la separación al mando unificado.</strong> Secuencia de comunicaciones críticas entre REE, REN, RTE, Swissgrid, Amprion y TERNA tras la separación física de la península ibérica. La figura documenta el paso desde la notificación del <em>system split</em> hasta la formalización del mando unificado europeo entre las 12:49 y las 12:54 CEST, incluyendo la alerta posterior de PICASSO y la recuperación del AGC de REE. Fuente: elaboración propia a partir del <em>Factual Report</em> de ENTSO-E y registros EAS.
+  </figcaption>
+</figure>
+
 La ventana crítica se sitúa entre las 12:49 y las 12:54 CEST: en apenas cinco minutos, los SAM aplicaron el protocolo estandarizado de separación de sistemas de ENTSO-E, asignando tres roles diferenciados con autoridad exclusiva y no solapable:
 
 REE — Líder de Frecuencia Ibérico. Mandato exclusivo de equilibrar la ratio generación/demanda dentro del bloque aislado, gestionando el deslastre y el arranque paulatino sin interferencias externas.
@@ -40,6 +50,13 @@ REE — Líder de Frecuencia Ibérico. Mandato exclusivo de equilibrar la ratio 
 Swissgrid — Líder de Frecuencia de Europa Continental. Control del resto del área síncrona, orquestando las reservas de contención de frecuencia (FCR) en más de 20 países para compensar la súbita sobrefrecuencia generada por la pérdida de las exportaciones hacia la península y el apagado del HVDC Baixas.
 
 RTE — Líder de Resincronización. Autoridad absoluta sobre las operaciones de cierre en los enlaces transpirenaicos. Ni REE ni ninguna otra entidad podía operar un interruptor fronterizo sin la validación previa de los parámetros de deslizamiento y tensión desde las salas de control de RTE en París y Toulouse.
+
+<figure id="fig-k2-arquitectura-mando-continental">
+  <CommandArchitectureGraph />
+  <figcaption>
+    <strong>Figura K2 — Arquitectura de mando continental tras la separación ibérica.</strong> El grafo sintetiza la reasignación de autoridad operativa tras el colapso: REE actúa como líder de frecuencia del bloque ibérico aislado, REN coordina la restauración portuguesa bajo ese marco, Swissgrid y Amprion supervisan el área síncrona continental como SAM, y RTE concentra la autoridad exclusiva de resincronización física con Europa. Fuente: elaboración propia a partir del <em>Factual Report</em> de ENTSO-E, la directriz SO GL y los procedimientos EAS/SAM.
+  </figcaption>
+</figure>
 
 ## El papel de Coreso: el escudo matemático de la restauración
 
@@ -55,7 +72,16 @@ Esta validación de Coreso fue el escudo matemático que permitió a RTE operar 
 
 La coordinación multinacional funcionó con notable eficacia una vez activado el estado de emergencia. Sin embargo, el episodio expuso con crudeza las limitaciones estructurales del sistema europeo de monitorización en la fase previa: tal como se documenta en el análisis del sistema español, el bloque ibérico transitó directamente del estado "Normal" al estado "Blackout" (criterio OB3) sin pasar por los estados intermedios de Alerta o Emergencia previstos en las System Operation Guidelines.
 
-El resultado fue que los operadores vecinos — RTE, Swissgrid, Coreso — no recibieron señales anticipatorias de vulnerabilidad dinámica al sur de los Pirineos. La primera actuación de la arquitectura SAM/EAS no fue preventiva sino reactiva: el EAS actuó como notificador post mortem del colapso, no como herramienta de alerta temprana. Esta limitación — la incapacidad del sistema europeo de monitorización para capturar la dinámica rápida de tensión en redes de baja inercia — es una de las lecciones regulatorias centrales del incidente y el punto de partida de las reformas documentadas en la sección siguiente.
+El resultado fue que los operadores vecinos — RTE, Swissgrid, Coreso — no recibieron señales anticipatorias de vulnerabilidad dinámica al sur de los Pirineos.
+
+<figure id="fig-k3-fallo-estructural-eas">
+  <EASStateTransition />
+  <figcaption>
+    <strong>Figura K3 — Falsa normalidad del EAS: transición directa de Normal a Blackout.</strong> La figura compara la degradación física del sistema ibérico con los estados declarados en el ENTSO-E Awareness System, mostrando la ausencia de una fase intermedia de Alerta o Emergencia antes del colapso y el carácter reactivo de la coordinación continental. Fuente: elaboración propia a partir del <em>Factual Report</em> de ENTSO-E, registros EAS y reconstrucción operativa del incidente.
+  </figcaption>
+</figure>
+
+La primera actuación de la arquitectura SAM/EAS no fue preventiva sino reactiva: el EAS actuó como notificador post mortem del colapso, no como herramienta de alerta temprana. Esta limitación — la incapacidad del sistema europeo de monitorización para capturar la dinámica rápida de tensión en redes de baja inercia — es una de las lecciones regulatorias centrales del incidente y el punto de partida de las reformas documentadas en la sección siguiente.
 
 La comunicación se mantuvo constante hasta el fin de la emergencia, culminando a las 00:11 CEST del 29 de abril, momento en que RTE notificó a Swissgrid que el algoritmo de Control Automático de Generación (AGC) de REE estaba de nuevo en lazo cerrado estabilizado — señal que certificó el fin del estado de emergencia continental.
 

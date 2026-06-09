@@ -1,0 +1,92 @@
+/* AnnexThemeEvidence.module.css
+   Estilos del wrapper y la grid de evidencias.
+   El diseño individual de cada tarjeta está en AnnexEvidenceViewer.module.css.
+   Variables scoped al .annexThemeWrapper — sin selectores globales.
+*/
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* WRAPPER — raíz de las variables de tema                                     */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.annexThemeWrapper {
+  /* Light mode defaults */
+  --ate-bg:           #fdfbf7;
+  --ate-border:       #e2dfd8;
+  --ate-text:         #191814;
+  --ate-text-muted:   #625c52;
+  --ate-accent:       #145c63;
+
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+html[data-theme='dark'] .annexThemeWrapper {
+  --ate-bg:           #0b0f19;
+  --ate-border:       rgba(148, 163, 184, 0.15);
+  --ate-text:         #f8fafc;
+  --ate-text-muted:   #94a3b8;
+  --ate-accent:       #2dd4bf;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* NOTA DE TRAZABILIDAD                                                        */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.trazabilityNote {
+  font-size: 0.85rem;
+  color: var(--ate-text-muted);
+  border-left: 3px solid var(--ate-accent);
+  padding-left: 0.75rem;
+  margin-bottom: 2rem;
+  line-height: 1.55;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* SECCIÓN POR TIPO (figuras / tablas / interactivos / series)                 */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.summary {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ate-accent);
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ate-border);
+  padding-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.emptyState {
+  padding: 2rem;
+  background-color: var(--ate-bg);
+  border: 1px dashed var(--ate-border);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--ate-text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* GRID DE EVIDENCIAS                                                          */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.evidenceContainer {
+  display: grid;
+  /* 260 px mínimo → con layout wide en desktop: 3 columnas.
+     Sin wide / en tablet: 2 columnas (≥ 540 px).
+     Móvil: 1 columna (ver media query). */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 640px) {
+  .evidenceContainer {
+    grid-template-columns: 1fr;
+  }
+}

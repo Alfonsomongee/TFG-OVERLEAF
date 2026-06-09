@@ -1,0 +1,644 @@
+================================================================================
+AUDITORIA_INTERFAZ_INTERNA_ANEXOS.txt
+TFG Antigravity Docs — Sistema de Anexos
+Fecha de auditoría: 2026-06-08
+Fases auditadas: Fase 2A-2E (sistema AnnexLayout/AnnexSection/AnnexMethodNote)
+Auditor: Claude Opus (resumen de sesión continuada)
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+1. RESUMEN EJECUTIVO
+────────────────────────────────────────────────────────────────────────────────
+
+Los cuatro anexos (A, B, C, D) han sido migrados al sistema exterior común
+(AnnexLayout, AnnexSection, AnnexMethodNote). La capa exterior es coherente.
+
+La capa interior —componentes que pintan los datos reales— presenta un grado
+de coherencia ALTO pero con cuatro problemas específicos que conviene resolver:
+
+  PROBLEMA PRINCIPAL:
+  TabSelector usa un sistema de estilos completamente distinto al resto:
+  - Clase global .tab-selector-btn (no CSS Module)
+  - Reglas duplicadas en custom.css (aparece DOS veces: líneas 3364 y 3558)
+  - Estado activo en oscuro: electric blue (#00BFFF área, var(--accent-electric))
+  - Estado activo en claro: crimson (var(--primary), rgba(139,38,53,...))
+  - AnnexLayout espera teal (--annex-accent: #145c63 / #83bdc2 oscuro)
+  Resultado: dentro del Anexo B, los tabs parecen sacados de otra aplicación.
+
+  PROBLEMA SECUNDARIO:
+  Ninguno de los componentes internos tiene estilos de focus visible (:focus-visible).
+  Solo InteractiveGraphicsGallery tiene ARIA completo (tablist/tab/tabpanel).
+  ForensicGallery, TablaMaestra28A y TabSelector no tienen aria en sus botones.
+
+  PROBLEMAS MENORES:
+  - ForensicGallery usa color-mix() en la cabecera de tabla (CSS L4, sin fallback)
+  - InteractiveGraphicsGallery usa :global() para dark mode (diferente al resto)
+  - Las paletas de variables son paralelas pero no unificadas:
+    --fg-old-accent: #1F6F78 vs --annex-accent: #145c63 (mismo tono, distinto valor)
+    --igg-accent: #1F6F78 vs --annex-accent: #145c63 (igual discrepancia)
+    --tm-accent: #1F6F78 vs --annex-accent: #145c63 (igual discrepancia)
+    ImageGallery: --img-accent: #1F6F78 vs --annex-accent: #145c63 (ídem)
+
+  ESTADO GENERAL:
+  Visualmente los componentes internos son compatibles con AnnexLayout porque
+  comparten la misma base cromática (papel cálido claro / azul navy oscuro).
+  La diferencia de acentos (#1F6F78 vs #145c63) es sutil en uso. TabSelector
+  es el único elemento que rompe la coherencia de forma clara y visible.
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. MAPA DE ANEXOS Y COMPONENTES INTERNOS
+────────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANEXO A — docs/anexo-figuras.mdx                                            │
+│ Componente interior: ImageGallery                                           │
+│ CSS Module: ImageGallery.module.css (variables --img-*)                     │
+│ Tabs: NO  Sidebar: NO  Filtro: NO  Buscador: NO                             │
+│ Grid de cards: SÍ (auto-fit minmax 280–350px)                               │
+│ Lightbox modal: SÍ (position:fixed, z-index:9999)                           │
+│ Expansión de filas: NO  Dato vivo: NO                                       │
+│ Variables propias: SÍ (--img-*)  IFM: NO  Estilos inline: NO               │
+│ Idioma: useDocLang() hook interno                                            │
+│ Modo oscuro: html[data-theme='dark'] .galleryContainer                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANEXO B — docs/anexo-tablas.mdx                                             │
+│ Componentes interiores: TabSelector + ForensicGallery + TablaMaestra28A     │
+│ CSS: ForensicGallery.module.css (--fg-old-*) + styles.module.css (--tm-*)   │
+│ TabSelector CSS: custom.css global + IFM vars (NO CSS Module)               │
+│ Tabs: SÍ (TabSelector, 2 pestañas)                                          │
+│ Sidebar: NO (ForensicGallery usa grid 3×N)                                  │
+│ Filtro: SÍ (TablaMaestra28A: pill badges por fuente primaria)               │
+│ Buscador: NO  Dato vivo: NO                                                 │
+│ Botones de categoría: SÍ (ForensicGallery: cards clicables tipo acordeón)  │
+│ Expansión de filas: SÍ (TablaMaestra28A: botón "Ver contexto")              │
+│ Scroll horizontal tabla: SÍ (.table-scroll-wrapper global en TablaMaestra) │
+│ Scroll horizontal ForensicGallery: SÍ (.tableWrapper overflow-x:auto)      │
+│ Variables propias: SÍ  IFM: SÍ (TabSelector)  Estilos inline: SÍ (TabSel) │
+│ Idioma: useDocusaurusContext() (ambas galerías) + Translate (TablaMaestra)  │
+│ Modo oscuro: ForensicGallery = html[data-theme='dark'] .galleryContainer    │
+│              TablaMaestra = html[data-theme='dark'] .container              │
+│              TabSelector = via custom.css !important overrides              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANEXO C — docs/anexo-interactivos.mdx                                       │
+│ Componente interior: InteractiveGraphicsGallery                             │
+│ CSS Module: InteractiveGraphicsGallery.module.css (variables --igg-*)       │
+│ Tabs: SÍ (sidebar como tablist ARIA completo)                               │
+│ Sidebar interna: SÍ (flex: 0 0 240px, lista de 18 botones)                 │
+│ Filtro: NO  Buscador: NO  Expansión: NO                                     │
+│ Dato vivo: SÍ (Comparador28A usa API ESIOS tiempo real)                     │
+│ Variables propias: SÍ (--igg-*)  IFM: NO  Estilos inline: NO               │
+│ Idioma: propLang prop o useDocLang() o i18n.currentLocale                   │
+│ Modo oscuro: :global(html[data-theme='dark']) .galleryContainer             │
+│              NOTA: usa :global() al contrario del resto (sin :global())     │
+│ min-height: 850px (container) / 750px (graphicStage)                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANEXO D — docs/anexo-entsoe.mdx                                             │
+│ Componente interior: ForensicGallery2                                       │
+│ CSS Module: ForensicGallery2.module.css (no inspeccionado en esta fase)     │
+│ Sidebar interna: SÍ (categorías con hash-based navigation)                 │
+│ Tabs: SÍ (categorías como botones de selección)                             │
+│ Filtro: NO  Buscador: NO  Dato vivo: NO                                     │
+│ Variables propias: SÍ (presunto)  IFM: pendiente verificar                 │
+│ Idioma: useForensicData() hook (categorías hardcoded en forensicCharts.js)  │
+│ 5 categorías × 23 gráficas                                                  │
+│ NOTA: ForensicGallery2 no acepta props. Zero-props API.                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. BOTONES Y PESTAÑAS DETECTADOS
+────────────────────────────────────────────────────────────────────────────────
+
+[BT-1] TabSelector — Anexo B únicamente
+  Componente: src/components/TabSelector.jsx
+  Tipo: <button> real ✓
+  Clase CSS: tab-selector-btn (GLOBAL, no scoped)
+  CSS: src/css/custom.css líneas 3364–3397 y 3558–3587 (DUPLICADO)
+  Estado activo claro: --primary (crimson), border + background rgba(139,38,53,0.06)
+  Estado activo oscuro: --accent-electric (cyan brillante), box-shadow glow
+  Estado hover claro: --primary (crimson)
+  Estado hover oscuro: --accent-electric con glow
+  ARIA: NINGUNO. No hay role="tab", no hay aria-selected, no hay aria-controls
+  Focus: sin :focus-visible. Solo estados hover/active
+  Props: active (number), onSelect (fn), labels (array)
+  Variantes: NO (un único modo)
+  Usos: solo docs/anexo-tablas.mdx
+  IFM: SÍ (--ifm-color-emphasis-100, --ifm-color-emphasis-200, etc. — inline style)
+  Problema visual: en claro → crimson puro dentro de AnnexLayout teal; en oscuro →
+    glow eléctrico contradice la estética "papel técnico sobrio" del sistema annex
+  Solución recomendada: crear AnnexTabs en src/components/annex/AnnexTabs.jsx
+    que reuse la lógica de TabSelector pero use --annex-* variables y tenga ARIA
+  Riesgo de rotura: BAJO (único uso en anexo-tablas.mdx)
+
+[BT-2] ForensicGallery — botones de categoría — Anexo B (tab=0)
+  Componente: src/components/GaleriaForense/ForensicGallery.jsx
+  Tipo: <button> real ✓
+  Clase CSS: .categoryButton, .categoryButton.active (CSS Module)
+  Estado activo: .active → accent-soft background + accent-border
+  Estado hover: translateY(-2px) + shadow
+  ARIA: NINGUNO. No hay role="button" explícito, no hay aria-expanded para
+    indicar si la lista de tablas está abierta, no hay aria-controls
+  Focus: sin :focus-visible en el CSS Module
+  Variables: --fg-old-* (propias, compatibles con annex palette)
+  Problema visual: catTitle usa --font-display (fuente display, probablemente serif
+    o estilizada); AnnexLayout usa font-family: 'Inter' en el header
+  Problema técnico: color-mix() en .tableHeader — sin fallback para Safari <16.2
+  Solución recomendada: añadir :focus-visible ring + aria-expanded en JSX
+
+[BT-3] InteractiveGraphicsGallery — sidebar buttons — Anexo C
+  Componente: src/components/InteractiveGraphicsGalleryBase.jsx
+  Tipo: <button> real ✓  con role="tab" ✓ y aria-selected ✓
+  Clase CSS: .graphicButton, .activeButton (CSS Module)
+  Estado activo: .activeButton → border-left accent + weight 700
+  Estado hover: border-left-color + bg-muted
+  ARIA: COMPLETO — role="tablist", role="tab", aria-selected, aria-controls,
+    role="tabpanel", aria-labelledby ✓✓✓
+  Focus: sin :focus-visible en el CSS Module ✗
+  Variables: --igg-* (propias)
+  Problema visual: MENOR. El sidebar tiene min-height implícita enorme por el
+    graphicStage (min-height: 750px), lo que podría colapsar en móvil estrecho
+  Solución recomendada: añadir :focus-visible ring en CSS Module únicamente
+
+[BT-4] TablaMaestra28A — filter badges — Anexo B (tab=1)
+  Componente: src/components/TablaMaestra28A/index.jsx
+  Tipo: <button> real ✓
+  Clase CSS: .badge, .badgeActive, .badgeClear (CSS Module)
+  Estado activo: .badgeActive → accent-soft + accent-border + font-weight 700
+  Estado hover: color accent + border accent
+  ARIA: NINGUNO. badge no tiene aria-pressed ni aria-label descriptivo
+  Focus: sin :focus-visible ✗
+  Nota visual: pills redondeados (border-radius: 20px) — coherentes con sistema
+    annex (ambos usan esquinas suaves). Compatible visualmente.
+  Solución recomendada: añadir :focus-visible ring + aria-pressed en JSX
+
+[BT-5] TablaMaestra28A — expand button — Anexo B (tab=1)
+  Tipo: <button> real ✓
+  Clase CSS: .expandBtn (CSS Module)
+  Texto: "Ver contexto" / "Ocultar info" (cambia con estado)
+  ARIA: NINGUNO. Sin aria-expanded, sin aria-controls
+  Focus: sin :focus-visible ✗
+  Solución recomendada: añadir aria-expanded={expandedRow === row.id}
+
+
+────────────────────────────────────────────────────────────────────────────────
+4. SIDEBARS INTERNAS DETECTADAS
+────────────────────────────────────────────────────────────────────────────────
+
+[SB-1] InteractiveGraphicsGallery — sidebar fija 240px
+  CSS: .sidebar { flex: 0 0 240px; ... }
+  Comportamiento: en < 996px desaparece la fila (flex-direction: column)
+  Título sidebar: .sidebarTitle usa --igg-muted-accent (#636E4F claro / #A6C67B oscuro)
+  Fondo: --igg-bg-panel (rgba(255,252,245,0.84) claro / rgba(16,29,53,0.78) oscuro)
+  Problema: al estar dentro de sectionContent (padding-left: 1rem), la sidebar
+    está indentada 1rem más del borde del annex. Visual: aceptable en desktop,
+    ligeramente ajustado en tablet.
+  No hay riesgo de overflow si overflow-x: auto está en sectionContent ✓
+
+[SB-2] ForensicGallery — no hay sidebar
+  La galería usa grid 3×N (desktop) → 2×N (tablet) → 1×N (móvil)
+  No hay panel lateral. Las categorías son cards clickables que expanden.
+  Compatible con el flujo normal de sectionContent.
+
+
+────────────────────────────────────────────────────────────────────────────────
+5. FILTROS Y BUSCADORES DETECTADOS
+────────────────────────────────────────────────────────────────────────────────
+
+[F-1] TablaMaestra28A — filtro por fuente primaria
+  Tipo: buttons multiselect (toggle individual)
+  Ubicación: .filterSection (franja sobre la tabla)
+  Comportamiento: selección múltiple, botón "Borrar filtros" si hay selección
+  Sin buscador de texto libre
+  Responsive: flex-wrap: wrap → correcto en móvil
+
+[F-2] ForensicGallery — "filtro" por expansión de categoría
+  No es un filtro técnico: es un acordeón de categorías
+  Solo una categoría puede estar abierta a la vez (setActiveCategory toggle)
+  Sin buscador
+
+[F-3] InteractiveGraphicsGallery — selector lateral
+  18 items en lista, sin filtro de búsqueda
+  Navegación por clic o por hash URL (#frequency, #map, etc.)
+
+[AUSENCIAS]
+  Ningún componente tiene buscador de texto libre
+  Ningún componente tiene paginación
+
+
+────────────────────────────────────────────────────────────────────────────────
+6. TABLAS DETECTADAS
+────────────────────────────────────────────────────────────────────────────────
+
+[TAB-1] ForensicGallery — dataTable
+  Renderizado: dentro de .tableWrapper (overflow-x: auto) ✓ — scroll horizontal OK
+  Cabeceras: th con font-weight 700, white-space: nowrap
+  Hover fila: tr:hover td → --fg-old-bg-muted ✓
+  Caption / nota: .tableNote (nota en itálica con border-left coloreado) ✓
+  Fuente: .tableSource (texto gris muted sobre el header de la card)
+  Color de borde de card: var(--cat-color) — CSS custom property inline
+    Inyectado como style={{ '--cat-color': `var(--fg-old-cat-${(idx%5)+1})` }}
+    5 colores categóricos: rojo, ámbar, dorado, verde, teal
+  Modo oscuro: completamente cubierto ✓
+  Problema: catTitle usa var(--font-display) (fuente alternativa), lo que puede
+    generar inconsistencia tipográfica con AnnexLayout (Inter)
+
+[TAB-2] TablaMaestra28A — main table
+  Renderizado: dentro de div.table-scroll-wrapper (global class, overflow-x: auto) ✓
+  La clase .table-scroll-wrapper está definida en custom.css línea 316
+  Cabeceras: th uppercase, font-size 0.75rem — estilo "datos técnicos" ✓
+  Hover fila: tr:hover td → --tm-bg-row-hover ✓
+  Fila expandida: .rowExpanded td → --tm-bg-expanded + border-bottom: none
+  Detalle expandido: .detailBox con contexto + discrepancia + link a fuente
+  .discrepancyBox: border-left 3px warning, fondo warning-soft ← coherente
+  No hay caption HTML nativo
+  .valor usa --font-mono (monospace) → apropiado para datos numéricos ✓
+  Modo oscuro: completamente cubierto ✓
+
+  Diferencia visual fuerte entre ForensicGallery y TablaMaestra28A:
+  - ForensicGallery: tarjetas de categoría + tabla interna por tarjeta, más visual
+  - TablaMaestra28A: tabla plana filtreable, más densa, estilo spreadsheet
+  Dentro del mismo TabSelector, el cambio de tab produce un salto visual notable.
+  Esto es esperado y aceptable dado que son objetos de dato distintos.
+
+
+────────────────────────────────────────────────────────────────────────────────
+7. GALERÍAS DETECTADAS
+────────────────────────────────────────────────────────────────────────────────
+
+[GAL-1] ImageGallery — Anexo A
+  Grid: auto-fit minmax(280px, 350px), justify: center
+  Cards clicables: hover → translateY(-4px) + shadow
+  Lightbox: position:fixed, z-index:9999 — escapa correctamente del AnnexLayout
+  backdrop-filter: blur(6px) en lightbox ✓
+  Responsivo: se adapta sólo (auto-fit)
+  Modo oscuro: completo ✓
+  Variables propias: --img-* sin IFM
+  Compatibilidad con AnnexLayout: ALTA. Paleta idéntica (warm paper / navy)
+  Riesgo de overflow: BAJO (grid auto-fit)
+
+[GAL-2] ForensicGallery — Anexo B (tab=0)
+  Grid: 3 col → 2 col → 1 col
+  No hay sidebar interna
+  Expansión de lista de tablas con animación slideDown (keyframes)
+  Modo oscuro: completo ✓
+  Variables: --fg-old-* sin IFM
+  Problema técnico: color-mix() en .tableHeader (CSS L4, sin fallback)
+    Versiones afectadas: Safari < 16.2, Chrome < 111, Firefox < 113
+    Comportamiento en versiones antiguas: fondo transparente (no critico pero
+    el tinte de color de categoría no aparece)
+  Compatibilidad con AnnexLayout: ALTA. Misma paleta base.
+
+[GAL-3] InteractiveGraphicsGallery — Anexo C
+  Sidebar 240px + panel principal (flex row en >= 996px)
+  min-height: 850px en el container — importante para los simuladores
+  graphicStage: min-height: 750px — espacio para las visualizaciones
+  El header del gráfico activo muestra título (--igg-title-accent: #64242E claro /
+    #7DCDE3 oscuro) y descripción entre llaves { ... }
+  Modo oscuro: usa :global(html[data-theme='dark']) en lugar de html[data-theme='dark']
+    Esta diferencia de sintaxis produce el mismo resultado CSS compilado
+    pero es inconsistente con los otros módulos
+  ARIA: completo ✓ — mejor accesibilidad del grupo
+  Sin focus visible en los botones del sidebar ✗
+
+[GAL-4] ForensicGallery2 — Anexo D
+  No inspeccionado en detalle en esta auditoría (zero-props, self-contained)
+  Tiene sidebar basada en categorías con hash navigation
+  Mismo patrón que InteractiveGraphicsGallery (sidebar + panel)
+  23 gráficas, 5 categorías
+  Riesgo de overflow: BAJO — gestiona internamente
+
+
+────────────────────────────────────────────────────────────────────────────────
+8. PROBLEMAS VISUALES DETECTADOS
+────────────────────────────────────────────────────────────────────────────────
+
+[PV-1] TabSelector — incoherencia de color activo con AnnexLayout
+  Severidad: ALTA
+  En claro: estado activo = crimson (#8B2635 área) — contradice teal del annex
+  En oscuro: estado activo = cyan eléctrico con glow — contradice estética
+    "azul técnico sobrio" de AnnexLayout
+  Los botones inactivos (base) son correctos (neutros, var(--ifm-*))
+  Solo el estado ACTIVE y HOVER desentona
+
+[PV-2] TabSelector — reglas duplicadas en custom.css
+  Severidad: MEDIA
+  Líneas 3364–3397 y 3558–3587 contienen EXACTAMENTE las mismas reglas
+  (con ligeras diferencias tipográficas en los comentarios)
+  El segundo bloque sobreescribe el primero sin efecto neto visible
+  Pero genera confusión y posible mantenimiento futuro contradictorio
+
+[PV-3] ForensicGallery — catTitle usa var(--font-display)
+  Severidad: BAJA
+  El título de cada categoría usa una fuente "display" (presumiblemente serif
+  o titulado especial, según cómo esté definida en custom.css)
+  AnnexLayout usa 'Inter', system-ui, sans-serif
+  El cambio tipográfico es notable en los botones de categoría del ForensicGallery
+
+[PV-4] Acento #1F6F78 vs #145c63 — diferencia sistémica de 1 paso
+  Severidad: MUY BAJA
+  ForensicGallery, TablaMaestra28A, ImageGallery, InteractiveGraphicsGallery
+  todos usan #1F6F78 como acento claro
+  AnnexLayout usa #145c63 (ligeramente más oscuro, más cercano al teal oscuro)
+  La diferencia es visible en comparación directa pero difícilmente perceptible
+  en el contexto normal de lectura. No requiere unificación urgente.
+
+[PV-5] InteractiveGraphicsGallery — min-height 850px en móvil
+  Severidad: MEDIA
+  En viewports < 600px el contenedor sigue siendo 850px de alto mínimo
+  Cada subcomponente (FrequencyChart, SwingSimulator, etc.) tiene su propia
+  altura interna. El usuario debe hacer scroll vertical extenso en móvil.
+  No hay diseño alternativo para móvil de la galería de interactivos.
+
+
+────────────────────────────────────────────────────────────────────────────────
+9. PROBLEMAS DE MODO OSCURO
+────────────────────────────────────────────────────────────────────────────────
+
+[MO-1] InteractiveGraphicsGallery — :global() vs html[data-theme='dark']
+  Archivo: InteractiveGraphicsGallery.module.css línea 32
+  Usa: :global(html[data-theme='dark']) .galleryContainer { ... }
+  Resto de módulos usa: html[data-theme='dark'] .galleryContainer { ... }
+  CSS Modules compila ambas formas al mismo selector, pero la sintaxis
+  :global() es explícita sobre la intención de escapar el scoping.
+  No es un bug, pero sí una inconsistencia de estilo que puede confundir.
+
+[MO-2] TabSelector — dark mode via custom.css !important
+  Los overrides de dark mode de TabSelector usan !important obligatorio
+  porque los estilos base son inline (style={{...}} en JSX)
+  Este patrón es frágil: si alguien añade más especificidad en otro sitio,
+  los overrides pueden no funcionar
+
+[MO-3] AnnexLayout dark mode — posible conflicto con wrapperClassName
+  Anexo C tiene wrapperClassName: forensic-gallery-wrapper
+  Si ese wrapper tiene reglas de fondo en dark mode, puede competir
+  con --annex-bg de AnnexLayout. No inspeccionado en detalle.
+  Severidad: PENDIENTE DE VERIFICACIÓN
+
+
+────────────────────────────────────────────────────────────────────────────────
+10. PROBLEMAS RESPONSIVE
+────────────────────────────────────────────────────────────────────────────────
+
+[RES-1] InteractiveGraphicsGallery — min-height excesiva en móvil
+  El contenedor tiene min-height: 850px y graphicStage min-height: 750px
+  Sin breakpoint que reduzca estas alturas en viewports < 600px
+  En teléfono, la galería ocupa aprox. 850px de scroll vertical solo para
+  mostrar la sidebar apilada sobre el panel del gráfico activo
+
+[RES-2] TablaMaestra28A — tabla con 5 columnas en móvil
+  La tabla principal tiene columnas: Magnitud, Valor, Fuente, Pág, Auditoría
+  El .table-scroll-wrapper (global) provee overflow-x: auto ✓
+  Pero en 320px la tabla es probablemente < 500px de ancho mínimo útil
+  El usuario necesita scroll horizontal para ver Fuente + Pág + Auditoría
+
+[RES-3] ForensicGallery — grid colapsa correctamente ✓
+  3 col → 2 col (< 996px) → 1 col (< 600px)
+  Responsive: adecuado
+
+[RES-4] ImageGallery — auto-fit colapsa correctamente ✓
+  grid-template-columns: repeat(auto-fit, minmax(280px, 350px))
+  En móvil: 1 columna (si < 280px*2 + gap)
+  El lightbox usa position:fixed — funciona independiente del viewport
+
+[RES-5] AnnexSection sectionContent — 1rem padding-left en móvil
+  En < 480px, sectionContent tiene padding-left: 0.5rem
+  Con width 320px, la galería de interactivos tiene 319.5px de ancho efectivo
+  La sidebar de 240px del IGG ocupa casi todo el ancho en móvil antes de
+  colapsar a flex-direction: column (al < 996px ya se apila)
+  Resolución: aceptable una vez que IGG colapsa a columna
+
+
+────────────────────────────────────────────────────────────────────────────────
+11. PROBLEMAS DE ACCESIBILIDAD
+────────────────────────────────────────────────────────────────────────────────
+
+[ACC-1] Sin :focus-visible en ningún componente interno
+  Ninguno de los módulos CSS internos define :focus-visible
+  Afectados: ForensicGallery (.categoryButton), InteractiveGraphicsGallery
+    (.graphicButton), TablaMaestra28A (.badge, .expandBtn, .badgeClear)
+  AnnexSection sí tiene .sectionSummary:focus (outline: 2px solid --annex-accent)
+  Riesgo: navegación por teclado opaca en los componentes de los 4 anexos
+  Solución: añadir :focus-visible { outline: 2px solid <var-accent>; outline-offset: 2px }
+    en cada CSS Module afectado. Cambio solo de CSS, sin tocar JSX.
+
+[ACC-2] ForensicGallery — categoryButton sin aria
+  Los botones de categoría no tienen aria-expanded para comunicar si
+  la lista de tablas está visible u oculta
+  No tienen aria-controls apuntando a la lista que controlan
+  Impacto: usuarios de lector de pantalla no saben que el botón expande contenido
+  Solución: añadir aria-expanded={activeCategory === category.id}
+    y aria-controls={`tables-${category.id}`} en el JSX
+
+[ACC-3] TablaMaestra28A — filter badges sin aria
+  Los botones de filtro (.badge) no tienen aria-pressed para indicar
+  si el filtro está activo o no
+  No tienen aria-label descriptivo (solo el nombre de la fuente)
+  El botón de borrar filtros (.badgeClear) no tiene aria-label
+  Solución: añadir aria-pressed={selectedSources.includes(source)} en cada badge
+
+[ACC-4] TablaMaestra28A — expandBtn sin aria
+  El botón "Ver contexto" / "Ocultar info" no tiene aria-expanded
+  ni aria-controls que apunte a la fila expandida
+  Solución: aria-expanded={expandedRow === row.id}
+
+[ACC-5] TabSelector — sin ningún aria
+  No tiene role="tablist" en el contenedor
+  Los botones no tienen role="tab", ni aria-selected, ni aria-controls
+  InteractiveGraphicsGallery implementa el patrón correcto — TabSelector debería
+  seguirlo si se reemplaza por AnnexTabs
+
+[ACC-6] ImageGallery — img sin alt descriptivo
+  Las imágenes del grid usan alt={`Gallery image ${index + 1}`}
+  Los alt son genéricos. El texto descriptivo está en .imageCaption pero
+  no se asocia al img como alt ni como aria-describedby
+  Solución parcial: usar caption como aria-describedby o como alt text
+
+
+────────────────────────────────────────────────────────────────────────────────
+12. COMPONENTES CANDIDATOS A UNIFICACIÓN
+────────────────────────────────────────────────────────────────────────────────
+
+PRIORIDAD ALTA — requiere nuevo componente o refactor visible:
+
+  [U-1] TabSelector → AnnexTabs
+  Solo usado en anexo-tablas.mdx. Único caso de pestañas en los anexos.
+  Solución: crear src/components/annex/AnnexTabs.jsx que:
+    - Use --annex-* variables en lugar de IFM + !important en custom.css
+    - Tenga role="tablist" + role="tab" + aria-selected + aria-controls
+    - Active state use --annex-accent (teal) en lugar de crimson/eléctrico
+    - Elimine la necesidad de las reglas en custom.css
+  Riesgo: bajo (único uso)
+  Impacto visual: alto (elimina la principal inconsistencia del Anexo B)
+
+PRIORIDAD MEDIA — cambio de CSS puro (sin tocar JSX):
+
+  [U-2] Focus styles en componentes internos
+  ForensicGallery.module.css → añadir :focus-visible en .categoryButton
+  InteractiveGraphicsGallery.module.css → añadir :focus-visible en .graphicButton
+  TablaMaestra28A/styles.module.css → añadir :focus-visible en .badge y .expandBtn
+  Cambio solo de CSS. Sin riesgo de romper lógica.
+
+PRIORIDAD MEDIA — cambio de JSX (moderado):
+
+  [U-3] ARIA en ForensicGallery
+  aria-expanded + aria-controls en categoryButton
+  Cambio JSX, bajo riesgo. Solo Anexo B.
+
+  [U-4] ARIA en TablaMaestra28A
+  aria-pressed en badges de filtro + aria-expanded en expandBtn
+  Cambio JSX, bajo riesgo. Solo Anexo B.
+
+PRIORIDAD BAJA — corrección técnica puntual:
+
+  [U-5] color-mix() fallback en ForensicGallery
+  Añadir propiedad background fallback antes del color-mix()
+  Cambio CSS de 1 línea. Sin riesgo.
+
+  [U-6] Eliminar duplicado TabSelector en custom.css
+  Eliminar el bloque duplicado (líneas 3558–3587)
+  Cambio de 30 líneas en custom.css. Sin riesgo visual.
+  (No aplicar si se decide reemplazar TabSelector por AnnexTabs primero)
+
+PRIORIDAD MUY BAJA — estético, no urgente:
+
+  [U-7] Unificar --fg-old-accent / --igg-accent / --tm-accent / --img-accent
+  Todos usan #1F6F78. AnnexLayout usa #145c63. Diferencia de 1 tono.
+  Si se decide unificar, seria un cambio de variable en 4 módulos CSS.
+  No conviene hacerlo ahora: el riesgo de side effects en otros usos de
+  estos componentes fuera de los anexos no está evaluado.
+
+  [U-8] ImageGallery — alt descriptivo
+  Requiere pasar caption al atributo alt de img.
+  Cambio JSX menor pero modifica la semántica accesible del componente.
+
+
+────────────────────────────────────────────────────────────────────────────────
+13. CAMBIOS SEGUROS RECOMENDADOS (solo CSS, sin JSX, sin lógica)
+────────────────────────────────────────────────────────────────────────────────
+
+Los siguientes cambios pueden aplicarse con riesgo mínimo de regresión:
+
+  1. Añadir :focus-visible en ForensicGallery.module.css
+     .categoryButton:focus-visible {
+       outline: 2px solid var(--fg-old-accent);
+       outline-offset: 2px;
+     }
+
+  2. Añadir :focus-visible en InteractiveGraphicsGallery.module.css
+     .graphicButton:focus-visible {
+       outline: 2px solid var(--igg-accent);
+       outline-offset: 2px;
+     }
+
+  3. Añadir :focus-visible en TablaMaestra28A/styles.module.css
+     .badge:focus-visible, .expandBtn:focus-visible {
+       outline: 2px solid var(--tm-accent);
+       outline-offset: 2px;
+     }
+
+  4. Añadir fallback para color-mix() en ForensicGallery.module.css
+     .tableHeader {
+       background: rgba(255,252,245, 0.08); /* fallback */
+       background: color-mix(in srgb, var(--cat-color) 10%, transparent);
+     }
+
+Estos cuatro cambios mejoran accesibilidad y compatibilidad sin afectar
+la lógica, la estructura ni la interacción visual existente.
+
+
+────────────────────────────────────────────────────────────────────────────────
+14. CAMBIOS QUE NO CONVIENE HACER TODAVÍA
+────────────────────────────────────────────────────────────────────────────────
+
+  - Rediseñar ForensicGallery: es el componente de mayor complejidad visual
+    del Anexo B. Cualquier cambio de layout puede romper la experiencia.
+    Pendiente hasta que se auditen sus otros usos en el sitio.
+
+  - Rediseñar TablaMaestra28A: la tabla maestra es una herramienta de consulta
+    académica con lógica de expansión y filtrado. Cualquier cambio de estilo
+    debe ir acompañado de prueba manual de expansión y filtro.
+
+  - Unificar los acentos (#1F6F78 → #145c63): primero hay que verificar si
+    estos componentes se usan en páginas distintas a los anexos. Si se cambian,
+    todos esos usos también cambian.
+
+  - Modificar custom.css líneas de ForensicGallery sin entender el contexto:
+    custom.css tiene ~3600+ líneas. Las secciones de ForensicGallery en
+    custom.css pueden afectar otras páginas del sitio, no solo los anexos.
+
+  - Mover wrapperClassName de Anexo C: el forensic-gallery-wrapper puede tener
+    reglas de layout en custom.css que afectan el render del InteractiveGraphicsGallery.
+    Eliminar esa clase podría romper el layout sin aviso visual en build.
+
+  - Modificar ForensicGallery2: acepta zero props, es completamente self-contained
+    y tiene su propio sistema de hash navigation. Cualquier cambio interno
+    requiere una microfase de inspección específica antes de tocar nada.
+
+
+────────────────────────────────────────────────────────────────────────────────
+15. ORDEN RECOMENDADO DE MICROFASES
+────────────────────────────────────────────────────────────────────────────────
+
+GRUPO A — Cambios seguros inmediatos (solo CSS, sin JSX, sin lógica):
+
+  F2G-a  Focus visible en componentes internos
+         Archivos: ForensicGallery.module.css, IGG.module.css,
+                   TablaMaestra28A/styles.module.css
+         Riesgo: MÍNIMO. Solo CSS. Sin efecto en lógica.
+         Coste estimado: 10 min
+
+  F2G-b  Fallback color-mix() en ForensicGallery
+         Archivo: ForensicGallery.module.css
+         Riesgo: MÍNIMO. Una línea añadida.
+         Coste estimado: 5 min
+
+GRUPO B — Cambios que requieren variante de componente:
+
+  F2H    AnnexTabs — nuevo componente en sistema annex
+         Crear: src/components/annex/AnnexTabs.jsx
+         Usar en: docs/anexo-tablas.mdx (reemplaza TabSelector + useState inline)
+         Requiere: inspección de custom.css para evaluar si las reglas actuales
+                   de TabSelector se pueden eliminar o deben convivir
+         Riesgo: BAJO (un solo uso)
+         Coste estimado: 45 min
+
+GRUPO C — Cambios que requieren modificar JSX de componentes internos:
+
+  F2I    ARIA gaps en ForensicGallery y TablaMaestra28A
+         - aria-expanded + aria-controls en ForensicGallery categoryButton
+         - aria-pressed en TablaMaestra28A filter badges
+         - aria-expanded en TablaMaestra28A expandBtn
+         Riesgo: BAJO-MEDIO. Cambio JSX. Requiere test manual con lector de pantalla.
+         Coste estimado: 60 min
+
+GRUPO D — Cambios que conviene dejar para más adelante:
+
+  F2J    Unificación de paleta de acentos (#1F6F78 → #145c63)
+         Requiere auditoría de todos los usos de ForensicGallery, ImageGallery,
+         TablaMaestra28A e InteractiveGraphicsGallery fuera de los anexos
+
+  F2K    ImageGallery alt descriptivo
+         Requiere cambio JSX + evaluación del impacto en SEO (alt actual es
+         genérico pero no vacío)
+
+  F2L    Responsive de InteractiveGraphicsGallery en móvil
+         min-height: 850px no tiene breakpoint de reducción. Solucionar requiere
+         evaluar si los subcomponentes de visualización funcionan en alturas
+         menores (cada chart tiene sus propias restricciones de espacio mínimo)
+
+  F2M    ForensicGallery2 auditoría interna (Anexo D)
+         No se ha inspeccionado ForensicGallery2.module.css en esta auditoría.
+         Requiere lectura de ese módulo y evaluación de coherencia con el annex.
+
+
+────────────────────────────────────────────────────────────────────────────────
+FIN DEL INFORME
+================================================================================

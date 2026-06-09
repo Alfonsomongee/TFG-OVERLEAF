@@ -21,6 +21,24 @@ export default function ImageGallery({}) {
     };
   }, [selectedImage]);
 
+  // Handle hash navigation
+  useEffect(() => {
+    if (window.location.hash) {
+      const hashId = window.location.hash.substring(1);
+      if (hashId.startsWith('fig-')) {
+        setTimeout(() => {
+          const el = document.getElementById(hashId);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.transition = 'outline 0.3s ease';
+            el.style.outline = '3px solid var(--ifm-color-primary)';
+            setTimeout(() => { el.style.outline = 'none'; }, 2000);
+          }
+        }, 300);
+      }
+    }
+  }, []);
+
   // Handle escape key to close lightbox
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -50,10 +68,12 @@ export default function ImageGallery({}) {
             {chapter.images.map((img, index) => {
               const caption = img[`caption_${lang}`] || img.caption_es;
               const imageUrl = useBaseUrl(img.src);
+              const safeId = img.src.split('/').pop().split('.')[0].replace(/[^a-z0-9-_]/gi, '').toLowerCase();
               
               return (
                 <div 
                   key={index} 
+                  id={`fig-${safeId}`}
                   className={styles.imageCard}
                   onClick={() => setSelectedImage({ url: imageUrl, caption })}
                   title={lang === 'en' ? "Click to enlarge" : "Clic para ampliar"}

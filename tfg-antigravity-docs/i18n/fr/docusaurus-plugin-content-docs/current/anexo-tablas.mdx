@@ -8,26 +8,33 @@ pagination_prev: null
 pagination_next: null
 ---
 
-import { useState } from 'react';
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
 import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
-import TabSelector from '@site/src/components/TabSelector';
+import AnnexTabs from '@site/src/components/annex/AnnexTabs';
 
 <GlitchTitle>Annexe B — Tableaux et Registres Documentaires</GlitchTitle>
 
 Tous les tableaux numérotés du travail (TABLEAU 1 – TABLEAU 27) et la base de données
 maîtresse contenant les enregistrements techniques complets de l'incident du 28 avril.
 
-export const AnexoB = () => {
-  const [tab, setTab] = useState(0);
-  return (
-    <>
-      <TabSelector active={tab} onSelect={setTab} labels={['Tableaux numérotés', 'Base de données maîtresse']} />
-      {tab === 0 && <ForensicGallery />}
-      {tab === 1 && <TablaMaestra28A />}
-    </>
-  );
-};
+export const AnexoB = () => (
+  <AnnexTabs
+    tabs={[
+      {
+        id: 'tablas',
+        label: 'Tableaux numérotés',
+        content: <ForensicGallery />,
+      },
+      {
+        id: 'base-maestra',
+        label: 'Base de données maîtresse',
+        content: <TablaMaestra28A />,
+      },
+    ]}
+    defaultTab="tablas"
+    ariaLabel="Tableaux numérotés et Base de données maîtresse"
+  />
+);
 
 <AnexoB />

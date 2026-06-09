@@ -1,0 +1,54 @@
+================================================================================
+CONTRATO TÉCNICO PARA ANEXOS CONCEPTUALES
+================================================================================
+
+1. Objetivo arquitectónico
+Reemplazar los 4 contenedores de anexos basados en formato tecnológico (A, B, C, D) por 9 anexos temáticos transversales (I a IX). Estos nuevos anexos consumirán las colecciones de datos existentes simultáneamente, aplicando un filtrado por el atributo `tema`.
+
+2. Fuentes de datos existentes
+- Figuras estáticas: `src/data/imageGalleryData.js`
+- Tablas maestras: `static/data/processed/forensic_categories.json`
+- Interactivos: `src/components/InteractiveGraphicsGalleryBase.jsx`
+- Series ENTSO-E: `src/data/forensicCharts.js`
+
+3. Estado del campo tema por fuente
+- Anexo A (Figuras): COMPLETO. Las 41 imágenes cuentan con el campo `tema` en el array.
+- Anexo B (Tablas): INCOMPLETO. Las 42 tablas forenses no tienen inyectado ningún metadato `tema`.
+- Anexo C (Interactivos): COMPLETO. Los 18 interactivos tienen el campo `tema` definido.
+- Anexo D (Series): COMPLETO. Las 23 gráficas ENTSO-E tienen la clave `tema` especificada.
+
+4. Problemas detectados
+El bloque de las Tablas (Anexo B) está serializado en un JSON anidado que agrupa las tablas por "categorías lógicas" (e.g., "Reconstrucción cronológica"), pero no a nivel tabular. Al carecer de `tema` en el objeto tabla, la futura API de filtrado fracasará para el Anexo B.
+
+5. Contrato de datos recomendado
+Todas las estructuras deben exponer obligatoriamente un atributo `tema` explícito de tipo string (e.g., `"T3"`). Para el Anexo B, se desaconseja crear un `annexThemeRegistry.js` paralelo porque viola la unicidad del metadato. La solución es inyectar directamente `"tema": "T_"` dentro de cada nodo de tabla en el `forensic_categories.json`.
+
+6. Componentes reutilizables
+- `AnnexLayout`, `AnnexSection` y `AnnexMethodNote`.
+- Lógica de anclas y deep-linking integrada en la Fase 2R-3B.
+- Componentes internos de pintado individual: tarjetas de ImageGallery, ForensicTable, Card interactiva y ChartViewer.
+
+7. Componentes/adaptadores nuevos necesarios
+Se requiere crear un orquestador o capa adaptadora: `src/components/annex/AnnexThemeEvidence.jsx`.
+Este adaptador recibirá como prop el identificador del tema (ej. `<AnnexThemeEvidence theme="T3" include={['figures', 'tables']} />`) e iterará internamente sobre los 4 repositorios de datos filtrando los elementos con exact match en `tema`, delegando el pintado a los componentes base.
+
+8. Estrategia para no duplicar datos
+Las fuentes JS/JSON actuales permanecerán como única fuente de verdad. El adaptador importará directamente estas colecciones en tiempo de compilación y generará un array derivado dinámico (map/filter). No se admiten diccionarios duplicados.
+
+9. Estrategia de deep-links
+Al delegar la renderización a los componentes base dentro de los nuevos MDX, los IDs inyectados dinámicamente (`#fig-...`, `#tabla-...`) se pintarán con normalidad en las nuevas rutas.
+
+10. Estrategia de transición A/B/C/D -> I/IX
+1. Regularizar metadatos (inyectar `tema` a las tablas del JSON).
+2. Desarrollar `AnnexThemeEvidence.jsx`.
+3. Crear el Anexo Conceptual piloto y testearlo en convivencia con A/B/C/D.
+4. Escalar los 8 anexos conceptuales restantes.
+5. Ocultar A/B/C/D del menú lateral.
+
+11. Riesgos técnicos
+- **Hidratación y rendimiento SSR**: Cargar múltiples instancias pesadas de React ECharts y mapas térmicos SVG en una sola página larga puede provocar avisos de timeout durante el build SSR o tirones en el cliente.
+- **Riesgo en las traducciones (i18n)**: Modificar el JSON estático de las tablas afectará teóricamente a los JSON equivalentes en `i18n/{lang}/docusaurus-plugin-content-docs/current/...` si el componente de galería lee localizaciones absolutas, o puede haber desajustes.
+
+12. Primera implementación piloto recomendada
+Se propone como piloto el **Anexo III · Protecciones, cascada y desconexiones** (`tema: "T3"`).
+Justificación: Agrupa el núcleo del evento del 28-A, exhibiendo alta heterogeneidad (fotos de relés, tablas de secuencias ANSI59, simulador de propagación, y datos de caída de frecuencia). Permitirá probar la carga cognitiva y el estrés técnico del SSR al máximo exponente.

@@ -1,0 +1,155 @@
+================================================================================
+INVENTARIO CONCEPTUAL ACTUALIZADO DE ANEXOS
+================================================================================
+
+1. Resumen ejecutivo
+El TFG cuenta actualmente con cuatro anexos organizados exclusivamente por tipo de soporte (Figuras, Tablas, Interactivos, Series temporales). Esta estructura genera una sobrecarga cognitiva para el lector y mezcla datos de naturalezas muy diferentes (vivos, históricos, didácticos) en un mismo contenedor. Existen decenas de elementos distribuidos desigualmente, con un grado de saturación alto en Anexo C (Interactivos) y D (ENTSO-E). Se recomienda una reestructuración interna inicial basada en conceptos temáticos que faciliten la navegación pericial, mitigando el impacto técnico de modificar rutas.
+
+2. Estado actual de los anexos
+- Criterio organizativo actual: Formato de presentación (imágenes, tablas, widgets, gráficas).
+- Problema principal: Saturación, mezcla de temas dentro del mismo formato y pérdida de hilo narrativo.
+- Dependencias técnicas estables: Se utilizan 4 familias de componentes galerías (ImageGallery, AnnexTabs/ForensicGallery/TablaMaestra28A, InteractiveGraphicsGallery, ForensicGallery2) bien delimitados y estructurados.
+
+3. Inventario por anexo
+
+[ANEXO A - Figuras estáticas]
+- Ruta MDX: docs/anexo-figuras.mdx
+- Componente principal: ImageGallery
+- Componentes secundarios: N/A
+- Datos que consume: src/data/imageGalleryData.js
+- Número aprox. de elementos: 7 figuras/imágenes estáticas.
+- Categorías reales: No tiene filtros reales.
+- Categorías metodológicas: Figura propia, Esquema institucional, PNG heredado, Figura no insertada.
+- ¿Filtros reales?: No.
+- ¿Tabs reales?: No.
+- ¿Sidebar real?: Sí (generado por Docusaurus).
+- ¿Datos vivos?: No.
+- ¿Modelos didácticos?: Sí/No (Ilustraciones conceptuales).
+- ¿Evidencia documental?: Sí.
+- Nivel de saturación: Bajo.
+- Problema principal: Demasiado pobre como anexo aislado, su contenido queda desconectado de su equivalente interactivo o tabular.
+
+[ANEXO B - Tablas y registros]
+- Ruta MDX: docs/anexo-tablas.mdx
+- Componente principal: AnnexTabs
+- Componentes secundarios: ForensicGallery, TablaMaestra28A
+- Datos que consume: datosForenses.json, datos_i18n
+- Número aprox. de elementos: Numerosos parámetros (cientos de métricas agrupadas en múltiples categorías operativas).
+- Categorías reales: Sí (sistema operativo, inercia, cascada, reposición, impacto, normativas).
+- ¿Filtros reales?: Sí, mediante ForensicGallery.
+- ¿Tabs reales?: Sí (Tablas numeradas y Base maestra).
+- ¿Datos vivos?: No.
+- ¿Modelos didácticos?: No.
+- ¿Evidencia documental?: Sí, registros forenses estrictos del 28-A.
+- Nivel de saturación: Media-Alta (densidad de información).
+- Problema principal: Mezcla parámetros estrictamente eléctricos (frecuencia, potencias) con impactos macroeconómicos (PVPC, restricciones) y textos normativos.
+
+[ANEXO C - Interactivos]
+- Ruta MDX: docs/anexo-interactivos.mdx
+- Componente principal: InteractiveGraphicsGallery
+- Componentes secundarios: InteractiveGraphicsGalleryBase (18 simuladores).
+- Datos que consume: Lógica interna de cada simulador React (FrequencyChart, SwingEquationSimulator, etc.).
+- Número aprox. de elementos: 18 widgets interactivos.
+- Categorías reales: No hay un sistema de categorías estructural integrado (se apilan verticalmente).
+- Categorías metodológicas: Visualización histórica, reconstrucción, modelos didácticos, datos vivos.
+- ¿Filtros reales?: No.
+- ¿Tabs reales?: No.
+- ¿Datos vivos?: Sí (en algunos simuladores).
+- ¿Modelos didácticos?: Sí (Swing equation, curvas PV, etc.).
+- ¿Evidencia documental?: Sí, reconstrucciones históricas mixtas.
+- Nivel de saturación: Muy alta (renderizado simultáneo de 18 componentes interactivos complejos).
+- Problema principal: Aglomeración visual excesiva. Fricción metodológica al mezclar simuladores abstractos (fines académicos) con mapas empíricos precisos del 28-A.
+
+[ANEXO D - ENTSO-E / ESIOS]
+- Ruta MDX: docs/anexo-entsoe.mdx
+- Componente principal: ForensicGallery2
+- Componentes secundarios: ENTSOEDashboard, EsiosCharts
+- Datos que consume: forensicCharts.js
+- Número aprox. de elementos: 35 gráficas históricas.
+- Categorías reales: Sí.
+- ¿Filtros reales?: Sí (basado en ForensisGallery2).
+- ¿Tabs reales?: No.
+- ¿Datos vivos?: Parcial (algunos consumen API ESIOS/ENTSO-E).
+- ¿Evidencia documental?: Sí, series históricas.
+- Nivel de saturación: Media-Alta.
+- Problema principal: Las 35 gráficas abordan toda la cronología (demanda, interconexiones, precios de desvíos), agrupadas sin distinción temática robusta en la misma galería plana.
+
+4. Inventario detallado por elemento
+(Selección representativa basada en la inspección de archivos)
+
+ID interno | Título/Tipo | Anexo | Soporte | Componente | Tema sugerido | Naturaleza | ¿Quedarse?
+--- | --- | --- | --- | --- | --- | --- | ---
+ch1..ch7 | Varias imgs | A | Figura | ImageGallery | Varios (según fig) | Ilustración/Dato | Pendiente (aislado)
+datosForenses | Base métricas | B | Tabla | TablaMaestra28A | Varios (Técnico y Económico) | Dato histórico | Sí, desglosable
+SwingEq | Swing Equation | C | Interactivo | Interactive...Base | Metodología/Didáctica | Modelo didáctico | Sí (mejor clasificado)
+BlackoutMap | Propagación | C | Interactivo | Interactive...Base | Estabilidad y Cascada | Reconstrucción | Sí
+PVCurve | PV Curve | C | Interactivo | Interactive...Base | Metodología/Didáctica | Modelo didáctico | Sí
+cat1..cat5 | Demanda/Carga | D | Serie | ForensicGallery2 | Demanda y Generación | Dato histórico | Sí (clasificado)
+chart-7..14 | Precios/SPOT | D | Serie | ForensicGallery2 | Mercado eléctrico | Dato histórico | Sí (clasificado)
+chart-15..23 | Interconexiones | D | Serie | ForensicGallery2 | Flujos transfronterizos | Dato histórico | Sí (clasificado)
+
+5. Diagnóstico de saturación
+- El Anexo C está críticamente saturado a nivel técnico. Cargar 18 interactivos pesados en un único MDX perjudica la experiencia de usuario y confunde la naturaleza epistemológica (histórico vs didáctico).
+- El Anexo D contiene la serie más exhaustiva de gráficas (35 items), abarcando desde flujos de potencia hasta mercados financieros. Su organización actual depende exclusivamente de filtros visuales y requiere scroll infinito.
+- El Anexo A sufre el problema opuesto: está infrautilizado y sus pocos elementos aportarían más valor si se incrustaran junto al contexto interactivo de su misma temática.
+
+6. Taxonomía conceptual propuesta
+Basado en los clústeres reales detectados:
+T1. Demanda, generación y balance eléctrico (Situación previa al incidente)
+T2. Estabilidad dinámica y secuencia del colapso (Inercia, cascada, frecuencia)
+T3. Interconexiones y flujos transfronterizos (Aislamiento y bloqueos de mercado)
+T4. Operación de emergencia y reposición (Black Start y recuperación)
+T5. Mercado eléctrico y costes del ajuste (Precios, desvíos, impacto en PVPC)
+T6. Impacto socioeconómico y resiliencia (Costes directos, infraestructuras)
+T7. Metodología, datos vivos y modelos didácticos (Simuladores teóricos)
+
+7. Alternativa A: mantener anexos por formato con clasificación conceptual interna
+Consiste en preservar la arquitectura de 4 anexos de Docusaurus (A, B, C y D), pero dotar a todos los componentes de galerías de "Tabs" conceptuales (basados en T1-T7) en su capa superior.
+- En Anexo C, por ejemplo, el InteractiveGraphicsGalleryBase tendría Pestañas (Demanda, Estabilidad, Metodología), renderizando solo 3 o 4 simuladores a la vez.
+
+8. Alternativa B: reorganizar anexos por conceptos
+Romper el paradigma de formatos y generar nuevos anexos temáticos:
+Anexo A — Demanda y Generación
+Anexo B — Estabilidad y Cascada
+Anexo C — Interconexiones y Mercado
+Anexo D — Reposición e Impactos
+Anexo E — Metodología y Modelos
+Cada uno renderizaría una sección de Tablas, otra de Interactivos y otra de Gráficas relativas exclusivamente a ese tema.
+
+9. Impacto técnico de cada alternativa
+- Alternativa A (Interna):
+  Archivos a tocar: src/components (mejorar galerías existentes), y mapeo de datos JSON/JS (añadir campo "tema_sugerido").
+  Riesgo de romper rutas: Bajo o Nulo.
+  Riesgo de romper traducciones: Bajo.
+  Dificultad estimada: Media.
+  Impacto positivo lector: Medio-Alto.
+
+- Alternativa B (Reestructuración completa):
+  Archivos a tocar: Todos los MDX de docs e i18n, sidebars.js, reestructurar fuertemente src/components.
+  Riesgo de romper rutas: Muy Alto (miles de enlaces internos, anclas y traducciones referenciando anexo-tablas.mdx, etc.).
+  Riesgo de romper traducciones: Muy Alto.
+  Dificultad estimada: Muy Alta.
+  Impacto positivo lector: Alto.
+
+10. Riesgos metodológicos
+Al implementar la Alternativa B, se agrava el riesgo de que el lector confunda datos históricos (frecuencia en el instante del apagón) con datos vivos e ilustrativos (simulador de inercia), al estar en la misma página bajo el epígrafe "Estabilidad". Las notas metodológicas (AnnexMethodNote) deberían estar muy remarcadas por sección, no a nivel de documento global.
+
+11. Riesgos de navegación, rutas e i18n
+La principal limitación para la Alternativa B en este momento del proyecto es el ecosistema internacional (i18n). Si renombramos anexo-tablas.mdx a anexo-estabilidad.mdx, deberemos hacer el refactor espejo en 'en', 'fr', 'de' y 'zh-Hans'. Además, cualquier enlace desde los capítulos 1 al 12 que apunte a anexo-tablas.mdx#seccion quedará roto masivamente (Docusaurus found broken links).
+
+12. Recomendación final
+Se recomienda firmemente apostar por la ALTERNATIVA A en el corto y medio plazo. Conservar las rutas de los 4 anexos actuales (Figuras, Tablas, Interactivos, ENTSOE), garantizando la estabilidad de Docusaurus y sus traducciones. La reorganización debe ser puramente de Interfaz de Usuario (UI) dentro de los componentes:
+- Incorporar Tabs temáticas (T1-T7) dentro del Anexo C para evitar la sobrecarga de 18 interactivos.
+- Optimizar ForensicGallery2 en el Anexo D con pestañas temáticas rígidas.
+
+13. Orden de fases propuesto
+Fase 1: Corregir broken link actual (`#eas-falsa-normalidad`) para limpiar la salida de build.
+Fase 2: Auditar ForensicGallery2 para habilitar su uso con categorización conceptual.
+Fase 3: Revisar anexos obsoletos con GlitchTitle en i18n.
+Fase 4: Inyectar la taxonomía T1-T7 a los ficheros de datos base.
+Fase 5: Actualizar los componentes de Galería para separar la carga en Tabs temáticas (Alternativa A).
+
+14. Cambios que NO deben hacerse todavía
+- Bajo ningún concepto renombrar o eliminar los archivos MDX de `docs/anexo-*.mdx` o de las carpetas `i18n`.
+- No modificar `sidebars.js`.
+- No alterar las importaciones principales de los componentes hasta tener completada la fase de rediseño de las propias galerías.

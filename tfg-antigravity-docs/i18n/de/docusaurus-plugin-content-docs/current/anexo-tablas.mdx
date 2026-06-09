@@ -8,26 +8,33 @@ pagination_prev: null
 pagination_next: null
 ---
 
-import { useState } from 'react';
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
 import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
-import TabSelector from '@site/src/components/TabSelector';
+import AnnexTabs from '@site/src/components/annex/AnnexTabs';
 
 <GlitchTitle>Anhang B — Tabellen und Dokumentationsaufzeichnungen</GlitchTitle>
 
 Alle nummerierten Tabellen der Arbeit (TABELLE 1 – TABELLE 27) und die 
 Master-Datenbank mit den vollständigen technischen Aufzeichnungen des Vorfalls vom 28. April.
 
-export const AnexoB = () => {
-  const [tab, setTab] = useState(0);
-  return (
-    <>
-      <TabSelector active={tab} onSelect={setTab} labels={['Nummerierte Tabellen', 'Master-Datenbank']} />
-      {tab === 0 && <ForensicGallery />}
-      {tab === 1 && <TablaMaestra28A />}
-    </>
-  );
-};
+export const AnexoB = () => (
+  <AnnexTabs
+    tabs={[
+      {
+        id: 'tablas',
+        label: 'Nummerierte Tabellen',
+        content: <ForensicGallery />,
+      },
+      {
+        id: 'base-maestra',
+        label: 'Master-Datenbank',
+        content: <TablaMaestra28A />,
+      },
+    ]}
+    defaultTab="tablas"
+    ariaLabel="Nummerierte Tabellen und Master-Datenbank"
+  />
+);
 
 <AnexoB />

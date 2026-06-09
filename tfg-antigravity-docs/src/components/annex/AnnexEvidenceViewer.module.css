@@ -1,0 +1,553 @@
+/* AnnexEvidenceViewer.module.css
+   Dos zonas:
+     1. CARD — tarjeta compacta en la grid del anexo
+     2. FULLSCREEN MODAL — overlay via createPortal(…, document.body)
+   Variables scoped a .card y .fsShell respectivamente.
+   Sin selectores globales que no estén anidados en esas raíces.
+   Sin neón, sin dashboard.
+*/
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* ZONA 1 — CARD (previsualización compacta)                                  */
+/* Variables scoped al .card — sin selectores html[data-theme] sueltos.       */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+.card {
+  /* Light mode defaults */
+  --aev-bg:           #fdfbf7;
+  --aev-border:       #e2dfd8;
+  --aev-text:         #191814;
+  --aev-muted:        #625c52;
+  --aev-accent:       #145c63;
+  --aev-btn:          #145c63;
+  --aev-btn-hover:    #0e464c;
+  --aev-btn-text:     #ffffff;
+  --aev-thumb-bg:     #f5f4f0;
+  --aev-th-bg:        #f0ece6;
+
+  background-color: var(--aev-bg);
+  border: 1px solid var(--aev-border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border-color: var(--aev-accent);
+}
+
+html[data-theme='dark'] .card {
+  --aev-bg:           #0d1117;
+  --aev-border:       rgba(148, 163, 184, 0.14);
+  --aev-text:         #f0f4f8;
+  --aev-muted:        #94a3b8;
+  --aev-accent:       #83bdc2;
+  --aev-btn:          #2a8e95;
+  --aev-btn-hover:    #1e6b71;
+  --aev-btn-text:     #f0f4f8;
+  --aev-thumb-bg:     #07090f;
+  --aev-th-bg:        #111827;
+}
+
+/* ── Badge row ─────────────────────────────────────────────────────────────── */
+
+.badgeRow {
+  margin-bottom: 0.75rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  line-height: 1.3;
+}
+
+/* Figura — crimson cálido */
+.figura {
+  background-color: rgba(139, 38, 53, 0.09);
+  color: #8b2635;
+  border: 1px solid rgba(139, 38, 53, 0.18);
+}
+html[data-theme='dark'] .figura {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+/* Tabla — teal técnico */
+.tabla {
+  background-color: rgba(20, 92, 99, 0.09);
+  color: #145c63;
+  border: 1px solid rgba(20, 92, 99, 0.18);
+}
+html[data-theme='dark'] .tabla {
+  background-color: rgba(131, 189, 194, 0.1);
+  color: #83bdc2;
+  border-color: rgba(131, 189, 194, 0.2);
+}
+
+/* Interactivo — ámbar */
+.interactivo {
+  background-color: rgba(178, 94, 26, 0.09);
+  color: #b25e1a;
+  border: 1px solid rgba(178, 94, 26, 0.18);
+}
+html[data-theme='dark'] .interactivo {
+  background-color: rgba(251, 146, 60, 0.1);
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.2);
+}
+
+/* Serie — azul analítico */
+.serie {
+  background-color: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+  border: 1px solid rgba(37, 99, 235, 0.16);
+}
+html[data-theme='dark'] .serie {
+  background-color: rgba(96, 165, 250, 0.1);
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+/* ── Thumbnail (figuras) ───────────────────────────────────────────────────── */
+
+.thumbnailBtn {
+  width: 100%;
+  height: 130px;
+  background-color: var(--aev-thumb-bg);
+  border: 1px solid var(--aev-border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.thumbnailBtn:hover {
+  opacity: 0.88;
+}
+
+.thumbnailBtn:focus-visible {
+  outline: 2px solid var(--aev-accent);
+  outline-offset: 2px;
+}
+
+.thumbnail {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.thumbnailBtn:hover .thumbnail {
+  transform: scale(1.04);
+}
+
+/* ── Card text ─────────────────────────────────────────────────────────────── */
+
+.cardTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--aev-text);
+  margin: 0 0 0.45rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.cardCaption {
+  font-size: 0.82rem;
+  color: var(--aev-muted);
+  margin: 0 0 0.6rem;
+  line-height: 1.55;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.metaPill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--aev-muted);
+  background-color: var(--aev-th-bg);
+  border: 1px solid var(--aev-border);
+  border-radius: 3px;
+  padding: 0.15rem 0.5rem;
+  line-height: 1.4;
+}
+
+.cardSource {
+  font-size: 0.75rem;
+  color: var(--aev-muted);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+/* ── Card footer — botón de acción ────────────────────────────────────────── */
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--aev-border);
+}
+
+.actionBtn {
+  width: 100%;
+  background-color: var(--aev-btn);
+  color: var(--aev-btn-text);
+  border: 1px solid var(--aev-btn);
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+  line-height: 1.4;
+}
+
+.actionBtn:hover {
+  background-color: var(--aev-btn-hover);
+  border-color: var(--aev-btn-hover);
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--aev-accent);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* ZONA 2 — FULLSCREEN MODAL (renderizado via createPortal a document.body)   */
+/*                                                                             */
+/* El portal vive en document.body, fuera de cualquier grid o contenedor      */
+/* con overflow/transform. html[data-theme='dark'] .fsShell sigue funcionando */
+/* porque .fsShell es descendiente del <html> aunque no del .card.            */
+/* Variables scoped a .fsShell.                                                */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop ──────────────────────────────────────────────────────────────── */
+
+.fsBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(8, 10, 18, 0.86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* ── Shell (ventana del modal) ─────────────────────────────────────────────── */
+
+.fsShell {
+  /* Light mode defaults — scoped aquí para no contaminar nada más */
+  --ev-bg:          #fdfbf7;
+  --ev-border:      #e2dfd8;
+  --ev-text:        #191814;
+  --ev-muted:       #625c52;
+  --ev-accent:      #145c63;
+  --ev-th-bg:       #f0ece6;
+  --ev-tr-odd:      #f7f5f0;
+  --ev-tr-hover:    #ede9e3;
+  --ev-scroll:      #c8c2ba;
+
+  width: min(1280px, 96vw);
+  max-height: 92vh;
+  background: var(--ev-bg);
+  color: var(--ev-text);
+  border: 1px solid var(--ev-border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.38), 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+html[data-theme='dark'] .fsShell {
+  --ev-bg:          #0d1117;
+  --ev-border:      rgba(148, 163, 184, 0.16);
+  --ev-text:        #f0f4f8;
+  --ev-muted:       #94a3b8;
+  --ev-accent:      #83bdc2;
+  --ev-th-bg:       #111827;
+  --ev-tr-odd:      #111827;
+  --ev-tr-hover:    #192033;
+  --ev-scroll:      rgba(148, 163, 184, 0.3);
+}
+
+/* Figura: shell más estrecho (la imagen no necesita 1280px) */
+.fsShellFigure {
+  width: min(900px, 96vw);
+}
+
+/* ── Cabecera del modal ────────────────────────────────────────────────────── */
+
+.fsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--ev-border);
+  flex-shrink: 0;
+  background: var(--ev-bg);
+}
+
+.fsTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  flex: 1;
+}
+
+/* fsBadge: reutiliza los mismos colores que .badge del card */
+.fsBadge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+
+/* Los selectores de color ya están definidos arriba (.figura, .tabla, etc.)  */
+/* y aplican tanto a .badge como a .fsBadge por compartir los mismos nombres. */
+
+.fsModalTitle {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ev-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.fsClose {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--ev-muted);
+  cursor: pointer;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.fsClose:hover {
+  color: var(--ev-text);
+  background-color: var(--ev-th-bg);
+}
+
+.fsClose:focus-visible {
+  outline: 2px solid var(--ev-accent);
+  outline-offset: 2px;
+}
+
+/* ── Cuerpo del modal ─────────────────────────────────────────────────────── */
+
+/* Cuerpo estándar: padding cómodo, scroll vertical */
+.fsBody {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.75rem 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ev-scroll) transparent;
+}
+
+/* Cuerpo ancho: para interactivos y gráficas.
+   Sin padding propio — el componente hijo gestiona su espaciado interno.
+   min-height garantiza espacio suficiente para el contenido.              */
+.fsBodyWide {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+  min-height: min(70vh, 560px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ev-scroll) transparent;
+}
+
+/* ── Mensaje de estado vacío / cargando ────────────────────────────────────── */
+
+.fsLoadingMsg {
+  padding: 4rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ev-muted);
+  font-style: italic;
+}
+
+.fsEmptyMsg {
+  padding: 2rem 1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--ev-muted);
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* CONTENIDO POR TIPO dentro del modal                                         */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Figura ────────────────────────────────────────────────────────────────── */
+
+.figureContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.figureImg {
+  width: 100%;
+  max-height: 66vh;
+  object-fit: contain;
+  border-radius: 6px;
+  display: block;
+}
+
+.figureCaption {
+  font-size: 0.88rem;
+  color: var(--ev-muted);
+  line-height: 1.65;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ev-border);
+  width: 100%;
+  max-width: 820px;
+}
+
+/* ── Tabla ─────────────────────────────────────────────────────────────────── */
+
+.tableContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableScrollWrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ev-scroll) transparent;
+}
+
+.tableEl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.th {
+  background-color: var(--ev-th-bg);
+  color: var(--ev-text);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--ev-border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.td {
+  padding: 0.55rem 1rem;
+  color: var(--ev-text);
+  border-bottom: 1px solid var(--ev-border);
+  vertical-align: top;
+}
+
+.trEven { background-color: transparent; }
+.trOdd  { background-color: var(--ev-tr-odd); }
+
+.tableEl tbody tr:hover .td {
+  background-color: var(--ev-tr-hover);
+}
+
+.tableEl tbody tr:last-child .td {
+  border-bottom: none;
+}
+
+.tableFooterMeta {
+  padding: 0.75rem 1rem;
+  border-top: 1px dashed var(--ev-border);
+}
+
+.tableFootnote {
+  font-size: 0.8rem;
+  color: var(--ev-muted);
+  margin: 0.25rem 0;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* RESPONSIVE                                                                  */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  /* Mobile: modal ocupa toda la pantalla (sin padding del backdrop) */
+  .fsBackdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .fsShell,
+  .fsShellFigure {
+    width: 100vw;
+    max-height: 96dvh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .fsBody {
+    padding: 1.25rem 1rem;
+  }
+
+  .fsBodyWide {
+    min-height: min(60vh, 420px);
+  }
+
+  .th,
+  .td {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.82rem;
+  }
+
+  .cardTitle {
+    font-size: 0.9rem;
+  }
+
+  .cardCaption {
+    font-size: 0.8rem;
+  }
+}

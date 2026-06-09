@@ -1,0 +1,92 @@
+================================================================================
+AUDITORÍA DE ANCLAS REALES PARA ÍNDICE CONCEPTUAL DE ANEXOS
+================================================================================
+
+1. Resumen ejecutivo
+La auditoría revela que el ecosistema de anexos carece de una estrategia de anclas (anchors) unificada. Mientras que los archivos MDX sólo proveen anclajes a nivel de sección global, los componentes interactivos de los Anexos B, C y D implementan navegación basada en el hash de la URL (`window.location.hash`), posibilitando enlaces directos. Sin embargo, el Anexo A (Figuras) y elementos como las filas de la Tabla Maestra no poseen soporte de anclaje a elementos específicos.
+
+2. Anclas explícitas detectadas en MDX
+Los archivos MDX utilizan `<AnnexSection id="...">` que genera anclas de bloque. No existen anclas manuales adicionales ni anclajes por elemento.
+- Anexo A: `#lectura-figuras`, `#indice-figuras`, `#galeria-figuras`
+- Anexo B: `#lectura-tablas`, `#indice-tablas`, `#repositorio-tabular`
+- Anexo C: `#lectura-interactivos`, `#indice-interactivos`, `#galeria-interactivos`
+- Anexo D: `#lectura-metodologica`, `#indice-datos`, `#galeria-series`
+
+3. Anclas generadas por componentes
+- ImageGallery (Anexo A): NO genera IDs individuales enlazables.
+- ForensicGallery (Anexo B): Asigna `id={table.id}`. Lee `window.location.hash` y hace scroll programático con `scrollIntoView()`.
+- TablaMaestra28A (Anexo B): Asigna `id="context-row-<id>"` con fines de accesibilidad (ARIA), pero no provee scroll directo vía hash de URL.
+- InteractiveGraphicsGalleryBase (Anexo C): Lee `window.location.hash` explícitamente y actualiza el estado interno de la pestaña visible para mostrar el interactivo correspondiente.
+- ForensicGallery2 (Anexo D): Similar al Anexo C, lee el hash para activar la serie o gráfico específico mediante estado local.
+
+4. Matriz de anclas por Anexo A
+Elemento: 41 imágenes de `imageGalleryData.js`
+ID de datos: Nombre de archivo (`src`)
+Anexo actual: Anexo A
+Tema T1-T9: Asignado individualmente
+¿Existe ancla real?: NO
+Ancla actual si existe: Ninguna
+¿Necesita ancla nueva?: SÍ
+Tipo de ancla recomendada: `/anexo-figuras#fig-<nombre_sin_extension>`
+Riesgo: Lightbox no deep-linkable. Requiere que `ImageGallery.jsx` implemente la escucha del hash.
+
+5. Matriz de anclas por Anexo B
+Elemento: 42 tablas de `ForensicGallery`
+ID de datos: `table.id`
+Anexo actual: Anexo B
+Tema T1-T9: Asignado individualmente
+¿Existe ancla real?: SÍ (Parcial/Dinámico)
+Ancla actual si existe: `/anexo-tablas#<table.id>`
+¿Necesita ancla nueva?: NO (Adaptación de prefijo recomendada para evitar colisiones)
+Tipo de ancla recomendada: `/anexo-tablas#tabla-<table.id>`
+Riesgo: Scroll problemático si la tabla está dentro de una pestaña de categoría no activa.
+
+6. Matriz de anclas por Anexo C
+Elemento: 18 interactivos
+ID de datos: `graphic.id` (ej. `frequency`, `map`)
+Anexo actual: Anexo C
+Tema T1-T9: T1, T2, T3, T4, T7, T9
+¿Existe ancla real?: SÍ (Dinámico)
+Ancla actual si existe: `/anexo-interactivos#<graphic.id>`
+¿Necesita ancla nueva?: NO (Adaptación de prefijo)
+Tipo de ancla recomendada: `/anexo-interactivos#grafico-<graphic.id>`
+Riesgo: El validador estático de Docusaurus puede reportar enlaces rotos si no encuentra el ID renderizado en el HTML estático inicial (al depender de JS local).
+
+7. Matriz de anclas por Anexo D
+Elemento: 23 gráficas
+ID de datos: `chart.id` (ej. `chart-1`)
+Anexo actual: Anexo D
+Tema T1-T9: T1, T4, T5
+¿Existe ancla real?: SÍ (Dinámico)
+Ancla actual si existe: `/anexo-entsoe#<chart.id>`
+¿Necesita ancla nueva?: NO (Opcional, aunque `#chart-X` ya es un buen identificador)
+Tipo de ancla recomendada: `/anexo-entsoe#chart-<id>`
+Riesgo: Misma dependencia de estado JS para seleccionar la pestaña.
+
+8. Elementos sin ancla real
+- Anexo A: Las 41 imágenes no pueden ser enlazadas directamente para abrirse.
+- Anexo B: La Tabla Maestra no dispone de navegación por ancla a una fila específica.
+- Las menciones o definiciones del glosario tampoco parecen disponer de micro-anclas explícitas unificadas.
+
+9. Patrón de anclas recomendado
+Para preservar semántica y evitar choques con el generador estático:
+- Anexo A: `/anexo-figuras#fig-[id_imagen]`
+- Anexo B: `/anexo-tablas#tabla-[table.id]`
+- Anexo C: `/anexo-interactivos#grafico-[graphic.id]`
+- Anexo D: `/anexo-entsoe#chart-[chart.id]`
+
+10. Riesgos con tabs, sidebars y contenido oculto
+- Broken Links de Docusaurus: Si se usa Markdown genérico (`[Link](/anexo-interactivos#frequency)`), Docusaurus verificará estáticamente la presencia del `id="frequency"`. Si React lo inyecta después o está condicionado a la pestaña, Docusaurus arrojará un error `broken-link` durante el build.
+- Ocultación (Tabs): Enlazar a un elemento del Anexo B que está en una tab que no se renderiza por defecto, fallará en hacer el scroll porque el elemento `document.getElementById()` devolverá null en la primera carga.
+- Estado Visual: En Anexo A, abrir automáticamente una imagen en fullscreen/lightbox basándose en el hash requiere lógica explícita en `ImageGallery.jsx`.
+
+11. Cambios mínimos necesarios antes de crear el índice
+- Modificar `ImageGallery.jsx` para admitir anclas.
+- Ajustar `InteractiveGraphicsGalleryBase.jsx`, `ForensicGallery2.jsx` y `ForensicGallery.jsx` para prefijar sus escuchas y asignaciones de ID y evitar warnings de build.
+
+12. Recomendación final
+Abordar la actualización de los componentes React afectados para estandarizar el patrón de anclajes, permitiendo abrir tabs programáticamente según la URL, antes de compilar un índice estático gigante que genere errores masivos de validación de links.
+
+13. Orden de fases propuesto
+- FASE 2R-3B: Modificación de componentes React (Anexos A, B, C, D) para soporte estandarizado y resiliente de hash (soportando el prefijo recomendado y abriendo la tab adecuada).
+- FASE 2R-3C: Creación del `docs/anexo-indice-conceptual.mdx` con todas las anclas ya operativas.

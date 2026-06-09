@@ -1,0 +1,266 @@
+/* ── ConsensusMatrix ── */
+
+.figure {
+  --fig-bg: #f8f4ea;
+  --fig-surface: #fffdf7;
+  --fig-text: #1f2933;
+  --fig-muted: #64707d;
+  --fig-border: rgba(31, 41, 51, 0.14);
+  --fig-hover: rgba(31, 41, 51, 0.04);
+  --fig-stripe: rgba(31, 41, 51, 0.03);
+  --fig-detail-bg: #fffdf7;
+
+  max-width: 780px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.25rem;
+  background: var(--fig-bg);
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--fig-text);
+  line-height: 1.5;
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #13263f;
+  --fig-text: #e5edf5;
+  --fig-muted: #a9b6c7;
+  --fig-border: rgba(180, 198, 220, 0.16);
+  --fig-hover: rgba(180, 198, 220, 0.06);
+  --fig-stripe: rgba(180, 198, 220, 0.04);
+  --fig-detail-bg: #172b45;
+}
+
+/* ── Header ── */
+
+.header {
+  margin-bottom: 0.6rem;
+}
+
+.kicker {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fig-muted);
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+  color: var(--fig-text);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--fig-muted);
+  line-height: 1.45;
+}
+
+/* ── Legend ── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--fig-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Table wrapper ── */
+
+.tableWrap {
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Table ── */
+
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  min-width: 580px;
+}
+
+.matrix th,
+.matrix td {
+  padding: 0.3rem 0.35rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--fig-border);
+}
+
+.matrix thead th {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fig-muted);
+  border-bottom: 2px solid var(--fig-border);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.thClaim {
+  text-align: left !important;
+  min-width: 200px;
+  position: sticky;
+  left: 0;
+  background: var(--fig-surface);
+  z-index: 2;
+}
+
+.thReport {
+  width: 60px;
+}
+
+.thConsenso {
+  width: 72px;
+}
+
+/* ── Claim column ── */
+
+.tdClaim {
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--fig-text);
+  min-width: 200px;
+  position: sticky;
+  left: 0;
+  background: var(--fig-surface);
+  z-index: 1;
+}
+
+.rowEven .tdClaim {
+  background: color-mix(in srgb, var(--fig-surface) 96%, var(--fig-text) 4%);
+}
+
+.rowEven {
+  background: var(--fig-stripe);
+}
+
+/* ── Status cells ── */
+
+.tdCell {
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.cell:hover {
+  transform: scale(1.15);
+}
+
+.cell:focus-visible {
+  outline: 2px solid var(--fig-text);
+  outline-offset: 2px;
+}
+
+.cellActive {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px var(--fig-surface), 0 0 0 4px var(--fig-text);
+}
+
+/* ── Consensus column ── */
+
+.tdConsenso {
+  text-align: center;
+  padding: 0.25rem 0.3rem;
+}
+
+.consensoBadge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+/* ── Detail panel ── */
+
+.detail {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--fig-detail-bg);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.detailTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+  color: var(--fig-text);
+}
+
+.detail p {
+  margin: 0.15rem 0;
+}
+
+.detailNote {
+  font-style: italic;
+  color: var(--fig-muted);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 600px) {
+  .figure {
+    padding: 0.75rem 0.9rem;
+    margin: 1rem 0;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .thClaim,
+  .tdClaim {
+    min-width: 160px;
+  }
+}

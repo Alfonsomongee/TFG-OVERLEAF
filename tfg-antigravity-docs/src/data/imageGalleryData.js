@@ -10,7 +10,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 1: Einführung in ein Neues Paradigma Systemischen Versagens",
       images: [
         {
-          src: "/figuras/albustami_ieee39_secuencia.png",
+          src: "/figuras/albustami_ieee39_secuencia.png", tema: "T3",
           caption_es: "Secuencia del colapso del 28-A mostrando la interacción entre Acciones del Operador (OA) y Acciones Automáticas de protección (AA). Fuente: Albustami et al., 2025.",
           caption_en: "Sequence of the April 28 collapse showing the interaction between Operator Actions (OA) and Automatic protective actions (AA). Source: Albustami et al., 2025.",
           caption_pt: "Sequência do colapso de 28-A mostrando a interação entre Ações do Operador (OA) e Ações Automáticas de proteção (AA). Fonte: Albustami et al., 2025.",
@@ -19,7 +19,7 @@ export const imageGalleryData = {
           caption_de: "Sequenz des Zusammenbruchs vom 28-A, die die Interaktion zwischen Bedieneraktionen (OA) und automatischen Schutzaktionen (AA) zeigt. Quelle: Albustami et al., 2025."
         },
         {
-          src: "/figuras/futured_grid_evolution.png",
+          src: "/figuras/futured_grid_evolution.png", tema: "T2",
           caption_es: "El desplazamiento de grandes masas rotatorias por recursos IBR reduce drásticamente la inercia total del sistema. Fuente: FutuRed, 2024.",
           caption_en: "The displacement of large rotating masses by IBR resources drastically reduces the total inertia of the system. Source: FutuRed, 2024.",
           caption_pt: "O deslocamento de grandes massas rotativas por recursos IBR reduz drasticamente a inércia total do sistema. Fonte: FutuRed, 2024.",
@@ -28,7 +28,7 @@ export const imageGalleryData = {
           caption_de: "Die Verdrängung großer rotierender Massen durch IBR-Ressourcen reduziert die Gesamtträgheit des Systems drastisch. Quelle: FutuRed, 2024."
         },
         {
-          src: "/figuras/pmu_sensors_europe.png",
+          src: "/figuras/pmu_sensors_europe.png", tema: "T9",
           caption_es: "La densidad de cobertura de las PMU fue determinante para la verificación independiente de las oscilaciones inter-área. Fuente: NREL.",
           caption_en: "The coverage density of PMUs was decisive for the independent verification of inter-area oscillations. Source: NREL.",
           caption_pt: "A densidade de cobertura das PMUs foi determinante para a verificação independente das oscilações interárea. Fonte: NREL.",
@@ -48,7 +48,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 2: Der Energiekontext und die Strukturelle Anfälligkeit",
       images: [
         {
-          src: "/figuras/mix_comparativo_2010_2024.png",
+          src: "/figuras/mix_comparativo_2010_2024.png", tema: "T1",
           caption_es: "Evolución del mix de generación en España: 2010 frente a 2024. Fuente: Centro Peter Huber / ESIOS.",
           caption_en: "Evolution of the generation mix in Spain: 2010 versus 2024. Source: Peter Huber Center / ESIOS.",
           caption_pt: "Evolução do mix de geração na Espanha: 2010 versus 2024. Fonte: Centro Peter Huber / ESIOS.",
@@ -57,7 +57,7 @@ export const imageGalleryData = {
           caption_de: "Entwicklung des Erzeugungsmixes in Spanien: 2010 gegenüber 2024. Quelle: Peter Huber Zentrum / ESIOS."
         },
         {
-          src: "/figuras/capacidad_instalada_2025.png",
+          src: "/figuras/capacidad_instalada_2025.png", tema: "T1",
           caption_es: "Capacidad de generación instalada en el sistema español a 31 de enero de 2025. Fuente: NREL / Red Eléctrica.",
           caption_en: "Installed generation capacity in the Spanish system as of January 31, 2025. Source: NREL / Red Eléctrica.",
           caption_pt: "Capacidade de geração instalada no sistema espanhol em 31 de janeiro de 2025. Fonte: NREL / Red Eléctrica.",
@@ -66,7 +66,7 @@ export const imageGalleryData = {
           caption_de: "Installierte Erzeugungskapazität im spanischen System zum 31. Januar 2025. Quelle: NREL / Red Eléctrica."
         },
         {
-          src: "/figuras/ree_generation_mix_28april.png",
+          src: "/figuras/ree_generation_mix_28april.png", tema: "T1",
           caption_es: "Perfil de generación del 28-A: el valle de demanda coincidió con el pico de producción fotovoltaica, desplazando la generación síncrona a mínimos históricos. Fuente: NREL / Red Eléctrica.",
           caption_en: "Generation profile on April 28: the demand valley coincided with the peak of photovoltaic production, displacing synchronous generation to historical minimums. Source: NREL / Red Eléctrica.",
           caption_pt: "Perfil de geração de 28-A: o vale de demanda coincidiu com o pico de produção fotovoltaica, deslocando a geração síncrona para mínimos históricos. Fonte: NREL / Red Eléctrica.",
@@ -75,7 +75,7 @@ export const imageGalleryData = {
           caption_de: "Erzeugungsprofil vom 28-A: Das Nachfragetal fiel mit dem Höhepunkt der Photovoltaikproduktion zusammen und verdrängte die synchrone Erzeugung auf historische Tiefststände. Quelle: NREL / Red Eléctrica."
         },
         {
-          src: "/figuras/precursor_overvoltage_22april.png",
+          src: "/figuras/precursor_overvoltage_22april.png", tema: "T2",
           caption_es: "Oscilaciones de tensión registradas en Núñez de Balboa (400 kV) durante el episodio precursor del 22 de abril. Varias instalaciones que dispararon el 28-A ya habían sufrido disparos idénticos en este evento previo. Fuente: IIT-ICAI / Compass Lexecon.",
           caption_en: "Voltage oscillations recorded at Núñez de Balboa (400 kV) during the precursor episode on April 22. Several facilities that tripped on April 28 had already suffered identical trips in this previous event. Source: IIT-ICAI / Compass Lexecon.",
           caption_pt: "Oscilações de tensão registradas em Núñez de Balboa (400 kV) durante o episódio precursor de 22 de abril. Várias instalações que desarmaram em 28-A já haviam sofrido desarmes idênticos neste evento anterior. Fonte: IIT-ICAI / Compass Lexecon.",
@@ -84,7 +84,7 @@ export const imageGalleryData = {
           caption_de: "Spannungsschwankungen, die am 22. April in Núñez de Balboa (400 kV) während des Vorläuferereignisses registriert wurden. Mehrere Anlagen, die am 28-A auslösten, hatten bereits bei diesem früheren Ereignis identische Auslösungen erfahren. Quelle: IIT-ICAI / Compass Lexecon."
         },
         {
-          src: "/figuras/entsoe_flow_deviation.png",
+          src: "/figuras/entsoe_flow_deviation.png", tema: "T4",
           caption_es: "Desviación entre el programa de intercambio comercial (NTC) y el flujo de potencia físico real en la frontera España-Francia durante la mañana del 28-A. Fuente: Informe Factual ENTSO-E.",
           caption_en: "Deviation between the commercial exchange schedule (NTC) and the actual physical power flow on the Spain-France border during the morning of April 28. Source: ENTSO-E Factual Report.",
           caption_pt: "Desvio entre o programa de intercâmbio comercial (NTC) e o fluxo de potência físico real na fronteira Espanha-França durante a manhã de 28-A. Fonte: Relatório Factual ENTSO-E.",
@@ -93,7 +93,7 @@ export const imageGalleryData = {
           caption_de: "Abweichung zwischen dem kommerziellen Austauschprogramm (NTC) und dem tatsächlichen physischen Leistungsfluss an der spanisch-französischen Grenze am Morgen des 28-A. Quelle: ENTSO-E Sachstandsbericht."
         },
         {
-          src: "/figuras/hvdc_control_transition.png",
+          src: "/figuras/hvdc_control_transition.png", tema: "T4",
           caption_es: "Transición PMODE3 → PMODE1 a las 12:08 CEST en el enlace HVDC INELFE-1. La decisión limitó la capacidad de respuesta dinámica del enlace ante la cascada posterior. Fuente: IIT-ICAI / AELEC.",
           caption_en: "Transition from PMODE3 to PMODE1 at 12:08 CEST in the INELFE-1 HVDC link. The decision limited the dynamic response capacity of the link to the subsequent cascade. Source: IIT-ICAI / AELEC.",
           caption_pt: "Transição PMODE3 → PMODE1 às 12:08 CEST na ligação HVDC INELFE-1. A decisão limitou a capacidade de resposta dinâmica da ligação perante a cascata subsequente. Fonte: IIT-ICAI / AELEC.",
@@ -102,7 +102,7 @@ export const imageGalleryData = {
           caption_de: "Übergang PMODE3 → PMODE1 um 12:08 CEST bei der HGÜ-Verbindung INELFE-1. Die Entscheidung begrenzte die dynamische Reaktionsfähigkeit der Verbindung angesichts der nachfolgenden Kaskade. Quelle: IIT-ICAI / AELEC."
         },
         {
-          src: "/figuras/frequency_voltage_carmona.png",
+          src: "/figuras/frequency_voltage_carmona.png", tema: "T2",
           caption_es: "Frecuencia y tensión en los segundos críticos del incidente. Subestación de Carmona (400 kV). La transición abrupta Normal → Blackout queda registrada en la caída simultánea de ambas variables. Fuente: ENTSO-E / REE.",
           caption_en: "Frequency and voltage in the critical seconds of the incident. Carmona Substation (400 kV). The abrupt transition from Normal to Blackout is recorded in the simultaneous drop of both variables. Source: ENTSO-E / REE.",
           caption_pt: "Frequência e tensão nos segundos críticos do incidente. Subestação de Carmona (400 kV). A transição abrupta Normal → Blackout fica registrada na queda simultânea de ambas as variáveis. Fonte: ENTSO-E / REE.",
@@ -122,7 +122,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 3: Analyse des Vorfalls",
       images: [
         {
-          src: "/figuras/nunez_balboa_precursores.png",
+          src: "/figuras/nunez_balboa_precursores.png", tema: "T2",
           caption_es: "Tensiones en Núñez de Balboa (400 kV) durante los eventos precursores del 22, 24 y 28 de abril. La sucesión de picos de sobretensión evidencia el estrechamiento progresivo de los márgenes de control de potencia reactiva. Fuente: IIT-ICAI.",
           caption_en: "Voltages at Núñez de Balboa (400 kV) during the precursor events of April 22, 24, and 28. The succession of overvoltage peaks shows the progressive narrowing of reactive power control margins. Source: IIT-ICAI.",
           caption_pt: "Tensões em Núñez de Balboa (400 kV) durante os eventos precursores de 22, 24 e 28 de abril. A sucessão de picos de sobretensão evidencia o estreitamento progressivo das margens de controle de potência reativa. Fonte: IIT-ICAI.",
@@ -131,7 +131,7 @@ export const imageGalleryData = {
           caption_de: "Spannungen in Núñez de Balboa (400 kV) während der Vorläuferereignisse am 22., 24. und 28. April. Die Abfolge von Überspannungsspitzen zeigt die fortschreitende Verengung der Blindleistungsregelmargen. Quelle: IIT-ICAI."
         },
         {
-          src: "/figuras/wams_oscilaciones_carmona.png",
+          src: "/figuras/wams_oscilaciones_carmona.png", tema: "T2",
           caption_es: "Registro del WAMS capturando la oscilación electromecánica de 0,6 Hz en Carmona (Sevilla) a las 12:03 CEST. Los sistemas WAMS, basados en redes de PMU sincronizadas por GPS, permiten observar la dinámica continental con resolución de milisegundos. Fuente: ENTSO-E / REE.",
           caption_en: "WAMS record capturing the 0.6 Hz electromechanical oscillation at Carmona (Seville) at 12:03 CEST. WAMS systems, based on networks of GPS-synchronized PMUs, allow observing continental dynamics with millisecond resolution. Source: ENTSO-E / REE.",
           caption_pt: "Registro do WAMS capturando a oscilação eletromecânica de 0,6 Hz em Carmona (Sevilha) às 12:03 CEST. Os sistemas WAMS, baseados em redes de PMU sincronizadas por GPS, permitem observar a dinâmica continental com resolução de milissegundos. Fonte: ENTSO-E / REE.",
@@ -140,8 +140,8 @@ export const imageGalleryData = {
           caption_de: "WAMS-Aufzeichnung der elektromechanischen Oszillation von 0,6 Hz in Carmona (Sevilla) um 12:03 CEST. WAMS-Systeme, die auf GPS-synchronisierten PMU-Netzwerken basieren, ermöglichen die Beobachtung der kontinentalen Dynamik mit Millisekundenauflösung. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/tap_lag_decoupling.png",
-          caption_es: "Desacoplamiento entre el primario de 400 kV y el secundario colector durante la Fase 2. Mientras el incremento de tensión en el lado de 400 kV se mantuvo en valores moderados, la inercia del OLTC amplificó el transitorio en el lado colector. Fuente: ENTSO-E.",
+          src: "/figuras/tap_lag_decoupling.png", tema: "T3",
+          caption_es: "Desacoplamiento Tap-Lag entre la red de transporte de 400 kV y la red colectora subyacente. La inercia mecánica de los OLTC amplificó la sobretensión aguas abajo, fuera de la observabilidad directa del SCADA de REE. Fuente: ENTSO-E / IIT-ICAI / Compass Lexecon.",
           caption_en: "Decoupling between the 400 kV primary and the collector secondary during Phase 2. While the voltage increase on the 400 kV side remained moderate, the inertia of the OLTC amplified the transient on the collector side. Source: ENTSO-E.",
           caption_pt: "Desacoplamento entre o primário de 400 kV e o secundário coletor durante a Fase 2. Enquanto o aumento de tensão no lado de 400 kV se manteve em valores moderados, a inércia do OLTC amplificou o transitório no lado coletor. Fonte: ENTSO-E.",
           caption_fr: "Découplage entre le primaire de 400 kV et le secondaire collecteur pendant la Phase 2. Alors que l'augmentation de tension du côté 400 kV est restée à des valeurs modérées, l'inertie du changeur de prises (OLTC) a amplifié le transitoire du côté collecteur. Source : ENTSO-E.",
@@ -149,8 +149,8 @@ export const imageGalleryData = {
           caption_de: "Entkopplung zwischen der 400-kV-Primärseite und der Kollektor-Sekundärseite während der Phase 2. Während der Spannungsanstieg auf der 400-kV-Seite auf moderaten Werten blieb, verstärkte die Trägheit des Stufenschalters (OLTC) die Transiente auf der Kollektorseite. Quelle: ENTSO-E."
         },
         {
-          src: "/figuras/heatmap_propagation.png",
-          caption_es: "Propagación de las sobretensiones en la red de 400 kV durante la Fase 2 (12:32:00–12:33:18 CEST). Fuente: Comité de Análisis del Gobierno / REE.",
+          src: "/figuras/heatmap_propagation.png", tema: "T3",
+          caption_es: "Propagación espacial de las sobretensiones durante la Fase 2 del incidente, entre la maniobra de mallado, el disparo raíz y la cascada de desconexiones IBR. Fuente: Comité de Análisis del Gobierno / REE.",
           caption_en: "Propagation of overvoltages in the 400 kV network during Phase 2 (12:32:00–12:33:18 CEST). Source: Government Analysis Committee / REE.",
           caption_pt: "Propagação das sobretensões na rede de 400 kV durante a Fase 2 (12:32:00–12:33:18 CEST). Fonte: Comitê de Análise do Governo / REE.",
           caption_fr: "Propagation des surtensions dans le réseau 400 kV pendant la Phase 2 (12:32:00–12:33:18 CEST). Source : Comité d'Analyse du Gouvernement / REE.",
@@ -158,7 +158,7 @@ export const imageGalleryData = {
           caption_de: "Ausbreitung von Überspannungen im 400-kV-Netz während Phase 2 (12:32:00–12:33:18 CEST). Quelle: Analyseausschuss der Regierung / REE."
         },
         {
-          src: "/figuras/cascada_desconexiones.png",
+          src: "/figuras/cascada_desconexiones.png", tema: "T3",
           caption_es: "Propagación geográfica de la cascada durante los once segundos de la Fase 3. Fuente: Comité de Análisis del Gobierno.",
           caption_en: "Geographical propagation of the cascade during the eleven seconds of Phase 3. Source: Government Analysis Committee.",
           caption_pt: "Propagação geográfica da cascata durante os onze segundos da Fase 3. Fonte: Comitê de Análise do Governo.",
@@ -167,7 +167,7 @@ export const imageGalleryData = {
           caption_de: "Geografische Ausbreitung der Kaskade während der elf Sekunden von Phase 3. Quelle: Analyseausschuss der Regierung."
         },
         {
-          src: "/figuras/tension_frecuencia_colapso.png",
+          src: "/figuras/tension_frecuencia_colapso.png", tema: "T2",
           caption_es: "Evolución acoplada de la tensión (kV) y la frecuencia (Hz) durante la Fase 3. El incremento de tensión por encima de 1,10 p.u. precede en el tiempo a la caída de frecuencia, confirmando que el colapso fue primariamente capacitivo, no inercial. Fuente: Comité de Análisis del Gobierno.",
           caption_en: "Coupled evolution of voltage (kV) and frequency (Hz) during Phase 3. The voltage increase above 1.10 p.u. precedes the frequency drop in time, confirming that the collapse was primarily capacitive, not inertial. Source: Government Analysis Committee.",
           caption_pt: "Evolução acoplada da tensão (kV) e da frequência (Hz) durante a Fase 3. O aumento de tensão acima de 1,10 p.u. precede no tempo a queda de frequência, confirmando que o colapso foi primeiramente capacitivo, não inercial. Fonte: Comitê de Análise do Governo.",
@@ -176,8 +176,8 @@ export const imageGalleryData = {
           caption_de: "Gekoppelte Entwicklung von Spannung (kV) und Frequenz (Hz) während Phase 3. Der Spannungsanstieg über 1,10 p.u. geht dem Frequenzabfall zeitlich voraus, was bestätigt, dass der Zusammenbruch primär kapazitiv und nicht trägheitsbedingt war. Quelle: Analyseausschuss der Regierung."
         },
         {
-          src: "/figuras/interconexion_francia_colapso.png",
-          caption_es: "Inversión de flujos en la frontera pirenaica durante la Fase 3: importación de emergencia de hasta 4.609 MVAr por las líneas AC, extracción simultánea de 1.000 MW por el HVDC en PMODE1, y apertura de las líneas AC por pérdida de sincronismo a las 12:33:21 CEST. Fuente: Comité de Análisis del Gobierno / REE.",
+          src: "/figuras/interconexion_francia_colapso.png", tema: "T4",
+          caption_es: "Evolución de los flujos en la frontera pirenaica durante la fase terminal del colapso. La interpretación cuantitativa de la componente reactiva debe tratarse como cuestión abierta por la divergencia entre fuentes. Fuente: Comité de Análisis del Gobierno / REE / ENTSO-E.",
           caption_en: "Reversal of flows at the Pyrenean border during Phase 3: emergency import of up to 4,609 MW through AC lines, simultaneous extraction of 1,000 MW through HVDC in PMODE1, and opening of AC lines due to loss of synchronism at 12:33:21 CEST. Source: Government Analysis Committee / REE.",
           caption_pt: "Inversão de fluxos na fronteira pirenaica durante a Fase 3: importação de emergência de até 4.609 MW pelas linhas AC, extração simultânea de 1.000 MW pelo HVDC em PMODE1, e abertura das linhas AC por perda de sincronismo às 12:33:21 CEST. Fonte: Comitê de Análise do Governo / REE.",
           caption_fr: "Inversion des flux à la frontière pyrénéenne pendant la Phase 3 : importation d'urgence jusqu'à 4 609 MW par les lignes AC, extraction simultanée de 1 000 MW par le HVDC en PMODE1, et ouverture des lignes AC suite à la perte de synchronisme à 12:33:21 CEST. Source : Comité d'Analyse du Gouvernement / REE.",
@@ -196,7 +196,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 4: Reaktion und Wiederherstellung",
       images: [
         {
-          src: "/figuras/islas_reposicion_entsoe.png",
+          src: "/figuras/islas_reposicion_entsoe.png", tema: "T6",
           caption_es: "Fragmentación topológica conforme al P.O. 1.6. Cada isla debía estabilizarse individualmente en tensión y frecuencia antes de autorizarse su sincronización con las islas adyacentes. Fuente: ENTSO-E / REE.",
           caption_en: "Topological fragmentation according to OP 1.6. Each island had to stabilize individually in voltage and frequency before its synchronization with adjacent islands was authorized. Source: ENTSO-E / REE.",
           caption_pt: "Fragmentação topológica conforme o P.O. 1.6. Cada ilha devia se estabilizar individualmente em tensão e frequência antes de se autorizar sua sincronização com as ilhas adjacentes. Fonte: ENTSO-E / REE.",
@@ -205,7 +205,7 @@ export const imageGalleryData = {
           caption_de: "Topologische Fragmentierung gemäß P.O. 1.6. Jede Insel musste einzeln in Spannung und Frequenz stabilisiert werden, bevor ihre Synchronisierung mit benachbarten Inseln genehmigt wurde. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/estrategia_reenergizacion_dual.png",
+          src: "/figuras/estrategia_reenergizacion_dual.png", tema: "T6",
           caption_es: "Estrategia dual de re-energización: vía Top-Down desde Francia y Marruecos y vía Bottom-Up desde las centrales hidráulicas internas. Fuente: ENTSO-E / REE.",
           caption_en: "Dual re-energization strategy: Top-Down approach from France and Morocco, and Bottom-Up approach from internal hydroelectric plants. Source: ENTSO-E / REE.",
           caption_pt: "Estratégia dual de reenergização: via Top-Down a partir da França e Marrocos e via Bottom-Up a partir das centrais hidrelétricas internas. Fonte: ENTSO-E / REE.",
@@ -214,7 +214,7 @@ export const imageGalleryData = {
           caption_de: "Duale Strategie zur Wiederaufladung: Top-Down-Weg von Frankreich und Marokko und Bottom-Up-Weg von internen Wasserkraftwerken. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/black_start_hidroelectrico.png",
+          src: "/figuras/black_start_hidroelectrico.png", tema: "T6",
           caption_es: "Intentos de arranque autónomo hidroeléctrico durante la Fase 4. Los puntos grises corresponden a intentos fallidos. La elevada proporción de fracasos refleja la complejidad de energizar una red sin masa síncrona acoplada. Fuente: ENTSO-E / REE.",
           caption_en: "Hydroelectric black start attempts during Phase 4. Grey dots correspond to failed attempts. The high proportion of failures reflects the complexity of energizing a grid without coupled synchronous mass. Source: ENTSO-E / REE.",
           caption_pt: "Tentativas de partida autônoma hidrelétrica durante a Fase 4. Os pontos cinzas correspondem a tentativas falhas. A alta proporção de fracassos reflete a complexidade de energizar uma rede sem massa síncrona acoplada. Fonte: ENTSO-E / REE.",
@@ -223,7 +223,7 @@ export const imageGalleryData = {
           caption_de: "Versuche eines autonomen Wasserkraftstarts während Phase 4. Die grauen Punkte entsprechen fehlgeschlagenen Versuchen. Der hohe Anteil an Fehlversuchen spiegelt die Komplexität wider, ein Netz ohne gekoppelte synchrone Masse zu erregen. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/evolucion_carga_repuesta_francia.png",
+          src: "/figuras/evolucion_carga_repuesta_francia.png", tema: "T4",
           caption_es: "Soporte transfronterizo desde Francia durante la reposición. Las inyecciones de RTE sostuvieron la estabilidad de tensión durante la re-energización de los corredores norte y este antes de que los grupos síncronos internos se acoplaran en cantidad suficiente. Fuente: Comité de Análisis del Gobierno.",
           caption_en: "Cross-border support from France during restoration. RTE injections sustained voltage stability during the re-energization of the northern and eastern corridors before internal synchronous units were coupled in sufficient quantity. Source: Government Analysis Committee.",
           caption_pt: "Suporte transfronteiriço da França durante a reposição. As injeções da RTE mantiveram a estabilidade de tensão durante a reenergização dos corredores norte e leste antes que os grupos síncronos internos se acoplassem em quantidade suficiente. Fonte: Comitê de Análise do Governo.",
@@ -232,7 +232,7 @@ export const imageGalleryData = {
           caption_de: "Grenzüberschreitende Unterstützung aus Frankreich während der Wiederherstellung. Die Einspeisungen von RTE unterstützten die Spannungsstabilität während der Wiederaufladung der Nord- und Ostkorridore, bevor sich interne Synchrongruppen in ausreichender Menge koppelten. Quelle: Analyseausschuss der Regierung."
         },
         {
-          src: "/figuras/intercambio_marruecos_topdown.png",
+          src: "/figuras/intercambio_marruecos_topdown.png", tema: "T4",
           caption_es: "Soporte Top-Down desde la frontera sur (ONEE). La interconexión marroquí resultó determinante para aportar la potencia de cortocircuito necesaria para energizar Andalucía. Fuente: ENTSO-E / REE.",
           caption_en: "Top-Down support from the southern border (ONEE). The Moroccan interconnection was decisive in providing the short-circuit power necessary to energize Andalusia. Source: ENTSO-E / REE.",
           caption_pt: "Suporte Top-Down a partir da fronteira sul (ONEE). A interconexão marroquina foi determinante para fornecer a potência de curto-circuito necessária para energizar a Andaluzia. Fonte: ENTSO-E / REE.",
@@ -241,7 +241,7 @@ export const imageGalleryData = {
           caption_de: "Top-Down-Unterstützung von der Südgrenze (ONEE). Die marokkanische Verbindung erwies sich als entscheidend für die Bereitstellung der erforderlichen Kurzschlussleistung zur Erregung Andalusiens. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/evolucion_mix_reenergizacion.png",
+          src: "/figuras/evolucion_mix_reenergizacion.png", tema: "T1",
           caption_es: "Mix tecnológico durante la re-energización. En las primeras horas, el sistema se sostuvo exclusivamente mediante importaciones transfronterizas y generación síncrona. La incorporación de IBR quedó restringida hasta que se acreditó la potencia de cortocircuito e inercia mínimas necesarias. Fuente: ENTSO-E / REE.",
           caption_en: "Technological mix during re-energization. In the early hours, the system was sustained exclusively by cross-border imports and synchronous generation. The incorporation of IBRs was restricted until the minimum required short-circuit power and inertia were verified. Source: ENTSO-E / REE.",
           caption_pt: "Mix tecnológico durante a reenergização. Nas primeiras horas, o sistema foi sustentado exclusivamente por meio de importações transfronteiriças e geração síncrona. A incorporação de IBR ficou restrita até que se comprovasse a potência de curto-circuito e inércia mínimas necessárias. Fonte: ENTSO-E / REE.",
@@ -250,7 +250,21 @@ export const imageGalleryData = {
           caption_de: "Technologiemix während der Wiederaufladung. In den ersten Stunden wurde das System ausschließlich durch grenzüberschreitende Importe und synchrone Erzeugung aufrechterhalten. Die Einbindung von IBR wurde eingeschränkt, bis die erforderliche Mindestkurzschlussleistung und Trägheit nachgewiesen waren. Quelle: ENTSO-E / REE."
         },
         {
-          src: "/figuras/recuperacion_demanda_peninsular.png",
+          src: "/figuras/timeline-light.png", tema: "T4",
+          caption_es: "Fig. B1 — Respuestas divergentes de RTE (Francia) y REN (Portugal) ante el transitorio ibérico. La línea temporal compara la contención francesa —red preservada y convertida en ancla Top-Down— con el colapso total portugués y su recuperación Bottom-Up mediante islas eléctricas, compensación síncrona en Torrão y sincronización final a 0 MW. Fuente: elaboración propia a partir de ENTSO-E, RTE y REN.",
+          caption_en: "Fig. B1 — Divergent responses of RTE (France) and REN (Portugal) to the Iberian transient. The timeline compares French containment —grid preserved and converted into a Top-Down anchor— with Portugal's total collapse and Bottom-Up recovery via electrical islands, synchronous compensation at Torrão, and final synchronization at 0 MW. Source: Own elaboration based on ENTSO-E, RTE and REN.",
+          caption_de: "Abb. B1 — Divergierende Reaktionen von RTE (Frankreich) und REN (Portugal) auf den iberischen Störfall. Die Zeitlinie vergleicht die französische Eindämmung mit dem vollständigen portugiesischen Zusammenbruch und der Bottom-Up-Wiederherstellung über elektrische Inseln und synchrone Kompensation in Torrão. Quelle: Eigene Darstellung auf Basis von ENTSO-E, RTE und REN.",
+          caption_zh: "图 B1 — RTE（法国）与 REN（葡萄牙）对伊比利亚暂态的不同应对。时间轴对比法国的遏制——电网保全并转为自上而下的支撑锚——与葡萄牙的全面崩溃及通过电气孤岛、Torrão 同步补偿和最终 0 MW 同步实现的自下而上恢复。来源：基于 ENTSO-E、RTE 和 REN 的自制图。"
+        },
+        {
+          src: "/figuras/figuraB3-light.png", tema: "T6",
+          caption_es: "Fig. B2 — Torrão como compensador síncrono durante la reposición portuguesa. Diagrama que compara el modo hidroeléctrico convencional (exportación de potencia activa) con la operación en compensación síncrona pura (consumo mínimo para pérdidas mecánicas y eléctricas + inyección dinámica de potencia reactiva). Maniobra ejecutada a las 17:23 CEST para estabilizar la isla Zêzere 220 kV. Fuente: elaboración propia a partir de ENTSO-E y REN.",
+          caption_en: "Fig. B2 — Torrão as synchronous compensator during Portuguese restoration. Diagram comparing conventional hydroelectric mode (active power export) with pure synchronous compensation operation (minimum losses consumption + dynamic reactive power injection). Maneuver executed at 17:23 CEST to stabilize the Zêzere 220 kV island. Source: Own elaboration based on ENTSO-E and REN.",
+          caption_de: "Abb. B2 — Torrão als Synchronkompensator während der portugiesischen Wiederherstellung. Diagramm mit dem Vergleich zwischen konventionellem Wasserkraftbetrieb (Wirkleistungsabgabe) und reinem Synchronkompensatorbetrieb (Mindestleistung für Verluste + dynamische Blindleistungseinspeisung). Manöver um 17:23 CEST zur Stabilisierung der Insel Zêzere 220 kV. Quelle: Eigene Darstellung auf Basis von ENTSO-E und REN.",
+          caption_zh: "图 B2 — Torrão 在葡萄牙恢复供电期间作为同步补偿器运行。图表对比传统水电模式（有功功率输出）与纯同步补偿运行（最小损耗消耗 + 动态无功功率注入）。该操作于 CEST 17:23 执行，用于稳定 Zêzere 220 kV 孤岛。来源：基于 ENTSO-E 和 REN 的自制图。"
+        },
+        {
+          src: "/figuras/recuperacion_demanda_peninsular.png", tema: "T6",
           caption_es: "Desplome y recuperación de la demanda peninsular. La reposición de los 25 GW perdidos se completó tras aproximadamente 18,5 horas de maniobras ininterrumpidas, con conexión de carga escalonada para evitar nuevos episodios de subfrecuencia. Fuente: Comité de Análisis del Gobierno.",
           caption_en: "Collapse and recovery of peninsular demand. The replacement of the 25 GW lost was completed after almost 19 hours of uninterrupted maneuvers, with staggered load connection to avoid new subfrequency episodes. Source: Government Analysis Committee.",
           caption_pt: "Colapso e recuperação da demanda peninsular. A reposição dos 25 GW perdidos foi concluída após quase 19 horas de manobras ininterruptas, com conexão de carga escalonada para evitar novos episódios de subfrequência. Fonte: Comitê de Análise do Governo.",
@@ -270,7 +284,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 5: Analyse der Berichte",
       images: [
         {
-          src: "/figuras/mapas_termicos_tension_ree.png",
+          src: "/figuras/mapas_termicos_tension_ree.png", tema: "T2",
           caption_es: "Cartografía de tensión en la red de 400 kV (12:30–12:32:57 CEST) según el análisis del Operador del Sistema. REE sostiene que los perfiles se mantuvieron dentro de los rangos del P.O. 1.1 hasta el inicio de las desconexiones en las redes colectoras. Fuente: Red Eléctrica.",
           caption_en: "Voltage mapping in the 400 kV network (12:30–12:32:57 CEST) according to the System Operator's analysis. REE argues that profiles remained within PO 1.1 ranges until the onset of disconnections in collector networks. Source: Red Eléctrica.",
           caption_pt: "Cartografia de tensão na rede de 400 kV (12:30–12:32:57 CEST) segundo a análise do Operador do Sistema. A REE afirma que os perfis se mantiveram dentro das faixas do P.O. 1.1 até o início das desconexões nas redes coletoras. Fonte: Red Eléctrica.",
@@ -279,7 +293,7 @@ export const imageGalleryData = {
           caption_de: "Spannungskartierung im 400-kV-Netz (12:30–12:32:57 CEST) nach Analyse des Systembetreibers. REE argumentiert, dass die Profile bis zum Beginn der Abschaltungen in den Kollektornetzen innerhalb der P.O. 1.1-Bereiche blieben. Quelle: Red Eléctrica."
         },
         {
-          src: "/figuras/fluctuaciones_tension_previas.png",
+          src: "/figuras/fluctuaciones_tension_previas.png", tema: "T2",
           caption_es: "Curvas Q-V de estabilidad de tensión en Carmona 400 kV. Las maniobras de mallado desplazaron el punto de operación contrayendo el margen al colapso un 57 %. Fuente: IIT-ICAI / Compass Lexecon.",
           caption_en: "Q-V voltage stability curves at Carmona 400 kV. Meshing maneuvers shifted the operating point, shrinking the margin to collapse by 57%. Source: IIT-ICAI / Compass Lexecon.",
           caption_pt: "Curvas Q-V de estabilidade de tensão em Carmona 400 kV. As manobras de malha deslocaram o ponto de operação, reduzindo a margem para o colapso em 57%. Fonte: IIT-ICAI / Compass Lexecon.",
@@ -288,7 +302,7 @@ export const imageGalleryData = {
           caption_de: "Q-V-Kurven der Spannungsstabilität in Carmona 400 kV. Die Vermaschungsmanöver verschoben den Betriebspunkt und verringerten die Kollapsmarge um 57 %. Quelle: IIT-ICAI / Compass Lexecon."
         },
         {
-          src: "/figuras/aluvion_alertas_sobretension_sur.png",
+          src: "/figuras/aluvion_alertas_sobretension_sur.png", tema: "T3",
           caption_es: "Oscilograma del disparo raíz (Granada, 12:32:56.993 CEST). Panel inferior: tensión en el secundario colector —fase A alcanza ~145 kV— invisible para el SCADA de REE en la red de 400 kV por efecto Tap-Lag. Fuente: IIT-ICAI / AELEC.",
           caption_en: "Oscillogram of the root trip (Granada, 12:32:56.993 CEST). Lower panel: voltage on the collector secondary reaches ~145 kV, invisible to REE's SCADA on the 400 kV grid due to the Tap-Lag effect. Source: IIT-ICAI / AELEC.",
           caption_pt: "Oscilograma do disparo raiz (Granada, 12:32:56.993 CEST). Painel inferior: tensão no secundário coletor —fase A atinge ~145 kV— invisível para o SCADA da REE na rede de 400 kV por efeito Tap-Lag. Fonte: IIT-ICAI / AELEC.",
@@ -297,7 +311,7 @@ export const imageGalleryData = {
           caption_de: "Oszillogramm der Wurzelauslösung (Granada, 12:32:56.993 CEST). Unteres Feld: Spannung auf der Kollektorsekundärseite —Phase A erreicht ~145 kV— für das SCADA von REE im 400-kV-Netz aufgrund des Tap-Lag-Effekts unsichtbar. Quelle: IIT-ICAI / AELEC."
         },
         {
-          src: "/figuras/asimetria_balance_reactiva_sur.png",
+          src: "/figuras/asimetria_balance_reactiva_sur.png", tema: "T2",
           caption_es: "Balance de potencia reactiva a las 12:30 CEST. Déficit neto: −0,6 GVAr. Fuente: IIT-ICAI / Compass Lexecon.",
           caption_en: "Reactive power balance at 12:30 CEST. Net deficit: −0.6 GVAr. Source: IIT-ICAI / Compass Lexecon.",
           caption_pt: "Balanço de potência reativa às 12:30 CEST. Déficit líquido: −0,6 GVAr. Fonte: IIT-ICAI / Compass Lexecon.",
@@ -306,7 +320,7 @@ export const imageGalleryData = {
           caption_de: "Blindleistungsbilanz um 12:30 CEST. Nettodefizit: −0,6 GVAr. Quelle: IIT-ICAI / Compass Lexecon."
         },
         {
-          src: "/figuras/perdida_sincronismo_frontera.png",
+          src: "/figuras/perdida_sincronismo_frontera.png", tema: "T4",
           caption_es: "Intercambio de potencia activa en la frontera España-Francia durante la Fase 3. La oscilación final refleja la divergencia de polos antes de la apertura definitiva. Fuente: ENTSO-E.",
           caption_en: "Active power exchange at the Spain-France border during Phase 3. The final oscillation reflects pole divergence before final opening. Source: ENTSO-E.",
           caption_pt: "Intercâmbio de potência ativa na fronteira Espanha-França durante a Fase 3. A oscilação final reflete a divergência de polos antes da abertura definitiva. Fonte: ENTSO-E.",
@@ -326,7 +340,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 6: Kommunikative Auswirkungen",
       images: [
         {
-          src: "/figuras/collage_conservador.png",
+          src: "/figuras/collage_conservador.png", tema: "T8",
           caption_es: "Cobertura representativa de medios con postura crítica frente a la gestión institucional. Se identifica un patrón de encuadre que reduce el fenómeno multicausal a la relación «mayor penetración renovable → menor estabilidad → apagón». Fuente: elaboración propia.",
           caption_en: "Representative coverage from media critical of institutional management. A framing pattern reduces the multi-causal phenomenon to: «higher renewable penetration → lower stability → blackout». Source: Own elaboration.",
           caption_pt: "Cobertura representativa de meios com postura crítica em relação à gestão institucional. Identifica-se um padrão de enquadramento que reduz o fenômeno multicausal à relação «maior penetração renovável → menor estabilidade → apagão». Fonte: elaboração própria.",
@@ -335,7 +349,7 @@ export const imageGalleryData = {
           caption_de: "Repräsentative Berichterstattung von Medien mit einer kritischen Haltung gegenüber dem institutionellen Management. Es wird ein Rahmenmuster identifiziert, das das multikausale Phänomen auf die Beziehung «höhere Durchdringung mit erneuerbaren Energien → geringere Stabilität → Stromausfall» reduziert. Quelle: eigene Erarbeitung."
         },
         {
-          src: "/figuras/collage_progresista.png",
+          src: "/figuras/collage_progresista.png", tema: "T8",
           caption_es: "Cobertura representativa de medios con postura favorable a la narrativa oficial. La selección de evidencias es simétricamente parcial a la del bloque anterior. Fuente: elaboración propia.",
           caption_en: "Representative coverage from media favorable to the official narrative. The selection of evidence is symmetrically partial compared to the critical block. Source: Own elaboration.",
           caption_pt: "Cobertura representativa de meios com postura favorável à narrativa oficial. A seleção de evidências é simetricamente parcial em relação à do bloco anterior. Fonte: elaboração própria.",
@@ -344,7 +358,7 @@ export const imageGalleryData = {
           caption_de: "Repräsentative Berichterstattung von Medien mit einer positiven Haltung zum offiziellen Narrativ. Die Auswahl der Belege ist symmetrisch einseitig im Vergleich zum vorherigen Block. Quelle: eigene Erarbeitung."
         },
         {
-          src: "/figuras/collage_internacional.png",
+          src: "/figuras/collage_internacional.png", tema: "T8",
           caption_es: "Cobertura internacional del incidente. Los medios internacionales tendieron a un encuadre estructural europeo, con mayor presencia de argumentos de seguridad de infraestructuras críticas. Fuente: elaboración propia.",
           caption_en: "International coverage of the incident. International media leaned toward a structural European framing, emphasizing critical infrastructure security. Source: Own elaboration.",
           caption_pt: "Cobertura internacional do incidente. Os meios internacionais tenderam a um enquadramento estrutural europeu, com maior presença de argumentos de segurança de infraestruturas críticas. Fonte: elaboração própria.",
@@ -353,7 +367,7 @@ export const imageGalleryData = {
           caption_de: "Internationale Berichterstattung über den Vorfall. Die internationalen Medien tendierten zu einem europäischen Strukturrahmen mit einer stärkeren Präsenz von Argumenten zur Sicherheit kritischer Infrastrukturen. Quelle: eigene Erarbeitung."
         },
         {
-          src: "/figuras/collage_ciudadanos.png",
+          src: "/figuras/collage_ciudadanos.png", tema: "T8",
           caption_es: "Publicaciones ciudadanas durante las primeras horas. Se identifican tres patrones: normalización pragmática y humor, crítica institucional, y búsqueda activa de explicaciones. Fuente: elaboración propia.",
           caption_en: "Citizen publications during the first hours. Three patterns are identified: pragmatic normalization/humor, institutional criticism, and active search for causal explanations. Source: Own elaboration.",
           caption_pt: "Publicações de cidadãos durante as primeiras horas. Identificam-se três padrões: normalização pragmática e humor, crítica institucional e busca ativa por explicações. Fonte: elaboração própria.",
@@ -361,8 +375,8 @@ export const imageGalleryData = {
           caption_it: "Pubblicazioni dei cittadini durante le prime ore. Si identificano tre schemi: normalizzazione pragmatica e umorismo, critica istituzionale e ricerca attiva di spiegazioni. Fonte: elaborazione propria.",
           caption_de: "Bürgerpublikationen in den ersten Stunden. Es lassen sich drei Muster erkennen: pragmatische Normalisierung und Humor, institutionelle Kritik und die aktive Suche nach Erklärungen. Quelle: eigene Erarbeitung."
         },
-        {
-          src: "/figuras/collage_politicos.png",
+{
+          src: "/figuras/collage_politicos.png", tema: "T8",
           caption_es: "Publicaciones de líderes políticos españoles en X durante las 72 horas posteriores. Ninguno abordó aspectos técnicos, orientándose a la atribución de responsabilidades. Fuente: elaboración propia.",
           caption_en: "Posts by Spanish political leaders on X during the following 72 hours. None addressed technical aspects, focusing instead on attribution of blame. Source: Own elaboration.",
           caption_pt: "Publicações de líderes políticos espanhóis no X durante as 72 horas seguintes. Nenhum abordou aspectos técnicos, focando na atribuição de responsabilidades. Fonte: elaboração própria.",
@@ -382,7 +396,7 @@ export const imageGalleryData = {
       title_de: "Kapitel 7: Resilienz und Zukunft",
       images: [
         {
-          src: "/figuras/scr_iberia.png",
+          src: "/figuras/scr_iberia.png", tema: "T9",
           caption_es: "Evolución geográfica de las tensiones en la red de 400 kV previa al colapso. Las zonas de color cálido muestran la progresión y concentración de sobretensiones severas en el sur y suroeste peninsular. Fuente: IIT-ICAI.",
           caption_en: "Geographical evolution of voltages in the 400 kV grid prior to collapse. Warm-colored zones show the progression and concentration of severe overvoltages in the southern and southwestern peninsula. Source: IIT-ICAI.",
           caption_pt: "Evolução geográfica das tensões na rede de 400 kV antes do colapso. As zonas de cor quente mostram a progressão e concentração de sobretensões severas no sul e sudoeste peninsular. Fonte: IIT-ICAI.",
@@ -391,7 +405,7 @@ export const imageGalleryData = {
           caption_de: "Geografische Entwicklung der Spannungen im 400-kV-Netz vor dem Zusammenbruch. Die warmfarbigen Zonen zeigen das Fortschreiten und die Konzentration schwerwiegender Überspannungen im Süden und Südwesten der Halbinsel. Quelle: IIT-ICAI."
         },
         {
-          src: "/figuras/conventionalunits.png",
+          src: "/figuras/conventionalunits.png", tema: "T1",
           caption_es: "Unidades síncronas convencionales acopladas diariamente. La tendencia decreciente en los meses previos al 28-A refleja la expulsión sistemática por orden de mérito. Fuente: ENTSO-E.",
           caption_en: "Conventional synchronous units coupled daily. The decreasing trend in the months prior to April 28 reflects their systematic market displacement. Source: ENTSO-E.",
           caption_pt: "Unidades síncronas convencionais acopladas diariamente. A tendência decrescente nos meses anteriores a 28-A reflete a expulsão sistemática por ordem de mérito. Fonte: ENTSO-E.",
@@ -400,7 +414,7 @@ export const imageGalleryData = {
           caption_de: "Täglich gekoppelte konventionelle Synchroneinheiten. Der rückläufige Trend in den Monaten vor dem 28-A spiegelt die systematische Verdrängung nach der Merit-Order wider. Quelle: ENTSO-E."
         },
         {
-          src: "/figuras/gfl_vs_gfm_circuit1.png",
+          src: "/figuras/gfl_vs_gfm_circuit1.png", tema: "T9",
           caption_es: "Circuitos equivalentes: Inversor GFL (fuente de corriente dependiente) frente a inversor GFM (fuente de tensión autónoma). El GFM no necesita leer la red para operar: la crea.",
           caption_en: "Equivalent circuits: GFL inverter (dependent current source) vs. GFM inverter (autonomous voltage source). GFM doesn't need to read the grid to operate: it creates it.",
           caption_pt: "Circuitos equivalentes: Inversor GFL (fonte de corrente dependente) versus inversor GFM (fonte de tensão autônoma). O GFM não precisa ler a rede para operar: ele a cria.",
@@ -409,7 +423,7 @@ export const imageGalleryData = {
           caption_de: "Ersatzschaltbilder: GFL-Wechselrichter (abhängige Stromquelle) gegenüber GFM-Wechselrichter (autonome Spannungsquelle). Der GFM muss das Netz nicht auslesen, um zu funktionieren: Er erzeugt es."
         },
         {
-          src: "/figuras/hitachi_hybrid.png",
+          src: "/figuras/hitachi_hybrid.png", tema: "T9",
           caption_es: "Esquema de arquitectura híbrida: los BESS-GFM proveen FFR; los compensadores síncronos aportan inercia rotacional y potencia de cortocircuito. Fuente: Hitachi Energy.",
           caption_en: "Hybrid architecture diagram: BESS-GFM provide FFR; synchronous condensers provide rotational inertia and short-circuit power. Source: Hitachi Energy.",
           caption_pt: "Esquema de arquitetura híbrida: os BESS-GFM fornecem FFR; os compensadores síncronos contribuem com inércia rotacional e potência de curto-circuito. Fonte: Hitachi Energy.",
@@ -418,7 +432,7 @@ export const imageGalleryData = {
           caption_de: "Hybrides Architekturschema: BESS-GFM bieten FFR; synchrone Phasenschieber liefern Rotations-Trägheit und Kurzschlussleistung. Quelle: Hitachi Energy."
         },
         {
-          src: "/figuras/coste_optimo_ers.png",
+          src: "/figuras/coste_optimo_ers.png", tema: "T5",
           caption_es: "El mínimo de coste total del sistema se alcanza con un mix que remunera explícitamente los ERS. La diferencia es el coste de los servicios ancilares no remunerados. Fuente: ESIG.",
           caption_en: "Minimum total system cost is achieved with a mix that explicitly remunerates ERS. The difference is the cost of unremunerated ancillary services. Source: ESIG.",
           caption_pt: "O mínimo de custo total do sistema é alcançado com um mix que remunera explicitamente os ERS. A diferença é o custo dos serviços ancilares não remunerados. Fonte: ESIG.",
@@ -427,7 +441,7 @@ export const imageGalleryData = {
           caption_de: "Die minimalen Gesamtkosten des Systems werden mit einem Mix erreicht, der ERS explizit vergütet. Die Differenz sind die Kosten für unvergütete Systemdienstleistungen. Quelle: ESIG."
         },
         {
-          src: "/figuras/po74_banda_muerta.png",
+          src: "/figuras/po74_banda_muerta.png", tema: "T9",
           caption_es: "La zona sombreada ilustra la «banda muerta» del antiguo P.O. 7.4, inhabilitando la defensa del sistema frente a transitorios capacitivos rápidos. Fuente: REE.",
           caption_en: "The shaded area illustrates the «dead band» of the old P.O. 7.4, disabling system defense against fast capacitive transients. Source: REE.",
           caption_pt: "A zona sombreada ilustra a «banda morta» do antigo P.O. 7.4, desabilitando a defesa do sistema contra transitórios capacitivos rápidos. Fonte: REE.",
@@ -436,7 +450,7 @@ export const imageGalleryData = {
           caption_de: "Der schattierte Bereich veranschaulicht das «Totband» der alten P.O. 7.4, das die Verteidigung des Systems gegen schnelle kapazitive Transienten außer Kraft setzt. Quelle: REE."
         },
         {
-          src: "/figuras/ers_revenue_stacking.png",
+          src: "/figuras/ers_revenue_stacking.png", tema: "T5",
           caption_es: "Fuentes de ingresos apiladas para un sistema BESS-GFM: mercado diario, aFRR/mFRR, inercia sintética y FFR. Fuente: elaboración propia.",
           caption_en: "Stacked revenue sources for a BESS-GFM system: day-ahead market, aFRR/mFRR, synthetic inertia, and FFR. Source: Own elaboration.",
           caption_pt: "Fontes de receitas empilhadas para um sistema BESS-GFM: mercado diário, aFRR/mFRR, inércia sintética e FFR. Fonte: elaboração própria.",

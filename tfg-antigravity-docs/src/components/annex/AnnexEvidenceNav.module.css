@@ -1,0 +1,122 @@
+/* AnnexEvidenceNav.module.css
+   Navegación interna de anexo — estética de índice académico.
+   Variables scoped al .navWrapper.
+   Sin neón. Sin dashboard.
+*/
+
+.navWrapper {
+  /* Light mode */
+  --nav-bg:        #f5f3ee;
+  --nav-border:    #dedad4;
+  --nav-text:      #3a342a;
+  --nav-muted:     #625c52;
+  --nav-accent:    #145c63;
+  --nav-btn-bg:    #fdfbf7;
+  --nav-btn-hover: #e8f4f5;
+  --nav-btn-active:#145c63;
+  --nav-btn-active-text: #ffffff;
+
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--nav-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 8px;
+  padding: 0.7rem 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+html[data-theme='dark'] .navWrapper {
+  --nav-bg:        #0f1825;
+  --nav-border:    rgba(148, 163, 184, 0.15);
+  --nav-text:      #e2e8f0;
+  --nav-muted:     #94a3b8;
+  --nav-accent:    #83bdc2;
+  --nav-btn-bg:    #0d1117;
+  --nav-btn-hover: rgba(131, 189, 194, 0.1);
+  --nav-btn-active:#1e6b71;
+  --nav-btn-active-text: #f0f4f8;
+}
+
+.navLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nav-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.navButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--nav-btn-bg);
+  color: var(--nav-accent);
+  border: 1px solid var(--nav-border);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+.navBtn:hover {
+  background-color: var(--nav-btn-hover);
+  border-color: var(--nav-accent);
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--nav-accent);
+  outline-offset: 2px;
+}
+
+.navBtn:active {
+  background-color: var(--nav-btn-active);
+  border-color: var(--nav-btn-active);
+  color: var(--nav-btn-active-text);
+}
+
+.navBtnIcon {
+  font-size: 0.85em;
+  line-height: 1;
+}
+
+.navBtnLabel {
+  /* label text — no extra styles needed */
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .navWrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .navButtons {
+    width: 100%;
+  }
+
+  .navBtn {
+    flex: 1;
+    justify-content: center;
+    min-width: 100px;
+  }
+}

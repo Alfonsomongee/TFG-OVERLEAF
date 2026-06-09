@@ -1,0 +1,331 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 8: COMPONENTES UI GENERAL
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de componentes UI reutilizables en src/components/
+Propósito: Documentar librería de componentes visuales no específicos de datos
+
+================================================================================
+ESTRUCTURA DE src/components/
+================================================================================
+
+Estimada basada en imports detectados:
+
+src/components/
+├── GlitchTitle.jsx              (efecto glitch)
+├── ExecutiveHook.jsx             (resumen ejecutivo)
+├── NavigationGuide.jsx           (guía de navegación)
+├── CuestionAbierta.jsx           (pregunta abierta/encuesta)
+├── InteractiveFootnote.jsx       (nota interactiva)
+├── MediaCardGallery.jsx          (galería de tarjetas)
+├── SentimentAnalyzer.jsx         (análisis de sentimiento)
+├── TimelineCrisis.jsx            (línea de tiempo)
+├── AnimatedRestorationMap.jsx    (mapa animado)
+├── ForensicUI/
+│   └── Primitives.js             (componentes forenses: ForensicTable, etc.)
+├── EsiosCharts/
+│   └── DemandaChart.jsx          (gráfica de demanda)
+├── Simulators/
+│   ├── PVCurveSimulator.jsx
+│   ├── SwingEquationSimulator.jsx
+│   ├── UFLSVisualizer.jsx (en carpeta?)
+│   └── TapLagSequence.jsx
+├── Maps/
+│   ├── BlackoutPropagationMap.jsx
+│   └── IberianGridTopology.jsx
+├── Charts/
+│   ├── FrequencyChart.jsx
+│   ├── RadarVulnerabilidad.jsx    (con useEsiosAnalysis ✓)
+│   ├── TermometroRiesgo.jsx       (con useEsiosAnalysis ✓)
+│   ├── MixGeneracion.jsx          (con useEsiosAnalysis ✓)
+│   └── ... (más componentes)
+├── StickyCollapse.jsx            (componente collapse pegajoso)
+├── ForensicReveal.jsx            (reveal con animación)
+└── ... (posiblemente más)
+
+================================================================================
+COMPONENTES DE PRESENTACIÓN (NO DATOS)
+================================================================================
+
+1. GlitchTitle
+   Propósito: Título con efecto glitch/cyberpunk
+   Props probable: {children, level?, className?}
+   Styling: Animación de glitch, colores cian/magenta
+   Ubicación: Títulos de secciones principales
+
+2. ExecutiveHook
+   Propósito: Resumen ejecutivo en homepage
+   Props probable: (ninguna)
+   Contenido: Resumen de 2-3 párrafos del proyecto
+   Styling: Prominent, posiblemente full-width
+
+3. NavigationGuide
+   Propósito: Guía interactiva de cómo navegar el documento
+   Props probable: {steps?, onComplete?}
+   Interactividad: Probablemente clicks progresivos
+
+4. InteractiveFootnote
+   Propósito: Nota a pie de página interactiva
+   Props probable: {id, content, trigger?}
+   Interactividad: Hover o click para mostrar/ocultar
+
+5. SentimentAnalyzer
+   Propósito: Visualización de análisis de sentimiento
+   Props probable: {data, timeline?}
+   Datos: Probablemente score de sentimiento a través del tiempo
+
+6. MediaCardGallery
+   Propósito: Galería de tarjetas (fotos, videos, artículos)
+   Props probable: {items, columns?, layout?}
+   Contenido: Array de {title, image, description, link}
+
+================================================================================
+COMPONENTES DE TIMELINE/NARRATIVA
+================================================================================
+
+7. TimelineCrisis
+   Propósito: Línea de tiempo detallada del incidente
+   Props probable: {events, detailed?, compact?}
+   Formato: Eventos ordenados cronológicamente
+   Interactividad: Expandir/colapsar eventos
+
+8. AnimatedRestorationMap
+   Propósito: Mapa de restauración del suministro animado
+   Props probable: {data, timeline?, speed?}
+   Animación: Progresión temporal de recuperación de zonas
+   Dependencias: Maplibre GL o similar
+
+9. StickyCollapse
+   Propósito: Componente collapse que se queda "pegado" al scroll
+   Props probable: {title, children, sticky?, threshold?}
+   Comportamiento: Fixed position al scrollear, collapse en desktopi
+
+10. ForensicReveal
+    Propósito: Reveal animado con efecto "descubrimiento"
+    Props probable: {hidden, reveal, delay?}
+    Animación: Wipe, fade, o glitch reveal
+    Propósito narrativo: Construir tensión antes de revelar info crítica
+
+================================================================================
+COMPONENTES DE VISUALIZACIÓN (NO DATOS ESIOS)
+================================================================================
+
+11. PVCurveSimulator
+    Propósito: Simulador interactivo de curva P-V
+    Props probable: {initialLoadLevel?, onStateChange?}
+    Interactividad: Sliders para variar parámetros
+    Propósito educativo: Mostrar cómo crece voltaje/potencia
+
+12. SwingEquationSimulator
+    Propósito: Simulador de ecuación de oscilación
+    Props probable: {initialH?, initialP?, duration?}
+    Ecuación: ω_dot = (P - D*ω) / (2*H)
+    Output: Gráfica de rotor angle vs tiempo
+
+13. UFLSVisualizer
+    Propósito: Visualizador de Sistema Automático de Deslastre
+    Props probable: {stages, triggeredStage?, threshold?}
+    Educación: Mostrar qué cargas se desconectan en qué orden
+
+14. TapLagSequence
+    Propósito: Secuencia de maniobra LAG (Late Action Game)
+    Props probable: {transformers, timeline?}
+    Visualización: Taps de transformadores autotransformadores cambiando
+
+15. BlackoutPropagationMap
+    Propósito: Mapa de propagación de apagón
+    Props probable: {startPoint, timeline, speed?}
+    Animación: Onda de propagación de colapso en mapa de península
+
+16. IberianGridTopology
+    Propósito: Topología de red eléctrica ibérica
+    Props probable: {highlighted?, interaktive?}
+    Componente: Diagrama de nodos y líneas (no datos dinámicos)
+
+17. FrequencyChart
+    Propósito: Gráfica de frecuencia de red
+    Props probable: {data, range?, threshold?}
+    Eje Y: Hz (nominalmente 50 Hz)
+    Datos: Probablemente datos28A.json
+
+================================================================================
+COMPONENTES FORENSES
+================================================================================
+
+ForensicUI/Primitives.js contiene:
+
+  ForensicTable
+    - Tabla styled como documento forense
+    - Props: {title, source, children, footNote?}
+    - Styling: Border left color, background tint
+
+  Posibles otros primitivos:
+    - ForensicBox (highlight box)
+    - ForensicLabel (etiqueta de evidencia)
+    - ForensicTimestamp (timestamp styled)
+
+Patrón: Componentes minimalistas que envuelven elementos estándar
+         con styling consistente "de investigación"
+
+================================================================================
+PATRONES DE DISEÑO DETECTADOS
+================================================================================
+
+Patrón 1: Props mínimas
+  - La mayoría de componentes reciben {children} y opciones simples
+  - No sobrecargados con Props complejos
+  - Composición sobre configuración
+
+Patrón 2: Accessibility en mente
+  - Props sugeridas: aria-label, role
+  - Probable: keyboard navigation soportado
+
+Patrón 3: Responsive por defecto
+  - Componentes probablemente usan CSS media queries
+  - No hardcodean breakpoints en JS
+
+Patrón 4: Dark mode integration
+  - Uso de variables CSS (--bg-0, --text-1, etc.)
+  - No hardcodean colores
+
+Patrón 5: Estilo cyberpunk
+  - Naming: "Glitch", "Forensic", "Reveal"
+  - Efectos: Animaciones, transiciones, colores high-contrast
+
+================================================================================
+DEPENDENCIAS EXTERNAS PROBABLES
+================================================================================
+
+Librerías visuales:
+  - Recharts (gráficas)
+  - Plotly (gráficas avanzadas)
+  - ECharts (visualizaciones complejas)
+  - Maplibre GL (mapas)
+  - Reactflow (diagramas)
+  - react-force-graph-2d (grafos)
+  - Deck.gl (geo-visualizaciones)
+
+Animación:
+  - GSAP (@gsap/react)
+  - Framer Motion (motion)
+  - react-scrollama (scroll-driven)
+  - Lenis (smooth scroll)
+
+Utilidades:
+  - react-icons (iconografía)
+  - lucide-react (más iconografía)
+  - clsx (className utilitarios)
+  - react-animated-cursor (cursor custom)
+
+================================================================================
+ARQUITECTURA PROBABLE DE UN COMPONENTE
+================================================================================
+
+Patrón común esperado:
+
+```jsx
+import { useColorMode } from '@docusaurus/theme-common';
+import { useDocLang } from '@site/src/hooks/useDocLang';
+import React, { useMemo, useCallback } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+function ComponentNameInner() {
+  const { colorMode } = useColorMode();
+  const lang = useDocLang();
+  const isDark = colorMode === 'dark';
+
+  // Color palette based on theme
+  const colors = isDark ? { ... } : { ... };
+
+  // Render
+  return (
+    <div style={{ backgroundColor: colors.bg }}>
+      {/* contenido */}
+    </div>
+  );
+}
+
+export default function ComponentName() {
+  return (
+    <BrowserOnly fallback={<Skeleton />}>
+      {() => <ComponentNameInner />}
+    </BrowserOnly>
+  );
+}
+```
+
+================================================================================
+POTENCIALES PROBLEMAS
+================================================================================
+
+1. **Duplicación de componentes**
+   - ¿RadarVulnerabilidad está en src/components/Charts/ o src/components/?
+   - ¿Hay múltiples versiones de componentes similares?
+
+2. **Mantenimiento de colores**
+   - Si cada componente hardcodea colores, cambiar tema es difícil
+   - Mejor: usar variables CSS
+
+3. **SSR safety**
+   - Todos deben estar envueltos en BrowserOnly
+   - Si alguno no lo está, causará errores en build
+
+4. **Testing**
+   - ¿Hay tests unitarios para componentes?
+   - Probablemente no (no es típico en Docusaurus)
+
+5. **Documentación**
+   - ¿Cada componente tiene PropTypes documentado?
+   - ¿Hay Storybook o demo pages?
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. MAPEO RÁPIDO:
+   a) Listar todos los archivos en src/components/
+   b) Agrupar por categoría (UI, Forense, Charts, Maps, etc.)
+   c) Identificar componentes sin usar
+
+2. ANÁLISIS DE CADA COMPONENTE:
+   a) Propósito y uso
+   b) Props y parámetros
+   c) Dependencias externas
+   d) Styling (inline, CSS modules, o CSS global)
+
+3. IDENTIFICAR PUNTOS DE RIESGO:
+   a) Componentes que hardcodean colores
+   b) Componentes sin BrowserOnly
+   c) Componentes con props complejas
+   d) Duplicación de código
+
+4. OPTIMIZACIONES SUGERIDAS:
+   a) Extraer colores a variables CSS
+   b) Crear componentes base (Button, Card, etc.)
+   c) Memoizar componentes pesados
+   d) Lazy load componentes no críticos
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Prioritarios:
+  ✓ src/components/ (listar contenido)
+  ✓ src/components/ForensicUI/Primitives.js
+  ✓ src/components/Charts/ (MapGen, RadarVul, TermometroRiesgo)
+
+Secundarios:
+  ✓ src/components/EsiosCharts/
+  ✓ src/components/Maps/
+  ✓ src/components/Simulators/
+
+================================================================================
+STATUS AUDITORÍA: ESTRUCTURA MAPEADA
+================================================================================
+
+Componentes estimados: 20-30+
+Patrones: Cyberpunk + Forense + Educación
+Complejidad: MEDIA (mezcla de simple y avanzado)
+
+Próximo paso: Inspeccionar estructura de carpetas y contenido

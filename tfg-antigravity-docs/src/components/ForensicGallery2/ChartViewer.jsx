@@ -156,7 +156,7 @@ export default function ChartViewer({ chartId, locale, onSelectChart }) {
   return (
     <>
       {/* ── ZONA SUPERIOR DERECHA (Gráfica) ── */}
-      <div className={styles.chartArea}>
+      <div id={chartId} className={styles.chartArea}>
         {/* ── HEADER ── */}
         <div className={styles.chartHeader}>
           <div className={styles.chartHeaderTop}>

@@ -5,9 +5,9 @@ title: "Contexto Técnico"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import EnergyTransitionStreamgraph from "@site/src/components/EnergyTransitionStreamgraph";
-import MixGeneracion from "@site/src/components/MixGeneracion";
 import CollapseSismograph from "@site/src/components/CollapseSismograph";
-import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator";
+import ThemedImage from '@theme/ThemedImage';
+import HvdcControlModeTransitionFigure from "@site/src/components/PMODEDiagram";
 
 <GlitchTitle>Contexto Técnico</GlitchTitle>
 
@@ -20,35 +20,38 @@ A pesar de que la demanda máxima de electricidad en España lleva más de una d
 
 En el primer cuatrimestre de 2025, el sistema peninsular consolidó este escenario superando los 100 GW de capacidad renovable instalada. A enero de 2025, casi el 66 % de la capacidad total procedía de fuentes descarbonizadas, con energía eólica y solar fotovoltaica en paridad técnica (24,9 % cada una). Incluyendo el autoconsumo distribuido, la cuota fotovoltaica global ascendía a más de 48,1 GW, frente a los 33,1 GW eólicos.
 
-![Desglose de la capacidad de generación instalada a enero de 2025](/figuras/capacidad_instalada_2025.png) _Figura 4. Capacidad de generación instalada a 31 enero 2025. Fuente: NREL / Red Eléctrica._
+import BrowserOnly from '@docusaurus/BrowserOnly';
+
+<BrowserOnly>
+  {() => {
+    const InstalledCapacityChart = require('@site/src/components/EntsoeCharts/InstalledCapacityChart').default;
+    return (
+      <div style={{ marginBottom: '2rem', marginTop: '2rem' }}>
+        <InstalledCapacityChart hideFooter={true} />
+      </div>
+    );
+  }}
+</BrowserOnly>
+
+_Figura B1. Capacidad instalada por tecnología en el sistema ibérico antes del 28-A. Fuente: ENTSO-E, serie Installed Capacity per Type, enero de 2025._
 
 Como contrapartida, la generación síncrona convencional ha sido progresivamente desplazada: el carbón ocupa un papel residual (1,6 %) de la capacidad instalada, el nuclear (5,5 %) afronta un calendario de cierre progresivo, y los más de 26 GW de ciclo combinado de gas (*20,4 %*) operan con factores de utilización inferiores al 15 % anuales.
 
-Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, inercia física y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante inversores (IBR), que operan en modo estándar como seguidores de red (grid-following): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos PLL y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una RoCoF amplificada ante cualquier desequilibrio de potencia activa ([*ver Radar de Vulnerabilidad Nodal interactivo*](./anexo-interactivos#frequency)).
+Desde la perspectiva de la ingeniería de sistemas de potencia, esta transformación plantea retos operativos estructurales. La estabilidad histórica de las redes descansaba en los generadores síncronos —térmicos, nucleares e hidráulicos— cuyas masas rotativas aportaban energía cinética inmediata, inercia física y elevadas corrientes de cortocircuito ante cualquier perturbación. Las nuevas instalaciones solares y eólicas se conectan mediante inversores (IBR), que operan en modo estándar como seguidores de red (grid-following): sincronizan su exportación con la tensión y frecuencia externas a través de algoritmos PLL y, al carecer de masas rotativas, no aportan inercia síncrona ni responden intrínsecamente a las fluctuaciones de la red. Esta reducción de masa síncrona afecta simultáneamente a los dos parámetros críticos de estabilidad: por un lado, la inercia (asociada a la frecuencia y modelada por la Ecuación de Oscilación o *Swing Equation*); por otro, la potencia de cortocircuito (asociada a la estabilidad de tensión). El resultado es que el sistema ibérico opera de forma rutinaria con baja capacidad de cortocircuito, elevada impedancia nodal y una RoCoF amplificada ante cualquier desequilibrio de potencia activa. El Radar de Vulnerabilidad Sistémica queda disponible en el Anexo IX · Metodología, modelos y datos.
 
 <KeyFact id="inercia-28a">
 
-La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s como promedio ponderado peninsular — por encima del umbral ENTSO-E de 2,0 s. Sin embargo, los valores zonales eran significativamente inferiores: 1,3 s en el sur y 1,84 s en el centro, ambos por debajo del umbral. El colapso se originó en la zona más débil, no en el promedio — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esto establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia.
+La ecuación de swing gobierna el comportamiento de la frecuencia ante perturbaciones de potencia activa. Sin embargo, el 28-A certificó que el sistema tenía $H = 2,3$ s como promedio ponderado peninsular — por encima del umbral ENTSO-E de 2,0 s. Sin embargo, los valores zonales eran significativamente inferiores: 1,3 s en el sur y 1,84 s en el centro, ambos por debajo del umbral. El colapso se originó en la zona más débil, no en el promedio — y aun así colapsó. El mecanismo relevante fue de naturaleza diferente: la pérdida de fortaleza de red medida por el SCR, que determinó la dinámica de tensión en el plano Q-V. Esta establece la jerarquía analítica del incidente: primero estabilidad de tensión, luego inercia. El modelo didáctico de ecuación de swing queda disponible en el Anexo IX · Metodología, modelos y datos.
 
 </KeyFact>
-
-<details className="collapsible">
-<summary>
-  <span>▶ Simulador interactivo — Ecuación de Oscilación (RoCoF vs. inercia H)</span>
-</summary>
-<div className="collapsibleBody">
-<SwingEquationSimulator />
-<p style={{fontSize:'0.8rem', color:'var(--ifm-color-emphasis-600)', marginTop:'0.75rem'}}>
-  También disponible en la <a href="./anexo-interactivos#swing">Galería de Gráficas Interactivas</a>.
-</p>
-</div>
-</details>
 
 ## Descarbonización e implicaciones operativas
 
 El éxito ambiental de la transición energética ibérica es indiscutible. Las emisiones del sector eléctrico alcanzaron su máximo histórico en torno a los 110 MtCO₂-eq en 2007; al cierre de 2024, coincidiendo con el récord histórico de generación renovable (*56,8 %*), se redujeron hasta los 27,0 millones de toneladas de CO₂-eq — un descenso del 75,7 % respecto al pico. El factor de emisión cayó desde los 290 gCO₂/kWh de 2015 hasta valores próximos a los 80–100 gCO₂/kWh en 2024.
 
 <EnergyTransitionStreamgraph />
+
+_Figura B2. Estratos de transición del sistema eléctrico español: evolución del mix de generación y emisiones, 1990–2025._
 
 La contrapartida operativa es la que esta investigación examina: la sustitución de centrales térmicas por fuentes renovables conectadas a través de inversores conlleva la retirada progresiva de las masas síncronas que aportaban inercia, potencia reactiva dinámica y control de tensión. El sistema ibérico opera habitualmente en regímenes de baja inercia y reducida robustez nodal — condiciones cuya relación con la inestabilidad de tensión del 28-A se analiza en el Capítulo 4.
 
@@ -58,19 +61,26 @@ Esta configuración de baja inercia con alta penetración IBR no es exclusiva de
 
 En los días previos al apagón, el sistema peninsular operó bajo lo que la literatura técnica ha denominado la "paradoja de la abundancia". Las temperaturas primaverales inusualmente suaves (~25 °C) y el calendario festivo deprimieron la curva de demanda: a las 12:30 CEST, escasos minutos antes del colapso, la demanda instantánea se situaba en 25.184 MW — el 56 % de la demanda punta histórica.
 
-Este escenario de demanda valle coincidió con una excepcional disponibilidad de recurso renovable, de modo que la generación no síncrona cubría el 82 % del mix instantáneo: aproximadamente 18.000 MW de solar fotovoltaica (*53 %*) y 3.500 MW de eólica (*11 %*). Para equilibrar el excedente de potencia activa, el sistema recurrió simultáneamente al bombeo hidráulico (~3.000 MW) y a la exportación neta hacia Francia, Portugal y Marruecos. La generación síncrona convencional quedó desplazada a mínimos históricos: nuclear al 10 % (3,4 GW) y ciclos combinados de gas a un exiguo 3 % (~1.600 MW).
-
-<MixGeneracion />
-
-_Figura 5. Perfil comparado de generación peninsular: escenario del 28-A a las 12:30 CEST frente a operación actual vía API de ESIOS. Datos: ESIOS / REE y Comité de Análisis. Visualización interactiva de elaboración propia._
+Este escenario de demanda valle coincidió con una excepcional disponibilidad de recurso renovable, de modo que la generación no síncrona cubría el 82 % del mix instantáneo: aproximadamente 18.000 MW de solar fotovoltaica (*53 %*) y 3.500 MW de eólica (*11 %*). Para equilibrar el excedente de potencia activa, el sistema recurrió simultáneamente al bombeo hidráulico (~3.000 MW) y a la exportación neta hacia Francia, Portugal y Marruecos. La generación síncrona convencional quedó desplazada a mínimos históricos: nuclear al 10 % (3,4 GW) y ciclos combinados de gas a un exiguo 3 % (~1.600 MW). La comparación operativa con datos actuales queda reservada a la sección Datos ESIOS/ENTSO-E en tiempo real.
 
 Esta reducción de masas rotatorias se tradujo en valores de inercia síncrona excepcionalmente bajos: 1,3 s en el área Sur y 1,84 s en el área Centro — ambos por debajo del umbral de 2 s recomendado por ENTSO-E. La operación prolongada en estas condiciones ya había producido señales de estrés dinámico los días 16, 22 y 24 de abril, con episodios de inestabilidad de tensión en la red de transporte.
 
-![Oscilaciones de tensión en la subestación de Núñez de Balboa, 22 de abril de 2025](/figuras/precursor_overvoltage_22april.png) _Figura 6. Oscilaciones de tensión en Núñez de Balboa (22 abril 2025). Varias instalaciones que dispararon el 28-A ya habían sufrido disparos idénticos en este evento previo. Fuente: IIT-ICAI / Compass Lexecon._
-
-El episodio más severo ocurrió el 22 de abril a las ~19:00 h: un pico de sobretensión superior a 430 kV activó las protecciones y desconectó múltiples plantas fotovoltaicas y eólicas. El hecho de que varias de las instalaciones que dispararon en los primeros segundos del 28-A ya hubiesen sufrido disparos idénticos en este evento previo es interpretado por el informe ICAI como evidencia de que el sistema operaba con sus márgenes de control dinámico de tensión estructuralmente estrechos.
+El episodio más severo ocurrió el 22 de abril a las ~19:00 h: un pico de sobretensión superior a 430 kV activó las protecciones y desconectó múltiples plantas fotovoltaicas y eólicas. El hecho de que varias de las instalaciones que dispararon en los primeros segundos del 28-A ya hubiesen sufrido disparos idénticos en este evento previo es interpretado por el informe ICAI como evidencia de que el sistema operaba con sus márgenes de control dinámico de tensión estructuralmente estrechos. El oscilograma del episodio precursor queda documentado en el Anexo II · Estabilidad dinámica, frecuencia y tensión.
 
 ## Capacidad de interconexión: la isla energética ibérica
+
+<div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+  <ThemedImage
+    alt="Interconexiones funcionales del sistema ibérico y condición de isla energética."
+    sources={{
+      light: require('@site/static/figuras/figuraB3-light.png').default,
+      dark: require('@site/static/figuras/figuraB3-dark.png').default,
+    }}
+    style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+  />
+</div>
+
+_Figura B3. Interconexiones funcionales del sistema ibérico y condición de isla energética._
 
 ### La condición estructural de isla
 
@@ -78,9 +88,7 @@ La península ibérica opera bajo la condición de "isla energética" dentro del
 
 ### NTC comercial frente a flujo físico
 
-Es indispensable distinguir entre los límites comerciales y los flujos físicos reales. Los intercambios de mercado se rigen por la Capacidad Neta de Transferencia (NTC), pactada ex ante entre REE y RTE. Sin embargo, en regímenes transitorios rápidos, los flujos de potencia activa y reactiva obedecen las Leyes de Kirchhoff con independencia del programa de mercado. Forzar un flujo físico por encima del límite de estabilidad angular —típicamente 90° de diferencia entre extremos— no incrementa la potencia transferida, sino que provoca una divergencia de polos y la consiguiente pérdida de sincronismo: mecanismo que se materializó el 28-A a las 12:33:21 CEST.
-
-![Desviación entre programa comercial NTC y flujo físico en la frontera ES-FR](/figuras/entsoe_flow_deviation.png) _Figura 7. Desviación entre programa comercial NTC y flujo físico real en la frontera ES-FR durante la mañana del 28-A. Fuente: Informe Factual ENTSO-E._
+Es indispensable distinguir entre los límites comerciales y los flujos físicos reales. Los intercambios de mercado se rigen por la Capacidad Neta de Transferencia (NTC), pactada ex ante entre REE y RTE. Sin embargo, en regímenes transitorios rápidos, los flujos de potencia activa y reactiva obedecen las Leyes de Kirchhoff con independencia del programa de mercado. Forzar un flujo físico por encima del límite de estabilidad angular —típicamente 90° de diferencia entre extremos— no incrementa la potencia transferida, sino que provoca una divergencia de polos y la consiguiente pérdida de sincronismo: mecanismo que se materializó el 28-A a las 12:33:21 CEST. La desviación NTC/flujo físico del 28-A queda documentada en el Anexo IV · Interconexiones y flujos transfronterizos.
 
 ### El enlace HVDC INELFE-1 y la decisión crítica de modo de control
 
@@ -88,11 +96,15 @@ La interconexión con Francia combina líneas AC transpirenaicas con el enlace s
 
 Durante los prolegómenos del apagón, INELFE-1 operaba en *PMODE3*. Sin embargo, a las 12:08 CEST, para amortiguar las oscilaciones de 0,6 Hz detectadas, el modo se cambió a *PMODE1*, fijando una exportación de 1.000 MW hacia Francia. Las consecuencias fueron determinantes: en el momento del colapso, las líneas AC transpirenaicas intentaron importar hasta 4.609 MVAr (potencia reactiva) de emergencia desde Francia, mientras el enlace HVDC —fijado en PMODE1— continuó extrayendo 1.000 MW del sistema ibérico al carecer de un bucle de control de frecuencia que pudiese invertir el sentido del flujo. El soporte efectivo desde el sistema francés quedó así reducido respecto al máximo teórico disponible. A las 12:33:21 CEST, las líneas AC abrieron por pérdida de sincronismo, aislando totalmente la península del sistema continental.
 
-![Cambio del modo de control en el enlace HVDC INELFE-1](/figuras/hvdc_control_transition.png) _Figura 8. Cambio de modo de control en enlace HVDC INELFE-1 (PMODE3→PMODE1 a las 12:08 CEST). La decisión limitó la respuesta dinámica ante la cascada posterior. Fuente: IIT-ICAI / AELEC._
+<HvdcControlModeTransitionFigure />
+
+_Figura B4. Transición de control HVDC INELFE-1: de respuesta dinámica PMODE3 a consigna fija PMODE1._
 
 ### Frontera sur: Marruecos y el arranque autónomo
 
 La conexión con Marruecos (cables submarinos AC, *900 MW* técnicos) aportaba 314 MW de importación momentos antes del colapso. A las 12:33:20 CEST, los relés de subfrecuencia del operador marroquí dispararon al alcanzarse el umbral de 49,5 Hz, desconectando el enlace para proteger su red. Esta desconexión, aunque protectora para Marruecos, tuvo consecuencias relevantes en la reposición: la inyección de tensión desde el sur proporcionó horas más tarde la referencia necesaria para iniciar las estrategias de Black Start de los ciclos combinados de Andalucía.
+
+<span id="eas-falsa-normalidad"></span>
 
 ## El sistema de alerta europeo (EAS) y la "falsa normalidad" {#eas-falsa-normalidad}
 
@@ -108,7 +120,7 @@ Esta ausencia de escalada generó visibilidad limitada hacia los operadores veci
 
 <CollapseSismograph />
 
-_Figura 9. Frecuencia y tensión en la subestación de Carmona (400 kV). Datos: ENTSO-E / REE. Visualización interactiva de elaboración propia._
+_Figura B5. Sismógrafo del colapso: transición de normalidad operativa a pérdida total del sistema._
 
 ## El Trilema de la Transición Energética: Hilo Conductor del Análisis
 
@@ -119,3 +131,5 @@ El apagón del 28-A no puede reducirse a un simple fallo de hardware o a una suc
 3. **Vértice Económico:** La ausencia de mercados de servicios complementarios que remuneren económicamente a los inversores formadores de red (Grid-Forming) o a los compensadores síncronos, desincentivando su instalación. (*Analizado en el Capítulo 7b*).
 
 A lo largo de los siguientes capítulos, este trilema servirá como esqueleto transversal para comprender por qué el colapso era, bajo las condiciones de abril de 2025, estructuralmente predecible.
+
+Sobre este escenario de máxima fragilidad —82% de generación no síncrona, inercia zonal de 1,3 s, fortaleza de red reducida y EAS en estado Normal—, el capítulo 3 reconstruye los 32 segundos en que el sistema pasó del equilibrio al colapso total.

@@ -1,0 +1,82 @@
+INFORME DE TRAZABILIDAD VISUAL: CAPÍTULOS -> ANEXOS
+====================================================
+
+Este informe detalla la situación de todos los elementos visuales que han sido retirados o sustituidos en los Capítulos 01 y 02 durante la limpieza editorial, verificando si realmente están accesibles en los anexos conceptuales como respaldo documental.
+
+----------------------------------------------------------------------
+CAPÍTULO 01 — INTRODUCCIÓN
+----------------------------------------------------------------------
+
+1. Secuencia simulada Albustami IEEE39
+   - ¿Dónde estaba antes?: `docs/01-introduccion.mdx` (Bajo "Evidencia complementaria").
+   - ID / ruta antigua: `/figuras/albustami_ieee39_secuencia.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T3"` (Cascada y Propagación).
+   - Render real: SÍ. Aparece en el Anexo III gracias a que `AnnexThemeEvidence` filtra correctamente por `tema === 'T3'`.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+2. Figura FutuRed Grid Evolution
+   - ¿Dónde estaba antes?: `docs/01-introduccion.mdx` (Bajo "Evidencia complementaria").
+   - ID / ruta antigua: `/figuras/futured_grid_evolution.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T1"` (Estabilidad dinámica).
+   - Render real: SÍ. Aparece en el Anexo I vía `AnnexThemeEvidence`.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+3. Sensores PMU Europa
+   - ¿Dónde estaba antes?: `docs/01-introduccion.mdx` (Bajo "Evidencia complementaria").
+   - ID / ruta antigua: `/figuras/pmu_sensors_europe.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T9"` (Debate regulatorio).
+   - Render real: SÍ. Aparece en el Anexo IX vía `AnnexThemeEvidence`.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+----------------------------------------------------------------------
+CAPÍTULO 02 — CONTEXTO ESTRUCTURAL
+----------------------------------------------------------------------
+
+4. Gráfica Capacidad Instalada (PNG vs Componente)
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx` (Como `capacidad_instalada_2025.png`).
+   - Sustituido por: Componente estático `InstalledCapacityChart` (`chart-5`).
+   - Asignación actual: 
+     - El componente `chart-5` está en `src/data/forensicCharts.js` con `categoryId: "cat2"` y `tema: "T1"`.
+   - Render real: SÍ.
+     Tras la corrección estructural, las 23 gráficas de `forensicCharts.js` tienen su campo `tema`. `chart-5` ya aparece renderizado en el Anexo I vía `AnnexThemeEvidence`.
+   - DIAGNÓSTICO: Corregido.
+
+5. Oscilaciones precursoras Núñez de Balboa 22 de abril
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx`
+   - ID / ruta antigua: `/figuras/precursor_overvoltage_22april.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T1"`.
+   - Render real: SÍ. Aparece en el Anexo II.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+6. Desviación Flujo ENTSO-E (NTC vs Flujo Físico)
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx`
+   - ID / ruta antigua: `/figuras/entsoe_flow_deviation.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T4"` (Interconexiones y Flujos).
+   - Render real: SÍ. Aparece en el Anexo IV.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+7. Transición de Modo de Control HVDC
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx`
+   - ID / ruta antigua: `/figuras/hvdc_control_transition.png`
+   - Asignación actual: `src/data/imageGalleryData.js` -> `tema: "T4"`.
+   - Render real: SÍ. Aparece en el Anexo IV. (NOTA: En el capítulo fue sustituido por `<HvdcControlModeTransitionFigure />`).
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+8. Simulador Ecuación del Swing (Interactivo)
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx` (`<SwingEquationSimulator />`)
+   - Asignación actual: `src/components/InteractiveGraphicsGalleryBase.jsx` -> `id: 'swing'`, `tema: 'T9'`.
+   - Render real: SÍ. Aparece en el Anexo IX (T9) ya que `AnnexThemeEvidence` carga los interactivos correctamente si tienen `tema`.
+   - DIAGNÓSTICO: Correcto.
+   - RECOMENDACIÓN: Ninguna acción necesaria.
+
+9. Mix de Generación Vivo ESIOS (Interactivo)
+   - ¿Dónde estaba antes?: `docs/02-contexto.mdx` (`<MixGeneracion />`)
+   - Asignación actual: `src/components/InteractiveGraphicsGalleryBase.jsx` -> `id: 'mix-generacion'`, `tema: 'T1'`.
+   - Render real: SÍ. Dado de alta correctamente en la galería global interactiva, accesible desde las páginas de datos en tiempo real (ESIOS/ENTSO-E).
+   - DIAGNÓSTICO: Corregido.

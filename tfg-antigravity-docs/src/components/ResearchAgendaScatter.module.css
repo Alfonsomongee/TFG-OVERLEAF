@@ -1,0 +1,310 @@
+/* ── ResearchAgendaScatter ── */
+
+.figure {
+  --fig-bg: #f8f4ea;
+  --fig-surface: #fffdf7;
+  --fig-text: #1f2933;
+  --fig-muted: #64707d;
+  --fig-border: rgba(31, 41, 51, 0.14);
+  --fig-track: rgba(31, 41, 51, 0.06);
+  --fig-hover: rgba(31, 41, 51, 0.04);
+  --fig-stripe: rgba(31, 41, 51, 0.025);
+  --fig-detail-bg: #fffdf7;
+
+  max-width: 700px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.25rem;
+  background: var(--fig-bg);
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--fig-text);
+  line-height: 1.5;
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #13263f;
+  --fig-text: #e5edf5;
+  --fig-muted: #a9b6c7;
+  --fig-border: rgba(180, 198, 220, 0.16);
+  --fig-track: rgba(180, 198, 220, 0.08);
+  --fig-hover: rgba(180, 198, 220, 0.06);
+  --fig-stripe: rgba(180, 198, 220, 0.03);
+  --fig-detail-bg: #172b45;
+}
+
+/* ── Header ── */
+
+.header {
+  margin-bottom: 0.6rem;
+}
+
+.kicker {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fig-muted);
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+  color: var(--fig-text);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--fig-muted);
+  line-height: 1.45;
+}
+
+/* ── Legend ── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--fig-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendBar {
+  display: inline-block;
+  width: 16px;
+  height: 6px;
+  border-radius: 1.5px;
+  flex-shrink: 0;
+}
+
+/* ── Table ── */
+
+.table {
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 1fr 180px 48px;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fig-muted);
+  border-bottom: 1px solid var(--fig-border);
+}
+
+.colLine,
+.colBars,
+.colConf {
+  display: block;
+}
+
+.colConf {
+  text-align: center;
+}
+
+/* ── Row ── */
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 180px 48px;
+  gap: 0.4rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  margin: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--fig-border);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:nth-child(odd) {
+  background: var(--fig-stripe);
+}
+
+.row:hover {
+  background: var(--fig-hover);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--fig-muted);
+  outline-offset: -2px;
+}
+
+.rowActive {
+  background: var(--fig-hover);
+}
+
+.lineLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fig-text);
+}
+
+/* ── Bars block ── */
+
+.barsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.barLine {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.barTag {
+  flex-shrink: 0;
+  width: 24px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--fig-muted);
+  text-align: right;
+}
+
+.barTrack {
+  flex: 1;
+  height: 7px;
+  background: var(--fig-track);
+  border-radius: 1.5px;
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: 1.5px;
+  transition: width 0.3s ease;
+}
+
+.barVal {
+  flex-shrink: 0;
+  width: 16px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--fig-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Confidence dots ── */
+
+.confCell {
+  display: flex;
+  justify-content: center;
+}
+
+.dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid;
+}
+
+/* ── Detail ── */
+
+.detail {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--fig-detail-bg);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.detailTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+  color: var(--fig-text);
+}
+
+.detail p {
+  margin: 0.15rem 0;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.1rem 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: var(--fig-muted);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 600px) {
+  .figure {
+    padding: 0.75rem 0.9rem;
+    margin: 1rem 0;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .tableHead {
+    grid-template-columns: 1fr;
+  }
+
+  .colBars,
+  .colConf {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .barsBlock {
+    width: 100%;
+  }
+
+  .confCell {
+    justify-content: flex-start;
+  }
+}

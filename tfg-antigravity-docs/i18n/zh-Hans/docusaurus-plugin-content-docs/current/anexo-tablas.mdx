@@ -8,25 +8,32 @@ pagination_prev: null
 pagination_next: null
 ---
 
-import { useState } from 'react';
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import ForensicGallery from '@site/src/components/GaleriaForense/ForensicGallery';
 import TablaMaestra28A from '@site/src/components/TablaMaestra28A';
-import TabSelector from '@site/src/components/TabSelector';
+import AnnexTabs from '@site/src/components/annex/AnnexTabs';
 
 <GlitchTitle>附录 B — 表格与文档记录</GlitchTitle>
 
 本工作中所有编号表格（表 1 – 表 27）以及包含4月28日事件完整技术记录的主数据库。
 
-export const AnexoB = () => {
-  const [tab, setTab] = useState(0);
-  return (
-    <>
-      <TabSelector active={tab} onSelect={setTab} labels={['编号表格', '主数据库']} />
-      {tab === 0 && <ForensicGallery />}
-      {tab === 1 && <TablaMaestra28A />}
-    </>
-  );
-};
+export const AnexoB = () => (
+  <AnnexTabs
+    tabs={[
+      {
+        id: 'tablas',
+        label: '编号表格',
+        content: <ForensicGallery />,
+      },
+      {
+        id: 'base-maestra',
+        label: '主数据库',
+        content: <TablaMaestra28A />,
+      },
+    ]}
+    defaultTab="tablas"
+    ariaLabel="编号表格 和 主数据库"
+  />
+);
 
 <AnexoB />

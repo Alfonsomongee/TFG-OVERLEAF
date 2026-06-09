@@ -1,0 +1,75 @@
+AUDITORÍA PREVIA CAPÍTULO 04 — REACCIÓN Y REPOSICIÓN
+======================================================
+
+1. ARCHIVO REAL DEL CAPÍTULO 4
+Ruta absoluta en el espacio de trabajo:
+`c:\Users\aphmo\Proyectos\TFG OVERLEAF\tfg-antigravity-docs\docs\04-reaccion-reposicion.mdx`
+
+2. NÚMERO TOTAL DE VISUALES DETECTADOS
+Se han identificado un total de 9 elementos visuales y componentes interactivos integrados en el cuerpo del archivo:
+- 1 Tabla pericial (ForensicTable)
+- 1 Componente de revelado interactivo (ForensicReveal)
+- 1 Mapa interactivo (AnimatedRestorationMap)
+- 3 Imágenes estáticas (PNG)
+- 3 Componentes/Gráficas interactivas (DemandaChart, SectorialResilienceChart, RestorationLoadRampFigure)
+
+3. TABLA DE VISUALES ACTUALES
+| N° | Elemento / Componente | Tipo | Origen / Ruta | Leyenda / Pie actual | ¿Respaldado en Anexos? | Tema | Recomendación |
+| :- | :-------------------- | :--- | :------------ | :------------------- | :--------------------- | :--- | :------------ |
+| 1 | `ForensicTable` | Tabla pericial | MDX inline (L22-44) | TABLA 14b \| RESTORATION MILESTONES | Sí, datos equivalentes en `anexo-tablas.mdx#tabla-eas-state-changes` | T6 | MANTENER (Renombrar a Tabla D.1) |
+| 2 | `AnimatedRestorationMap` | Mapa interactivo | Componente React | Mapa Interactivo 1. Fragmentación en 7 islas eléctricas... | Sí, en `anexo-interactivos.mdx#map` (ID `map`) | T6 | MANTENER (Renombrar a Figura D.1) |
+| 3 | `black_start_hidroelectrico.png` | Imagen estática | `/figuras/black_start_hidroelectrico.png` | Figura 17. Despliegue temporal y eficacia... | Sí, en `anexo-figuras.mdx#fig-black_start_hidroelectrico` | T6 | MOVER A ANEXO (Referencia textual) |
+| 4 | `ForensicReveal` | Bloque interactivo | Componente React | Encender la red es más difícil que apagarla... | No (contenido textual específico local) | T6 | MANTENER (Bloque explicativo local) |
+| 5 | `RestorationLoadRampFigure` | Gráfica interactiva | Componente React | Figura 18. Rampa de recuperación de la demanda... | No (gráfico personalizado local de Recharts) | T6 | MANTENER (Renombrar a Figura D.2) |
+| 6 | `intercambio_marruecos_topdown.png` | Imagen estática | `/figuras/intercambio_marruecos_topdown.png` | Figura 19. Inyección de potencia desde Marruecos... | Sí, en `anexo-figuras.mdx#fig-intercambio_marruecos_topdown` | T4 | MOVER A ANEXO (Referencia textual) |
+| 7 | `evolucion_mix_reenergizacion.png` | Imagen estática | `/figuras/evolucion_mix_reenergizacion.png` | Figura 20. Evolución del mix tecnológico... | Sí, en `anexo-figuras.mdx#fig-evolucion_mix_reenergizacion` | T1 | MOVER A ANEXO (Referencia textual) |
+| 8 | `DemandaChart` | Gráfica interactiva | Componente React | Figura 21. Evolución de la demanda eléctrica... | Sí, en `anexo-entsoe.mdx#chart-1` (ID `chart-1`) | T1 | MOVER A ANEXO (Referencia textual) |
+| 9 | `SectorialResilienceChart` | Gráfica/Dato vivo | Componente React | Figura 22. Desplome y recuperación sectorial... | Sí, en `anexo-interactivos.mdx#sectorial-resilience` | T7 | MOVER A ANEXO (Referencia textual) |
+
+4. VISUALES IMPRESCINDIBLES PARA EL RELATO PRINCIPAL
+- **Tabla cronológica de hitos (ForensicTable)**: Fundamental para asentar la línea temporal de la reposición (Fase 4).
+- **Mapa animado de islas (AnimatedRestorationMap)**: El elemento visual clave que muestra la geografía del apagón y el andamiaje del sistema.
+- **Rampa de recuperación (RestorationLoadRampFigure)**: El núcleo empírico de la reposición, detallando la inyección local vs. importación de Francia.
+- **Bloque explicativo de transitorios (ForensicReveal)**: Imprescindible para ilustrar los problemas de inrush y sympathetic inrush sin sobrecargar con gráficas pesadas.
+
+5. VISUALES CANDIDATOS A ANEXO
+- **Figuras estáticas PNG**: `black_start_hidroelectrico.png`, `intercambio_marruecos_topdown.png`, `evolucion_mix_reenergizacion.png`. Todas ellas saturan la lectura y su valor es puramente corroborativo/evidencial. Quedan perfectamente cubiertas en el Anexo A (Figuras estáticas) con referencias cruzadas.
+- **Gráficas interactivas complejas**:
+  - `DemandaChart`: Gráfica interactiva de 5 minutos sobre la demanda completa (ya está en Anexo D como `chart-1`).
+  - `SectorialResilienceChart`: Gráfica interactiva con datos vivos/fallback del IRE sectorial (ya está en Portal de Datos y Anexo C).
+
+6. VISUALES DUPLICADOS O REDUNDANTES
+- **Duplicaciones conceptuales**: `black_start_hidroelectrico.png` es redundante con el mapa interactivo y la explicación textual de transitorios de arranque autónomo.
+- `evolucion_mix_reenergizacion.png` y `intercambio_marruecos_topdown.png` son evidencias documentales que se solapan con la rampa de recuperación e importaciones que ya detalla de forma dinámica y precisa la `RestorationLoadRampFigure`.
+
+7. PROBLEMAS DE NUMERACIÓN DETECTADOS
+- **Colisión con el Capítulo 3**: El Capítulo 4 utiliza actualmente los números fijos `Figura 17` a `Figura 22`. El Capítulo 3 (antes de su depuración) utilizaba la numeración hasta el 17. Tras la cirugía, el Capítulo 3 se unificó bajo el prefijo "C" (`Figura C1` a `Figura C7`). Mantener números enteros sin prefijo en el Capítulo 4 rompe la consistencia e introduce colisiones históricas.
+- **Inconsistencia de etiquetas**: El mapa se denomina `Mapa Interactivo 1` en lugar de seguir la nomenclatura de figuras del capítulo. La tabla se etiqueta como `TABLA 14b` de forma arbitraria.
+- **Pies de figura inconsistentes**: Algunos pies de figura están integrados en el markdown de la imagen (`![alt](src) _Pie_`), mientras que los componentes usan texto plano debajo de manera informal.
+
+8. PROBLEMAS DE ENLACES O REFERENCIAS ANTIGUAS
+- El enlace de la línea 63 (`[ver Mapa de Reposición interactivo](./anexo-interactivos#map)`) redirige correctamente al anexo de interactivos pero convive con el componente inline, lo cual es redundante.
+- Hay referencias textuales en otros capítulos que asumen la numeración antigua (p. ej., "Figura 17"). Al renombrar o mover estas figuras, es necesario asegurar que la terminología apunte a los nuevos prefijos conceptuales.
+
+9. RIESGOS METODOLÓGICOS (DATO HISTÓRICO vs. MODELO DIDÁCTICO vs. DATO VIVO)
+- **Dato Vivo en relato histórico**: `SectorialResilienceChart` y `DemandaChart` son componentes conectados a APIs dinámicas (o proxies con fallbacks). Introducirlos en medio de la narrativa histórica expone al capítulo a roturas por caídas del endpoint de ESIOS/REData y confunde la monitorización en tiempo real del portal con el análisis forense del 28-A.
+- **Modelo Didáctico**: El mapa animado `AnimatedRestorationMap` es un modelo didáctico de fragmentación que simplifica las maniobras de red. Debe aclararse explícitamente en el texto que se trata de una aproximación didáctica basada en informes.
+
+10. PROPUESTA PRELIMINAR DE NUMERACIÓN FINAL PARA EL CAPÍTULO 4
+Se propone adoptar el prefijo "D" (para el Capítulo 4 / Reconstrucción y reposición) para unificar y simplificar las figuras activas en el relato principal:
+- **Tabla D.1**: `Cronología técnica de hitos de la restauración (28–29 de abril de 2025)` (actual Tabla 14b).
+- **Figura D.1**: `Mapa de fragmentación topológica en islas eléctricas y estrategia de re-energización` (actual Mapa Interactivo 1).
+- **Figura D.2**: `Rampa de recuperación de la demanda peninsular e importación transfronteriza` (actual Figura 18 / RestorationLoadRampFigure).
+
+Referencias textuales a los visuales movidos a anexos:
+- `black_start_hidroelectrico.png` -> Referenciar a `[Figura A.T6.3 en el Anexo A](./anexo-figuras.mdx#fig-black_start_hidroelectrico)`.
+- `intercambio_marruecos_topdown.png` -> Referenciar a `[Figura A.T4.5 en el Anexo A](./anexo-figuras.mdx#fig-intercambio_marruecos_topdown)`.
+- `evolucion_mix_reenergizacion.png` -> Referenciar a `[Figura A.T1.6 en el Anexo A](./anexo-figuras.mdx#fig-evolucion_mix_reenergizacion)`.
+- `DemandaChart` -> Referenciar a `[Serie Histórica D.1.1 en el Anexo D](./anexo-entsoe.mdx#chart-1)`.
+- `SectorialResilienceChart` -> Referenciar a `[Interactiva C.4.4 en el Anexo C](./anexo-interactivos.mdx#sectorial-resilience)`.
+
+11. ARCHIVOS QUE HABRÍA QUE TOCAR EN LA SIGUIENTE FASE
+- `docs/04-reaccion-reposicion.mdx`: Limpieza de los 5 elementos candidatos a salir, actualización de la numeración de los 3 elementos que permanecen (Tabla D.1, Figura D.1, Figura D.2) e inserción de enlaces cruzados precisos a los anexos conceptuales.
+
+12. VEREDICTO
+**APTO**. Las figuras a retirar ya están completamente respaldadas en las bases de datos estáticas y dinámicas de los anexos (Anexos A, C y D), por lo que no hay riesgo de pérdida de evidencia en la web. El Capítulo 4 se convertirá en un relato técnico limpio enfocado en la física y la operativa de la restauración.

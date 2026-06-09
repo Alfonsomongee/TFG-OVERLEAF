@@ -1,0 +1,297 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 9: CHATBOT Y ELEMENTOS FLOTANTES
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de elementos interactivos flotantes y asistentes
+Propósito: Documentar chatbot RAG, tooltips, y elementos de UX global
+
+================================================================================
+CHATBOT RAG
+================================================================================
+
+Configuración detectada:
+
+API endpoint:
+  /api/chat.js (serverless function)
+  Ruta: api/chat.js (en raíz, no en src/)
+
+Propósito:
+  Chatbot RAG (Retrieval-Augmented Generation)
+  Usa minisearch + chunks.json para buscar contexto
+  Llamadas a Anthropic Claude API para generar respuestas
+
+Datos incluidos en función (via vercel.json):
+  {
+    includeFiles: "{static/*.json,node_modules/minisearch/dist/**/*}"
+  }
+
+Archivos empaquetados:
+  - static/data/chunks.json (chunks de documentación)
+  - static/data/search-index.json (índice de búsqueda)
+  - node_modules/minisearch/ (librería de búsqueda)
+
+Propósito arquitectural:
+  - Sin backend externo (everything bundled)
+  - Búsqueda local + LLM remoto
+  - Genera respuestas contextualizadas al documento
+
+================================================================================
+UBICACIÓN PROBABLE DEL CHATBOT EN UI
+================================================================================
+
+Posible ubicación 1: Floating button en esquina
+  - Botón circular flotante (corner derecha inferior)
+  - Click abre modal/panel de chat
+  - X para cerrar
+
+Posible ubicación 2: Sidebar collapse
+  - Panel que se despliega desde el lado
+  - Siempre visible o toggle
+
+Posible ubicación 3: Drawer/Modal
+  - Modal que se abre en centro de pantalla
+  - Overlay de fondo
+
+INTEGRACIÓN PROBABLE:
+  src/theme/Root.js o Layout/index.js
+  → Envuelve <ChatWidget /> alrededor de children
+
+CSS PROBABLE:
+  .chat-widget (fixed, bottom-right, z-index alto)
+  .chat-button (botón flotante)
+  .chat-panel (panel con mensajes)
+  .chat-input (input de usuario)
+
+================================================================================
+TOOLTIPS Y COMPONENTES INTERACTIVOS
+================================================================================
+
+1. GLOSSARY TOOLTIPS
+   Vinculación: remark-auto-glossary-links plugin
+   Comportamiento: Hover → tooltip con definición
+   Almacenamiento: docs/glosario.mdx
+
+   Términos probables con tooltips:
+     - RoCoF (Rate of Change of Frequency)
+     - SCR (Short Circuit Ratio)
+     - IBR (Inverter-Based Resources)
+     - UFLS (Under Frequency Load Shedding)
+     - LAG (Late Action Game)
+     - Inercia (H)
+
+2. INTERACTIVE FOOTNOTES
+   Componente: InteractiveFootnote.jsx
+   Comportamiento: Click en nota → expande contenido
+   Propósito: Notas técnicas largas sin interrumpir flow
+
+3. CONTEXT MENUS
+   Probables en elementos de datos
+   Click derecho: Copiar, descargar, compartir
+
+4. HOVER STATES
+   - Links: Cambio de color, underline
+   - Cards: Elevation, transform slight
+   - Data points: Highlight, tooltip con valor
+
+================================================================================
+ELEMENTOS FLOTANTES DETECTADOS
+================================================================================
+
+Basado en imports y componentes:
+
+1. Chat widget (si existe)
+   Estado: Probable (backend api/chat.js existe)
+   Ubicación: Esquina inferior derecha
+   Persistencia: Estado en localStorage
+
+2. Animated cursor (react-animated-cursor)
+   Estado: Detectado en dependencies
+   Ubicación: Global, no flotante pero interactivo
+   Propósito: UX eye-candy
+
+3. Scroll progress indicator
+   CSS probable: --scroll-progress-color variable
+   Ubicación: Top bar o side
+   Propósito: Indicar scroll position
+
+4. Back-to-top button
+   Ubicación: Esquina inferior derecha
+   Comportamiento: Aparece después de X px scroll
+   Animación: Smooth scroll to top
+
+5. Theme toggle
+   Ubicación: Navbar o floating
+   Comportamiento: Click alterna dark/light mode
+   Storage: localStorage zen-mode (ya existe)
+
+================================================================================
+INTERACTIVIDAD DOCUSAURUS ESTÁNDAR
+================================================================================
+
+Funcionalidades built-in que Docusaurus proporciona:
+
+1. Table of Contents (TOC)
+   Ubicación: Right sidebar (solo en desktop)
+   Sincronización: Destaca heading actual
+   Behavior: Click → smooth scroll a sección
+
+2. Search bar (docusaurus-lunr-search)
+   Ubicación: Navbar
+   Comportamiento: Búsqueda offline multiidioma
+   Hotkey: Probablemente Ctrl+K o Cmd+K
+
+3. Language selector
+   Ubicación: Navbar (detectado)
+   Comportamiento: Dropdown de idiomas (es/en/de/zh-Hans)
+   Storage: localStorage
+
+4. Sidebar breadcrumbs
+   Ubicación: Top of content (auto)
+   Comportamiento: Muestra ruta de navegación
+   Links: Clickables para navegar up
+
+5. Prev/Next navigation
+   Ubicación: Bottom of article
+   Comportamiento: Botones para ir a doc anterior/siguiente
+
+================================================================================
+POTENCIAL CHATBOT - FLUJO DE INTERACCIÓN
+================================================================================
+
+Flujo probable si chatbot existe:
+
+1. Usuario hace click en botón flotante
+2. Panel se abre (animación slide/fade)
+3. Welcome message muestra contexto (capítulo actual?)
+4. Usuario escribe pregunta
+5. JavaScript:
+   - Busca contexto en chunks.json (minisearch)
+   - Envía a /api/chat con {query, context, lang}
+6. Backend:
+   - Llama Anthropic API con prompt + contexto
+   - Retorna respuesta generada
+7. UI:
+   - Muestra respuesta con streaming (si es posible)
+   - Guarda conversación en sessionStorage
+8. Usuario puede:
+   - Hacer más preguntas
+   - Copiar respuesta
+   - Compartir enlace
+
+LIMITACIONES:
+  - Sin persistencia (sesión solo)
+  - Sin historial multi-usuario
+  - Limitado a contexto del documento actual
+
+================================================================================
+ACCESIBILIDAD DE ELEMENTOS FLOTANTES
+================================================================================
+
+Consideraciones WCAG:
+
+1. Keyboard navigation
+   ⚠ ¿El chat widget es accessible con Tab/Enter?
+   ⚠ ¿Se puede cerrar con Escape?
+
+2. Focus management
+   ⚠ ¿El focus se mueve al abrir modal?
+   ⚠ ¿Se restaura al cerrar?
+
+3. Screen reader
+   ⚠ ¿Aria-labels en botón flotante?
+   ⚠ ¿Role="dialog" en modal de chat?
+
+4. Color contrast
+   ⚠ ¿Elementos flotantes tienen suficiente contraste?
+
+5. Motor access
+   ⚠ ¿Hay alternativa si no se puede usar mouse?
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. VERIFICACIÓN DE EXISTENCIA:
+   a) Inspeccionar api/chat.js (¿existe y funciona?)
+   b) Buscar /api/chat llamadas en el código
+   c) Verificar chunks.json está en static/data/
+   d) Verificar node_modules/minisearch en bundle
+
+2. ANÁLISIS DE CHATBOT:
+   a) Flujo del usuario: click → input → respuesta
+   b) Integración con Root.js o Layout/index.js
+   c) Error handling y rate limiting
+   d) Persistencia de conversación
+
+3. ELEMENTOS FLOTANTES:
+   a) Listar todos los elementos fixed/floating
+   b) Verificar z-index conflicts
+   c) Verificar mobile responsiveness
+   d) Verificar performance (no debería ralentizar)
+
+4. INTERACTIVIDAD:
+   a) Verificar all tooltips funcionan
+   b) Verificar TOC sincroniza con scroll
+   c) Verificar search funciona correctamente
+   d) Verificar prev/next navigation
+
+5. TESTING SUGERIDO:
+   a) Test chatbot con preguntas típicas
+   b) Test en mobile (¿cabe el chat widget?)
+   c) Test keyboard navigation
+   d) Test screen reader accessibility
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ api/chat.js (chatbot backend)
+  ✓ src/theme/Root.js (dónde se monta ChatWidget?)
+  ✓ static/data/chunks.json (tamaño y contenido)
+
+Secundarios:
+  ✓ src/js/copyEmail.js (si existe otro .js global)
+  ✓ docusaurus.config.js (searchParameters para Lunr)
+  ✓ vercel.json (CSP headers para chat API)
+
+================================================================================
+POTENCIALES PROBLEMAS
+================================================================================
+
+1. **Chatbot no funciona**
+   - API key de Anthropic no configurada
+   - chunks.json vacío o mal formateado
+   - CORS headers incorrectos
+
+2. **Tooltips no aparecen**
+   - remark-auto-glossary-links no instalado
+   - CSS de tooltip oculto
+   - Z-index conflict
+
+3. **Chat widget interfiere con contenido**
+   - Z-index conflicto con elementos otros
+   - Mobile layout roto (chat cubre botones)
+   - Performance issue (rerender frecuente)
+
+4. **Accesibilidad**
+   - Chat no usable con keyboard
+   - Screen reader no anuncia new messages
+   - Focus trap implementado mal
+
+================================================================================
+STATUS AUDITORÍA: ESTRUCTURA PROBABLE DOCUMENTADA
+================================================================================
+
+Componentes identificados:
+  ✓ Chatbot RAG (backend existe: api/chat.js)
+  ✓ Search Lunr (navbar widget)
+  ✓ Tooltips glossario (plugin remark)
+  ✓ Table of contents (Docusaurus standard)
+  ✓ Navigation prev/next (Docusaurus standard)
+  ✓ Breadcrumbs (Docusaurus standard)
+
+Estado de verificación: ⚠ PARCIAL (requiere inspección de archivos)
+
+Próximo paso: Leer api/chat.js y Root.js

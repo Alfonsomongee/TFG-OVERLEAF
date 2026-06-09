@@ -1,0 +1,346 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 12: ACCESIBILIDAD GLOBAL (WCAG 2.1)
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de cumplimiento de normas de accesibilidad web
+Propósito: Documentar barreras y fortalezas de accesibilidad
+
+================================================================================
+ESTÁNDARES DE REFERENCIA
+================================================================================
+
+WCAG 2.1 (Web Content Accessibility Guidelines):
+  Nivel A (básico)
+  Nivel AA (recomendado) ← Objetivo típico
+  Nivel AAA (enhancido)
+
+Normas españolas:
+  EN 301 549 (norma técnica europea)
+  Ley de Accesibilidad Digital (España)
+
+================================================================================
+ACCESIBILIDAD VISUAL
+================================================================================
+
+1. CONTRASTE DE COLOR (WCAG 2.1 Level AA):
+   Mínimo: 4.5:1 para texto normal
+   Mínimo: 3:1 para texto grande (18pt+)
+
+   ANÁLISIS PROBABLE:
+
+   Dark mode:
+   - Fondo #0a1128, texto #ffffff → muy alto contraste ✓
+   - Fondo #0a1128, texto #e8e8e8 → ~16:1 ✓
+
+   Light mode:
+   - Fondo #F4F1EA, texto #2B2B2B → ~10:1 ✓
+
+   Elementos interactivos:
+   - Cian (#00D9FF) sobre #0a1128 → revisar
+   - Burdeos (#8B2635) sobre #F4F1EA → revisar
+
+   ⚠ RIESGO: Enlaces azules pueden tener bajo contraste en light mode
+
+2. TAMAÑO DE TEXTO:
+   - Mínimo legal: 12px (algunos países)
+   - Recomendado: 14px+
+   - Docusaurus por defecto: 16px (--fs-body clamp)
+   ✓ Probable cumplimiento
+
+3. ESCALABILIDAD:
+   - Usuario debe poder zoomar hasta 200% sin que el contenido se corte
+   - Docusaurus soporta zoom nativo del navegador
+   - Componentes custom: ¿respetan max-width y overflow?
+   ⚠ Requiere testing con zoom
+
+4. INDICADORES VISUALES:
+   - Focus visible (cuando navegas con Tab)
+   - Docusaurus probablemente tiene default focus outline
+   - Componentes custom: ¿tienen focus visible?
+   ⚠ Requiere auditoría de cada componente
+
+================================================================================
+ACCESIBILIDAD AUDITIVA
+================================================================================
+
+1. VÍDEOS (si existen):
+   - ¿Tienen subtítulos (captions)?
+   - ¿Tienen transcripción completa?
+   ⚠ No detectados en análisis anterior
+
+2. AUDIO (si existe):
+   - ¿Tiene transcripción?
+   - ¿Hay alternativa visual?
+
+3. DOCUMENTACIÓN:
+   - Imágenes de gráficos: ¿tienen alt text?
+   - Tablas: ¿tienen <caption> o resumen?
+
+================================================================================
+ACCESIBILIDAD MOTORA
+================================================================================
+
+1. KEYBOARD NAVIGATION:
+   ✓ Probable: Tab navega entre elementos
+   ✓ Probable: Enter activa botones
+   ⚠ Requiere testing:
+     - ¿Puedo cerrar modales con Escape?
+     - ¿Puedo navegar dropdowns con Arrow keys?
+     - ¿El orden Tab es lógico?
+
+2. TOUCH TARGETS (mobile):
+   Mínimo: 44x44px (recomendado WCAG)
+   ✓ Botones de navbar probablemente cumplen
+   ⚠ Pequeños elementos de gráficos pueden no cumplir
+
+3. GESTOS (mobile):
+   - ¿El sitio funciona sin gestos complejos?
+   - Probable: Toda funcionalidad accesible via taps simples
+
+4. MOTOR ALTERNATIVO:
+   - ¿Funciona sin mouse? (solo keyboard/tablet)
+   - ¿Funciona con software de control ocular?
+
+================================================================================
+ACCESIBILIDAD COGNITIVA
+================================================================================
+
+1. LENGUAJE SIMPLE:
+   - Frases cortas: ✓ (documentación técnica lo exige)
+   - Léxico evitado: ✗ (muchos términos técnicos)
+   - Solución: Glosario con tooltips ✓
+
+2. CONSISTENCIA:
+   - Navegación consistente: ✓ (sidebar siempre igual)
+   - Estilos consistentes: ✓ (CSS centralizado)
+   - Terminología consistente: ⚠ (requiere auditoría)
+
+3. ENFOQUE Y ANSIEDAD:
+   - ¿Elementos que parpaden? ✗ (no detectados)
+   - ¿Autoplay de contenido? ✗ (probablemente no)
+   - ¿Redirecciones sorpresas? ✗ (unlikely)
+   - ¿Límites de tiempo? ✗ (no detectados)
+
+4. MAPEO DE PÁGINA:
+   - ¿Estructura de headings es clara?
+   - ¿Hay skip links ("Skip to content")?
+   ⚠ Requiere verificación
+
+================================================================================
+ACCESIBILIDAD SEMÁNTICA (HTML)
+================================================================================
+
+1. HEADINGS:
+   Recomendación: <h1> una por página, luego <h2>, <h3>, no saltar niveles
+   ⚠ Requiere auditoría de cada MDX
+
+2. LANDMARKS:
+   - <header> para navbar
+   - <nav> para sidebar
+   - <main> para contenido
+   - <footer> para pie de página
+   ✓ Probable: Docusaurus genera automáticamente
+
+3. LISTAS:
+   - <ul>/<ol> para listas, no divs
+   ✓ Probable: MDX genera correctamente
+
+4. TABLAS:
+   - <thead>, <tbody>, <th> con scope
+   - ForensicTable: ¿genera semántica correcta?
+   ⚠ Requiere inspección
+
+5. FORMULARIOS (si existen):
+   - <label> vinculado a <input> (for="id")
+   - Error messages vinculados con aria-describedby
+   ⚠ Chat input probablemente necesita auditoría
+
+================================================================================
+ARIA (Accessible Rich Internet Applications)
+================================================================================
+
+1. LANDMARK ROLES:
+   - role="navigation" en sidebar
+   - role="main" en contenido
+   - role="complementary" en TOC
+   ⚠ Probable Docusaurus lo añade, verificar
+
+2. LIVE REGIONS:
+   - aria-live="polite" en chat messages
+   - aria-live="assertive" en alerts
+   ⚠ Requiere testing con screen reader
+
+3. LABELS Y DESCRIPTIONS:
+   - aria-label="Cerrar modal" en botones X
+   - aria-describedby en elementos complejos
+   ⚠ Probable deficiencia en componentes custom
+
+4. EXPANDED STATE:
+   - aria-expanded="true|false" en collapses
+   - StickyCollapse: ¿tiene aria-expanded?
+   ⚠ Probable deficiencia
+
+5. DISABLED STATE:
+   - aria-disabled en botones deshabilitados
+   - disabled attribute en inputs
+
+================================================================================
+SCREEN READER COMPATIBILITY
+================================================================================
+
+Navegadores de prueba:
+  - NVDA (Windows, gratis)
+  - JAWS (Windows, pago)
+  - VoiceOver (macOS/iOS, nativo)
+  - TalkBack (Android, nativo)
+
+ESCENARIOS DE TESTING:
+
+1. Lectura de página:
+   - ¿Lee títulos, headings, contenido en orden?
+   - ¿Salta elementos importantes?
+
+2. Navegación:
+   - ¿Puede navegar por headings?
+   - ¿Puede navegar por landmarks?
+   - ¿Puede navegar por links?
+
+3. Formularios:
+   - ¿Anuncia labels de campos?
+   - ¿Anuncia errores?
+
+4. Interactividad:
+   - ¿Anuncia cuando se abre modal?
+   - ¿Anuncia cambios en chat?
+
+⚠ Probable: Docusaurus base es accesible, pero componentes custom pueden no serlo
+
+================================================================================
+TESTING TOOLS
+================================================================================
+
+Herramientas automatizadas:
+
+1. axe DevTools (Chrome extension)
+   - Scan de página
+   - Violations, warnings, best practices
+   - Reporte detallado
+
+2. WAVE (WebAIM)
+   - Firefox/Chrome extension
+   - Visualización de elementos
+   - Errores y warnings
+
+3. Lighthouse (Chrome DevTools built-in)
+   - Accessibility score (0-100)
+   - Suggestions específicas
+
+4. Pa11y (CLI tool)
+   - Testing automatizado CI/CD
+   - Múltiples estándares
+
+⚠ RECOMENDACIÓN: Ejecutar axe + Lighthouse en cada página
+
+================================================================================
+PROBLEMAS IDENTIFICABLES SIN TESTING
+================================================================================
+
+Probables deficiencias:
+
+1. **Componentes custom sin aria labels**
+   - Chat widget sin role="dialog"
+   - Botón flotante sin aria-label
+   - Collapses sin aria-expanded
+
+2. **Color como único indicador**
+   - ¿Hay elementos solo diferenciados por color?
+   - Deben tener patrón, ícono o texto adicional
+
+3. **Imágenes sin alt text**
+   - Gráficos de datos: ¿tienen alt text descriptivo?
+   - Logos: ¿tienen alt="" (decorativo) o alt="..."?
+
+4. **Links sin contexto**
+   - "Click aquí" → texto no descriptivo
+   - Mejor: "Lee más sobre la cascada"
+
+5. **Tablas sin headers**
+   - ForensicTable: ¿usa <thead>?
+   - Datos28A.json: ¿cómo se renderizan?
+
+6. **Contraste en estados**
+   - Focus state: ¿visible?
+   - Hover state: ¿tiene suficiente contraste?
+   - Disabled state: ¿se ve diferente?
+
+================================================================================
+CUMPLIMIENTO ESTIMADO
+================================================================================
+
+WCAG 2.1 Level A:
+  ✓ Probable cumplimiento (Docusaurus base)
+  ⚠ Componentes custom pueden tener deficiencias
+
+WCAG 2.1 Level AA:
+  ✓ Probable cumplimiento de colores/contraste
+  ⚠ Probable deficiencia en ARIA/keyboard nav
+  ⚠ Probable deficiencia en screen reader
+
+WCAG 2.1 Level AAA:
+  ✗ Probable no cumplimiento (muy exigente)
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. AUDITORÍA RÁPIDA:
+   a) Instalar axe DevTools
+   b) Hacer scan de 3-5 páginas
+   c) Documentar violations encontradas
+
+2. AUDITORÍA KEYBOARD:
+   a) Navegar sitio solo con Tab, Enter, Arrow keys
+   b) Documentar si hay traps de focus
+   c) Documentar si el orden Tab es lógico
+
+3. AUDITORÍA VISUAL:
+   a) Aplicar filtro grayscale (Chrome DevTools)
+   b) Aplicar filtro de deficiencia de color
+   c) Documentar qué no es distinguible
+
+4. AUDITORÍA SCREEN READER:
+   a) Descargar NVDA (free, Windows)
+   b) Probar lectura de página principal
+   c) Probar navegación por headings
+   d) Documentar problemas
+
+5. MEJORAS SUGERIDAS:
+   a) Añadir aria-labels a todos los componentes interactivos
+   b) Documentar headings de cada página
+   c) Añadir alt text descriptivo a imágenes
+   d) Crear skip link "Ir al contenido"
+   e) Asegurar focus visible en todos los elementos
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ src/css/custom.css (colores, contraste)
+  ✓ src/theme/ (componentes html)
+  ✓ src/components/ (aria attributes)
+
+Secundarios:
+  ✓ docs/ (headings, alt text)
+  ✓ docusaurus.config.js (viewport meta tag)
+
+================================================================================
+STATUS AUDITORÍA: GUIDELINES DOCUMENTADAS
+================================================================================
+
+Estándares: WCAG 2.1 Level AA
+Evaluación: Probablemente cumple base, pero componentes custom requieren mejora
+Herramientas: axe DevTools, Lighthouse, NVDA
+
+Próximo paso: Ejecutar testing con herramientas reales

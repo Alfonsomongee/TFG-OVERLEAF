@@ -31,11 +31,12 @@ function ForensicGalleryInner() {
         // Handle hash navigation
         if (window.location.hash) {
           const hashId = window.location.hash.substring(1);
-          const category = data.categories.find(c => c.tables.some(t => t.id === hashId));
+          const targetId = hashId.startsWith('tabla-') ? hashId.substring(6) : hashId;
+          const category = data.categories.find(c => c.tables.some(t => t.id === targetId));
           if (category) {
             setActiveCategory(category.id);
             setTimeout(() => {
-              const el = document.getElementById(hashId);
+              const el = document.getElementById(`tabla-${targetId}`);
               if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }
@@ -61,6 +62,8 @@ function ForensicGalleryInner() {
             <button
               className={`${styles.categoryButton} ${activeCategory === category.id ? styles.active : ''}`}
               onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
+              aria-expanded={activeCategory === category.id}
+              aria-controls={`forensic-tables-${category.id}`}
             >
               <div className={styles.catTitle}>
                 {translate({id: `forensic.category.${category.id}`, message: category.name})}
@@ -68,11 +71,11 @@ function ForensicGalleryInner() {
             </button>
             
             {activeCategory === category.id && (
-              <div className={styles.tableList}>
+              <div id={`forensic-tables-${category.id}`} className={styles.tableList}>
                 {category.tables.map((table) => (
                   <div
                     key={table.id}
-                    id={table.id}
+                    id={`tabla-${table.id}`}
                     className={styles.tableItem}
                     style={{ '--cat-color': `var(--fg-old-cat-${(categoryIndex % 5) + 1})` }}
                   >

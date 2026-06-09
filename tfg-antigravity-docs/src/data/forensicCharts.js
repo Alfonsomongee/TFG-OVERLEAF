@@ -61,6 +61,7 @@ export const CHARTS = [
   {
     id: 'chart-1',
     categoryId: 'cat1',
+    tema: 'T1',
     order: 1,
     title: 'Demanda Peninsular',
     fullTitle: 'Evolución de la demanda eléctrica en España — 28 y 29 de abril de 2025',
@@ -98,6 +99,7 @@ Die Erholung verlief stufenweise und extrem langsam. Ab 13:05 CEST tauchten symb
   {
     id: 'chart-2',
     categoryId: 'cat1',
+    tema: 'T1',
     order: 2,
     title: 'Total Load — ES + PT',
     fullTitle: 'Demanda real frente a previsión day-ahead — España y Portugal',
@@ -135,6 +137,7 @@ Spaniens Erholung produzierte bis 22:00–23:00 Uhr am 29. April keine signifika
   {
     id: 'chart-3',
     categoryId: 'cat1',
+    tema: 'T1',
     order: 3,
     title: 'Programa de Producción',
     fullTitle: 'Desglose de la energía programada en los mercados de producción',
@@ -174,6 +177,7 @@ Der Zusammenbruch um 12:33 CEST annullierte diese gesamte Planung physisch und a
   {
     id: 'chart-4',
     categoryId: 'cat2',
+    tema: 'T2',
     order: 1,
     title: 'Potencia Disponible por Tecnología',
     fullTitle: 'Comparativa de potencia disponible por tecnología',
@@ -211,6 +215,7 @@ Die verfügbare Leistung in den frühen Morgenstunden steht jedoch in radikalem 
   {
     id: 'chart-5',
     categoryId: 'cat2',
+    tema: 'T1',
     order: 2,
     title: 'Installed Capacity per Type',
     fullTitle: 'Capacidad instalada del sistema eléctrico peninsular por tipo de tecnología',
@@ -248,6 +253,7 @@ Die Falle liegt im Unterschied zwischen installierter und tatsächlich eingesetz
   {
     id: 'chart-6',
     categoryId: 'cat2',
+    tema: 'T2',
     order: 3,
     title: 'Actual Generation per Unit',
     fullTitle: 'Generación real por unidad de producción — Estado del mix durante el colapso',
@@ -284,7 +290,8 @@ Das Ranking der 20 einzelnen Einheiten mit der höchsten Erzeugung wird von Kern
   },
   {
     id: 'chart-7',
-    categoryId: 'cat2',
+    categoryId: 'cat1',
+    tema: 'T1',
     order: 4,
     title: 'Water Reservoirs & Hydro',
     fullTitle: 'Almacenamiento en embalses y plantas hidroeléctricas — España, 2025',
@@ -321,7 +328,8 @@ Dieses verfügbare Volumen war entscheidend für den Wiederherstellungsprozess. 
   },
   {
     id: 'chart-8',
-    categoryId: 'cat2',
+    categoryId: 'cat1',
+    tema: 'T1',
     order: 5,
     title: 'Otros Indicadores — CO₂ + Renovables',
     fullTitle: 'Porcentaje de generación libre de CO₂ y previsiones renovables',
@@ -362,6 +370,7 @@ Der Rückgang ist augenblicklich und total: von 91% auf 0% in den Sekunden des S
   {
     id: 'chart-9',
     categoryId: 'cat3',
+    tema: 'T3',
     order: 1,
     title: 'Mercados y Precios — SPOT vs PVPC',
     fullTitle: 'Comparativa de precios eléctricos — Mercado SPOT mayorista vs. PVPC 2.0TD',
@@ -399,6 +408,7 @@ Der Blackout änderte nicht direkt die am Vortag bereits festgesetzten Stundenpr
   {
     id: 'chart-10',
     categoryId: 'cat3',
+    tema: 'T3',
     order: 2,
     title: 'Precio Final Desglosado',
     fullTitle: 'Componentes del precio final de la electricidad',
@@ -436,6 +446,7 @@ Das aufschlussreichste Datum ist nicht der Endpreis, sondern das Verhältnis sei
   {
     id: 'chart-11',
     categoryId: 'cat3',
+    tema: 'T3',
     order: 3,
     title: 'Energy Prices — Europa',
     fullTitle: 'Precios day-ahead del mercado mayorista ibérico (OMIE)',
@@ -473,6 +484,7 @@ Der negative Preis von 12:00–13:00 wurde 24 Stunden vor dem Blackout festgeset
   {
     id: 'chart-12',
     categoryId: 'cat3',
+    tema: 'T3',
     order: 4,
     title: 'Precios de Desvíos Tiempo Real',
     fullTitle: 'Precios de desvíos y restricciones técnicas en tiempo real',
@@ -513,6 +525,7 @@ Der Zusammenbruch um 12:33 CEST verursachte den sofortigen Einbruch des Anteils 
   {
     id: 'chart-13',
     categoryId: 'cat4',
+    tema: 'T4',
     order: 1,
     title: 'Saldos por Frontera (P48)',
     fullTitle: 'Saldos netos de intercambio programados (P48)',
@@ -551,6 +564,7 @@ Der Zusammenbruch annullierte alle geplanten Salden (Nullwerte von 13:00 Uhr am 
   {
     id: 'chart-14',
     categoryId: 'cat4',
+    tema: 'T4',
     order: 2,
     title: 'Cross-Border Physical Flows',
     fullTitle: 'Flujos físicos reales en las interconexiones de España',
@@ -588,6 +602,7 @@ Der Zusammenbruch zeigte sich zuerst an der französischen Grenze. Im Intervall 
   {
     id: 'chart-15',
     categoryId: 'cat4',
+    tema: 'T4',
     order: 3,
     title: 'Scheduled Commercial Exchanges',
     fullTitle: 'Saldo neto de intercambios comerciales programados',
@@ -625,6 +640,7 @@ Minuten vor dem Zusammenbruch (10:33 UTC) war der geplante kommerzielle Saldo no
   {
     id: 'chart-16',
     categoryId: 'cat4',
+    tema: 'T4',
     order: 4,
     title: 'Subastas Explícitas de Capacidad',
     fullTitle: 'Subastas explícitas de capacidad de interconexión',
@@ -662,6 +678,7 @@ Der Zusammenbruch am 28. April annullierte physisch alle kontrahierten Kapazitä
   {
     id: 'chart-17',
     categoryId: 'cat4',
+    tema: 'T4',
     order: 5,
     title: 'Forecast Transfer Capacities',
     fullTitle: 'Capacidades de transferencia previstas en las interconexiones',
@@ -701,6 +718,7 @@ Der 29. April zeigt eine andere Konfiguration: Die Kapazität Spanien → Frankr
   {
     id: 'chart-18',
     categoryId: 'cat5',
+    tema: 'T5',
     order: 1,
     title: 'Current Balancing State',
     fullTitle: 'Evolución del desequilibrio eléctrico (imbalance) — España',
@@ -738,6 +756,7 @@ Der Übergang vom Defizit zum Überschuss erfolgte um 18:15–18:30 UTC dank REE
   {
     id: 'chart-19',
     categoryId: 'cat5',
+    tema: 'T5',
     order: 2,
     title: 'Imbalance — Volumen MW',
     fullTitle: 'Volumen de desequilibrio entre generación y demanda — España',
@@ -775,6 +794,7 @@ Der Übergang zum Überschuss (18:15–18:30 UTC) markierte die vollständige Ak
   {
     id: 'chart-20',
     categoryId: 'cat5',
+    tema: 'T5',
     order: 3,
     title: 'Imbalance Prices',
     fullTitle: 'Precios de los desvíos de balance — España',
@@ -812,6 +832,7 @@ Während der Krise brachen die Ausgleichspreise technisch auf Null oder nicht re
   {
     id: 'chart-21',
     categoryId: 'cat5',
+    tema: 'T5',
     order: 4,
     title: 'FRR Capacity — Reservas',
     fullTitle: 'Capacidad real y prevista de Reserva de Restauración de Frecuencia',
@@ -849,6 +870,7 @@ Das zweite Quartal (Q2) umfasst den verhängnisvollen 28. April. Der Auslöser w
   {
     id: 'chart-22',
     categoryId: 'cat5',
+    tema: 'T5',
     order: 5,
     title: 'Cost of Congestion Management',
     fullTitle: 'Costes mensuales de gestión de congestión (countertrading)',
@@ -885,7 +907,8 @@ Die Nullkosten im April sind das aufschlussreichste Datum. Sie deuten nicht auf 
   },
   {
     id: 'chart-23',
-    categoryId: 'cat5',
+    categoryId: 'cat6',
+    tema: 'T6',
     order: 6,
     title: 'Fall-backs y Protocolos Emergencia',
     fullTitle: 'Desconexiones de TSOs y activación de procedimientos de contingencia',

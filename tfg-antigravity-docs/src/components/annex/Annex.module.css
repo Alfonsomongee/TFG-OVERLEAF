@@ -1,0 +1,452 @@
+/* Annex System — Common CSS Module
+   Unified visual language for all conceptual annexes.
+   Light & dark mode support via CSS variables
+   Responsive design for desktop, tablet, mobile
+*/
+
+.layout {
+  --annex-bg: rgba(255, 252, 245, 0.94);
+  --annex-surface: rgba(255, 252, 245, 0.84);
+  --annex-text-1: #191814;
+  --annex-text-2: #4a4338;
+  --annex-text-3: #7a7062;
+  --annex-border: rgba(62, 52, 38, 0.14);
+  --annex-accent: #145c63;
+  --annex-accent-light: #2d8a91;
+  --annex-subtle-bg: rgba(20, 92, 99, 0.04);
+}
+
+html[data-theme='dark'] .layout {
+  --annex-bg: rgba(16, 29, 53, 0.9);
+  --annex-surface: rgba(7, 19, 38, 0.62);
+  --annex-text-1: #f4f7fb;
+  --annex-text-2: #c7d2e3;
+  --annex-text-3: #91a4bc;
+  --annex-border: rgba(156, 180, 210, 0.18);
+  --annex-accent: #83bdc2;
+  --annex-accent-light: #a6d8dd;
+  --annex-subtle-bg: rgba(131, 189, 194, 0.05);
+}
+
+.layout {
+  background-color: var(--annex-bg);
+  color: var(--annex-text-1);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+  border-radius: 8px;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  margin: 1.5rem 0;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* VARIANTE WIDE — solo para anexos conceptuales I–IX             */
+/* Consume el padding lateral del artículo de Docusaurus para     */
+/* dar ~4 rem más de ancho útil. No invade la sidebar.            */
+/* ─────────────────────────────────────────────────────────────── */
+
+.layoutWide {
+  margin-left:  -2rem;
+  margin-right: -2rem;
+  width: calc(100% + 4rem);
+}
+
+@media (max-width: 996px) {
+  /* En tablet/móvil: volver a layout estándar */
+  .layoutWide {
+    margin-left:  0;
+    margin-right: 0;
+    width: 100%;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* HEADER SECTION */
+/* ─────────────────────────────────────────────────────────────── */
+
+.header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--annex-border);
+  padding-bottom: 1.2rem;
+  text-align: left;
+}
+
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--annex-accent);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.title {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--annex-text-1);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--annex-text-2);
+  max-width: 680px;
+  line-height: 1.7;
+  margin: 0.75rem 0;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* METADATA CHIPS */
+/* ─────────────────────────────────────────────────────────────── */
+
+.metaContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+}
+
+.metaChip {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0.4rem 0.8rem;
+  background-color: var(--annex-surface);
+  border: 1px solid var(--annex-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.metaChipLabel {
+  font-weight: 600;
+  color: var(--annex-text-3);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.metaChipValue {
+  color: var(--annex-text-1);
+  font-weight: 500;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* CONTENT AREA */
+/* ─────────────────────────────────────────────────────────────── */
+
+.content {
+  margin-top: 1.5rem;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* ANNEX SECTION */
+/* ─────────────────────────────────────────────────────────────── */
+
+.section {
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--annex-border);
+  padding-bottom: 2rem;
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionDetails {
+  /* Native <details> styling */
+}
+
+.sectionDetails[open] .sectionSummary {
+  color: var(--annex-accent);
+}
+
+.sectionDetails[open] .sectionSummary .sectionTitle {
+  color: var(--annex-accent);
+}
+
+.sectionSummary {
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  padding: 1rem;
+  margin: -1rem -1rem 0 -1rem;
+  border-radius: 6px;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--annex-text-1);
+}
+
+.sectionSummary:hover {
+  background-color: var(--annex-subtle-bg);
+}
+
+.sectionSummary:focus {
+  outline: 2px solid var(--annex-accent);
+  outline-offset: 2px;
+}
+
+.sectionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.sectionEyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--annex-text-3);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+  font-weight: 700;
+  color: var(--annex-text-1);
+  margin: 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.sectionDescription {
+  font-size: 0.95rem;
+  color: var(--annex-text-2);
+  margin-top: 0.5rem;
+  line-height: 1.7;
+}
+
+.sectionContent {
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--annex-subtle-bg);
+  overflow-x: auto;
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* METHOD NOTE / DATA TYPE BADGE */
+/* ─────────────────────────────────────────────────────────────── */
+
+.methodNote {
+  display: block;
+  padding: 0.65rem 1rem;
+  margin: 0.75rem 0;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.55;
+  border: 1px solid;
+}
+
+/* Data type variants */
+
+.methodNote.historico {
+  background-color: rgba(20, 92, 99, 0.08);
+  border-color: var(--annex-border);
+  color: var(--annex-text-1);
+}
+
+html[data-theme='dark'] .methodNote.historico {
+  background-color: rgba(131, 189, 194, 0.08);
+  border-color: rgba(131, 189, 194, 0.25);
+}
+
+.methodNote.vivo {
+  background-color: rgba(212, 163, 115, 0.08);
+  border-color: rgba(212, 163, 115, 0.25);
+  color: var(--annex-text-1);
+}
+
+html[data-theme='dark'] .methodNote.vivo {
+  background-color: rgba(230, 180, 92, 0.08);
+  border-color: rgba(230, 180, 92, 0.25);
+}
+
+.methodNote.estimacion {
+  background-color: rgba(212, 163, 115, 0.06);
+  border-color: var(--annex-border);
+  color: var(--annex-text-2);
+}
+
+html[data-theme='dark'] .methodNote.estimacion {
+  background-color: rgba(230, 180, 92, 0.06);
+  border-color: rgba(230, 180, 92, 0.15);
+}
+
+.methodNote.reconstruccion {
+  background-color: rgba(139, 38, 53, 0.06);
+  border-color: var(--annex-border);
+  color: var(--annex-text-1);
+}
+
+html[data-theme='dark'] .methodNote.reconstruccion {
+  background-color: rgba(217, 135, 152, 0.06);
+  border-color: rgba(217, 135, 152, 0.15);
+}
+
+.methodNote.modeloDidactico {
+  background-color: rgba(20, 92, 99, 0.05);
+  border-color: var(--annex-border);
+  color: var(--annex-text-2);
+}
+
+html[data-theme='dark'] .methodNote.modeloDidactico {
+  background-color: rgba(131, 189, 194, 0.05);
+  border-color: rgba(131, 189, 194, 0.15);
+}
+
+.methodNote.ilustracionConceptual {
+  background-color: rgba(78, 107, 79, 0.06);
+  border-color: var(--annex-border);
+  color: var(--annex-text-2);
+}
+
+html[data-theme='dark'] .methodNote.ilustracionConceptual {
+  background-color: rgba(78, 107, 79, 0.06);
+  border-color: rgba(78, 107, 79, 0.15);
+}
+
+.methodNote.cuestionAbierta {
+  background-color: rgba(212, 163, 115, 0.05);
+  border-color: var(--annex-border);
+  color: var(--annex-text-2);
+  font-style: italic;
+}
+
+html[data-theme='dark'] .methodNote.cuestionAbierta {
+  background-color: rgba(230, 180, 92, 0.05);
+  border-color: rgba(230, 180, 92, 0.12);
+}
+
+/* ─────────────────────────────────────────────────────────────── */
+/* RESPONSIVE */
+/* ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .layout {
+    padding: clamp(1rem, 4vw, 1.5rem);
+    margin: 1.5rem 0;
+  }
+
+  .metaContainer {
+    gap: 0.5rem;
+  }
+
+  .metaChip {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .sectionContent {
+    padding-left: 0.75rem;
+    border-left-width: 2px;
+  }
+
+  .title {
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.15rem, 3vw, 1.4rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .layout {
+    padding: 1rem;
+  }
+
+  .header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .metaChip {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 140px;
+  }
+
+  .sectionSummary {
+    padding: 0.75rem;
+    margin: -0.75rem -0.75rem 0 -0.75rem;
+  }
+
+  .sectionContent {
+    padding-left: 0.5rem;
+  }
+}
+
+/* ============================================================
+   AnnexTabs
+   ============================================================ */
+
+.tabsWrapper {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--annex-border);
+  margin-bottom: 1.25rem;
+}
+
+.tabButton {
+  margin-bottom: -1px;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--annex-border);
+  border-bottom-color: transparent;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--annex-text-2, #4b5563);
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.tabButton:hover {
+  color: var(--annex-accent);
+  border-color: var(--annex-accent);
+  background: rgba(20, 92, 99, 0.06);
+  background: color-mix(in srgb, var(--annex-accent) 6%, transparent);
+}
+
+.tabButtonActive {
+  color: var(--annex-accent);
+  border-color: var(--annex-accent);
+  border-bottom-color: var(--annex-surface);
+  background: var(--annex-surface);
+  font-weight: 700;
+}
+
+.tabButton:focus-visible {
+  outline: 2px solid var(--annex-accent);
+  outline-offset: 2px;
+}
+
+.tabPanel {
+  min-width: 0;
+}
+
+html[data-theme='dark'] .tabButton {
+  color: var(--annex-text-2, #cbd5e1);
+}
+
+html[data-theme='dark'] .tabButton:hover {
+  background: rgba(131, 189, 194, 0.08);
+  background: color-mix(in srgb, var(--annex-accent) 10%, transparent);
+}
+
+html[data-theme='dark'] .tabButtonActive {
+  border-bottom-color: var(--annex-surface);
+  background: var(--annex-surface);
+}

@@ -7,6 +7,16 @@ hide_title: true
 import Link from '@docusaurus/Link';
 import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
 
+:::info Declaración metodológica: sección de datos vivos
+
+Esta sección muestra **datos operativos actuales** del sistema eléctrico ibérico obtenidos de la API de ESIOS (Red Eléctrica de España) con actualización cada 5 minutos.
+
+**No forma parte de la reconstrucción forense histórica del apagón del 28 de abril de 2025.** Los módulos de análisis comparativo mostran datos históricos fijos del 28-A para referencia contextual, pero el propósito principal es la monitorización viva de variables sistémicas.
+
+Para el análisis causal del evento y sus determinantes técnicos, consulten los Capítulos 2–4 (Contexto, Análisis, Reacción) y los Anexos técnicos documentales.
+
+:::
+
 <div className="custom-hero" style={{ textAlign: 'center', marginBottom: '3rem', marginTop: '1rem' }}>
   <div style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ifm-color-primary)', marginBottom: '0.75rem' }}>
     Monitorización Dinámica
@@ -25,7 +35,7 @@ import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
       Actualización 5 Minutos
     </span>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-primary)', color: 'var(--ifm-color-primary)', borderRadius: '20px' }}>
-      11 Herramientas Métricas
+      6 Herramientas Métricas
     </span>
   </div>
 </div>
@@ -44,20 +54,6 @@ export const items1 = [
 ];
 
 <DatosTiempoRealGrid items={items1} />
-
-## Contexto Histórico y Forense
-
-Indicadores forenses y económicos derivados del análisis pericial y de los informes de auditoría del incidente del 28 de abril.
-
-export const items2 = [
-  {title: 'Costes de Ajuste', description: 'Matriz térmica de los costes extraordinarios asociados a los servicios de ajuste y resolución de restricciones técnicas durante la crisis.', href: '/datos-tiempo-real/costes-ajuste'},
-  {title: 'Impacto Económico', description: 'Diagrama de cascada que detalla el coste total imputado a pérdidas de servicio (VoLL), operaciones reforzadas de gas y daños físicos de infraestructura.', href: '/datos-tiempo-real/waterfall-financiero'},
-  {title: 'Indisponibilidad de Red', description: 'Medida del porcentaje de indisponibilidad de la red de transporte de alta tensión (400 kV) afectada por los disparos en cascada.', href: '/datos-tiempo-real/indisponibilidad'},
-  {title: 'Emisiones vs Renovable', description: 'Curva de correlación entre la intensidad de emisiones específicas de CO₂ y los niveles de penetración renovable durante el colapso.', href: '/datos-tiempo-real/emisiones-renovable'},
-  {title: 'Resiliencia Sectorial', description: 'Trayectoria temporal de la recuperación del consumo de energía desagregado por sectores (Industrial frente a Servicios).', href: '/datos-tiempo-real/resiliencia-sectorial'}
-];
-
-<DatosTiempoRealGrid items={items2} />
 
 <div style={{ fontSize: '0.8rem', color: 'var(--ifm-color-emphasis-500)', borderTop: '1px solid var(--ifm-color-emphasis-200)', paddingTop: '1rem', marginTop: '3rem', fontFamily: 'var(--ifm-font-family-monospace)', lineHeight: 1.5 }}>
   Nota de seguridad metodológica: Las credenciales de acceso a la interfaz de programación de aplicaciones (API) se encuentran custodiadas en el entorno seguro del servidor (Serverless Variables). La agregación y saneamiento de los vectores dinámicos se delega en el endpoint '/api/esios-multi', garantizando la protección de los tokens.

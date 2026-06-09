@@ -5,6 +5,9 @@ title: "El Día Después: Reformas Institucionales"
 ---
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import LOLEBarChart from "@site/src/components/LOLEBarChart";
+import PicasoPriceChart from "@site/src/components/PicasoPriceChart";
+import MRSCRComparator from "@site/src/components/MRSCRComparator";
 
 <GlitchTitle>El Día Después: Reformas Institucionales</GlitchTitle>
 
@@ -19,7 +22,7 @@ Antes del 28-A, el cálculo probabilístico de los márgenes de reserva por Regi
 La aplicación de la enmienda forzó una divergencia regulatoria fundamentada en la vulnerabilidad técnica de cada región:
 
 <ForensicTable 
-  title="TABLA 12 | PRIMERA ENMIENDA: METODOLOGÍA DE RESERVAS"
+  title="TABLA L1 | PRIMERA ENMIENDA: METODOLOGÍA DE RESERVAS"
   source="Elaboración propia"
 >
 
@@ -43,6 +46,13 @@ Recalibración de la función CARA. ENTSO-E utilizaba un coeficiente de aversió
 
 Reformulación del LOLE. ENTSO-E presentaba resultados de suficiencia probabilística utilizando rangos (ej. para Portugal en 2028: entre 1 y 6 h/año, frente a un estándar de fiabilidad de 1,46 h). ACER dictaminó que utilizar rangos estadísticos socava la solidez legal necesaria para aplicar mecanismos de capacidad. La nueva directriz obliga a entregar un valor determinista único que integre escenarios de inestabilidad multifactorial: las simulaciones Monte Carlo del ERAA ya no pueden limitarse a modelar déficits de viento y alta demanda, sino que deben calcular la probabilidad conjunta de indisponibilidad de renovables cruzada con fallos topológicos de red, perfiles de sobretensión en la red de 400 kV e insuficiencia de reservas rodantes — tal como ocurrió el 28-A.
 
+<figure id="fig-l1-lole">
+  <LOLEBarChart />
+  <figcaption>
+    <strong>Figura L1 — Horas anuales de LOLE por zona de oferta (ERAA 2025 enmendada).</strong> Horas anuales de LOLE por zona de oferta según la Decisión 06/2026 de ACER. La línea discontinua roja marca el estándar de fiabilidad (3 h para la mayoría de zonas, 8 h para ISEM).
+  </figcaption>
+</figure>
+
 ## Metamorfosis de PICASSO: de la eficiencia económica a la resiliencia estructural
 
 La plataforma *PICASSO* (Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation) fue concebida primariamente como una herramienta de optimización de mercado: su algoritmo buscaba el emparejamiento transfronterizo más barato de ofertas de aFRR con granularidad de 15 minutos, minimizando el coste para los consumidores en condiciones normales.
@@ -50,6 +60,13 @@ La plataforma *PICASSO* (Platform for the International Coordination of Automate
 Durante la gestión de la crisis, a las 15:50 CEST del 28-A, Amprion alertó a RTE por peticiones computacionales masivas de hasta 2.500 MW volcadas en PICASSO asociadas a precios fuertemente negativos. Estas distorsiones financieras evidenciaron que, en medio de un aislamiento y un deslastre masivo de carga, el algoritmo puramente económico colapsa conceptualmente.
 
 La reforma institucional subsiguiente dictó la formalización de PICASSO como herramienta de resiliencia estructural de obligado cumplimiento. Las enmiendas operativas otorgan a los despachos de control de los TSOs la potestad de ejecutar overrides (sobrescrituras manuales) inmediatos sobre los algoritmos LFC de la plataforma durante un estado de alerta del EAS. La capacidad interconectada gestionada por PICASSO ya no se somete únicamente al precio marginal: se bloquea preventivamente para inyectar flujos macroscópicos de estabilización direccional, blindando las fronteras vulnerables contra colapsos de inercia o desequilibrios asíncronos rápidos.
+
+<figure id="fig-l2-picasso">
+  <PicasoPriceChart />
+  <figcaption>
+    <strong>Figura L2 — Incidentes de precios en PICASSO e impacto de la demanda elástica.</strong> CBMP (€/MWh) sin elasticidad (rojo discontinuo) y con demanda elástica (verde) para activaciones de aFRR. Efecto mitigador de las Decisiones ACER 08/2024 y 09/2024.
+  </figcaption>
+</figure>
 
 ## La nueva métrica MRSCR: el certificado de defunción del SCR tradicional
 
@@ -73,6 +90,13 @@ $$
 </div>
 
 Institucionalmente, los nuevos códigos de red establecen el Valor Crítico (CMRSCR): por normativa legal obligatoria, el MRSCR calculado en el lado de baja tensión del transformador elevador de cualquier nueva planta IBR no debe ser inferior a 1,5. Un MRSCR inferior a 1,5 indica una debilidad sistémica insoportable: frente a un hueco de tensión de la red, los lazos de control de los inversores se volverán inestables y desconectarán. Los TSOs están jurídicamente facultados para bloquear la conexión de cualquier parque eólico o solar que no cumpla este ratio, obligando a los promotores a instalar compensadores síncronos distribuidos en el punto de conexión (hibridación obligatoria) para elevar <i>S<sub>ac</sub></i> hasta el umbral.
+
+<figure id="fig-l3-mrscr">
+  <MRSCRComparator />
+  <figcaption>
+    <strong>Figura L3 — Fortaleza de red: SCR tradicional vs MRSCR real.</strong> Comparación del Short-Circuit Ratio (SCR) tradicional y el Multi-Infeed SCR (MRSCR) real en los nodos de interconexión franco‑ibérica. El umbral MRSCR ≤ 2.0 indica red débil con riesgo de inestabilidad dinámica.
+  </figcaption>
+</figure>
 
 ## Reacciones políticas e institucionales en Europa
 

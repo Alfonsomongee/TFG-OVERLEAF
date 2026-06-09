@@ -1,0 +1,308 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 10: BUSCADOR, GLOSARIO Y TOOLTIPS
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de sistemas de búsqueda, glosario compartido y sistema de tooltips
+Propósito: Documentar indexación, términos definidos y vinculación automática
+
+================================================================================
+BUSCADOR LUNR
+================================================================================
+
+Configuración:
+  Plugin: docusaurus-lunr-search v3.6.0
+  Ubicación del índice: static/data/search-index.json
+  Generación: prebuild script (scripts/build-index.js)
+
+Propósito:
+  - Búsqueda offline (no depende de backend)
+  - Multiidioma: es, en, de (configurable)
+  - Sin JavaScript adicional (datos + minisearch lib)
+
+FLUJO DE INDEXACIÓN:
+
+1. Build time:
+   - npm run prebuild ejecuta scripts/build-index.js
+   - Scrapea todos los .mdx en docs/
+   - Extrae títulos, headings, párrafos
+   - Genera índice Lunr (formato JSON)
+   - Guarda en static/data/search-index.json
+
+2. Runtime:
+   - Browser carga search-index.json
+   - Minisearch library busca en RAM
+   - Resultados se muestran en navbar
+
+MÉTADATA INDEXADA (probable):
+
+Cada documento contribuye:
+  - title (de frontMatter)
+  - h1, h2, h3 headings
+  - Primeros N palabras de cada párrafo
+  - Componentes importados (nombre del componente)
+
+MULTIIDIOMA:
+
+Configuración docusaurus.config.js:
+  languages: ['es', 'en', 'de']
+  → 3 índices separados (search-index.json, search-index.en.json, etc.)
+
+Problema detectado:
+  ⚠ Buscar palabras en idioma X cuando usuario está en idioma Y
+  → No funciona (índices separados)
+
+================================================================================
+GLOSARIO
+================================================================================
+
+Ubicación: docs/glosario.mdx
+
+Propósito:
+  - Definiciones de términos técnicos
+  - Consulta por usuario
+  - Linkeo automático en todo documento
+
+Estructura probable:
+
+```mdx
+---
+title: "Glosario"
+---
+
+## A
+**UFLS** (Under Frequency Load Shedding)
+  Dispositivo que desconecta cargas si frecuencia cae por debajo de umbral.
+  Ver: Procedimiento de Operación P.O. 2.1
+
+## D
+**Inercia (H)**
+  Constante de inercia síncrona, medida en segundos.
+  Determina velocidad de respuesta de frecuencia.
+
+...más términos...
+```
+
+TÉRMINOS CRÍTICOS PROBABLES:
+
+  - RoCoF (Rate of Change of Frequency)
+  - SCR (Short Circuit Ratio)
+  - IBR (Inverter-Based Resources)
+  - UFLS (Under Frequency Load Shedding)
+  - LAG (Late Action Game)
+  - CECOEL (centro de control)
+  - N-1 (Criterio N menos 1)
+  - Inercia (H)
+  - Generador síncrono
+  - Inversor grid-forming
+  - Soporte de tensión
+  - Cascada
+  - Colapso de voltaje
+
+CANTIDAD ESTIMADA: 30-50 términos
+
+================================================================================
+SISTEMA DE TOOLTIPS AUTOMÁTICOS
+================================================================================
+
+Plugin: remark-auto-glossary-links (custom)
+
+Funcionalidad:
+  1. Lee docs/glosario.mdx
+  2. Extrae términos definidos
+  3. En cada MDX, busca coincidencias
+  4. Envuelve con componente Tooltip
+  5. Al hover → muestra definición
+
+CONFIGURACIÓN PROBABLE:
+
+En docusaurus.config.js (remarkPlugins):
+  [
+    require('remark-auto-glossary-links'),
+    {
+      glossaryFile: 'docs/glosario.mdx',
+      tooltipComponent: '@site/src/components/GlossaryTooltip',
+      excludeTerms: ['el', 'la', 'de'],  // palabras comunes a ignorar
+      caseSensitive: false,
+    }
+  ]
+
+COMPORTAMIENTO:
+
+Input MDX:
+  "La inercia (H) del sistema era baja, causando rápida caída de RoCoF."
+
+Output renderizado:
+  "La <GlossaryTooltip term="inercia">inercia (H)</GlossaryTooltip> del sistema
+   era baja, causando rápida caída de <GlossaryTooltip term="rocof">RoCoF</GlossaryTooltip>."
+
+Tooltip al hover:
+  ┌─────────────────────┐
+  │ RoCoF              │
+  │ Rate of Change of  │
+  │ Frequency         │
+  │                   │
+  │ Velocidad de cam-  │
+  │ bio de frecuencia  │
+  └─────────────────────┘
+
+================================================================================
+COMPONENTE GLOSSARY TOOLTIP
+================================================================================
+
+Ubicación probable: src/components/GlossaryTooltip.jsx
+
+Propiedades:
+  - term (string): identificador del término
+  - children (ReactNode): texto a envolver
+  - position (string): top, bottom, left, right
+
+Comportamiento:
+  1. onMouseEnter → muestra tooltip
+  2. onMouseLeave → oculta tooltip
+  3. Responsive: On mobile, click → modal en lugar de hover
+
+Styling probable:
+  - Posición: absolute, relativo al trigger
+  - Fondo: rgba(bg-0, 0.95) con border
+  - Texto: pequeño pero legible
+  - Animación: fade-in 150ms
+  - Z-index: alto (encima de contenido)
+
+ACCESIBILIDAD:
+  - role="tooltip"
+  - aria-describedby en trigger
+  - Keyboard: Tab llega a término, Enter → tooltip
+
+================================================================================
+BÚSQUEDA INTEGRADA EN NAVBAR
+================================================================================
+
+Ubicación: Navbar (parte de docusaurus-lunr-search)
+
+Componente:
+  SearchBar (built-in de Docusaurus con plugin Lunr)
+
+Funcionalidad:
+  1. Click en search icon → input aparece
+  2. Usuario escribe query
+  3. JavaScript busca en search-index.json
+  4. Dropdown muestra top 10 resultados
+  5. Click en resultado → navega al documento
+
+Cada resultado muestra:
+  - Título del documento
+  - Excerpt (primeras N palabras de la coincidencia)
+  - Icono de categoría
+
+OPTIMIZACIONES:
+  - Búsqueda incremental (mientras escribe)
+  - Debounce para reducir computación
+  - Cache de búsquedas recientes (localStorage)
+
+HOTKEYS (probable):
+  - Ctrl+K (Win/Linux) o Cmd+K (Mac) → abre search
+  - Escape → cierra search
+  - Arrow up/down → navega resultados
+  - Enter → selecciona resultado
+
+================================================================================
+CALIDAD DEL ÍNDICE DE BÚSQUEDA
+================================================================================
+
+Potenciales problemas:
+
+1. **Términos sin indexar**
+   - Palabras muy cortas (< 3 caracteres)
+   - Palabras comunes (stop words)
+   - Acrónimos en mayúsculas (N-1, LAG)
+
+2. **Búsquedas inexactas**
+   - Sin fuzzy matching (búsqueda aproximada)
+   - Sin sinónimos (búsqueda de "potencia" no encuentra "MW")
+
+3. **Idiomas**
+   - Búsqueda en es no encuentra contenido en en
+   - Raíz de palabra no funciona (buscar "generar" no encuentra "generador")
+
+4. **Actualización del índice**
+   - Si editar MDX, hay que rebuild (`npm run build`)
+   - No se actualiza automáticamente en dev mode
+   - En Vercel, prebuild se ejecuta automáticamente
+
+================================================================================
+INTEGRACIÓN GLOSSARIO-BÚSQUEDA
+================================================================================
+
+Sinergia:
+
+1. Usuario hace búsqueda: "inercia"
+2. Resultados incluyen documentos con ese término
+3. Al navegar al documento, tooltips aparecen en "inercia"
+4. Tooltip muestra definición completa del glosario
+
+Ventaja:
+  - Usuario educado progresivamente
+  - Términos contextualizados
+  - Redirección a definición completa
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. BUSCADOR LUNR:
+   a) Leer scripts/build-index.js (cómo se genera índice)
+   b) Verificar static/data/search-index.json existe
+   c) Analizar tamaño del índice (¿muy grande para descargar?)
+   d) Verificar configuración de idiomas
+
+2. GLOSARIO:
+   a) Leer docs/glosario.mdx completamente
+   b) Contar términos definidos
+   c) Verificar que estén ordenados alfabéticamente
+   d) Verificar que definiciones son técnicamente correctas
+
+3. TOOLTIPS AUTOMÁTICOS:
+   a) Buscar remark-auto-glossary-links en node_modules/
+   b) Verificar que se ejecuta en build
+   c) Buscar GlossaryTooltip en src/components/
+   d) Verificar CSS de tooltip
+
+4. BÚSQUEDA:
+   a) Test: buscar término técnico → ¿aparecen resultados?
+   b) Test: buscar palabra común → ¿demasiados resultados?
+   c) Test: buscar en idioma diferente → ¿funciona?
+   d) Test: hotkey Ctrl+K → ¿abre search?
+
+5. MEJORAS SUGERIDAS:
+   a) Añadir fuzzy matching (typo tolerance)
+   b) Añadir sinónimos (generar → generación → generador)
+   c) Documentar términos del glosario en comments
+   d) Crear "search cheatsheet" en página de inicio
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ docs/glosario.mdx (lista de términos)
+  ✓ scripts/build-index.js (generación del índice)
+  ✓ static/data/search-index.json (contenido del índice)
+
+Secundarios:
+  ✓ src/components/GlossaryTooltip.jsx (if exists)
+  ✓ docusaurus.config.js (plugin Lunr config)
+  ✓ src/css/custom.css (tooltip styling)
+
+================================================================================
+STATUS AUDITORÍA: SISTEMA DOCUMENTADO
+================================================================================
+
+Componentes:
+  ✓ Buscador Lunr (offline, multiidioma)
+  ✓ Glosario (docs/glosario.mdx)
+  ✓ Tooltips automáticos (plugin custom)
+
+Integración: ✓ Fluida (búsqueda → documento → tooltip)
+
+Próximo paso: Verificar que remark-auto-glossary-links está instalado

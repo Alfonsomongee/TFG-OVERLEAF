@@ -1,0 +1,263 @@
+/* ── DynamicSecurityShift ── */
+
+.figure {
+  --fig-bg: #f8f4ea;
+  --fig-surface: #fffdf7;
+  --fig-text: #1f2933;
+  --fig-muted: #64707d;
+  --fig-border: rgba(31, 41, 51, 0.14);
+  --fig-hover: rgba(31, 41, 51, 0.04);
+  --fig-stripe: rgba(31, 41, 51, 0.025);
+  --fig-detail-bg: #fffdf7;
+
+  max-width: 740px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.25rem;
+  background: var(--fig-bg);
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--fig-text);
+  line-height: 1.5;
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #13263f;
+  --fig-text: #e5edf5;
+  --fig-muted: #a9b6c7;
+  --fig-border: rgba(180, 198, 220, 0.16);
+  --fig-hover: rgba(180, 198, 220, 0.06);
+  --fig-stripe: rgba(180, 198, 220, 0.03);
+  --fig-detail-bg: #172b45;
+}
+
+/* ── Header ── */
+
+.header {
+  margin-bottom: 0.6rem;
+}
+
+.kicker {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fig-muted);
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  line-height: 1.3;
+  color: var(--fig-text);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--fig-muted);
+  line-height: 1.45;
+}
+
+/* ── Legend ── */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--fig-muted);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Column headers ── */
+
+.colHeaders {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fig-muted);
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+
+.colOld,
+.colNew {
+  display: block;
+}
+
+.colArrow {
+  display: block;
+}
+
+/* ── Rows ── */
+
+.rows {
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-top: 1px solid var(--fig-border);
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 32px 1fr;
+  gap: 0.4rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  margin: 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--fig-border);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:nth-child(odd) {
+  background: var(--fig-stripe);
+}
+
+.row:hover {
+  background: var(--fig-hover);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--fig-muted);
+  outline-offset: -2px;
+}
+
+.rowActive {
+  background: var(--fig-hover);
+}
+
+/* ── Cells ── */
+
+.cellOld,
+.cellNew {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--fig-text);
+}
+
+.cellAccent {
+  flex-shrink: 0;
+  width: 3px;
+  min-height: 1em;
+  align-self: stretch;
+  border-radius: 1.5px;
+  margin-top: 0.1rem;
+}
+
+.arrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--fig-muted);
+  text-align: center;
+  line-height: 1;
+}
+
+/* ── Detail ── */
+
+.detail {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--fig-detail-bg);
+  border: 1px solid var(--fig-border);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.detailTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--fig-text);
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.6rem;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: var(--fig-muted);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 640px) {
+  .colHeaders {
+    display: none;
+  }
+
+  .rows {
+    border-radius: 4px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .arrow {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--fig-muted);
+  }
+
+  .cellOld {
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 600px) {
+  .figure {
+    padding: 0.75rem 0.9rem;
+    margin: 1rem 0;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+}

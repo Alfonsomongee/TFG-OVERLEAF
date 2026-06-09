@@ -1,0 +1,71 @@
+| ID | Tipo | Fuente original | Tema actual | ¿Aparece en anexo conceptual? | Anexo esperado | Riesgo | Acción recomendada |
+|---|---|---|---|---|---|---|---|
+| `chart-6` | Chart | `forensicCharts.js` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `chart-7` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-8` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-9` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-10` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-11` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-12` | Chart | `forensicCharts.js` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `chart-13` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-14` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-15` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-16` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Crucial: Vincular a T4 (Interconexiones) |
+| `chart-17` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Crucial: Vincular a T4 (Interconexiones) |
+| `chart-18` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-19` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-20` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-21` | Chart | `forensicCharts.js` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `chart-22` | Chart | `forensicCharts.js` | `T1` | No | T1 | Alto (Tema incorrecto) | Cambiar tema a T5 o T3 respectivamente |
+| `chart-23` | Chart | `forensicCharts.js` | `T1` | No | T1 | Alto (Tema incorrecto) | Cambiar tema a T5 o T3 respectivamente |
+| `albustami_ieee39_secuencia.png` | Image | `imageGalleryData.js` | `T3` | No | T3 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `futured_grid_evolution.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `pmu_sensors_europe.png` | Image | `imageGalleryData.js` | `T9` | No | T9 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T9 |
+| `mix_comparativo_2010_2024.png` | Image | `imageGalleryData.js` | `T1` | No | T1 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `capacidad_instalada_2025.png` | Image | `imageGalleryData.js` | `T1` | No | T1 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `ree_generation_mix_28april.png` | Image | `imageGalleryData.js` | `T1` | No | T1 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `precursor_overvoltage_22april.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `entsoe_flow_deviation.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `hvdc_control_transition.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `frequency_voltage_carmona.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `nunez_balboa_precursores.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `wams_oscilaciones_carmona.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `tap_lag_decoupling.png` | Image | `imageGalleryData.js` | `T3` | No | T3 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `heatmap_propagation.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `cascada_desconexiones.png` | Image | `imageGalleryData.js` | `T3` | No | T3 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `tension_frecuencia_colapso.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `interconexion_francia_colapso.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `islas_reposicion_entsoe.png` | Image | `imageGalleryData.js` | `T6` | No | T6 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `estrategia_reenergizacion_dual.png` | Image | `imageGalleryData.js` | `T6` | No | T6 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `black_start_hidroelectrico.png` | Image | `imageGalleryData.js` | `T6` | No | T6 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `evolucion_carga_repuesta_francia.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `intercambio_marruecos_topdown.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `evolucion_mix_reenergizacion.png` | Image | `imageGalleryData.js` | `T1` | No | T1 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `recuperacion_demanda_peninsular.png` | Image | `imageGalleryData.js` | `T6` | No | T6 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `mapas_termicos_tension_ree.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `fluctuaciones_tension_previas.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `aluvion_alertas_sobretension_sur.png` | Image | `imageGalleryData.js` | `T3` | No | T3 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `asimetria_balance_reactiva_sur.png` | Image | `imageGalleryData.js` | `T2` | No | T2 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `perdida_sincronismo_frontera.png` | Image | `imageGalleryData.js` | `T4` | No | T4 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `collage_conservador.png` | Image | `imageGalleryData.js` | `T8` | No | T8 | Medio | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T8 |
+| `precios-marginales-omie` | Table | `forensic_categories.json` | `T5` | No | T5 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T5 |
+| `programa-intercambios-pre-apagon` | Table | `forensic_categories.json` | `T4` | No | T4 | Alto | Crucial: Vincular a T4 (Interconexiones) |
+| `hvdc-santa-llogaia-parametros` | Table | `forensic_categories.json` | `T4` | No | T4 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T4 |
+| `intercambios-internacionales-minuto` | Table | `forensic_categories.json` | `T4` | No | T4 | Alto | Crucial: Vincular a T4 (Interconexiones) |
+| `re-voltage-manoeuvres` | Table | `forensic_categories.json` | `T2` | No | T2 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T2 |
+| `re-topological-manoeuvres` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `ren-topological-manoeuvres` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `lines-outage-icai` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `km-percentage-icai` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `desconexion-bombeo-hidraulica` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `pump-storage-es` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `pump-storage-pt` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `eventos-proteccion-maniobras` | Table | `forensic_categories.json` | `T3` | No | T3 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T3 |
+| `load-shedding-es-pt` | Table | `forensic_categories.json` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `dso-load-shedding` | Table | `forensic_categories.json` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `spanish-demand-forecast` | Table | `forensic_categories.json` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `portuguese-demand-forecast` | Table | `forensic_categories.json` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `centrales-black-start` | Table | `forensic_categories.json` | `T6` | No | T6 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `eas-state-changes` | Table | `forensic_categories.json` | `T6` | No | T6 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T6 |
+| `unavailable-capacity` | Table | `forensic_categories.json` | `T1` | No | T1 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T1 |
+| `compass-lexecon` | Table | `forensic_categories.json` | `T7` | No | T7 | Alto | Actualizar inventario/MDX para reflejar que sí tiene etiqueta T7 |

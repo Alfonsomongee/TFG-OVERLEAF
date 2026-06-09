@@ -1,0 +1,320 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 11: RESPONSIVE LAYOUT Y BREAKPOINTS
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de adaptación responsive para desktop, tablet y mobile
+Propósito: Documentar puntos de ruptura, estrategia mobile-first y comportamientos
+
+================================================================================
+BREAKPOINTS DEFINIDOS
+================================================================================
+
+Docusaurus estándar (inherited):
+
+  sm: 320px   (small phones)
+  md: 768px   (tablets, collapso de sidebar)
+  lg: 1024px  (laptops)
+  xl: 1216px  (desktops, contenido de ancho máximo)
+
+IMPLEMENTACIÓN:
+  Media queries en custom.css probablemente usan estos:
+  @media (max-width: 768px) { /* mobile */ }
+  @media (min-width: 769px) and (max-width: 1024px) { /* tablet */ }
+  @media (min-width: 1025px) { /* desktop */ }
+
+ESTRATEGIA PROBABLE:
+  Desktop-first approach (default es desktop, overrides para mobile)
+  o Mobile-first (default es mobile, overrides para desktop)
+  → Necesita verificación en custom.css
+
+================================================================================
+NAVBAR RESPONSIVE
+================================================================================
+
+DESKTOP (>= 768px):
+  - Logo visible (si no estuviera oculto)
+  - Items: [Language dropdown, About, PDF, GitHub]
+  - Navbar sticky al top
+  - Flex layout: items distribuidos horizontalmente
+
+TABLET (469-767px):
+  - Items probablemente caben en una fila
+  - Posible cambio de tamaño de fuente
+  - Logo más pequeño
+
+MOBILE (< 469px):
+  - Hamburger menu
+  - Navbar collapse items en drawer
+  - Items apilados verticalmente
+  - Solo icono de language y menu button visibles
+
+COMPORTAMIENTO hideOnScroll:
+  - Todos los breakpoints: se oculta al scroll down
+  - Se muestra al scroll up
+  - Animación suave (altura gradualmente)
+
+================================================================================
+SIDEBAR RESPONSIVE
+================================================================================
+
+DESKTOP (>= 768px):
+  - Sidebar visible por defecto
+  - Width: ~250px (estimado)
+  - Position: fixed o sticky
+  - Contenido scrollable independiente
+  - Botón collapse en esquina
+
+TABLET (469-767px):
+  - Sidebar probablemente oculto por defecto
+  - Hamburger button en navbar abre drawer
+  - Drawer overlay con width ~80%
+  - Click afuera cierra drawer
+
+MOBILE (< 469px):
+  - Sidebar OCULTO por defecto
+  - Hamburger button para abrir
+  - Drawer fullscreen o cerca
+  - Gesture: swipe derecha para cerrar (probable)
+
+CSS PROBABLE:
+
+```css
+.sidebar {
+  display: none;  /* mobile */
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: block;
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+.sidebar-overlay {
+  display: block;  /* mobile */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+@media (min-width: 768px) {
+  .sidebar-overlay {
+    display: none;
+  }
+}
+```
+
+================================================================================
+CONTENIDO PRINCIPAL RESPONSIVE
+================================================================================
+
+DESKTOP (>= 768px):
+  - Max-width: ~800px (contenido)
+  - Padding lateral: ~40px
+  - Sidebar a la izquierda
+  - TOC (table of contents) a la derecha
+  - Layout: [sidebar | content | toc]
+
+TABLET (469-767px):
+  - Max-width: ~90%
+  - Padding reducido: ~20px
+  - TOC oculto (integrado en sidebar?)
+  - Layout: [drawer | content]
+
+MOBILE (< 469px):
+  - Max-width: 100%
+  - Padding: ~12px (muy comprimido)
+  - TOC oculto
+  - Sidebar drawer
+  - Layout: [content]
+
+OVERFLOW:
+
+Elemento problema: Tablas
+  - En mobile, tablas son más anchas que viewport
+  - Solución: Horizontal scroll + wrapper
+  - Componente ForensicTable probablemente lo maneja
+
+Elemento problema: Código
+  - Bloques de código también pueden ser muy anchos
+  - Solución: Pre con overflow-x: auto
+  - Syntax highlighting de Prism lo manejaría
+
+Elemento problema: Imágenes
+  - Imágenes grandes pueden romper layout
+  - Solución: max-width: 100% + height: auto
+  - Componente Image custom probablemente lo hace
+
+================================================================================
+GRÁFICOS RESPONSIVE
+================================================================================
+
+Todos los gráficos usan <ResponsiveContainer> de Recharts:
+  <ResponsiveContainer width="100%" height={300}>
+    <LineChart data={data}>...
+
+COMPORTAMIENTO:
+  - Ancho: 100% del contenedor padre
+  - Alto: Fixed (ej, 300px)
+  - En mobile: Se reduce proporcionalmente
+  - Ejes: Probablemente se reordenan/ocultan en mobile
+
+PLOTLY GRÁFICOS (si existen):
+  {responsive: true} en config
+  → Recalcula layout en resize de ventana
+
+MAPAS (si usan Maplibre GL):
+  Maplibre manejaautomáticamente responsive
+  Nivel de zoom ajustable manualmente
+
+================================================================================
+TIPOGRAFÍA RESPONSIVE
+================================================================================
+
+Escala fluida con clamp():
+  --fs-h1: clamp(2.8rem, 2rem + 4vw, 4.8rem)
+
+INTERPRETACIÓN:
+  - Mobile (320px): 2rem + 4% * 320px = 2rem + 12.8px ≈ 1.8rem (clamped)
+  - Tablet (768px): 2rem + 4% * 768px = 2rem + 30.72px ≈ 3.3rem
+  - Desktop (1440px): 2rem + 4% * 1440px = 2rem + 57.6px ≈ 3.9rem
+  - Max clamped a 4.8rem
+
+VENTAJA:
+  - Sin media queries para tipografía
+  - Escalado suave en todos los tamaños
+  - Proporcional al viewport
+
+================================================================================
+ELEMENTOS FLOTANTES EN MOBILE
+================================================================================
+
+Chat widget:
+  - Mobile: Aparece en espacio valioso
+  - Solución 1: Hide en mobile (media query)
+  - Solución 2: Reposition a top (encima de navbar)
+  - Solución 3: Drawer bottom (like iMessage)
+  - Probable: Display none en < 469px
+
+Back-to-top button:
+  - Mobile: similar problema
+  - Probable: Oculto en mobile (navbar sticky sube)
+
+================================================================================
+TEST CHECKLIST RESPONSIVE
+================================================================================
+
+DESKTOP (1440px+):
+  ✓ Navbar visible, items horizontales
+  ✓ Sidebar visible, ancho correcto
+  ✓ Content centered, max-width respetado
+  ✓ TOC visible a la derecha
+  ✓ Gráficos renderizan correctamente
+  ✓ Tablas sin scroll horizontal
+
+TABLET (768px - 1024px):
+  ✓ Navbar sigue visible
+  ✓ Sidebar colapsable (hamburger?)
+  ✓ Content toma ancho disponible
+  ✓ Gráficos siguen responsive
+  ✓ Fuentes legibles sin zoom
+
+MOBILE (< 768px):
+  ✓ Hamburger menu funciona
+  ✓ Sidebar drawer accessible
+  ✓ Content full-width
+  ✓ Tablas scrolleables horizontalmente
+  ✓ Imágenes no overflow
+  ✓ Fuentes escaladas correctamente
+  ✓ Touch targets >= 44px
+  ✓ Chat widget no interfiere
+
+================================================================================
+PROBLEMAS POTENCIALES
+================================================================================
+
+1. **Fixed positioning conflicts**
+   - Navbar fixed + sidebar fixed → overlap
+   - Solución: margin-top en contenido
+   - ⚠ Requiere verificación
+
+2. **Overflow en mobile**
+   - Tablas muy anchas
+   - Código con líneas largas
+   - Solución: overflow-x: auto
+
+3. **Imágenes sin max-width**
+   - Rompen layout en mobile
+   - Solución: img { max-width: 100% }
+
+4. **Modal/drawer sin mobile optimization**
+   - Modal centrado cubre todo en mobile
+   - Drawer debería ser fullscreen
+
+5. **Performance en mobile**
+   - Gráficos complejos pueden ser lentos
+   - Solución: Lazy load gráficos
+   - Solución: Simplificar en mobile
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. INSPECCIONAR BREAKPOINTS:
+   a) Leer custom.css buscando @media queries
+   b) Documentar todos los breakpoints usados
+   c) Verificar que son consistentes
+
+2. TESTING RESPONSIVE:
+   a) Abrir en DevTools, toggle device toolbar
+   b) Probar en: 320px, 480px, 768px, 1024px, 1440px
+   c) Verificar que navbar, sidebar, contenido adaptan correctamente
+
+3. PROBLEMAS A BUSCAR:
+   a) Overflow horizontal (scroll innecesario)
+   b) Texto muy pequeño (<12px)
+   c) Elementos superpuestos
+   d) Touch targets muy pequeños (<44px)
+
+4. OPTIMIZACIONES:
+   a) Documentar breakpoint strategy en README
+   b) Crear guía de responsive components
+   c) Añadir tests visuales de responsive
+
+5. MOBILE-SPECIFIC:
+   a) Verificar que chat widget no interfiere
+   b) Verificar que tablas son scrolleables
+   c) Verificar que imágenes se adaptan
+   d) Verificar velocidad de load en mobile (LCP, FID, CLS)
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ src/css/custom.css (media queries)
+  ✓ src/theme/DocSidebar/Desktop/*.js (responsive logic)
+  ✓ src/components/ (cada componente custom)
+
+Secundarios:
+  ✓ docusaurus.config.js (viewport meta tag)
+  ✓ vercel.json (responsive image optimization?)
+
+================================================================================
+STATUS AUDITORÍA: ESTRATEGIA DOCUMENTADA
+================================================================================
+
+Breakpoints: ✓ Estándar Docusaurus (320, 768, 1024, 1216)
+Tipografía: ✓ Fluida con clamp()
+Layout: ✓ Probable flexbox/grid
+Gráficos: ✓ ResponsiveContainer (Recharts)
+
+Próximo paso: Crear suite de tests responsivos visuales

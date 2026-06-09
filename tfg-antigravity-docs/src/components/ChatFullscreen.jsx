@@ -48,6 +48,15 @@ const EnergyTransitionStreamgraph = lazyWithPreload(() => import('./EnergyTransi
 const AnimatedRestorationMap = lazyWithPreload(() => import('./AnimatedRestorationMap'));
 const VerticalTimeline    = lazyWithPreload(() => import('./VerticalTimeline'));
 const ThermalAdjustmentCostMatrix = lazyWithPreload(() => import('./ThermalAdjustmentCostMatrix'));
+// ── Lazy imports adicionales (Fix 2 + Fix 3) ──────────────────
+const PhasePlanePlot           = lazyWithPreload(() => import('./PhasePlanePlot'));
+const Comparador28A            = lazyWithPreload(() => import('./Comparador28A'));
+const RadarVulnerabilidad      = lazyWithPreload(() => import('./RadarVulnerabilidad'));
+const StickyCollapse           = lazyWithPreload(() => import('./StickyCollapse'));
+const SynchrophasorPlot        = lazyWithPreload(() => import('./SynchrophasorPlot'));
+const GridUnavailabilityGauge  = lazyWithPreload(() => import('./GridUnavailabilityGauge'));
+const SectorialResilienceChart = lazyWithPreload(() => import('./SectorialResilienceChart'));
+const EmissionsVsRenewablesChart = lazyWithPreload(() => import('./EmissionsVsRenewablesChart'));
 
 // ── Mapa anchor → componente interactivo ──────────────────────
 const INTERACTIVE_MAP = {
@@ -72,6 +81,19 @@ const INTERACTIVE_MAP = {
   'restoration':     AnimatedRestorationMap,
   'timeline':        VerticalTimeline,
   'matrix':          ThermalAdjustmentCostMatrix,
+  // Fix 2 — Anexo IX (T9)
+  'phaseplane':          PhasePlanePlot,
+  'phase-plane':         PhasePlanePlot,
+  'comparador-28a':      Comparador28A,
+  'comparador28a':       Comparador28A,
+  'radar-vulnerabilidad': RadarVulnerabilidad,
+  'radar':               RadarVulnerabilidad,
+  // Fix 3 — componentes verificados existentes
+  'sticky-collapse':     StickyCollapse,
+  'phasor':              SynchrophasorPlot,
+  'grid-unavailability': GridUnavailabilityGauge,
+  'sectorial-resilience': SectorialResilienceChart,
+  'emissions-renewables': EmissionsVsRenewablesChart,
 };
 
 // ── Mapa keywords → figuras estáticas (Anexo A) ───────────────
@@ -221,13 +243,15 @@ function extractInteractiveAnchors(text) {
   const regex = /\]\(([^)]+#([^)]+))\)/g;
   let m;
   while ((m = regex.exec(text)) !== null) {
-    const anchor = m[2].toLowerCase();
+    // Strip the "grafico-" prefix from new-format anchors (#grafico-swing → swing)
+    const raw = m[2].toLowerCase();
+    const anchor = raw.startsWith('grafico-') ? raw.slice(8) : raw;
     if (INTERACTIVE_MAP[anchor]) anchors.add(anchor);
   }
-  // También buscar menciones directas de términos
+  // Fallback: buscar menciones directas de términos en el texto
   const lower = text.toLowerCase();
   Object.keys(INTERACTIVE_MAP).forEach(key => {
-    if (lower.includes(key.replace('-', ' '))) anchors.add(key);
+    if (lower.includes(key.replace(/-/g, ' '))) anchors.add(key);
   });
   return [...anchors].slice(0, 4);
 }

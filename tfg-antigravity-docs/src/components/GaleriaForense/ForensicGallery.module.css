@@ -133,6 +133,11 @@ html[data-theme='dark'] .galleryContainer {
   transform: translateY(-2px);
 }
 
+.categoryButton:focus-visible {
+  outline: 2px solid var(--fg-old-accent);
+  outline-offset: 2px;
+}
+
 .categoryButton.active {
   background: var(--fg-old-accent-soft);
   border-color: var(--fg-old-accent-border);
@@ -146,7 +151,7 @@ html[data-theme='dark'] .galleryContainer {
 }
 
 .catTitle {
-  font-family: var(--font-display);
+  font-family: var(--ifm-font-family-base);
   font-size: 1.1rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -183,6 +188,7 @@ html[data-theme='dark'] .galleryContainer {
 }
 
 .tableHeader {
+  background: rgba(255, 252, 245, 0.08);
   background: color-mix(in srgb, var(--cat-color) 10%, transparent);
   padding: 1rem;
   border-bottom: 1px solid var(--fg-old-border);
@@ -218,12 +224,14 @@ html[data-theme='dark'] .galleryContainer {
 }
 
 .tableWrapper {
+  max-width: 100%;
   overflow-x: auto;
   padding: 1rem;
 }
 
 .dataTable {
   width: 100%;
+  table-layout: auto;
   border-collapse: collapse;
   font-size: 0.85rem;
   color: var(--fg-old-text-secondary);
@@ -235,7 +243,10 @@ html[data-theme='dark'] .galleryContainer {
   font-weight: 700;
   color: var(--fg-old-text-muted);
   border-bottom: 1px solid var(--fg-old-border-strong);
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.25;
+  max-width: 11rem;
+  overflow-wrap: anywhere;
 }
 
 .dataTable td {

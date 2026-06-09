@@ -41,7 +41,7 @@ function getInstalledCapacityPalette(isDark) {
   };
 }
 
-export default function InstalledCapacityChart() {
+export default function InstalledCapacityChart({ hideFooter = false }) {
   const lang = useDocLang();
   const isEs = lang === 'es';
   const { colorMode } = useColorMode();
@@ -171,18 +171,21 @@ export default function InstalledCapacityChart() {
           />
         </PieChart>
       </ResponsiveContainer>
-      <div
-        style={{
-          textAlign: 'center',
-          fontSize: '0.85rem',
-          color: palette.textMuted,
-        }}
-      >
-        {isEs
-          ? '* Capacidad Instalada (MW). Pasa el ratón sobre los segmentos para ver el desglose. El color base distingue tecnologías.'
-          : '* Installed Capacity (MW). Hover over segments to see the breakdown. Colors distinguish technologies.'
-        }
-      </div>
+      {!hideFooter && (
+        <div
+          style={{
+            textAlign: 'center',
+            fontSize: '0.85rem',
+            color: palette.textMuted,
+            marginTop: '1rem',
+          }}
+        >
+          {isEs
+            ? '* Capacidad Instalada (MW). Pasa el ratón sobre los segmentos para ver el desglose. El color base distingue tecnologías.'
+            : '* Installed Capacity (MW). Hover over segments to see the breakdown. Colors distinguish technologies.'
+          }
+        </div>
+      )}
     </div>
   );
 }

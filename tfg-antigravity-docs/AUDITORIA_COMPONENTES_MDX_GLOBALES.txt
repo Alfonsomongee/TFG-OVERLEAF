@@ -1,0 +1,318 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 6: COMPONENTES MDX Y GLOBALES
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de componentes React registrados globalmente para MDX
+Propósito: Documentar qué componentes custom están disponibles en todos los MDX
+
+================================================================================
+REGISTRO GLOBAL DE COMPONENTES MDX
+================================================================================
+
+Ubicación probable: src/theme/MDXComponents.js
+
+Objetivo:
+  Mapea elementos HTML estándar (h1, p, table, img, etc.) a componentes React custom
+  Permite reutilizar lógica compleja en múltiples archivos MDX sin imports explícitos
+
+Patrón:
+  export default {
+    h1: CustomH1,
+    h2: CustomH2,
+    p: CustomP,
+    table: CustomTable,
+    img: CustomImg,
+    a: CustomLink,
+    ...otrosElementos
+  }
+
+================================================================================
+COMPONENTES PROBABLES REGISTRADOS EN MDX
+================================================================================
+
+TEXTUALES:
+
+h1, h2, h3, h4, h5, h6
+  Probable: Envoltura con estilos custom + generación de slugs + copy-anchor
+  Ejemplo: <H1 id="intro">Introducción</H1> → genera #intro automáticamente
+
+p
+  Probable: Drop caps en primeros párrafos, estilos de fuente
+
+strong, em, code (inline)
+  Probable: Colores y tipografía personalizados
+
+TABLAS:
+
+table
+  Probable: Envolvimiento en horizontal-scroll para móviles
+  Probable: Styling custom de filas/columnas
+  Probable: Componente <ForensicTable> (detectado en docs)
+
+ENLACES:
+
+a (anchor)
+  Probable: Detección de links internos vs externos
+  Probable: Links externos abren en new tab + icon
+  Probable: Enlaces a glosario con tooltip
+
+IMÁGENES:
+
+img
+  Probable: Lazy loading
+  Probable: Lightbox/zoom al hacer click
+  Probable: Caption e información de fuente
+  Probable: Responsiveness automática
+
+BLOQUES:
+
+blockquote
+  Probable: Estilos de cita (border-left, background, etc.)
+
+pre, code (bloques de código)
+  Probable: Syntax highlighting via Prism
+  Probable: Copy-button
+  Probable: Language selector
+
+hr, hr (divisor)
+  Probable: Estilos de línea divisoria personalizados
+
+================================================================================
+COMPONENTES CUSTOM DETECTADOS EN DOCS
+================================================================================
+
+Importados en archivos MDX (detectados en 01-introduccion.mdx, etc.):
+
+1. GlitchTitle
+   Ubicación probable: src/components/GlitchTitle.jsx
+   Propósito: Título con efecto glitch/cyberpunk
+   Uso: <GlitchTitle>Introducción</GlitchTitle>
+
+2. ForensicTable
+   Ubicación probable: src/components/ForensicUI/Primitives.js
+   Propósito: Tabla con styling forense/investigativo
+   Props: title, source, ...
+   Uso: <ForensicTable title="..." source="..." />
+
+3. ExecutiveHook
+   Ubicación probable: src/components/ExecutiveHook.jsx
+   Propósito: Resumen ejecutivo en página de inicio
+   Uso: <ExecutiveHook />
+
+4. NavigationGuide
+   Ubicación probable: src/components/NavigationGuide.jsx
+   Propósito: Guía de navegación interactiva
+   Uso: <NavigationGuide />
+
+5. Componentes de DATOS-TIEMPO-REAL:
+   Ubicación: src/components/
+   Ejemplos:
+   - MixGeneracion.jsx (con useEsiosAnalysis hook ✓)
+   - DemandaChart.jsx (de EsiosCharts/)
+   - CuestionAbierta.jsx (encuesta/pregunta abierta)
+   - BrowserOnly (Docusaurus built-in, para SSR-safe)
+
+6. Componentes de visualización:
+   - PVCurveSimulator.jsx (simulador interactivo)
+   - FrequencyChart.jsx (gráfica de frecuencia)
+   - BlackoutPropagationMap.jsx (mapa de propagación)
+   - StickyCollapse.jsx (colapso pegajoso)
+   - ForensicReveal.jsx (reveal con efecto forense)
+   - TapLagSequence.jsx (secuencia LAG)
+   - UFLSVisualizer.jsx (visualizador UFLS)
+
+7. Componentes de timeline:
+   - TimelineCrisis.jsx
+   - AnimatedRestorationMap.jsx
+
+8. Componentes de análisis:
+   - FinancialWaterfallChart.jsx
+   - MarketDistortionPvpcFigure.jsx
+   - RadarVulnerabilidad.jsx (con useEsiosAnalysis hook ✓)
+   - TermometroRiesgo.jsx (con useEsiosAnalysis hook ✓)
+
+9. Componentes UI:
+   - SentimentAnalyzer.jsx
+   - InteractiveFootnote.jsx
+   - MediaCardGallery.jsx
+
+================================================================================
+PROPIEDADES DOCUSAURUS EN MDX
+================================================================================
+
+Metadata de front-matter disponible en MDX:
+
+```mdx
+---
+slug: /ruta-custom
+sidebar_position: 1
+hide_title: true
+title: "Título de página"
+---
+```
+
+Variables inyectadas automáticamente en MDX:
+  - metadata (objeto con frontMatter)
+  - toc (table of contents generado)
+  - isFrontPage (boolean si es la página de inicio)
+
+Uso en MDX:
+  {frontMatter.title}
+  {metadata.custom_prop}
+
+================================================================================
+PLUGINS REMARK Y REHYPE
+================================================================================
+
+Configuración en docusaurus.config.js:
+
+remarkPlugins:
+  1. remark-math (strict: false)
+     → Procesa delimitadores $...$ y $$...$$
+     → Genera tokens para rehype-katex
+
+  2. remark-auto-glossary-links (custom)
+     → Detecta términos del glosario
+     → Envuelve con tooltip/link automático
+     → Probablemente usa glosario en docs/glosario.mdx
+
+rehypePlugins:
+  1. rehype-katex (strict: false)
+     → Renderiza matemáticas con KaTeX
+     → CDN: cdn.jsdelivr.net/npm/katex@0.15.0
+
+IMPLICACIONES:
+  - MDX files pueden usar LaTeX: $E=mc^2$
+  - Términos automáticamente linkeados al glosario
+  - Matemáticas renderizadas server-side (no JS adicional en cliente)
+
+================================================================================
+PATRONES DE COMPONENTES DETECTADOS
+================================================================================
+
+Patrón 1: Componentes "Forense"
+  Naming: *Forensic*, *Reveal*, *Tape*, *Sequence*
+  Propósito: Investigativo, con efectos de "descubrimiento"
+  Uso: En análisis técnico del colapso
+
+Patrón 2: Componentes de Datos en Tiempo Real
+  Naming: *Chart, *Radar, *Termometro, *Trend
+  Hook: useEsiosAnalysis para análisis comparativo
+  Propósito: Visualización de datos ESIOS + análisis LLM
+
+Patrón 3: Componentes Interactivos
+  Naming: *Simulator, *Visualizer, *Analyzer
+  Props: Datos, configuración, callbacks
+  Propósito: Educación interactiva sobre dinámica de red
+
+Patrón 4: Componentes de Navegación
+  Naming: *Timeline, *Guide, *Navigation
+  Propósito: Orientación del usuario en narrativa compleja
+
+================================================================================
+IMPORTS AUTOMÁTICOS ESPERADOS
+================================================================================
+
+En cada MDX, sin necesidad de import:
+
+De @docusaurus/BrowserOnly:
+  - BrowserOnly (para componentes que requieren hydration)
+
+De src/components/:
+  - GlitchTitle
+  - ForensicTable
+  - ExecutiveHook
+  - NavigationGuide
+  - Cualquier componente registrado globalmente
+
+De src/hooks/:
+  - useDocLang (idioma actual)
+  - useColorMode (tema actual)
+
+De recharts, plotly, echarts:
+  - Importados localmente en componentes, no globalmente
+
+================================================================================
+INTEGRACIÓN CON DOCUSAURUS
+================================================================================
+
+MDXComponents.js se carga en:
+  1. src/theme/MDXComponents.js (donde se define el mapa)
+  2. Root.js o Layout/index.js (donde se proporciona a <MDXProvider>)
+
+Propósito:
+  <MDXProvider components={MDXComponents}>
+    {children}
+  </MDXProvider>
+
+Esto hace que todos los elementos de MDX usen los componentes custom.
+
+================================================================================
+PROBLEMAS POTENCIALES
+================================================================================
+
+1. **Conflicto de nombres**
+   - Si MDXComponents.js registra componentes que también existen como imports
+   - Ejemplo: Si hay un <Table /> custom global pero también se importa otro
+
+2. **Props no pasadas**
+   - Si MDXComponents no pasa todas las props (className, id, etc.)
+   - Puede romper styling o accesibilidad
+
+3. **Rendimiento**
+   - Componentes custom complejos en cada elemento puede ralentizar
+   - Alternativa: Usar clases CSS en lugar de componentes React
+
+4. **Mantenimiento**
+   - Si Docusaurus cambia estructura de MDXComponents
+   - Requiere actualización manual
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. LECTURA SECUENCIAL:
+   a) Leer MDXComponents.js (qué elementos están customizados)
+   b) Verificar cada componente custom existe en src/components/
+   c) Documentar props y comportamiento de cada uno
+   d) Identificar dónde se registran globalmente
+
+2. PREGUNTAS CLAVE:
+   - ¿Qué componentes están realmente customizados vs defaults de Docusaurus?
+   - ¿Cuál es la complejidad de cada componente custom?
+   - ¿Hay componentes duplicados o sin usar?
+   - ¿Están todas las props siendo pasadas correctamente?
+
+3. VALIDACIÓN:
+   - Verificar que cada import en MDX existe en src/components/
+   - Buscar uso de components no registrados (harían fallback a HTML)
+   - Verificar plugins (remark-auto-glossary-links existe?)
+
+4. OPTIMIZACIONES SUGERIDAS:
+   - Lazy load componentes pesados con React.lazy()
+   - Memoizar componentes frecuentes
+   - Documentar cuál es el propósito de cada componente custom
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ src/theme/MDXComponents.js (mapa de componentes)
+  ✓ src/components/ (toda carpeta con componentes)
+  ✓ docusaurus.config.js (plugins remark/rehype)
+
+Secundarios:
+  ✓ src/theme/Root.js (dónde se proporciona MDXProvider)
+  ✓ src/hooks/ (hooks disponibles globalmente)
+
+================================================================================
+STATUS AUDITORÍA: ESTRUCTURA DOCUMENTADA
+================================================================================
+
+Componentes detectados: ~20+ componentes custom
+Patrón dominante: Forense + Datos en tiempo real
+Complejidad: MEDIA-ALTA (muchas dependencias e integraciones)
+
+Próximo paso: Inspeccionar contenido de src/theme/MDXComponents.js

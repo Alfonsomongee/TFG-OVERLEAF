@@ -79,12 +79,14 @@ export default function TablaMaestra28A() {
               key={source}
               className={`${styles.badge} ${selectedSources.includes(source) ? styles.badgeActive : ''}`}
               onClick={() => toggleSource(source)}
+              aria-pressed={selectedSources.includes(source)}
+              aria-label={`Filtrar por fuente: ${source}`}
             >
               {source}
             </button>
           ))}
           {selectedSources.length > 0 && (
-            <button className={styles.badgeClear} onClick={() => setSelectedSources([])}>
+            <button className={styles.badgeClear} onClick={() => setSelectedSources([])} aria-label="Borrar todos los filtros de fuente">
               ✖ <Translate id="tablaMaestra.borrarFiltros">Borrar filtros</Translate>
             </button>
           )}
@@ -117,13 +119,17 @@ export default function TablaMaestra28A() {
                   <td className={styles.fuente}>{row.fuentePrimaria || '-'}</td>
                   <td>{row.pagina || '-'}</td>
                   <td>
-                    <button className={styles.expandBtn}>
+                    <button
+                      className={styles.expandBtn}
+                      aria-expanded={expandedRow === row.id}
+                      aria-controls={`context-row-${row.id}`}
+                    >
                       {expandedRow === row.id ? translate({id: 'tablaMaestra.ocultar', message: 'Ocultar info'}) : translate({id: 'tablaMaestra.verContexto', message: 'Ver contexto'})}
                     </button>
                   </td>
                 </tr>
                 {expandedRow === row.id && (
-                  <tr className={styles.expandedDetail}>
+                  <tr id={`context-row-${row.id}`} className={styles.expandedDetail}>
                     <td colSpan="5">
                       <div className={styles.detailBox}>
                         {row.contexto && <p><strong><Translate id="tablaMaestra.contexto">Contexto:</Translate></strong> {row.contexto}</p>}

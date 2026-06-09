@@ -1,0 +1,329 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 13: PÁGINAS ESPECIALES Y CASOS ÚNICOS
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de páginas con configuración o comportamiento especial
+Propósito: Documentar tratamiento de páginas no estándar
+
+================================================================================
+PÁGINAS ESPECIALES DETECTADAS
+================================================================================
+
+1. PÁGINA DE INICIO (01-introduccion.mdx)
+   Frontmatter especial:
+     - slug: / (raíz del sitio)
+     - sidebar_position: 1
+     - hide_title: true (no renderiza <h1>)
+
+   Contenido probable:
+     - <GlitchTitle> personalizado
+     - <ExecutiveHook> (resumen ejecutivo)
+     - <NavigationGuide> (guía de navegación)
+     - Componentes visuales de bienvenida
+
+   Comportamiento especial:
+     - No muestra título estándar
+     - Probablemente full-width o layout distinto
+     - Puede tener navbar behavior especial
+
+   URL: /
+
+2. PÁGINA SOBRE EL AUTOR (sobre-el-autor.mdx)
+   Ubicación en sidebar:
+     - toplevel, no dentro de categoría
+     - Item simple: 'sobre-el-autor'
+
+   Contenido probable:
+     - Biografía del autor
+     - Foto/avatar
+     - Redes sociales (LinkedIn, GitHub)
+     - Información de contacto
+
+   Enlace en navbar: "Sobre el Autor"
+
+   URL: /sobre-el-autor
+
+3. PÁGINAS DE ACTUALIZACIÓN (08.5-actualizacion-2026.mdx)
+   Frontmatter especial:
+     - id: "08.5-actualizacion-2026" (ID custom)
+     - sidebar_position: 8.8 (decimal, posición especial)
+
+   Contenido: Estado actual (año 2026)
+     - Cómo ha evolucionado el sistema desde 28-A
+     - Nuevas regulaciones (RD 997/2025)
+     - Resultados de Operación Reforzada
+
+   URL: /actualizacion-2026 (o con slug custom)
+
+4. PÁGINAS DE DIMENSIÓN EUROPEA
+   Ubicación:
+     - Categoría IV en sidebar
+     - Subcarpeta: docs/dimension-europea/
+
+   Archivos:
+     - francia-portugal.mdx
+     - coordinacion-continental.mdx
+     - dia-despues.mdx
+
+   Contenido:
+     - Contexto europeo del apagón
+     - Coordinación continental
+     - Estado del sistema al día siguiente
+
+   URL: /dimension-europea/francia-portugal, etc.
+
+================================================================================
+REDIRECCIONES Y ROUTING
+================================================================================
+
+Redirecciones en vercel.json (probable):
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/en",
+      "destination": "/en/introduccion"
+    },
+    {
+      "source": "/en/",
+      "destination": "/en/introduccion"
+    },
+    {
+      "source": "/de",
+      "destination": "/de/introduccion"
+    }
+  ]
+}
+```
+
+Propósito:
+  - Usuario entra /en → redirige a /en/introduccion
+  - User entra /de → redirige a /de/introduccion
+  - Evita landing en página vacía
+
+SLUGS CUSTOM:
+  Algunos documentos pueden tener slug custom en frontMatter
+  Ejemplo:
+    slug: /analisis-incidente-28-abril
+  → URL diferente del nombre de archivo
+
+================================================================================
+PÁGINA 404 PERSONALIZADA
+================================================================================
+
+Docusaurus proporciona 404 default
+Ubicación probab Possible: /404.html (generado automáticamente)
+
+Personalización probable:
+  - Mensaje custom de Docusaurus
+  - Link a página de inicio
+  - Buscador integrado
+
+================================================================================
+PÁGINAS DINÁMICAS (DATOS EN TIEMPO REAL)
+================================================================================
+
+Directorio: docs/datos-tiempo-real/
+Archivos: 12 documentos autogenerados
+
+CARATERÍSTICA ESPECIAL: Contenido dinámico
+  - Cada página fetch data de ESIOS API
+  - Hook: useEsiosAnalysis
+  - Análisis LLM generado en tiempo real
+
+Comportamiento:
+  - Carga inicial: muestra skeleton/loading
+  - API call: fetch /api/esios-multi
+  - Análisis: POST a /api/esios-analysis
+  - Render: actualiza cada 5 minutos (setInterval)
+
+Componentes:
+  - MixGeneracion (con useEsiosAnalysis ✓)
+  - DemandaRenovableTrend
+  - BalanceIntercambios
+  - PrecioSpotScatter
+  - RadarVulnerabilidad (con useEsiosAnalysis ✓)
+  - TermometroRiesgo (con useEsiosAnalysis ✓)
+
+RIESGO: Si API cae, estos componentes muestran error/skeleton
+
+================================================================================
+PÁGINA DE GLOSARIO (glosario.mdx)
+================================================================================
+
+Contenido: Listado completo de términos
+Ubicación: Categoría VII (Referencia)
+
+Características:
+  - Alfabético (A-Z)
+  - Cada término con definición completa
+  - Probablemente sin links internos (ya están en tooltips)
+
+Integración:
+  - remark-auto-glossary-links linkea automáticamente
+  - Si usuario busca definición completa, viene aquí
+
+================================================================================
+PÁGINA DE REFERENCIAS (referencias.mdx)
+================================================================================
+
+Contenido: Bibliografía consolidada
+Ubicación: Categoría VII (Referencia)
+
+Formato probable:
+  - Informes oficiales (Gobierno, ENTSO-E)
+  - Papers académicos
+  - Normativas (RD 997/2025)
+  - URLs de referencia
+
+Estructura:
+  - Por categoría de fuente
+  - O alfabético por autor
+
+================================================================================
+PÁGINA DE ÍNDICE (datos-tiempo-real/index.mdx)
+================================================================================
+
+Ubicación: Hub de datos en tiempo real
+Tamaño: 5514 bytes (relativamente grande)
+
+Contenido probable:
+  - Explicación de qué son estos datos
+  - Links a cada página de dato-tiempo-real
+  - Explicación del hook useEsiosAnalysis
+  - Info sobre actualización en tiempo real
+
+Rol: Puerta de entrada a sección dinámica
+
+================================================================================
+PÁGINA DE CIERRE (conclusiones.mdx)
+================================================================================
+
+Ubicación: Categoría V (Cierre)
+Frontmatter: ⚠ Probablemente sin sidebar_position
+
+Contenido:
+  - Resumen de hallazgos
+  - Reflexiones finales
+  - Llamada a acción
+
+URL: /conclusiones
+
+================================================================================
+CASOS ESPECIALES DE COMPONENTES
+================================================================================
+
+1. PÁGINA CON MÚLTIPLES GRÁFICOS:
+   Capítulos 2-7 probablemente contienen:
+   - LineCharts
+   - BarCharts
+   - Maps
+   - Simuladores
+
+   Performance: ¿Hay optimización?
+   - Lazy load gráficos (React.lazy)?
+   - Código split por página?
+
+2. PÁGINA CON TABLAS LARGAS:
+   anexo-tablas.mdx probablemente tiene:
+   - 20-30 tablas
+   - Cada una puede ser 100+ filas
+   - ¿Pagination o virtualization?
+
+3. PÁGINA CON TIMELINE:
+   cronologia.mdx:
+   - <TimelineCrisis> con eventos cronológicos
+   - Probablemente collapsible
+   - Timeline.js o custom?
+
+================================================================================
+COMPORTAMIENTOS ESPECIALES EN PÁGINAS
+================================================================================
+
+1. ZEN MODE:
+   Toggle localStorage.zen-mode
+   Afecta todas las páginas
+   ¿Qué se oculta?
+   - Navbar (hideOnScroll)
+   - Sidebar
+   - Footer
+   - TOC
+
+2. DARK/LIGHT MODE:
+   Toggle via navbar (probablemente)
+   Persistent en localStorage (data-theme)
+   Afecta todas las páginas
+
+3. LANGUAGE SELECTOR:
+   Dropdown en navbar
+   Cambia todas las páginas a idioma seleccionado
+   URLs: /es/, /en/, /de/, /zh-Hans/
+
+4. SEARCH:
+   Hotkey Ctrl+K abre búsqueda
+   Funciona en todas las páginas
+   Resultados son multiidioma
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. MAPEO DE PÁGINAS ESPECIALES:
+   a) Listar todas las páginas MDX
+   b) Identificar cuáles tienen configuración especial
+   c) Documentar frontMatter custom de cada una
+   d) Documentar si usan componentes especiales
+
+2. PRUEBA DE ROUTING:
+   a) Navegar a / (homepage)
+   b) Navegar a /sobre-el-autor
+   c) Navegar a /datos-tiempo-real/ (hub)
+   d) Navegar a URL inexistente → verificar 404
+   e) Navegar entre idiomas
+
+3. ANÁLISIS DE PÁGINAS DINÁMICAS:
+   a) Abrir página de dato-tiempo-real
+   b) Verificar que API call se hace
+   c) Verificar que análisis se genera
+   d) Verificar que refetch cada 5 min funciona
+
+4. EDGECASE TESTING:
+   a) Abrir datos-tiempo-real cuando API cae
+   b) Abrir con JavaScript disabled
+   c) Abrir con conexión lenta (slow 3G)
+   d) Abrir en different languages
+
+5. OPTIMIZACIONES SUGERIDAS:
+   a) Cache de respuestas de ESIOS
+   b) Offline fallback para datos-tiempo-real
+   c) Progressive enhancement (funciona sin JS)
+
+================================================================================
+ARCHIVOS A INSPECCIONAR
+================================================================================
+
+Críticos:
+  ✓ docs/01-introduccion.mdx (página inicio)
+  ✓ docs/sobre-el-autor.mdx
+  ✓ docs/glosario.mdx
+  ✓ docs/referencias.mdx
+  ✓ docs/conclusiones.mdx
+
+Dinámicos:
+  ✓ docs/datos-tiempo-real/index.mdx
+  ✓ docs/datos-tiempo-real/*.mdx (12 archivos)
+
+Especiales:
+  ✓ docs/dimension-europea/*.mdx
+
+================================================================================
+STATUS AUDITORÍA: CASOS DOCUMENTADOS
+================================================================================
+
+Páginas especiales identificadas: 8-10+
+Comportamientos especiales: 4 (zen-mode, dark/light, language, search)
+Páginas dinámicas: 12 (datos-tiempo-real)
+
+Próximo paso: Crear suite de testing para cada página especial

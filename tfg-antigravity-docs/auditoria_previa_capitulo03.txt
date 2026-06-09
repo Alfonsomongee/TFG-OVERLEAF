@@ -1,0 +1,54 @@
+AUDITORÍA PREVIA CAPÍTULO 03 — ANÁLISIS DEL INCIDENTE
+======================================================
+
+1. RESUMEN EJECUTIVO
+El Capítulo 03 contiene 12 elementos visuales (5 imágenes estáticas y 7 componentes interactivos). Los elementos previamente huérfanos (`UFLSVisualizer`, y las Figuras 13, 14 y 16) han sido debidamente registrados en la galería interactiva (`InteractiveGraphicsGalleryBase.jsx`) y en la base de datos de imágenes (`imageGalleryData.js`). Todos tienen ahora un tema y un punto de acceso público garantizado.
+
+2. INVENTARIO VISUAL REAL DEL CAPÍTULO 03
+| Orden | Elemento | Tipo | Ruta/componente/imagen | Leyenda actual | ¿Está colapsado? | Función narrativa | Recomendación preliminar |
+| ----- | -------- | ---- | ---------------------- | -------------- | ---------------- | ----------------- | ------------------------ |
+| 1 | Figura 10 | Imagen | `/figuras/nunez_balboa_precursores.png` | Oscilaciones y sobretensiones en Núñez de Balboa... | No | Evidencia de inestabilidad | Mantener (estático) o enviar Anexo II |
+| 2 | Figura 11 | Imagen | `/figuras/wams_oscilaciones_carmona.png` | Captura oscilográfica WAMS... | No | Evidencia modo inter-área | Mantener (estático) o enviar Anexo II |
+| 3 | FrequencyChart | Comp. | `<FrequencyChart isGallery={true} />` | Figura 12. Evolución de la frecuencia... | No | Caída de frecuencia | Sustituir por imagen estática |
+| 4 | Figura 13 | Imagen | `/figuras/tap_lag_decoupling.png` | Desacoplamiento Tap-Lag... | Sí (details) | Mecanismo técnico OLTC | REGISTRADO en T3. Retirar a anexo |
+| 5 | Figura 14 | Imagen | `/figuras/heatmap_propagation.png` | Mapa de calor: propagación... | Sí (details) | Expansión de sobretensiones | REGISTRADA en T3. Retirar a anexo |
+| 6 | TapLagSequence | Comp. | `<TapLagSequence />` | (Sin leyenda) | No | Explicación interactiva Tap-Lag | Retirar (ya en galería T3) |
+| 7 | PVCurveSimulator | Comp. | `<PVCurveSimulator />` | Simulador Curva P-V... | Sí (details) | Modelo didáctico | Retirar (ya en galería T9) |
+| 8 | ANSI59Cascade | Comp. | `<ANSI59Cascade />` | (Sin leyenda) | No | Simulación de disparos | Retirar (ya en galería T3) |
+| 9 | StickyCollapse | Comp. | `<StickyCollapse />` | (Sin leyenda) | No | Recorrido visual cascada | Retirar (ya en galería T3) |
+| 10| BlackoutPropagationMap| Comp.| `<BlackoutPropagationMap />` | Figura 15. Cascada de desconexiones... | No | Mapa animado del colapso | Sustituir por síntesis estática |
+| 11| UFLSVisualizer | Comp. | `<UFLSVisualizer />` | Figura 17b. Retrato de fases UFLS... | Sí (details) | Modelo didáctico UFLS | REGISTRADO en T3. Retirar a anexo |
+| 12| Figura 16 | Imagen | `/figuras/interconexion_francia_colapso.png` | Inversión de flujos en enlaces... | No | Evidencia flujos externos | REGISTRADA en T4. Retirar a anexo |
+
+3. ESTADO DE ACCESO EXTERNO DE PVCurveSimulator
+- ACCESIBLE. 
+- Está registrado en `InteractiveGraphicsGalleryBase.jsx` con id `pvcurve` y tema `T9`.
+
+4. ESTADO DE ACCESO EXTERNO DE UFLSVisualizer
+- ACCESIBLE.
+- Registrado en `InteractiveGraphicsGalleryBase.jsx` con id `ufls`, tema `T3` y naturaleza `didactic`. Ya no está huérfano. 
+
+5. ESTADO DE ACCESO EXTERNO DE StickyCollapse
+- ACCESIBLE.
+- Registrado con id `sticky-collapse` y tema `T3`.
+
+6. ESTADO DE FIGURAS 13, 14 Y 16
+- ACCESIBLES.
+- Se han registrado correctamente en `imageGalleryData.js` (ch3) con los captions requeridos y los temas asignados: T3 (Figuras 13 y 14) y T4 (Figura 16).
+
+7. RIESGO METODOLÓGICO POR NATURALEZA DE INTERACTIVOS
+La estructura actual (`InteractiveGraphicsGalleryBase.jsx`) permite inyectar etiquetas de naturaleza (`nature: 'didactic'`, etc.) sin gran refactor. Ya se ha aplicado experimentalmente a `UFLSVisualizer`.
+
+8. PROPUESTA DE CIRUGÍA DEL CAPÍTULO 03
+A. Visuales que deben permanecer: Figuras 10 y 11 (estáticas, núcleo del capítulo).
+B. Visuales que pueden retirarse ya sin pérdida: TODOS los demás (ya están registrados en anexos/galerías).
+C. Visuales que solo pueden retirarse después de registrarse: Ninguno (todos registrados).
+D. Visuales que deben mantenerse colapsados: Ninguno en el cuerpo principal.
+E. Visuales que deben convertirse en referencia textual: PVCurveSimulator, UFLSVisualizer, TapLagSequence, StickyCollapse, ANSI59Cascade, BlackoutPropagationMap, Figuras 13, 14 y 16.
+F. Nueva figura de síntesis necesaria: Árbol causal del colapso (estático) para sustituir interacciones como BlackoutPropagationMap.
+
+9. LISTA EXACTA DE ARCHIVOS A TOCAR EN LA SIGUIENTE FASE
+1. `docs/03-analisis-incidente.mdx` (limpieza editorial completa, retirando componentes y sustituyendo por referencias textuales o imágenes de síntesis).
+
+10. VEREDICTO
+APTO. Todos los elementos huérfanos han sido integrados en la base de datos de anexos/galerías. Se puede proceder con seguridad a la edición del Capítulo 03.

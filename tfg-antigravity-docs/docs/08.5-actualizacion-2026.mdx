@@ -9,14 +9,38 @@ import GlitchTitle from "@site/src/components/GlitchTitle";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 import Comparador28A from "@site/src/components/Comparador28A";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import BESSBoomChart from "@site/src/components/BESSBoomChart";
+import CNMCSanctionsChart from "@site/src/components/CNMCSanctionsChart";
+import OvervoltageTimeline from "@site/src/components/OvervoltageTimeline";
+import PO74Timeline from "@site/src/components/PO74Timeline";
+import ThenVsNowPanel from "@site/src/components/ThenVsNowPanel";
 
 <GlitchTitle>Actualización 2026: Un Año Después</GlitchTitle>
+
+*Estado actualizado a mayo de 2026. Los procedimientos regulatorios, expedientes administrativos y reformas técnicas mencionados en este capítulo pueden haber evolucionado con posterioridad a esa fecha.*
 
 El apagón del 28 de abril de 2025 supuso un punto de inflexión sistémico. A fecha de mayo de 2026, los informes finales de la ENTSO-E (publicados el 20 de marzo de 2026) y las investigaciones forenses independientes han sacado a la luz una serie de revelaciones técnicas y regulatorias que alteran drásticamente la narrativa inicial del incidente.
 
 ## Sistema Ahora vs 28-A
 
 El siguiente panel compara las métricas de vulnerabilidad sistémica actuales con las condiciones registradas el 28 de abril de 2025 a las 12:30 CEST.
+
+<figure id="fig-n1-thenvsnow">
+  <ThenVsNowPanel />
+  <figcaption>
+    <strong>Figura N1 - Sistema Ahora vs 28A.</strong> Cada fila enfrenta el valor de una métrica de seguridad del sistema en el instante previo al colapso (28A) con su equivalente en mayo de 2026. Las barras normalizadas facilitan la comparación visual de la magnitud del cambio. Los valores exactos se muestran en los extremos.
+  </figcaption>
+</figure>
+
+:::warning Advertencia metodológica: distinción entre datos históricos y operativos
+
+Los datos del bloque "Sistema actual" proceden de fuentes operativas actuales (API ESIOS, mayo 2026) y pueden variar en función de la hora de consulta.
+
+Los datos del "28-A" deben tratarse como valores históricos fijos correspondientes al escenario previo al colapso, obtenidos de ENTSO-E Factual Report y Comité de Análisis del Gobierno.
+
+La comparación es orientativa para mostrar la evolución del sistema desde la crisis. No sustituye a la reconstrucción forense del evento histórico documentada en los Capítulos 2 a 4.
+
+:::
 
 <Collapsible label="Ver comparador interactivo (Sistema Actual vs 28-A)">
 
@@ -33,6 +57,13 @@ Los primeros análisis sugerían un colapso clásico por falta de inercia o desv
 :::warning [Revelación Técnica]
 La secuencia fatal no fue una caída de tensión generalizada. Al activarse las lógicas de protección, la red sufrió una cascada de disparos por sobretensión masiva. La desconexión de carga y la enorme inyección de energía capacitiva de las líneas a 400 kV (sin reactancias suficientes conectadas) elevó las tensiones por encima del límite de las protecciones de generación. El disparo del transformador 400/220 kV en Granada a las 12:32:57, que perdió 355 MW, fue el detonante de la cascada.
 :::
+
+<figure id="fig-n2-overvoltage">
+  <OvervoltageTimeline />
+  <figcaption>
+    <strong>Figura N2 - Cronología del "Overvoltage-Driven Blackout".</strong> Secuencia de eventos que condujeron al colapso por sobretensión del 28A. Los colores indican la naturaleza de cada fase: azul (oscilación), ámbar (sobretensión), rojo (disparo en cascada), gris oscuro (colapso total).
+  </figcaption>
+</figure>
 
 Según la reconstrucción forense, las plantas conectadas mediante inversores Grid-Following que operaban en modo de factor de potencia fijo reaccionaron a las oscilaciones de activa inyectando enormes rampas de potencia reactiva. Ante una red debilitada (con bajo Short-Circuit Ratio), el bucle de enganche de fase (PLL) de estos inversores provocó inestabilidades que el sistema fue incapaz de amortiguar.
 
@@ -52,41 +83,21 @@ El apagón no solo rompió el sistema eléctrico, sino también las relaciones i
 
 ## Estado procesal y regulatorio (mayo 2026)
 
-<ForensicTable 
-  title="TABLA 25 | CNMC SANCTIONING PROCEEDINGS (MAY 2026)"
-  source="CNMC / BOE"
-  confidence="HIGH"
->
-
-| Entidad | Nº expedientes | Tipificación según LSE |
-| :--- | :--- | :--- |
-| Red Eléctrica de España (OS) | 1 | Muy grave (art. 64.25) — hasta 60 M€ |
-| Iberdrola (incl. Almaraz/Cofrentes) | 24 | Graves + Muy graves (nucleares) |
-| Endesa | 19 | Graves (control de tensión en CCGT) |
-| Naturgy | 11 | Graves (ciclos combinados) |
-| Otros (Repsol, TotalEnergies, EDP, Engie, Mercuria) | ~10 | Graves (varios) |
-| Sist. Eléctrico de Conexión Huéneja (Granada) | 1 | Grave (punto cero del colapso) |
-
-</ForensicTable>
+<figure id="fig-n3-cnmc">
+  <CNMCSanctionsChart />
+  <figcaption>
+    <strong>Figura N3 - Expedientes sancionadores incoados por la CNMC tras el 28A.</strong> Las barras representan el número de expedientes; el color indica la gravedad de la infracción según la LSE.
+  </figcaption>
+</figure>
 
 ### Calendario de implementación del P.O. 7.4
 
-<ForensicTable 
-  title="TABLA 26 | P.O. 7.4 IMPLEMENTATION TIMELINE"
-  source="CNMC / BOE-A-2025-13076 / BOE-A-2026-1377"
-  confidence="HIGH"
->
-
-| Hito | Fecha | Estado |
-| :--- | :--- | :--- |
-| Aprobación resolución CNMC | 12/06/2025 | ✅ Completado |
-| Publicación BOE | 26/06/2025 | ✅ Completado |
-| Expiración medidas transitorias | 19/01/2026 | ✅ Completado |
-| Formato telemetría I90DIA_CSV obligatorio | 09/06/2026 | ⏳ Pendiente |
-| Tolerancia εQ (Anexo II P.O. 7.4): 5% Qmax, mín 0,25 MVAr, máx 5 MVAr | 16/06/2026 | ⏳ Pendiente |
-| Operación normalizada completa | Q3-Q4 2026 | 📋 Estimado |
-
-</ForensicTable>
+<figure id="fig-n4-po74">
+  <PO74Timeline />
+  <figcaption>
+    <strong>Figura N4 - Calendario de implementación del P.O. 7.4.</strong> Hitos del proceso de reforma del P.O. 7.4 desde la propuesta inicial de REE (2021) hasta la finalización prevista de exenciones transitorias (dic2026). Verde: completado. ámbar: pendiente. Gris: estimado.
+  </figcaption>
+</figure>
 
 ### Litigio Iberdrola vs Redeia
 
@@ -102,6 +113,13 @@ A pesar del colapso ibérico, la adopción oficial del NC RfG 2.0 por parte de l
 
 ### El Boom del Almacenamiento Ibérico
 El coste sistémico de mantener el sistema reforzado con gas tras el apagón ascendió a 666 millones de euros adicionales en solo diez meses. Como reacción directa, el mercado español de baterías experimentó una aceleración sin precedentes: la capacidad BESS (Battery Energy Storage Systems) instalada se ha incrementado en un 589%, pasando de unos simbólicos 28 MW a aproximadamente 193 MW operativos en un solo año, impulsando una arquitectura de red nativa para servicios de Black Start.
+
+<figure id="fig-n5-bess">
+  <BESSBoomChart />
+  <figcaption>
+    <strong>Figura N5 - El Boom del Almacenamiento Ibérico.</strong> Evolución de la capacidad BESS acumulada en España desde Q1 2024 hasta mayo de 2026. Las anotaciones marcan los hitos normativos y de mercado que aceleraron el despliegue.
+  </figcaption>
+</figure>
 
 ## Conclusión de la Crisis
 

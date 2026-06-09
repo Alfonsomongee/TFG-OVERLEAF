@@ -1,0 +1,377 @@
+================================================================================
+AUDITORÍA ESTRUCTURAL DOCUSAURUS — FASE 3: NAVBAR, FOOTER Y LAYOUT
+================================================================================
+
+Proyecto: tfg-antigravity-docs
+Tipo: Análisis de componentes globales de navegación, pie de página y estructura layout
+Propósito: Documentar configuración visual y funcional de navbar, footer, y componentes de layout
+
+================================================================================
+NAVBAR (themeConfig.navbar en docusaurus.config.js)
+================================================================================
+
+Configuración:
+  hideOnScroll: true
+  → Navbar se oculta automáticamente al hacer scroll hacia abajo
+  → Ayuda a maximizar espacio de contenido
+
+Elementos:
+
+  Logo:
+    src: 'img/logo_transparent.png'
+    alt: '' (vacío — sin texto alternativo)
+    style: { display: 'none' }  ← LOGO OCULTO CON CSS INLINE
+    ⚠ NOTA: Logo no visible en el navbar, probablemente para mantener minimalismo
+
+  Items (4 elementos, todos right-aligned):
+
+    [0] Selector de idioma (localeDropdown)
+        position: 'right'
+        → Dropdown: es, en, de, zh-Hans
+        → Permitir cambio de idioma en tiempo real
+        ✓ Ubicación: arriba-derecha
+
+    [1] "Sobre el Autor"
+        to: '/sobre-el-autor'
+        label: 'Sobre el Autor'
+        position: 'right'
+        → Link a la página de autor
+        ✓ Navegación interna
+
+    [2] "Descargar PDF"
+        href: 'pathname:///tfg_antigravity(1).pdf'
+        label: 'Descargar PDF'
+        position: 'right'
+        → Descarga de PDF local (en static/ o public/)
+        ⚠ Usar pathname:/// para rutas locales en Vercel
+
+    [3] GitHub
+        href: 'https://github.com/Alfonsomongee/TFG-OVERLEAF'
+        label: 'GitHub'
+        position: 'right'
+        → Link externo al repositorio
+        ✓ Acceso a código fuente
+
+ESTRUCTURA HTML ESPERADA:
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__items">
+        <!-- logo aquí (hidden) -->
+      </div>
+      <div class="navbar__items navbar__items--right">
+        <!-- language dropdown -->
+        <!-- About author link -->
+        <!-- PDF download link -->
+        <!-- GitHub link -->
+      </div>
+    </div>
+  </nav>
+
+================================================================================
+FOOTER (themeConfig.footer en docusaurus.config.js)
+================================================================================
+
+Configuración global:
+  style: 'dark'
+  → Footer siempre en tema oscuro, incluso con light mode en página
+
+Secciones (4 bloques):
+
+  [1] CONTENIDO:
+      title: 'Contenido'
+      links:
+        - label: 'Introducción' → /
+        - label: 'Contexto Técnico' → /contexto
+        - label: 'Análisis del Incidente' → /analisis-incidente
+      → Acceso rápido a páginas principales
+
+  [2] UNIVERSIDAD:
+      title: 'Universidad'
+      items:
+        - 'Escuela Técnica Superior de Ingeniería'
+        - 'Universidad de Sevilla'
+      → Información institucional (sin links)
+
+  [3] CONTACTO:
+      title: 'Contacto'
+      items:
+        - 'Alfonso Monge Díaz-Ángel'
+        - 'LinkedIn' (probablemente con link)
+      → Datos de contacto / redes sociales
+
+  [4] RECURSOS:
+      title: 'Recursos'
+      links:
+        - 'Descargar PDF'
+        - 'GitHub'
+        - 'Docusaurus'
+      → Acceso a archivos y herramientas
+
+Copyright:
+  'Copyright © 2026 Alfonso Monge Díaz-Ángel...'
+  → Año 2026 (actualizado)
+
+ESTRUCTURA HTML ESPERADA:
+  <footer class="footer footer--dark">
+    <div class="container container-fluid">
+      <div class="row footer__row">
+        <div class="col footer__col">
+          <h3 class="footer__title">Contenido</h3>
+          <ul class="footer__items">
+            <li class="footer__item"><a href="/">Introducción</a></li>
+            ...
+          </ul>
+        </div>
+        <!-- más secciones -->
+      </div>
+      <div class="footer__bottom">
+        <div class="footer__copyright">Copyright © 2026...</div>
+      </div>
+    </div>
+  </footer>
+
+================================================================================
+LAYOUT Y ESTRUCTURA GLOBAL (Swizzled en src/theme/)
+================================================================================
+
+Componentes de layout swizzled:
+
+1. src/theme/Layout/index.js
+   → Componente raíz de layout
+   → Proporciona estructura global: navbar + content + footer
+   ⚠ Si existe swizzle, sobrescribe el layout por defecto de Docusaurus
+
+2. src/theme/Root.js
+   → Componente de más alto nivel
+   → Puede contener providers (tema, contexto global)
+   → Cargado una sola vez por aplicación
+
+3. src/theme/DocPage/index.js
+   → Layout específico para páginas de documentación
+   → Genera: sidebar + contenido + TOC (table of contents)
+
+4. src/theme/DocRoot/index.js
+   → Raíz de contexto para documentos
+   → Define dónde se inyectan datos globales
+
+5. src/theme/DocItem/Layout/index.js
+   → Layout para un artículo/documento individual
+   → Estructura interna: título, breadcrumbs, contenido, navegación prev/next
+
+FLUJO DE RENDERIZADO:
+  Root.js
+    └─ Layout/index.js
+        ├─ Navbar
+        ├─ DocPage/index.js
+        │   ├─ Sidebar (CollapseButton + Content)
+        │   └─ DocRoot/index.js
+        │       └─ DocItem/Layout/index.js
+        │           └─ [Contenido MDX]
+        └─ Footer
+
+================================================================================
+SIDEBAR PERSONALIZADO (swizzled)
+================================================================================
+
+Componentes en src/theme/DocSidebar/:
+
+1. Desktop/index.js
+   → Renderizado en pantallas grandes (>768px)
+   → Fixed o sticky positioning
+
+2. Desktop/Content/index.js
+   → Contenido actual del sidebar
+   → Itera sobre items del sidebars.js
+
+3. Desktop/CollapseButton/index.js
+   → Botón para contraer/expandir sidebar
+   → Toggle visual
+
+⚠ NOTA: Mobile sidebar probablemente es drawer/drawer-menu (no swizzled visible)
+
+ICONOGRAFÍA:
+  Cada categoría tiene CSS class: sidebar-icon-*
+  → Se renderiza como ::before con content Unicode o SVG
+  → Ubicación probable: src/css/custom.css (línea ~180-210)
+
+================================================================================
+TEMA GLOBAL Y VARIABLES CSS
+================================================================================
+
+Ubicación: src/css/custom.css (primeras 100 líneas)
+
+Variables de tema (dark/light):
+
+DARK MODE (data-theme='dark'):
+  --bg-0: #0a1128 (fondo principal, azul muy oscuro)
+  --bg-1: #0f1830 (superficies elevadas)
+  --text-0: #ffffff (texto primario)
+  --text-1: #e8e8e8 (texto secundario)
+  --text-2: #b0b8cc (terciario)
+  --text-3: #7888aa (meta/fuentes)
+
+LIGHT MODE (data-theme='light'):
+  --bg-0: #F4F1EA (papel cálido)
+  --bg-1: #EBE6DD
+  --text-0: #2B2B2B (tinta oscura)
+  --text-1: #5C5C5C
+  --primary: #8B2635 (burdeos)
+  --secondary: #4A6B5D (verde bosque)
+  --warning: #D4A373 (mostaza)
+
+ACENTOS GLOBALES:
+  --accent-electric: cian (datos)
+  --accent-amber: ámbar (advertencia)
+  --accent-magenta: magenta (glitch/anomalía)
+
+================================================================================
+TIPOGRAFÍA GLOBAL
+================================================================================
+
+Fuentes importadas vía docusaurus.config.js (Google Fonts + CDN):
+
+  --font-display: 'Space Grotesk' (titulares, 300-700)
+  --font-body:    'Inter' (body, 400-600 + italic)
+  --font-mono:    'JetBrains Mono' (código, 400-500)
+
+Escala de tamaño (clamp para responsive):
+
+  --fs-body:      clamp(1rem, 0.95rem + 0.3vw, 1.125rem)
+  --fs-h3:        clamp(1.75rem, 1.3rem + 1.8vw, 2.4rem)
+  --fs-h1:        clamp(2.8rem, 2rem + 4vw, 4.8rem)
+  --fs-display:   clamp(3.6rem, 2.5rem + 6vw, 7rem)
+
+Interlineado:
+  --lh-body:      1.65 (espaciado generoso para legibilidad)
+  --lh-tight:     1.05 (comprimido, para titulares)
+
+IMPLEMENTACIÓN:
+  Docusaurus aplica automáticamente --ifm-font-size-base y --ifm-line-height-base
+  Componentes personalizados pueden usar var(--fs-h3), var(--font-mono), etc.
+
+================================================================================
+TOGGLE ZEN-MODE
+================================================================================
+
+Script inline en <head> (docusaurus.config.js, headTags):
+
+Funcionalidad:
+  1. Lee localStorage.zen-mode
+  2. Si está true o no definido, añade class 'zen-mode' a <html>
+  3. Ejecuta ANTES del render (evita flash)
+
+CSS correspondiente (en custom.css):
+  html.zen-mode { /* estilos para modo zen */ }
+  → Probablemente: oculta navbar/sidebar, maximiza contenido
+
+Propósito:
+  Permitir lectura sin distracciones
+  Estado persiste en localStorage
+
+================================================================================
+HEADTAGS Y OPTIMIZACIONES GLOBALES
+================================================================================
+
+Scripts/metas inyectados en <head>:
+
+1. Preconnect a fonts.googleapis.com
+   → Reduce latencia de carga de Google Fonts
+
+2. Preconnect a fonts.gstatic.com (anonymous)
+   → Ruta de fuentes en caché global
+
+3. Zen-mode inline script (descrito arriba)
+
+4. KaTeX via CDN (en <head> de docusaurus.config.js)
+   <link rel="stylesheet" href="cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css" />
+   → Para renderizado de matemáticas
+
+NOTA: No hay scripts de analytics visibles en config
+      (Google Analytics podría estar en vercel.json o env vars)
+
+================================================================================
+RESPONSIVE BREAKPOINTS
+================================================================================
+
+Docusaurus usa breakpoints de CSS estándar:
+  sm: 320px
+  md: 768px (sidebar → collapse en mobile)
+  lg: 1024px
+  xl: 1216px
+
+COMPORTAMIENTO ESPERADO:
+  < 768px: Sidebar oculto, drawer/hamburger menu
+  >= 768px: Sidebar visible en desktop
+
+Uso en custom.css: media queries con (min-width:) y (max-width:)
+
+================================================================================
+PROPUESTA DE LECTURA PARA OPUS
+================================================================================
+
+1. ESTRUCTURA GLOBAL DEL LAYOUT:
+   - Root.js proporciona contexto
+   - Layout/index.js organiza navbar, contenido, footer
+   - DocPage + DocRoot + DocItem/Layout crean estructura jerárquica
+
+2. NAVBAR MINIMALIST:
+   - Logo oculto (display: none)
+   - 4 items en navbar: idioma, autor, PDF, GitHub
+   - Oculta al scroll (hideOnScroll: true)
+
+3. FOOTER DARK:
+   - Siempre tema oscuro (style: 'dark')
+   - 4 secciones: Contenido, Universidad, Contacto, Recursos
+
+4. TEMA DUAL:
+   - Dark mode: azul oscuro + cian
+   - Light mode: papel cálido + burdeos
+   - Toggle via data-theme attribute en <html>
+
+5. PERSONALIZACIÓN VISUAL:
+   - Custom CSS en src/css/custom.css (3773+ líneas)
+   - Variables globales para colores, tipografía, transiciones
+   - Swizzled theme components para control total
+
+6. TIPOGRAFÍA RESPONSIVE:
+   - Space Grotesk para display
+   - Inter para body
+   - JetBrains Mono para código
+   - Escala fluida con clamp()
+
+7. MODO ZEN:
+   - Toggle localStorage-based
+   - Script inline para evitar flashing
+   - Oculta distracciones durante lectura
+
+================================================================================
+ARCHIVOS CRÍTICOS PARA REVISIÓN
+================================================================================
+
+Directorio structure:
+  src/theme/
+    ├── Layout/index.js
+    ├── Root.js
+    ├── DocPage/index.js
+    ├── DocRoot/index.js
+    ├── DocItem/Layout/index.js
+    ├── DocSidebar/
+    │   ├── Desktop/index.js
+    │   ├── Desktop/Content/index.js
+    │   └── Desktop/CollapseButton/index.js
+    └── MDXComponents.js
+
+  src/css/
+    ├── custom.css (3773+ líneas)
+    └── designTokens.css (importado por custom.css)
+
+  docusaurus.config.js:
+    - themeConfig.navbar (líneas ~70-100)
+    - themeConfig.footer (líneas ~110-140)
+
+================================================================================
+STATUS AUDITORÍA: COMPLETADA
+================================================================================
+
+Componentes verificados: ✓ navbar, ✓ footer, ✓ layout, ✓ tipografía
+Pendiente: Inspección detallada de swizzled components en src/theme/

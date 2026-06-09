@@ -1,0 +1,271 @@
+.container {
+  --coord-bg: #F5F2EB;
+  --coord-surface: #ffffff;
+  --coord-text: #1e1e1e;
+  --coord-text-secondary: #555;
+  --coord-border: #ccc;
+  --coord-crisis: #C0392B;
+  --coord-coordination: #A86018;
+  --coord-command: #2A4875;
+  --coord-restoration: #4E7432;
+  --coord-reconstruction: #6C3483;
+  --coord-shadow: 0 1px 4px rgba(0,0,0,0.1);
+
+  max-width: 900px;
+  margin: 1.5rem auto;
+  padding: 1rem;
+  background: var(--coord-bg);
+  border-radius: 8px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--coord-text);
+}
+
+.header {
+  margin-bottom: 1rem;
+}
+
+.kicker {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  line-height: 1.3;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Leyenda */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.legendSwatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.swatch-crisis { background-color: var(--coord-crisis); }
+.swatch-coordination { background-color: var(--coord-coordination); }
+.swatch-command { background-color: var(--coord-command); }
+.swatch-restoration { background-color: var(--coord-restoration); }
+.swatch-reconstruction { background-color: var(--coord-reconstruction); }
+
+.legendLabel {
+  opacity: 0.9;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.item {
+  position: relative;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.item:last-child {
+  margin-bottom: 0;
+}
+
+.markerCol {
+  position: absolute;
+  left: -1.5rem;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.marker {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--coord-border);
+  background: var(--coord-surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 2;
+  transition: transform 0.2s;
+}
+
+.marker:hover,
+.itemExpanded .marker {
+  transform: scale(1.2);
+}
+
+.marker-crisis { border-color: var(--coord-crisis); background: var(--coord-crisis); }
+.marker-coordination { border-color: var(--coord-coordination); background: var(--coord-coordination); }
+.marker-command { border-color: var(--coord-command); background: var(--coord-command); }
+.marker-restoration { border-color: var(--coord-restoration); background: var(--coord-restoration); }
+.marker-reconstruction { border-color: var(--coord-reconstruction); background: var(--coord-reconstruction); }
+
+.markerInner {
+  display: none;
+}
+
+.line {
+  width: 2px;
+  flex-grow: 1;
+  background: var(--coord-border);
+  margin-top: 4px;
+  min-height: 20px;
+}
+
+.content {
+  flex: 1;
+  padding-left: 1rem;
+  border-left: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.itemExpanded .content {
+  border-left-color: var(--coord-border);
+}
+
+.summaryBtn {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+}
+
+.time {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.5rem;
+  margin-bottom: 0;
+  opacity: 0.8;
+}
+
+.senderReceiver {
+  font-size: 0.95rem;
+  display: inline;
+}
+
+.eventText {
+  font-size: 0.95rem;
+  margin-left: 0.3rem;
+  opacity: 0.9;
+}
+
+.details {
+  margin-top: 0.6rem;
+  padding: 0.8rem 1rem;
+  background: var(--coord-surface);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border: 1px solid var(--coord-border);
+  box-shadow: var(--coord-shadow);
+}
+
+.label {
+  font-weight: 600;
+}
+
+.commandSubpanel,
+.picassoSubpanel {
+  margin-top: 0.8rem;
+  border-top: 1px dashed var(--coord-border);
+  padding-top: 0.6rem;
+}
+
+.subpanelTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.commandList {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+}
+
+.picassoData {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.2rem 1rem;
+  font-size: 0.85rem;
+}
+
+.picassoData dt {
+  font-weight: 600;
+}
+
+.picassoData dd {
+  margin: 0;
+}
+
+.figcaption {
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Modo oscuro */
+html[data-theme='dark'] .container {
+  --coord-bg: #0D1620;
+  --coord-surface: #14202D;
+  --coord-text: #e0e0e0;
+  --coord-text-secondary: #aaa;
+  --coord-border: #1E3042;
+  --coord-crisis: #E74C3C;
+  --coord-coordination: #D4A040;
+  --coord-command: #5890D8;
+  --coord-restoration: #72BC54;
+  --coord-reconstruction: #AF7AC5;
+  --coord-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0.8rem;
+    margin: 1rem 0;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+}
