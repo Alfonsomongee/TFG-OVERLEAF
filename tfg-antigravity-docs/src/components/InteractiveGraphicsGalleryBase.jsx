@@ -184,6 +184,38 @@ export const getGraphicData = (id, lang) => {
       en: { title: 'Sectorial Resilience', desc: 'Electricity consumption recovery curves by activity sector (large industry and services) after the 28-A restoration.' },
       fr: { title: 'Résilience Sectorielle', desc: 'Courbes de récupération de la consommation électrique par secteur d\'activité (grande industrie et services) après le rétablissement du 28-A.' },
       de: { title: 'Sektorielle Resilienz', desc: 'Erholungskurven des Stromverbrauchs nach Aktivitätssektoren (Großindustrie und Dienstleistungen) nach der Wiederherstellung des 28-A.' }
+    },
+    ferranti: {
+      es: { title: 'Efecto Ferranti y Saturación Capacitiva', desc: 'En líneas largas y poco cargadas, la capacitancia distribuida puede elevar la tensión y generar excedente de reactiva.' },
+      en: { title: 'Ferranti Effect & Capacitive Saturation', desc: 'In long, lightly loaded lines, distributed capacitance can raise voltage and generate surplus reactive power.' }
+    },
+    'grid-strength-scr': {
+      es: { title: 'Fortaleza Nodal (SCR vs IBR)', desc: 'El Short Circuit Ratio cae cuando la potencia conectada mediante inversores crece sobre una red con baja potencia de cortocircuito.' },
+      en: { title: 'Nodal Strength (SCR vs IBR)', desc: 'The Short Circuit Ratio drops when inverter-based generation capacity increases on a grid with low short-circuit power.' }
+    },
+    'hvdc-control': {
+      es: { title: 'Control HVDC y Soporte de Frecuencia', desc: 'El modo de control determina si el enlace HVDC mantiene consigna o modifica potencia ante una desviación de frecuencia.' },
+      en: { title: 'HVDC Control & Frequency Support', desc: 'The control mode determines whether the HVDC link maintains setpoint or modifies power during a frequency deviation.' }
+    },
+    'power-flow-jacobian': {
+      es: { title: 'Singularidad del Jacobiano de Flujos', desc: 'Cuando el Jacobiano se aproxima a singularidad, pequeñas perturbaciones de P/Q producen grandes desviaciones de tensión y ángulo.' },
+      en: { title: 'Power Flow Jacobian Singularity', desc: 'When the Jacobian approaches singularity, small P/Q perturbations produce large voltage and angle deviations.' }
+    },
+    'transformer-inrush': {
+      es: { title: 'Corriente de Inserción (Inrush)', desc: 'El inrush magnetizante combina pico inicial, offset asimétrico y decaimiento lento, especialmente crítico en islas eléctricas débiles.' },
+      en: { title: 'Magnetizing Inrush Current', desc: 'Magnetizing inrush combines initial peak, asymmetric offset, and slow decay, critical in weak electrical islands.' }
+    },
+    'pq-capability': {
+      es: { title: 'Conflicto P-Q del Semiconductor', desc: 'A mayor potencia activa, menor margen reactivo disponible para controlar tensión.' },
+      en: { title: 'Semiconductor P-Q Constraint', desc: 'Higher active power reduces the reactive margin available for voltage control.' }
+    },
+    'gfm-droop': {
+      es: { title: 'Respuesta Droop GFM vs GFL', desc: 'El control grid-forming sintetiza tensión y frecuencia internas, reduciendo la excursión dinámica frente a inversores seguidores de red.' },
+      en: { title: 'Droop Response GFM vs GFL', desc: 'Grid-forming control synthesizes internal voltage and frequency, reducing dynamic excursion compared to grid-following inverters.' }
+    },
+    'energy-trilemma': {
+      es: { title: 'Simulador del Trilema Energético', desc: 'Visualización baricéntrica interactiva del compromiso dinámico entre seguridad, equidad y sostenibilidad ambiental.' },
+      en: { title: 'Energy Trilemma Simulator', desc: 'Interactive barycentric visualization of the dynamic trade-off between security, equity, and environmental sustainability.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -214,7 +246,7 @@ export const graphicsData = [
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard , tema: 'T4' },
   { id: 'swing', icon: '⚖️', component: SwingEquationSimulator , tema: ['T9', 'T10-gen'] },
   { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix , tema: 'T5' },  // costes de ajuste → T5 mercado/costes
-  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator , tema: ['T9', 'T10-gen'] },
+  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator , tema: ['T9', 'T10-red'] },
   { id: 'ansi59', icon: '⚡', component: ANSI59Cascade , tema: 'T3' },
   { id: 'sticky-collapse', icon: '🎬', component: StickyCollapse , tema: 'T3' },
   { id: 'ufls', icon: '🎛️', component: UFLSVisualizer , tema: ['T3', 'T10-gen'], nature: 'didactic' },
@@ -226,7 +258,15 @@ export const graphicsData = [
   { id: 'mix-generacion', icon: '🔋', component: MixGeneracion, tema: 'T1' },
   { id: 'grid-unavailability', icon: '⛔', component: GridUnavailabilityGauge , tema: 'T3' },  // cascada/protecciones/desconexiones
   { id: 'emissions-renewables', icon: '🌿', component: EmissionsVsRenewablesChart , tema: 'T1' },  // demanda/generación/balance
-  { id: 'sectorial-resilience', icon: '🏭', component: SectorialResilienceChart , tema: 'T7' },  // impacto/resiliencia
+  { id: 'sectorial-resilience', icon: '🏭', component: SectorialResilienceChart , tema: 'T7' },
+  { id: 'ferranti', icon: '⚡', component: FerrantiCapacitiveLineSimulator , tema: ['T3', 'T10-red'] },
+  { id: 'grid-strength-scr', icon: '📈', component: GridStrengthScrFigure , tema: 'T10-red' },
+  { id: 'hvdc-control', icon: '🎛️', component: HvdcControlModeResponseFigure , tema: 'T10-red' },
+  { id: 'power-flow-jacobian', icon: '🌀', component: PowerFlowJacobianCollapseFigure , tema: 'T10-red' },
+  { id: 'transformer-inrush', icon: '🔌', component: TransformerInrushDecayFigure , tema: 'T10-red' },
+  { id: 'pq-capability', icon: '📊', component: PQCapabilitySimulator , tema: 'T10-gen' },
+  { id: 'gfm-droop', icon: '📉', component: GfmDroopResponseFigure , tema: 'T10-gen' },
+  { id: 'energy-trilemma', icon: '⚖️', component: EnergyTrilemmaSimulator , tema: ['T9', 'T10-mer'] },  // impacto/resiliencia
 ];
 
 export default function InteractiveGraphicsGallery({ propLang }) {
