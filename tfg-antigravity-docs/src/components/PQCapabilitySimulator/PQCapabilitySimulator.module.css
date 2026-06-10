@@ -1,0 +1,221 @@
+/* PQCapabilitySimulator.module.css */
+
+.figure {
+  /* Variables prefijadas – modo claro */
+  --pq-bg: #F9F6F0;
+  --pq-surface: #F3EFE5;
+  --pq-text: #2B2B2B;
+  --pq-curve: #005F6B;        /* Sₘₐₓ – azul petróleo */
+  --pq-p: #B87B4A;            /* P – cobre/ámbar */
+  --pq-q: #2D6A4F;            /* Qₘₐₓ – verde técnico */
+  --pq-accent: #B87B4A;       /* punto operativo */
+  --pq-critical: #C47B5A;     /* zona crítica */
+  --pq-badge-wide: #2D6A4F;
+  --pq-badge-compromised: #B87B4A;
+  --pq-badge-critical: #A6523E;
+
+  max-width: 880px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.2rem;
+  background: var(--pq-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  font-family: var(--ifm-font-family-base);
+  color: var(--pq-text);
+  box-sizing: border-box;
+  scroll-margin-top: 96px;
+}
+
+/* Modo oscuro */
+html[data-theme='dark'] .figure {
+  --pq-bg: #1A2332;
+  --pq-surface: #212E3E;
+  --pq-text: #CFD9E3;
+  --pq-curve: #4FA4B0;
+  --pq-p: #E0A25E;
+  --pq-q: #5BA07A;
+  --pq-accent: #E0A25E;
+  --pq-critical: #E0866E;
+  --pq-badge-wide: #5BA07A;
+  --pq-badge-compromised: #E0A25E;
+  --pq-badge-critical: #E0866E;
+}
+
+/* ========== Header ========== */
+.header {
+  margin-bottom: 1.6rem;
+}
+
+.kicker {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--pq-text);
+  opacity: 0.5;
+  margin: 0 0 0.3rem;
+}
+
+.title {
+  font-size: 1.38rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.4rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.75;
+}
+
+/* ========== Gráfico SVG ========== */
+.svgContainer {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 1.4rem auto;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--pq-surface);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+html[data-theme='dark'] .svg {
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* ========== Leyenda ========== */
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.6rem;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto 1.6rem auto;
+  font-size: 0.76rem;
+  background: var(--pq-surface);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-sizing: border-box;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legendSwatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ========== Controles (slider) ========== */
+.controls {
+  margin-bottom: 1.1rem;
+}
+
+.sliderLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.slider {
+  flex: 1;
+  accent-color: var(--pq-accent);
+  height: 6px;
+}
+
+.sliderValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 5em;
+  text-align: right;
+}
+
+/* ========== Estado operativo ========== */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.statusBadge {
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 0.15rem 0.8rem;
+  border-radius: 4px;
+  background: var(--pq-surface);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusWide {
+  color: var(--pq-badge-wide);
+}
+.statusCompromised {
+  color: var(--pq-badge-compromised);
+}
+.statusCritical {
+  color: var(--pq-badge-critical);
+}
+
+.qValue {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ========== Texto pericial ========== */
+.pericial {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  opacity: 0.9;
+}
+
+/* ========== Bloque conceptual fijo ========== */
+.conceptual {
+  background: var(--pq-surface);
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  opacity: 0.88;
+  border-left: 3px solid var(--pq-curve);
+}
+
+.conceptual p {
+  margin: 0;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 600px) {
+  .figure {
+    padding: 1.35rem;
+  }
+
+  .legend {
+    grid-template-columns: 1fr;
+  }
+
+  .svgContainer,
+  .legend {
+    max-width: 100%;
+  }
+}

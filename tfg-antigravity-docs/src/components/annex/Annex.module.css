@@ -5,7 +5,7 @@
 */
 
 .layout {
-  --annex-bg: rgba(255, 252, 245, 0.94);
+  --annex-bg: transparent;
   --annex-surface: rgba(255, 252, 245, 0.84);
   --annex-text-1: #191814;
   --annex-text-2: #4a4338;
@@ -17,7 +17,7 @@
 }
 
 html[data-theme='dark'] .layout {
-  --annex-bg: rgba(16, 29, 53, 0.9);
+  --annex-bg: transparent;
   --annex-surface: rgba(7, 19, 38, 0.62);
   --annex-text-1: #f4f7fb;
   --annex-text-2: #c7d2e3;
@@ -40,22 +40,44 @@ html[data-theme='dark'] .layout {
 
 /* ─────────────────────────────────────────────────────────────── */
 /* VARIANTE WIDE — solo para anexos conceptuales I–IX             */
-/* Consume el padding lateral del artículo de Docusaurus para     */
-/* dar ~4 rem más de ancho útil. No invade la sidebar.            */
+/* Comportamiento híbrido:                                        */
+/* - Por defecto (sidebar abierto): ancho normal 100%             */
+/* - Sidebar oculto: breakout a pantalla completa (94vw)          */
 /* ─────────────────────────────────────────────────────────────── */
 
+:global(html:has(.layoutWide) .theme-doc-toc-desktop),
+:global(html:has(.layoutWide) .col--3) {
+  display: none !important;
+}
+
+:global(html:has(.layoutWide) .col--9) {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
 .layoutWide {
-  margin-left:  -2rem;
-  margin-right: -2rem;
-  width: calc(100% + 4rem);
+  /* Tamaño estándar por defecto (compactado con el sidebar) */
+  width: 100%;
+  transition: width 0.3s ease, margin 0.3s ease, transform 0.3s ease;
+}
+
+/* Cuando Docusaurus oculta el sidebar (clase controlada por React) */
+.layoutWide.isSidebarHidden {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 94vw;
+  max-width: 1400px;
 }
 
 @media (max-width: 996px) {
-  /* En tablet/móvil: volver a layout estándar */
+  /* En tablet/móvil, Docusaurus nativamente oculta el sidebar lateral */
   .layoutWide {
-    margin-left:  0;
-    margin-right: 0;
-    width: 100%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96vw;
+    max-width: 100%;
   }
 }
 

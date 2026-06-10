@@ -8,14 +8,14 @@ import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>Uso de Inteligencia Artificial</GlitchTitle>
 
-La elaboración de este TFG se ha desarrollado en un contexto metodológico atípico: la concurrencia simultánea, durante el bienio 2024–2026, de una crisis sistémica en el sistema eléctrico ibérico y de una transformación acelerada en las herramientas de procesamiento de lenguaje natural. La disponibilidad de Large Language Models (LLMs) capaces de procesar documentos técnicos de cientos de páginas en pocos minutos coincidió con la publicación, en el plazo de un año, de cuatro informes periciales primarios y una decena de análisis académicos sobre el mismo evento. Este capítulo documenta de forma transparente cómo se han integrado estas herramientas, qué tareas concretas han desempeñado, qué errores sistemáticos se han detectado y corregido, y qué reflexión epistemológica se desprende de ello para la práctica investigadora en ingeniería.
+La elaboración de este TFG se ha desarrollado en un contexto metodológico atípico: la concurrencia simultánea, durante el bienio 2024–2026, de una crisis sistémica en el sistema eléctrico ibérico y de una transformación acelerada en las herramientas de procesamiento de lenguaje natural. La disponibilidad de modelos de lenguaje de gran tamaño (_Large Language Models_, LLM) capaces de procesar documentos técnicos de cientos de páginas en pocos minutos coincidió con la publicación, en el plazo de un año, de cuatro informes periciales primarios y una decena de análisis académicos sobre el mismo evento. Este capítulo documenta de forma transparente cómo se han integrado estas herramientas, qué tareas concretas han desempeñado, qué errores sistemáticos se han detectado y corregido, y qué reflexión epistemológica se desprende de ello para la práctica investigadora en ingeniería.
 
 ## Aplicación metodológica: cinco funciones operativas
 
 El cuerpo documental de partida abarca expedientes técnicos, normativas de ENTSO-E, informes oficiales de extensión superior a 200 páginas, simulaciones PSS/E del IIT-ICAI, actas de la CNMC, registros oscilográficos del NREL y un volumen amplio de hemeroteca especializada. Su lectura lineal sin mediación informática resultaba incompatible con los plazos académicos del TFG. La integración de modelos generativos se ha articulado en torno a cinco funciones operativas claramente delimitadas, ninguna de las cuales involucra inferencia causal autónoma sobre la física del sistema:
 
 <ForensicTable 
-  title="TABLA O1 | LLM ASSISTANCE — OPERATIONAL FUNCTIONS"
+  title="Tabla O1 — Funciones operativas de la asistencia LLM"
   source="Elaboración propia"
 >
 
@@ -38,24 +38,24 @@ El flujo de trabajo se estructura en tres etapas secuenciales con un bucle de co
                                (reformulación de prompt ante alucinación detectada)
 ```
 
-El elemento metodológicamente decisivo no es la asistencia LLM en sí misma, sino el filtro de validación física que se interpone entre cualquier salida del modelo y su incorporación al texto: Leyes de Kirchhoff, curvas Q-V, ecuación de oscilación del rotor y cotejo con la fuente primaria. Cuando el filtro detecta una inferencia incompatible con la mecánica del sistema, el prompt se reformula con restricciones semánticas adicionales y el ciclo se reinicia.
+El elemento metodológicamente decisivo no es la asistencia LLM en sí misma, sino el filtro de validación física que se interpone entre cualquier salida del modelo y su incorporación al texto: Leyes de Kirchhoff, curvas Q-V, ecuación de oscilación del rotor y cotejo con la fuente primaria. Cuando el filtro detecta una inferencia incompatible con la mecánica del sistema, el _prompt_ se reformula con restricciones semánticas adicionales y el ciclo se reinicia.
 
-## Validación y verificación: los cuatro casos de inferencia errónea
+## Validación y verificación: cinco casos de inferencia errónea
 
-La utilización de modelos generativos en un dominio tan denso en relaciones causales como la dinámica de sistemas de potencia revela, de forma sistemática, un comportamiento que los sistemas eléctricos no toleran: la inferencia por analogía estadística. Los LLM tienden a aplicar patrones causales _típicos_ —los más frecuentes en la literatura de su corpus de entrenamiento— a casos cuya estructura física es _atípica_. El 28-A es, por su naturaleza dual (estabilidad de tensión en lugar de balance de frecuencia), un caso atípico respecto a la mayoría de los apagones documentados en la bibliografía técnica del siglo XX, lo que hizo especialmente productiva la observación de los puntos en los que la IA "por defecto" se desviaba del fenómeno real.
+La utilización de modelos generativos en un dominio tan denso en relaciones causales como la dinámica de sistemas de potencia revela, de forma sistemática, un comportamiento que los sistemas eléctricos no toleran: la inferencia por analogía estadística. Los LLM tienden a aplicar patrones causales «típicos» —los más frecuentes en la literatura de su corpus de entrenamiento— a casos cuya estructura física es _atípica_. El 28-A es, por su naturaleza dual (estabilidad de tensión en lugar de balance de frecuencia), un caso atípico respecto a la mayoría de los apagones documentados en la bibliografía técnica del siglo XX, lo que hizo especialmente productiva la observación de los puntos en los que la IA «por defecto» se desviaba del fenómeno real.
 
 <ForensicTable 
-  title="TABLA O2 | LLM HEURISTIC FAILURE MODES"
+  title="Tabla O2 — Modos de fallo heurístico de los LLM"
   source="Elaboración propia"
 >
 
-| Fenómeno | Inferencia errónea por defecto del LLM | Corrección física aplicada | Estrategia de prompt correctora |
+| Fenómeno | Inferencia errónea por defecto del LLM | Corrección física aplicada | Estrategia de _prompt_ correctora |
 | --- | --- | --- | --- |
-| Paradoja del UFLS | El deslastre de cargas por subfrecuencia "salvó" áreas del sistema al recuperar el balance de potencia activa. | El UFLS es ciego al voltaje: al desconectar carga retiró sumideros de reactiva inductiva en pleno transitorio capacitivo, agravando la sobretensión. | Restricción explícita: razonar exclusivamente en el plano Q-V, ignorando la lógica frecuencia–potencia activa habitual en apagones clásicos. |
-| *Tap-Lag* | Los OLTC respondieron correctamente al transitorio elevando o rebajando la tensión secundaria de forma proporcional. | Los retardos intencionales de los OLTC —diseñados para evitar hunting— los dejaron desfasados frente a un transitorio de decenas de milisegundos, multiplicando la tensión hacia la red de 220 kV y 132 kV. | Inyección de la constante de tiempo real del conjunto electromecánico OLTC y prohibición de asumir respuesta cuasi-instantánea. |
-| Aporte capacitivo del mallado | El mallado redujo la impedancia del sistema y, por tanto, aumentó la estabilidad de tensión. | En condiciones de baja carga, el mallado activó la admitancia transversal de las líneas de 400 kV (efecto Ferranti), inyectando los 1.050 MVAr capacitivos que precipitaron la sobretensión. | Restricción al régimen "línea descargada" y exigencia de calcular el balance de reactiva con la admitancia capacitiva $Y_t$ en el modelo π de la línea. |
-| Oscilación de 0,6 Hz | Producción de una respuesta _integrada_ — la lectura "más probable" promediada sobre las fuentes. | El origen del modo (oscilación forzada por una planta concreta según ICAI; modo natural del sistema según REE) es precisamente la discrepancia que el TFG debe preservar, no resolver editorialmente. | Veto a la elección unilateral entre ambas hipótesis y obligación de producir versiones duales con atribución explícita a su fuente. |
-| Topología de red oculta | Alucinación de esquemas de conexión y arquitecturas de control de inversores específicos. | La arquitectura interna de los lazos de control de las plantas no es pública. Ante la ausencia de datos en internet, el LLM inventa diagramas plausibles pero ficticios. | Restricción estricta a basarse únicamente en los diagramas unifilares aportados en los informes oficiales, prohibiendo inferir topologías no documentadas. |
+| Paradoja del UFLS | El deslastre de cargas por subfrecuencia «salvó» áreas del sistema al recuperar el balance de potencia activa. | El UFLS es ciego al voltaje: al desconectar carga retiró sumideros de reactiva inductiva en pleno transitorio capacitivo, agravando la sobretensión. | Restricción explícita: razonar exclusivamente en el plano Q-V, ignorando la lógica frecuencia–potencia activa habitual en apagones clásicos. |
+| *Tap-Lag* | Los OLTC respondieron correctamente al transitorio elevando o rebajando la tensión secundaria de forma proporcional. | Los retardos intencionales de los OLTC —diseñados para evitar _hunting_— los dejaron desfasados frente a un transitorio de decenas de milisegundos, multiplicando la tensión hacia la red de 220 kV y 132 kV. | Inyección de la constante de tiempo real del conjunto electromecánico OLTC y prohibición de asumir respuesta cuasi-instantánea. |
+| Aporte capacitivo del mallado | El mallado redujo la impedancia del sistema y, por tanto, aumentó la estabilidad de tensión. | En condiciones de baja carga, el mallado activó la admitancia transversal de las líneas de 400 kV (efecto Ferranti), inyectando los 1.050 MVAr capacitivos que precipitaron la sobretensión. | Restricción al régimen «línea descargada» y exigencia de calcular el balance de reactiva con la admitancia capacitiva $Y_t$ en el modelo π de la línea. |
+| Oscilación de 0,6 Hz | Producción de una respuesta _integrada_ — la lectura «más probable» promediada sobre las fuentes. | El origen del modo (oscilación forzada por una planta concreta según ICAI; modo natural del sistema según REE) es precisamente la discrepancia que el TFG debe preservar, no resolver editorialmente. | Veto a la elección unilateral entre ambas hipótesis y obligación de producir versiones duales con atribución explícita a su fuente. |
+| Topología de red oculta | Alucinación de esquemas de conexión y arquitecturas de control de inversores específicos. | La arquitectura interna de los lazos de control de las plantas no es pública. Ante la ausencia de datos en Internet, el LLM inventa diagramas plausibles pero ficticios. | Restricción estricta a basarse únicamente en los diagramas unifilares aportados en los informes oficiales, prohibiendo inferir topologías no documentadas. |
 
 </ForensicTable>
 
@@ -63,11 +63,11 @@ La utilización de modelos generativos en un dominio tan denso en relaciones cau
 
 El caso más ilustrativo del patrón de error: ante la consulta sobre el papel del deslastre en el desarrollo del incidente, los modelos ofrecieron sistemáticamente una interpretación heredada de los apagones clásicos, en los que el UFLS constituye la última línea de defensa y consigue habitualmente preservar porciones de la red al recuperar el balance frecuencia-potencia activa. Esta inferencia es físicamente correcta para el universo de eventos sobre los que el modelo fue entrenado, pero inválida para el 28-A: en un colapso dominado por el plano Q-V, la activación del UFLS retiró simultáneamente los sumideros de potencia reactiva inductiva que aportaban las cargas desconectadas, agravando la sobretensión en lugar de mitigarla.
 
-La corrección requirió formular el prompt con una restricción explícita sobre el plano de análisis y verificar manualmente que el razonamiento resultante fuese consistente con la oscilografía publicada por el NREL en la franja temporal 12:33:19–12:33:27 CEST ([*ver Simulador de Retrato de Fases interactivo*](./anexo-interactivos#phaseplane)).
+La corrección requirió formular el _prompt_ con una restricción explícita sobre el plano de análisis y verificar manualmente que el razonamiento resultante fuese consistente con la oscilografía publicada por el NREL en la franja temporal 12:33:19–12:33:27 CEST. El simulador de retrato de fases queda documentado en el [Anexo IX · Metodología y modelos](./anexo-metodologia-modelos-datos-vivos.mdx).
 
 ### El caso del Tap-Lag
 
-La descripción cualitativa que los modelos producen del OLTC es correcta en régimen estacionario, pero asume por defecto una respuesta proporcional e instantánea que el conjunto electromecánico real no posee. El retardo intencional introducido para evitar hunting se tradujo el 28-A en una relación de transformación desfasada respecto al transitorio eléctrico, lo que multiplicó la sobretensión hacia las redes de 220 kV y 132 kV — fenómeno invisible para el SCADA del operador, anclado en las medidas del primario de 400 kV. Toda la cadena causal del Tap-Lag exigió describir al modelo, por adelantado, las constantes de tiempo del OLTC y prohibirle asumir respuesta cuasi-instantánea.
+La descripción cualitativa que los modelos producen del OLTC es correcta en régimen estacionario, pero asume por defecto una respuesta proporcional e instantánea que el conjunto electromecánico real no posee. El retardo intencional introducido para evitar _hunting_ se tradujo el 28-A en una relación de transformación desfasada respecto al transitorio eléctrico, lo que multiplicó la sobretensión hacia las redes de 220 kV y 132 kV — fenómeno invisible para el SCADA del operador, anclado en las medidas del primario de 400 kV. Toda la cadena causal del Tap-Lag exigió describir al modelo, por adelantado, las constantes de tiempo del OLTC y prohibirle asumir respuesta cuasi-instantánea.
 
 ### El caso del aporte capacitivo del mallado
 
@@ -75,11 +75,11 @@ La inyección estimada de 1.050 MVAr capacitivos debía corresponderse con el ef
 
 ### El caso de la oscilación de 0,6 Hz
 
-Ilustra una limitación específica del uso de IA en contextos forenses con divergencia institucional. Los modelos tienden a producir una respuesta integrada — la lectura "más probable" promediada sobre las fuentes — cuando el rigor pericial exige preservar la divergencia. El origen del modo es precisamente el dato que el TFG debe presentar como discrepancia irresuelta, no como consenso editorial.
+Ilustra una limitación específica del uso de IA en contextos forenses con divergencia institucional. Los modelos tienden a producir una respuesta integrada — la lectura «más probable» promediada sobre las fuentes — cuando el rigor pericial exige preservar la divergencia. El origen del modo es precisamente el dato que el TFG debe presentar como discrepancia irresuelta, no como consenso editorial.
 
 ### El caso de la topología de red (Alucinación por falta de datos)
 
-Este caso evidencia una vulnerabilidad fundamental: los LLM están diseñados para completar patrones. Dado que los detalles exactos de los lazos de control de inversores y topologías de subestaciones específicas no son de dominio público por razones de seguridad crítica, el modelo rellenó el vacío de información generando arquitecturas de red "típicas" pero ficticias, incurriendo en una alucinación estructural. La IA no puede deducir la realidad de infraestructuras críticas cerradas a partir de datos generales de internet.
+Este caso evidencia una vulnerabilidad fundamental: los LLM están diseñados para completar patrones. Dado que los detalles exactos de los lazos de control de inversores y topologías de subestaciones específicas no son de dominio público por razones de seguridad crítica, el modelo rellenó el vacío de información generando arquitecturas de red «típicas» pero ficticias, incurriendo en una alucinación estructural. La IA no puede deducir la realidad de infraestructuras críticas cerradas a partir de datos generales de Internet.
 
 La observación de alcance general que estos cinco casos permiten formular: la utilidad de la asistencia automática es máxima en tareas de _procesamiento_ —extracción, síntesis, estructuración, tabulación, redacción asistida— y mínima, hasta el punto de ser contraproducente, en tareas de _inferencia causal_ sobre fenómenos físicos con baja representación en los corpus de entrenamiento.
 
@@ -93,7 +93,7 @@ El uso de IA no exime al investigador de dominar el contenido técnico de su obj
 
 ### Implicación ético-académica
 
-La asistencia automática se ha empleado en este trabajo como herramienta de procesamiento, no como sustituto del razonamiento. Toda decisión de contenido — el encuadre del problema, la jerarquía de fuentes, la formulación de la tesis causal sobre el colapso del 28-A, la valoración comparada de las narrativas institucionales, las conclusiones finales — es responsabilidad exclusiva del autor. La IA no firma TFGs ni se sienta ante un tribunal: el ingeniero rubrica con su nombre la causalidad material de los hechos expuestos, y esa rúbrica es intransferible.
+La asistencia automática se ha empleado en este trabajo como herramienta de procesamiento, no como sustituto del razonamiento. Toda decisión de contenido — el encuadre del problema, la jerarquía de fuentes, la formulación de la tesis causal sobre el colapso del 28-A, la valoración comparada de las narrativas institucionales, las conclusiones finales — es responsabilidad exclusiva del autor. La IA no firma un TFG ni se sienta ante un tribunal: el ingeniero rubrica con su nombre la causalidad material de los hechos expuestos, y esa rúbrica es intransferible.
 
 ### Implicación disciplinar prospectiva
 
@@ -101,4 +101,4 @@ Los sistemas eléctricos de la próxima década — dominados por electrónica d
 
 La arquitectura híbrida — LLM como interfaz semántica y de síntesis, simuladores físicos como motor de inferencia causal — es, plausiblemente, la dirección hacia la que evolucionarán las herramientas de ingeniería de sistemas de potencia. Su desarrollo requerirá exactamente la misma vigilancia epistemológica que ha estructurado el flujo de trabajo del presente TFG: tener siempre presente qué hace cada herramienta y qué se le pide explícitamente que no haga.
 
-El registro detallado del flujo de prompts restrictivos empleados, junto con ejemplos representativos de las correcciones aplicadas, se documenta en el Anexo de Metodología IA, siguiendo las recomendaciones de buenas prácticas en transparencia metodológica para la integración de modelos generativos en investigación de grado y posgrado.
+El registro detallado del flujo de _prompts_ restrictivos empleados, junto con ejemplos representativos de las correcciones aplicadas, se documenta en el [Anexo IX · Metodología y modelos](./anexo-metodologia-modelos-datos-vivos.mdx), siguiendo criterios de transparencia metodológica para la integración de modelos generativos en investigación de grado y posgrado.

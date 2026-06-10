@@ -180,34 +180,30 @@ export default function ChatWidget() {
   };
 
   const parseInline = (text) => {
-    // Parsear links Markdown: [texto](url) y negritas: **texto**
-    const tokenRegex = /(?:\[([^\]]+)\]\(([^)]+)\))|(?:\*\*([^*]+)\*\*)/g;
+    const regex = /(\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\))/g;
     const parts = [];
-    let lastIndex = 0;
-    let match;
-    while ((match = tokenRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.substring(lastIndex, match.index));
-      }
-      if (match[1] && match[2]) {
+    let last = 0, match, key = 0;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > last) parts.push(text.substring(last, match.index));
+      if (match[2]) {
+        // **negrita**
+        parts.push(<strong key={key++}>{match[2]}</strong>);
+      } else {
+        // [texto](url)
         parts.push(
           <a
-            href={match[2]}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: '#60a5fa', textDecoration: 'underline' }}
-            key={`link-${match.index}`}
+            key={key++}
+            href={match[4]}
+            style={{ color: 'var(--ifm-color-primary)', textDecoration: 'underline' }}
           >
-            {match[1]}
+            {match[3]}
           </a>
         );
-      } else if (match[3]) {
-        parts.push(<strong key={`bold-${match.index}`}>{match[3]}</strong>);
       }
-      lastIndex = tokenRegex.lastIndex;
+      last = regex.lastIndex;
     }
-    if (lastIndex < text.length) parts.push(text.substring(lastIndex));
-    return parts.length > 0 ? parts : text;
+    if (last < text.length) parts.push(text.substring(last));
+    return parts.length ? parts : text;
   };
 
   return (

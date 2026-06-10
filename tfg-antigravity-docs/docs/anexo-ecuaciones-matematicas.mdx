@@ -1,0 +1,83 @@
+---
+id: anexo-ecuaciones-matematicas
+title: "Anexo X · Ecuaciones matemáticas y simuladores"
+sidebar_label: "Anexo X · Ecuaciones y simuladores"
+hide_title: true
+---
+
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+
+import FerrantiCapacitiveLineSimulator from "@site/src/components/FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator";
+import PVCurveSimulator from "@site/src/components/PVCurveSimulator/PVCurveSimulator";
+import PQCapabilitySimulator from "@site/src/components/PQCapabilitySimulator/PQCapabilitySimulator";
+import PowerAngleStabilitySimulator from "@site/src/components/PowerAngleStabilitySimulator/PowerAngleStabilitySimulator";
+import SwingEquationSimulator from "@site/src/components/SwingEquationSimulator/SwingEquationSimulator";
+import UFLSVisualizer from "@site/src/components/UFLSVisualizer/UFLSVisualizer";
+import EnergyTrilemmaSimulator from "@site/src/components/EnergyTrilemmaSimulator/EnergyTrilemmaSimulator";
+
+<AnnexLayout
+  wide
+  kicker="Anexo X"
+  title="Ecuaciones matemáticas y simuladores"
+  description="Recopilación de simuladores interactivos gobernados por formulación matemática, física y financiera."
+  meta={[
+    { label: 'Eje técnico', value: 'Matemáticas y Simulación' },
+    { label: 'Interactividad', value: 'Tiempo real' }
+  ]}
+>
+  <AnnexMethodNote type="reconstruccion">
+    Este anexo aísla y agrupa todas las herramientas interactivas del documento que no se basan en datos históricos estáticos, sino en ecuaciones matemáticas, financieras y de física eléctrica. El usuario puede alterar las variables independientes de las fórmulas para observar el comportamiento dinámico de las curvas resultantes.
+  </AnnexMethodNote>
+
+  <AnnexSection
+    id="simuladores-red"
+    eyebrow="Física de Redes"
+    title="Simuladores de Transporte y Estabilidad"
+    description="Fenómenos de inestabilidad y transporte de energía en extra alta tensión gobernados por ecuaciones de flujo y reactiva."
+    defaultOpen
+  >
+    <FerrantiCapacitiveLineSimulator />
+    
+    <div style={{ marginTop: '4rem' }}>
+      <PVCurveSimulator />
+    </div>
+
+    <div style={{ marginTop: '4rem' }}>
+      <PowerAngleStabilitySimulator />
+    </div>
+  </AnnexSection>
+
+  <AnnexSection
+    id="simuladores-generacion"
+    eyebrow="Generación y Frecuencia"
+    title="Simuladores de Máquinas y Control"
+    description="Ecuaciones fundamentales del control de frecuencia y los límites matemáticos del estator y rotor."
+    defaultOpen
+  >
+    <PQCapabilitySimulator />
+
+    <div style={{ marginTop: '4rem' }}>
+      <SwingEquationSimulator />
+    </div>
+
+    <div style={{ marginTop: '4rem' }}>
+      <UFLSVisualizer />
+    </div>
+  </AnnexSection>
+
+  <AnnexSection
+    id="simuladores-mercado"
+    eyebrow="Mercado y Finanzas"
+    title="Simuladores de Mercado y Transición"
+    description="Modelos matemáticos de costes, mercados financieros y la ecuación del Trilema Energético. (Espacio reservado para las nuevas gráficas)"
+    defaultOpen
+  >
+    <EnergyTrilemmaSimulator />
+    
+    {/* RESERVADO PARA LAS NUEVAS GRÁFICAS FINANCIERAS Y DE MERCADO DEL USUARIO */}
+    
+  </AnnexSection>
+
+</AnnexLayout>

@@ -366,7 +366,7 @@ function injectMasterData() {
       heading: 'Datos Oficiales, Exportaciones Netas y Mix de Generación',
       subheading: '',
       rawText: rawText,
-      slug: '/anexo-tablas',
+      slug: '/resumen-de-cifras',
       anchor: 'cifras-maestras',
       chunkType: 'master_data',
       keywords: keywords,
@@ -415,6 +415,44 @@ function injectGlossary() {
   }
 }
 
+const TEMA_TO_SLUG = {
+  'T1': '/anexo-demanda-generacion-balance',
+  'T2': '/anexo-estabilidad-dinamica-tension',
+  'T3': '/anexo-cascada-protecciones-desconexiones',
+  'T4': '/anexo-interconexiones-flujos',
+  'T5': '/anexo-mercado-costes',
+  'T6': '/anexo-reposicion-blackstart',
+  'T7': '/anexo-impacto-resiliencia',
+  'T8': '/anexo-comunicacion-fuentes',
+  'T9': '/anexo-metodologia-modelos-datos-vivos'
+};
+
+const GRAPHIC_TEMA_MAP = {
+  'frequency': 'T2',
+  'map': 'T3',
+  'timeline': 'T3',
+  'streamgraph': 'T1',
+  'waterfall': 'T7',
+  'topology': 'T4',
+  'sismograph': 'T2',
+  'phasor': 'T2',
+  'phaseplane': 'T9',
+  'interconnection': 'T4',
+  'swing': 'T9',
+  'matrix': 'T5',
+  'pvcurve': 'T9',
+  'ansi59': 'T3',
+  'sticky-collapse': 'T3',
+  'ufls': 'T3',
+  'comparador-28a': 'T9',
+  'radar-vulnerabilidad': 'T9',
+  'tap-lag-sequence': 'T3',
+  'mix-generacion': 'T1',
+  'grid-unavailability': 'T3',
+  'emissions-renewables': 'T1',
+  'sectorial-resilience': 'T7'
+};
+
 function injectGraphics() {
   const graphicsPath = path.join(__dirname, '..', 'static', 'data', 'graphics-metadata.json');
   if (!fs.existsSync(graphicsPath)) {
@@ -425,14 +463,18 @@ function injectGraphics() {
   const graphics = JSON.parse(fs.readFileSync(graphicsPath, 'utf-8'));
   graphics.forEach(g => {
     const rawText = `${g.title}: ${g.description} Palabras clave: ${g.keywords.join(', ')}.`.normalize('NFC');
+    const tema = GRAPHIC_TEMA_MAP[g.id];
+    const newSlug = TEMA_TO_SLUG[tema] || '/anexo-interactivos';
+    const newAnchor = `grafico-${g.id}`;
+    const newUrl = `${newSlug}#${newAnchor}`;
     
     createChunk({
       title: 'Herramientas Interactivas — Anexo C',
       heading: g.title,
       subheading: '',
       rawText: rawText,
-      slug: g.slug,
-      anchor: g.id || '',
+      slug: newSlug,
+      anchor: newAnchor,
       chunkType: 'graphic',
       keywords: g.keywords,
       chapterOrder: 97,
@@ -443,8 +485,8 @@ function injectGraphics() {
         source: 'annex_c',
         title: g.title,
         description: g.description,
-        slug: g.slug,
-        url: g.slug,
+        slug: newUrl,
+        url: newUrl,
         keywords: g.keywords || []
       }
     });
@@ -460,13 +502,16 @@ function injectForensicTables() {
   raw.categories.forEach(category => {
     (category.tables || []).forEach(table => {
       const rawText = `Anexo B — Tabla forense\nCategoría: ${category.name || ''}\nID: ${table.id}\nNombre: ${table.name || table.id}\nOrigen: ${table.source || ''}\nNota: ${table.note || ''}\nColumnas: ${(table.columns || []).map(c => c.label || c.key).join(', ')}\nMuestra de datos: ${JSON.stringify(Array.isArray(table.data) ? table.data.slice(0, 3) : [])}`;
+      const newSlug = TEMA_TO_SLUG[table.tema] || '/anexo-tablas';
+      const newUrl = `${newSlug}#tabla-${table.id}`;
+
       createChunk({
         title: 'Anexo B — Tablas Forenses',
         heading: table.name || table.id,
         subheading: category.name || '',
         rawText,
-        slug: '/anexo-tablas',
-        anchor: table.id,
+        slug: newSlug,
+        anchor: `tabla-${table.id}`,
         chunkType: 'table',
         keywords: extractKeywords(rawText),
         chapterOrder: 96,
@@ -478,7 +523,7 @@ function injectForensicTables() {
           title: table.name || table.id,
           description: table.note || '',
           origin: table.source || '',
-          url: `/anexo-tablas#${table.id}`,
+          url: newUrl,
           columns: table.columns || [],
           sampleRows: Array.isArray(table.data) ? table.data.slice(0, 3) : []
         }
@@ -493,42 +538,66 @@ function injectImageGalleryData() {
   const galleryPath = path.join(__dirname, '..', 'src', 'data', 'imageGalleryData.js');
   if (!fs.existsSync(galleryPath)) return;
   const raw = fs.readFileSync(galleryPath, 'utf8');
+  
+  const jsContent = raw
+    .replace(/export\s+/g, '')
+    .replace(/import\s+.*?from\s+['"].*?['"];?/g, '');
+  
+  const vm = require('vm');
+  const sandbox = {};
+  let imageGalleryData = {};
+  try {
+    vm.runInNewContext(jsContent + '\nvar result = imageGalleryData;', sandbox);
+    imageGalleryData = sandbox.result || {};
+  } catch (err) {
+    console.error('Error evaluando imageGalleryData.js en build-index:', err);
+    return;
+  }
+
   let count = 0;
-  const imgRegex = /\{\s*src:\s*['"]([^'"]+)['"],\s*caption_es:\s*['"]([^'"]+)['"]/g;
-  let match;
-  while ((match = imgRegex.exec(raw)) !== null) {
-    const src = match[1];
-    const caption_es = match[2];
-    const id = src.split('/').pop().replace(/\.[^/.]+$/, "");
-    
-    let title = caption_es;
-    if (title.length > 120) {
-      title = title.substring(0, 117) + '...';
-    }
-    const description = caption_es;
-    const rawText = `ID: ${id}\nTítulo: ${title}\nDescripción: ${description}\nRuta: ${src}`;
-    createChunk({
-      title: 'Anexo D — Gráficas de Datos Reales',
-      heading: title,
-      subheading: 'Gráficas 28-A / ESIOS / REE / ENTSO-E',
-      rawText,
-      slug: '/anexo-figuras',
-      anchor: id,
-      chunkType: 'data_figure',
-      keywords: extractKeywords(rawText),
-      chapterOrder: 95,
-      sourceFile: 'imageGalleryData.js',
-      artifact: {
-        id: id,
-        type: 'image',
-        source: 'annex_d',
-        title: title,
-        description: description,
-        path: src,
-        url: `/anexo-figuras#${id}`
-      }
+  if (imageGalleryData && imageGalleryData.chapters) {
+    imageGalleryData.chapters.forEach(ch => {
+      (ch.images || []).forEach(img => {
+        const src = img.src;
+        const caption_es = img.caption_es;
+        const id = src.split('/').pop().replace(/\.[^/.]+$/, "");
+        const tema = img.tema;
+        
+        const newSlug = TEMA_TO_SLUG[tema] || '/anexo-figuras';
+        const newAnchor = `fig-${id}`;
+        const newUrl = `${newSlug}#${newAnchor}`;
+        
+        let title = caption_es;
+        if (title.length > 120) {
+          title = title.substring(0, 117) + '...';
+        }
+        const description = caption_es;
+        const rawText = `ID: ${id}\nTítulo: ${title}\nDescripción: ${description}\nRuta: ${src}`;
+        
+        createChunk({
+          title: 'Anexo D — Gráficas de Datos Reales',
+          heading: title,
+          subheading: 'Gráficas 28-A / ESIOS / REE / ENTSO-E',
+          rawText,
+          slug: newSlug,
+          anchor: newAnchor,
+          chunkType: 'data_figure',
+          keywords: extractKeywords(rawText),
+          chapterOrder: 95,
+          sourceFile: 'imageGalleryData.js',
+          artifact: {
+            id: id,
+            type: 'image',
+            source: 'annex_d',
+            title: title,
+            description: description,
+            path: src,
+            url: newUrl
+          }
+        });
+        count++;
+      });
     });
-    count++;
   }
   console.log(`  → ${count} gráficas de datos reales indexadas.`);
 }
@@ -575,12 +644,15 @@ function injectEntsoeCharts() {
       `Fuente: ESIOS / ENTSO-E / REE / OMIE — datos extraídos directamente de las APIs oficiales`
     ].join('\n').normalize('NFC');
 
+    const newSlug = TEMA_TO_SLUG[chart.tema] || '/anexo-entsoe';
+    const newUrl = `${newSlug}#${id}`;
+
     createChunk({
       title:        'Anexo ENTSO-E — Gráficas con Datos Reales de las APIs',
       heading:      title,
       subheading:   'Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A',
       rawText,
-      slug:         '/anexo-entsoe',
+      slug:         newSlug,
       anchor:       id,
       chunkType:    'data_figure',
       keywords:     extractKeywords(rawText),
@@ -595,7 +667,7 @@ function injectEntsoeCharts() {
         whyMatters:  relevance,
         description_en: chart.desc_en || description,
         whyMatters_en:  chart.rel_en || relevance,
-        url:         `/anexo-entsoe#${id}`,
+        url:         newUrl,
       }
     });
     count++;

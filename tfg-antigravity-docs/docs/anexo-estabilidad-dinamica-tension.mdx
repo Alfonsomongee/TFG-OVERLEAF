@@ -13,6 +13,7 @@ import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
 import MRSCRComparator from '@site/src/components/MRSCRComparator';
 import DynamicSecurityShift from '@site/src/components/DynamicSecurityShift';
 import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
+import FerrantiCapacitiveLineSimulator from "@site/src/components/FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator";
 
 <AnnexLayout
   wide
@@ -65,6 +66,9 @@ import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
     description="Visualizaciones dinámicas asociadas al tema."
     defaultOpen
   >
+    <span id="grafico-frequency"></span>
+    <span id="grafico-sismograph"></span>
+    <span id="grafico-phasor"></span>
     <AnnexThemeEvidence theme="T2" include={['interactives']} />
   </AnnexSection>
 
@@ -80,13 +84,17 @@ import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
 
   <MRSCRComparator showCaption={false} />
 
-  *Figura A2.1. Comparación de SCR y MRSCR en subestaciones ibéricas. Fuente: ENTSO‑E.*
+  *Figura L3 — Fortaleza de red: SCR tradicional frente a MRSCR real en subestaciones ibéricas. Fuente: ENTSO‑E.*
 
   <DynamicSecurityShift showCaption={false} />
 
-  *Figura A2.2. Transición del modelo de seguridad clásico a métricas dinámicas.*
+  *Figura M2 — Del modelo de seguridad clásico a métricas dinámicas.*
 
   <ThenVsNowPanel showCaption={false} />
 
-  *Figura A2.3. Comparación de métricas de vulnerabilidad entre el 28‑A y mayo de 2026. Fuentes: REE, ENTSO‑E, ESIOS.*
+  *Figura N1 — Sistema Ahora vs 28A: Comparación de métricas de vulnerabilidad. Fuentes: REE, ENTSO‑E, ESIOS.*
+
+  <FerrantiCapacitiveLineSimulator />
+
+  _Figura C2. Simulador conceptual del efecto Ferranti y la saturación capacitiva en líneas de transporte. La figura muestra cómo una línea larga, poco cargada y con compensación insuficiente puede elevar la tensión receptora y aumentar el riesgo de disparo por sobretensión. Elaboración propia a partir de la relación \\(Q_c = \\omega C V^2\\)._
 </AnnexLayout>

@@ -1,0 +1,98 @@
+---
+id: anexo-cascada-protecciones-desconexiones
+title: "Anexo III · Protecciones, cascada y desconexiones"
+sidebar_label: "Anexo III · Protecciones y desconexiones"
+hide_title: true
+---
+
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
+import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import PO74Timeline from '@site/src/components/PO74Timeline';
+import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
+
+<AnnexLayout
+  wide
+  kicker="Anexo III"
+  title="Protecciones, cascada y desconexiones"
+  description="Evidencias técnicas relacionadas con la propagación del colapso, disparos de protección, desconexiones de generación y mecanismos de cascada del 28-A."
+  meta={[
+    { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
+    { label: 'Cobertura', value: 'Análisis forense de cascada' },
+    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+  ]}
+>
+  <AnnexMethodNote type="reconstruccion">
+    El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
+  </AnnexMethodNote>
+
+  <AnnexMethodNote type="modelo-didactico">
+    Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
+  </AnnexMethodNote>
+
+  <AnnexEvidenceNav
+    items={[
+      { label: 'Figuras',      target: 'figuras-cascada' },
+      { label: 'Tablas',       target: 'tablas-cascada' },
+      { label: 'Interactivos', target: 'interactivos-cascada' },
+      { label: 'Series',       target: 'series-cascada' },
+    ]}
+  />
+
+  <AnnexSection
+    id="figuras-cascada"
+    eyebrow="Evidencia visual"
+    title="Figuras y reconstrucciones gráficas"
+    description="Imágenes, mapas y esquemas asociados a la propagación del fallo."
+    defaultOpen
+  >
+    <AnnexThemeEvidence theme="T3" include={['figures']} />
+  </AnnexSection>
+
+  <AnnexSection
+    id="tablas-cascada"
+    eyebrow="Registros técnicos"
+    title="Tablas forenses y eventos de protección"
+    description="Registros tabulados sobre desconexiones, protecciones y maniobras."
+    defaultOpen
+  >
+    <AnnexThemeEvidence theme="T3" include={['tables']} />
+  </AnnexSection>
+
+  <AnnexSection
+    id="interactivos-cascada"
+    eyebrow="Exploración interactiva"
+    title="Herramientas de propagación y mecanismos de cascada"
+    description="Visualizaciones interactivas asociadas a la secuencia del colapso."
+    defaultOpen
+  >
+    <span id="grafico-map"></span>
+    <span id="grafico-timeline"></span>
+    <span id="grafico-ansi59"></span>
+    <span id="grafico-sticky-collapse"></span>
+    <span id="grafico-ufls"></span>
+    <span id="grafico-tap-lag-sequence"></span>
+    <span id="grafico-grid-unavailability"></span>
+    <AnnexThemeEvidence theme="T3" include={['interactives']} />
+  </AnnexSection>
+
+  <AnnexSection
+    id="series-cascada"
+    eyebrow="Series históricas"
+    title="Series asociadas al episodio de cascada"
+    description="Gráficas históricas disponibles asociadas a este tema, si existen."
+    defaultOpen
+  >
+    <AnnexThemeEvidence theme="T3" include={['charts']} />
+  </AnnexSection>
+
+  <PO74Timeline showCaption={false} />
+
+  *Figura A3.1. Cronograma de implementación del P.O. 7.4. Fuentes: CNMC, BOE.*
+
+  <OvervoltageTimeline showCaption={false} />
+
+  *Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.*
+</AnnexLayout>

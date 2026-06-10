@@ -57,6 +57,21 @@ const SynchrophasorPlot        = lazyWithPreload(() => import('./SynchrophasorPl
 const GridUnavailabilityGauge  = lazyWithPreload(() => import('./GridUnavailabilityGauge'));
 const SectorialResilienceChart = lazyWithPreload(() => import('./SectorialResilienceChart'));
 const EmissionsVsRenewablesChart = lazyWithPreload(() => import('./EmissionsVsRenewablesChart'));
+// ── Lazy imports ENTSO-E Charts ───────────────────────────────
+const EntsoeActualGeneration   = lazyWithPreload(() => import('./EntsoeCharts/ActualGenerationChart'));
+const EntsoeCostCongestion     = lazyWithPreload(() => import('./EntsoeCharts/CostCongestionChart'));
+const EntsoeCrossBorderFlows   = lazyWithPreload(() => import('./EntsoeCharts/CrossBorderFlowsChart'));
+const EntsoeCurrentBalancing   = lazyWithPreload(() => import('./EntsoeCharts/CurrentBalancingStateChart'));
+const EntsoeEnergyPrices       = lazyWithPreload(() => import('./EntsoeCharts/EnergyPricesChart'));
+const EntsoeFallbacks          = lazyWithPreload(() => import('./EntsoeCharts/FallbacksChart'));
+const EntsoeForecastTransfer   = lazyWithPreload(() => import('./EntsoeCharts/ForecastTransferChart'));
+const EntsoeFrrCapacity        = lazyWithPreload(() => import('./EntsoeCharts/FrrCapacityChart'));
+const EntsoeHydroReservoir     = lazyWithPreload(() => import('./EntsoeCharts/HydroReservoirChart'));
+const EntsoeImbalance          = lazyWithPreload(() => import('./EntsoeCharts/ImbalanceChart'));
+const EntsoeImbalancePrices    = lazyWithPreload(() => import('./EntsoeCharts/ImbalancePricesChart'));
+const EntsoeInstalledCapacity  = lazyWithPreload(() => import('./EntsoeCharts/InstalledCapacityChart'));
+const EntsoeScheduledExchanges = lazyWithPreload(() => import('./EntsoeCharts/ScheduledCommercialExchangesChart'));
+const EntsoeTotalLoad          = lazyWithPreload(() => import('./EntsoeCharts/TotalLoadChart'));
 
 // ── Mapa anchor → componente interactivo ──────────────────────
 const INTERACTIVE_MAP = {
@@ -94,6 +109,32 @@ const INTERACTIVE_MAP = {
   'grid-unavailability': GridUnavailabilityGauge,
   'sectorial-resilience': SectorialResilienceChart,
   'emissions-renewables': EmissionsVsRenewablesChart,
+};
+
+// ── Mapa chart-id → componente ENTSO-E (Fix ENTSO-E inline) ──
+const ENTSOE_CHART_MAP = {
+  'chart-1':  EntsoeTotalLoad,          // Demanda Peninsular (Total Load)
+  'chart-2':  EntsoeTotalLoad,          // Total Load — ES + PT
+  'chart-3':  EntsoeActualGeneration,   // Programa de Producción
+  'chart-4':  EntsoeActualGeneration,   // Potencia Disponible por Tecnología
+  'chart-5':  EntsoeInstalledCapacity,  // Installed Capacity per Type
+  'chart-6':  EntsoeActualGeneration,   // Actual Generation per Unit
+  'chart-7':  EntsoeHydroReservoir,     // Water Reservoirs & Hydro
+  'chart-8':  EntsoeActualGeneration,   // Otros Indicadores — CO₂ + Renovables
+  'chart-9':  EntsoeEnergyPrices,       // Mercados y Precios — SPOT vs PVPC
+  'chart-10': EntsoeEnergyPrices,       // Precio Final Desglosado
+  'chart-11': EntsoeEnergyPrices,       // Energy Prices — Europa
+  'chart-12': EntsoeImbalancePrices,    // Precios de Desvíos Tiempo Real
+  'chart-13': EntsoeCrossBorderFlows,   // Saldos por Frontera (P48)
+  'chart-14': EntsoeCrossBorderFlows,   // Cross-Border Physical Flows
+  'chart-15': EntsoeScheduledExchanges, // Scheduled Commercial Exchanges
+  'chart-17': EntsoeForecastTransfer,   // Forecast Transfer Capacities
+  'chart-18': EntsoeCurrentBalancing,   // Current Balancing State
+  'chart-19': EntsoeImbalance,          // Imbalance — Volumen MW
+  'chart-20': EntsoeImbalancePrices,    // Imbalance Prices
+  'chart-21': EntsoeFrrCapacity,        // FRR Capacity — Reservas
+  'chart-22': EntsoeCostCongestion,     // Cost of Congestion Management
+  'chart-23': EntsoeFallbacks,          // Fall-backs y Protocolos Emergencia
 };
 
 // ── Mapa keywords → figuras estáticas (Anexo A) ───────────────
@@ -351,54 +392,38 @@ const SUGGESTED_QUESTIONS = {
 
 function VisualArtifactCard({ artifact }) {
   if (artifact.type === 'table') {
+    const tableData = artifact.data || [];
+    const columns = artifact.columns || [];
+    
     return (
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
         <div style={{ fontSize: 10, color: 'var(--cfs-amber)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
         {artifact.origin && <div style={{ fontSize: 11, color: 'var(--cfs-text-3)', marginBottom: 8 }}>{artifact.origin}</div>}
         <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
-        {artifact.sampleRows && artifact.sampleRows.length > 0 && artifact.columns && (
+        
+        {tableData.length === 0 ? (
+          <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--cfs-amber)', textDecoration: 'none', fontWeight: 600 }}>
+            Ver tabla en el anexo ↗
+          </a>
+        ) : (
           <div style={{ overflowX: 'auto', marginTop: 12 }}>
-            <table style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              fontSize: 11,
-              color: 'var(--cfs-text-2)',
-            }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, color: 'var(--cfs-text-2)' }}>
               <thead>
                 <tr>
-                  {artifact.columns.map(col => (
-                    <th key={col.key} style={{
-                      padding: '6px 10px',
-                      textAlign: 'left',
-                      borderBottom: '1px solid var(--cfs-amber)',
-                      color: 'var(--cfs-amber)',
-                      fontWeight: 700,
-                      fontSize: 10,
-                      letterSpacing: '0.06em',
-                      textTransform: 'uppercase',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {col.label}
+                  {columns.map(c => (
+                    <th key={c.key} style={{ padding: '6px 10px', textAlign: 'left', borderBottom: '1px solid var(--cfs-amber)', color: 'var(--cfs-amber)', fontWeight: 700, fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                      {c.label}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {artifact.sampleRows.map((row, i) => (
-                  <tr key={i} style={{
-                    borderBottom: '1px solid var(--cfs-border-soft)',
-                    backgroundColor: i % 2 === 0
-                      ? 'rgba(255,255,255,0.02)'
-                      : 'transparent',
-                  }}>
-                    {artifact.columns.map(col => (
-                      <td key={col.key} style={{
-                        padding: '6px 10px',
-                        fontSize: 11,
-                        lineHeight: 1.4,
-                      }}>
-                        {row[col.key] ?? '—'}
+                {tableData.map((row, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid var(--cfs-border-soft)', backgroundColor: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
+                    {columns.map(c => (
+                      <td key={c.key} style={{ padding: '6px 10px', fontSize: 11, lineHeight: 1.4 }}>
+                        {row[c.key] ?? '—'}
                       </td>
                     ))}
                   </tr>
@@ -407,7 +432,6 @@ function VisualArtifactCard({ artifact }) {
             </table>
           </div>
         )}
-        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--cfs-amber)', textDecoration: 'none', fontWeight: 600 }}>Ver tabla completa ↗</a>
       </div>
     );
   }
@@ -416,19 +440,34 @@ function VisualArtifactCard({ artifact }) {
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
         <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Gráfica de Datos Reales</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
-        {artifact.path && <img src={artifact.path} alt={artifact.title} style={{ width: '100%', borderRadius: 8, margin: '12px 0', border: '1px solid var(--cfs-border-soft)' }} />}
-        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
-        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 8, fontSize: 12, color: 'var(--accent-electric, hsl(200 100% 60%))', textDecoration: 'none', fontWeight: 600 }}>Ver figura en contexto ↗</a>
+        <div style={{ marginTop: 8 }}>
+          <img src={artifact.path || artifact.url} alt={artifact.title} style={{ width: '100%', borderRadius: 8, border: '1px solid var(--cfs-border-soft)' }} loading="lazy" />
+          {artifact.description && (
+            <p style={{ fontSize: 11, color: 'var(--cfs-text-2)', marginTop: 6, lineHeight: 1.5 }}>
+              {artifact.description}
+            </p>
+          )}
+        </div>
       </div>
     );
   }
   if (artifact.type === 'interactive') {
+    const Component = INTERACTIVE_MAP[artifact.id];
     return (
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
         <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Interactivo</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
-        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
-        <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>Abrir simulador ↗</a>
+        <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5, marginBottom: 12 }}>{artifact.description}</p>
+        
+        {!Component ? (
+          <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>
+            Abrir simulador ↗
+          </a>
+        ) : (
+          <Suspense fallback={<div style={{ padding: 20, color: 'var(--cfs-text-2)' }}>⟳ Cargando interactivo...</div>}>
+            <Component />
+          </Suspense>
+        )}
       </div>
     );
   }
@@ -1047,48 +1086,68 @@ export default function ChatFullscreen({
             )}
           </div>
 
-          {/* Imagen o enlace a gráfica ENTSO-E */}
-          {fig.artifact?.type === 'entsoe_chart' ? (
-            <div style={{
-              marginTop: 16,
-              padding: '20px 24px',
-              border: '1px solid var(--cfs-border-soft)',
-              borderRadius: 10,
-              textAlign: 'center',
-              backgroundColor: 'hsla(220,40%,6%,0.6)',
-            }}>
+          {/* Gráfica ENTSO-E — renderizado inline con fallback a enlace */}
+          {fig.artifact?.type === 'entsoe_chart' ? (() => {
+            const chartId = fig.artifact?.id;
+            const ChartComponent = ENTSOE_CHART_MAP[chartId];
+            if (ChartComponent) {
+              return (
+                <div style={{ marginTop: 16, overflow: 'hidden', borderRadius: 10, border: '1px solid var(--cfs-border-soft)' }}>
+                  <div style={{
+                    fontSize: 11,
+                    color: 'var(--cfs-text-2)',
+                    padding: '10px 16px',
+                    borderBottom: '1px solid var(--cfs-border-soft)',
+                    backgroundColor: 'hsla(220,40%,6%,0.4)',
+                    lineHeight: 1.6,
+                  }}>
+                    Gráfica construida con datos reales extraídos de las APIs
+                    de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+                  </div>
+                  <div style={{ padding: '16px' }}>
+                    <Suspense fallback={
+                      <div style={{ textAlign: 'center', padding: 40, color: 'var(--cfs-text-2)' }}>
+                        ⟳ Cargando gráfica...
+                      </div>
+                    }>
+                      <ChartComponent />
+                    </Suspense>
+                  </div>
+                </div>
+              );
+            }
+            // Fallback: chart-id no mapeado → mostrar enlace
+            return (
               <div style={{
-                fontSize: 11,
-                color: 'var(--cfs-text-2)',
-                marginBottom: 12,
-                lineHeight: 1.6,
+                marginTop: 16,
+                padding: '20px 24px',
+                border: '1px solid var(--cfs-border-soft)',
+                borderRadius: 10,
+                textAlign: 'center',
+                backgroundColor: 'hsla(220,40%,6%,0.6)',
               }}>
-                Gráfica construida con datos reales extraídos de las APIs
-                de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+                <div style={{ fontSize: 11, color: 'var(--cfs-text-2)', marginBottom: 12, lineHeight: 1.6 }}>
+                  Gráfica construida con datos reales extraídos de las APIs
+                  de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+                </div>
+                <a
+                  href={fig.artifact.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    padding: '10px 20px', borderRadius: 8,
+                    backgroundColor: 'var(--cfs-accent)',
+                    color: 'var(--cfs-accent-text)',
+                    textDecoration: 'none', fontWeight: 700, fontSize: 12,
+                    letterSpacing: '0.08em',
+                  }}
+                >
+                  VER GRÁFICA COMPLETA ↗
+                </a>
               </div>
-              
-              <a
-                href={fig.artifact.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '10px 20px',
-                  borderRadius: 8,
-                  backgroundColor: 'var(--cfs-accent)',
-                  color: 'var(--cfs-accent-text)',
-                  textDecoration: 'none',
-                  fontWeight: 700,
-                  fontSize: 12,
-                  letterSpacing: '0.08em',
-                }}
-              >
-                VER GRÁFICA COMPLETA ↗
-              </a>
-            </div>
-          ) : (
+            );
+          })() : (
             <img
               src={fig.src}
               alt={caption}

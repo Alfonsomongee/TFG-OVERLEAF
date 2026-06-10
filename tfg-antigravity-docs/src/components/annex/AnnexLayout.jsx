@@ -24,9 +24,38 @@ export default function AnnexLayout({
   meta = [],
   wide = false,
 }) {
-  const layoutClass = [styles.layout, wide ? styles.layoutWide : '']
-    .filter(Boolean)
-    .join(' ');
+  const [isSidebarHidden, setIsSidebarHidden] = React.useState(true); // default true for mobile
+
+  React.useEffect(() => {
+    const checkSidebar = () => {
+      if (typeof document === 'undefined') return;
+      const btn = document.querySelector('[class*="expandButton"]');
+      const sidebar = document.querySelector('.theme-doc-sidebar-container');
+      
+      if (btn || !sidebar || sidebar.offsetWidth < 100) {
+        setIsSidebarHidden(true);
+      } else {
+        setIsSidebarHidden(false);
+      }
+    };
+
+    checkSidebar();
+    
+    // Escuchar cambios de tamaño y clics para actualizar el estado instantáneamente
+    window.addEventListener('resize', checkSidebar);
+    document.addEventListener('click', () => setTimeout(checkSidebar, 50)); 
+    
+    return () => {
+      window.removeEventListener('resize', checkSidebar);
+      document.removeEventListener('click', checkSidebar);
+    };
+  }, []);
+
+  const layoutClass = [
+    styles.layout, 
+    wide ? styles.layoutWide : '',
+    wide && isSidebarHidden ? styles.isSidebarHidden : ''
+  ].filter(Boolean).join(' ');
 
   return (
     <section className={layoutClass}>

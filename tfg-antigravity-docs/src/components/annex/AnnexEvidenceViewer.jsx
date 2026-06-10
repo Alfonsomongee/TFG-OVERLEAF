@@ -156,8 +156,9 @@ function FigureViewer({ item, lang }) {
     ? desc.slice(0, 147) + '…'
     : desc;
 
+  const id = `fig-${item.src.split('/').pop().replace(/\.[^/.]+$/, "")}`;
   return (
-    <div className={styles.card}>
+    <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
         <span className={`${styles.badge} ${styles.figura}`}>Figura</span>
       </div>
@@ -220,8 +221,9 @@ function TableViewer({ item }) {
   const rowCount  = Array.isArray(item.data)    ? item.data.length    : 0;
   const colCount  = Array.isArray(item.columns) ? item.columns.length : 0;
 
+  const id = `tabla-${item.id}`;
   return (
-    <div className={styles.card}>
+    <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
         <span className={`${styles.badge} ${styles.tabla}`}>Tabla</span>
       </div>
@@ -329,8 +331,9 @@ function InteractiveViewer({ item, lang }) {
   const [open, setOpen] = useState(false);
   const DynComponent = item.component;
 
+  const id = `grafico-${item.id}`;
   return (
-    <div className={styles.card}>
+    <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
         <span className={`${styles.badge} ${styles.interactivo}`}>
           Interactivo
@@ -393,8 +396,9 @@ function ChartSeriesViewer({ item, lang }) {
     setOpen(true);
   };
 
+  const id = item.id;
   return (
-    <div className={styles.card}>
+    <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
         <span className={`${styles.badge} ${styles.serie}`}>Serie</span>
       </div>

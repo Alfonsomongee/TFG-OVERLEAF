@@ -7,6 +7,16 @@ let chunks = null;
 let miniSearch = null;
 let searchInitPromise = null;
 
+const FORENSIC_TABLES = {};
+try {
+  const cats = JSON.parse(fs.readFileSync(
+    path.join(process.cwd(), 'static/data/processed/forensic_categories.json'), 'utf8'
+  ));
+  cats.categories.forEach(cat => {
+    (cat.tables || []).forEach(t => { FORENSIC_TABLES[t.id] = t; });
+  });
+} catch(e) {}
+
 const rateLimiter = new Map();
 const RATE_LIMIT_WINDOW = 60_000;
 const RATE_LIMIT_MAX = 12;
@@ -1082,10 +1092,19 @@ function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxIt
   return sorted
     .filter(item => item.source === 'selected' || item.score >= maxScore * 0.50)
     .slice(0, maxItems)
-    .map(item => ({
-      ...item.artifact,
-      relevance: parseFloat((item.score / maxScore).toFixed(2))
-    }));
+    .map(item => {
+      const art = item.artifact;
+      const extraProps = {};
+      if (art.type === 'table') {
+        extraProps.columns = FORENSIC_TABLES[art.id]?.columns || [];
+        extraProps.data = FORENSIC_TABLES[art.id]?.data || [];
+      }
+      return {
+        ...art,
+        ...extraProps,
+        relevance: parseFloat((item.score / maxScore).toFixed(2))
+      };
+    });
 }
 
 function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
@@ -1422,10 +1441,20 @@ ${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL EN EL PANEL DE
 → Haz referencia a este recurso DENTRO de tu explicación (no al final).
    Indica QUÉ elemento concreto debe buscar el usuario (curva, columna, valor, timestamp) y QUÉ confirma de tu argumento.
    Ejemplo: "En el panel derecho puedes ver cómo la tensión supera 1,10 p.u. 24 segundos antes de que la frecuencia caiga — esa asimetría temporal es la firma del colapso capacitivo."
-` : ''}ENLACES:
-1. Usa SOLO las URLs que aparecen como [URL interna a citar] en el CONTEXTO. Conserva el #anchor íntegro.
-2. Máximo 2 enlaces por respuesta, integrados naturalmente en el texto.
-3. PROHIBIDO inventar URLs. Si no hay URL apropiada en el contexto, no pongas ninguna.
+` : ''}ENLACES EN EL TEXTO:
+1. Cada fragmento del CONTEXTO termina con [URL interna a citar: /ruta#anchor].
+   Usa ESA URL exacta, incluyendo el #anchor íntegro. NUNCA la modifiques ni la inventes.
+2. Integra 2-3 enlaces en el flujo natural de tu respuesta. Ejemplos de formato:
+   - "El fenómeno [Tap-Lag](/analisis-incidente#fase-2-taplag) creó un punto ciego..."
+   - "...como documenta el [glosario técnico](/glosario#ufls)."
+   - "La evidencia oscilográfica del [Anexo II](/anexo-estabilidad-dinamica-tension) confirma..."
+3. OBLIGATORIO enlazar al glosario cuando menciones por primera vez un término técnico
+   (IBR, GFM, UFLS, Tap-Lag, SCR, RoCoF, OLTC, HVDC, EAS) SI el contexto contiene
+   una URL del glosario para ese término.
+4. OBLIGATORIO enlazar al capítulo o anexo que amplíe tu argumento principal,
+   SI el contexto proporciona la URL.
+5. PROHIBIDO inventar URLs. Si el contexto no incluye una [URL interna a citar]
+   para lo que quieres enlazar, no pongas enlace.
 
 CIERRE:
 Termina con UNA frase que formule la pregunta técnica de continuación más natural, o con la implicación más importante del argumento. Sin fórmulas como "¿quieres saber más?".

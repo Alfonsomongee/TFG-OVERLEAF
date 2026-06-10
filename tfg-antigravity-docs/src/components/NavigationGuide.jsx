@@ -29,7 +29,7 @@ export default function NavigationGuide() {
     {
       label: 'Explorar los simuladores',
       desc: '18 herramientas interactivas — frecuencia, cascada, Tap-Lag, PV curve',
-      href: '/anexo-interactivos',
+      href: '/anexo-indice-conceptual',
     },
     {
       label: 'Consultar datos en tiempo real',

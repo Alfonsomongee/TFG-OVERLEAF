@@ -5,6 +5,17 @@ hide_title: true
 ---
 
 import Link from '@docusaurus/Link';
+import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
+
+:::info Methodische Erklärung: Abschnitt für Live-Daten
+
+Dieser Abschnitt zeigt **aktuelle Betriebsdaten** des iberischen Stromsystems, die über die ESIOS-API (Red Eléctrica de España) bezogen und alle 5 Minuten aktualisiert werden.
+
+**Er ist kein Bestandteil der historischen forensischen Rekonstruktion des Blackouts vom 28. April 2025.** Die Module zur vergleichenden Analyse zeigen feste historische Daten vom 28. April als Referenzkontext, der Hauptzweck ist jedoch die Live-Überwachung systemischer Variablen.
+
+Für die Kausalanalyse des Ereignisses und seiner technischen Determinanten konsultieren Sie bitte die Kapitel 2–4 (Kontext, Analyse, Reaktion) und die technischen Dokumentationsanhänge.
+
+:::
 
 <div className="custom-hero" style={{ textAlign: 'center', marginBottom: '3rem', marginTop: '1rem' }}>
   <div style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ifm-color-primary)', marginBottom: '0.75rem' }}>
@@ -14,165 +25,36 @@ import Link from '@docusaurus/Link';
     ECHTZEITDATEN
   </h1>
   <p style={{ fontSize: '1.1rem', color: 'var(--ifm-color-emphasis-700)', maxWidth: '750px', margin: '0 auto 1.5rem', lineHeight: 1.7 }}>
-    Fortschrittlicher Überwachungsbereich des iberischen Stromsystems. Durch die Integration der offiziellen ESIOS-API (Red Eléctrica de España) bietet diese Plattform einen systematischen Vergleich zwischen den Transienten-Variablen in Echtzeit und den Parametern, die während des Zusammenbruchs vom 28. April 2025 registriert wurden.
+    Erweiterter Überwachungsbereich des iberischen Stromsystems. Durch die Integration der offiziellen ESIOS-API (Red Eléctrica de España) bietet diese Plattform einen systematischen Vergleich zwischen den Variablen des transienten Zustands in Echtzeit und den Parametern, die während des Zusammenbruchs am 28. April 2025 aufgezeichnet wurden.
   </p>
   <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '20px' }}>
-      Aktive ESIOS-API
+      ESIOS API Aktiv
     </span>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '20px' }}>
-      5-Minuten-Aktualisierung
+      Aktualisierung alle 5 Minuten
     </span>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-primary)', color: 'var(--ifm-color-primary)', borderRadius: '20px' }}>
-      11 Metrik-Tools
+      6 Metrische Werkzeuge
     </span>
   </div>
 </div>
 
 ## Betriebsanalyse (Echtzeit)
 
-Dynamische Visualisierungen, basierend auf Telemetriedaten des Systembetreibers (REE), die darauf abzielen, die momentane Vulnerabilität des Erzeugungsmixes zu bewerten.
+Dynamische Visualisierungen, die auf Fernmessdaten des Systembetreibers (REE) basieren und darauf abzielen, die momentane Verwundbarkeit des Erzeugungsmixes zu bewerten.
 
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', margin: '2rem 0' }}>
-  <Link to="/datos-tiempo-real/mix-generacion" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Erzeugungsmix</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Sektoraler Vergleich der Nettoenergieerzeugung nach Technologie im Vergleich zum Zeitpunkt der systemischen Instabilität (84,5% erneuerbar).
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
+export const items1 = [
+  {title: 'Erzeugungsmix', description: 'Sektoraler Vergleich der Netto-Stromerzeugung nach Technologie im Vergleich zum Zeitpunkt der Systeminstabilität (82% erneuerbar).', href: '/datos-tiempo-real/mix-generacion'},
+  {title: 'Nachfrage und Erneuerbare', description: 'Analyse des Verlaufs der aggregierten Gesamtnachfrage sowie des Wind- und Solar-PV-Beitrags.', href: '/datos-tiempo-real/demanda-renovable'},
+  {title: 'Risikothermometer', description: 'Schätzer der Trägheitsreserve und des Niveaus der momentanen Systemverwundbarkeit.', href: '/datos-tiempo-real/termometro-riesgo'},
+  {title: 'Austauschbilanz', description: 'Export- und Importflüsse über die grenzüberschreitenden Verbindungen mit Frankreich und Portugal.', href: '/datos-tiempo-real/balance-intercambios'},
+  {title: 'SPOT-Preis vs. Nachfrage', description: 'Echtzeit-Korrelation zwischen dem Preis des täglichen Großhandelsstrommarktes und der Systemlast.', href: '/datos-tiempo-real/precio-spot'},
+  {title: 'Verwundbarkeitsradar', description: 'Multidimensionale geometrische Analyse der Ähnlichkeit mit dem kritischen Zustand vom 28. April.', href: '/datos-tiempo-real/radar-vulnerabilidad'}
+];
 
-  <Link to="/datos-tiempo-real/demanda-renovable" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Nachfrage und Erneuerbare</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Analyse des Verlaufs der gesamten aggregierten Nachfrage sowie des Beitrags von Wind- und Photovoltaik-Solarenergie.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/termometro-riesgo" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Risikothermometer</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Schätzer der Trägheitsmarge und des Niveaus der momentanen systemischen Vulnerabilität.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/balance-intercambios" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Austauschbilanz</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Grenzüberschreitende Export- und Importflüsse über die Verbindungsleitungen mit Frankreich und Portugal.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/precio-spot" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>SPOT-Preis vs. Nachfrage</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Echtzeitkorrelation zwischen dem Preis auf dem Day-Ahead-Großhandelsstrommarkt und der Systemlast.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/radar-vulnerabilidad" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Vulnerabilitätsradar</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Multidimensionale geometrische Analyse der Ähnlichkeit mit dem kritischen Zustand vom 28. April.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-</div>
-
-## Historischer und Forensischer Kontext
-
-Forensische und wirtschaftliche Indikatoren, abgeleitet aus der gutachterlichen Analyse und den Prüfberichten des Vorfalls vom 28. April.
-
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', margin: '2rem 0' }}>
-  <Link to="/datos-tiempo-real/costes-ajuste" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Ausgleichskosten</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Thermische Matrix der außerordentlichen Kosten im Zusammenhang mit Ausgleichsleistungen und der Behebung technischer Einschränkungen während der Krise.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/waterfall-financiero" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Wirtschaftliche Auswirkungen</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Wasserfalldiagramm, das die Gesamtkosten im Zusammenhang mit Versorgungsunterbrechungen (VoLL), verstärkten Gasoperationen und physischen Infrastrukturschäden aufschlüsselt.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/indisponibilidad" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Nichtverfügbarkeit des Netzes</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Messung des prozentualen Ausfalls des Hochspannungs-Übertragungsnetzes (400 kV), das von den Kaskadenauslösungen betroffen war.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/emisiones-renovable" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Emissionen vs. Erneuerbare</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Korrelationskurve zwischen der spezifischen CO₂-Emissionsintensität und der Durchdringungsrate erneuerbarer Energien während des Zusammenbruchs.
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-
-  <Link to="/datos-tiempo-real/resiliencia-sectorial" style={{ textDecoration: 'none', color: 'inherit' }}>
-    <div className="card-hover-effect" style={{ border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '12px', padding: '1.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem' }}>Sektorale Resilienz</h3>
-        <p style={{ fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)', lineHeight: '1.5', margin: 0 }}>
-          Zeitlicher Verlauf der Erholung des Energieverbrauchs, aufgeschlüsselt nach Sektoren (Industrie vs. Dienstleistungen).
-        </p>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--ifm-color-primary)', fontWeight: 'bold' }}>Metrik abrufen →</div>
-    </div>
-  </Link>
-</div>
+<DatosTiempoRealGrid items={items1} />
 
 <div style={{ fontSize: '0.8rem', color: 'var(--ifm-color-emphasis-500)', borderTop: '1px solid var(--ifm-color-emphasis-200)', paddingTop: '1rem', marginTop: '3rem', fontFamily: 'var(--ifm-font-family-monospace)', lineHeight: 1.5 }}>
-  Methodischer Sicherheitshinweis: Die Zugangsdaten für die Application Programming Interface (API) werden in einer sicheren Serverumgebung (Serverless Variables) verwahrt. Die Aggregation und Bereinigung dynamischer Vektoren wird an den Endpunkt '/api/esios-multi' delegiert, um den Schutz der Tokens zu gewährleisten.
+  Methodischer Sicherheitshinweis: Die Zugangsdaten zur Programmierschnittstelle (API) werden in der sicheren Serverumgebung (Serverless Variables) verwaltet. Die Aggregation und Bereinigung der dynamischen Vektoren erfolgt über den Endpunkt '/api/esios-multi', wodurch der Schutz der Tokens gewährleistet wird.
 </div>
