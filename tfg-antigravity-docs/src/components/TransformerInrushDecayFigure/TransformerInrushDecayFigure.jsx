@@ -195,11 +195,9 @@ export default function TransformerInrushDecayFigure() {
         </svg>
       </div>
 
-      {hoveredElement && (
-        <div className={styles.tooltip} role="status" aria-live="polite">
-          <p>{tooltips[hoveredElement]}</p>
-        </div>
-      )}
+      <div className={`${styles.tooltip} ${hoveredElement ? '' : styles.tooltipHidden}`} role="status" aria-live="polite">
+        <p>{hoveredElement ? tooltips[hoveredElement] : '\u00A0'}</p>
+      </div>
 
       <div className={styles.legend}>
         <span

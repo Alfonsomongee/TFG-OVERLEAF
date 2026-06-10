@@ -211,11 +211,9 @@ export default function HvdcControlModeResponseFigure() {
         </svg>
       </div>
 
-      {activeMode && (
-        <div className={styles.tooltip} role="status" aria-live="polite">
-          <p>{modeInfo[activeMode]}</p>
-        </div>
-      )}
+      <div className={`${styles.tooltip} ${activeMode ? '' : styles.tooltipHidden}`} role="status" aria-live="polite">
+        <p>{activeMode ? modeInfo[activeMode] : '\u00A0'}</p>
+      </div>
 
       <div className={styles.legend}>
         <span

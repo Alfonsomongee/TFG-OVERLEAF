@@ -177,11 +177,9 @@ export default function GfmDroopResponseFigure() {
         </svg>
       </div>
 
-      {activeCurve && (
-        <div className={styles.tooltip} role="status" aria-live="polite">
-          <p>{curveInfo[activeCurve]}</p>
-        </div>
-      )}
+      <div className={`${styles.tooltip} ${activeCurve ? '' : styles.tooltipHidden}`} role="status" aria-live="polite">
+        <p>{activeCurve ? curveInfo[activeCurve] : '\u00A0'}</p>
+      </div>
 
       <div className={styles.legend}>
         {curveKeys.map(({ key, label, dotCls }) => (

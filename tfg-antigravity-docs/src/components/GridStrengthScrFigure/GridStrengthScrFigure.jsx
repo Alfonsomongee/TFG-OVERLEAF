@@ -198,11 +198,9 @@ export default function GridStrengthScrFigure() {
       </div>
 
       {/* ── Tooltip ── */}
-      {activeRegion && (
-        <div className={styles.tooltip} role="status" aria-live="polite">
-          <p>{regionInfo[activeRegion]}</p>
-        </div>
-      )}
+      <div className={`${styles.tooltip} ${activeRegion ? '' : styles.tooltipHidden}`} role="status" aria-live="polite">
+        <p>{activeRegion ? regionInfo[activeRegion] : '\u00A0'}</p>
+      </div>
 
       {/* ── Legend ── */}
       <div className={styles.legend}>

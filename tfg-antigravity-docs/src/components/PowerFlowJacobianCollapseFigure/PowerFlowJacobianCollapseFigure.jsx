@@ -178,11 +178,9 @@ export default function PowerFlowJacobianCollapseFigure() {
         </svg>
       </div>
 
-      {activeZone && (
-        <div className={styles.tooltip} role="status" aria-live="polite">
-          <p>{zoneInfo[activeZone]}</p>
-        </div>
-      )}
+      <div className={`${styles.tooltip} ${activeZone ? '' : styles.tooltipHidden}`} role="status" aria-live="polite">
+        <p>{activeZone ? zoneInfo[activeZone] : '\u00A0'}</p>
+      </div>
 
       <div className={styles.legend}>
         <span
