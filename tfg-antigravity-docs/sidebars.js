@@ -70,6 +70,7 @@ module.exports = {
         'anexo-impacto-resiliencia',
         'anexo-comunicacion-fuentes',
         'anexo-metodologia-modelos-datos-vivos',
+        'anexo-ecuaciones-matematicas',
         'glosario',
         'referencias',
       ],

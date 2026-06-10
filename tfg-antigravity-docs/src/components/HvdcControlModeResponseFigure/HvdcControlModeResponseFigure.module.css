@@ -1,0 +1,137 @@
+.figure {
+  --fig-bg: #fff8ec;
+  --fig-surface: #fffdf7;
+  --fig-surface-2: #f6eddc;
+  --fig-text: #24211c;
+  --fig-muted: #6f675c;
+  --fig-border: rgba(77, 60, 38, 0.16);
+  --fig-burgundy: #8b2635;
+  --fig-pistachio: #6f7f36;
+  --fig-amber: #c58b35;
+  --fig-teal: #28666e;
+  --fig-hvdc: #28666e;
+  --fig-pm1: #8b7355;
+  --fig-pm3: #6f7f36;
+
+  max-width: 880px;
+  margin: 1.5rem auto;
+  padding: 1.4rem 1.8rem;
+  border: 1px solid var(--fig-border);
+  border-radius: 14px;
+  background: var(--fig-bg);
+  color: var(--fig-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #122846;
+  --fig-surface-2: #183452;
+  --fig-text: #e8eef7;
+  --fig-muted: #aab7c8;
+  --fig-border: rgba(210, 225, 245, 0.14);
+  --fig-burgundy: #d77a8a;
+  --fig-pistachio: #c7d982;
+  --fig-amber: #f0b866;
+  --fig-teal: #83bdc2;
+  --fig-hvdc: #83bdc2;
+  --fig-pm1: #aab7c8;
+  --fig-pm3: #c7d982;
+}
+
+.header { margin-bottom: 0.6rem; }
+.kicker { margin: 0 0 0.2rem; font-size: 0.72rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fig-muted); }
+.title { margin: 0 0 0.3rem; font-size: 1.15rem; font-weight: 740; line-height: 1.22; }
+.subtitle { margin: 0; font-size: 0.86rem; line-height: 1.42; opacity: 0.8; max-width: 720px; }
+
+.equationBlock {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 0.7rem; padding: 0.4rem 0.7rem;
+  background: var(--fig-surface); border: 1px solid var(--fig-border);
+  border-radius: 8px; width: fit-content;
+}
+.eq { font-size: 0.82rem; font-weight: 550; font-family: 'Georgia', serif; }
+.eqSep { font-size: 0.8rem; color: var(--fig-muted); opacity: 0.4; }
+
+.visualWrap { margin-bottom: 0.2rem; }
+.svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+/* ── HVDC diagram ── */
+.acBar { fill: var(--fig-surface-2); stroke: var(--fig-muted); stroke-width: 1.2; }
+.acLabel { font-size: 11px; fill: var(--fig-text); font-weight: 600; }
+.acLabelSmall { font-size: 9px; fill: var(--fig-muted); }
+.vscBox { fill: var(--fig-surface); stroke: var(--fig-hvdc); stroke-width: 1.5; }
+.vscLabel { font-size: 8px; fill: var(--fig-hvdc); font-weight: 600; }
+.dcLink { stroke: var(--fig-hvdc); stroke-width: 3; }
+.dcLabel { font-size: 8px; fill: var(--fig-hvdc); font-weight: 600; }
+.acLine { stroke: var(--fig-muted); stroke-width: 1.5; }
+.hvdcLabel { font-size: 10px; fill: var(--fig-hvdc); font-weight: 700; }
+
+.controlBox { fill: var(--fig-surface); stroke: var(--fig-border); stroke-width: 1; }
+.controlTitle { font-size: 8px; fill: var(--fig-muted); font-weight: 600; }
+.controlLine { stroke: var(--fig-muted); stroke-width: 1; stroke-dasharray: 3 2; }
+
+.modeBtn rect { fill: var(--fig-surface-2); stroke: var(--fig-muted); stroke-width: 1; cursor: pointer; transition: fill 0.15s; }
+.modeBtn text { font-size: 7.5px; fill: var(--fig-text); font-weight: 600; pointer-events: none; }
+.modeBtn:hover rect, .modeBtn:focus rect { fill: var(--fig-surface); stroke: var(--fig-hvdc); }
+.modeBtnActive rect { fill: var(--fig-hvdc); stroke: var(--fig-hvdc); }
+.modeBtnActive text { fill: var(--fig-bg); }
+.modeBtn:focus { outline: 2px solid var(--fig-teal); outline-offset: 1px; }
+
+.divider { stroke: var(--fig-border); stroke-width: 1; }
+
+/* ── Chart ── */
+.refLine { stroke: var(--fig-muted); stroke-width: 1; stroke-dasharray: 6 4; opacity: 0.35; }
+.refLabel { font-size: 9px; fill: var(--fig-muted); font-weight: 500; }
+.pertLine { stroke: var(--fig-burgundy); stroke-width: 1.2; stroke-dasharray: 3 3; opacity: 0.6; }
+.pertLabel { font-size: 8.5px; fill: var(--fig-burgundy); font-weight: 600; }
+
+.curvePm1 { fill: none; stroke: var(--fig-pm1); stroke-width: 2.4; stroke-linecap: round; cursor: pointer; transition: opacity 0.18s; }
+.curvePm3 { fill: none; stroke: var(--fig-pm3); stroke-width: 2.8; stroke-linecap: round; cursor: pointer; transition: opacity 0.18s; }
+.curveDimmed { opacity: 0.18; }
+.curvePm1:focus, .curvePm3:focus { outline: none; stroke-width: 4; }
+
+.dynAnnotation { font-size: 9px; fill: var(--fig-pm3); font-weight: 600; pointer-events: none; }
+
+.axis { stroke: var(--fig-text); stroke-width: 1; opacity: 0.5; }
+.axisLabel { font-size: 10px; fill: var(--fig-text); font-weight: 600; opacity: 0.7; }
+
+/* ── Tooltip ── */
+.tooltip {
+  margin: 0.3rem 0 0.5rem; padding: 0.5rem 0.75rem;
+  background: var(--fig-surface); border: 1px solid var(--fig-border);
+  border-left: 3px solid var(--fig-teal); border-radius: 6px;
+  font-size: 0.79rem; line-height: 1.42; opacity: 0.92;
+}
+.tooltip p { margin: 0; }
+
+/* ── Legend ── */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 0.7rem 1.2rem;
+  margin: 0.5rem 0 0.8rem; font-size: 0.76rem;
+}
+.legendItem {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  cursor: pointer; padding: 0.15rem 0.3rem; border-radius: 4px;
+  transition: background 0.15s; opacity: 0.85;
+}
+.legendItem:hover, .legendItem:focus { background: var(--fig-surface); opacity: 1; }
+.legendItemActive { background: var(--fig-surface-2); opacity: 1; font-weight: 600; }
+.legendItem:focus { outline: 2px solid var(--fig-teal); outline-offset: 1px; }
+
+.dotPm1, .dotPm3, .dotPert { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+.dotPm1 { background: var(--fig-pm1); }
+.dotPm3 { background: var(--fig-pm3); }
+.dotPert { background: var(--fig-burgundy); }
+
+.reading {
+  margin: 0; padding: 0.6rem 0.8rem;
+  background: var(--fig-surface); border-left: 3px solid var(--fig-teal);
+  border-radius: 6px; font-size: 0.8rem; line-height: 1.45; opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .figure { padding: 1rem; }
+  .equationBlock { flex-wrap: wrap; }
+  .legend { flex-direction: column; gap: 0.4rem; }
+}
