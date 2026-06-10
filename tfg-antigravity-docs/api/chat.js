@@ -110,7 +110,7 @@ async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTo
         max_tokens: maxTokens,
       }),
     },
-    6000
+    12000
   );
 
   if (!response.ok) {
@@ -150,7 +150,7 @@ async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, m
         stream: false,
       }),
     },
-    9000
+    18000
   );
 
   if (!response.ok) {
@@ -673,44 +673,50 @@ function buildSources(selectedPairs, maxItems = 5) {
   return sources;
 }
 
-function extractFiguresFromText(text) {
-  if (!text || typeof text !== 'string') return [];
-  const figures = [];
-  const seen = new Set();
-  const pushFigure = (label, path) => {
-    if (!path || !path.startsWith('/figuras/')) return;
-    const cleanPath = path.trim();
-    const cleanLabel = (label || cleanPath.split('/').pop() || 'Figura').replace(/\s+/g, ' ').trim();
-    if (seen.has(cleanPath)) return;
-    seen.add(cleanPath);
-    figures.push({ label: cleanLabel, path: cleanPath });
-  };
+let figureCatalog = [];
+function loadFigureCatalog() {
+  if (figureCatalog.length > 0) return;
+  try {
+    const p1 = path.join(__dirname, '..', '..', 'galeriaforensedefinitiva.json');
+    const p2 = path.join(__dirname, '..', 'galeriaforensedefinitiva.json');
+    const p = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+    if (p) {
+       const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+       data.categories.forEach(cat => {
+         ['tables', 'graphics', 'interactives', 'figures', 'data_figures'].forEach(key => {
+           if (cat[key]) {
+             cat[key].forEach(item => {
+               figureCatalog.push({ id: item.id, name: item.name, textMatch: normalizeText(item.name + ' ' + item.id) });
+             });
+           }
+         });
+       });
+    }
+  } catch(e) {
+    console.error("[api/chat] Error loading figure catalog", e);
+  }
+}
 
-  const mdRegex = /!\[([^\]]*)\]\((\/figuras\/[^)\s]+\.(?:png|jpg|jpeg|svg|webp))\)/gi;
-  let match;
-  while ((match = mdRegex.exec(text)) !== null) pushFigure(match[1], match[2]);
-  
-  const rawRegex = /(\/figuras\/[A-Za-z0-9_\-./]+\.(?:png|jpg|jpeg|svg|webp))/gi;
-  while ((match = rawRegex.exec(text)) !== null) pushFigure(match[1].split('/').pop(), match[1]);
-
-  return figures;
+function getFigureCandidates(question, contextText, maxItems = 6) {
+  loadFigureCatalog();
+  if (figureCatalog.length === 0) return [];
+  const q = normalizeText(question);
+  const ctx = normalizeText(contextText);
+  const scored = figureCatalog.map(f => {
+     let score = 0;
+     const words = f.textMatch.split(/\s+/).filter(w => w.length > 3);
+     words.forEach(w => {
+        if (q.includes(w)) score += 3;
+        if (ctx.includes(w)) score += 1;
+     });
+     if (q.includes(normalizeText(f.id))) score += 10;
+     return { ...f, score };
+  });
+  return scored.filter(f => f.score > 0).sort((a,b) => b.score - a.score).slice(0, maxItems);
 }
 
 function buildSuggestedFigures(selectedPairs, maxItems = 3) {
-  const figures = [];
-  const seen = new Set();
-  for (const { chunk } of selectedPairs) {
-    if (!chunk || !chunk.text) continue;
-    const extracted = extractFiguresFromText(chunk.text);
-    for (const f of extracted) {
-      if (!seen.has(f.path)) {
-        seen.add(f.path);
-        figures.push(f);
-        if (figures.length >= maxItems) return figures;
-      }
-    }
-  }
-  return figures;
+  return []; // Ya no extraemos con regex, delegamos en el LLM.
 }
 
 function buildRelatedChapters(selectedPairs, maxItems = 5) {
@@ -781,6 +787,7 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
   if (intent === 'visual') {
     if (artifact.source === 'annex_d')        score *= 2.8;  // máximo peso: datos reales
     if (artifact.source === 'annex_entsoe')   score *= 2.8;
+    if (artifact.source === 'annex_figures')  score *= 2.2;
     if (artifact.type === 'interactive')      score *= 1.8;
     if (artifact.type === 'table')            score *= 0.8;  // tablas menos relevantes en visual
   }
@@ -883,6 +890,10 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
 
   if (q.includes('ufls') || q.includes('deslastre') || q.includes('subfrecuencia')) {
     boostIds(['escalones-ufls', 'tension_frecuencia_colapso', 'evolucion-frecuencia-rocof'], 3.0);
+  }
+
+  if (q.includes('cascada') || q.includes('propagacion') || q.includes('efecto domino')) {
+    boostIds(['map', 'heatmap_propagation', 'cascada_desconexiones'], 4.0);
   }
 
   if (q.includes('francia') || q.includes('rte') || q.includes('reposicion') || q.includes('interconexion')) {
@@ -1080,7 +1091,23 @@ function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxIt
 function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
   const q = normalizeText(question);
   const suggestions = [];
-  const add = (text) => { if (text && !suggestions.includes(text)) suggestions.push(text); };
+  
+  // Anti-repetition check against user's question
+  const isRepetitive = (text) => {
+    const nText = normalizeText(text);
+    if (nText === q) return true;
+    const qWords = new Set(q.split(/\s+/).filter(w => w.length > 3));
+    const nWords = nText.split(/\s+/).filter(w => w.length > 3);
+    if (nWords.length === 0) return false;
+    const common = nWords.filter(w => qWords.has(w)).length;
+    return (common / nWords.length) > 0.6;
+  };
+
+  const add = (text) => { 
+    if (text && !suggestions.includes(text) && !isRepetitive(text)) {
+      suggestions.push(text);
+    } 
+  };
 
   if (q.includes('como empezo') || q.includes('como inicio') || q.includes('por que se fue la luz') || q.includes('explicame de forma sencilla') || q.includes('no se nada')) {
     add('¿Cuál fue la causa física principal frente a los factores agravantes?');
@@ -1090,10 +1117,22 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
     add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
     add('¿Qué parte del coste corresponde a OPEX recurrente y cuál a CAPEX preventivo?');
     add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
-  } else if (q.includes('francia') || q.includes('rte') || q.includes('interconexion') || q.includes('reposicion')) {
+  } else if (q.includes('francia') || q.includes('rte') || q.includes('interconexion')) {
     add('¿Qué papel jugó la interconexión con Francia en el punto de no retorno?');
-    add('¿Cómo se combinó el soporte de Francia con el Black Start hidroeléctrico?');
     add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
+    add('¿Cómo se combinó el soporte de Francia con el Black Start hidroeléctrico?');
+  } else if (q.includes('black start') || q.includes('reposicion') || q.includes('arranque')) {
+    add('¿Por qué el Black Start hidroeléctrico fue crucial en la recuperación?');
+    add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
+    add('¿Cuánto tardó en restaurarse el servicio a la península completa?');
+  } else if (q.includes('eas') || q.includes('alerta europea') || q.includes('entso-e') || q.includes('ceguera')) {
+    add('¿Por qué falló la coordinación entre el EAS de ENTSO-E y REE?');
+    add('¿Qué información le faltó a REE para anticipar el apagón?');
+    add('¿Cómo impactó la ceguera del sistema en la propagación del evento?');
+  } else if (q.includes('reforma') || q.includes('ers') || q.includes('mercado') || q.includes('solucion')) {
+    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
+    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
   } else if (q.includes('figura') || q.includes('simulador') || q.includes('grafica') || q.includes('mapa') || q.includes('tabla')) {
     add('¿Qué simulador muestra mejor la secuencia completa del colapso?');
     add('¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?');
@@ -1103,45 +1142,58 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
     add('¿Por qué los BESS-GFM podrían sustituir parte de la inercia síncrona?');
     add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
   } else if (q.includes('tap-lag') || q.includes('oltc')) {
-    add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
-    add('¿Por qué el SCADA de REE no veía la tensión real de los secundarios?');
+    add('¿Qué relación tiene el Tap-Lag con la inyección de reactiva capacitiva?');
+    add('¿Qué recomiendan los informes periciales para mitigar el Tap-Lag?');
   } else if (q.includes('ufls') || q.includes('deslastre')) {
     add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
-    add('¿Qué diferencia hay entre un colapso de frecuencia y uno de sobretensión?');
+    add('¿Se podría haber diseñado un relé de sobretensión (OVS) que evitase el colapso?');
+  } else if (q.includes('mallado') || q.includes('scr') || q.includes('cortocircuito')) {
+    add('¿Por qué REE decidió mallar la red a pesar de la baja potencia de cortocircuito?');
+    add('¿Cómo afectó el mallado a la saturación de reactiva capacitiva?');
+    add('¿Qué dice el informe ICAI sobre la decisión de mallado de REE?');
+  } else if (q.includes('responsable') || q.includes('culpa') || q.includes('cnmc') || q.includes('iberdrola') || q.includes('informe')) {
+    add('¿Qué dice la normativa sobre la responsabilidad en un overvoltage-driven blackout?');
+    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    add('¿Qué papel jugó el mercado en la desconexión de los ciclos combinados?');
+  } else if (intent === 'comparison' || q.includes('compara') || q.includes('diferencia') || q.includes('relacion')) {
+    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    add('¿Qué diferencia fundamental hay entre el 28-A y el apagón de South Australia?');
+    add('¿Cómo se compara el impacto económico del 28-A con otros apagones europeos?');
   } else {
     const textContext = [
       ...selectedPairs.map(p => `${p.chunk.title || ''} ${p.chunk.heading || ''} ${p.chunk.text || ''}`)
     ].join(' ').toLowerCase();
 
-    if (textContext.includes('tap-lag') || textContext.includes('oltc')) {
+    if (textContext.includes('tap-lag') && !q.includes('tap-lag') && !q.includes('oltc')) {
       add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
     }
-    if (textContext.includes('ufls') || textContext.includes('deslastre')) {
+    if (textContext.includes('ufls') && !q.includes('ufls') && !q.includes('deslastre')) {
       add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
     }
-    if (textContext.includes('inercia') || textContext.includes('rocof')) {
+    if (textContext.includes('inercia') && !q.includes('inercia') && !q.includes('rocof')) {
       add('¿La baja inercia fue causa raíz o solo un factor agravante?');
     }
-    if (textContext.includes('gobierno') || textContext.includes('ree') || textContext.includes('icai')) {
+    if ((textContext.includes('gobierno') || textContext.includes('ree') || textContext.includes('icai')) && !q.includes('gobierno') && !q.includes('ree')) {
       add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
     }
-    if (textContext.includes('interconexión') || textContext.includes('francia')) {
+    if ((textContext.includes('interconexión') || textContext.includes('francia')) && !q.includes('francia')) {
       add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
     }
-    if (textContext.includes('reactiva') || textContext.includes('mvar') || textContext.includes('q-v')) {
+    if ((textContext.includes('reactiva') || textContext.includes('mvar') || textContext.includes('q-v')) && !q.includes('reactiva')) {
       add('¿Qué es el margen Q-V y por qué se agotó el 28-A?');
     }
-    if (textContext.includes('black start') || textContext.includes('reposición')) {
+    if ((textContext.includes('black start') || textContext.includes('reposición')) && !q.includes('black start')) {
       add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
     }
-    if (textContext.includes('coste') || textContext.includes('opex') || textContext.includes('bess')) {
+    if ((textContext.includes('coste') || textContext.includes('opex') || textContext.includes('bess')) && !q.includes('coste')) {
       add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
     }
   }
 
-  if (suggestions.length === 0) {
+  if (suggestions.length < 2) {
     add('¿Cuál fue la causa física principal del apagón del 28-A?');
     add('¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?');
+    add('¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?');
   }
 
   return suggestions.slice(0, maxItems);
@@ -1185,11 +1237,13 @@ module.exports = async function handler(req, res) {
     'nhv', 'mhv', 'oltc', 'sssc', 'bess', 'ffr', 'afrr',
     'mfrr', 'fcr', 'ntc', 'atc', 'ptc', '28-a', '28a',
     'tap', 'mw', 'hz', 'kv', 'mvar', 'gw', 'gvar',
+    'rocof', 'p.o. 7.4', 'po 7.4', 'po 74', 'ansi 59', 'ansi59',
+    'n-1', 'n-k', 'mrscr', 'pll', 'vsc'
   ]);
 
   const isShortButValid =
     trimmedQ.length < 10 &&
-    VALID_SHORT_TERMS.has(trimmedQ.toLowerCase().replace(/[¿?]/g, ''));
+    VALID_SHORT_TERMS.has(trimmedQ.toLowerCase().replace(/[¿?.]/g, ''));
 
   if (trimmedQ.length < 10 && !isShortButValid) {
     return errResponse(400,
@@ -1332,7 +1386,6 @@ module.exports = async function handler(req, res) {
 
     const sources = buildSources(selectedPairs, 5);
     const relatedChapters = buildRelatedChapters(selectedPairs, 5);
-    const suggestedFigures = buildSuggestedFigures(selectedPairs, 3);
     const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
     const followUps = buildFollowUps(question, selectedPairs, intent, 3);
     const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 2);
@@ -1340,6 +1393,9 @@ module.exports = async function handler(req, res) {
     const context = selectedPairs
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
       .join('\n\n---\n\n');
+      
+    const figureCandidates = getFigureCandidates(question, context, 6);
+    const figureCandidatesStr = figureCandidates.map(f => `- ID: "${f.id}" | Nombre: "${f.name}"`).join('\n');
 
     const intentInstruction = getIntentInstruction(intent);
     const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
@@ -1347,38 +1403,32 @@ module.exports = async function handler(req, res) {
     const prompt = `INSTRUCCIÓN DE RESPUESTA:
 ${intentInstruction}
 
-IDIOMA: Responde en ${langName}. Máximo 220 palabras. Sin LaTeX. Sin listas salvo que el usuario las pida explícitamente.
+IDIOMA: Responde en ${langName}. Sin LaTeX. Sin listas salvo que el usuario las pida explícitamente.
+
+EXTENSIÓN: Adapta la longitud a la complejidad de la pregunta.
+- Pregunta factual simple (dato, cifra, definición): 3-5 frases, directo.
+- Pregunta técnica o causal (mecanismo, por qué): desarrolla el argumento completo sin truncar. Prioriza completar la cadena causal sobre acortar.
+- Pregunta comparativa (REE vs ICAI vs ENTSO-E): desarrolla cada posición con evidencia. No resumas las tres en un párrafo.
 
 PROHIBIDO:
 - Empezar con "Según el contexto", "Basado en", "Es importante destacar", "En resumen".
 - Repetir literalmente frases del CONTEXTO.
 - Inventar URLs o citas no presentes en el CONTEXTO.
 - Usar notación matemática ($H$, \\frac, etc.).
+- Truncar una explicación causal por límite de longitud.
 
-${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL DISPONIBLE EN EL PANEL DERECHO:
-"${visualArtifacts[0].title}" — ${(visualArtifacts[0].description || '').substring(0, 120)}
-→ Integra una referencia a este recurso dentro de tu respuesta, NO al final.
-   Indica exactamente qué debe buscar el usuario en él y qué verá que confirma tu explicación.
-` : ''}
-ENLACES EN EL TEXTO (REGLAS ABSOLUTAS):
-1. Usa EXACTAMENTE la [URL interna a citar] que aparece en el CONTEXTO,
-   incluyendo siempre el #anchor si lo tiene. NUNCA elimines el fragmento
-   #anchor de una URL.
-2. Ejemplos de formato correcto:
-   - [Tap-Lag](analisis-incidente#tap-lag) ← concepto de glosario
-   - [oscilograma del disparo raíz](anexo-figuras#aluvion_alertas_sobretension_sur) ← figura
-   - [tabla de escalones UFLS](anexo-tablas#escalones-ufls) ← tabla
-   - [sección de análisis](analisis-incidente#cascada-ibr) ← capítulo
-3. Integra el enlace en la frase, no al final como nota.
-4. Enlaza 2-3 conceptos o recursos por respuesta máximo. No enlaces todo.
-5. PROHIBIDO inventar URLs. Solo usa las que aparecen en
-   [URL interna a citar] dentro del CONTEXTO RECUPERADO DEL TFG.
+${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL EN EL PANEL DERECHO:
+"${visualArtifacts[0].title}" — ${(visualArtifacts[0].description || '').substring(0, 150)}
+→ Haz referencia a este recurso DENTRO de tu explicación (no al final).
+   Indica QUÉ elemento concreto debe buscar el usuario (curva, columna, valor, timestamp) y QUÉ confirma de tu argumento.
+   Ejemplo: "En el panel derecho puedes ver cómo la tensión supera 1,10 p.u. 24 segundos antes de que la frecuencia caiga — esa asimetría temporal es la firma del colapso capacitivo."
+` : ''}ENLACES:
+1. Usa SOLO las URLs que aparecen como [URL interna a citar] en el CONTEXTO. Conserva el #anchor íntegro.
+2. Máximo 2 enlaces por respuesta, integrados naturalmente en el texto.
+3. PROHIBIDO inventar URLs. Si no hay URL apropiada en el contexto, no pongas ninguna.
 
 CIERRE:
-Termina con UNA frase que dé al usuario el siguiente paso lógico de comprensión.
-No uses fórmulas como "¿quieres saber más?" ni "espero haber aclarado".
-Si la pregunta tiene continuación natural obvia, formula esa pregunta de forma específica y técnica.
-Si no, cierra con la implicación más importante del argumento.
+Termina con UNA frase que formule la pregunta técnica de continuación más natural, o con la implicación más importante del argumento. Sin fórmulas como "¿quieres saber más?".
 
 CONTEXTO RECUPERADO DEL TFG:
 ${context}
@@ -1389,13 +1439,30 @@ ${question}
 RESPUESTA:`;
 
     const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
-Respondes ÚNICAMENTE con información del CONTEXTO proporcionado.
-Eres técnico, directo y preciso. No usas LaTeX. No inventas cifras.
-Si el contexto no cubre la pregunta, lo dices explícitamente.
-Cifras maestras verificadas (úsalas si el contexto no especifica):
-  Inicio cascada: 12:32:56.993 CEST · Nadir: 47,79 Hz · RoCoF: ~1,5 Hz/s (100 ms)
-  Pérdida generación: ~15.000 MW · H_eq ibérico: 2,21–2,71 s
-  Separación Francia: 12:33:21,535 CEST · Coste Op. Reforzada: 666 M€/año`;
+
+IDENTIDAD: Respondes como un ingeniero eléctrico forense que ha analizado los cuatro informes primarios (Gobierno/REE, ICAI/AELEC/Compass Lexecon, ENTSO-E, NREL). Tu voz es técnica, precisa y directa — sin rodeos, sin frases hechas, sin grandilocuencia.
+
+FUENTES: Respondes ÚNICAMENTE con información del CONTEXTO proporcionado. Si el contexto no cubre la pregunta, dilo explícitamente: "Este aspecto no está cubierto en el TFG."
+
+ESTILO:
+- No uses LaTeX ni notación matemática.
+- Usa unidades con rigor (MW, MVAr, Hz, kV, s, Hz/s, p.u.).
+- Cita fuentes cuando el contexto las menciona (REE, ENTSO-E, ICAI, NREL).
+- Si el panel derecho muestra un recurso visual relacionado, refiérelo de forma natural en tu explicación indicando qué buscar exactamente en él.
+- Párrafos cortos con conectores causales. Evita listas salvo que el usuario las pida.
+
+CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
+- Inicio cascada: 12:32:56.993 CEST
+- Nadir frecuencial: 47,79 Hz
+- RoCoF máximo: ~1,5 Hz/s (ventana 100 ms)
+- Pérdida de generación en cascada: ~15.000 MW en <30 s
+- H_eq ibérico ponderado: 2,21–2,71 s (zonal sur: 1,3 s)
+- Separación Francia: 12:33:21,535 CEST
+- Cero de tensión: 12:33:29,741 CEST
+- Demanda sin suministro: ~25.200 MW (ES) + ~5.800 MW (PT)
+- Personas afectadas: ~57 millones
+- Reposición 99%: ~18,5 horas
+- Coste Operación Reforzada: >666 M€ (10 meses)`;
 
     let llmResult;
     try {
@@ -1403,31 +1470,41 @@ Cifras maestras verificadas (úsalas si el contexto no especifica):
         prompt,
         systemPrompt,
         temperature: 0.18,
-        maxTokens: 380,
+        maxTokens: 1200,
       });
     } catch (llmError) {
       console.error('[api/chat] LLM provider error:', llmError?.message);
 
       return res.status(llmError?.status || 502).json({
-        answer: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo. Revisa GROQ_API_KEY, DEEPSEEK_API_KEY, cuota o conectividad del proveedor.',
+        answer: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo.',
         error: llmError?.message || 'LLM provider error',
         sources: typeof sources !== 'undefined' ? sources : [],
         confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
-        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : 'El fallo ocurrió después de recuperar contexto, durante la generación del modelo.',
+        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : '',
         relatedChapters: typeof relatedChapters !== 'undefined' ? relatedChapters : [],
-        suggestedFigures: typeof suggestedFigures !== 'undefined' ? suggestedFigures : [],
+        suggestedFigures: [],
         visualArtifacts: typeof visualArtifacts !== 'undefined' ? visualArtifacts : [],
         followUps: typeof followUps !== 'undefined' ? followUps : [],
         intent: typeof intent !== 'undefined' ? intent : 'general',
       });
     }
 
-    const answer = llmResult?.text || 'He recuperado contexto del TFG, pero el modelo no ha devuelto una respuesta textual. Prueba a reformular la pregunta.';
     const provider = llmResult?.provider || 'unknown';
     const model = llmResult?.model || 'unknown';
+    const finalAnswer = llmResult?.text || 'No answer provided by LLM.';
 
     return res.status(200).json({
-      answer, provider, model, sources, confidence, confidence_reason, relatedChapters, suggestedFigures, visualArtifacts, followUps, intent
+      answer: finalAnswer, 
+      provider, 
+      model, 
+      sources, 
+      confidence, 
+      confidence_reason, 
+      relatedChapters, 
+      suggestedFigures: [], 
+      visualArtifacts, 
+      followUps: typeof followUps !== 'undefined' ? followUps : [], 
+      intent
     });
 
   } catch (error) {

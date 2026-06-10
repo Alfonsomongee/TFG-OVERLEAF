@@ -187,15 +187,61 @@ function createChunk(metadata) {
 function extractChunks(filePath, content) {
   const { data, content: body } = matter(content);
 
+  // 1. Extraer captions (ej. _Figura B3. Título..._ o *Figura X...*) antes de que se pierdan o corten
+  const captions = [];
+  const captionRegex = /(?:_|\*)(Figura\s+[A-Za-z0-9]+(?:\.[0-9]+)?[\s:.-]+.*?)(?:_|\*)/g;
+  let capMatch;
+  while ((capMatch = captionRegex.exec(body)) !== null) {
+    captions.push(capMatch[1].trim());
+  }
+  const figureCaption = captions.length > 0 ? captions.join(' | ') : undefined;
+
   let cleanBody = body
-    .replace(/^import\s+.*?from\s+['"].*?['"];?\s*$/gm, '')
-    .replace(/^import\s+\{[^}]+\}\s+from\s+['"].*?['"];?\s*$/gm, '')
-    .replace(/^<[A-Z][^>]*\/>\s*$/gm, '')
-    .replace(/^<[A-Z][^>]*>\s*$/gm, '')
-    .replace(/^<\/[A-Z][^>]*>\s*$/gm, '')
+    // ── PASO 1: Bloques estructurales grandes (eliminar ANTES de tags sueltos) ──
+    // Imports y requires
+    .replace(/^import\s+.*?;?\s*$/gm, '')
+    .replace(/^const\s+\w+\s*=\s*require\(.*?\).*?;?\s*$/gm, '')
+    // Bloques <BrowserOnly> enteros (multilínea, non-greedy)
+    .replace(/<BrowserOnly[\s\S]*?<\/BrowserOnly>/g, '')
+    // Bloques JSX multilínea con require interno:
+    //   {() => { const X = require(...); return (...) }}
+    .replace(/\{\s*\(\)\s*=>\s*\{[\s\S]*?return\s*\([\s\S]*?\)\s*;?\s*\}\s*\}/g, '')
+    // Bloques JSX multilínea con expresión directa:
+    //   {() => ( <Component /> )}
+    .replace(/\{\s*\(\)\s*=>\s*\([\s\S]*?\)\s*\}/g, '')
+    // Bloques JSX inline: {() => <Component />} o {() => <C .../>}
+    .replace(/\{\s*\(\s*\)\s*=>\s*<[A-Z][A-Za-z0-9]*\s*[^>]*(?:\/>|>[\s\S]*?<\/[A-Z][A-Za-z0-9]*>)\s*\}/g, '')
+    // Export de componentes JSX en MDX
+    .replace(/export\s+const\s+[A-Za-z0-9_]+\s*=\s*(?:\([^)]*\)|[A-Za-z0-9_]+)\s*=>\s*(?:\([\s\S]*?\)|\{[\s\S]*?\})\s*;/g, '')
+
+    // ── PASO 2: Tags React individuales ──
+    // <ThemedImage .../> con props multilínea
+    .replace(/<ThemedImage[\s\S]*?\/>/g, '')
+    // <div style={...}> ... </div> (estilos JSX inline)
+    .replace(/<div\s+style=\{[\s\S]*?\}[^>]*>[\s\S]*?<\/div>/g, '')
+    // <div style={...}> sueltos (sin cierre en el mismo bloque)
+    .replace(/<div\s+style=\{[^}]*\}[^>]*>/g, '')
+    .replace(/<\/div>/g, '')
+    // <Details>/<summary> — conservar texto interior
+    .replace(/<\/?Details[^>]*>/g, '')
+    .replace(/<\/?summary[^>]*>/g, '')
+    // <span> con id (anchors manuales) — conservar
+    .replace(/<span\s+id="[^"]*"\s*\/?>/g, '')
+    .replace(/<\/span>/g, '')
+    // Tags React self-closing y con apertura/cierre (PascalCase)
+    .replace(/<[A-Z][A-Za-z0-9.]*\s*[^>]*\/>/g, '')
+    .replace(/<[A-Z][A-Za-z0-9.]*\s*[^>]*>/g, '')
+    .replace(/<\/[A-Z][A-Za-z0-9.]*>/g, '')
+
+    // ── PASO 3: Limpieza de formato ──
+    // Frontmatter YAML
     .replace(/^---[\s\S]*?---/m, '')
+    // Docusaurus directives (:::note, :::tip, etc.)
     .replace(/^:::[a-z]+.*$/gm, '')
     .replace(/^:::$/gm, '')
+    // Require sueltos que sobrevivieron
+    .replace(/require\([^)]+\)/g, '')
+    // Líneas vacías excesivas
     .replace(/\n{3,}/g, '\n\n')
     .normalize('NFC')
     .trim();
@@ -237,7 +283,8 @@ function extractChunks(filePath, content) {
         slug,
         anchor: currentAnchor,
         chapterOrder,
-        sourceFile: path.basename(filePath)
+        sourceFile: path.basename(filePath),
+        figureCaption // <- Añadido a los metadatos del chunk
       });
     });
     buffer = [];
@@ -556,6 +603,53 @@ function injectEntsoeCharts() {
   console.log(`  → ${count} gráficas ENTSO-E indexadas con descripción y relevancia.`);
 }
 
+function injectAnnexFigures() {
+  const annexPath = path.join(OUTPUT_DIR, 'data', 'annex-figures-metadata.json');
+  if (!fs.existsSync(annexPath)) {
+    console.warn('  ⚠ No se encontró annex-figures-metadata.json');
+    return;
+  }
+
+  const figures = JSON.parse(fs.readFileSync(annexPath, 'utf8'));
+  let count = 0;
+
+  figures.forEach(fig => {
+    const rawText = [
+      `Anexo — Figura de ${fig.annex_name}`,
+      `ID: ${fig.id}`,
+      `Título: ${fig.title}`,
+      `Descripción: ${fig.description || fig.title}`,
+      `Anexo: ${fig.annex_name}`,
+      fig.path ? `Ruta: ${fig.path}` : '',
+    ].filter(Boolean).join('\n').normalize('NFC');
+
+    createChunk({
+      title: `Anexo — ${fig.annex_name}`,
+      heading: fig.title,
+      subheading: fig.annex_name,
+      rawText,
+      slug: fig.url ? fig.url.split('#')[0] : `/${fig.annex}`,
+      anchor: fig.url ? fig.url.split('#')[1] || fig.id : fig.id,
+      chunkType: fig.type === 'table' ? 'table' : 'data_figure',
+      keywords: fig.keywords || extractKeywords(rawText),
+      chapterOrder: 93,
+      sourceFile: fig.source_file || 'annex-figures-metadata.json',
+      artifact: {
+        id: fig.id,
+        type: fig.type || 'image',
+        source: 'annex_figures',
+        title: fig.title,
+        description: fig.description || fig.title,
+        path: fig.path || '',
+        url: fig.url || `/${fig.annex}#${fig.id}`,
+        keywords: fig.keywords || [],
+      }
+    });
+    count++;
+  });
+  console.log(`  → ${count} figuras de anexos indexadas.`);
+}
+
 function buildIndex() {
   console.log('🔍 Construyendo índice jerárquico de búsqueda para el chatbot...');
   walkDir(DOCS_DIR);
@@ -565,6 +659,7 @@ function buildIndex() {
   injectGlossary();
   injectGraphics();
   injectEntsoeCharts();
+  injectAnnexFigures();
 
   miniSearch.addAll(allChunks);
 

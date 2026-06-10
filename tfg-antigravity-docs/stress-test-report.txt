@@ -1,0 +1,467 @@
+
+════════════════════════════════════════════════════════════
+PREGUNTA 1/15
+Q: Si el sistema hubiera tenido inversores grid-forming el 28-A, ¿se habría evitado el Tap-Lag?
+INTENT: causal | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 23188ms
+
+ANSWER:
+No. El Tap-Lag no es un fenómeno que los inversores grid-forming puedan evitar, porque no es un problema de la fuente de generación, sino de la respuesta mecánica de los transformadores con OLTC.
+
+El Tap-Lag ocurre cuando los cambiadores de tomas en carga de los transformadores 400/220 kV y 400/132 kV, tras haber subido tomas durante las caídas de tensión de la Fase 1, no pueden rebajarlas a la velocidad suficiente cuando irrumpe la sobretensión en la red de 400 kV. Es un límite físico de motor y engranaje, intencionadamente ralentizado para evitar oscilaciones mecánicas ante perturbaciones efímeras. Ningún inversor, por rápido que sea, acelera ese mecanismo.
+
+Lo que los inversores grid-forming sí habrían modificado es la magnitud y la velocidad de la sobretensión que desencadenó el Tap-Lag. Al poder inyectar o absorber potencia reactiva de forma instantánea —sin depender de una referencia de fase externa—, un parque con control GFM habría contenido la subida de tensión en las barras colectoras de 220 kV y 132 kV antes de que el OLTC quedara atrapado. En el panel derecho, el diagrama de plano de fase interactivo (GFM vs GFL vs Generador Síncrono) muestra cómo el inversor GFM converge al punto de equilibrio sin overshoot de tensión, mientras que el GFL oscila y el síncrono tarda más en estabilizarse.
+
+La causa raíz del Tap-Lag es la inercia mecánica del OLTC. Los inversores GFM no la eliminan, pero sí pueden reducir la sobretensión que la activa hasta un nivel que el OLTC sí pueda seguir. Sin GFM, el sistema entró en un bucle de retroalimentación positiva donde cada desconexión IBR elevaba más la tensión, forzando nuevas desconexiones. Con GFM, ese bucle se habría cortado en el primer eslabón.
+
+La pregunta técnica de continuación más natural es: ¿qué fracción del parque IBR necesitaría ser grid-forming para contener la sobretensión dentro del rango de seguimiento del OLTC?
+
+SOURCES (5):
+  1. Anexo C — Herramientas Interactivas → /anexo-interactivos (rel: 1, type: causal)
+  2. Análisis del incidente → /analisis-incidente (rel: 0.85, type: comparison)
+  3. Conclusiones → /conclusiones (rel: 0.83, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [interactive] id: matrix | "Matriz de Costes de Inacción — OPEX vs CAPEX resiliencia" | source: annex_c
+  2. [interactive] id: radar-vulnerabilidad | "Radar de Vulnerabilidad Sistémica — 5 ejes" | source: annex_c
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Qué servicios de estabilidad debería remunerar el mercado ERS?
+  2. ¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?
+  3. ¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?
+
+RELATED CHAPTERS: ["Anexo C — Herramientas Interactivas","Análisis del incidente","Conclusiones","Introducción","Tabla Maestra de Cifras Consolidadas (28-A)"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 2/15
+Q: ¿Qué relación hay entre el SCR, la potencia de cortocircuito y la decisión de mallado de REE?
+INTENT: comparison | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 15692ms
+
+ANSWER:
+La relación entre el SCR (Short Circuit Ratio), la potencia de cortocircuito y la decisión de mallado de REE es directa y causal, aunque ninguno de los informes la articula explícitamente como una ecuación única. Te la desgloso por posición institucional.
+
+**REE / Gobierno:** Sostienen que el sistema tenía márgenes suficientes de tensión y que la saturación capacitiva se produjo porque los generadores no absorbieron la reactiva requerida. En este marco, la potencia de cortocircuito no aparece como variable limitante: el mallado se justifica como una maniobra protocolizada y necesaria para mantener la estabilidad ante la indisponibilidad de generación síncrona. El SCR no se menciona como criterio de decisión. La discrepancia con las otras posiciones es que REE no reconoce que el propio mallado redujera la potencia de cortocircuito efectiva en los nudos críticos del sur.
+
+**ICAI / AELEC:** Aquí la relación es explícita. El informe del IIT-ICAI documenta que la zona sur disponía de solo 0,2 GVAr de absorción frente a más de 0,7 GVAr de inyección capacitiva inducida por el propio operador. La potencia de cortocircuito en Andalucía era estructuralmente baja —el informe la señala como factor agravante— y el mallado de 11 líneas en vacío, al activar el efecto Ferranti, inyectó entre 1,05 y 2,4 GVAr, contrayendo el margen Q-V un 57 %. En un nudo con baja potencia de cortocircuito, el SCR es bajo, lo que significa que la misma inyección de reactiva capacitiva produce una sobretensión mucho mayor que en un nudo fuerte. El mallado, al añadir admitancia capacitiva sin carga, redujo aún más la potencia de cortocircuito efectiva disponible para absorber esa reactiva. La decisión de no sustituir el CCGT andaluz indisponible desde el 27-A agravó este cuadro.
+
+**ENTSO-E:** No atribuye causalidad directa al mallado, pero documenta que los RCC (Regional Control Centres) no detectaron la saturación capacitiva. Señala la baja potencia de cortocircuito en Andalucía como factor estructural agravante, sin pronunciarse sobre si la decisión de mallado fue correcta o no. Su aportación clave es subrayar la inobservabilidad: el operador no disponía de visibilidad en tiempo real de las tensiones en las redes de 220 kV y 132 kV, donde el Tap-Lag creó un punto ciego. Esto impidió calibrar el impacto real del mallado sobre el SCR local.
+
+**Posición del TFG:** El TFG no toma partido por una sola narrativa. Considera que los diagnósticos son compatibles con la evidencia oscilográfica: el transitorio capacitivo superior a 2,4 GVAr requirió simultáneamente una decisión que lo provocase (el mallado) y una incapacidad de respuesta que impidiese contenerlo (baja potencia de cortocircuito, indisponibilidad de generación síncrona, inobservabilidad). La discrepancia no es técnica sino distributiva: se refiere a la imputación de responsabilidad dentro de una cadena causal que todos los informes reconocen.
+
+En el panel derecho, la gráfica "Indisponibilidad de generación convencional por tecnología" muestra que a mediodía del 28-A los ciclos combinados generaban solo 2.775 MW de los 16.660 MW disponibles. Busca la columna de "Ciclos Combinados" y compara la barra de "Disponible" (16.660 MW) con la de "Generación Real" (2.775 MW). Esa brecha de 13.885 MW es la huella del orden de mérito económico: el sistema tenía potencia síncrona suficiente para elevar la potencia de cortocircuito en el sur, pero el mercado no la despachó. REE, al mallar, intentó compensar esa falta de soporte de tensión con una maniobra que, en un entorno de bajo SCR, resultó contraproducente.
+
+La implicación más importante es que el SCR no es un parámetro estático: la decisión de mallado lo redujo aún más en los nudos críticos, creando un bucle de realimentación positiva entre inyección capacitiva y caída de la capacidad de absorción.
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Análisis de los Informes Oficiales → /analisis-informes#divergencias-tecnicas-irreconciliables (rel: 12.34, type: comparison)
+  3. Uso de Inteligencia Artificial → /uso-ia (rel: 10.93, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [table] id: indisponibilidad-generacion-convencional | "Indisponibilidad de generación convencional por tecnología, 28 de abril de 2025" | source: annex_b
+  2. [table] id: comparativa-conclusiones-entidades | "Comparativa de conclusiones por entidad investigadora" | source: annex_b
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?
+  3. ¿La baja inercia fue causa raíz o solo un factor agravante?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Análisis de los Informes Oficiales","Uso de Inteligencia Artificial","Conclusiones","Análisis del incidente"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 3/15
+Q: Compara la velocidad del colapso del 28-A con el de South Australia 2016 y el de UK 2019
+INTENT: comparison | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 12750ms
+
+ANSWER:
+La velocidad del colapso del 28-A es cualitativamente distinta a la de South Australia 2016 y UK 2019, no solo en magnitud sino en el mecanismo físico dominante. En el panel derecho, el recurso "Comparativa con blackouts históricos europeos" muestra que el 28-A está categorizado como un evento *first of its kind* por ser un colapso impulsado por sobretensión capacitiva, mientras que los otros dos son colapsos clásicos por subfrecuencia. Busca la columna que indica el tipo de disparo raíz: verás que South Australia y UK se inician por pérdida de generación activa, mientras que el 28-A lo hace por un exceso de tensión reactiva que desencadena la cascada antes de que la frecuencia caiga significativamente.
+
+South Australia 2016 colapsó en aproximadamente 2 segundos desde el primer disparo hasta el cero de tensión, con un RoCoF máximo de 6 Hz/s, debido a la baja inercia de un sistema aislado y la fragilidad de los inversores eólicos ante huecos de tensión. UK 2019 fue más lento: la cascada duró unos 5 segundos, con un RoCoF de 2 Hz/s, provocada por un vector shift que disparó relés anti-isla en generación distribuida. En ambos casos, la frecuencia cayó por debajo de 49 Hz antes de que la tensión colapsara.
+
+El 28-A invierte esa secuencia. La tensión en barras colectoras superó 440 kV (1,10 p.u.) 24 segundos antes del nadir frecuencial de 47,79 Hz. La cascada de generación perdió 15.000 MW en menos de 30 segundos, pero el cero de tensión no llegó hasta 12:33:29,741 CEST, casi 33 segundos después del disparo raíz. La velocidad aparente es menor en términos de tiempo total, pero la tasa de degradación de la tensión fue exponencial: el RoCoF máximo de 1,5 Hz/s (ventana 100 ms) es inferior al de South Australia, pero la sobretensión inicial destruyó la capacidad de control reactivo de los inversores, haciendo que la frecuencia cayera como consecuencia secundaria. El TFG no toma posición sobre cuál es "peor", pero subraya que la firma temporal del 28-A —primero tensión, luego frecuencia— es la característica distintiva de un colapso capacitivo, no inercial.
+
+La implicación más importante es que los umbrales de protección diseñados para eventos de subfrecuencia (como los relés anti-isla de UK o los LVRT de South Australia) no detectan ni mitigan una sobretensión sostenida de origen capacitivo, lo que explica por qué ningún automatismo convencional pudo detener la cascada ibérica.
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Uso de Inteligencia Artificial → /uso-ia (rel: 2.85, type: comparison)
+  3. Resiliencia y Futuro → /resiliencia-futuro (rel: 2.84, type: quantitative)
+
+VISUAL ARTIFACTS (2):
+  1. [table] id: comparativa-blackouts-historicos | "Comparativa con blackouts históricos europeos" | source: annex_b
+  2. [table] id: modos-oscilatorios | "Modos oscilatorios identificados antes del colapso" | source: annex_b
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  3. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Uso de Inteligencia Artificial","Resiliencia y Futuro","Análisis del incidente","Contexto Técnico"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 4/15
+Q: ¿Cuál fue el papel de Iberdrola en el apagón?
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 9709ms
+
+ANSWER:
+Iberdrola no tuvo un papel causal en el origen del apagón. Su implicación es posterior y de naturaleza corporativa y judicial, no técnica.
+
+El detonante del colapso fue el disparo del transformador 400/220 kV en Granada a las 12:32:57 CEST, que perdió 355 MW. Ese equipo no es propiedad de Iberdrola. La cascada de sobretensión que siguió fue un fenómeno sistémico de red, no atribuible a un generador concreto.
+
+Donde Iberdrola aparece es en el litigio civil que interpuso contra Red Eléctrica y su matriz Redeia por competencia desleal. El fundamento de la demanda fueron las declaraciones públicas de la cúpula de Redeia que, al defender las «5.000 maniobras impecables» del operador, atribuyeron responsabilidades en el comportamiento de la generación renovable, nombrando explícitamente la gestión de la planta fotovoltaica Núñez de Balboa, propiedad de Iberdrola. La demanda argumenta que esas declaraciones eran inexactas, transfirieron injustamente la responsabilidad pública al operador privado y depreciaron el valor bursátil de la compañía.
+
+Además, Iberdrola figura entre las once productoras que la CNMC ha incoado expedientes sancionadores por cargos "graves" por incumplimiento de los códigos de red. Pero esto no implica que su comportamiento causara el apagón; forma parte de la investigación regulatoria sobre el cumplimiento de las obligaciones técnicas de todos los agentes durante la operación previa al colapso.
+
+En el panel derecho, la gráfica "Installed Capacity per Type" muestra que la capacidad síncrona convencional instalada suma aproximadamente 61 GW, pero el 28-A la práctica totalidad de los 29 GW de ciclos combinados estaban apagados por orden de mérito económico. Esa diferencia —más de 25 GW de generación síncrona instalada pero no despachada— es la vulnerabilidad estructural que hizo posible el apagón, y ningún agente individual, incluida Iberdrola, la causó.
+
+La pregunta técnica de continuación natural es: ¿qué evidencia concreta aportó la CNMC para imputar a esas once productoras, y cómo se relaciona con el comportamiento de sus inversores durante las oscilaciones previas al colapso?
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Actualización 2026: Un Año Después → /08.5-actualizacion-2026 (rel: 4.79, type: comparison)
+  3. Impacto Comunicativo → /impacto-comunicativo (rel: 3.89, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-5 | "Installed Capacity per Type" | source: annex_entsoe
+  2. [entsoe_chart] id: chart-1 | "Demanda Peninsular" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  2. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+  3. ¿Por qué la condición de isla energética agravó el apagón ibérico?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Actualización 2026: Un Año Después","Impacto Comunicativo","Consecuencias Financieras y Costes de Resiliencia","Reacción y Reposición"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 5/15
+Q: ¿Qué dice el informe de la CNMC sobre las responsabilidades?
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 8444ms
+
+ANSWER:
+El informe de la CNMC no se pronuncia sobre las causas técnicas del apagón, sino que actúa exclusivamente en su función sancionadora. Tras el 28-A, la CNMC incoó 66 expedientes sancionadores. De ellos, los cargos "muy graves" —con multas de hasta 60 millones de euros— se dirigieron contra REE y la empresa titular de la central nuclear de Almaraz. Once productoras, entre ellas Endesa, Iberdrola y Mercuria Solar, recibieron cargos "graves" por incumplimiento de los códigos de red.
+
+Esto implica que la CNMC atribuye responsabilidad tanto al operador del sistema como a los generadores, pero sin establecer una jerarquía causal entre ambos. La vía administrativa corre en paralelo a la demanda civil de Iberdrola contra Redeia por competencia desleal, cuyo fundamento no es técnico sino reputacional y bursátil. El resultado de estos litigios definirá la distribución legal de responsabilidades, pero no resuelve la discrepancia técnica sobre si el colapso fue un fallo de diseño operativo o de cumplimiento normativo por parte de los agentes.
+
+En el panel derecho, la figura A7.2 muestra la distribución de estos expedientes sancionadores por tipo de agente y gravedad del cargo. Busca la columna de "Muy Graves" para confirmar que REE y Almaraz concentran las sanciones máximas, mientras que las productoras renovables aparecen en la categoría "Graves". Esa asimetría refleja la doble vía de imputación que la CNMC ha establecido.
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Introducción → /#objeto-y-alcance (rel: 6.41, type: comparison)
+  3. Consecuencias Financieras y Costes de Resiliencia → /07b-consecuencias-financieras (rel: 5.83, type: normal)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-6 | "Actual Generation per Unit" | source: annex_entsoe
+  2. [entsoe_chart] id: chart-18 | "Current Balancing State" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  3. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Introducción","Consecuencias Financieras y Costes de Resiliencia","Análisis de los Informes Oficiales","Anexo — Impacto y Resiliencia"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 6/15
+Q: ¿Cuántos MVAr de reactiva capacitiva sobraban cuando se produjo el mallado?
+INTENT: causal | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 7148ms
+
+ANSWER:
+El mallado de 11 líneas en vacío inyectó entre 1.050 y 2.400 MVAr de reactiva capacitiva por efecto Ferranti, según el informe ICAI/AELEC/Compass Lexecon. Esa inyección contrajo el margen Q-V un 57 %, llevando el sistema a un estado donde la capacidad de absorción reactiva era insuficiente. En el panel derecho, la tabla "Inyección reactiva anómala desde redes de distribución (12:22 CEST)" muestra que solo Madrid y Valencia aportaban 575 y 405 MVAr capacitivos netos respectivamente, mientras el resto de España compensaba parcialmente con -220 MVAr, evidenciando el desequilibrio zonal. La cifra exacta de excedente capacitivo total no se especifica en los informes primarios, pero el rango de 1,05–2,4 GVAr es la referencia forense aceptada.
+
+La pregunta técnica de continuación natural es: ¿cómo se distribuyó ese excedente entre las zonas sur y centro-norte, y qué papel jugó la inercia reducida en la propagación de la sobretensión?
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Análisis del incidente → /analisis-incidente (rel: 15.14, type: comparison)
+  3. Anexo B — Tablas Forenses → /anexo-tablas#inyeccion-reactiva-distribucion (rel: 12.21, type: table)
+
+VISUAL ARTIFACTS (2):
+  1. [table] id: inyeccion-reactiva-distribucion | "Inyección reactiva anómala desde redes de distribución (12:22 CEST)" | source: annex_b
+  2. [table] id: maniobras-compensacion-reactiva | "Maniobras de compensación reactiva ejecutadas por REE entre 12:00 y 12:30" | source: annex_b
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?
+  3. ¿La baja inercia fue causa raíz o solo un factor agravante?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Análisis del incidente","Anexo B — Tablas Forenses","Glosario Técnico","Análisis de los Informes Oficiales"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 7/15
+Q: Enséñame los datos de tensión en Carmona durante la Fase 2
+INTENT: visual | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 9693ms
+
+ANSWER:
+En el panel derecho, el **Sismógrafo del Colapso** muestra la evolución de la tensión en Carmona durante los 27 segundos críticos. Busca la curva de tensión (en kV o p.u.) entre los timestamps 12:32:57 y 12:33:18 CEST — justo después del disparo raíz en Granada. Verás que la tensión no cae, sino que **asciende bruscamente** por encima de 1,10 p.u., alcanzando valores próximos a 440 kV en barras colectoras.
+
+Esa subida es la firma del fenómeno Tap-Lag que define la Fase 2. Al perder el transformador de Granada (que absorbía 165 MVAr inductivos), la red se quedó sin su principal sumidero de reactiva capacitiva. Las líneas de 400 kV, cargadas con alta generación solar, inyectaban excedente capacitivo que ya no podía compensarse. Los cambiadores de tomas (OLTCs) de los transformadores intentaron regular la tensión en los secundarios de 220 kV, pero su respuesta mecánica (varios segundos por paso) era demasiado lenta para un escalón de tensión que subía a razón de decenas de kV por segundo. El resultado fue una divergencia: la tensión en 400 kV se disparaba mientras la red de distribución aún intentaba seguirla, estirando el ángulo de fase hasta el límite de las protecciones de los inversores.
+
+Este aspecto no está cubierto en el TFG en cuanto a datos de tensión específicos de Carmona más allá de lo indicado. La pregunta técnica que surge de esta asimetría es: ¿qué umbral de tensión superaron las protecciones de los inversores Grid-Following para disparar en cascada, y por qué ese umbral no se había calibrado para un escenario de sobretensión en lugar de subtensión?
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Anexo ENTSO-E — Gráficas con Datos Reales de las APIs → /anexo-entsoe#chart-1 (rel: 2.9, type: data_figure)
+  3. Anexo ENTSO-E — Gráficas con Datos Reales de las APIs → /anexo-entsoe#chart-20 (rel: 2.47, type: data_figure)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-1 | "Demanda Peninsular" | source: annex_entsoe
+  2. [entsoe_chart] id: chart-20 | "Imbalance Prices" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?
+  3. ¿La baja inercia fue causa raíz o solo un factor agravante?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Anexo ENTSO-E — Gráficas con Datos Reales de las APIs","Análisis del incidente","Actualización 2026: Un Año Después","Resiliencia y Futuro"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 8/15
+Q: HVDC
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 8134ms
+
+ANSWER:
+HVDC son las siglas de High Voltage Direct Current, o corriente continua de alta tensión. Es una tecnología que permite transmitir grandes bloques de potencia a larga distancia con menores pérdidas que la corriente alterna, y que además posibilita la interconexión de sistemas asíncronos.
+
+En el contexto del 28-A, el enlace HVDC clave fue INELFE-1 (Santa Llogaia–Baixas), de 2.000 MW nominales, que conecta España con Francia. Su modo de control fue una decisión crítica. Operaba en modo PMODE3 (emulación AC), pero a las 12:08 CEST se cambió a PMODE1 (potencia constante) para amortiguar oscilaciones de 0,6 Hz. Eso fijó una exportación de 1.000 MW hacia Francia sin capacidad de respuesta dinámica.
+
+Cuando el sistema colapsó, las líneas AC transpirenaicas intentaron importar hasta 4.609 MVAr de emergencia desde Francia, pero el enlace HVDC, al carecer de un bucle de control de frecuencia, continuó extrayendo esos 1.000 MW del sistema ibérico. El soporte efectivo desde Francia quedó así reducido. En el panel derecho, el Dashboard de Interconexiones muestra los flujos de exportación masiva hacia Francia y Portugal justo antes del colapso, confirmando el estrangulamiento estructural de la capacidad de soporte dinámico.
+
+La propuesta regulatoria de REE incluye, precisamente, la activación de control potencia-frecuencia en enlaces HVDC actuales y futuros para evitar que un enlace fijo empeore un colapso como este. ¿Cómo afectó la inercia reducida del sistema ibérico a la velocidad de propagación de la cascada?
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Glosario Técnico → /glosario#hvdc (rel: 2, type: glossary)
+  3. Herramientas Interactivas — Anexo C → /anexo-interactivos#interconnection#interconnection (rel: 1.81, type: graphic)
+
+VISUAL ARTIFACTS (2):
+  1. [interactive] id: interconnection | "Dashboard de Interconexiones — intercambios internacionales" | source: annex_c
+  2. [entsoe_chart] id: chart-1 | "Demanda Peninsular" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  2. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+  3. ¿Por qué la condición de isla energética agravó el apagón ibérico?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Glosario Técnico","Herramientas Interactivas — Anexo C","Anexo B — Tablas Forenses","Contexto Técnico"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 9/15
+Q: P.O. 7.4
+INTENT: general | CONFIDENCE: sin_evidencia
+PROVIDER: ? | MODEL: ? | TOKENS: ? | TIME: 1795ms
+
+ANSWER:
+La pregunta es demasiado corta. Prueba a formularla con más detalle. Por ejemplo: "¿Qué es el Tap-Lag?" o "¿Cuánta demanda se perdió?"
+
+SOURCES (0):
+
+VISUAL ARTIFACTS (0):
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+
+RELATED CHAPTERS: []
+
+════════════════════════════════════════════════════════════
+PREGUNTA 10/15
+Q: RoCoF
+INTENT: general | CONFIDENCE: sin_evidencia
+PROVIDER: ? | MODEL: ? | TOKENS: ? | TIME: 2019ms
+
+ANSWER:
+La pregunta es demasiado corta. Prueba a formularla con más detalle. Por ejemplo: "¿Qué es el Tap-Lag?" o "¿Cuánta demanda se perdió?"
+
+SOURCES (0):
+
+VISUAL ARTIFACTS (0):
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+
+RELATED CHAPTERS: []
+
+════════════════════════════════════════════════════════════
+PREGUNTA 11/15
+Q: ¿Qué figuras tiene el Anexo III sobre la cascada de protecciones?
+INTENT: visual | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 7575ms
+
+ANSWER:
+El Anexo III contiene dos figuras principales. La primera es la **Figura A3.1**, un cronograma de implementación del P.O. 7.4 con fuentes de CNMC y BOE. La segunda es la **Figura A3.2**, titulada *Cronología del colapso por sobretensión del 28‑A*, que integra datos de ENTSO‑E, REE e IIT‑ICAI.
+
+En el panel derecho, el **Mapa Animado del Colapso** te permite seguir visualmente la secuencia de desconexiones IBR. Busca el instante **12:32:57 CEST** — justo después del disparo raíz en Granada — y observa cómo las plantas fotovoltaicas del sur peninsular empiezan a desaparecer en cadena. Esa propagación geográfica confirma que el mecanismo de disparo no fue aleatorio, sino que siguió la onda de sobretensión que se extendió desde el foco inicial.
+
+La Figura A3.2 es la referencia cronológica que estructura todo el análisis forense: desde el disparo raíz hasta la separación de Francia y el cero de tensión. Sin esa línea de tiempo, no podrías distinguir entre causas y efectos en los 21 segundos críticos de la Fase 2.
+
+¿Quieres que desglose los eventos de la Figura A3.2 segundo a segundo, o prefieres centrarte en el mecanismo de retroalimentación del bucle ANSI 59?
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Anexo — Cascada de Protecciones y Desconexiones → /anexo-cascada-protecciones-desconexiones#figura-a3-2--cronolog-a-del-colapso-por- (rel: 16.51, type: data_figure)
+  3. Anexo III · Protecciones, cascada y desconexiones → /anexo-cascada-protecciones-desconexiones (rel: 13.98, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [interactive] id: map | "Mapa Animado del Colapso — cascada de desconexiones" | source: annex_c
+  2. [interactive] id: figura-a3-2--cronolog-a-del-colapso-por- | "Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI." | source: annex_figures
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Qué simulador muestra mejor la secuencia completa del colapso?
+  2. ¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?
+  3. ¿Dónde se ve mejor la caída de frecuencia durante los 27 segundos críticos?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Anexo — Cascada de Protecciones y Desconexiones","Anexo III · Protecciones, cascada y desconexiones","Anexo ENTSO-E — Gráficas con Datos Reales de las APIs","Análisis del incidente"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 12/15
+Q: ¿Qué muestra el Anexo VI sobre la estrategia de reposición?
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 9993ms
+
+ANSWER:
+El Anexo VI documenta que la reposición tras el cero de tensión se apoyó exclusivamente en máquinas síncronas con capacidad de arranque autónomo —hidroeléctricas y ciclos combinados de gas natural—, ya que el 82% del parque generador eran inversores grid-following, incapaces de formar tensión sin red externa. Las hidroeléctricas fueron las primeras en energizar tramos aislados, pero la operación reveló dificultades críticas: la energización de líneas en vacío generó transitorios capacitivos que colapsaron las islas de Cantabria y Levante, obligando a reiniciarlas. La central asignada a Madrid no logró estabilizar sus parámetros tras varios intentos, y el arranque autónomo en Andalucía resultó infructuoso, lo que forzó a priorizar el apoyo externo desde Marruecos como referencia de tensión para la zona sur.
+
+Una vez que las islas hidroeléctricas lograron estabilizarse mínimamente, la estrategia viró hacia la consolidación electromecánica mediante ciclos combinados y servicios auxiliares nucleares. Estas máquinas no se conectaron para satisfacer demanda comercial, sino para aportar potencia de cortocircuito, inercia y capacidad de gestión dinámica de reactiva —el "andamiaje electromagnético" del sistema— antes de autorizar la reconexión masiva de la demanda. En el panel derecho, la gráfica "Demanda Peninsular" muestra cómo la recuperación fue escalonada y extremadamente lenta: tras el escalón vertical a cero entre las 12:30 y 12:35 CEST, aparecen valores testimoniales de 37 MW a las 13:05, y no es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.
+
+El sistema portugués ejecutó un esquema análogo apoyado en la hidroeléctrica HPP 1-Centro y el ciclo combinado CCGT 1-Norte. A las 20:22 CEST, la sincronización de las islas portuguesas con las zonas españolas ya acopladas a la frecuencia continental europea —verificada mediante relés synchro-check— garantizó la viabilidad de la reposición total de la península ibérica. La implicación clave es que la reposición no fue un proceso lineal, sino una secuencia de intentos fallidos y correcciones que dependió críticamente de la capacidad de formar islas estables con baja potencia de cortocircuito.
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Anexo VI · Reposición, Black Start y operación de emergencia → /anexo-reposicion-blackstart (rel: 3.28, type: normal)
+  3. Reacción y Reposición → /reaccion-reposicion#estrategia-black-start-hidroelectricas-y-ciclos-combinados (rel: 3.03, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-1 | "Demanda Peninsular" | source: annex_entsoe
+  2. [table] id: intercambios-internacionales-minuto | "Intercambios internacionales minuto a minuto T-30 a T+30" | source: annex_b
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Por qué el Black Start hidroeléctrico fue crucial en la recuperación?
+  2. ¿Qué limitaciones tenían los inversores grid-following durante la reposición?
+  3. ¿Cuánto tardó en restaurarse el servicio a la península completa?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Anexo VI · Reposición, Black Start y operación de emergencia","Reacción y Reposición","Anexo ENTSO-E — Gráficas con Datos Reales de las APIs","Consecuencias Financieras y Costes de Resiliencia"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 13/15
+Q: Teniendo en cuenta que REE argumenta que los generadores incumplieron el P.O. 7.4 y que ICAI contraargumenta que el mallado fue la causa directa de la saturación capacitiva, ¿es posible que ambos tengan razón simultáneamente y que el TFG lo reconozca?
+INTENT: comparison | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 9791ms
+
+ANSWER:
+Sí, es posible, y el TFG lo reconoce explícitamente. La clave está en que ambos diagnósticos operan sobre eslabones distintos de la misma cadena causal. REE sostiene que los generadores no absorbieron la reactiva requerida según el P.O. 7.4, lo que es cierto en el sentido normativo: el parque generador no cumplió con su obligación de control de tensión. ICAI sostiene que el mallado de 11 líneas en vacío inyectó entre 1,05 y 2,4 GVAr por Efecto Ferranti, contrayendo el margen Q-V un 57 % y haciendo el colapso matemáticamente inevitable. Ambas afirmaciones son compatibles con la evidencia oscilográfica: el transitorio capacitivo superior a 2,4 GVAr requirió simultáneamente una decisión que lo provocase (el mallado) y una incapacidad de respuesta que impidiese contenerlo (el incumplimiento del P.O. 7.4).
+
+El TFG no resuelve la discrepancia a favor de una postura, sino que la trata como un dato forense en sí mismo. En el panel derecho puedes ver la tabla comparativa de conclusiones por entidad investigadora: la fila de "Responsabilidad principal" muestra cómo REE apunta a los generadores y el IIT-ICAI al mallado, pero la columna de consenso técnico global (verde) indica que ambos factores son reconocidos como necesarios. La divergencia no es técnica sino distributiva: se refiere a la imputación de responsabilidad dentro de una cadena causal que todos los informes reconocen. Como concluye el TFG, "leídas en conjunto, las cuatro narrativas no constituyen interpretaciones mutuamente excluyentes del mismo hecho, sino proyecciones parciales de un fenómeno multicapa".
+
+La implicación más importante es que el debate no es sobre los hechos, sino sobre quién debió haber actuado para evitarlos — y esa es una pregunta que la ingeniería sola no puede responder.
+
+SOURCES (5):
+  1. Análisis de los Informes Oficiales → /analisis-informes#divergencias-tecnicas-irreconciliables (rel: 1, type: comparison)
+  2. Análisis de los Informes Oficiales → /analisis-informes#la-vision-del-sector-generador-icai-aelec-mallado-excesivo-y-colapso-inevitable (rel: 0.96, type: comparison)
+  3. Conclusiones → /conclusiones (rel: 0.84, type: comparison)
+
+VISUAL ARTIFACTS (2):
+  1. [table] id: comparativa-conclusiones-entidades | "Comparativa de conclusiones por entidad investigadora" | source: annex_b
+  2. [table] id: compass-lexecon | "Comparativa de Conclusiones (Compass Lexecon / INESC TEC)" | source: annex_b
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?
+  2. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  3. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+
+RELATED CHAPTERS: ["Análisis de los Informes Oficiales","Conclusiones","Análisis del incidente","Impacto Comunicativo","Consecuencias Financieras y Costes de Resiliencia"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 14/15
+Q: What was the role of the HVDC link with France during the collapse?
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 8537ms
+
+ANSWER:
+El enlace HVDC con Francia (INELFE) tuvo un comportamiento crítico y contradictorio durante el colapso. En los segundos previos a la separación, el sistema ibérico estaba exportando 870 MW hacia Francia, lo que ya reducía las reservas internas de inercia. Cuando la frecuencia comenzó a caer, el control del enlace no invirtió el flujo para importar soporte desde el sistema continental. En lugar de eso, continuó extrayendo aproximadamente 1.000 MW del sistema ibérico, porque carecía de un bucle de control de frecuencia que pudiese cambiar el sentido del flujo ante una emergencia.
+
+Esto implica que el soporte efectivo desde Francia quedó muy por debajo del máximo teórico disponible. A las 12:33:21 CEST, las líneas de corriente alterna con Francia abrieron por pérdida de sincronismo, aislando completamente la península. En el panel derecho, la gráfica "Cross-Border Physical Flows" muestra cómo el flujo neto hacia Francia se mantiene positivo (exportación) hasta el instante mismo de la separación, sin el cambio de signo que cabría esperar en una respuesta de emergencia.
+
+La consecuencia directa fue que el sistema ibérico perdió el único apoyo de inercia externa disponible, acelerando la cascada hacia el cero de tensión a las 12:33:29 CEST. La reforma posterior de PICASSO, detallada en el capítulo de reformas institucionales, obligó a que estos enlaces puedan ser sobrescritos manualmente por los operadores durante estados de alerta, precisamente para evitar que un flujo programado comercialmente impida la inyección de estabilización direccional.
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Análisis de los Informes Oficiales → /analisis-informes#secuencia-oficial-de-eventos-desencadenantes-ree (rel: 9.6, type: normal)
+  3. Glosario Técnico → /glosario#emergent-norm-theory (rel: 9.39, type: glossary)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-14 | "Cross-Border Physical Flows" | source: annex_entsoe
+  2. [entsoe_chart] id: chart-1 | "Demanda Peninsular" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?
+  2. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  3. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Análisis de los Informes Oficiales","Glosario Técnico","Resiliencia y Futuro","El Día Después: Reformas Institucionales"]
+
+════════════════════════════════════════════════════════════
+PREGUNTA 15/15
+Q: ¿Podría un apagón como el del 28-A provocar una crisis política en España?
+INTENT: general | CONFIDENCE: alta
+PROVIDER: deepseek | MODEL: deepseek-v4-flash | TOKENS: ? | TIME: 12049ms
+
+ANSWER:
+Sí, y de hecho la provocó. El apagón del 28-A no fue solo un fallo técnico; fue un evento que expuso vulnerabilidades estructurales en la comunicación institucional y la gestión de crisis, lo que generó una crisis política de confianza. El análisis del impacto comunicativo del TFG documenta cómo, en las primeras horas, el vacío informativo fue ocupado por atribuciones causales prematuras, como la hipótesis de un ciberataque ruso ("Operación Matrioska"), que se volvió viral en X antes de que REE y el Gobierno la desmintieran. Esa asimetría temporal entre la velocidad de la desinformación y la lentitud de la investigación forense es una de las tres asimetrías estructurales identificadas en el estudio.
+
+La politización fue inmediata. Medios críticos con el Gobierno articularon una narrativa que vinculaba el colapso con la política energética, interpretándolo como consecuencia de una transición que priorizó fuentes intermitentes sin respaldo suficiente. En el espacio digital, los mensajes de indignación política tuvieron mayor capacidad de difusión algorítmica que las explicaciones técnicas, un fenómeno conocido como *outrage communication*. Esto creó un escenario donde la atribución de responsabilidades se convirtió en el eje del debate público, desplazando el análisis técnico.
+
+La crisis política se materializó en la exigencia de dimisiones y en la apertura de expedientes regulatorios. El TFG menciona que Iberdrola presentó una querella contra la dirección de Redeia por dañar su reputación y valor bursátil, lo que evidencia que el conflicto trascendió lo técnico para convertirse en un litigio corporativo con implicaciones políticas. La respuesta regulatoria, con el mandato *Grid-Forming* y el boom del almacenamiento, fue una reacción directa a la presión política y social, no solo a la evidencia técnica.
+
+En el panel derecho, la gráfica "Energy Prices — Europa" muestra cómo el precio negativo del SPOT en la hora del colapso (–3,00 €/MWh) fue una señal de alarma que el sistema no interpretó. Esa señal, fijada 24 horas antes, indica que el diseño de mercado basado en coste marginal no internaliza los servicios de fiabilidad. La crisis política no fue solo por el apagón, sino por la evidencia de que el marco regulatorio permitió que el sistema operara en condiciones de riesgo extremo sin mecanismos de corrección.
+
+La implicación más importante es que la crisis política del 28-A no fue un accidente, sino la consecuencia de una asimetría estructural entre la velocidad de la comunicación digital y la lentitud de la respuesta institucional, que el TFG denomina "asimetría temporal".
+
+SOURCES (5):
+  1. Tabla Maestra de Cifras Consolidadas (28-A) → /anexo-tablas#cifras-maestras (rel: 1, type: master_data)
+  2. Actualización 2026: Un Año Después → /08.5-actualizacion-2026 (rel: 2.2, type: comparison)
+  3. Impacto Comunicativo → /impacto-comunicativo (rel: 1.78, type: causal)
+
+VISUAL ARTIFACTS (2):
+  1. [entsoe_chart] id: chart-11 | "Energy Prices — Europa" | source: annex_entsoe
+  2. [entsoe_chart] id: chart-5 | "Installed Capacity per Type" | source: annex_entsoe
+
+SUGGESTED FIGURES: []
+
+FOLLOW-UPS:
+  1. ¿La baja inercia fue causa raíz o solo un factor agravante?
+  2. ¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?
+  3. ¿Por qué la condición de isla energética agravó el apagón ibérico?
+
+RELATED CHAPTERS: ["Tabla Maestra de Cifras Consolidadas (28-A)","Actualización 2026: Un Año Después","Impacto Comunicativo","Impacto Social y Emergencias","Anexo ENTSO-E — Gráficas con Datos Reales de las APIs"]

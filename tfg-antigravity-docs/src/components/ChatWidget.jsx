@@ -106,12 +106,12 @@ export default function ChatWidget() {
     intent: data.intent || 'general',
   });
 
-  const handleSend = async () => {
-    const q = question.trim();
+  const handleSend = async (overrideQuestion) => {
+    const q = (typeof overrideQuestion === 'string' ? overrideQuestion : question).trim();
     if (!q || loading) return;
 
     setMessages(prev => [...prev, { role: 'user', text: q }]);
-    setQuestion('');
+    if (typeof overrideQuestion !== 'string') setQuestion('');
     setLoading(true);
     setLoadingStage('searching');
 
@@ -167,24 +167,44 @@ export default function ChatWidget() {
   };
 
   const renderText = (text) => {
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    if (!text) return text;
+    // Separar párrafos por doble salto de línea
+    const paragraphs = text.split(/\n\n+/);
+    if (paragraphs.length <= 1) return parseInline(text);
+    return paragraphs.map((p, pIdx) => (
+      <span key={pIdx}>
+        {pIdx > 0 && <><br/><br/></>}
+        {parseInline(p)}
+      </span>
+    ));
+  };
+
+  const parseInline = (text) => {
+    // Parsear links Markdown: [texto](url) y negritas: **texto**
+    const tokenRegex = /(?:\[([^\]]+)\]\(([^)]+)\))|(?:\*\*([^*]+)\*\*)/g;
     const parts = [];
     let lastIndex = 0;
     let match;
-    while ((match = linkRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) parts.push(text.substring(lastIndex, match.index));
-      parts.push(
-        <a
-          href={match[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#60a5fa', textDecoration: 'underline' }}
-          key={match.index}
-        >
-          {match[1]}
-        </a>
-      );
-      lastIndex = linkRegex.lastIndex;
+    while ((match = tokenRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      if (match[1] && match[2]) {
+        parts.push(
+          <a
+            href={match[2]}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#60a5fa', textDecoration: 'underline' }}
+            key={`link-${match.index}`}
+          >
+            {match[1]}
+          </a>
+        );
+      } else if (match[3]) {
+        parts.push(<strong key={`bold-${match.index}`}>{match[3]}</strong>);
+      }
+      lastIndex = tokenRegex.lastIndex;
     }
     if (lastIndex < text.length) parts.push(text.substring(lastIndex));
     return parts.length > 0 ? parts : text;
@@ -393,6 +413,39 @@ export default function ChatWidget() {
                 >
                   {t.simplify}
                 </button>
+              )}
+              {m.role === 'assistant' && i === messages.length - 1 && m.followUps && m.followUps.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                  {m.followUps.map((fu, fIdx) => (
+                    <button
+                      key={fIdx}
+                      onClick={() => handleSend(fu)}
+                      style={{
+                        alignSelf: 'flex-start',
+                        background: 'rgba(31, 111, 120, 0.05)',
+                        border: '1px solid var(--chat-widget-accent-border)',
+                        borderRadius: 12,
+                        color: 'var(--chat-widget-accent)',
+                        fontSize: 12,
+                        padding: '6px 12px',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        lineHeight: 1.3,
+                        transition: 'all 0.15s ease',
+                      }}
+                      onMouseEnter={e => {
+                        e.target.style.background = 'var(--chat-widget-accent)';
+                        e.target.style.color = 'var(--chat-widget-accent-text)';
+                      }}
+                      onMouseLeave={e => {
+                        e.target.style.background = 'rgba(31, 111, 120, 0.05)';
+                        e.target.style.color = 'var(--chat-widget-accent)';
+                      }}
+                    >
+                      {fu}
+                    </button>
+                  ))}
+                </div>
               )}
               </div>
             ))}

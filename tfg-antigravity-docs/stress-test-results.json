@@ -1,0 +1,1809 @@
+[
+  {
+    "question": "Si el sistema hubiera tenido inversores grid-forming el 28-A, ¿se habría evitado el Tap-Lag?",
+    "elapsed_ms": 23188,
+    "status": 200,
+    "answer": "No. El Tap-Lag no es un fenómeno que los inversores grid-forming puedan evitar, porque no es un problema de la fuente de generación, sino de la respuesta mecánica de los transformadores con OLTC.\n\nEl Tap-Lag ocurre cuando los cambiadores de tomas en carga de los transformadores 400/220 kV y 400/132 kV, tras haber subido tomas durante las caídas de tensión de la Fase 1, no pueden rebajarlas a la velocidad suficiente cuando irrumpe la sobretensión en la red de 400 kV. Es un límite físico de motor y engranaje, intencionadamente ralentizado para evitar oscilaciones mecánicas ante perturbaciones efímeras. Ningún inversor, por rápido que sea, acelera ese mecanismo.\n\nLo que los inversores grid-forming sí habrían modificado es la magnitud y la velocidad de la sobretensión que desencadenó el Tap-Lag. Al poder inyectar o absorber potencia reactiva de forma instantánea —sin depender de una referencia de fase externa—, un parque con control GFM habría contenido la subida de tensión en las barras colectoras de 220 kV y 132 kV antes de que el OLTC quedara atrapado. En el panel derecho, el diagrama de plano de fase interactivo (GFM vs GFL vs Generador Síncrono) muestra cómo el inversor GFM converge al punto de equilibrio sin overshoot de tensión, mientras que el GFL oscila y el síncrono tarda más en estabilizarse.\n\nLa causa raíz del Tap-Lag es la inercia mecánica del OLTC. Los inversores GFM no la eliminan, pero sí pueden reducir la sobretensión que la activa hasta un nivel que el OLTC sí pueda seguir. Sin GFM, el sistema entró en un bucle de retroalimentación positiva donde cada desconexión IBR elevaba más la tensión, forzando nuevas desconexiones. Con GFM, ese bucle se habría cortado en el primer eslabón.\n\nLa pregunta técnica de continuación más natural es: ¿qué fracción del parque IBR necesitaría ser grid-forming para contener la sobretensión dentro del rango de seguimiento del OLTC?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Anexo C — Herramientas Interactivas",
+        "heading": "Anexo C — Herramientas Interactivas",
+        "slug": "/anexo-interactivos",
+        "anchor": "",
+        "url": "/anexo-interactivos",
+        "chunkType": "causal",
+        "relevance": 1,
+        "excerpt": "Capítulo: Anexo C — Herramientas Interactivas Sección: Anexo C — Herramientas Interactivas Subsección: N/A Parte de los recursos interactivos reconstruyen secuencias, relaciones físicas o patrones operativos a partir de…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 0.85,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A [continuación] forense. Tras la desconexión de Granada, la tendencia creciente de la tensión en la red de transporte reveló una…"
+      },
+      {
+        "title": "Conclusiones",
+        "heading": "Conclusiones",
+        "slug": "/conclusiones",
+        "anchor": "",
+        "url": "/conclusiones",
+        "chunkType": "comparison",
+        "relevance": 0.83,
+        "excerpt": "Capítulo: Conclusiones Sección: Conclusiones Subsección: N/A Conclusiones Del contraste entre las cuatro narrativas emergen tres puntos de convergencia que ningún informe pericial contradice: Primero, el mecanismo…"
+      },
+      {
+        "title": "Introducción",
+        "heading": "Metodología: triangulación forense y validación cruzada",
+        "slug": "/",
+        "anchor": "metodologia-triangulacion-forense-y-validacion-cruzada",
+        "url": "/#metodologia-triangulacion-forense-y-validacion-cruzada",
+        "chunkType": "causal",
+        "relevance": 0.78,
+        "excerpt": "Capítulo: Introducción Sección: Metodología: triangulación forense y validación cruzada Subsección: N/A La investigación adopta un enfoque de análisis forense comparativo, estructurado en tres fases: 1. Compilación de…"
+      },
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 0.12,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Anexo C — Herramientas Interactivas",
+      "Análisis del incidente",
+      "Conclusiones",
+      "Introducción",
+      "Tabla Maestra de Cifras Consolidadas (28-A)"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "matrix",
+        "type": "interactive",
+        "source": "annex_c",
+        "title": "Matriz de Costes de Inacción — OPEX vs CAPEX resiliencia",
+        "description": "Análisis comparativo entre el OPEX tóxico diario por inacción y el CAPEX del retrofitting de resiliencia.",
+        "slug": "/anexo-interactivos#matrix",
+        "url": "/anexo-interactivos#matrix",
+        "keywords": [
+          "costes inacción",
+          "OPEX",
+          "CAPEX",
+          "retrofitting",
+          "resiliencia",
+          "operación reforzada coste"
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "radar-vulnerabilidad",
+        "type": "interactive",
+        "source": "annex_c",
+        "title": "Radar de Vulnerabilidad Sistémica — 5 ejes",
+        "description": "Radar de 5 ejes comparando condición del colapso vs operación reforzada vs objetivo PNIEC 2030.",
+        "slug": "/anexo-interactivos#radar-vulnerabilidad",
+        "url": "/anexo-interactivos#radar-vulnerabilidad",
+        "keywords": [
+          "radar",
+          "vulnerabilidad",
+          "PNIEC",
+          "2030",
+          "operación reforzada",
+          "5 ejes",
+          "sistémica"
+        ],
+        "relevance": 0.88
+      }
+    ],
+    "followUps": [
+      "¿Qué servicios de estabilidad debería remunerar el mercado ERS?",
+      "¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?",
+      "¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?"
+    ],
+    "intent": "causal"
+  },
+  {
+    "question": "¿Qué relación hay entre el SCR, la potencia de cortocircuito y la decisión de mallado de REE?",
+    "elapsed_ms": 15692,
+    "status": 200,
+    "answer": "La relación entre el SCR (Short Circuit Ratio), la potencia de cortocircuito y la decisión de mallado de REE es directa y causal, aunque ninguno de los informes la articula explícitamente como una ecuación única. Te la desgloso por posición institucional.\n\n**REE / Gobierno:** Sostienen que el sistema tenía márgenes suficientes de tensión y que la saturación capacitiva se produjo porque los generadores no absorbieron la reactiva requerida. En este marco, la potencia de cortocircuito no aparece como variable limitante: el mallado se justifica como una maniobra protocolizada y necesaria para mantener la estabilidad ante la indisponibilidad de generación síncrona. El SCR no se menciona como criterio de decisión. La discrepancia con las otras posiciones es que REE no reconoce que el propio mallado redujera la potencia de cortocircuito efectiva en los nudos críticos del sur.\n\n**ICAI / AELEC:** Aquí la relación es explícita. El informe del IIT-ICAI documenta que la zona sur disponía de solo 0,2 GVAr de absorción frente a más de 0,7 GVAr de inyección capacitiva inducida por el propio operador. La potencia de cortocircuito en Andalucía era estructuralmente baja —el informe la señala como factor agravante— y el mallado de 11 líneas en vacío, al activar el efecto Ferranti, inyectó entre 1,05 y 2,4 GVAr, contrayendo el margen Q-V un 57 %. En un nudo con baja potencia de cortocircuito, el SCR es bajo, lo que significa que la misma inyección de reactiva capacitiva produce una sobretensión mucho mayor que en un nudo fuerte. El mallado, al añadir admitancia capacitiva sin carga, redujo aún más la potencia de cortocircuito efectiva disponible para absorber esa reactiva. La decisión de no sustituir el CCGT andaluz indisponible desde el 27-A agravó este cuadro.\n\n**ENTSO-E:** No atribuye causalidad directa al mallado, pero documenta que los RCC (Regional Control Centres) no detectaron la saturación capacitiva. Señala la baja potencia de cortocircuito en Andalucía como factor estructural agravante, sin pronunciarse sobre si la decisión de mallado fue correcta o no. Su aportación clave es subrayar la inobservabilidad: el operador no disponía de visibilidad en tiempo real de las tensiones en las redes de 220 kV y 132 kV, donde el Tap-Lag creó un punto ciego. Esto impidió calibrar el impacto real del mallado sobre el SCR local.\n\n**Posición del TFG:** El TFG no toma partido por una sola narrativa. Considera que los diagnósticos son compatibles con la evidencia oscilográfica: el transitorio capacitivo superior a 2,4 GVAr requirió simultáneamente una decisión que lo provocase (el mallado) y una incapacidad de respuesta que impidiese contenerlo (baja potencia de cortocircuito, indisponibilidad de generación síncrona, inobservabilidad). La discrepancia no es técnica sino distributiva: se refiere a la imputación de responsabilidad dentro de una cadena causal que todos los informes reconocen.\n\nEn el panel derecho, la gráfica \"Indisponibilidad de generación convencional por tecnología\" muestra que a mediodía del 28-A los ciclos combinados generaban solo 2.775 MW de los 16.660 MW disponibles. Busca la columna de \"Ciclos Combinados\" y compara la barra de \"Disponible\" (16.660 MW) con la de \"Generación Real\" (2.775 MW). Esa brecha de 13.885 MW es la huella del orden de mérito económico: el sistema tenía potencia síncrona suficiente para elevar la potencia de cortocircuito en el sur, pero el mercado no la despachó. REE, al mallar, intentó compensar esa falta de soporte de tensión con una maniobra que, en un entorno de bajo SCR, resultó contraproducente.\n\nLa implicación más importante es que el SCR no es un parámetro estático: la decisión de mallado lo redujo aún más en los nudos críticos, creando un bucle de realimentación positiva entre inyección capacitiva y caída de la capacidad de absorción.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "Consenso y discrepancias: la fractura técnica en tres ejes",
+        "slug": "/analisis-informes",
+        "anchor": "divergencias-tecnicas-irreconciliables",
+        "url": "/analisis-informes#divergencias-tecnicas-irreconciliables",
+        "chunkType": "comparison",
+        "relevance": 12.34,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: Consenso y discrepancias: la fractura técnica en tres ejes Subsección: Divergencias técnicas irreconciliables | Eje de disputa | Gobierno / REE | ICAI / AELEC |…"
+      },
+      {
+        "title": "Uso de Inteligencia Artificial",
+        "heading": "Uso de Inteligencia Artificial",
+        "slug": "/uso-ia",
+        "anchor": "",
+        "url": "/uso-ia",
+        "chunkType": "comparison",
+        "relevance": 10.93,
+        "excerpt": "Capítulo: Uso de Inteligencia Artificial Sección: Uso de Inteligencia Artificial Subsección: N/A [continuación] frecuencia), un caso atípico respecto a la mayoría de los apagones documentados en la bibliografía técnica…"
+      },
+      {
+        "title": "Conclusiones",
+        "heading": "Conclusiones",
+        "slug": "/conclusiones",
+        "anchor": "",
+        "url": "/conclusiones",
+        "chunkType": "comparison",
+        "relevance": 10.06,
+        "excerpt": "Capítulo: Conclusiones Sección: Conclusiones Subsección: N/A [continuación] omisión del sujeto obligado por el P.O. 7.4 —. El IIT-ICAI lo sitúa en la maniobra de mallado del Operador del Sistema y en la inobservabilidad…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 9.93,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A [continuación] forense. Tras la desconexión de Granada, la tendencia creciente de la tensión en la red de transporte reveló una…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Análisis de los Informes Oficiales",
+      "Uso de Inteligencia Artificial",
+      "Conclusiones",
+      "Análisis del incidente"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "indisponibilidad-generacion-convencional",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Indisponibilidad de generación convencional por tecnología, 28 de abril de 2025",
+        "description": "La discrepancia de 3.028 MW entre REE y el Gobierno alimenta el debate sobre si el operador del sistema dispuso de suficiente capacidad síncrona. Compass Lexecon/INESC TEC subraya que entre 08:00 y 10:00 CET REE desacopló 15 CCGTs.",
+        "origin": "Informe de Restricciones Técnicas REE (cifras propias) vs Informe Comité 28-A (Tabla 1, p. 20)",
+        "url": "/anexo-tablas#indisponibilidad-generacion-convencional",
+        "columns": [
+          {
+            "key": "tecnologia",
+            "label": "Tecnología"
+          },
+          {
+            "key": "mw_indisponibles_ree",
+            "label": "MW Indisponibles (REE)"
+          },
+          {
+            "key": "mw_indisponibles_comite",
+            "label": "MW Indisponibles (Comité)"
+          },
+          {
+            "key": "mw_instalados",
+            "label": "MW Instalados"
+          },
+          {
+            "key": "porcentaje_indisponible",
+            "label": "% Indisponible (Comité)"
+          }
+        ],
+        "sampleRows": [
+          {
+            "tecnologia": "CCGT",
+            "mw_indisponibles_ree": "9.436,4",
+            "mw_indisponibles_comite": "7.426,3",
+            "mw_instalados": "24.562",
+            "porcentaje_indisponible": "30,2%"
+          },
+          {
+            "tecnologia": "Nuclear",
+            "mw_indisponibles_ree": "4.096,2",
+            "mw_indisponibles_comite": "3.078,6",
+            "mw_instalados": "7.117",
+            "porcentaje_indisponible": "43,3%"
+          },
+          {
+            "tecnologia": "Bombeo (turbinación)",
+            "mw_indisponibles_ree": "1.392,1",
+            "mw_indisponibles_comite": "1.392,1",
+            "mw_instalados": "3.331",
+            "porcentaje_indisponible": "41,8%"
+          }
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "comparativa-conclusiones-entidades",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Comparativa de conclusiones por entidad investigadora",
+        "description": "Tabla comparativa idónea para sección de 'discusión' del TFG.",
+        "origin": "Comité 28-A; REE; ENTSO-E (Factual + Final); Compass Lexecon/INESC TEC",
+        "url": "/anexo-tablas#comparativa-conclusiones-entidades",
+        "columns": [
+          {
+            "key": "entidad",
+            "label": "Entidad"
+          },
+          {
+            "key": "fecha",
+            "label": "Fecha"
+          },
+          {
+            "key": "paginas",
+            "label": "Páginas"
+          },
+          {
+            "key": "causa_principal",
+            "label": "Causa principal identificada"
+          },
+          {
+            "key": "responsable",
+            "label": "Responsable señalado"
+          }
+        ],
+        "sampleRows": [
+          {
+            "entidad": "REE",
+            "fecha": "18-jun-2025",
+            "paginas": "15",
+            "causa_principal": "Sobretensión por incumplimiento P.O. 7.4",
+            "responsable": "Generadores RCR y convencionales no compliance"
+          },
+          {
+            "entidad": "Gobierno (Comité 28-A)",
+            "fecha": "17-jun-2025",
+            "paginas": "182",
+            "causa_principal": "Multifactorial: sobretensión + planificación insuficiente",
+            "responsable": "Multireparto: REE + algunas eléctricas"
+          },
+          {
+            "entidad": "Compass Lexecon/INESC TEC",
+            "fecha": "28-jul-2025",
+            "paginas": "62",
+            "causa_principal": "Fallo sistémico control de tensión por REE",
+            "responsable": "REE (gestión de reactiva)"
+          }
+        ],
+        "relevance": 0.93
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?"
+    ],
+    "intent": "comparison"
+  },
+  {
+    "question": "Compara la velocidad del colapso del 28-A con el de South Australia 2016 y el de UK 2019",
+    "elapsed_ms": 12750,
+    "status": 200,
+    "answer": "La velocidad del colapso del 28-A es cualitativamente distinta a la de South Australia 2016 y UK 2019, no solo en magnitud sino en el mecanismo físico dominante. En el panel derecho, el recurso \"Comparativa con blackouts históricos europeos\" muestra que el 28-A está categorizado como un evento *first of its kind* por ser un colapso impulsado por sobretensión capacitiva, mientras que los otros dos son colapsos clásicos por subfrecuencia. Busca la columna que indica el tipo de disparo raíz: verás que South Australia y UK se inician por pérdida de generación activa, mientras que el 28-A lo hace por un exceso de tensión reactiva que desencadena la cascada antes de que la frecuencia caiga significativamente.\n\nSouth Australia 2016 colapsó en aproximadamente 2 segundos desde el primer disparo hasta el cero de tensión, con un RoCoF máximo de 6 Hz/s, debido a la baja inercia de un sistema aislado y la fragilidad de los inversores eólicos ante huecos de tensión. UK 2019 fue más lento: la cascada duró unos 5 segundos, con un RoCoF de 2 Hz/s, provocada por un vector shift que disparó relés anti-isla en generación distribuida. En ambos casos, la frecuencia cayó por debajo de 49 Hz antes de que la tensión colapsara.\n\nEl 28-A invierte esa secuencia. La tensión en barras colectoras superó 440 kV (1,10 p.u.) 24 segundos antes del nadir frecuencial de 47,79 Hz. La cascada de generación perdió 15.000 MW en menos de 30 segundos, pero el cero de tensión no llegó hasta 12:33:29,741 CEST, casi 33 segundos después del disparo raíz. La velocidad aparente es menor en términos de tiempo total, pero la tasa de degradación de la tensión fue exponencial: el RoCoF máximo de 1,5 Hz/s (ventana 100 ms) es inferior al de South Australia, pero la sobretensión inicial destruyó la capacidad de control reactivo de los inversores, haciendo que la frecuencia cayera como consecuencia secundaria. El TFG no toma posición sobre cuál es \"peor\", pero subraya que la firma temporal del 28-A —primero tensión, luego frecuencia— es la característica distintiva de un colapso capacitivo, no inercial.\n\nLa implicación más importante es que los umbrales de protección diseñados para eventos de subfrecuencia (como los relés anti-isla de UK o los LVRT de South Australia) no detectan ni mitigan una sobretensión sostenida de origen capacitivo, lo que explica por qué ningún automatismo convencional pudo detener la cascada ibérica.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Uso de Inteligencia Artificial",
+        "heading": "Uso de Inteligencia Artificial",
+        "slug": "/uso-ia",
+        "anchor": "",
+        "url": "/uso-ia",
+        "chunkType": "comparison",
+        "relevance": 2.85,
+        "excerpt": "Capítulo: Uso de Inteligencia Artificial Sección: Uso de Inteligencia Artificial Subsección: N/A Uso de Inteligencia Artificial La elaboración de este TFG se ha desarrollado en un contexto metodológico atípico: la…"
+      },
+      {
+        "title": "Resiliencia y Futuro",
+        "heading": "Resiliencia y Futuro",
+        "slug": "/resiliencia-futuro",
+        "anchor": "",
+        "url": "/resiliencia-futuro",
+        "chunkType": "quantitative",
+        "relevance": 2.84,
+        "excerpt": "Capítulo: Resiliencia y Futuro Sección: Resiliencia y Futuro Subsección: N/A [continuación] desde 2007 | | Europa 2006 | Descoordinación transfronteriza: desconexión manual sin reanálisis N-1 | EAS + creación ENTSO-E +…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 2.62,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A Análisis del Incidente El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culminación de una degradación progresiva y…"
+      },
+      {
+        "title": "Contexto Técnico",
+        "heading": "Contexto Técnico",
+        "slug": "/contexto",
+        "anchor": "",
+        "url": "/contexto",
+        "chunkType": "quantitative",
+        "relevance": 2.44,
+        "excerpt": "Capítulo: Contexto Técnico Sección: Contexto Técnico Subsección: N/A [continuación] zonales eran significativamente inferiores: 1,3 s en el sur y 1,84 s en el centro, ambos por debajo del umbral. El colapso se originó…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Uso de Inteligencia Artificial",
+      "Resiliencia y Futuro",
+      "Análisis del incidente",
+      "Contexto Técnico"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "comparativa-blackouts-historicos",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Comparativa con blackouts históricos europeos",
+        "description": "Sitúa el 28-A como evento 'first of its kind' (sobretensión-driven), distinto de los típicos colapsos por subfrecuencia.",
+        "origin": "IEA; FERC; ENTSO-E; UCTE official investigation report (IEEE Xplore, 2004)",
+        "url": "/anexo-tablas#comparativa-blackouts-historicos",
+        "columns": [
+          {
+            "key": "evento",
+            "label": "Evento"
+          },
+          {
+            "key": "fecha",
+            "label": "Fecha"
+          },
+          {
+            "key": "demanda_perdida",
+            "label": "Demanda perdida (MW/GW)"
+          },
+          {
+            "key": "personas_afectadas",
+            "label": "Personas afectadas (M)"
+          },
+          {
+            "key": "duracion_h",
+            "label": "Duración (h)"
+          },
+          {
+            "key": "ens_estimada",
+            "label": "ENS estimada (GWh)"
+          },
+          {
+            "key": "causa_raiz",
+            "label": "Causa raíz"
+          }
+        ],
+        "sampleRows": [
+          {
+            "evento": "Apagón ibérico 28-A",
+            "fecha": "28-abr-2025",
+            "demanda_perdida": "31 GW carga + ~15 GW gen.",
+            "personas_afectadas": "47",
+            "duracion_h": "~10-16",
+            "ens_estimada": "n/d",
+            "causa_raiz": "Sobretensión + cascada IBR"
+          },
+          {
+            "evento": "Italia 2003",
+            "fecha": "28-sep-2003",
+            "demanda_perdida": "27,7 GW",
+            "personas_afectadas": "56",
+            "duracion_h": "18",
+            "ens_estimada": "180",
+            "causa_raiz": "Línea Lukmanier-Mettlen + cascada"
+          },
+          {
+            "evento": "Noreste EEUU/Canadá 2003",
+            "fecha": "14-ago-2003",
+            "demanda_perdida": "61,8 GW",
+            "personas_afectadas": "55",
+            "duracion_h": "hasta 48",
+            "ens_estimada": "~46",
+            "causa_raiz": "Línea FirstEnergy + software"
+          }
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "modos-oscilatorios",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Modos oscilatorios identificados antes del colapso",
+        "description": "La oscilación forzada de 0,63 Hz, posiblemente originada en una planta FV de Badajoz, fue el detonante que activó las medidas de mitigación que paradójicamente degradaron el control de tensión.",
+        "origin": "REE pp. 3-5; ENTSO-E Factual Report p. 53; Comité 28-A pp. 31-34; arXiv 2511.17433",
+        "url": "/anexo-tablas#modos-oscilatorios",
+        "columns": [
+          {
+            "key": "hora",
+            "label": "Hora CEST"
+          },
+          {
+            "key": "frecuencia_hz",
+            "label": "Frecuencia (Hz)"
+          },
+          {
+            "key": "tipo",
+            "label": "Tipo"
+          },
+          {
+            "key": "amplitud_mhz",
+            "label": "Amplitud (mHz)"
+          },
+          {
+            "key": "damping",
+            "label": "Damping inicial → final"
+          },
+          {
+            "key": "voltaje_pkp_kv",
+            "label": "Voltaje pk-pk en 400 kV"
+          }
+        ],
+        "sampleRows": [
+          {
+            "hora": "10:30",
+            "frecuencia_hz": "0,2",
+            "tipo": "Inter-área W-C-E",
+            "amplitud_mhz": "4 kV",
+            "damping": "Normal",
+            "voltaje_pkp_kv": "<1% Vnom"
+          },
+          {
+            "hora": "11:03",
+            "frecuencia_hz": "0,2",
+            "tipo": "Inter-área",
+            "amplitud_mhz": "7 kV",
+            "damping": "Normal",
+            "voltaje_pkp_kv": "~2% Vnom"
+          },
+          {
+            "hora": "11:23",
+            "frecuencia_hz": "0,2",
+            "tipo": "Inter-área",
+            "amplitud_mhz": "6 kV",
+            "damping": "Normal",
+            "voltaje_pkp_kv": "~1,5% Vnom"
+          }
+        ],
+        "relevance": 0.93
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?"
+    ],
+    "intent": "comparison"
+  },
+  {
+    "question": "¿Cuál fue el papel de Iberdrola en el apagón?",
+    "elapsed_ms": 9709,
+    "status": 200,
+    "answer": "Iberdrola no tuvo un papel causal en el origen del apagón. Su implicación es posterior y de naturaleza corporativa y judicial, no técnica.\n\nEl detonante del colapso fue el disparo del transformador 400/220 kV en Granada a las 12:32:57 CEST, que perdió 355 MW. Ese equipo no es propiedad de Iberdrola. La cascada de sobretensión que siguió fue un fenómeno sistémico de red, no atribuible a un generador concreto.\n\nDonde Iberdrola aparece es en el litigio civil que interpuso contra Red Eléctrica y su matriz Redeia por competencia desleal. El fundamento de la demanda fueron las declaraciones públicas de la cúpula de Redeia que, al defender las «5.000 maniobras impecables» del operador, atribuyeron responsabilidades en el comportamiento de la generación renovable, nombrando explícitamente la gestión de la planta fotovoltaica Núñez de Balboa, propiedad de Iberdrola. La demanda argumenta que esas declaraciones eran inexactas, transfirieron injustamente la responsabilidad pública al operador privado y depreciaron el valor bursátil de la compañía.\n\nAdemás, Iberdrola figura entre las once productoras que la CNMC ha incoado expedientes sancionadores por cargos \"graves\" por incumplimiento de los códigos de red. Pero esto no implica que su comportamiento causara el apagón; forma parte de la investigación regulatoria sobre el cumplimiento de las obligaciones técnicas de todos los agentes durante la operación previa al colapso.\n\nEn el panel derecho, la gráfica \"Installed Capacity per Type\" muestra que la capacidad síncrona convencional instalada suma aproximadamente 61 GW, pero el 28-A la práctica totalidad de los 29 GW de ciclos combinados estaban apagados por orden de mérito económico. Esa diferencia —más de 25 GW de generación síncrona instalada pero no despachada— es la vulnerabilidad estructural que hizo posible el apagón, y ningún agente individual, incluida Iberdrola, la causó.\n\nLa pregunta técnica de continuación natural es: ¿qué evidencia concreta aportó la CNMC para imputar a esas once productoras, y cómo se relaciona con el comportamiento de sus inversores durante las oscilaciones previas al colapso?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Actualización 2026: Un Año Después",
+        "heading": "Actualización 2026: Un Año Después",
+        "slug": "/08.5-actualizacion-2026",
+        "anchor": "",
+        "url": "/08.5-actualizacion-2026",
+        "chunkType": "comparison",
+        "relevance": 4.79,
+        "excerpt": "Capítulo: Actualización 2026: Un Año Después Sección: Actualización 2026: Un Año Después Subsección: N/A [continuación] técnico inédito: el overvoltage-driven blackout (apagón inducido por sobretensión). La secuencia…"
+      },
+      {
+        "title": "Impacto Comunicativo",
+        "heading": "Impacto Comunicativo",
+        "slug": "/impacto-comunicativo",
+        "anchor": "",
+        "url": "/impacto-comunicativo",
+        "chunkType": "comparison",
+        "relevance": 3.89,
+        "excerpt": "Capítulo: Impacto Comunicativo Sección: Impacto Comunicativo Subsección: N/A [continuación] en el Sur, aunque omite el mecanismo técnico subyacente (saturación de curvas Q-V). | | La Vanguardia | Apertura transpirenaica…"
+      },
+      {
+        "title": "Consecuencias Financieras y Costes de Resiliencia",
+        "heading": "Consecuencias Financieras y Costes de Resiliencia",
+        "slug": "/07b-consecuencias-financieras",
+        "anchor": "",
+        "url": "/07b-consecuencias-financieras",
+        "chunkType": "normal",
+        "relevance": 3.55,
+        "excerpt": "Capítulo: Consecuencias Financieras y Costes de Resiliencia Sección: Consecuencias Financieras y Costes de Resiliencia Subsección: N/A [continuación] contra REE Paralela a la vía administrativa, Iberdrola interpuso una…"
+      },
+      {
+        "title": "Reacción y Reposición",
+        "heading": "Evolución del mix y estabilización final",
+        "slug": "/reaccion-reposicion",
+        "anchor": "la-red-curada-la-economia-en-pausa",
+        "url": "/reaccion-reposicion#la-red-curada-la-economia-en-pausa",
+        "chunkType": "causal",
+        "relevance": 3.21,
+        "excerpt": "Capítulo: Reacción y Reposición Sección: Evolución del mix y estabilización final Subsección: La red curada, la economía en pausa A las 07:05 del 29 de abril, REE levantó las últimas restricciones operativas. El 99,95 %…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Actualización 2026: Un Año Después",
+      "Impacto Comunicativo",
+      "Consecuencias Financieras y Costes de Resiliencia",
+      "Reacción y Reposición"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-5",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Installed Capacity per Type",
+        "description": "Esta gráfica muestra la capacidad de generación eléctrica instalada en la Península Ibérica desglosada por tecnología. La capacidad total asciende a 121.873 MW: eólica onshore (30.932 MW), solar fotovoltaica (29.047 MW), fósil gas (29.943 MW), hidráulica de embalse (15.765 MW), nuclear (7.117 MW), bombeo hidroeléctrico (3.418 MW) y carbón (1.820 MW). La capacidad síncrona convencional suma aproximadamente 61 GW. La trampa es la diferencia entre capacidad instalada y capacidad efectivamente despachada. El 28 de abril, por orden de mérito económico, la práctica totalidad de los 29 GW de ciclos combinados estaban apagados. El mix instantáneo estaba dominado al 82 % por IBR — fundamentalmente solar fotovoltaica — con apenas 7 GW de generación síncrona activa.",
+        "whyMatters": "La capacidad instalada síncrona no sirve si está desconectada por razones de mercado. Esta gráfica debe leerse junto con la de generación real: la primera muestra los recursos disponibles en papel; la segunda los que estaban operativos en el momento crítico. La diferencia — más de 25 GW de generación síncrona instalada pero no despachada — es la vulnerabilidad estructural que hizo posible el apagón.",
+        "description_en": "This chart shows the installed electricity generation capacity on the Iberian Peninsula broken down by technology. Total capacity amounts to 121,873 MW: onshore wind (30,932 MW), solar photovoltaic (29,047 MW), fossil gas (29,943 MW), reservoir hydro (15,765 MW), nuclear (7,117 MW), pumped hydro (3,418 MW), and coal (1,820 MW). Conventional synchronous capacity totals approximately 61 GW.\n\nThe trap is the difference between installed capacity and actually dispatched capacity. On April 28, due to economic merit order, virtually all 29 GW of combined-cycle plants were offline. The instantaneous mix was dominated 82% by IBR — mainly solar photovoltaic — with barely 7 GW of active synchronous generation.",
+        "whyMatters_en": "Installed synchronous capacity is useless if disconnected for market reasons. This chart must be read alongside the actual generation chart: the first shows paper resources; the second shows what was operational at the critical moment. The difference — more than 25 GW of installed but undispatched synchronous generation — is the structural vulnerability that made the blackout possible.",
+        "url": "/anexo-entsoe#chart-5",
+        "relevance": 1
+      },
+      {
+        "id": "chart-1",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Demanda Peninsular",
+        "description": "Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado. La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.",
+        "whyMatters": "Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.",
+        "description_en": "During the morning of April 28, the peninsular real demand was between 19,000 and 27,000 MW — well below the historical peak (>45,000 MW) and consistent with a spring Monday with high solar generation. The scheduled and forecast curves overlapped with the real demand with a deviation of less than 2%, demonstrating that the low-load scenario was perfectly anticipated by the operator. This apparent normality makes what follows all the more striking: between 12:30 and 12:35 CEST, real demand fell from 25,184 MW to 0 MW in a vertical step. Scheduled and forecast values were cancelled simultaneously. The SCADA telemetry units themselves stopped transmitting because they lost their power supply. This was not a gradual drop; it was a certified voltage zero.\n\nRecovery was stepped and extremely slow. From 13:05 CEST, token values appeared — 37 MW, then 204 MW — growing throughout the following afternoon and night. It was not until the early hours of April 29 that demand again exceeded 20,000 MW, and the full day of the 29th was spent in progressive normalisation. The system needed almost 19 hours to restore supply across the entire peninsula.",
+        "whyMatters_en": "This is the most important chart in the analysis. It is the flat electrocardiogram of the Iberian system. With 5-minute resolution, it documents the exact moment of total collapse, the absence of prior gradual degradation signals in demand (confirming that the failure was dynamic and ultra-fast), and the slowness of restoration via Top-Down strategies (support from France) and Bottom-Up (autonomous start-up of hydroelectric plants). It is the mandatory entry point for any forensic analysis of the 28-A event.",
+        "url": "/anexo-entsoe#chart-1",
+        "relevance": 0.66
+      }
+    ],
+    "followUps": [
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?",
+      "¿Por qué la condición de isla energética agravó el apagón ibérico?"
+    ],
+    "intent": "general"
+  },
+  {
+    "question": "¿Qué dice el informe de la CNMC sobre las responsabilidades?",
+    "elapsed_ms": 8444,
+    "status": 200,
+    "answer": "El informe de la CNMC no se pronuncia sobre las causas técnicas del apagón, sino que actúa exclusivamente en su función sancionadora. Tras el 28-A, la CNMC incoó 66 expedientes sancionadores. De ellos, los cargos \"muy graves\" —con multas de hasta 60 millones de euros— se dirigieron contra REE y la empresa titular de la central nuclear de Almaraz. Once productoras, entre ellas Endesa, Iberdrola y Mercuria Solar, recibieron cargos \"graves\" por incumplimiento de los códigos de red.\n\nEsto implica que la CNMC atribuye responsabilidad tanto al operador del sistema como a los generadores, pero sin establecer una jerarquía causal entre ambos. La vía administrativa corre en paralelo a la demanda civil de Iberdrola contra Redeia por competencia desleal, cuyo fundamento no es técnico sino reputacional y bursátil. El resultado de estos litigios definirá la distribución legal de responsabilidades, pero no resuelve la discrepancia técnica sobre si el colapso fue un fallo de diseño operativo o de cumplimiento normativo por parte de los agentes.\n\nEn el panel derecho, la figura A7.2 muestra la distribución de estos expedientes sancionadores por tipo de agente y gravedad del cargo. Busca la columna de \"Muy Graves\" para confirmar que REE y Almaraz concentran las sanciones máximas, mientras que las productoras renovables aparecen en la categoría \"Graves\". Esa asimetría refleja la doble vía de imputación que la CNMC ha establecido.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Introducción",
+        "heading": "Objeto y alcance",
+        "slug": "/",
+        "anchor": "objeto-y-alcance",
+        "url": "/#objeto-y-alcance",
+        "chunkType": "comparison",
+        "relevance": 6.41,
+        "excerpt": "Capítulo: Introducción Sección: Objeto y alcance Subsección: N/A El colapso —caracterizado por una cascada de desconexiones asociadas a fenómenos de sobretensión en un contexto de elevada penetración de Recursos Basados…"
+      },
+      {
+        "title": "Consecuencias Financieras y Costes de Resiliencia",
+        "heading": "Consecuencias Financieras y Costes de Resiliencia",
+        "slug": "/07b-consecuencias-financieras",
+        "anchor": "",
+        "url": "/07b-consecuencias-financieras",
+        "chunkType": "normal",
+        "relevance": 5.83,
+        "excerpt": "Capítulo: Consecuencias Financieras y Costes de Resiliencia Sección: Consecuencias Financieras y Costes de Resiliencia Subsección: N/A [continuación] contra REE Paralela a la vía administrativa, Iberdrola interpuso una…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "Consenso y discrepancias: la fractura técnica en tres ejes",
+        "slug": "/analisis-informes",
+        "anchor": "divergencias-tecnicas-irreconciliables",
+        "url": "/analisis-informes#divergencias-tecnicas-irreconciliables",
+        "chunkType": "comparison",
+        "relevance": 5.69,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: Consenso y discrepancias: la fractura técnica en tres ejes Subsección: Divergencias técnicas irreconciliables | Eje de disputa | Gobierno / REE | ICAI / AELEC |…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "La visión del Gobierno y REE: causalidad multifactorial e incumplimiento normativo",
+        "slug": "/analisis-informes",
+        "anchor": "la-vision-del-gobierno-y-ree-causalidad-multifactorial-e-incumplimiento-normativo",
+        "url": "/analisis-informes#la-vision-del-gobierno-y-ree-causalidad-multifactorial-e-incumplimiento-normativo",
+        "chunkType": "causal",
+        "relevance": 5.64,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: La visión del Gobierno y REE: causalidad multifactorial e incumplimiento normativo Subsección: N/A La narrativa oficial tipifica el apagón no como un error de diseño…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Introducción",
+      "Consecuencias Financieras y Costes de Resiliencia",
+      "Análisis de los Informes Oficiales",
+      "Anexo — Impacto y Resiliencia"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-6",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Actual Generation per Unit",
+        "description": "Estas gráficas muestran la potencia activa generada por cada unidad de producción en el período inmediatamente posterior al colapso. Los datos agregados por tecnología presentan el siguiente estado del mix durante la crisis: generación solar en 0 MW (caída total), eólica onshore en apenas 152 MW (menos del 5 % de la previsión), ciclos combinados de gas en 2.775 MW, nuclear en 3.369 MW, hidráulica de embalse en 1.012 MW y bombeo hidroeléctrico en 1.416 MW. El ranking de las 20 unidades individuales con mayor generación está encabezado por las centrales nucleares: Vandellós (1.044 MW), Ascó 2 (1.004 MW), Ascó 1 (681 MW) y Almaraz 2 (643 MW). Ninguna instalación solar o eólica aparece en este ranking.",
+        "whyMatters": "Esta gráfica es la más directa del análisis de causalidad técnica. Demuestra que el colapso no fue causado por falta de recurso primario, sino por la desconexión masiva de los inversores IBR a consecuencia de las sobretensiones. La generación síncrona remanente — nuclear (~3,4 GW), ciclos combinados (~2,8 GW) e hidráulica (~2,4 GW) — constituyó el único andamiaje electromagnético del sistema en los segundos del colapso. Sin esas máquinas rotatorias, no habría habido posibilidad de Black Start.",
+        "description_en": "These charts show the active power generated by each production unit in the period immediately following the collapse. Data aggregated by technology presents the following mix status during the crisis: solar generation at 0 MW (total drop), onshore wind at barely 152 MW (less than 5% of forecast), combined-cycle gas at 2,775 MW, nuclear at 3,369 MW, reservoir hydro at 1,012 MW, and pumped hydro at 1,416 MW.\n\nThe ranking of the 20 individual units with highest generation is led by nuclear plants: Vandellós (1,044 MW), Ascó 2 (1,004 MW), Ascó 1 (681 MW), and Almaraz 2 (643 MW). No solar or wind installation appears in this ranking.",
+        "whyMatters_en": "This chart is the most direct in the technical causality analysis. It demonstrates that the collapse was not caused by a lack of primary resource, but by the massive disconnection of IBR inverters as a consequence of overvoltages. The remaining synchronous generation — nuclear (~3.4 GW), combined-cycle (~2.8 GW), and hydro (~2.4 GW) — constituted the only electromagnetic scaffolding of the system in the seconds of the collapse. Without those rotating machines, there would have been no possibility of a Black Start.",
+        "url": "/anexo-entsoe#chart-6",
+        "relevance": 1
+      },
+      {
+        "id": "chart-18",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Current Balancing State",
+        "description": "Esta gráfica muestra el volumen de desequilibrio entre generación y demanda en el sistema español, en intervalos de 15 minutos. Durante la madrugada y la mañana del 28 de abril, el desequilibrio se mantuvo en valores moderados (generalmente por debajo de 200 MWh). El deterioro comienza a las 10:00–10:15 UTC (12:00–12:15 CEST), con valores progresivos de 123,8 MWh, 346,7 MWh, 616,2 MWh hasta alcanzar un pico de 1.690,4 MWh entre las 13:45 y las 14:00 UTC. La transición de déficit a superávit se produjo a las 18:15–18:30 UTC, gracias a la Operación Reforzada de REE: el mantenimiento forzado de grupos síncronos incluso por encima de la demanda real.",
+        "whyMatters": "El pico de déficit de 1.690 MWh alcanzado más de tres horas después del colapso es la prueba cuantitativa más directa de que el blackout no fue un evento instantáneo y concluido, sino el inicio de una crisis operativa prolongada. La red no pudo recuperar el equilibrio generación–demanda hasta bien entrada la tarde, y la estrategia de corrección supuso un sobrecoste económico significativo.",
+        "description_en": "This chart shows the volume of imbalance between generation and demand in the Spanish system, in 15-minute intervals. During the early hours and morning of April 28, the imbalance remained at moderate values (generally below 200 MWh). Deterioration began at 10:00–10:15 UTC (12:00–12:15 CEST), with progressive values of 123.8 MWh, 346.7 MWh, 616.2 MWh until reaching a peak of 1,690.4 MWh between 13:45 and 14:00 UTC.\n\nThe transition from deficit to surplus occurred at 18:15–18:30 UTC, thanks to REE's Reinforced Operation: the forced maintenance of synchronous units even above actual demand.",
+        "whyMatters_en": "The deficit peak of 1,690 MWh reached more than three hours after the collapse is the most direct quantitative proof that the blackout was not an instantaneous and concluded event, but the start of a prolonged operational crisis. The grid could not recover the generation-demand balance until well into the afternoon, and the correction strategy entailed a significant economic surcharge.",
+        "url": "/anexo-entsoe#chart-18",
+        "relevance": 1
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?"
+    ],
+    "intent": "general"
+  },
+  {
+    "question": "¿Cuántos MVAr de reactiva capacitiva sobraban cuando se produjo el mallado?",
+    "elapsed_ms": 7148,
+    "status": 200,
+    "answer": "El mallado de 11 líneas en vacío inyectó entre 1.050 y 2.400 MVAr de reactiva capacitiva por efecto Ferranti, según el informe ICAI/AELEC/Compass Lexecon. Esa inyección contrajo el margen Q-V un 57 %, llevando el sistema a un estado donde la capacidad de absorción reactiva era insuficiente. En el panel derecho, la tabla \"Inyección reactiva anómala desde redes de distribución (12:22 CEST)\" muestra que solo Madrid y Valencia aportaban 575 y 405 MVAr capacitivos netos respectivamente, mientras el resto de España compensaba parcialmente con -220 MVAr, evidenciando el desequilibrio zonal. La cifra exacta de excedente capacitivo total no se especifica en los informes primarios, pero el rango de 1,05–2,4 GVAr es la referencia forense aceptada.\n\nLa pregunta técnica de continuación natural es: ¿cómo se distribuyó ese excedente entre las zonas sur y centro-norte, y qué papel jugó la inercia reducida en la propagación de la sobretensión?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 15.14,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A [continuación] del 1 %, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados…"
+      },
+      {
+        "title": "Anexo B — Tablas Forenses",
+        "heading": "Inyección reactiva anómala desde redes de distribución (12:22 CEST)",
+        "slug": "/anexo-tablas",
+        "anchor": "inyeccion-reactiva-distribucion",
+        "url": "/anexo-tablas#inyeccion-reactiva-distribucion",
+        "chunkType": "table",
+        "relevance": 12.21,
+        "excerpt": "Capítulo: Anexo B — Tablas Forenses Sección: Inyección reactiva anómala desde redes de distribución (12:22 CEST) Subsección: Maniobras de Tensión y Red de Distribución Anexo B — Tabla forense Categoría: Maniobras de…"
+      },
+      {
+        "title": "Glosario Técnico",
+        "heading": "Potencia reactiva",
+        "slug": "/glosario",
+        "anchor": "potencia-reactiva",
+        "url": "/glosario#potencia-reactiva",
+        "chunkType": "glossary",
+        "relevance": 9.91,
+        "excerpt": "Capítulo: Glosario Técnico Sección: Potencia reactiva Subsección: N/A Potencia reactiva: Componente de la potencia eléctrica asociada al almacenamiento y liberación de energía en campos eléctricos y magnéticos (no…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "Consenso y discrepancias: la fractura técnica en tres ejes",
+        "slug": "/analisis-informes",
+        "anchor": "divergencias-tecnicas-irreconciliables",
+        "url": "/analisis-informes#divergencias-tecnicas-irreconciliables",
+        "chunkType": "comparison",
+        "relevance": 9.86,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: Consenso y discrepancias: la fractura técnica en tres ejes Subsección: Divergencias técnicas irreconciliables | Eje de disputa | Gobierno / REE | ICAI / AELEC |…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Análisis del incidente",
+      "Anexo B — Tablas Forenses",
+      "Glosario Técnico",
+      "Análisis de los Informes Oficiales"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "inyeccion-reactiva-distribucion",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Inyección reactiva anómala desde redes de distribución (12:22 CEST)",
+        "description": "Esta inyección capacitiva desde distribución elevó tensiones en transporte y es el lado opuesto del problema.",
+        "origin": "REE p. 6; Comité 28-A",
+        "url": "/anexo-tablas#inyeccion-reactiva-distribucion",
+        "columns": [
+          {
+            "key": "zona",
+            "label": "Zona"
+          },
+          {
+            "key": "q_inyectada_mvar",
+            "label": "Q inyectada hacia red de transporte (MVAr)"
+          },
+          {
+            "key": "observacion",
+            "label": "Observación"
+          }
+        ],
+        "sampleRows": [
+          {
+            "zona": "Madrid",
+            "q_inyectada_mvar": "575",
+            "observacion": "Capacitivo neto"
+          },
+          {
+            "zona": "Valencia",
+            "q_inyectada_mvar": "405",
+            "observacion": "Capacitivo neto"
+          },
+          {
+            "zona": "Resto España",
+            "q_inyectada_mvar": "-220",
+            "observacion": "Compensación parcial"
+          }
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "maniobras-compensacion-reactiva",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Maniobras de compensación reactiva ejecutadas por REE entre 12:00 y 12:30",
+        "description": "Demuestra que el control de tensión es esencialmente un problema de gestión de potencia reactiva en tiempo real.",
+        "origin": "Compass Lexecon/INESC TEC ¶32-34, ¶156, ¶163; REE pp. 4-6",
+        "url": "/anexo-tablas#maniobras-compensacion-reactiva",
+        "columns": [
+          {
+            "key": "accion",
+            "label": "Acción"
+          },
+          {
+            "key": "cantidad",
+            "label": "Cantidad"
+          },
+          {
+            "key": "mvar_afectados",
+            "label": "MVAr afectados"
+          },
+          {
+            "key": "comentario",
+            "label": "Comentario"
+          }
+        ],
+        "sampleRows": [
+          {
+            "accion": "Reactores desconectados (12:00-12:30)",
+            "cantidad": "8",
+            "mvar_afectados": "-1.150 MVAr (capacidad absorción)",
+            "comentario": "Para combatir bajas tensiones"
+          },
+          {
+            "accion": "Reactores reconectados (12:22-12:30)",
+            "cantidad": "5",
+            "mvar_afectados": "+750 MVAr",
+            "comentario": "Tras subida de tensión"
+          },
+          {
+            "accion": "Saldo neto reactores",
+            "cantidad": "",
+            "mvar_afectados": "-400 MVAr",
+            "comentario": "Pérdida absorción"
+          }
+        ],
+        "relevance": 0.67
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?"
+    ],
+    "intent": "causal"
+  },
+  {
+    "question": "Enséñame los datos de tensión en Carmona durante la Fase 2",
+    "elapsed_ms": 9693,
+    "status": 200,
+    "answer": "En el panel derecho, el **Sismógrafo del Colapso** muestra la evolución de la tensión en Carmona durante los 27 segundos críticos. Busca la curva de tensión (en kV o p.u.) entre los timestamps 12:32:57 y 12:33:18 CEST — justo después del disparo raíz en Granada. Verás que la tensión no cae, sino que **asciende bruscamente** por encima de 1,10 p.u., alcanzando valores próximos a 440 kV en barras colectoras.\n\nEsa subida es la firma del fenómeno Tap-Lag que define la Fase 2. Al perder el transformador de Granada (que absorbía 165 MVAr inductivos), la red se quedó sin su principal sumidero de reactiva capacitiva. Las líneas de 400 kV, cargadas con alta generación solar, inyectaban excedente capacitivo que ya no podía compensarse. Los cambiadores de tomas (OLTCs) de los transformadores intentaron regular la tensión en los secundarios de 220 kV, pero su respuesta mecánica (varios segundos por paso) era demasiado lenta para un escalón de tensión que subía a razón de decenas de kV por segundo. El resultado fue una divergencia: la tensión en 400 kV se disparaba mientras la red de distribución aún intentaba seguirla, estirando el ángulo de fase hasta el límite de las protecciones de los inversores.\n\nEste aspecto no está cubierto en el TFG en cuanto a datos de tensión específicos de Carmona más allá de lo indicado. La pregunta técnica que surge de esta asimetría es: ¿qué umbral de tensión superaron las protecciones de los inversores Grid-Following para disparar en cascada, y por qué ese umbral no se había calibrado para un escenario de sobretensión en lugar de subtensión?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Demanda Peninsular",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-1",
+        "url": "/anexo-entsoe#chart-1",
+        "chunkType": "data_figure",
+        "relevance": 2.9,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Demanda Peninsular Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API ID:…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Imbalance Prices",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-20",
+        "url": "/anexo-entsoe#chart-20",
+        "chunkType": "data_figure",
+        "relevance": 2.47,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Imbalance Prices Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API ID: chart-20…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 1.33,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A [continuación] del 1 %, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados…"
+      },
+      {
+        "title": "Actualización 2026: Un Año Después",
+        "heading": "Actualización 2026: Un Año Después",
+        "slug": "/08.5-actualizacion-2026",
+        "anchor": "",
+        "url": "/08.5-actualizacion-2026",
+        "chunkType": "comparison",
+        "relevance": 1.19,
+        "excerpt": "Capítulo: Actualización 2026: Un Año Después Sección: Actualización 2026: Un Año Después Subsección: N/A [continuación] técnico inédito: el overvoltage-driven blackout (apagón inducido por sobretensión). La secuencia…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+      "Análisis del incidente",
+      "Actualización 2026: Un Año Después",
+      "Resiliencia y Futuro"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-1",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Demanda Peninsular",
+        "description": "Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado. La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.",
+        "whyMatters": "Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.",
+        "description_en": "During the morning of April 28, the peninsular real demand was between 19,000 and 27,000 MW — well below the historical peak (>45,000 MW) and consistent with a spring Monday with high solar generation. The scheduled and forecast curves overlapped with the real demand with a deviation of less than 2%, demonstrating that the low-load scenario was perfectly anticipated by the operator. This apparent normality makes what follows all the more striking: between 12:30 and 12:35 CEST, real demand fell from 25,184 MW to 0 MW in a vertical step. Scheduled and forecast values were cancelled simultaneously. The SCADA telemetry units themselves stopped transmitting because they lost their power supply. This was not a gradual drop; it was a certified voltage zero.\n\nRecovery was stepped and extremely slow. From 13:05 CEST, token values appeared — 37 MW, then 204 MW — growing throughout the following afternoon and night. It was not until the early hours of April 29 that demand again exceeded 20,000 MW, and the full day of the 29th was spent in progressive normalisation. The system needed almost 19 hours to restore supply across the entire peninsula.",
+        "whyMatters_en": "This is the most important chart in the analysis. It is the flat electrocardiogram of the Iberian system. With 5-minute resolution, it documents the exact moment of total collapse, the absence of prior gradual degradation signals in demand (confirming that the failure was dynamic and ultra-fast), and the slowness of restoration via Top-Down strategies (support from France) and Bottom-Up (autonomous start-up of hydroelectric plants). It is the mandatory entry point for any forensic analysis of the 28-A event.",
+        "url": "/anexo-entsoe#chart-1",
+        "relevance": 1
+      },
+      {
+        "id": "chart-20",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Imbalance Prices",
+        "description": "Esta gráfica muestra la evolución de los precios de los desvíos de balance en España durante el evento. Los precios de desvíos reflejan el coste marginal de activar reservas de frecuencia (aFRR, mFRR) para corregir los desequilibrios entre generación y demanda. En los intervalos previos al colapso, los precios de desvíos mostraban valores elevados, indicando un sistema bajo estrés operativo. Durante la crisis, los precios de desvíos se desplomaron técnicamente a cero o a valores no representativos, porque el mecanismo de mercado de desvíos dejó de funcionar al colapsar la red. La recuperación de precios significativos durante la Operación Reforzada documenta el coste extraordinario de reactivar el sistema.",
+        "whyMatters": "Los precios de desvíos son el termómetro más sensible del estrés operativo en tiempo real. Su evolución en las horas previas al colapso muestra señales de tensión que los modelos de seguridad estáticos no captaron. Su desaparición durante el blackout y su reaparición durante la Operación Reforzada documentan el ciclo completo de colapso y recuperación desde la perspectiva de los mercados de balance.",
+        "description_en": "This chart shows the evolution of balance imbalance prices in Spain during the event. Imbalance prices reflect the marginal cost of activating frequency reserves (aFRR, mFRR) to correct imbalances between generation and demand. In the intervals before the collapse, imbalance prices showed high values, indicating a system under operational stress.\n\nDuring the crisis, imbalance prices technically collapsed to zero or non-representative values, because the market mechanism for imbalances stopped functioning when the grid collapsed. The recovery of significant prices during the Reinforced Operation documents the extraordinary cost of reactivating the system.",
+        "whyMatters_en": "Imbalance prices are the most sensitive thermometer of real-time operational stress. Their evolution in the hours before the collapse shows stress signals that static security models did not capture. Their disappearance during the blackout and their reappearance during the Reinforced Operation document the complete cycle of collapse and recovery from the perspective of balancing markets.",
+        "url": "/anexo-entsoe#chart-20",
+        "relevance": 1
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?"
+    ],
+    "intent": "visual"
+  },
+  {
+    "question": "HVDC",
+    "elapsed_ms": 8134,
+    "status": 200,
+    "answer": "HVDC son las siglas de High Voltage Direct Current, o corriente continua de alta tensión. Es una tecnología que permite transmitir grandes bloques de potencia a larga distancia con menores pérdidas que la corriente alterna, y que además posibilita la interconexión de sistemas asíncronos.\n\nEn el contexto del 28-A, el enlace HVDC clave fue INELFE-1 (Santa Llogaia–Baixas), de 2.000 MW nominales, que conecta España con Francia. Su modo de control fue una decisión crítica. Operaba en modo PMODE3 (emulación AC), pero a las 12:08 CEST se cambió a PMODE1 (potencia constante) para amortiguar oscilaciones de 0,6 Hz. Eso fijó una exportación de 1.000 MW hacia Francia sin capacidad de respuesta dinámica.\n\nCuando el sistema colapsó, las líneas AC transpirenaicas intentaron importar hasta 4.609 MVAr de emergencia desde Francia, pero el enlace HVDC, al carecer de un bucle de control de frecuencia, continuó extrayendo esos 1.000 MW del sistema ibérico. El soporte efectivo desde Francia quedó así reducido. En el panel derecho, el Dashboard de Interconexiones muestra los flujos de exportación masiva hacia Francia y Portugal justo antes del colapso, confirmando el estrangulamiento estructural de la capacidad de soporte dinámico.\n\nLa propuesta regulatoria de REE incluye, precisamente, la activación de control potencia-frecuencia en enlaces HVDC actuales y futuros para evitar que un enlace fijo empeore un colapso como este. ¿Cómo afectó la inercia reducida del sistema ibérico a la velocidad de propagación de la cascada?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Glosario Técnico",
+        "heading": "HVDC",
+        "slug": "/glosario",
+        "anchor": "hvdc",
+        "url": "/glosario#hvdc",
+        "chunkType": "glossary",
+        "relevance": 2,
+        "excerpt": "Capítulo: Glosario Técnico Sección: HVDC Subsección: N/A HVDC: High Voltage Direct Current."
+      },
+      {
+        "title": "Herramientas Interactivas — Anexo C",
+        "heading": "Dashboard de Interconexiones — intercambios internacionales",
+        "slug": "/anexo-interactivos#interconnection",
+        "anchor": "interconnection",
+        "url": "/anexo-interactivos#interconnection#interconnection",
+        "chunkType": "graphic",
+        "relevance": 1.81,
+        "excerpt": "Capítulo: Herramientas Interactivas — Anexo C Sección: Dashboard de Interconexiones — intercambios internacionales Subsección: N/A Dashboard de Interconexiones — intercambios internacionales: Análisis del…"
+      },
+      {
+        "title": "Anexo B — Tablas Forenses",
+        "heading": "Enlace HVDC Santa Llogaia – Baixas: parámetros operativos",
+        "slug": "/anexo-tablas",
+        "anchor": "hvdc-santa-llogaia-parametros",
+        "url": "/anexo-tablas#hvdc-santa-llogaia-parametros",
+        "chunkType": "table",
+        "relevance": 1.68,
+        "excerpt": "Capítulo: Anexo B — Tablas Forenses Sección: Enlace HVDC Santa Llogaia – Baixas: parámetros operativos Subsección: Oscilaciones y Estabilidad Dinámica Anexo B — Tabla forense Categoría: Oscilaciones y Estabilidad…"
+      },
+      {
+        "title": "Glosario Técnico",
+        "heading": "IBR",
+        "slug": "/glosario",
+        "anchor": "ibr",
+        "url": "/glosario#ibr",
+        "chunkType": "glossary",
+        "relevance": 0.73,
+        "excerpt": "Capítulo: Glosario Técnico Sección: IBR Subsección: N/A IBR: Recursos de generación o almacenamiento que se interconectan a la red de corriente alterna exclusivamente a través de electrónica de potencia, careciendo de…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Glosario Técnico",
+      "Herramientas Interactivas — Anexo C",
+      "Anexo B — Tablas Forenses",
+      "Contexto Técnico"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "interconnection",
+        "type": "interactive",
+        "source": "annex_c",
+        "title": "Dashboard de Interconexiones — intercambios internacionales",
+        "description": "Análisis del estrangulamiento estructural de los intercambios internacionales. Francia, Portugal, Marruecos, HVDC.",
+        "slug": "/anexo-interactivos#interconnection",
+        "url": "/anexo-interactivos#interconnection",
+        "keywords": [
+          "interconexión",
+          "Francia",
+          "Portugal",
+          "Marruecos",
+          "HVDC",
+          "INELFE",
+          "intercambios",
+          "exportación",
+          "importación"
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "chart-1",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Demanda Peninsular",
+        "description": "Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado. La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.",
+        "whyMatters": "Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.",
+        "description_en": "During the morning of April 28, the peninsular real demand was between 19,000 and 27,000 MW — well below the historical peak (>45,000 MW) and consistent with a spring Monday with high solar generation. The scheduled and forecast curves overlapped with the real demand with a deviation of less than 2%, demonstrating that the low-load scenario was perfectly anticipated by the operator. This apparent normality makes what follows all the more striking: between 12:30 and 12:35 CEST, real demand fell from 25,184 MW to 0 MW in a vertical step. Scheduled and forecast values were cancelled simultaneously. The SCADA telemetry units themselves stopped transmitting because they lost their power supply. This was not a gradual drop; it was a certified voltage zero.\n\nRecovery was stepped and extremely slow. From 13:05 CEST, token values appeared — 37 MW, then 204 MW — growing throughout the following afternoon and night. It was not until the early hours of April 29 that demand again exceeded 20,000 MW, and the full day of the 29th was spent in progressive normalisation. The system needed almost 19 hours to restore supply across the entire peninsula.",
+        "whyMatters_en": "This is the most important chart in the analysis. It is the flat electrocardiogram of the Iberian system. With 5-minute resolution, it documents the exact moment of total collapse, the absence of prior gradual degradation signals in demand (confirming that the failure was dynamic and ultra-fast), and the slowness of restoration via Top-Down strategies (support from France) and Bottom-Up (autonomous start-up of hydroelectric plants). It is the mandatory entry point for any forensic analysis of the 28-A event.",
+        "url": "/anexo-entsoe#chart-1",
+        "relevance": 0.98
+      }
+    ],
+    "followUps": [
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?",
+      "¿Por qué la condición de isla energética agravó el apagón ibérico?"
+    ],
+    "intent": "general"
+  },
+  {
+    "question": "P.O. 7.4",
+    "elapsed_ms": 1795,
+    "status": 400,
+    "answer": "La pregunta es demasiado corta. Prueba a formularla con más detalle. Por ejemplo: \"¿Qué es el Tap-Lag?\" o \"¿Cuánta demanda se perdió?\"",
+    "error": "Pregunta demasiado corta (mínimo 10 caracteres).",
+    "sources": [],
+    "confidence": "sin_evidencia",
+    "confidence_reason": "Pregunta demasiado corta (mínimo 10 caracteres).",
+    "relatedChapters": [],
+    "suggestedFigures": [],
+    "visualArtifacts": [],
+    "followUps": [],
+    "intent": "general"
+  },
+  {
+    "question": "RoCoF",
+    "elapsed_ms": 2019,
+    "status": 400,
+    "answer": "La pregunta es demasiado corta. Prueba a formularla con más detalle. Por ejemplo: \"¿Qué es el Tap-Lag?\" o \"¿Cuánta demanda se perdió?\"",
+    "error": "Pregunta demasiado corta (mínimo 10 caracteres).",
+    "sources": [],
+    "confidence": "sin_evidencia",
+    "confidence_reason": "Pregunta demasiado corta (mínimo 10 caracteres).",
+    "relatedChapters": [],
+    "suggestedFigures": [],
+    "visualArtifacts": [],
+    "followUps": [],
+    "intent": "general"
+  },
+  {
+    "question": "¿Qué figuras tiene el Anexo III sobre la cascada de protecciones?",
+    "elapsed_ms": 7575,
+    "status": 200,
+    "answer": "El Anexo III contiene dos figuras principales. La primera es la **Figura A3.1**, un cronograma de implementación del P.O. 7.4 con fuentes de CNMC y BOE. La segunda es la **Figura A3.2**, titulada *Cronología del colapso por sobretensión del 28‑A*, que integra datos de ENTSO‑E, REE e IIT‑ICAI.\n\nEn el panel derecho, el **Mapa Animado del Colapso** te permite seguir visualmente la secuencia de desconexiones IBR. Busca el instante **12:32:57 CEST** — justo después del disparo raíz en Granada — y observa cómo las plantas fotovoltaicas del sur peninsular empiezan a desaparecer en cadena. Esa propagación geográfica confirma que el mecanismo de disparo no fue aleatorio, sino que siguió la onda de sobretensión que se extendió desde el foco inicial.\n\nLa Figura A3.2 es la referencia cronológica que estructura todo el análisis forense: desde el disparo raíz hasta la separación de Francia y el cero de tensión. Sin esa línea de tiempo, no podrías distinguir entre causas y efectos en los 21 segundos críticos de la Fase 2.\n\n¿Quieres que desglose los eventos de la Figura A3.2 segundo a segundo, o prefieres centrarte en el mecanismo de retroalimentación del bucle ANSI 59?",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Anexo — Cascada de Protecciones y Desconexiones",
+        "heading": "Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.",
+        "slug": "/anexo-cascada-protecciones-desconexiones",
+        "anchor": "figura-a3-2--cronolog-a-del-colapso-por-",
+        "url": "/anexo-cascada-protecciones-desconexiones#figura-a3-2--cronolog-a-del-colapso-por-",
+        "chunkType": "data_figure",
+        "relevance": 16.51,
+        "excerpt": "Capítulo: Anexo — Cascada de Protecciones y Desconexiones Sección: Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI. Subsección: Cascada de Protecciones y Desconexiones…"
+      },
+      {
+        "title": "Anexo III · Protecciones, cascada y desconexiones",
+        "heading": "Anexo III · Protecciones, cascada y desconexiones",
+        "slug": "/anexo-cascada-protecciones-desconexiones",
+        "anchor": "",
+        "url": "/anexo-cascada-protecciones-desconexiones",
+        "chunkType": "comparison",
+        "relevance": 13.98,
+        "excerpt": "Capítulo: Anexo III · Protecciones, cascada y desconexiones Sección: Anexo III · Protecciones, cascada y desconexiones Subsección: N/A El presente anexo articula cronológicamente la secuencia de disparos y actuaciones…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Forecast Transfer Capacities",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-17",
+        "url": "/anexo-entsoe#chart-17",
+        "chunkType": "data_figure",
+        "relevance": 11.16,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Forecast Transfer Capacities Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Total Load — ES + PT",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-2",
+        "url": "/anexo-entsoe#chart-2",
+        "chunkType": "data_figure",
+        "relevance": 9.43,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Total Load — ES + PT Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API ID:…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Anexo — Cascada de Protecciones y Desconexiones",
+      "Anexo III · Protecciones, cascada y desconexiones",
+      "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+      "Análisis del incidente"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "map",
+        "type": "interactive",
+        "source": "annex_c",
+        "title": "Mapa Animado del Colapso — cascada de desconexiones",
+        "description": "Simulación geográfica interactiva de la cascada de desconexiones IBR durante el 28-A.",
+        "slug": "/anexo-interactivos#map",
+        "url": "/anexo-interactivos#map",
+        "keywords": [
+          "mapa",
+          "cascada",
+          "desconexiones",
+          "geográfico",
+          "propagación",
+          "IBR",
+          "apagón mapa"
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "figura-a3-2--cronolog-a-del-colapso-por-",
+        "type": "interactive",
+        "source": "annex_figures",
+        "title": "Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.",
+        "description": "Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.",
+        "path": "",
+        "url": "/anexo-cascada-protecciones-desconexiones#figura-a3-2--cronolog-a-del-colapso-por-",
+        "keywords": [
+          "figura",
+          "cronologia",
+          "colapso",
+          "sobretension",
+          "fuentes",
+          "entsoe",
+          "iiticai"
+        ],
+        "relevance": 0.61
+      }
+    ],
+    "followUps": [
+      "¿Qué simulador muestra mejor la secuencia completa del colapso?",
+      "¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?",
+      "¿Dónde se ve mejor la caída de frecuencia durante los 27 segundos críticos?"
+    ],
+    "intent": "visual"
+  },
+  {
+    "question": "¿Qué muestra el Anexo VI sobre la estrategia de reposición?",
+    "elapsed_ms": 9993,
+    "status": 200,
+    "answer": "El Anexo VI documenta que la reposición tras el cero de tensión se apoyó exclusivamente en máquinas síncronas con capacidad de arranque autónomo —hidroeléctricas y ciclos combinados de gas natural—, ya que el 82% del parque generador eran inversores grid-following, incapaces de formar tensión sin red externa. Las hidroeléctricas fueron las primeras en energizar tramos aislados, pero la operación reveló dificultades críticas: la energización de líneas en vacío generó transitorios capacitivos que colapsaron las islas de Cantabria y Levante, obligando a reiniciarlas. La central asignada a Madrid no logró estabilizar sus parámetros tras varios intentos, y el arranque autónomo en Andalucía resultó infructuoso, lo que forzó a priorizar el apoyo externo desde Marruecos como referencia de tensión para la zona sur.\n\nUna vez que las islas hidroeléctricas lograron estabilizarse mínimamente, la estrategia viró hacia la consolidación electromecánica mediante ciclos combinados y servicios auxiliares nucleares. Estas máquinas no se conectaron para satisfacer demanda comercial, sino para aportar potencia de cortocircuito, inercia y capacidad de gestión dinámica de reactiva —el \"andamiaje electromagnético\" del sistema— antes de autorizar la reconexión masiva de la demanda. En el panel derecho, la gráfica \"Demanda Peninsular\" muestra cómo la recuperación fue escalonada y extremadamente lenta: tras el escalón vertical a cero entre las 12:30 y 12:35 CEST, aparecen valores testimoniales de 37 MW a las 13:05, y no es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.\n\nEl sistema portugués ejecutó un esquema análogo apoyado en la hidroeléctrica HPP 1-Centro y el ciclo combinado CCGT 1-Norte. A las 20:22 CEST, la sincronización de las islas portuguesas con las zonas españolas ya acopladas a la frecuencia continental europea —verificada mediante relés synchro-check— garantizó la viabilidad de la reposición total de la península ibérica. La implicación clave es que la reposición no fue un proceso lineal, sino una secuencia de intentos fallidos y correcciones que dependió críticamente de la capacidad de formar islas estables con baja potencia de cortocircuito.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Anexo VI · Reposición, Black Start y operación de emergencia",
+        "heading": "Anexo VI · Reposición, Black Start y operación de emergencia",
+        "slug": "/anexo-reposicion-blackstart",
+        "anchor": "",
+        "url": "/anexo-reposicion-blackstart",
+        "chunkType": "normal",
+        "relevance": 3.28,
+        "excerpt": "Capítulo: Anexo VI · Reposición, Black Start y operación de emergencia Sección: Anexo VI · Reposición, Black Start y operación de emergencia Subsección: N/A Se recopilan en este dossier técnico los registros y…"
+      },
+      {
+        "title": "Reacción y Reposición",
+        "heading": "Estrategia Black Start: hidroeléctricas y ciclos combinados",
+        "slug": "/reaccion-reposicion",
+        "anchor": "estrategia-black-start-hidroelectricas-y-ciclos-combinados",
+        "url": "/reaccion-reposicion#estrategia-black-start-hidroelectricas-y-ciclos-combinados",
+        "chunkType": "comparison",
+        "relevance": 3.03,
+        "excerpt": "Capítulo: Reacción y Reposición Sección: Estrategia Black Start: hidroeléctricas y ciclos combinados Subsección: N/A [continuación] el proceso de isla desde cero. 10 s (CIGRE WG A2). En el 28-A, las islas de Cantabria y…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Demanda Peninsular",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-1",
+        "url": "/anexo-entsoe#chart-1",
+        "chunkType": "data_figure",
+        "relevance": 2.56,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Demanda Peninsular Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API ID:…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Subastas Explícitas de Capacidad",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-16",
+        "url": "/anexo-entsoe#chart-16",
+        "chunkType": "data_figure",
+        "relevance": 2.19,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Subastas Explícitas de Capacidad Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Anexo VI · Reposición, Black Start y operación de emergencia",
+      "Reacción y Reposición",
+      "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+      "Consecuencias Financieras y Costes de Resiliencia"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-1",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Demanda Peninsular",
+        "description": "Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado. La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.",
+        "whyMatters": "Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.",
+        "description_en": "During the morning of April 28, the peninsular real demand was between 19,000 and 27,000 MW — well below the historical peak (>45,000 MW) and consistent with a spring Monday with high solar generation. The scheduled and forecast curves overlapped with the real demand with a deviation of less than 2%, demonstrating that the low-load scenario was perfectly anticipated by the operator. This apparent normality makes what follows all the more striking: between 12:30 and 12:35 CEST, real demand fell from 25,184 MW to 0 MW in a vertical step. Scheduled and forecast values were cancelled simultaneously. The SCADA telemetry units themselves stopped transmitting because they lost their power supply. This was not a gradual drop; it was a certified voltage zero.\n\nRecovery was stepped and extremely slow. From 13:05 CEST, token values appeared — 37 MW, then 204 MW — growing throughout the following afternoon and night. It was not until the early hours of April 29 that demand again exceeded 20,000 MW, and the full day of the 29th was spent in progressive normalisation. The system needed almost 19 hours to restore supply across the entire peninsula.",
+        "whyMatters_en": "This is the most important chart in the analysis. It is the flat electrocardiogram of the Iberian system. With 5-minute resolution, it documents the exact moment of total collapse, the absence of prior gradual degradation signals in demand (confirming that the failure was dynamic and ultra-fast), and the slowness of restoration via Top-Down strategies (support from France) and Bottom-Up (autonomous start-up of hydroelectric plants). It is the mandatory entry point for any forensic analysis of the 28-A event.",
+        "url": "/anexo-entsoe#chart-1",
+        "relevance": 1
+      },
+      {
+        "id": "intercambios-internacionales-minuto",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Intercambios internacionales minuto a minuto T-30 a T+30",
+        "description": "Asimetría notable: HVDC seguía exportando 1.000 MW mientras AC importaba 3.807 MW (déficit real ≈ 4.800 MW antes de apertura AC).",
+        "origin": "ENTSO-E; REE; Comité 28-A",
+        "url": "/anexo-tablas#intercambios-internacionales-minuto",
+        "columns": [
+          {
+            "key": "tiempo",
+            "label": "Tiempo (min relativo a 12:33)"
+          },
+          {
+            "key": "esp_fra_mw",
+            "label": "España-Francia (MW)"
+          },
+          {
+            "key": "esp_por_mw",
+            "label": "España-Portugal (MW)"
+          },
+          {
+            "key": "esp_mar_mw",
+            "label": "España-Marruecos (MW)"
+          },
+          {
+            "key": "notas",
+            "label": "Notas"
+          }
+        ],
+        "sampleRows": [
+          {
+            "tiempo": "T-30 (12:03)",
+            "esp_fra_mw": "+3.000 exp.",
+            "esp_por_mw": "+2.545 exp.",
+            "esp_mar_mw": "+800 exp.",
+            "notas": "Pre-mitigación"
+          },
+          {
+            "tiempo": "T-25 (12:08)",
+            "esp_fra_mw": "+1.500 exp. (-800 reducción)",
+            "esp_por_mw": "+2.545 exp.",
+            "esp_mar_mw": "+800",
+            "notas": "Tras E1 oscilación"
+          },
+          {
+            "tiempo": "T-14 (12:19)",
+            "esp_fra_mw": "+1.000 exp. (HVDC)",
+            "esp_por_mw": "+2.545 exp.",
+            "esp_mar_mw": "+800",
+            "notas": "Tras E2 osc."
+          }
+        ],
+        "relevance": 0.84
+      }
+    ],
+    "followUps": [
+      "¿Por qué el Black Start hidroeléctrico fue crucial en la recuperación?",
+      "¿Qué limitaciones tenían los inversores grid-following durante la reposición?",
+      "¿Cuánto tardó en restaurarse el servicio a la península completa?"
+    ],
+    "intent": "general"
+  },
+  {
+    "question": "Teniendo en cuenta que REE argumenta que los generadores incumplieron el P.O. 7.4 y que ICAI contraargumenta que el mallado fue la causa directa de la saturación capacitiva, ¿es posible que ambos tengan razón simultáneamente y que el TFG lo reconozca?",
+    "elapsed_ms": 9791,
+    "status": 200,
+    "answer": "Sí, es posible, y el TFG lo reconoce explícitamente. La clave está en que ambos diagnósticos operan sobre eslabones distintos de la misma cadena causal. REE sostiene que los generadores no absorbieron la reactiva requerida según el P.O. 7.4, lo que es cierto en el sentido normativo: el parque generador no cumplió con su obligación de control de tensión. ICAI sostiene que el mallado de 11 líneas en vacío inyectó entre 1,05 y 2,4 GVAr por Efecto Ferranti, contrayendo el margen Q-V un 57 % y haciendo el colapso matemáticamente inevitable. Ambas afirmaciones son compatibles con la evidencia oscilográfica: el transitorio capacitivo superior a 2,4 GVAr requirió simultáneamente una decisión que lo provocase (el mallado) y una incapacidad de respuesta que impidiese contenerlo (el incumplimiento del P.O. 7.4).\n\nEl TFG no resuelve la discrepancia a favor de una postura, sino que la trata como un dato forense en sí mismo. En el panel derecho puedes ver la tabla comparativa de conclusiones por entidad investigadora: la fila de \"Responsabilidad principal\" muestra cómo REE apunta a los generadores y el IIT-ICAI al mallado, pero la columna de consenso técnico global (verde) indica que ambos factores son reconocidos como necesarios. La divergencia no es técnica sino distributiva: se refiere a la imputación de responsabilidad dentro de una cadena causal que todos los informes reconocen. Como concluye el TFG, \"leídas en conjunto, las cuatro narrativas no constituyen interpretaciones mutuamente excluyentes del mismo hecho, sino proyecciones parciales de un fenómeno multicapa\".\n\nLa implicación más importante es que el debate no es sobre los hechos, sino sobre quién debió haber actuado para evitarlos — y esa es una pregunta que la ingeniería sola no puede responder.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "Consenso y discrepancias: la fractura técnica en tres ejes",
+        "slug": "/analisis-informes",
+        "anchor": "divergencias-tecnicas-irreconciliables",
+        "url": "/analisis-informes#divergencias-tecnicas-irreconciliables",
+        "chunkType": "comparison",
+        "relevance": 1,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: Consenso y discrepancias: la fractura técnica en tres ejes Subsección: Divergencias técnicas irreconciliables | Eje de disputa | Gobierno / REE | ICAI / AELEC |…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "La visión del sector generador (ICAI / AELEC): mallado excesivo y colapso inevitable",
+        "slug": "/analisis-informes",
+        "anchor": "la-vision-del-sector-generador-icai-aelec-mallado-excesivo-y-colapso-inevitable",
+        "url": "/analisis-informes#la-vision-del-sector-generador-icai-aelec-mallado-excesivo-y-colapso-inevitable",
+        "chunkType": "comparison",
+        "relevance": 0.96,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: La visión del sector generador (ICAI / AELEC): mallado excesivo y colapso inevitable Subsección: N/A [continuación] sobre los hechos — es sobre la imputación de…"
+      },
+      {
+        "title": "Conclusiones",
+        "heading": "Conclusiones",
+        "slug": "/conclusiones",
+        "anchor": "",
+        "url": "/conclusiones",
+        "chunkType": "comparison",
+        "relevance": 0.84,
+        "excerpt": "Capítulo: Conclusiones Sección: Conclusiones Subsección: N/A [continuación] omisión del sujeto obligado por el P.O. 7.4 —. El IIT-ICAI lo sitúa en la maniobra de mallado del Operador del Sistema y en la inobservabilidad…"
+      },
+      {
+        "title": "Análisis del incidente",
+        "heading": "Análisis del incidente",
+        "slug": "/analisis-incidente",
+        "anchor": "",
+        "url": "/analisis-incidente",
+        "chunkType": "comparison",
+        "relevance": 0.76,
+        "excerpt": "Capítulo: Análisis del incidente Sección: Análisis del incidente Subsección: N/A [continuación] _Figura C1. Núñez de Balboa / precursores: oscilaciones y sobretensiones en Núñez de Balboa 400 kV durante los eventos…"
+      },
+      {
+        "title": "Impacto Comunicativo",
+        "heading": "Impacto Comunicativo",
+        "slug": "/impacto-comunicativo",
+        "anchor": "",
+        "url": "/impacto-comunicativo",
+        "chunkType": "comparison",
+        "relevance": 0.74,
+        "excerpt": "Capítulo: Impacto Comunicativo Sección: Impacto Comunicativo Subsección: N/A [continuación] consenso técnico (Informes periciales) | | :--- | :--- | :--- | | ABC | La red se encontraba \"a un papel de fumar\" de colapsar…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Análisis de los Informes Oficiales",
+      "Conclusiones",
+      "Análisis del incidente",
+      "Impacto Comunicativo",
+      "Consecuencias Financieras y Costes de Resiliencia"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "comparativa-conclusiones-entidades",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Comparativa de conclusiones por entidad investigadora",
+        "description": "Tabla comparativa idónea para sección de 'discusión' del TFG.",
+        "origin": "Comité 28-A; REE; ENTSO-E (Factual + Final); Compass Lexecon/INESC TEC",
+        "url": "/anexo-tablas#comparativa-conclusiones-entidades",
+        "columns": [
+          {
+            "key": "entidad",
+            "label": "Entidad"
+          },
+          {
+            "key": "fecha",
+            "label": "Fecha"
+          },
+          {
+            "key": "paginas",
+            "label": "Páginas"
+          },
+          {
+            "key": "causa_principal",
+            "label": "Causa principal identificada"
+          },
+          {
+            "key": "responsable",
+            "label": "Responsable señalado"
+          }
+        ],
+        "sampleRows": [
+          {
+            "entidad": "REE",
+            "fecha": "18-jun-2025",
+            "paginas": "15",
+            "causa_principal": "Sobretensión por incumplimiento P.O. 7.4",
+            "responsable": "Generadores RCR y convencionales no compliance"
+          },
+          {
+            "entidad": "Gobierno (Comité 28-A)",
+            "fecha": "17-jun-2025",
+            "paginas": "182",
+            "causa_principal": "Multifactorial: sobretensión + planificación insuficiente",
+            "responsable": "Multireparto: REE + algunas eléctricas"
+          },
+          {
+            "entidad": "Compass Lexecon/INESC TEC",
+            "fecha": "28-jul-2025",
+            "paginas": "62",
+            "causa_principal": "Fallo sistémico control de tensión por REE",
+            "responsable": "REE (gestión de reactiva)"
+          }
+        ],
+        "relevance": 1
+      },
+      {
+        "id": "compass-lexecon",
+        "type": "table",
+        "source": "annex_b",
+        "title": "Comparativa de Conclusiones (Compass Lexecon / INESC TEC)",
+        "description": "",
+        "origin": "Informe Compass Lexecon",
+        "url": "/anexo-tablas#compass-lexecon",
+        "columns": [
+          {
+            "key": "entity",
+            "label": "Entidad"
+          },
+          {
+            "key": "point1",
+            "label": "1"
+          },
+          {
+            "key": "point2",
+            "label": "2"
+          },
+          {
+            "key": "point3",
+            "label": "3"
+          },
+          {
+            "key": "point4",
+            "label": "4"
+          },
+          {
+            "key": "point5",
+            "label": "5"
+          },
+          {
+            "key": "point6",
+            "label": "6"
+          },
+          {
+            "key": "point7",
+            "label": "7"
+          },
+          {
+            "key": "point8",
+            "label": "8"
+          }
+        ],
+        "sampleRows": [
+          {
+            "entity": "Gobierno de España",
+            "point1": "No se analiza",
+            "point2": "Se produjeron fluctuaciones relevantes",
+            "point3": "Menor número de grupos térmicos acoplados del año",
+            "point4": "Se produjeron fluctuaciones relevantes",
+            "point5": "El cambio de interconexión a modo fijo agravó la situación",
+            "point6": "No cumplió normativa",
+            "point7": "Círculo vicioso de sobretensión y algunos disparos incorrectos",
+            "point8": "No se analiza"
+          },
+          {
+            "entity": "Red Eléctrica",
+            "point1": "No se analiza",
+            "point2": "No se analiza",
+            "point3": "Fue adecuado",
+            "point4": "La situación era estable",
+            "point5": "El cambio de interconexión a modo fijo NO agravó la situación",
+            "point6": "No cumplió normativa",
+            "point7": "Disparos incorrectos",
+            "point8": "No se analiza"
+          },
+          {
+            "entity": "Compass Lexecon / INESC TEC",
+            "point1": "Han aumentado en los últimos años",
+            "point2": "Se produjeron fluctuaciones relevantes",
+            "point3": "La menor capacidad de control tensión en el año y más escasa en el sur",
+            "point4": "Se produjeron fluctuaciones relevantes",
+            "point5": "Pendiente de análisis",
+            "point6": "No existía suficiente generación convencional para controlar tensión",
+            "point7": "Parecen poco probables fallos simultáneos sin una causa sistémica",
+            "point8": "Disminución de fluctuaciones"
+          }
+        ],
+        "relevance": 0.93
+      }
+    ],
+    "followUps": [
+      "¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?"
+    ],
+    "intent": "comparison"
+  },
+  {
+    "question": "What was the role of the HVDC link with France during the collapse?",
+    "elapsed_ms": 8537,
+    "status": 200,
+    "answer": "El enlace HVDC con Francia (INELFE) tuvo un comportamiento crítico y contradictorio durante el colapso. En los segundos previos a la separación, el sistema ibérico estaba exportando 870 MW hacia Francia, lo que ya reducía las reservas internas de inercia. Cuando la frecuencia comenzó a caer, el control del enlace no invirtió el flujo para importar soporte desde el sistema continental. En lugar de eso, continuó extrayendo aproximadamente 1.000 MW del sistema ibérico, porque carecía de un bucle de control de frecuencia que pudiese cambiar el sentido del flujo ante una emergencia.\n\nEsto implica que el soporte efectivo desde Francia quedó muy por debajo del máximo teórico disponible. A las 12:33:21 CEST, las líneas de corriente alterna con Francia abrieron por pérdida de sincronismo, aislando completamente la península. En el panel derecho, la gráfica \"Cross-Border Physical Flows\" muestra cómo el flujo neto hacia Francia se mantiene positivo (exportación) hasta el instante mismo de la separación, sin el cambio de signo que cabría esperar en una respuesta de emergencia.\n\nLa consecuencia directa fue que el sistema ibérico perdió el único apoyo de inercia externa disponible, acelerando la cascada hacia el cero de tensión a las 12:33:29 CEST. La reforma posterior de PICASSO, detallada en el capítulo de reformas institucionales, obligó a que estos enlaces puedan ser sobrescritos manualmente por los operadores durante estados de alerta, precisamente para evitar que un flujo programado comercialmente impida la inyección de estabilización direccional.",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Análisis de los Informes Oficiales",
+        "heading": "La visión del Gobierno y REE: causalidad multifactorial e incumplimiento normativo",
+        "slug": "/analisis-informes",
+        "anchor": "secuencia-oficial-de-eventos-desencadenantes-ree",
+        "url": "/analisis-informes#secuencia-oficial-de-eventos-desencadenantes-ree",
+        "chunkType": "normal",
+        "relevance": 9.6,
+        "excerpt": "Capítulo: Análisis de los Informes Oficiales Sección: La visión del Gobierno y REE: causalidad multifactorial e incumplimiento normativo Subsección: Secuencia oficial de eventos desencadenantes (REE) <table> <thead>…"
+      },
+      {
+        "title": "Glosario Técnico",
+        "heading": "Emergent norm theory",
+        "slug": "/glosario",
+        "anchor": "emergent-norm-theory",
+        "url": "/glosario#emergent-norm-theory",
+        "chunkType": "glossary",
+        "relevance": 9.39,
+        "excerpt": "Capítulo: Glosario Técnico Sección: Emergent norm theory Subsección: N/A Emergent norm theory: La teoría de las normas emergentes (Turner y Killian) sostiene que, frente a las visiones del pánico masivo, los grupos en…"
+      },
+      {
+        "title": "Resiliencia y Futuro",
+        "heading": "Resiliencia y Futuro",
+        "slug": "/resiliencia-futuro",
+        "anchor": "",
+        "url": "/resiliencia-futuro",
+        "chunkType": "comparison",
+        "relevance": 9.26,
+        "excerpt": "Capítulo: Resiliencia y Futuro Sección: Resiliencia y Futuro Subsección: N/A [continuación] (post-2025) | | --- | --- | --- | | Naturaleza del control | Estática y asimétrica. Operación por escalones. | Dinámica,…"
+      },
+      {
+        "title": "El Día Después: Reformas Institucionales",
+        "heading": "El Día Después: Reformas Institucionales",
+        "slug": "/dimension-europea/dia-despues",
+        "anchor": "",
+        "url": "/dimension-europea/dia-despues",
+        "chunkType": "causal",
+        "relevance": 9.25,
+        "excerpt": "Capítulo: El Día Después: Reformas Institucionales Sección: El Día Después: Reformas Institucionales Subsección: N/A [continuación] 1,46 h). ACER dictaminó que utilizar rangos estadísticos socava la solidez legal…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Análisis de los Informes Oficiales",
+      "Glosario Técnico",
+      "Resiliencia y Futuro",
+      "El Día Después: Reformas Institucionales"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-14",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Cross-Border Physical Flows",
+        "description": "Esta gráfica muestra la evolución horaria de los flujos de potencia activa física (MW) en las fronteras de España con Francia y Portugal. A partir de las 07:00 UTC, el flujo con Portugal se invirtió: España comenzó a exportar hacia Portugal (más de 2.300 MW), consecuencia del excedente solar que hundía los precios a valores negativos. El colapso se manifestó primero en la frontera francesa. En el intervalo 10:00–11:00 UTC, las exportaciones a Francia se anularon por completo: las protecciones OST (Out of Step) abrieron las líneas AC transpirenaicas aislando a España del continente. No fue hasta las 22:00–23:00 UTC del 29 de abril cuando reaparecieron flujos significativos — casi 36 horas después del inicio del apagón.",
+        "whyMatters": "La cronología de los cierres de frontera — España primero, Portugal después — permite reconstruir la secuencia exacta del aislamiento ibérico. La apertura de las líneas transpirenaicas a las 10:33 UTC (12:33 CEST) no fue una consecuencia del apagón: fue su detonante inmediato. El intento del sistema de importar más de 4.600 MW de emergencia desde Francia — muy por encima de la capacidad prevista de 550 MW — provocó la pérdida de sincronismo y la apertura automática de los circuitos.",
+        "description_en": "This chart shows the hourly evolution of actual physical active power flows (MW) at Spain's borders with France and Portugal. From 07:00 UTC, the flow with Portugal reversed: Spain began exporting to Portugal (more than 2,300 MW), a consequence of the solar surplus that was pushing prices to negative values.\n\nThe collapse manifested first at the French border. In the 10:00–11:00 UTC interval, exports to France were completely cancelled: OST (Out of Step) protections opened the trans-Pyrenean AC lines, isolating Spain from the continent. It was not until 22:00–23:00 UTC on April 29 that significant flows reappeared — almost 36 hours after the start of the blackout.",
+        "whyMatters_en": "The chronology of border closures — Spain first, Portugal afterwards — allows the exact sequence of Iberian isolation to be reconstructed. The opening of the trans-Pyrenean lines at 10:33 UTC (12:33 CEST) was not a consequence of the blackout: it was its immediate trigger. The system's attempt to import more than 4,600 MW of emergency power from France — far above the forecasted capacity of 550 MW — caused the loss of synchronism and the automatic opening of the circuits.",
+        "url": "/anexo-entsoe#chart-14",
+        "relevance": 1
+      },
+      {
+        "id": "chart-1",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Demanda Peninsular",
+        "description": "Durante la mañana del 28 de abril, la demanda real peninsular se situaba entre 19.000 y 27.000 MW — muy por debajo de la punta histórica (>45.000 MW) y coherente con un lunes de primavera con alta generación solar. Las curvas de programación y previsión se solapaban con la demanda real con una desviación inferior al 2 %, demostrando que el escenario de baja carga era perfectamente anticipado por el operador. Esta aparente normalidad hace aún más llamativo lo que ocurre a continuación: entre las 12:30 y las 12:35 CEST la demanda real cae de 25.184 MW a 0 MW en un escalón vertical. La programación y la previsión se anulan simultáneamente. Los propios equipos de telemedida SCADA dejan de transmitir porque pierden su alimentación eléctrica. No es una caída gradual; es un cero de tensión certificado. La recuperación es escalonada y extremadamente lenta. A partir de las 13:05 CEST aparecen valores testimoniales — 37 MW, luego 204 MW — que crecen a lo largo de la tarde y la noche siguientes. No es hasta la madrugada del 29 de abril cuando la demanda vuelve a superar los 20.000 MW, y la jornada completa del 29 transcurre en proceso de normalización progresiva. El sistema necesitó casi 19 horas para restablecer el suministro en toda la península.",
+        "whyMatters": "Esta es la gráfica más importante del análisis. Es el electrocardiograma plano del sistema ibérico. Con resolución de 5 minutos, documenta el instante exacto del colapso total, la ausencia de señales de deterioro gradual previo en la demanda (lo que confirma que el fallo fue dinámico y ultrarrápido), y la lentitud de la restauración mediante estrategias Top-Down (soporte desde Francia) y Bottom-Up (arranque autónomo de centrales hidroeléctricas). Es el punto de entrada obligatorio de cualquier análisis forense del 28-A.",
+        "description_en": "During the morning of April 28, the peninsular real demand was between 19,000 and 27,000 MW — well below the historical peak (>45,000 MW) and consistent with a spring Monday with high solar generation. The scheduled and forecast curves overlapped with the real demand with a deviation of less than 2%, demonstrating that the low-load scenario was perfectly anticipated by the operator. This apparent normality makes what follows all the more striking: between 12:30 and 12:35 CEST, real demand fell from 25,184 MW to 0 MW in a vertical step. Scheduled and forecast values were cancelled simultaneously. The SCADA telemetry units themselves stopped transmitting because they lost their power supply. This was not a gradual drop; it was a certified voltage zero.\n\nRecovery was stepped and extremely slow. From 13:05 CEST, token values appeared — 37 MW, then 204 MW — growing throughout the following afternoon and night. It was not until the early hours of April 29 that demand again exceeded 20,000 MW, and the full day of the 29th was spent in progressive normalisation. The system needed almost 19 hours to restore supply across the entire peninsula.",
+        "whyMatters_en": "This is the most important chart in the analysis. It is the flat electrocardiogram of the Iberian system. With 5-minute resolution, it documents the exact moment of total collapse, the absence of prior gradual degradation signals in demand (confirming that the failure was dynamic and ultra-fast), and the slowness of restoration via Top-Down strategies (support from France) and Bottom-Up (autonomous start-up of hydroelectric plants). It is the mandatory entry point for any forensic analysis of the 28-A event.",
+        "url": "/anexo-entsoe#chart-1",
+        "relevance": 0.93
+      }
+    ],
+    "followUps": [
+      "¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?",
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?"
+    ],
+    "intent": "general"
+  },
+  {
+    "question": "¿Podría un apagón como el del 28-A provocar una crisis política en España?",
+    "elapsed_ms": 12049,
+    "status": 200,
+    "answer": "Sí, y de hecho la provocó. El apagón del 28-A no fue solo un fallo técnico; fue un evento que expuso vulnerabilidades estructurales en la comunicación institucional y la gestión de crisis, lo que generó una crisis política de confianza. El análisis del impacto comunicativo del TFG documenta cómo, en las primeras horas, el vacío informativo fue ocupado por atribuciones causales prematuras, como la hipótesis de un ciberataque ruso (\"Operación Matrioska\"), que se volvió viral en X antes de que REE y el Gobierno la desmintieran. Esa asimetría temporal entre la velocidad de la desinformación y la lentitud de la investigación forense es una de las tres asimetrías estructurales identificadas en el estudio.\n\nLa politización fue inmediata. Medios críticos con el Gobierno articularon una narrativa que vinculaba el colapso con la política energética, interpretándolo como consecuencia de una transición que priorizó fuentes intermitentes sin respaldo suficiente. En el espacio digital, los mensajes de indignación política tuvieron mayor capacidad de difusión algorítmica que las explicaciones técnicas, un fenómeno conocido como *outrage communication*. Esto creó un escenario donde la atribución de responsabilidades se convirtió en el eje del debate público, desplazando el análisis técnico.\n\nLa crisis política se materializó en la exigencia de dimisiones y en la apertura de expedientes regulatorios. El TFG menciona que Iberdrola presentó una querella contra la dirección de Redeia por dañar su reputación y valor bursátil, lo que evidencia que el conflicto trascendió lo técnico para convertirse en un litigio corporativo con implicaciones políticas. La respuesta regulatoria, con el mandato *Grid-Forming* y el boom del almacenamiento, fue una reacción directa a la presión política y social, no solo a la evidencia técnica.\n\nEn el panel derecho, la gráfica \"Energy Prices — Europa\" muestra cómo el precio negativo del SPOT en la hora del colapso (–3,00 €/MWh) fue una señal de alarma que el sistema no interpretó. Esa señal, fijada 24 horas antes, indica que el diseño de mercado basado en coste marginal no internaliza los servicios de fiabilidad. La crisis política no fue solo por el apagón, sino por la evidencia de que el marco regulatorio permitió que el sistema operara en condiciones de riesgo extremo sin mecanismos de corrección.\n\nLa implicación más importante es que la crisis política del 28-A no fue un accidente, sino la consecuencia de una asimetría estructural entre la velocidad de la comunicación digital y la lentitud de la respuesta institucional, que el TFG denomina \"asimetría temporal\".",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "sources": [
+      {
+        "title": "Tabla Maestra de Cifras Consolidadas (28-A)",
+        "heading": "Datos Oficiales, Exportaciones Netas y Mix de Generación",
+        "slug": "/anexo-tablas",
+        "anchor": "cifras-maestras",
+        "url": "/anexo-tablas#cifras-maestras",
+        "chunkType": "master_data",
+        "relevance": 1,
+        "excerpt": "Capítulo: Tabla Maestra de Cifras Consolidadas (28-A) Sección: Datos Oficiales, Exportaciones Netas y Mix de Generación Subsección: N/A Datos críticos del colapso del 28-A: - Demanda peninsular en el momento del apagón:…"
+      },
+      {
+        "title": "Actualización 2026: Un Año Después",
+        "heading": "Actualización 2026: Un Año Después",
+        "slug": "/08.5-actualizacion-2026",
+        "anchor": "",
+        "url": "/08.5-actualizacion-2026",
+        "chunkType": "comparison",
+        "relevance": 2.2,
+        "excerpt": "Capítulo: Actualización 2026: Un Año Después Sección: Actualización 2026: Un Año Después Subsección: N/A [continuación] las causas técnicas del apagón — competencia exclusiva de la CNMC — sino las conductas corporativas…"
+      },
+      {
+        "title": "Impacto Comunicativo",
+        "heading": "Impacto Comunicativo",
+        "slug": "/impacto-comunicativo",
+        "anchor": "",
+        "url": "/impacto-comunicativo",
+        "chunkType": "causal",
+        "relevance": 1.78,
+        "excerpt": "Capítulo: Impacto Comunicativo Sección: Impacto Comunicativo Subsección: N/A [continuación] norm theory: el desarrollo de mecanismos colectivos de afrontamiento ante la perturbación. El humor costumbrista, la ironía y…"
+      },
+      {
+        "title": "Impacto Social y Emergencias",
+        "heading": "Impacto Social y Emergencias",
+        "slug": "/impacto-social",
+        "anchor": "",
+        "url": "/impacto-social",
+        "chunkType": "normal",
+        "relevance": 1.47,
+        "excerpt": "Capítulo: Impacto Social y Emergencias Sección: Impacto Social y Emergencias Subsección: N/A [continuación] ANEPC portuguesa documentó más de 400 incidentes simultáneos de personas atrapadas en ascensores en todo el…"
+      },
+      {
+        "title": "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs",
+        "heading": "Energy Prices — Europa",
+        "slug": "/anexo-entsoe",
+        "anchor": "chart-11",
+        "url": "/anexo-entsoe#chart-11",
+        "chunkType": "data_figure",
+        "relevance": 1.43,
+        "excerpt": "Capítulo: Anexo ENTSO-E — Gráficas con Datos Reales de las APIs Sección: Energy Prices — Europa Subsección: Datos extraídos de ESIOS, ENTSO-E, OMIE y REE el 28-A Anexo ENTSO-E — Gráfica con datos reales de la API ID:…"
+      }
+    ],
+    "confidence": "alta",
+    "confidence_reason": "La respuesta se apoya en varios fragmentos convergentes y recuperados de forma directa.",
+    "relatedChapters": [
+      "Tabla Maestra de Cifras Consolidadas (28-A)",
+      "Actualización 2026: Un Año Después",
+      "Impacto Comunicativo",
+      "Impacto Social y Emergencias",
+      "Anexo ENTSO-E — Gráficas con Datos Reales de las APIs"
+    ],
+    "suggestedFigures": [],
+    "visualArtifacts": [
+      {
+        "id": "chart-11",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Energy Prices — Europa",
+        "description": "Esta gráfica muestra la evolución horaria de los precios del mercado diario (day-ahead) para España y Portugal — que comparten el mercado mayorista MIBEL — durante los días del evento. Entre las 08:00 y las 16:00 CEST caen a valores negativos, alcanzando un mínimo de –3,00 €/MWh en la hora 12:00–13:00, coincidiendo con el pico de producción solar. El precio negativo de las 12:00–13:00 fue fijado 24 horas antes del apagón, no como consecuencia de él. Al día siguiente, 29 de abril, el repunte vespertino (35 €/MWh a las 22:00) refleja el mayor uso de gas para asegurar la estabilidad en la Operación Reforzada.",
+        "whyMatters": "El precio negativo del SPOT en la hora del colapso es una señal de alarma que el sistema no interpretó correctamente. Indica que el mercado mayorista estaba expulsando activamente la generación síncrona (gas) cuando más se necesitaba su inercia y capacidad de absorción de reactiva. Esta gráfica evidencia que el diseño de mercado basado exclusivamente en coste marginal no internaliza los servicios esenciales de fiabilidad.",
+        "description_en": "This chart shows the hourly evolution of day-ahead market prices for Spain and Portugal — which share the MIBEL wholesale market — during the days of the event. Between 08:00 and 16:00 CEST they fell to negative values, reaching a minimum of –3.00 €/MWh in the 12:00–13:00 hour, coinciding with the solar production peak.\n\nThe negative price of 12:00–13:00 was fixed 24 hours before the blackout, not as a consequence of it. The following day, April 29, the afternoon rebound (35 €/MWh at 22:00) reflects the greater use of gas to ensure stability in the Reinforced Operation.",
+        "whyMatters_en": "The negative SPOT price in the hour of the collapse is an alarm signal that the system did not correctly interpret. It indicates that the wholesale market was actively expelling synchronous generation (gas) when its inertia and reactive absorption capacity were most needed. This chart shows that market design based exclusively on marginal cost does not internalise essential reliability services.",
+        "url": "/anexo-entsoe#chart-11",
+        "relevance": 1
+      },
+      {
+        "id": "chart-5",
+        "type": "entsoe_chart",
+        "source": "annex_entsoe",
+        "title": "Installed Capacity per Type",
+        "description": "Esta gráfica muestra la capacidad de generación eléctrica instalada en la Península Ibérica desglosada por tecnología. La capacidad total asciende a 121.873 MW: eólica onshore (30.932 MW), solar fotovoltaica (29.047 MW), fósil gas (29.943 MW), hidráulica de embalse (15.765 MW), nuclear (7.117 MW), bombeo hidroeléctrico (3.418 MW) y carbón (1.820 MW). La capacidad síncrona convencional suma aproximadamente 61 GW. La trampa es la diferencia entre capacidad instalada y capacidad efectivamente despachada. El 28 de abril, por orden de mérito económico, la práctica totalidad de los 29 GW de ciclos combinados estaban apagados. El mix instantáneo estaba dominado al 82 % por IBR — fundamentalmente solar fotovoltaica — con apenas 7 GW de generación síncrona activa.",
+        "whyMatters": "La capacidad instalada síncrona no sirve si está desconectada por razones de mercado. Esta gráfica debe leerse junto con la de generación real: la primera muestra los recursos disponibles en papel; la segunda los que estaban operativos en el momento crítico. La diferencia — más de 25 GW de generación síncrona instalada pero no despachada — es la vulnerabilidad estructural que hizo posible el apagón.",
+        "description_en": "This chart shows the installed electricity generation capacity on the Iberian Peninsula broken down by technology. Total capacity amounts to 121,873 MW: onshore wind (30,932 MW), solar photovoltaic (29,047 MW), fossil gas (29,943 MW), reservoir hydro (15,765 MW), nuclear (7,117 MW), pumped hydro (3,418 MW), and coal (1,820 MW). Conventional synchronous capacity totals approximately 61 GW.\n\nThe trap is the difference between installed capacity and actually dispatched capacity. On April 28, due to economic merit order, virtually all 29 GW of combined-cycle plants were offline. The instantaneous mix was dominated 82% by IBR — mainly solar photovoltaic — with barely 7 GW of active synchronous generation.",
+        "whyMatters_en": "Installed synchronous capacity is useless if disconnected for market reasons. This chart must be read alongside the actual generation chart: the first shows paper resources; the second shows what was operational at the critical moment. The difference — more than 25 GW of installed but undispatched synchronous generation — is the structural vulnerability that made the blackout possible.",
+        "url": "/anexo-entsoe#chart-5",
+        "relevance": 0.71
+      }
+    ],
+    "followUps": [
+      "¿La baja inercia fue causa raíz o solo un factor agravante?",
+      "¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?",
+      "¿Por qué la condición de isla energética agravó el apagón ibérico?"
+    ],
+    "intent": "general"
+  }
+]
