@@ -27,6 +27,16 @@ const PQCapabilitySimulator = lazy(() => import(/* webpackChunkName: "chart-pqca
 const GfmDroopResponseFigure = lazy(() => import(/* webpackChunkName: "chart-gfmdroop" */ './GfmDroopResponseFigure/GfmDroopResponseFigure'));
 const EnergyTrilemmaSimulator = lazy(() => import(/* webpackChunkName: "chart-trilemma" */ './EnergyTrilemmaSimulator'));
 
+const LOLEBarChart = lazy(() => import(/* webpackChunkName: "chart-lole" */ './LOLEBarChart'));
+const BESSBoomChart = lazy(() => import(/* webpackChunkName: "chart-bess-boom" */ './BESSBoomChart'));
+const MRSCRComparator = lazy(() => import(/* webpackChunkName: "chart-mrscr" */ './MRSCRComparator'));
+const DynamicSecurityShift = lazy(() => import(/* webpackChunkName: "chart-security-shift" */ './DynamicSecurityShift'));
+const ThenVsNowPanel = lazy(() => import(/* webpackChunkName: "chart-then-vs-now" */ './ThenVsNowPanel'));
+const PicasoPriceChart = lazy(() => import(/* webpackChunkName: "chart-picaso-price" */ './PicasoPriceChart'));
+const TrilemmaTriangle = lazy(() => import(/* webpackChunkName: "chart-trilemma-triangle" */ './TrilemmaTriangle'));
+const CNMCSanctionsChart = lazy(() => import(/* webpackChunkName: "chart-cnmc-sanctions" */ './CNMCSanctionsChart'));
+const ResolutionRoadmap = lazy(() => import(/* webpackChunkName: "chart-resolution-roadmap" */ './ResolutionRoadmap'));
+const ResearchAgendaScatter = lazy(() => import(/* webpackChunkName: "chart-research-agenda" */ './ResearchAgendaScatter'));
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export const getGraphicData = (id, lang) => {
@@ -189,6 +199,47 @@ export const getGraphicData = (id, lang) => {
       es: { title: 'Efecto Ferranti y Saturación Capacitiva', desc: 'En líneas largas y poco cargadas, la capacitancia distribuida puede elevar la tensión y generar excedente de reactiva.' },
       en: { title: 'Ferranti Effect & Capacitive Saturation', desc: 'In long, lightly loaded lines, distributed capacitance can raise voltage and generate surplus reactive power.' }
     },
+'lole-chart': {
+      es: { title: 'Horas anuales de LOLE por zona de oferta (ACER)', desc: 'Expectativa de pérdida de carga (LOLE) según la Decisión 06/2026 de ACER.' },
+      en: { title: 'Annual LOLE Hours by Bidding Zone (ACER)', desc: 'Loss of load expectation (LOLE) according to ACER Decision 06/2026.' }
+    },
+    'bess-boom-chart': {
+      es: { title: 'El Boom del Almacenamiento Ibérico (BESS)', desc: 'Capacidad acumulada de almacenamiento en baterías en España (Q1 2024 — mayo 2026).' },
+      en: { title: 'Iberian Battery Storage Boom (BESS)', desc: 'Cumulative utility-scale battery storage capacity in Spain (Q1 2024 — May 2026).' }
+    },
+    'mrscr-comparator': {
+      es: { title: 'Fortaleza de red: SCR vs MRSCR', desc: 'Comparación del Short Circuit Ratio tradicional frente al ratio de cortocircuito modificado (MRSCR) en subestaciones ibéricas.' },
+      en: { title: 'Grid Strength: SCR vs MRSCR', desc: 'Comparison of traditional Short Circuit Ratio versus modified short-circuit ratio (MRSCR) in Iberian substations.' }
+    },
+    'dynamic-security-shift': {
+      es: { title: 'Transición hacia la Seguridad Dinámica', desc: 'Evolución del modelo de seguridad clásico basado en límites estáticos hacia métricas dinámicas basadas en estabilidad.' },
+      en: { title: 'Transition to Dynamic Security', desc: 'Evolution of the classic static limits model towards dynamic stability-based metrics.' }
+    },
+    'then-vs-now-panel': {
+      es: { title: 'Comparador de Vulnerabilidad: Ahora vs 28-A', desc: 'Métricas clave de fortaleza del sistema eléctrico actual en comparación con las del día del colapso (28 de abril).' },
+      en: { title: 'Vulnerability Comparison: Now vs 28-A', desc: 'Key grid strength metrics of the current electrical system compared to the day of the collapse (April 28).' }
+    },
+    'picaso-price-chart': {
+      es: { title: 'Incidentes de Precios en PICASSO e Impacto Elástico', desc: 'Evolución de los precios marginales de la energía de regulación en PICASSO y el efecto de la demanda elástica.' },
+      en: { title: 'PICASSO Price Incidents & Elasticity Impact', desc: 'Evolution of marginal prices for regulation energy in PICASSO and the effect of elastic demand.' }
+    },
+    'trilemma-triangle': {
+      es: { title: 'Trilema Estructural del Sistema Ibérico el 28-A', desc: 'Representación del equilibrio dinámico entre seguridad de suministro, equidad de precios y sostenibilidad ambiental durante la crisis.' },
+      en: { title: 'Structural Trilemma of the Iberian System on 28-A', desc: 'Representation of the dynamic balance between security of supply, price equity, and environmental sustainability during the crisis.' }
+    },
+    'cnmc-sanctions-chart': {
+      es: { title: 'Expedientes Sancionadores CNMC post-28A', desc: 'Análisis de las sanciones propuestas e incoadas por la CNMC a los agentes del mercado tras el apagón del 28 de abril.' },
+      en: { title: 'CNMC Sanctions Files post-28A', desc: 'Analysis of the sanctions proposed and initiated by the CNMC against market agents after the April 28 blackout.' }
+    },
+    'resolution-roadmap': {
+      es: { title: 'Planes de Resolución y Mitigación', desc: 'Esquema de las fases de contención, reposición y reforma regulatoria para la resiliencia del sistema eléctrico.' },
+      en: { title: 'Resolution & Mitigation Roadmap', desc: 'Outline of containment, restoration, and regulatory reform phases for power system resilience.' }
+    },
+    'research-agenda-scatter': {
+      es: { title: 'Agenda de Investigación Futura', desc: 'Mapa de prioridad y viabilidad de los temas clave de investigación en estabilidad de sistemas con alta penetración de electrónica de potencia.' },
+      en: { title: 'Future Research Agenda', desc: 'Priority and feasibility map of key research topics in system stability with high power electronics penetration.' }
+    },
+
     'grid-strength-scr': {
       es: { title: 'Fortaleza Nodal (SCR vs IBR)', desc: 'El Short Circuit Ratio cae cuando la potencia conectada mediante inversores crece sobre una red con baja potencia de cortocircuito.' },
       en: { title: 'Nodal Strength (SCR vs IBR)', desc: 'The Short Circuit Ratio drops when inverter-based generation capacity increases on a grid with low short-circuit power.' }
@@ -260,6 +311,17 @@ export const graphicsData = [
   { id: 'emissions-renewables', icon: '🌿', component: EmissionsVsRenewablesChart , tema: 'T1' },  // demanda/generación/balance
   { id: 'sectorial-resilience', icon: '🏭', component: SectorialResilienceChart , tema: 'T7' },
   { id: 'ferranti', icon: '⚡', component: FerrantiCapacitiveLineSimulator , tema: ['T3', 'T10-red'] },
+{ id: 'lole-chart', icon: '📊', component: LOLEBarChart , tema: ['T1', 'T10-gen'] },
+  { id: 'bess-boom-chart', icon: '🔋', component: BESSBoomChart , tema: ['T1', 'T10-gen'] },
+  { id: 'mrscr-comparator', icon: '📈', component: MRSCRComparator , tema: ['T2', 'T10-red'] },
+  { id: 'dynamic-security-shift', icon: '🛡️', component: DynamicSecurityShift , tema: ['T2', 'T10-red'] },
+  { id: 'then-vs-now-panel', icon: '⚖️', component: ThenVsNowPanel , tema: ['T2', 'T9', 'T10-gen'] },
+  { id: 'picaso-price-chart', icon: '💸', component: PicasoPriceChart , tema: ['T5', 'T10-mer'] },
+  { id: 'trilemma-triangle', icon: '🔺', component: TrilemmaTriangle , tema: ['T7', 'T10-mer'] },
+  { id: 'cnmc-sanctions-chart', icon: '⚖️', component: CNMCSanctionsChart , tema: ['T7', 'T10-mer'] },
+  { id: 'resolution-roadmap', icon: '🗺️', component: ResolutionRoadmap , tema: ['T9', 'T10-red'] },
+  { id: 'research-agenda-scatter', icon: '🔬', component: ResearchAgendaScatter , tema: ['T9', 'T10-red'] },
+
   { id: 'grid-strength-scr', icon: '📈', component: GridStrengthScrFigure , tema: 'T10-red' },
   { id: 'hvdc-control', icon: '🎛️', component: HvdcControlModeResponseFigure , tema: 'T10-red' },
   { id: 'power-flow-jacobian', icon: '🌀', component: PowerFlowJacobianCollapseFigure , tema: 'T10-red' },
