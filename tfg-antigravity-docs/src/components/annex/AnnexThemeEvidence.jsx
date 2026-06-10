@@ -63,10 +63,12 @@ export default function AnnexThemeEvidence({
   }, [lang]);
 
   // ── Filter by tema ─────────────────────────────────────────────────────────
-  const figures     = allFigures.filter((item) => item.tema === theme);
-  const tables      = allTables.filter((item) => item.tema === theme);
-  const interactives = (graphicsData || []).filter((item) => item.tema === theme);
-  const charts      = (CHARTS || []).filter((item) => item.tema === theme);
+  const isMatch = (item) => Array.isArray(item.tema) ? item.tema.includes(theme) : item.tema === theme;
+  
+  const figures     = allFigures.filter(isMatch);
+  const tables      = allTables.filter(isMatch);
+  const interactives = (graphicsData || []).filter(isMatch);
+  const charts      = (CHARTS || []).filter(isMatch);
 
   // ── Enrich interactives with locale title/description ─────────────────────
   const enrichedInteractives = useMemo(

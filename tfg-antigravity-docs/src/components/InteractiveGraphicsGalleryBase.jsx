@@ -18,6 +18,14 @@ const SectorialResilienceChart = lazy(() => import(/* webpackChunkName: "chart-s
 const CollapseSismograph = lazy(() => import(/* webpackChunkName: "chart-sismograph" */ './CollapseSismograph'));
 const PVCurveSimulator = lazy(() => import(/* webpackChunkName: "chart-pvcurve" */ './PVCurveSimulator'));
 const ANSI59Cascade = lazy(() => import(/* webpackChunkName: "chart-ansi59" */ './ANSI59Cascade'));
+const FerrantiCapacitiveLineSimulator = lazy(() => import(/* webpackChunkName: "chart-ferranti" */ './FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator'));
+const GridStrengthScrFigure = lazy(() => import(/* webpackChunkName: "chart-scr" */ './GridStrengthScrFigure/GridStrengthScrFigure'));
+const HvdcControlModeResponseFigure = lazy(() => import(/* webpackChunkName: "chart-hvdc" */ './HvdcControlModeResponseFigure/HvdcControlModeResponseFigure'));
+const PowerFlowJacobianCollapseFigure = lazy(() => import(/* webpackChunkName: "chart-jacobian" */ './PowerFlowJacobianCollapseFigure/PowerFlowJacobianCollapseFigure'));
+const TransformerInrushDecayFigure = lazy(() => import(/* webpackChunkName: "chart-inrush" */ './TransformerInrushDecayFigure/TransformerInrushDecayFigure'));
+const PQCapabilitySimulator = lazy(() => import(/* webpackChunkName: "chart-pqcap" */ './PQCapabilitySimulator/PQCapabilitySimulator'));
+const GfmDroopResponseFigure = lazy(() => import(/* webpackChunkName: "chart-gfmdroop" */ './GfmDroopResponseFigure/GfmDroopResponseFigure'));
+const EnergyTrilemmaSimulator = lazy(() => import(/* webpackChunkName: "chart-trilemma" */ './EnergyTrilemmaSimulator'));
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
@@ -96,6 +104,14 @@ export const getGraphicData = (id, lang) => {
       fr: { title: 'Tableau de Bord des Interconnexions', desc: 'Analyse du goulot d\'étranglement structurel des échanges internationaux.' },
       de: { title: 'Verbindungs-Dashboard', desc: 'Analyse des strukturellen Engpasses im internationalen Austausch.' }
     },
+    ferranti: { es: { title: 'Efecto Ferranti', desc: 'Simulador didáctico de sobretensión por capacitancia distribuida.' }, en: {title: 'Ferranti Effect', desc: ''}, fr: {title: 'Effet Ferranti', desc: ''}, de: {title: 'Ferranti-Effekt', desc: ''} },
+    grid_strength: { es: { title: 'Fortaleza de Red (SCR)', desc: 'Simulación del impacto del Short Circuit Ratio en la estabilidad.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    hvdc_control: { es: { title: 'Control HVDC INELFE', desc: 'Modos de control y respuesta transitoria del enlace transpirenaico.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    power_flow_jacobian: { es: { title: 'Colapso del Jacobiano', desc: 'Inestabilidad del flujo de cargas y bifurcación estática.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    transformer_inrush: { es: { title: 'Inrush Magnetizante', desc: 'Dinámica de decaimiento en la energización de transformadores.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    pqcap: { es: { title: 'Conflicto P-Q', desc: 'Límites de capacidad del estator de inversores fotovoltaicos.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    gfm_droop: { es: { title: 'Control Droop GFM', desc: 'Respuesta primaria de frecuencia en inversores Formadores de Red.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
+    trilemma: { es: { title: 'Trilema Energético', desc: 'Optimización matemática de seguridad, equidad y sostenibilidad.' }, en: {title: '', desc: ''}, fr: {title: '', desc: ''}, de: {title: '', desc: ''} },
     swing: {
       es: { title: 'Simulador Ecuación del Swing', desc: 'Simulador interactivo de la inercia (H), desequilibrio (ΔP) y Respuesta Rápida de Frecuencia (FFR) tras el incidente.' },
       en: { title: 'Swing Equation Simulator', desc: 'Interactive simulator of inertia (H), power mismatch (ΔP) and Fast Frequency Response (FFR).' },
@@ -194,17 +210,17 @@ export const graphicsData = [
   { id: 'topology', icon: '🕸️', component: IberianGridTopology , tema: 'T4' },
   { id: 'sismograph', icon: '📊', component: CollapseSismograph , tema: 'T2' },
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot , tema: 'T2' },
-  { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot , tema: 'T9' },
+  { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot , tema: ['T9', 'T10-gen'] },
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard , tema: 'T4' },
-  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator , tema: 'T9' },
+  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator , tema: ['T9', 'T10-gen'] },
   { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix , tema: 'T5' },  // costes de ajuste → T5 mercado/costes
-  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator , tema: 'T9' },
+  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator , tema: ['T9', 'T10-gen'] },
   { id: 'ansi59', icon: '⚡', component: ANSI59Cascade , tema: 'T3' },
   { id: 'sticky-collapse', icon: '🎬', component: StickyCollapse , tema: 'T3' },
-  { id: 'ufls', icon: '🎛️', component: UFLSVisualizer , tema: 'T3', nature: 'didactic' },
+  { id: 'ufls', icon: '🎛️', component: UFLSVisualizer , tema: ['T3', 'T10-gen'], nature: 'didactic' },
 
-  { id: 'comparador-28a', icon: '📡', component: Comparador28A , tema: 'T9' },
-  { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad , tema: 'T9' },
+  { id: 'comparador-28a', icon: '📡', component: Comparador28A , tema: ['T9', 'T10-gen'] },
+  { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad , tema: ['T9', 'T10-gen'] },
   { id: 'tap-lag-sequence', icon: '⚙️', component: TapLagSequence , tema: 'T3' },
   // ── Visualizaciones forenses migradas desde datos-tiempo-real ───────────────
   { id: 'mix-generacion', icon: '🔋', component: MixGeneracion, tema: 'T1' },
@@ -320,4 +336,5 @@ export default function InteractiveGraphicsGallery({ propLang }) {
     </div>
   );
 }
+
 
