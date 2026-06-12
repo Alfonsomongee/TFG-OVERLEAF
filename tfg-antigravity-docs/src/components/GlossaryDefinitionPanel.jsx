@@ -17,6 +17,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Link from '@docusaurus/Link';
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import { GLOSSARY_TERMS as GLOSSARY_ES } from '@site/src/data/glossary';
 import { GLOSSARY_TERMS as GLOSSARY_EN } from '@site/src/data/glossary_en';
@@ -112,6 +113,36 @@ function PanelInner() {
 
   if (!active) return null;
 
+  // Split by sentence ends: period, exclamation, or question mark, followed by space and capital letter or Chinese character.
+  const getSummary = (text, l) => {
+    if (!text) return '';
+    const sentences = text.split(/(?<=[.!?。])\s*(?=[A-ZÁÉÍÓÚÜÑ\u4e00-\u9fa5])/);
+    if (sentences.length > 0) {
+      let sum = sentences[0].trim();
+      let idx = 1;
+      const threshold = l === 'zh-Hans' ? 35 : 80;
+      while (sum.length < threshold && idx < sentences.length) {
+        sum += ' ' + sentences[idx].trim();
+        idx++;
+      }
+      return sum;
+    }
+    return text;
+  };
+
+  const getLinkLabel = (l) => {
+    switch (l) {
+      case 'en': return 'View full definition ↗';
+      case 'de': return 'Vollständige Definition anzeigen ↗';
+      case 'zh-Hans': return '查看完整定义 ↗';
+      default: return 'Ver definición completa ↗';
+    }
+  };
+
+  const summary = getSummary(active.definition, lang);
+  const linkLabel = getLinkLabel(lang);
+  const glossaryLink = `${lang === 'es' ? '' : '/' + lang}/glosario#${active.id}`;
+
   return (
     <aside
       className={`glossary-definition-panel ${isClosing ? 'closing' : ''}`}
@@ -126,10 +157,14 @@ function PanelInner() {
         <strong className="glossary-panel-term">{active.term}</strong>
       </div>
       <div className="glossary-panel-body" style={{
-        // Quitamos las barras de scroll fijas, el CSS se encargará de que crezca automáticamente
         scrollbarWidth: 'none',
       }}>
-        {active.definition}
+        <p style={{ margin: 0, marginBottom: '0.65rem' }}>{summary}</p>
+        <div style={{ textAlign: 'right' }}>
+          <Link to={glossaryLink} className="glossary-panel-link">
+            {linkLabel}
+          </Link>
+        </div>
       </div>
     </aside>
   );
