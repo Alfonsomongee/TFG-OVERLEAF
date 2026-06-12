@@ -91,17 +91,55 @@ export default function AnnexThemeEvidence({
   // Render helpers
   // ─────────────────────────────────────────────────────────────────────────
 
+  const getSummaryLabel = (l, type, count) => {
+    switch (l) {
+      case 'en':
+        if (type === 'figures') return `Figures found: ${count}`;
+        if (type === 'tables') return `Tables found: ${count}`;
+        if (type === 'interactives') return `Interactives found: ${count}`;
+        if (type === 'charts') return `Series found: ${count}`;
+        return '';
+      case 'de':
+        if (type === 'figures') return `Gefundene Abbildungen: ${count}`;
+        if (type === 'tables') return `Gefundene Tabellen: ${count}`;
+        if (type === 'interactives') return `Gefundene interaktive Inhalte: ${count}`;
+        if (type === 'charts') return `Gefundene Zeitreihen: ${count}`;
+        return '';
+      case 'zh-Hans':
+        if (type === 'figures') return `找到的图: ${count}`;
+        if (type === 'tables') return `找到的表: ${count}`;
+        if (type === 'interactives') return `找到的互动模块: ${count}`;
+        if (type === 'charts') return `找到的时间序列: ${count}`;
+        return '';
+      default:
+        if (type === 'figures') return `Figuras encontradas: ${count}`;
+        if (type === 'tables') return `Tablas encontradas: ${count}`;
+        if (type === 'interactives') return `Interactivos encontrados: ${count}`;
+        if (type === 'charts') return `Series encontradas: ${count}`;
+        return '';
+    }
+  };
+
+  const getEmptyState = (l) => {
+    switch (l) {
+      case 'en': return 'No evidence of this type associated with this topic.';
+      case 'de': return 'Für dieses Thema sind keine Nachweise dieses Typs vorhanden.';
+      case 'zh-Hans': return '没有与此主题相关的此类证据。';
+      default: return 'No hay evidencias de este tipo asociadas a este tema.';
+    }
+  };
+
   const renderFigures = () => {
     if (!include.includes('figures')) return null;
     const items = slice(figures);
     return (
       <div className={styles.section}>
         <div className={styles.summary}>
-          Figuras encontradas: {figures.length}
+          {getSummaryLabel(lang, 'figures', figures.length)}
         </div>
         {figures.length === 0 ? (
           <div className={styles.emptyState}>
-            No hay evidencias de este tipo asociadas a este tema.
+            {getEmptyState(lang)}
           </div>
         ) : (
           <div className={styles.evidenceContainer}>
@@ -125,11 +163,11 @@ export default function AnnexThemeEvidence({
     return (
       <div className={styles.section}>
         <div className={styles.summary}>
-          Tablas encontradas: {tables.length}
+          {getSummaryLabel(lang, 'tables', tables.length)}
         </div>
         {tables.length === 0 ? (
           <div className={styles.emptyState}>
-            No hay evidencias de este tipo asociadas a este tema.
+            {getEmptyState(lang)}
           </div>
         ) : (
           <div className={styles.evidenceContainer}>
@@ -153,11 +191,11 @@ export default function AnnexThemeEvidence({
     return (
       <div className={styles.section}>
         <div className={styles.summary}>
-          Interactivos encontrados: {interactives.length}
+          {getSummaryLabel(lang, 'interactives', interactives.length)}
         </div>
         {interactives.length === 0 ? (
           <div className={styles.emptyState}>
-            No hay evidencias de este tipo asociadas a este tema.
+            {getEmptyState(lang)}
           </div>
         ) : (
           <div className={styles.evidenceContainer}>
@@ -181,11 +219,11 @@ export default function AnnexThemeEvidence({
     return (
       <div className={styles.section}>
         <div className={styles.summary}>
-          Series encontradas: {charts.length}
+          {getSummaryLabel(lang, 'charts', charts.length)}
         </div>
         {charts.length === 0 ? (
           <div className={styles.emptyState}>
-            No hay evidencias de este tipo asociadas a este tema.
+            {getEmptyState(lang)}
           </div>
         ) : (
           <div className={styles.evidenceContainer}>

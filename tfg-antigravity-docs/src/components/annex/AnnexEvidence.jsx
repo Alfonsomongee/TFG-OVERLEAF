@@ -23,11 +23,30 @@ const getForensicCategories = (lang) => {
 };
 
 export default function AnnexEvidence({ type, id, level = 2 }) {
-  const CHIPS = {
-    1: { symbol: '●', label: 'Evidencia nuclear' },
-    2: { symbol: '◆', label: 'Evidencia de apoyo' },
-  };
   const lang = useDocLang();
+
+  const getChips = (l) => {
+    switch (l) {
+      case 'en': return {
+        1: { symbol: '●', label: 'Key evidence' },
+        2: { symbol: '◆', label: 'Supporting evidence' },
+      };
+      case 'de': return {
+        1: { symbol: '●', label: 'Hauptbeweis' },
+        2: { symbol: '◆', label: 'Unterstützender Nachweis' },
+      };
+      case 'zh-Hans': return {
+        1: { symbol: '●', label: '核心证据' },
+        2: { symbol: '◆', label: '支持性证据' },
+      };
+      default: return {
+        1: { symbol: '●', label: 'Evidencia nuclear' },
+        2: { symbol: '◆', label: 'Evidencia de apoyo' },
+      };
+    }
+  };
+
+  const CHIPS = getChips(lang);
 
   // Find item based on type and id
   const item = useMemo(() => {
@@ -72,9 +91,17 @@ export default function AnnexEvidence({ type, id, level = 2 }) {
   }, [type, id, lang]);
 
   if (!item) {
+    const getErrorMsg = (l, t, i) => {
+      switch (l) {
+        case 'en': return `[AnnexEvidence Error] No element of type "${t}" found with ID "${i}"`;
+        case 'de': return `[AnnexEvidence Error] Kein Element vom Typ "${t}" mit der ID "${i}" gefunden`;
+        case 'zh-Hans': return `[AnnexEvidence Error] 未找到 ID 为 "${i}" 的 "${t}" 类型元素`;
+        default: return `[AnnexEvidence Error] No se encontró elemento de tipo "${t}" con ID "${i}"`;
+      }
+    };
     return (
       <div className={styles.error}>
-        [AnnexEvidence Error] No se encontró elemento de tipo "{type}" con ID "{id}"
+        {getErrorMsg(lang, type, id)}
       </div>
     );
   }

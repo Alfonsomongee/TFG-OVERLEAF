@@ -25,6 +25,7 @@
  */
 
 import React from 'react';
+import { useDocLang } from '@site/src/hooks/useDocLang';
 import styles from './AnnexEvidenceNav.module.css';
 
 const TYPE_ICONS = {
@@ -68,11 +69,39 @@ function scrollToSection(targetId) {
 }
 
 export default function AnnexEvidenceNav({ items = [] }) {
+  const lang = useDocLang();
   if (!items.length) return null;
 
+  const getNavLabel = (l) => {
+    switch (l) {
+      case 'en': return 'Explore evidence';
+      case 'de': return 'Nachweise erkunden';
+      case 'zh-Hans': return '浏览证据';
+      default: return 'Explorar evidencias';
+    }
+  };
+
+  const getAriaLabel = (l, label) => {
+    switch (l) {
+      case 'en': return `Go to section ${label}`;
+      case 'de': return `Gehe zu Bereich ${label}`;
+      case 'zh-Hans': return `前往 ${label} 部分`;
+      default: return `Ir a sección de ${label}`;
+    }
+  };
+
+  const getNavAriaLabel = (l) => {
+    switch (l) {
+      case 'en': return 'Annex section navigation';
+      case 'de': return 'Navigation der Anhangsabschnitte';
+      case 'zh-Hans': return '附录章节导航';
+      default: return 'Navegación de secciones del anexo';
+    }
+  };
+
   return (
-    <nav className={styles.navWrapper} aria-label="Navegación de secciones del anexo">
-      <span className={styles.navLabel}>Explorar evidencias</span>
+    <nav className={styles.navWrapper} aria-label={getNavAriaLabel(lang)}>
+      <span className={styles.navLabel}>{getNavLabel(lang)}</span>
       <div className={styles.navButtons}>
         {items.map(({ label, target }) => {
           const icon = TYPE_ICONS[label] || null;
@@ -81,7 +110,7 @@ export default function AnnexEvidenceNav({ items = [] }) {
               key={target}
               type="button"
               className={styles.navBtn}
-              aria-label={`Ir a sección de ${label}`}
+              aria-label={getAriaLabel(lang, label)}
               onClick={() => scrollToSection(target)}
             >
               <span className={styles.navBtnIcon} aria-hidden="true">{icon}</span>

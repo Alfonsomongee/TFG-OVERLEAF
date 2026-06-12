@@ -1,18 +1,13 @@
 /**
- * AnnexEvidenceViewer.jsx  — FASE 2R-4F (corrección UX)
+ * AnnexEvidenceViewer.jsx
  *
  * Patrón: tarjeta compacta en la grid del anexo → botón → overlay fullscreen
  * via createPortal(content, document.body).
- *
- * createPortal garantiza que el overlay escape cualquier contenedor con
- * overflow:hidden, transform o grid, sin depender de position:fixed.
  *
  * Props:
  *   type   'figure' | 'table' | 'interactive' | 'chart'
  *   item   objeto de evidencia (imageGalleryData / forensicCategories / graphicsData / CHARTS)
  *   lang   locale string ('es' | 'en' | 'de' | 'zh-Hans')
- *
- * No navega a /anexo-figuras, /anexo-tablas, /anexo-interactivos ni /anexo-entsoe.
  */
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
@@ -26,6 +21,93 @@ const ChartViewerLazy = lazy(() =>
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Diccionario de traducciones
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TRANSLATIONS = {
+  es: {
+    figure: 'Figura',
+    table: 'Tabla',
+    interactive: 'Interactivo',
+    chart: 'Serie',
+    close: 'Cerrar',
+    enlarge: 'Ampliar',
+    enlargeFig: 'Ampliar figura',
+    viewFullTable: 'Ver tabla completa',
+    viewChart: 'Ver gráfica',
+    openInteractive: 'Abrir interactivo',
+    rows: 'filas',
+    cols: 'col.',
+    source: 'Fuente',
+    note: 'Nota',
+    loading: 'Cargando…',
+    loadingChart: 'Cargando gráfica…',
+    starting: 'Iniciando',
+    noTableData: 'Datos de tabla no disponibles.',
+  },
+  en: {
+    figure: 'Figure',
+    table: 'Table',
+    interactive: 'Interactive',
+    chart: 'Series',
+    close: 'Close',
+    enlarge: 'Enlarge',
+    enlargeFig: 'Enlarge figure',
+    viewFullTable: 'View full table',
+    viewChart: 'View chart',
+    openInteractive: 'Open interactive',
+    rows: 'rows',
+    cols: 'col.',
+    source: 'Source',
+    note: 'Note',
+    loading: 'Loading…',
+    loadingChart: 'Loading chart…',
+    starting: 'Starting',
+    noTableData: 'Table data not available.',
+  },
+  de: {
+    figure: 'Abbildung',
+    table: 'Tabelle',
+    interactive: 'Interaktiver Inhalt',
+    chart: 'Zeitreihe',
+    close: 'Schließen',
+    enlarge: 'Vergrößern',
+    enlargeFig: 'Abbildung vergrößern',
+    viewFullTable: 'Ganze Tabelle anzeigen',
+    viewChart: 'Grafik anzeigen',
+    openInteractive: 'Interaktiven Inhalt öffnen',
+    rows: 'Zeilen',
+    cols: 'Sp.',
+    source: 'Quelle',
+    note: 'Hinweis',
+    loading: 'Wird geladen…',
+    loadingChart: 'Grafik wird geladen…',
+    starting: 'Wird gestartet',
+    noTableData: 'Tabellendaten nicht verfügbar.',
+  },
+  'zh-Hans': {
+    figure: '图',
+    table: '表',
+    interactive: '互动模块',
+    chart: '时间序列',
+    close: '关闭',
+    enlarge: '放大',
+    enlargeFig: '放大图片',
+    viewFullTable: '查看完整表格',
+    viewChart: '查看图表',
+    openInteractive: '打开互动模块',
+    rows: '行',
+    cols: '列',
+    source: '来源',
+    note: '备注',
+    loading: '加载中…',
+    loadingChart: '图表加载中…',
+    starting: '正在启动',
+    noTableData: '表格数据不可用。',
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Helpers de columna — las tablas de forensic_categories usan {key, label}
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -37,45 +119,30 @@ const getColLabel = (col) => (typeof col === 'string' ? col : (col.label || col.
 // ─────────────────────────────────────────────────────────────────────────────
 
 function getFigureTitle(item, lang) {
-  const t = item[`title_${lang}`] || item.title_es || item.title || '';
+  const lookupLang = lang === 'zh-Hans' ? 'zh' : lang;
+  const t = item[`title_${lookupLang}`] || item[`title_${lang}`] || item.title_es || item.title || '';
   if (t) return t;
-  const cap = item[`caption_${lang}`] || item.caption_es || item.caption_en || '';
+  const cap = item[`caption_${lookupLang}`] || item[`caption_${lang}`] || item.caption_es || item.caption_en || '';
   if (cap) {
     const first = cap.split(/[.!?]/)[0].trim();
     if (first) return first;
   }
+  const defaultLabel = TRANSLATIONS[lang]?.figure || TRANSLATIONS.es.figure;
   return item.src
     ? item.src.split('/').pop().split('.')[0].replace(/[-_]/g, ' ')
-    : 'Figura';
+    : defaultLabel;
 }
 
 function getFigureCaption(item, lang) {
-  return item[`caption_${lang}`] || item.caption_es || item.caption_en || '';
+  const lookupLang = lang === 'zh-Hans' ? 'zh' : lang;
+  return item[`caption_${lookupLang}`] || item[`caption_${lang}`] || item.caption_es || item.caption_en || '';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FULLSCREEN MODAL — createPortal a document.body
-//
-// Escapa cualquier contenedor con overflow/transform/grid/will-change.
-// Usado por los cuatro tipos de evidencia.
-//
-// Props:
-//   open     boolean
-//   title    string  — mostrado en cabecera
-//   type     'figure' | 'table' | 'interactive' | 'chart'
-//   onClose  () => void
-//   wide     boolean — si true, usa fsBodyWide (sin padding, min-height mayor)
-//   children ReactNode — contenido del cuerpo del modal
 // ─────────────────────────────────────────────────────────────────────────────
 
-const TYPE_LABELS = {
-  figure:      'Figura',
-  table:       'Tabla',
-  interactive: 'Interactivo',
-  chart:       'Serie',
-};
-
-function FullscreenEvidenceModal({ open, title, type, onClose, wide = false, children }) {
+function FullscreenEvidenceModal({ open, title, type, onClose, wide = false, lang, children }) {
   // Bloquear scroll del body mientras el modal está abierto
   useEffect(() => {
     if (!open) return;
@@ -98,7 +165,8 @@ function FullscreenEvidenceModal({ open, title, type, onClose, wide = false, chi
   if (!open) return null;
   if (typeof document === 'undefined') return null;
 
-  const label = TYPE_LABELS[type] || '';
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.es;
+  const label = t[type] || '';
   const shellClass = [
     styles.fsShell,
     type === 'figure' ? styles.fsShellFigure : '',
@@ -123,7 +191,7 @@ function FullscreenEvidenceModal({ open, title, type, onClose, wide = false, chi
             type="button"
             className={styles.fsClose}
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={t.close}
           >
             ×
           </button>
@@ -147,6 +215,7 @@ function FigureViewer({ item, lang }) {
   const [open, setOpen] = useState(false);
   const title   = getFigureTitle(item, lang);
   const caption = getFigureCaption(item, lang);
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.es;
   
   let desc = caption;
   if (desc.startsWith(title)) {
@@ -160,7 +229,7 @@ function FigureViewer({ item, lang }) {
   return (
     <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
-        <span className={`${styles.badge} ${styles.figura}`}>Figura</span>
+        <span className={`${styles.badge} ${styles.figura}`}>{t.figure}</span>
       </div>
 
       {item.src && (
@@ -168,7 +237,7 @@ function FigureViewer({ item, lang }) {
           type="button"
           className={styles.thumbnailBtn}
           onClick={() => setOpen(true)}
-          aria-label={`Ampliar: ${title}`}
+          aria-label={`${t.enlarge}: ${title}`}
         >
           <img
             src={item.src}
@@ -188,7 +257,7 @@ function FigureViewer({ item, lang }) {
           className={styles.actionBtn}
           onClick={() => setOpen(true)}
         >
-          Ampliar figura
+          {t.enlargeFig}
         </button>
       </div>
 
@@ -196,6 +265,7 @@ function FigureViewer({ item, lang }) {
         open={open}
         title={title}
         type="figure"
+        lang={lang}
         onClose={() => setOpen(false)}
       >
         <div className={styles.figureContent}>
@@ -213,9 +283,10 @@ function FigureViewer({ item, lang }) {
 // TABLA — tarjeta compacta + modal fullscreen con tabla completa
 // ─────────────────────────────────────────────────────────────────────────────
 
-function TableViewer({ item }) {
+function TableViewer({ item, lang }) {
   const [open, setOpen] = useState(false);
-  const title     = item.name || 'Tabla';
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.es;
+  const title     = item.name || t.table;
   const note      = item.note || '';
   const shortNote = note.length > 130 ? note.slice(0, 127) + '…' : note;
   const rowCount  = Array.isArray(item.data)    ? item.data.length    : 0;
@@ -225,7 +296,7 @@ function TableViewer({ item }) {
   return (
     <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
-        <span className={`${styles.badge} ${styles.tabla}`}>Tabla</span>
+        <span className={`${styles.badge} ${styles.tabla}`}>{t.table}</span>
       </div>
 
       <h4 className={styles.cardTitle}>{title}</h4>
@@ -234,13 +305,13 @@ function TableViewer({ item }) {
       <div className={styles.cardMeta}>
         {rowCount > 0 && colCount > 0 && (
           <span className={styles.metaPill}>
-            {rowCount} filas · {colCount} col.
+            {rowCount} {t.rows} · {colCount} {t.cols}
           </span>
         )}
       </div>
 
       {item.source && (
-        <p className={styles.cardSource}>Fuente: {item.source}</p>
+        <p className={styles.cardSource}>{t.source}: {item.source}</p>
       )}
 
       <div className={styles.cardFooter}>
@@ -249,7 +320,7 @@ function TableViewer({ item }) {
           className={styles.actionBtn}
           onClick={() => setOpen(true)}
         >
-          Ver tabla completa
+          {t.viewFullTable}
         </button>
       </div>
 
@@ -257,6 +328,7 @@ function TableViewer({ item }) {
         open={open}
         title={title}
         type="table"
+        lang={lang}
         onClose={() => setOpen(false)}
       >
         <div className={styles.tableContent}>
@@ -298,19 +370,19 @@ function TableViewer({ item }) {
               </table>
             </div>
           ) : (
-            <p className={styles.fsEmptyMsg}>Datos de tabla no disponibles.</p>
+            <p className={styles.fsEmptyMsg}>{t.noTableData}</p>
           )}
 
           {(note || item.source) && (
             <div className={styles.tableFooterMeta}>
               {note && (
                 <p className={styles.tableFootnote}>
-                  <em>Nota:</em> {note}
+                  <em>{t.note}:</em> {note}
                 </p>
               )}
               {item.source && (
                 <p className={styles.tableFootnote}>
-                  <em>Fuente:</em> {item.source}
+                  <em>{t.source}:</em> {item.source}
                 </p>
               )}
             </div>
@@ -323,20 +395,19 @@ function TableViewer({ item }) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // INTERACTIVO — tarjeta compacta + modal fullscreen ancho
-// item viene de graphicsData enriquecido con { title, description }
-// item.component es React.lazy(() => import(...))
 // ─────────────────────────────────────────────────────────────────────────────
 
 function InteractiveViewer({ item, lang }) {
   const [open, setOpen] = useState(false);
   const DynComponent = item.component;
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.es;
 
   const id = `grafico-${item.id}`;
   return (
     <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
         <span className={`${styles.badge} ${styles.interactivo}`}>
-          Interactivo
+          {t.interactive}
         </span>
       </div>
 
@@ -351,7 +422,7 @@ function InteractiveViewer({ item, lang }) {
           className={styles.actionBtn}
           onClick={() => setOpen(true)}
         >
-          Abrir interactivo
+          {t.openInteractive}
         </button>
       </div>
 
@@ -360,16 +431,17 @@ function InteractiveViewer({ item, lang }) {
         title={item.title || item.id}
         type="interactive"
         wide={true}
+        lang={lang}
         onClose={() => setOpen(false)}
       >
         <BrowserOnly
-          fallback={<div className={styles.fsLoadingMsg}>Cargando…</div>}
+          fallback={<div className={styles.fsLoadingMsg}>{t.loading}</div>}
         >
           {() => (
             <Suspense
               fallback={
                 <div className={styles.fsLoadingMsg}>
-                  Iniciando {item.title}…
+                  {t.starting} {item.title}…
                 </div>
               }
             >
@@ -384,12 +456,12 @@ function InteractiveViewer({ item, lang }) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SERIE (CHART) — tarjeta compacta + modal fullscreen con ChartViewer
-// onSelectChart permite navegar prev/next dentro del modal
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ChartSeriesViewer({ item, lang }) {
   const [open, setOpen]         = useState(false);
   const [currentId, setCurrentId] = useState(item.id);
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.es;
 
   const handleOpen = () => {
     setCurrentId(item.id); // reiniciar al chart original al abrir
@@ -400,16 +472,16 @@ function ChartSeriesViewer({ item, lang }) {
   return (
     <div id={id} className={styles.card}>
       <div className={styles.badgeRow}>
-        <span className={`${styles.badge} ${styles.serie}`}>Serie</span>
+        <span className={`${styles.badge} ${styles.serie}`}>{t.chart}</span>
       </div>
 
-      <h4 className={styles.cardTitle}>{item.title || `Serie ${item.id}`}</h4>
+      <h4 className={styles.cardTitle}>{item.title || `${t.chart} ${item.id}`}</h4>
       {item.subtitle && (
         <p className={styles.cardCaption}>{item.subtitle}</p>
       )}
       {(item.sourceBadge || item.source) && (
         <p className={styles.cardSource}>
-          Fuente: {item.sourceBadge || item.source}
+          {t.source}: {item.sourceBadge || item.source}
         </p>
       )}
 
@@ -419,25 +491,26 @@ function ChartSeriesViewer({ item, lang }) {
           className={styles.actionBtn}
           onClick={handleOpen}
         >
-          Ver gráfica
+          {t.viewChart}
         </button>
       </div>
 
       <FullscreenEvidenceModal
         open={open}
-        title={item.title || `Serie ${item.id}`}
+        title={item.title || `${t.chart} ${item.id}`}
         type="chart"
         wide={true}
+        lang={lang}
         onClose={() => setOpen(false)}
       >
         <BrowserOnly
-          fallback={<div className={styles.fsLoadingMsg}>Cargando gráfica…</div>}
+          fallback={<div className={styles.fsLoadingMsg}>{t.loadingChart}</div>}
         >
           {() => (
             <Suspense
               fallback={
                 <div className={styles.fsLoadingMsg}>
-                  Iniciando {item.title}…
+                  {t.starting} {item.title}…
                 </div>
               }
             >
@@ -465,7 +538,7 @@ export default function AnnexEvidenceViewer({ type, item, lang = 'es' }) {
     case 'figure':
       return <FigureViewer item={item} lang={lang} />;
     case 'table':
-      return <TableViewer item={item} />;
+      return <TableViewer item={item} lang={lang} />;
     case 'interactive':
       return <InteractiveViewer item={item} lang={lang} />;
     case 'chart':
