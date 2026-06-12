@@ -9,9 +9,26 @@ import forensicCategoriesDe from '../../../static/data/processed/forensic_catego
 import forensicCategoriesZh from '../../../static/data/processed/forensic_categories_zh-Hans.json';
 
 import { graphicsData, getGraphicData } from '../InteractiveGraphicsGalleryBase';
-import { CHARTS } from '../../data/forensicCharts';
+import { CHARTS as chartsEs } from '../../data/forensicCharts';
+import { CHARTS as chartsEn } from '../../data/forensicCharts_en';
+import { CHARTS as chartsDe } from '../../data/forensicCharts_de';
+import { CHARTS as chartsPt } from '../../data/forensicCharts_pt';
+import { CHARTS as chartsFr } from '../../data/forensicCharts_fr';
+import { CHARTS as chartsIt } from '../../data/forensicCharts_it';
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import AnnexEvidenceViewer from './AnnexEvidenceViewer';
+
+const getCharts = (lang) => {
+  switch (lang) {
+    case 'en': return chartsEn;
+    case 'de': return chartsDe;
+    case 'pt': return chartsPt;
+    case 'fr': return chartsFr;
+    case 'it': return chartsIt;
+    case 'zh-Hans': return chartsEn;
+    default: return chartsEs;
+  }
+};
 
 const getForensicCategories = (lang) => {
   switch (lang) {
@@ -84,7 +101,7 @@ export default function AnnexEvidence({ type, id, level = 2 }) {
     }
 
     if (type === 'chart') {
-      return (CHARTS || []).find((chart) => chart.id === id);
+      return (getCharts(lang) || []).find((chart) => chart.id === id);
     }
 
     return null;
