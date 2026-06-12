@@ -1,0 +1,122 @@
+.figure {
+  --fig-bg: #fff8ec;
+  --fig-surface: #fffdf7;
+  --fig-surface-2: #f6eddc;
+  --fig-text: #24211c;
+  --fig-muted: #6f675c;
+  --fig-border: rgba(77, 60, 38, 0.16);
+  --fig-burgundy: #8b2635;
+  --fig-pistachio: #6f7f36;
+  --fig-amber: #c58b35;
+  --fig-teal: #28666e;
+
+  max-width: 880px;
+  margin: 1.5rem auto;
+  padding: 1.4rem 1.8rem;
+  border: 1px solid var(--fig-border);
+  border-radius: 14px;
+  background: var(--fig-bg);
+  color: var(--fig-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg: #0d1e38;
+  --fig-surface: #122846;
+  --fig-surface-2: #183452;
+  --fig-text: #e8eef7;
+  --fig-muted: #aab7c8;
+  --fig-border: rgba(210, 225, 245, 0.14);
+  --fig-burgundy: #d77a8a;
+  --fig-pistachio: #9fb463;
+  --fig-amber: #f0b866;
+  --fig-teal: #83bdc2;
+}
+
+.header { margin-bottom: 0.6rem; }
+.kicker { margin: 0 0 0.2rem; font-size: 0.72rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fig-muted); }
+.title { margin: 0 0 0.3rem; font-size: 1.15rem; font-weight: 740; line-height: 1.22; }
+.subtitle { margin: 0; font-size: 0.86rem; line-height: 1.42; opacity: 0.8; max-width: 720px; }
+
+.equationBlock {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 0.7rem; padding: 0.4rem 0.7rem;
+  background: var(--fig-surface); border: 1px solid var(--fig-border);
+  border-radius: 8px; width: fit-content;
+}
+.eq { font-size: 0.82rem; font-weight: 550; font-family: 'Georgia', serif; }
+.eqSmall { font-size: 0.74rem; font-weight: 500; font-family: 'Georgia', serif; opacity: 0.75; }
+.eqSep { font-size: 0.8rem; color: var(--fig-muted); opacity: 0.4; }
+
+.visualWrap { margin-bottom: 0.2rem; }
+.svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+/* ── Network ── */
+.lineNormal { stroke: var(--fig-muted); stroke-width: 2.2; opacity: 0.5; }
+.lineCongested { stroke: var(--fig-burgundy); stroke-width: 3; cursor: pointer; transition: stroke-width 0.15s; }
+.lineCongestedActive { stroke-width: 5; opacity: 0.9; }
+.lineCongested:focus { outline: none; }
+
+.congLabel { font-size: 8.5px; fill: var(--fig-burgundy); font-weight: 600; pointer-events: none; }
+
+.node { fill: var(--fig-surface-2); stroke: var(--fig-teal); stroke-width: 1.8; }
+.nodeLabel { font-size: 13px; fill: var(--fig-text); font-weight: 700; }
+.nodeSub { font-size: 9px; fill: var(--fig-muted); font-weight: 500; }
+
+.connectLine { stroke: var(--fig-muted); stroke-width: 1; stroke-dasharray: 4 3; opacity: 0.5; }
+.shadowLabel { font-size: 8px; fill: var(--fig-muted); font-style: italic; }
+
+/* ── Stacked bar ── */
+.barTitle { font-size: 10px; fill: var(--fig-text); font-weight: 650; }
+.barSeg { cursor: pointer; transition: opacity 0.18s; }
+.barSeg:focus { outline: 2px solid var(--fig-teal); outline-offset: 1px; }
+.barSegLabel { font-size: 9.5px; fill: var(--fig-text); font-weight: 550; transition: opacity 0.18s; }
+
+.noteSmall { font-size: 8px; fill: var(--fig-muted); font-style: italic; opacity: 0.6; }
+
+.tooltip {
+  margin: 0.3rem 0 0.5rem; padding: 0.5rem 0.75rem;
+  background: var(--fig-surface); border: 1px solid var(--fig-border);
+  border-left: 3px solid var(--fig-teal); border-radius: 6px;
+  font-size: 0.79rem; line-height: 1.42; opacity: 0.92;
+ min-height: 48px; transition: opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;}
+.tooltip p { margin: 0; }
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 0.7rem 1.2rem;
+  margin: 0.5rem 0 0.8rem; font-size: 0.76rem;
+}
+.legendItem {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  cursor: pointer; padding: 0.15rem 0.3rem; border-radius: 4px;
+  transition: background 0.15s; opacity: 0.85;
+}
+.legendItem:hover, .legendItem:focus { background: var(--fig-surface); opacity: 1; }
+.legendItemActive { background: var(--fig-surface-2); opacity: 1; font-weight: 600; }
+.legendItem:focus { outline: 2px solid var(--fig-teal); outline-offset: 1px; }
+
+.dotEnergy, .dotLosses, .dotCongestion { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.dotEnergy { background: var(--fig-pistachio); }
+.dotLosses { background: var(--fig-amber); }
+.dotCongestion { background: var(--fig-burgundy); }
+
+.reading {
+  margin: 0; padding: 0.6rem 0.8rem;
+  background: var(--fig-surface); border-left: 3px solid var(--fig-teal);
+  border-radius: 6px; font-size: 0.8rem; line-height: 1.45; opacity: 0.9;
+}
+.readingNote { font-style: italic; opacity: 0.7; }
+
+@media (max-width: 640px) {
+  .figure { padding: 1rem; }
+  .equationBlock { flex-wrap: wrap; }
+  .legend { flex-direction: column; gap: 0.4rem; }
+}
+
+.tooltipHidden {
+  opacity: 0;
+  visibility: hidden;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

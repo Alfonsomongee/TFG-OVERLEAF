@@ -1,6 +1,6 @@
 ---
 id: anexo-mercado-costes
-title: "Anexo V · Mercado eléctrico, precios y costes"
+title: "Anexo V · Mercado eléctrico: la vulnerabilidad invisible"
 sidebar_label: "Anexo V · Mercado, precios y costes"
 hide_title: true
 ---
@@ -8,72 +8,107 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PicasoPriceChart from '@site/src/components/PicasoPriceChart';
 
 <AnnexLayout
   wide
   kicker="Anexo V"
-  title="Mercado eléctrico, precios y costes de ajuste"
-  description="Evidencias económicas sobre precios marginales, PVPC, mercados diario e intradiario, costes de ajuste, desvíos y señales económicas asociadas al apagón."
+  title="Mercado eléctrico: la vulnerabilidad invisible"
+  description="Este anexo documenta las señales de precio y costes de desvíos durante el 28-A, analizando cómo el diseño marginalista y los mercados de balance operaron a ciegas frente a la progresiva degradación de la estabilidad dinámica de la red."
   meta={[
     { label: 'Eje técnico', value: 'Mercado y Costes' },
     { label: 'Cobertura', value: 'Impacto económico y precios' },
     { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Por qué las señales de precios del mercado eléctrico y de los servicios de balance no reflejaron la creciente vulnerabilidad dinámica del sistema peninsular?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    El 28-A, el mercado marginalista liquidó la energía en niveles de precio normales o incluso bajos debido al pico de producción renovable a coste marginal cero. Sin embargo, este abaratamiento comercial ocultaba un coste de seguridad dinámico que el mercado actual no remunera de forma explícita: la inercia y la potencia de cortocircuito. Las señales de precios del mercado diario y de los servicios de balance paneuropeos (PICASSO) resultaron ciegas a la fragilidad física del sistema, demostrando que el actual diseño de mercado carece de mecanismos para valorar la resiliencia en tiempo real.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo reúne los registros de precios OMIE, los costes de desvíos y la facturación de servicios de balance que evidencian la desconexión entre la economía del mercado y la seguridad física de la red el 28-A.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
     La documentación económica se presenta estructurada temáticamente para evaluar el comportamiento de los mercados y las señales de precio derivadas de la interrupción del suministro.
   </AnnexMethodNote>
 
+  <em>El anexo se organiza en tres secciones argumentales: señales de mercado el 28-A, balance y desvíos operativos, y la ausencia de precios para las propiedades dinámicas de soporte de red.</em>
+
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t5' },
-      { label: 'Tablas',       target: 'tablas-t5' },
-      { label: 'Interactivos', target: 'interactivos-t5' },
-      { label: 'Series',       target: 'series-t5' },
+      { label: 'Señales de mercado', target: 'senales-mercado' },
+      { label: 'Balance y desvíos',   target: 'balance-desvios' },
+      { label: 'Vulnerabilidad',     target: 'vulnerabilidad-mercado' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t5"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-<AnnexThemeEvidence theme="T5" include={['figures']} />
+  <AnnexSection id="senales-mercado" eyebrow="Sección 1" title="Señales de mercado el 28-A: precios e indicadores">
+    La tabla de precios marginales OMIE registra la evolución horaria del precio de la energía, confirmando niveles bajos debidos a la alta penetración solar fotovoltaica.
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Coste del servicio ERS e inercia"
+      summary="Comparación del coste óptimo de adquisición del servicio de inercia y respuesta rápida (ERS) frente a la inacción del mercado el día del colapso."
+      insight="Brecha regulatoria y económica · Incentivos para la firmeza síncrona."
+    >
+      <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
+    </AnnexEvidenceLead>
+    El precio SPOT cayó a −3,00 €/MWh en la hora 12:00–13:00 CEST — fijado 24 horas antes del colapso. Un precio negativo indica que el mercado expulsaba activamente la generación síncrona precisamente cuando más se necesitaba su inercia.
+    <AnnexEvidence type="table" id="precios-marginales-omie" level={2} />
+    El precio negativo no fue consecuencia del apagón: fue una señal de alarma que el sistema no interpretó.
+    La evolución SPOT vs PVPC revela la brecha estructural: precio mayorista negativo frente a tarifa minorista de 130 €/MWh en la misma hora. Tras el apagón, el SPOT se recuperó a 35 €/MWh por el mayor uso de gas en la Operación Reforzada.
+    <AnnexEvidence type="chart" id="chart-9" level={2} />
+    El dato revelador no es el precio final (51,52 €/MWh) sino sus componentes: las restricciones técnicas (27,93 €/MWh) superaban al precio de mercado (24,63 €/MWh). El coste de la estabilidad ya excedía el coste de la energía en la madrugada del evento.
+    <AnnexEvidence type="chart" id="chart-10" level={2} />
+    Los precios de activación en la plataforma europea PICASSO documentan el coste de las reservas de regulación rápida movilizadas durante la emergencia paneuropea.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PicasoPriceChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t5"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-<AnnexThemeEvidence theme="T5" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t5"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="balance-desvios" eyebrow="Sección 2" title="Balance y desvíos operativos">
+    El coste de las reservas de regulación subida y el volumen de energía de regulación activada documentan la magnitud del esfuerzo técnico y económico por equilibrar la red tras la pérdida de 4,5 GW en 11 segundos.
+    <AnnexEvidence type="chart" id="chart-11" level={2} />
+    <AnnexEvidence type="chart" id="chart-12" level={2} />
+    Los saldos de desvíos, los precios de imbalance, la capacidad FRR disponible (~889 MW en el peor caso del Q2 frente a un déficit de ~1.200 MW) y los costes de gestión de congestiones completan el cuadro económico del colapso operativo.
+    <AnnexEvidence type="chart" id="chart-18" level={2} />
+    <AnnexEvidence type="chart" id="chart-19" level={2} />
+    <AnnexEvidence type="chart" id="chart-20" level={2} />
+    <AnnexEvidence type="chart" id="chart-21" level={2} />
+    <AnnexEvidence type="chart" id="chart-22" level={2} />
+    La matriz interactiva de costes de ajuste térmico permite explorar el reparto de sobrecostes por la activación excepcional de ciclos combinados de seguridad.
     <span id="grafico-matrix"></span>
-<AnnexThemeEvidence theme="T5" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="matrix" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t5"
-    eyebrow="Series hist�ricas"
-    title="Series hist�ricas"
-    description="Gr�ficas y series temporales operativas."
-    defaultOpen
-  >
-<AnnexThemeEvidence theme="T5" include={['charts']} />
+  <AnnexSection id="vulnerabilidad-mercado" eyebrow="Sección 3" title="La vulnerabilidad invisible del mercado">
+    El coste total del sistema se minimiza cuando se remunera explícitamente la inercia (ERS). La diferencia entre el óptimo y la realidad del 28-A es el coste de los servicios ancilares que el mercado no valora. El apilamiento de ingresos para BESS-GFM muestra que la remuneración por inercia sintética viabilizaría la inversión privada en soporte dinámico.
+    <AnnexEvidence type="figure" id="ers_revenue_stacking" level={3} />
+    El apilamiento de ingresos (revenue stacking) para almacenamiento en baterías (BESS) muestra cómo la remuneración por inercia sintética y regulación rápida viabiliza la inversión privada.
   </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="El análisis económico del 28-A revela una paradoja regulatoria: el mercado operó con total eficiencia comercial mientras conducía al sistema al colapso físico. El diseño marginalista actual no valora ni remunera las propiedades dinámicas de soporte de red (inercia, Scc), creando un incentivo sistemático para expulsar las máquinas síncronas que las proveen."
+    doesNotDemonstrate="Este anexo demuestra la necesidad de reformar el mercado eléctrico para incorporar mercados de servicios ancilares de inercia y potencia de cortocircuito, evitando que la transición energética comprometa la seguridad dinámica."
+    connection="La lectura se complementa con el Anexo I (mix de generación previo) y con el Anexo VII (cuantificación del impacto socioeconómico del apagón)."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
+    { to: "/anexo-impacto-resiliencia", label: "Anexo VII: impacto socioeconómico y resiliencia" }
+  ]} />
 </AnnexLayout>

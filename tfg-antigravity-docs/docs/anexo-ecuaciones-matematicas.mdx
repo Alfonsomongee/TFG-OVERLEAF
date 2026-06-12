@@ -1,6 +1,6 @@
 ---
 id: anexo-ecuaciones-matematicas
-title: "Anexo X · Ecuaciones matemáticas y simuladores"
+title: "Anexo X · Ecuaciones, modelos matemáticos y simuladores"
 sidebar_label: "Anexo X · Ecuaciones y simuladores"
 hide_title: true
 ---
@@ -8,53 +8,120 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
+import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
 
 <AnnexLayout
   wide
   kicker="Anexo X"
-  title="Ecuaciones matemáticas y simuladores"
-  description="Recopilación de simuladores interactivos gobernados por formulación matemática, física y financiera."
+  title="Ecuaciones, modelos matemáticos y simuladores"
+  description="Este anexo constituye el laboratorio matemático central del TFG. Centraliza los simuladores interactivos organizados por dominio físico, económico y de dinámica de sistemas para reproducir los fenómenos del 28-A."
   meta={[
     { label: 'Eje técnico', value: 'Matemáticas y Simulación' },
     { label: 'Interactividad', value: 'Tiempo real' }
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Qué ecuaciones, modelos y simulaciones permiten reproducir cuantitativamente los fenómenos físicos, financieros y comunicativos que confluyeron en el apagón del 28-A?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    El colapso del 28-A fue un fenómeno multiescala gobernado por leyes físicas de la electrotecnia, incentivos marginalistas de mercado y dinámicas sociales de propagación de información. Este anexo reúne los simuladores interactivos que modelan estos comportamientos de forma cuantitativa, permitiendo variar las variables independientes para analizar la estabilidad de la red, los costes de desvíos, el colapso del Jacobiano de flujos de potencia o el retardo en la comunicación institucional.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo proporciona el soporte de formulación y los modelos interactivos que validan cuantitativamente el análisis empírico desarrollado en los capítulos y anexos factuales del TFG.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
     Este anexo aísla y agrupa todas las herramientas interactivas del documento que no se basan en datos históricos estáticos, sino en ecuaciones matemáticas, financieras y de física eléctrica. El usuario puede alterar las variables independientes de las fórmulas para observar el comportamiento dinámico de las curvas resultantes.
   </AnnexMethodNote>
 
-  <AnnexSection
-    id="simuladores-red"
-    eyebrow="Física de Redes"
-    title="Simuladores de Transporte y Estabilidad"
-    description="Fenómenos de inestabilidad y transporte de energía en extra alta tensión gobernados por ecuaciones de flujo y reactiva."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T10-red" include={['interactives']} />
+  <em>El anexo se organiza en cinco secciones que cubren los distintos dominios matemáticos del estudio: fortaleza de red y colapso de tensión, reactiva y transitorios electromagnéticos, control e inercia de frecuencia, mercado y economía de red, y modelos de dinámica de sistemas.</em>
+
+  <AnnexEvidenceNav
+    items={[
+      { label: 'Fortaleza y tensión',      target: 'red-tension' },
+      { label: 'Reactiva y transitorios',  target: 'reactiva-transitorios' },
+      { label: 'Control y frecuencia',     target: 'control-frecuencia' },
+      { label: 'Mercado y economía',       target: 'mercado-coste' },
+      { label: 'Modelos sistémicos',       target: 'sistemicos' },
+    ]}
+  />
+
+  <AnnexSection id="red-tension" eyebrow="Dominio 1" title="Fortaleza de red y colapso de tensión">
+    El SCR mide la fortaleza de la red en un nudo. En el sur peninsular el 28-A, el SCR cayó por debajo de 3 en nudos con alta concentración de inversores — zona de riesgo para estabilidad de tensión.
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Simulador de la curva P-V"
+      summary="Este simulador permite explorar de forma interactiva el límite de transmisión de potencia activa y reactiva antes de alcanzar el punto de colapso de tensión (bifurcación sillar-nodo)."
+      insight="Estabilidad de tensión estática · Identificación del margen de cargabilidad."
+    >
+      <AnnexEvidence type="interactive" id="pvcurve" level={1} />
+    </AnnexEvidenceLead>
+    El SCR y el MRSCR capturan la interacción mutua y el desacoplamiento angular entre inversores IBR cercanos.
+    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    <AnnexEvidence type="interactive" id="power-flow-jacobian" level={2} />
+    <AnnexEvidence type="interactive" id="pq-capability" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="simuladores-generacion"
-    eyebrow="Generación y Frecuencia"
-    title="Simuladores de Máquinas y Control"
-    description="Ecuaciones fundamentales del control de frecuencia y los límites matemáticos del estator y rotor."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T10-gen" include={['interactives']} />
+  <AnnexSection id="reactiva-transitorios" eyebrow="Dominio 2" title="Reactiva y transitorios electromagnéticos">
+    El efecto Ferranti amplificó las sobretensiones en las líneas de 400 kV del suroeste. Para una línea de 300 km, la sobretensión puede alcanzar el 15–20% — suficiente para disparar las protecciones ANSI 59 de los inversores.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    La corriente de inrush magnetizante al energizar un transformador decae exponencialmente, introduciendo transitorios asimétricos ricos en segundos armónicos.
+    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
+    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="simuladores-mercado"
-    eyebrow="Mercado y Finanzas"
-    title="Simuladores de Mercado y Transición"
-    description="Modelos matemáticos de costes, mercados financieros y la ecuación del Trilema Energético. (Espacio reservado para las nuevas gráficas)"
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T10-mer" include={['interactives']} />
-    
-    {/* RESERVADO PARA LAS NUEVAS GRÁFICAS FINANCIERAS Y DE MERCADO DEL USUARIO */}
-    
+  <AnnexSection id="control-frecuencia" eyebrow="Dominio 3" title="Control e inercia de frecuencia">
+    La ecuación del swing predice la respuesta inercial: con la H del sistema ibérico el 28-A (~2,5 s), un desequilibrio de 4,5 GW produce un RoCoF superior a 1,5 Hz/s.
+    <AnnexEvidence type="interactive" id="swing" level={2} />
+    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
+    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+    <AnnexEvidence type="interactive" id="ufls" level={2} />
+    <AnnexEvidence type="interactive" id="bess-boom-chart" level={2} />
+    <AnnexEvidence type="interactive" id="lole-chart" level={2} />
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
   </AnnexSection>
 
+  <AnnexSection id="mercado-coste" eyebrow="Dominio 4" title="Mercado y economía de red">
+    Los precios nodales (LMP) habrían revelado el sobrecoste de congestión en los nudos del sur peninsular — información que el mercado zonal ibérico no proporciona.
+    <AnnexEvidence type="interactive" id="lmp-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="dcopf-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="voll-sector" level={2} />
+    <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
+    <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-triangle" level={2} />
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="sistemicos" eyebrow="Dominio 5" title="Modelos de dinámica de sistemas">
+    El modelo SIR calibrado con los datos del 28-A muestra que el retardo comunicativo de REE (~4 horas hasta la primera nota oficial) permitió que las narrativas de ciberataque alcanzasen el 30% de penetración antes de la primera rectificación.
+    <AnnexEvidence type="interactive" id="sir-disinformation" level={2} />
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
+    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={2} />
+    <AnnexEvidence type="interactive" id="resolution-roadmap" level={2} />
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="Este laboratorio matemático consolida la validación del análisis del TFG. La confluencia de modelos de flujo de potencia, oscilaciones de rotor y economía marginalista demuestra que el colapso del 28-A responde a dinámicas físicas precisas y previsibles que requieren una modelización rigurosa para plantear soluciones regulatorias efectivas."
+    doesNotDemonstrate="El uso integrado de los simuladores interactivos permite al lector contrastar las hipótesis y experimentar con los parámetros de sensibilidad de la red."
+    connection="La lectura se complementa de forma cruzada con los anexos factuales I, II, V y VII del informe."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX: metodología y contraste de fuentes" }
+  ]} />
 </AnnexLayout>

@@ -370,7 +370,7 @@ Der Rückgang ist augenblicklich und total: von 91% auf 0% in den Sekunden des S
   {
     id: 'chart-9',
     categoryId: 'cat3',
-    tema: 'T3',
+    tema: 'T5',
     order: 1,
     title: 'Mercados y Precios — SPOT vs PVPC',
     fullTitle: 'Comparativa de precios eléctricos — Mercado SPOT mayorista vs. PVPC 2.0TD',
@@ -408,7 +408,7 @@ Der Blackout änderte nicht direkt die am Vortag bereits festgesetzten Stundenpr
   {
     id: 'chart-10',
     categoryId: 'cat3',
-    tema: 'T3',
+    tema: 'T5',
     order: 2,
     title: 'Precio Final Desglosado',
     fullTitle: 'Componentes del precio final de la electricidad',
@@ -446,7 +446,7 @@ Das aufschlussreichste Datum ist nicht der Endpreis, sondern das Verhältnis sei
   {
     id: 'chart-11',
     categoryId: 'cat3',
-    tema: 'T3',
+    tema: 'T5',
     order: 3,
     title: 'Energy Prices — Europa',
     fullTitle: 'Precios day-ahead del mercado mayorista ibérico (OMIE)',
@@ -484,7 +484,7 @@ Der negative Preis von 12:00–13:00 wurde 24 Stunden vor dem Blackout festgeset
   {
     id: 'chart-12',
     categoryId: 'cat3',
-    tema: 'T3',
+    tema: 'T5',
     order: 4,
     title: 'Precios de Desvíos Tiempo Real',
     fullTitle: 'Precios de desvíos y restricciones técnicas en tiempo real',

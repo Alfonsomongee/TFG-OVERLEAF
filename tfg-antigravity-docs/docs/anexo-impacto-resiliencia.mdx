@@ -8,8 +8,16 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import TrilemmaTriangle from '@site/src/components/TrilemmaTriangle';
 import CNMCSanctionsChart from '@site/src/components/CNMCSanctionsChart';
 
@@ -17,53 +25,85 @@ import CNMCSanctionsChart from '@site/src/components/CNMCSanctionsChart';
   wide
   kicker="Anexo VII"
   title="Impacto socioeconómico y resiliencia"
-  description="Evidencias sobre costes económicos, comparación con apagones históricos, efectos en infraestructuras críticas y lecciones de resiliencia sistémica."
+  description="Este anexo cuantifica los costes socioeconómicos del apagón del 28-A y evalúa la resiliencia de las infraestructuras críticas afectadas, contrastando el incidente con otros colapsos históricos a nivel global."
   meta={[
     { label: 'Eje técnico', value: 'Impacto y Resiliencia' },
     { label: 'Cobertura', value: 'Consecuencias socioeconómicas' },
     { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Cuál fue el coste socioeconómico real del apagón del 28-A y qué lecciones sobre resiliencia sectorial e institucional se derivan del colapso?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    El apagón del 28-A causó pérdidas estimadas en más de 240 millones de euros, afectando prioritariamente al sector manufacturero y al transporte metropolitano. La comparación con otros colapsos históricos demuestra que, aunque el tiempo de reposición total fue relativamente corto (menos de 10 horas) gracias al apoyo transfronterizo, la vulnerabilidad del tejido industrial evidenció la necesidad de revisar los estándares del Valor de la Energía No Suministrada (VoLL). Los esquemas regulatorios de sanción (CNMC) y el equilibrio del trilema energético requieren una profunda revaluación tras el evento.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo reúne las pérdidas sectoriales y la comparativa de resiliencia del sistema ibérico frente a eventos de interrupción a gran escala a nivel internacional.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
     El anexo sistematiza la información relativa al alcance social del evento y la resiliencia de las infraestructuras críticas afectadas por el apagón.
   </AnnexMethodNote>
 
+  <em>El anexo se organiza en cuatro secciones argumentales: cuantificación del impacto, comparación con apagones históricos, resiliencia sectorial de infraestructuras, y régimen regulatorio y sanciones.</em>
+
   <AnnexEvidenceNav
     items={[
-      { label: 'Tablas',       target: 'tablas-t7' },
-      { label: 'Interactivos', target: 'interactivos-t7' },
+      { label: 'Cuantificación',       target: 'cuantificacion' },
+      { label: 'Comparación histórica', target: 'comparacion-historica' },
+      { label: 'Resiliencia sectorial',  target: 'resiliencia' },
+      { label: 'Régimen regulatorio',   target: 'regulatorio' },
     ]}
   />
 
-  <AnnexSection
-    id="tablas-t7"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-<AnnexThemeEvidence theme="T7" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t7"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="cuantificacion" eyebrow="Sección 1" title="Cuantificación del impacto económico">
+    La tabla de costes económicos desglosa el impacto financiero estimado en millones de euros, revelando la alta sensibilidad del sector industrial frente a interrupciones rápidas.
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Estimación de costes económicos"
+      summary="Desglose sectorial y conceptual de las pérdidas económicas directas e indirectas del apagón, estimadas en más de 240 M€ en el mercado ibérico."
+      insight="Impacto industrial y doméstico · Cuantificación del coste de no suministro."
+    >
+      <AnnexEvidence type="table" id="costes-economicos" level={1} />
+    </AnnexEvidenceLead>
+    La cascada financiera desglosa la acumulación de costes directos (interrupciones industriales, transporte) e indirectos (seguros, reputacional). La banda estimada es muy amplia: 200–4.500 M€, reflejo de la dificultad de cuantificar la ENS indirecta.
     <span id="grafico-waterfall"></span>
+    <AnnexEvidence type="interactive" id="waterfall" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="comparacion-historica" eyebrow="Sección 2" title="Comparación con apagones históricos">
+    La comparación sitúa el 28-A frente a apagones como el Northeast 2003 (55 M de afectados, 62 GW), Italia 2003 (56 M, 27 GW) y Argentina 2019 (48 M, 22 GW). El tiempo de reposición ibérico (~10 h) fue relativamente corto gracias al soporte francés, pero la velocidad del colapso (~5 min) fue inusualmente alta.
+    <AnnexEvidence type="table" id="comparativa-blackouts-historicos" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="resiliencia" eyebrow="Sección 3" title="Resiliencia sectorial de infraestructuras">
+    El análisis sectorial de resiliencia documenta qué infraestructuras críticas — transporte, telecomunicaciones, cadena de frío — tardaron más en recuperar operatividad tras el retorno de la tensión.
     <span id="grafico-sectorial-resilience"></span>
-<AnnexThemeEvidence theme="T7" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="sectorial-resilience" level={2} />
+    El trilema energético visualiza el equilibrio entre seguridad, sostenibilidad y asequibilidad. El 28-A demostró que priorizar las dos últimas sin asegurar la primera tiene un coste superior al ahorro obtenido.
+    <div style={{ margin: '1.5rem 0' }}>
+      <TrilemmaTriangle showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t7"
-    eyebrow="Series hist�ricas"
-    title="Series hist�ricas"
-    description="Gr�ficas operativas."
-    defaultOpen
-  >
+  <AnnexSection id="regulatorio" eyebrow="Sección 4" title="Régimen regulatorio y sanciones">
+    El histórico de sanciones de la CNMC revela que el régimen sancionador previo al 28-A no contenía incentivos suficientes para invertir en soporte dinámico de red.
+    <div style={{ margin: '1.5rem 0' }}>
+      <CNMCSanctionsChart showCaption={false} />
+    </div>
   </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="La cuantificación económica del 28-A demuestra que el coste de la inestabilidad dinámica es sumamente elevado para una economía moderna. Aunque el sistema de transporte ibérico demostró una resiliencia de reposición notable en comparación con referencias históricas, la vulnerabilidad del tejido de distribución y la falta de incentivos reguladores para el soporte dinámico urgen a una revisión de la normativa de calidad."
+    doesNotDemonstrate="Este anexo demuestra que el coste social de la ENS (VoLL) supera en órdenes de magnitud el coste de instalar y remunerar servicios de inercia y reactiva adicionales."
+    connection="La lectura se complementa con el Anexo V (mecanismo económico de mercado) y con el Anexo IX (metodología pericial de cálculo)."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-mercado-costes", label: "Anexo V: mercado eléctrico, precios y costes" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX: metodología y contraste de fuentes" }
+  ]} />
 </AnnexLayout>
-

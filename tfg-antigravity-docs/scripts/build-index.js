@@ -259,7 +259,7 @@ function extractChunks(filePath, content) {
     ? data.slug
     : rawSlug.split('/').map(segment => segment.replace(/^\d+-/, '')).join('/') || '/';
 
-  const lines = cleanBody.split('\n');
+  const lines = cleanBody.split('\n').map(line => line.replace(/\r$/, ''));
   let currentHeading = title;
   let currentSubheading = '';
   let currentAnchor = '';
@@ -327,6 +327,15 @@ function extractChunks(filePath, content) {
   flushBuffer();
 }
 
+const EXCLUDED_FROM_INDEX = [
+  'instrucciones-grid-anexos',
+  'rediseno-argumental-anexos',
+  'rediseno-visual-anexos',
+  'textos-puente-mejorados',
+  'mejoras-chatbot',
+  'propuesta-reorganizacion-anexos',
+];
+
 function walkDir(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
@@ -334,6 +343,7 @@ function walkDir(dir) {
     if (entry.isDirectory()) {
       walkDir(fullPath);
     } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
+      if (EXCLUDED_FROM_INDEX.some(ex => entry.name.includes(ex))) continue;
       const raw = fs.readFileSync(fullPath, 'utf-8');
       extractChunks(fullPath, raw);
     }
@@ -732,6 +742,38 @@ function buildIndex() {
   injectGraphics();
   injectEntsoeCharts();
   injectAnnexFigures();
+
+  // ── Inyectar metadatos de elementos de anexos no parseados ──
+  const annexMetaPath = path.join(OUTPUT_DIR, 'data', 'annex-elements-metadata.json');
+  if (fs.existsSync(annexMetaPath)) {
+    const annexMeta = JSON.parse(fs.readFileSync(annexMetaPath, 'utf8'));
+    console.log(`[build-index] Inyectando ${annexMeta.length} elementos de metadatos de anexos`);
+    for (const item of annexMeta) {
+      const id = docId++;
+      const chunk = {
+        id,
+        title: item.title,
+        heading: item.title,
+        subheading: '',
+        text: item.text,
+        slug: item.slug,
+        anchor: item.anchor,
+        chunkType: item.chunkType || 'graphic',
+        keywords: item.keywords || [],
+        keywordsText: (item.keywords || []).join(' '),
+        chapterOrder: 99,
+        sourceFile: 'annex-elements-metadata.json',
+        artifact: {
+          type: 'interactive',
+          id: item.anchor,
+          title: item.title,
+          description: item.text,
+          source: 'annex_x',
+        },
+      };
+      allChunks.push(chunk);
+    }
+  }
 
   miniSearch.addAll(allChunks);
 

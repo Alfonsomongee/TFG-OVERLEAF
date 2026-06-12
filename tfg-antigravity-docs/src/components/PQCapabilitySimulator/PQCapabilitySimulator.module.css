@@ -1,221 +1,199 @@
-/* PQCapabilitySimulator.module.css */
-
 .figure {
-  /* Variables prefijadas – modo claro */
-  --pq-bg: #F9F6F0;
-  --pq-surface: #F3EFE5;
-  --pq-text: #2B2B2B;
-  --pq-curve: #005F6B;        /* Sₘₐₓ – azul petróleo */
-  --pq-p: #B87B4A;            /* P – cobre/ámbar */
-  --pq-q: #2D6A4F;            /* Qₘₐₓ – verde técnico */
-  --pq-accent: #B87B4A;       /* punto operativo */
-  --pq-critical: #C47B5A;     /* zona crítica */
-  --pq-badge-wide: #2D6A4F;
-  --pq-badge-compromised: #B87B4A;
-  --pq-badge-critical: #A6523E;
+  --fig-bg: #fff8ec;
+  --fig-surface: #fffdf7;
+  --fig-surface-2: #f6eddc;
+  --fig-text: #24211c;
+  --fig-muted: #6f675c;
+  --fig-border: rgba(77, 60, 38, 0.16);
+  --fig-burgundy: #8b2635;
+  --fig-pistachio: #4a6b2a;
+  --fig-amber: #b87b2e;
+  --fig-teal: #28666e;
 
   max-width: 880px;
-  margin: 2.5rem auto;
-  padding: 2rem 2.2rem;
-  background: var(--pq-bg);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  margin: 1.5rem auto;
+  padding: 1.4rem 1.8rem;
+  border: 1px solid var(--fig-border);
   border-radius: 14px;
-  font-family: var(--ifm-font-family-base);
-  color: var(--pq-text);
-  box-sizing: border-box;
-  scroll-margin-top: 96px;
+  background: var(--fig-bg);
+  color: var(--fig-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
 }
 
-/* Modo oscuro */
 html[data-theme='dark'] .figure {
-  --pq-bg: #1A2332;
-  --pq-surface: #212E3E;
-  --pq-text: #CFD9E3;
-  --pq-curve: #4FA4B0;
-  --pq-p: #E0A25E;
-  --pq-q: #5BA07A;
-  --pq-accent: #E0A25E;
-  --pq-critical: #E0866E;
-  --pq-badge-wide: #5BA07A;
-  --pq-badge-compromised: #E0A25E;
-  --pq-badge-critical: #E0866E;
+  --fig-bg: #0d1e38;
+  --fig-surface: #122846;
+  --fig-surface-2: #183452;
+  --fig-text: #e8eef7;
+  --fig-muted: #aab7c8;
+  --fig-border: rgba(210, 225, 245, 0.14);
+  --fig-burgundy: #d77a8a;
+  --fig-pistachio: #9fb463;
+  --fig-amber: #f0b866;
+  --fig-teal: #83bdc2;
 }
 
-/* ========== Header ========== */
-.header {
-  margin-bottom: 1.6rem;
-}
+/* ═══ Header ═══ */
+.header { margin-bottom: 0.6rem; }
+.kicker { margin: 0 0 0.2rem; font-size: 0.72rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fig-muted); }
+.title { margin: 0 0 0.3rem; font-size: 1.15rem; font-weight: 740; line-height: 1.22; }
+.subtitle { margin: 0; font-size: 0.86rem; line-height: 1.42; opacity: 0.8; max-width: 720px; }
 
-.kicker {
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--pq-text);
-  opacity: 0.5;
-  margin: 0 0 0.3rem;
+/* ═══ Equation ═══ */
+.equationBlock {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 0.7rem; padding: 0.4rem 0.7rem;
+  background: var(--fig-surface); border: 1px solid var(--fig-border);
+  border-radius: 8px; width: fit-content;
 }
+.eq { font-size: 0.82rem; font-weight: 550; font-family: 'Georgia', serif; }
+.eqSep { font-size: 0.8rem; color: var(--fig-muted); opacity: 0.4; }
 
-.title {
-  font-size: 1.38rem;
-  font-weight: 700;
-  line-height: 1.25;
-  margin: 0 0 0.4rem;
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 0;
-  opacity: 0.75;
-}
-
-/* ========== Gráfico SVG ========== */
+/* ═══ SVG ═══ */
 .svgContainer {
   width: 100%;
   max-width: 520px;
-  margin: 0 auto 1.4rem auto;
+  margin: 0 auto 0.3rem;
 }
 
 .svg {
   width: 100%;
   height: auto;
   display: block;
-  background: var(--pq-surface);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-radius: 8px;
 }
 
-html[data-theme='dark'] .svg {
-  border-color: rgba(255, 255, 255, 0.07);
-}
+.smaxArc { cursor: pointer; transition: stroke-width 0.15s; }
+.smaxArcActive { stroke-width: 4; }
+.smaxArc:focus { outline: none; }
 
-/* ========== Leyenda ========== */
+.critArc { cursor: pointer; transition: opacity 0.15s; }
+.critArc:focus { outline: none; }
+
+.projLine { cursor: pointer; }
+
+.opPoint {
+  fill: var(--fig-amber);
+  stroke: var(--fig-text);
+  stroke-width: 1;
+  cursor: pointer;
+  transition: r 0.15s;
+}
+.opPointActive { r: 9; }
+.opPoint:focus { outline: 2px solid var(--fig-teal); outline-offset: 2px; }
+
+/* ═══ Tooltip ═══ */
+.tooltip {
+  margin: 0.3rem 0 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--fig-surface);
+  border: 1px solid var(--fig-border);
+  border-left: 3px solid var(--fig-teal);
+  border-radius: 6px;
+  font-size: 0.79rem;
+  line-height: 1.42;
+  opacity: 0.92;
+}
+.tooltip p { margin: 0; }
+
+/* ═══ Legend ═══ */
 .legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 1.6rem;
-  width: 100%;
-  max-width: 560px;
-  margin: 0 auto 1.6rem auto;
+  gap: 0.5rem 1.2rem;
+  max-width: 520px;
+  margin: 0 auto 0.8rem;
   font-size: 0.76rem;
-  background: var(--pq-surface);
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  box-sizing: border-box;
+  padding: 0.6rem 0.8rem;
+  background: var(--fig-surface);
+  border-radius: 8px;
 }
 
 .legendItem {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
+  cursor: pointer;
+  padding: 0.1rem 0.2rem;
+  border-radius: 4px;
+  transition: background 0.15s;
+  opacity: 0.85;
 }
+.legendItem:hover, .legendItem:focus { background: var(--fig-surface-2); opacity: 1; }
+.legendItemActive { background: var(--fig-surface-2); opacity: 1; font-weight: 600; }
+.legendItem:focus { outline: 2px solid var(--fig-teal); outline-offset: 1px; }
 
-.legendSwatch {
+.dotSmax, .dotP, .dotQ, .dotCritical {
+  display: inline-block;
   width: 11px;
   height: 11px;
   border-radius: 2px;
   flex-shrink: 0;
 }
+.dotSmax { background: var(--fig-teal); }
+.dotP { background: var(--fig-amber); }
+.dotQ { background: var(--fig-pistachio); }
+.dotCritical { background: var(--fig-burgundy); opacity: 0.6; }
 
-/* ========== Controles (slider) ========== */
-.controls {
-  margin-bottom: 1.1rem;
-}
+/* ═══ Controls ═══ */
+.controls { margin-bottom: 0.8rem; }
+.sliderLabel { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.35rem; }
+.sliderRow { display: flex; align-items: center; gap: 0.8rem; }
+.slider { flex: 1; accent-color: var(--fig-amber); height: 6px; }
+.sliderValue { font-size: 0.82rem; font-weight: 600; min-width: 5em; text-align: right; }
 
-.sliderLabel {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
-
-.sliderRow {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-}
-
-.slider {
-  flex: 1;
-  accent-color: var(--pq-accent);
-  height: 6px;
-}
-
-.sliderValue {
-  font-size: 0.85rem;
-  font-weight: 600;
-  min-width: 5em;
-  text-align: right;
-}
-
-/* ========== Estado operativo ========== */
+/* ═══ Status ═══ */
 .status {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  margin-bottom: 0.8rem;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 .statusBadge {
   font-size: 0.73rem;
   font-weight: 700;
-  padding: 0.15rem 0.8rem;
+  padding: 0.12rem 0.7rem;
   border-radius: 4px;
-  background: var(--pq-surface);
+  background: var(--fig-surface);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
-.statusWide {
-  color: var(--pq-badge-wide);
-}
-.statusCompromised {
-  color: var(--pq-badge-compromised);
-}
-.statusCritical {
-  color: var(--pq-badge-critical);
-}
+.statusWide { color: var(--fig-pistachio); }
+.statusCompromised { color: var(--fig-amber); }
+.statusCritical { color: var(--fig-burgundy); }
 
-.qValue {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
+.qValue { font-size: 0.82rem; font-weight: 600; }
 
-/* ========== Texto pericial ========== */
+/* ═══ Expert text ═══ */
 .pericial {
-  font-size: 0.9rem;
-  line-height: 1.55;
-  margin: 0 0 1rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin: 0 0 0.8rem;
+  opacity: 0.88;
+  font-style: italic;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--fig-amber);
+}
+
+/* ═══ Reading ═══ */
+.reading {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  background: var(--fig-surface);
+  border-left: 3px solid var(--fig-teal);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.45;
   opacity: 0.9;
 }
 
-/* ========== Bloque conceptual fijo ========== */
-.conceptual {
-  background: var(--pq-surface);
-  border-radius: 8px;
-  padding: 0.85rem 1.1rem;
-  font-size: 0.84rem;
-  line-height: 1.6;
-  opacity: 0.88;
-  border-left: 3px solid var(--pq-curve);
-}
-
-.conceptual p {
-  margin: 0;
-}
-
-/* ========== Responsive ========== */
-@media (max-width: 600px) {
-  .figure {
-    padding: 1.35rem;
-  }
-
-  .legend {
-    grid-template-columns: 1fr;
-  }
-
-  .svgContainer,
-  .legend {
-    max-width: 100%;
-  }
+/* ═══ Responsive ═══ */
+@media (max-width: 640px) {
+  .figure { padding: 1rem; }
+  .legend { grid-template-columns: 1fr; }
+  .svgContainer { max-width: 100%; }
 }

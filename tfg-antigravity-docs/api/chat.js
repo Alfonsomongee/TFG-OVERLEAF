@@ -120,7 +120,7 @@ async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTo
         max_tokens: maxTokens,
       }),
     },
-    12000
+    30000
   );
 
   if (!response.ok) {
@@ -160,7 +160,7 @@ async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, m
         stream: false,
       }),
     },
-    18000
+    45000
   );
 
   if (!response.ok) {
@@ -260,7 +260,8 @@ function classifyIntent(question, mode = 'normal') {
   match(['cuanta', 'cuanto', 'cifra', 'porcentaje', 'demanda',
          'mw', 'hz', 'mvar', 'kv', 'solar', 'mix',
          'how much', 'how many', 'percentage', 'value',
-         'magnitude', 'figure', 'number'],
+         'magnitude', 'figure', 'number',
+         'coste', 'costo', 'euros', 'millones', 'precio', 'cuanto costo'],
         'quantitative', 2);
 
   // Causal
@@ -270,7 +271,7 @@ function classifyIntent(question, mode = 'normal') {
 
   match(['por que', 'como amplifico', 'como actuo', 'mecanismo',
          'detonante', 'causa', 'agravo', 'tap-lag', 'ufls',
-         'colapso en vez de',
+         'colapso en vez de', 'conectan', 'relacion entre', 'vinculo',
          'why', 'how did', 'mechanism', 'trigger', 'cause',
          'root cause', 'what caused', 'reason'],
         'causal', 3);
@@ -639,7 +640,8 @@ function selectContextChunks(rerankedResults, chunksData, maxChunks = 9, lambda 
 function buildChunkUrl(chunk) {
   const slug = chunk?.slug || '';
   const anchor = chunk?.anchor || '';
-  return anchor ? `${slug}#${anchor}` : slug;
+  const path = slug.startsWith('/') ? slug : `/${slug}`;
+  return anchor ? `${path}#${anchor}` : path;
 }
 
 function makeExcerpt(text, maxLength = 220) {
@@ -795,11 +797,39 @@ function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore =
     if (artifact.type === 'interactive')      score *= 1.2;
   }
   if (intent === 'visual') {
-    if (artifact.source === 'annex_d')        score *= 2.8;  // máximo peso: datos reales
+    if (artifact.source === 'annex_d')        score *= 2.8;
     if (artifact.source === 'annex_entsoe')   score *= 2.8;
     if (artifact.source === 'annex_figures')  score *= 2.2;
-    if (artifact.type === 'interactive')      score *= 1.8;
-    if (artifact.type === 'table')            score *= 0.8;  // tablas menos relevantes en visual
+    if (artifact.source === 'annex_x')        score *= 3.5;
+    if (artifact.type === 'interactive')      score *= 3.0;
+    if (artifact.type === 'table')            score *= 0.8;
+
+    // Override explícito: si la query menciona el nombre del simulador,
+    // el simulador gana siempre sobre imágenes
+    const SIMULATOR_KEYWORDS = {
+      'ferranti':      ['ferranti', 'efecto ferranti', 'linea descargada', 'linea vacia'],
+      'pvcurve':       ['curva p-v', 'pv curve', 'colapso de tension', 'punto de nariz', 'cargabilidad', 'colapso jacobiano', 'nariz'],
+      'swing':         ['ecuacion del swing', 'swing equation', 'rocof', 'inercia', 'constante h'],
+      'map':           ['mapa', 'propagacion', 'cascada geografica', 'animado', 'animated'],
+      'sismograph':    ['sismografo', 'sismograph', '27 segundos', 'segundos criticos'],
+      'timeline':      ['cronologia', 'timeline', 'linea de tiempo', 'cronograma'],
+      'ansi59':        ['ansi 59', 'ansi59', 'proteccion sobretension', 'cascada ibr'],
+      'phaseplane':    ['plano de fase', 'phase plane', 'trayectoria angular'],
+      'frequency':     ['caida de frecuencia', 'nadir frecuencial', 'grafica de frecuencia'],
+      'radar-vulnerabilidad': ['radar', 'vulnerabilidad', 'ejes'],
+      'comparador-28a': ['comparador', 'comparacion escenarios'],
+      'grid-strength-scr': ['scr', 'fortaleza de red', 'short circuit ratio', 'potencia de cortocircuito'],
+      'mrscr-comparator':  ['mrscr', 'multi-maquina'],
+      'dynamic-security-shift': ['frontera de seguridad', 'desplazamiento', 'seguridad dinamica'],
+      'waterfall':     ['cascada financiera', 'waterfall', 'costes del apagon', 'coste total'],
+      'matrix':        ['matriz de costes', 'opex capex', 'inaccion'],
+    };
+    if (artifact.type === 'interactive') {
+      const simKws = SIMULATOR_KEYWORDS[artifact.id];
+      if (simKws && simKws.some(kw => q.includes(kw))) {
+        score *= 6.0;
+      }
+    }
   }
   if (intent === 'timeline') {
     if (artifact.source === 'annex_d')        score *= 2.2;  // gráficas temporales reales
@@ -1209,10 +1239,20 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
     }
   }
 
+  // Fallback solo si hay menos de 2 sugerencias contextuales
   if (suggestions.length < 2) {
-    add('¿Cuál fue la causa física principal del apagón del 28-A?');
-    add('¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?');
-    add('¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?');
+    // Elegir fallbacks que no repitan la pregunta actual
+    const fallbacks = [
+      '¿Cuál fue la causa física principal del apagón del 28-A?',
+      '¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?',
+      '¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?',
+      '¿Qué reformas se han implementado tras el apagón?',
+      '¿Cómo funcionó el Black Start en la reposición del sistema?',
+    ];
+    for (const fb of fallbacks) {
+      if (!isRepetitive(fb)) add(fb);
+      if (suggestions.length >= 2) break;
+    }
   }
 
   return suggestions.slice(0, maxItems);
@@ -1469,7 +1509,11 @@ RESPUESTA:`;
 
     const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
 
-IDENTIDAD: Respondes como un ingeniero eléctrico forense que ha analizado los cuatro informes primarios (Gobierno/REE, ICAI/AELEC/Compass Lexecon, ENTSO-E, NREL). Tu voz es técnica, precisa y directa — sin rodeos, sin frases hechas, sin grandilocuencia.
+FECHA DEL EVENTO: El apagón ocurrió el 28 de abril de 2025. Si ves "2021" en algún contexto, es un error tipográfico — el evento fue en 2025.
+
+ÁMBITO: Responde ÚNICAMENTE sobre el contenido del TFG. Si la pregunta pide datos actuales, en tiempo real, o fuera del período analizado (28-A y su contexto), di claramente: "Esta pregunta está fuera del alcance del TFG" y sugiere una fuente externa (OMIE, ESIOS, REE). No elabores una respuesta larga sobre preguntas fuera de ámbito.
+
+IDENTIDAD: Respondes como un ingeniero eléctrico forense que ha analizado los informes clave (Gobierno/REE, ICAI/AELEC, ENTSO-E, NREL). Tu voz es técnica, precisa y directa.
 
 FUENTES: Respondes ÚNICAMENTE con información del CONTEXTO proporcionado. Si el contexto no cubre la pregunta, dilo explícitamente: "Este aspecto no está cubierto en el TFG."
 
@@ -1491,7 +1535,7 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
 - Demanda sin suministro: ~25.200 MW (ES) + ~5.800 MW (PT)
 - Personas afectadas: ~57 millones
 - Reposición 99%: ~18,5 horas
-- Coste Operación Reforzada: >666 M€ (10 meses)`;
+- Coste Operación Reforzada: >666 M€ (primeros 10 meses, estimación REE feb-2026)`;
 
     let llmResult;
     try {

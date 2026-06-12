@@ -37,6 +37,11 @@ const TrilemmaTriangle = lazy(() => import(/* webpackChunkName: "chart-trilemma-
 const CNMCSanctionsChart = lazy(() => import(/* webpackChunkName: "chart-cnmc-sanctions" */ './CNMCSanctionsChart'));
 const ResolutionRoadmap = lazy(() => import(/* webpackChunkName: "chart-resolution-roadmap" */ './ResolutionRoadmap'));
 const ResearchAgendaScatter = lazy(() => import(/* webpackChunkName: "chart-research-agenda" */ './ResearchAgendaScatter'));
+const DcopfCongestionManagementFigure = lazy(() => import(/* webpackChunkName: "chart-dcopf" */ './new-graphics/DcopfCongestionManagementFigure'));
+const LmpCongestionDecompositionFigure = lazy(() => import(/* webpackChunkName: "chart-lmp-congestion" */ './new-graphics/LmpCongestionDecompositionFigure'));
+const SIRDisinformationDelayFigure = lazy(() => import(/* webpackChunkName: "chart-sir-delay" */ './new-graphics/SIRDisinformationDelayFigure'));
+const TrilemmaStateSpaceFigure = lazy(() => import(/* webpackChunkName: "chart-trilemma-space" */ './new-graphics/TrilemmaStateSpaceFigure'));
+const VoLLSectorIntegralFigure = lazy(() => import(/* webpackChunkName: "chart-voll-sector" */ './new-graphics/VoLLSectorIntegralFigure'));
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export const getGraphicData = (id, lang) => {
@@ -267,6 +272,26 @@ export const getGraphicData = (id, lang) => {
     'energy-trilemma': {
       es: { title: 'Simulador del Trilema Energético', desc: 'Visualización baricéntrica interactiva del compromiso dinámico entre seguridad, equidad y sostenibilidad ambiental.' },
       en: { title: 'Energy Trilemma Simulator', desc: 'Interactive barycentric visualization of the dynamic trade-off between security, equity, and environmental sustainability.' }
+    },
+    'dcopf-congestion': {
+      es: { title: 'Despacho Económico con Congestión (DC-OPF)', desc: 'Simulación de redespacho de generación local ante restricciones físicas y saturación de líneas en el modelo DC-OPF.' },
+      en: { title: 'Economic Dispatch with Congestion (DC-OPF)', desc: 'Simulation of local generation redispatch under physical grid constraints and line saturation in the DC-OPF model.' }
+    },
+    'lmp-congestion': {
+      es: { title: 'Componentes del Precio Nodal (LMP)', desc: 'Descomposición del precio marginal local (LMP) en energía, pérdidas y el componente de congestión originado por restricciones de red.' },
+      en: { title: 'Nodal Price Components (LMP)', desc: 'Decomposition of Locational Marginal Price (LMP) into energy, losses, and congestion components driven by grid constraints.' }
+    },
+    'voll-sector': {
+      es: { title: 'Daño Económico y VoLL Sectorial', desc: 'Visualización de cómo la energía no suministrada (ENS) se traduce en daño económico según el valor de pérdida de carga (VoLL) de cada sector.' },
+      en: { title: 'Economic Damage and Sectoral VoLL', desc: 'Visualization of how Energy Not Served (ENS) translates into economic damage based on the Value of Lost Load (VoLL) of each sector.' }
+    },
+    'sir-disinformation': {
+      es: { title: 'Modelo SIR de Desinformación', desc: 'Dinámica de propagación de bulos en el espacio de estados y coste temporal del vacío informativo antes de la comparecencia oficial.' },
+      en: { title: 'SIR Disinformation Model', desc: 'Propagation dynamics of fake narratives in the state space and the temporal cost of the information vacuum before official announcements.' }
+    },
+    'trilemma-state-space': {
+      es: { title: 'Espacio de Decisiones del Trilema', desc: 'Visualización de la frontera de Pareto del trilema energético, ilustrando la restricción explícita de estabilidad dinámica.' },
+      en: { title: 'Trilemma Decision Space', desc: 'Visualization of the energy trilemma Pareto frontier, illustrating the explicit constraint of dynamic stability.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -321,6 +346,12 @@ export const graphicsData = [
   { id: 'cnmc-sanctions-chart', icon: '⚖️', component: CNMCSanctionsChart , tema: ['T7', 'T10-mer'] },
   { id: 'resolution-roadmap', icon: '🗺️', component: ResolutionRoadmap , tema: ['T9', 'T10-red'] },
   { id: 'research-agenda-scatter', icon: '🔬', component: ResearchAgendaScatter , tema: ['T9', 'T10-red'] },
+{ id: 'dcopf-congestion', icon: '⚡', component: DcopfCongestionManagementFigure , tema: 'T10-mer' },
+  { id: 'lmp-congestion', icon: '💸', component: LmpCongestionDecompositionFigure , tema: 'T10-mer' },
+  { id: 'voll-sector', icon: '🏭', component: VoLLSectorIntegralFigure , tema: 'T10-mer' },
+  { id: 'sir-disinformation', icon: '📡', component: SIRDisinformationDelayFigure , tema: 'T10-sis' },
+  { id: 'trilemma-state-space', icon: '⚖️', component: TrilemmaStateSpaceFigure , tema: 'T10-sis' },
+
 
   { id: 'grid-strength-scr', icon: '📈', component: GridStrengthScrFigure , tema: 'T10-red' },
   { id: 'hvdc-control', icon: '🎛️', component: HvdcControlModeResponseFigure , tema: 'T10-red' },

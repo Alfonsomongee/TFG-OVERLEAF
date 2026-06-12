@@ -1,6 +1,6 @@
 ---
 id: anexo-comunicacion-fuentes
-title: "Anexo VIII · Comunicación, percepción pública y fuentes"
+title: "Anexo VIII · Comunicación y percepción pública"
 sidebar_label: "Anexo VIII · Comunicación y fuentes"
 hide_title: true
 ---
@@ -8,50 +8,100 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import EASStateTransition from '@site/src/components/EASStateTransition';
 import ConsensusMatrix from '@site/src/components/ConsensusMatrix';
 
 <AnnexLayout
   wide
   kicker="Anexo VIII"
-  title="Comunicación, percepción pública y fuentes narrativas"
-  description="Evidencias sobre cobertura mediática, narrativas institucionales, tratamiento internacional, percepción ciudadana y construcción pública del episodio."
+  title="Comunicación y percepción pública"
+  description="Este anexo documenta el tratamiento informativo, las narrativas institucionales y la percepción social del colapso del 28-A, analizando cómo se construyó el relato público del incidente en los medios de comunicación nacionales e internacionales."
   meta={[
     { label: 'Eje técnico', value: 'Comunicación y Percepción' },
     { label: 'Cobertura', value: 'Narrativa institucional y mediática' },
     { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Cómo influyeron los sesgos informativos y la asimetría de la comunicación oficial en la percepción ciudadana de la seguridad del sistema eléctrico tras el 28-A?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    El tratamiento público del apagón del 28-A estuvo marcado por una fuerte polarización narrativa. Mientras que los medios conservadores enfatizaron de forma prematura la culpabilidad del modelo renovable y la transición ecológica, los medios progresistas justificaron el incidente como un fallo fortuito y ajeno al diseño de mercado. La demora en los informes oficiales del operador del sistema y las contradicciones entre las notas de prensa de REE y el Comité del Gobierno alimentaron teorías de la conspiración y redujeron temporalmente la confianza pública en la solidez del sistema.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo reúne los collages de portadas de prensa y las matrices de consenso pericial que documentan la dimensión comunicativa y la construcción pública de la crisis.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
     Este anexo reúne materiales de comunicación y percepción pública. Su función es contextualizar el tratamiento narrativo del apagón, no sustituir la evidencia técnica operacional.
   </AnnexMethodNote>
 
+  <em>El anexo se organiza en tres secciones argumentales: cobertura mediática nacional e internacional, percepción ciudadana y política, y el análisis pericial del consenso.</em>
+
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t8' },
-      { label: 'Tablas',       target: 'tablas-t8' },
-      { label: 'Series',       target: 'series-t8' },
+      { label: 'Cobertura mediática', target: 'cobertura-mediatica' },
+      { label: 'Percepción pública',  target: 'percepcion' },
+      { label: 'Consenso pericial',   target: 'consenso-pericial' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t8"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['figures']} />
+  <AnnexSection id="cobertura-mediatica" eyebrow="Sección 1" title="Cobertura mediática nacional e internacional">
+    El encuadre de la prensa conservadora se centró en vincular directamente la inestabilidad con la penetración masiva de energía renovable, calificando el evento como el fracaso de la transición verde.
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Tratamiento en prensa internacional"
+      summary="Las portadas de la prensa internacional especializada ilustran la repercusión global del apagón y el encuadre técnico inicial fuera del debate partidista doméstico."
+      insight="Encuadre técnico internacional · Cobertura libre de tensiones políticas locales."
+    >
+      <AnnexEvidence type="figure" id="collage_internacional" level={1} />
+    </AnnexEvidenceLead>
+    La cobertura nacional se polarizó simétricamente: la prensa conservadora atribuyó el colapso al exceso de renovables; la progresista lo justificó como fallo fortuito ajeno al mix. Ambos encuadres se consolidaron antes de que se publicase ningún informe pericial.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_conservador" level={2} />
+      <AnnexEvidence type="figure" id="collage_progresista" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <EASStateTransition showCaption={false} />
+  <AnnexSection id="percepcion" eyebrow="Sección 2" title="Percepción pública y política">
+    En las redes sociales se propagaron rumores de ciberataque y escasez sistémica durante las primeras horas de silencio oficial. Ningún líder político abordó aspectos técnicos: la instrumentalización parlamentaria fue inmediata y se orientó exclusivamente a la atribución de responsabilidades.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_ciudadanos" level={2} />
+      <AnnexEvidence type="figure" id="collage_politicos" level={2} />
+    </AnnexEvidenceGrid>
+  </AnnexSection>
 
-  *Figura B5 — Sismógrafo del colapso: transición de normalidad operativa a pérdida total del sistema. Fuente: ENTSO‑E.*
+  <AnnexSection id="consenso-pericial" eyebrow="Sección 3" title="Consenso y discrepancias periciales">
+    La matriz de consenso contrasta las conclusiones de REE, CNMC y ENTSO-E: coinciden en la causa raíz (sobretensión + baja Scc) pero discrepan en el margen de inercia mínimo y en las responsabilidades del operador.
+    <div style={{ margin: '1.5rem 0' }}>
+      <ConsensusMatrix showCaption={false} />
+    </div>
+    El sismógrafo de estados EAS documenta el desfase entre el colapso físico y la notificación continental: un fallo del sistema de alerta temprana europeo para eventos de dinámica rápida.
+    <div style={{ margin: '1.5rem 0' }}>
+      <EASStateTransition showCaption={false} />
+    </div>
+  </AnnexSection>
 
-  <ConsensusMatrix showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="La dimensión comunicativa del 28-A demostró que la gestión de la información de crisis es tan crítica como la respuesta técnica de la red. La polarización y los encuadres mediáticos sesgados llenaron el vacío de información dejado por el operador, evidenciando la necesidad de protocolos de transparencia en tiempo real."
+    doesNotDemonstrate="Este anexo no demuestra malas prácticas intencionadas de los medios, sino la facilidad con la que un suceso físico complejo se reinterpreta bajo prismas ideológicos preconcebidos."
+    connection="La lectura se complementa con el Anexo VI (reposición y estados EAS) y con el Anexo IX (metodología y modelos de desinformación)."
+  />
 
-  *Figura M1 — Matriz de consenso y discrepancia entre informes periciales.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-reposicion-blackstart", label: "Anexo VI: reposición y operación de emergencia" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX: metodología y contraste de fuentes" }
+  ]} />
 </AnnexLayout>
-

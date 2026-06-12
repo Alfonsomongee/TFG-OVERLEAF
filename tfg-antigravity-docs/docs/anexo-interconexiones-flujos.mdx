@@ -8,8 +8,16 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import CoordinationTimeline from '@site/src/components/CoordinationTimeline';
 import CommandArchitectureGraph from '@site/src/components/CommandArchitectureGraph';
 
@@ -17,70 +25,112 @@ import CommandArchitectureGraph from '@site/src/components/CommandArchitectureGr
   wide
   kicker="Anexo IV"
   title="Interconexiones y flujos transfronterizos"
-  description="Evidencias sobre flujos físicos y programados, frontera España-Francia, enlaces HVDC, intercambios con Portugal, Marruecos y el papel de las interconexiones en la dinámica del incidente."
+  description="Este anexo documenta el comportamiento de las interconexiones internacionales durante el colapso del 28-A, analizando cómo actuaron inicialmente como propagadores de la inestabilidad y, posteriormente, como los vectores clave para la re-energización rápida del sistema ibérico."
   meta={[
     { label: 'Eje técnico', value: 'Interconexiones' },
     { label: 'Cobertura', value: 'España · Francia · Portugal · Marruecos' },
     { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Qué papel desempeñaron las interconexiones transfronterizas en la propagación de la inestabilidad y la posterior reposición del sistema ibérico?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Durante el colapso del 28-A, las interconexiones tuvieron un papel dual crítico. Inicialmente, al producirse el desequilibrio por la pérdida de generación síncrona ibérica, los flujos importadores desde Francia aumentaron bruscamente superando la capacidad de transferencia y provocando la pérdida de sincronismo en la frontera pirenaica. Sin embargo, en la fase de reposición, la interconexión con Francia actuó como el principal vector de re-energización de la red española de transporte, permitiendo levantar subestaciones clave mucho antes de que las centrales de reserva local estuvieran disponibles.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo reúne los flujos de potencia de enlace y los eventos de pérdida de sincronismo continental que determinaron el aislamiento eléctrico de la península ibérica el 28-A.
+  </AnnexBlackoutRelevance>
+
+  <AnnexMethodNote type="reconstruccion">
+    Las evidencias documentales se organizan en este anexo para facilitar una lectura integrada de los flujos de potencia y la secuencia de coordinación internacional.
+  </AnnexMethodNote>
+
+  <em>El anexo se organiza en cuatro secciones argumentales: pérdida de sincronismo transfronterizo, HVDC y tecnología de enlace, programación e intercambios previos, y re-energización guiada desde Francia.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t4' },
-      { label: 'Tablas',       target: 'tablas-t4' },
-      { label: 'Interactivos', target: 'interactivos-t4' },
-      { label: 'Series',       target: 'series-t4' },
+      { label: 'Pérdida de sincronismo', target: 'perdida-sincronismo' },
+      { label: 'HVDC y tecnología',       target: 'hvdc-tecnologia' },
+      { label: 'Intercambios previos',   target: 'intercambios-previos' },
+      { label: 'Re-energización',        target: 'reenergizacion-francia' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t4"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['figures']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="tablas-t4"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t4"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <span id="grafico-topology"></span>
+  <AnnexSection id="perdida-sincronismo" eyebrow="Sección 1" title="Pérdida de sincronismo transfronterizo">
+    El registro de flujos por la frontera francesa muestra cómo el salto abrupto de importaciones superó los límites térmicos y de estabilidad transitoria segundos antes del disparo de las líneas.
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Desviación de flujos transfronterizos"
+      summary="La desconexión intempestiva de los enlaces de interconexión con Francia provocó una desviación masiva de flujos reales frente a los valores programados en el sistema ENTSO-E."
+      insight="Transición al funcionamiento en isla · Desviación de más de 3.000 MW en segundos."
+    >
+      <AnnexEvidence type="figure" id="entsoe_flow_deviation" level={1} />
+    </AnnexEvidenceLead>
+    A las 10:33 UTC, España intentaba importar más de 4.600 MW de emergencia desde Francia — ocho veces la capacidad declarada de 550 MW. La oscilación final de polos precedió a la apertura definitiva de las líneas AC transpirenaicas.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="interconexion_francia_colapso" level={1} />
+      <AnnexEvidence type="figure" id="perdida_sincronismo_frontera" level={2} />
+    </AnnexEvidenceGrid>
+    El registro minuto a minuto de las cuatro fronteras (Francia, Portugal, Marruecos, Andorra) documenta el balance neto en el momento exacto del aislamiento.
+    <AnnexEvidence type="table" id="intercambios-internacionales-minuto" level={2} />
+    El panel interactivo permite explorar la capacidad de transferencia y el grado de saturación de cada interconexión en el instante del colapso.
     <span id="grafico-interconnection"></span>
-    <AnnexThemeEvidence theme="T4" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="interconnection" level={2} />
+    Los flujos físicos muestran que la frontera francesa se cerró primero; la portuguesa, después. La cronología de cierres reconstruye la secuencia exacta del aislamiento ibérico.
+    <AnnexEvidence type="chart" id="chart-14" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t4"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['charts']} />
-
-    <CoordinationTimeline showCaption={false} />
-
-    *Figura K1 — Cronología EAS/SAM: de la separación al mando unificado. Fuente: ENTSO‑E.*
-
-    <CommandArchitectureGraph showCaption={false} />
-
-    *Figura K2 — Arquitectura de mando continental tras la separación ibérica. Fuente: ENTSO‑E.*
+  <AnnexSection id="hvdc-tecnologia" eyebrow="Sección 2" title="HVDC y tecnología de enlace">
+    A las 12:08 CEST, el enlace HVDC INELFE-1 transitó de PMODE3 a PMODE1, limitando su capacidad de respuesta dinámica ante la cascada posterior. La decisión es un punto de análisis pericial abierto.
+    <AnnexEvidence type="figure" id="hvdc_control_transition" level={2} />
+    Los parámetros nominales de Santa Llogaia documentan un caso paradigmático: un enlace HVDC sin frequency response puede empeorar un colapso en lugar de amortiguarlo.
+    <AnnexEvidence type="table" id="hvdc-santa-llogaia-parametros" level={2} />
+    La topología del sistema de interconexión ibérico muestra la disposición de los enlaces AC y HVDC en la frontera norte.
+    <span id="grafico-topology"></span>
+    <AnnexEvidence type="interactive" id="topology" level={2} />
   </AnnexSection>
+
+  <AnnexSection id="intercambios-previos" eyebrow="Sección 3" title="Programación e intercambios previos">
+    A las 11:00 CEST, el saldo total de importación alcanzaba −4.755 MW — máximo histórico. La programación comercial seguía etiquetada como exportadora a 2.500 MW: la brecha entre mercado y física era de 7.255 MW.
+    <AnnexEvidence type="table" id="programa-intercambios-pre-apagon" level={3} />
+    Marruecos operaba en régimen de exportación moderada durante la mañana — el enlace sur no contribuyó al soporte de la estabilidad.
+    <AnnexEvidence type="figure" id="intercambio_marruecos_topdown" level={3} />
+    Los saldos P48 por frontera confirman que España dependía de importaciones récord desde Francia 90 minutos antes del colapso, mientras el programa comercial indicaba normalidad.
+    <AnnexEvidence type="chart" id="chart-13" level={2} />
+    Las series de intercambios comerciales programados, subastas de capacidad y forecast de transfer capacities documentan el desacoplamiento entre los modelos de seguridad estáticos y la dinámica real de la red.
+    <AnnexEvidence type="chart" id="chart-15" level={2} />
+    <AnnexEvidence type="chart" id="chart-16" level={2} />
+    <AnnexEvidence type="chart" id="chart-17" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="reenergizacion-francia" eyebrow="Sección 4" title="Re-energización guiada desde Francia">
+    Las inyecciones de RTE desde Francia sostuvieron la tensión durante la re-energización de los corredores norte y este antes de que los grupos síncronos internos se acoplaran. La línea temporal compara la contención francesa (red preservada, ancla Top-Down) con el colapso total portugués y su recuperación Bottom-Up.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="evolucion_carga_repuesta_francia" level={1} />
+      <AnnexEvidence type="figure" id="timeline-light" level={2} />
+    </AnnexEvidenceGrid>
+    El diagrama de mando continental muestra la jerarquía de decisión de emergencia activada entre los TSO europeos durante la crisis.
+    <div style={{ margin: '1.5rem 0' }}>
+      <CommandArchitectureGraph showCaption={false} />
+    </div>
+    La cronología operativa de coordinación detalla los tiempos de la secuencia de re-sincronización transfronteriza.
+    <div style={{ margin: '1.5rem 0' }}>
+      <CoordinationTimeline showCaption={false} />
+    </div>
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="El análisis de los flujos transfronterizos demuestra el carácter sistémico y transnacional de la seguridad eléctrica. Las interconexiones con el sistema continental actuaron inicialmente como un vector de importación inestable debido a la caída de inercia local, pero constituyeron en última instancia el salvavidas que permitió acortar el tiempo de reposición del sistema ibérico."
+    doesNotDemonstrate="Este anexo no demuestra que el aislamiento pudiese evitarse con una mayor capacidad de intercambio convencional en CA. Sugiere que la respuesta dinámica de los enlaces rápidos en CC (HVDC) y las reglas de reparto de reservas en Europa requieren una profunda revisión técnica."
+    connection="La lectura se complementa con el Anexo II (estabilidad previa de frecuencia y tensión), el Anexo III (secuencia de desconexiones) y el Anexo VI (secuencia de reposición y Black Start)."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III: secuencia de cascada y protecciones" },
+    { to: "/anexo-reposicion-blackstart", label: "Anexo VI: reposición y operación de emergencia" }
+  ]} />
 </AnnexLayout>

@@ -128,6 +128,7 @@ const ENTSOE_CHART_MAP = {
   'chart-13': EntsoeCrossBorderFlows,   // Saldos por Frontera (P48)
   'chart-14': EntsoeCrossBorderFlows,   // Cross-Border Physical Flows
   'chart-15': EntsoeScheduledExchanges, // Scheduled Commercial Exchanges
+  'chart-16': EntsoeScheduledExchanges,
   'chart-17': EntsoeForecastTransfer,   // Forecast Transfer Capacities
   'chart-18': EntsoeCurrentBalancing,   // Current Balancing State
   'chart-19': EntsoeImbalance,          // Imbalance — Volumen MW

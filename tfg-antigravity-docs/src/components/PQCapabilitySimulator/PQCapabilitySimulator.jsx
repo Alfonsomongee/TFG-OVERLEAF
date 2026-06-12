@@ -1,209 +1,215 @@
-// PQCapabilitySimulator.jsx
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styles from './PQCapabilitySimulator.module.css';
 
-const PQCapabilitySimulator = () => {
+export default function PQCapabilitySimulator() {
   const [pRatio, setPRatio] = useState(0.72);
+  const [hoveredElement, setHoveredElement] = useState(null);
+  const hover = useCallback((el) => setHoveredElement(el), []);
+  const unhover = useCallback(() => setHoveredElement(null), []);
+
   const qRatio = Math.sqrt(1 - pRatio * pRatio);
   const qPercent = (qRatio * 100).toFixed(1);
 
   let marginLevel;
-  if (qRatio >= 0.65) {
-    marginLevel = 'wide';
-  } else if (qRatio >= 0.35) {
-    marginLevel = 'compromised';
-  } else {
-    marginLevel = 'critical';
-  }
+  if (qRatio >= 0.65) marginLevel = 'wide';
+  else if (qRatio >= 0.35) marginLevel = 'compromised';
+  else marginLevel = 'critical';
 
   const marginData = {
-    wide: { label: 'Margen amplio', className: styles.statusWide },
-    compromised: { label: 'Margen comprometido', className: styles.statusCompromised },
-    critical: { label: 'Margen crítico', className: styles.statusCritical },
+    wide: { label: 'Margen amplio', cls: styles.statusWide },
+    compromised: { label: 'Margen comprometido', cls: styles.statusCompromised },
+    critical: { label: 'Margen crítico', cls: styles.statusCritical },
   }[marginLevel];
 
-  const getPericialText = () => {
-    const qStr = `${qPercent} % de Sₘₐₓ`;
-    if (qRatio >= 0.65) {
-      return `Con P ≈ ${(pRatio * 100).toFixed(0)} % de Sₘₐₓ, el margen reactivo disponible Qₘₐₓ ≈ ${qStr}. El inversor conserva capacidad apreciable para participar en control de tensión.`;
-    } else if (qRatio >= 0.35) {
-      return `Con P ≈ ${(pRatio * 100).toFixed(0)} % de Sₘₐₓ, Qₘₐₓ desciende a ≈ ${qStr}. En redes débiles, la participación en control de tensión comienza a verse limitada.`;
-    } else {
-      return `Con P ≈ ${(pRatio * 100).toFixed(0)} % de Sₘₐₓ, Qₘₐₓ cae a niveles muy reducidos (≈ ${qStr}). En una red con exceso capacitivo y baja fortaleza, la absorción de reactiva queda operativamente comprometida.`;
-    }
+  const pericialText = (() => {
+    const pPct = (pRatio * 100).toFixed(0);
+    if (qRatio >= 0.65)
+      return `Con P ≈ ${pPct} % de Smax, el margen reactivo Qmax ≈ ${qPercent} % Smax. Capacidad apreciable para control de tensión.`;
+    if (qRatio >= 0.35)
+      return `Con P ≈ ${pPct} % de Smax, Qmax desciende a ≈ ${qPercent} % Smax. En redes débiles, la participación en control de tensión se ve limitada.`;
+    return `Con P ≈ ${pPct} % de Smax, Qmax cae a niveles muy reducidos (≈ ${qPercent} % Smax). La absorción de reactiva queda operativamente comprometida.`;
+  })();
+
+  const tooltips = {
+    smax: 'Frontera de capacidad aparente Smax: el límite térmico del semiconductor define un cuarto de circunferencia donde P² + Q² = S²max.',
+    pLine: `Potencia activa: ${(pRatio * 100).toFixed(0)} % de Smax. A mayor irradiancia fotovoltaica, mayor P y menor margen Q disponible.`,
+    qLine: `Margen reactivo: Qmax ≈ ${qPercent} % de Smax. Este es el margen disponible para participar en control de tensión.`,
+    critical: 'Zona crítica: cuando Q disponible cae por debajo del 35 % de Smax, el inversor pierde capacidad efectiva de soporte de tensión en redes débiles.',
+    opPoint: `Punto de operación actual: P = ${(pRatio * 100).toFixed(0)} %, Q disponible = ${qPercent} %. ${marginData.label}.`,
   };
 
-  // Coordenadas SVG con viewBox 280x280 y márgenes adecuados
-  const originX = 45;
-  const originY = 225;
-  const radius = 185;
+  /* ── SVG layout ── */
+  const originX = 50, originY = 230, radius = 180;
   const px = originX + pRatio * radius;
   const py = originY - qRatio * radius;
 
-  // Zona crítica (umbral Q < 0.35 · Sₘₐₓ)
   const critP = Math.sqrt(1 - 0.35 * 0.35);
   const critX = originX + critP * radius;
   const critY = originY - 0.35 * radius;
 
+  /* ── Build arcs ── */
+  const smaxArc = `M ${originX} ${originY - radius} A ${radius} ${radius} 0 0 1 ${originX + radius} ${originY}`;
+  const critArc = `M ${critX} ${critY} A ${radius} ${radius} 0 0 1 ${originX + radius} ${originY}`;
+
   return (
-    <div className={styles.figure} role="figure" aria-labelledby="pq-simulator-title">
-      <div className={styles.header}>
+    <figure className={styles.figure} aria-labelledby="pq-title">
+      <header className={styles.header}>
         <p className={styles.kicker}>Simulador didáctico · Inversores IBR</p>
-        <h3 id="pq-simulator-title" className={styles.title}>
+        <h3 id="pq-title" className={styles.title}>
           El límite del semiconductor: conflicto P–Q
         </h3>
         <p className={styles.subtitle}>
           A mayor potencia activa, menor margen reactivo disponible para controlar tensión.
         </p>
+      </header>
+
+      <div className={styles.equationBlock}>
+        <span className={styles.eq}>P² + Q² = S²<sub>max</sub></span>
+        <span className={styles.eqSep}>→</span>
+        <span className={styles.eq}>Q<sub>max</sub> = √(S²<sub>max</sub> − P²)</span>
       </div>
 
-      {/* Gráfico principal – más contenido */}
       <div className={styles.svgContainer}>
         <svg
-          viewBox="0 0 280 280"
+          viewBox="0 0 290 280"
           role="img"
-          aria-label="Diagrama de capacidad P‑Q del inversor"
+          aria-labelledby="pq-svg-title pq-svg-desc"
           className={styles.svg}
         >
-          <title>Relación entre potencia activa P y capacidad reactiva Q</title>
-          <desc>
-            Curva de capacidad aparente constante S = 1, mostrando el compromiso entre P y Q.
+          <title id="pq-svg-title">Relación entre potencia activa P y capacidad reactiva Q del inversor</title>
+          <desc id="pq-svg-desc">
+            Curva de capacidad aparente Smax mostrando el compromiso entre P y Q.
+            Zona crítica marcada cuando Q cae por debajo del 35% de Smax.
             Punto de operación ajustable mediante deslizador.
           </desc>
 
-          {/* Ejes */}
-          <line
-            x1={originX}
-            y1={originY}
-            x2={originX + radius + 16}
-            y2={originY}
-            stroke="var(--pq-text)"
-            strokeWidth="1.2"
-          />
-          <line
-            x1={originX}
-            y1={originY}
-            x2={originX}
-            y2={originY - radius - 16}
-            stroke="var(--pq-text)"
-            strokeWidth="1.2"
-          />
+          {/* ── Axes ── */}
+          <line x1={originX} y1={originY} x2={originX + radius + 20} y2={originY}
+            stroke="var(--fig-text)" strokeWidth="1.2" />
+          <line x1={originX} y1={originY} x2={originX} y2={originY - radius - 20}
+            stroke="var(--fig-text)" strokeWidth="1.2" />
 
-          {/* Etiquetas de ejes */}
-          <text x={originX + radius + 20} y={originY + 5} fill="var(--pq-text)" fontSize="11">P</text>
-          <text x={originX - 12} y={originY - radius - 20} fill="var(--pq-text)" fontSize="11">Q</text>
+          <text x={originX + radius + 24} y={originY + 5} fill="var(--fig-text)" fontSize="12" fontWeight="600">P</text>
+          <text x={originX - 4} y={originY - radius - 24} fill="var(--fig-text)" fontSize="12" fontWeight="600" textAnchor="middle">Q</text>
 
-          {/* Marcas en extremos */}
-          <line x1={originX + radius} y1={originY - 3} x2={originX + radius} y2={originY + 3} stroke="var(--pq-text)" />
-          <line x1={originX - 3} y1={originY - radius} x2={originX + 3} y2={originY - radius} stroke="var(--pq-text)" />
+          {/* ── Ticks ── */}
+          <line x1={originX + radius} y1={originY - 3} x2={originX + radius} y2={originY + 3}
+            stroke="var(--fig-text)" strokeWidth="1" />
+          <line x1={originX - 3} y1={originY - radius} x2={originX + 3} y2={originY - radius}
+            stroke="var(--fig-text)" strokeWidth="1" />
 
-          {/* Curva de capacidad Sₘₐₓ */}
-          <path
-            d={`M ${originX} ${originY - radius} A ${radius} ${radius} 0 0 1 ${originX + radius} ${originY}`}
-            fill="none"
-            stroke="var(--pq-curve)"
-            strokeWidth="2.8"
+          {/* ── Smax arc ── */}
+          <path d={smaxArc}
+            fill="none" stroke="var(--fig-teal)" strokeWidth="2.8"
+            className={`${styles.smaxArc} ${hoveredElement === 'smax' ? styles.smaxArcActive : ''}`}
+            onMouseEnter={() => hover('smax')}
+            onMouseLeave={unhover}
+            onFocus={() => hover('smax')}
+            onBlur={unhover}
+            tabIndex={0} role="button"
+            aria-label="Frontera de capacidad aparente Smax"
           />
 
-          {/* Etiqueta Sₘₐₓ */}
-          <text x={originX + 130} y={originY - 70} fill="var(--pq-text)" fontSize="9" fontStyle="italic" opacity="0.6">
-            Sₘₐₓ
-          </text>
+          <text x={originX + radius * 0.62} y={originY - radius * 0.52}
+            fill="var(--fig-muted)" fontSize="9" fontStyle="italic" opacity="0.7">Smax</text>
 
-          {/* Zona crítica (arco discontinuo) */}
-          <path
-            d={`M ${critX} ${critY} A ${radius} ${radius} 0 0 1 ${originX + radius} ${originY}`}
-            fill="none"
-            stroke="var(--pq-critical)"
-            strokeWidth="2.8"
-            strokeDasharray="5 3"
-            opacity="0.35"
+          {/* ── Critical zone arc ── */}
+          <path d={critArc}
+            fill="none" stroke="var(--fig-burgundy)" strokeWidth="2.5" strokeDasharray="5 3"
+            opacity={hoveredElement === 'critical' ? 0.7 : 0.3}
+            className={styles.critArc}
+            onMouseEnter={() => hover('critical')}
+            onMouseLeave={unhover}
+            onFocus={() => hover('critical')}
+            onBlur={unhover}
+            tabIndex={0} role="button"
+            aria-label="Zona crítica, bajo margen Q"
           />
 
-          {/* Proyección P (horizontal) – cobre */}
-          <line x1={originX} y1={originY} x2={px} y2={originY} stroke="var(--pq-p)" strokeWidth="2.8" />
-          <text x={originX + (px - originX) / 2 - 8} y={originY + 17} fill="var(--pq-p)" fontSize="9">P</text>
+          {/* ── P projection ── */}
+          <line x1={originX} y1={originY} x2={px} y2={originY}
+            stroke="var(--fig-amber)" strokeWidth="2.8"
+            className={styles.projLine}
+            onMouseEnter={() => hover('pLine')}
+            onMouseLeave={unhover}
+          />
+          <text x={originX + (px - originX) / 2 - 4} y={originY + 17}
+            fill="var(--fig-amber)" fontSize="9.5" fontWeight="600">P</text>
 
-          {/* Proyección Qₘₐₓ (vertical) – verde técnico */}
-          <line x1={px} y1={py} x2={px} y2={originY} stroke="var(--pq-q)" strokeWidth="2.8" />
-          <text x={px + 7} y={py + (originY - py) / 2} fill="var(--pq-q)" fontSize="9">Qₘₐₓ</text>
+          {/* ── Q projection ── */}
+          <line x1={px} y1={py} x2={px} y2={originY}
+            stroke="var(--fig-pistachio)" strokeWidth="2.8"
+            className={styles.projLine}
+            onMouseEnter={() => hover('qLine')}
+            onMouseLeave={unhover}
+          />
+          <text x={px + 8} y={py + (originY - py) / 2}
+            fill="var(--fig-pistachio)" fontSize="9.5" fontWeight="600">Qmax</text>
 
-          {/* Línea de radio auxiliar */}
-          <line x1={originX} y1={originY} x2={px} y2={py} stroke="var(--pq-text)" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.3" />
+          {/* ── Radius line (dashed) ── */}
+          <line x1={originX} y1={originY} x2={px} y2={py}
+            stroke="var(--fig-text)" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.25" />
 
-          {/* Punto de operación */}
-          <circle cx={px} cy={py} r="5.5" fill="var(--pq-accent)" stroke="var(--pq-text)" strokeWidth="0.7" />
-          <text x={px + 9} y={py - 6} fill="var(--pq-text)" fontSize="8" opacity="0.6">op.</text>
+          {/* ── Operating point ── */}
+          <circle cx={px} cy={py} r="6"
+            className={`${styles.opPoint} ${hoveredElement === 'opPoint' ? styles.opPointActive : ''}`}
+            onMouseEnter={() => hover('opPoint')}
+            onMouseLeave={unhover}
+            onFocus={() => hover('opPoint')}
+            onBlur={unhover}
+            tabIndex={0} role="button"
+            aria-label={`Punto de operación: P=${(pRatio * 100).toFixed(0)}%, Qmax=${qPercent}%`}
+          />
+          <text x={px + 10} y={py - 8} fill="var(--fig-muted)" fontSize="8" opacity="0.7">op.</text>
         </svg>
       </div>
 
-      {/* Leyenda gráfica – compacta debajo */}
+      {hoveredElement && tooltips[hoveredElement] && (
+        <div className={styles.tooltip} role="status" aria-live="polite">
+          <p>{tooltips[hoveredElement]}</p>
+        </div>
+      )}
+
+      {/* ── Legend ── */}
       <div className={styles.legend}>
-        <div className={styles.legendItem}>
-          <span className={styles.legendSwatch} style={{ background: 'var(--pq-curve)' }} />
-          <span>Sₘₐₓ · capacidad aparente</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendSwatch} style={{ background: 'var(--pq-p)' }} />
-          <span>P · potencia activa</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendSwatch} style={{ background: 'var(--pq-q)' }} />
-          <span>Qₘₐₓ · margen reactivo</span>
-        </div>
-        <div className={styles.legendItem}>
-          <span className={styles.legendSwatch} style={{ background: 'var(--pq-critical)', opacity: 0.7 }} />
-          <span>Zona crítica · bajo margen Q</span>
-        </div>
-      </div>
-
-      {/* Slider */}
-      <div className={styles.controls}>
-        <label htmlFor="p-slider" className={styles.sliderLabel}>
-          Potencia activa fotovoltaica
-        </label>
-        <div className={styles.sliderRow}>
-          <input
-            id="p-slider"
-            type="range"
-            min="0.2"
-            max="0.98"
-            step="0.01"
-            value={pRatio}
-            onChange={(e) => setPRatio(parseFloat(e.target.value))}
-            className={styles.slider}
-          />
-          <span className={styles.sliderValue}>
-            {(pRatio * 100).toFixed(0)}% S<sub>max</sub>
+        {[
+          { key: 'smax', label: 'Smax · capacidad aparente', cls: styles.dotSmax },
+          { key: 'pLine', label: 'P · potencia activa', cls: styles.dotP },
+          { key: 'qLine', label: 'Qmax · margen reactivo', cls: styles.dotQ },
+          { key: 'critical', label: 'Zona crítica · bajo margen Q', cls: styles.dotCritical },
+        ].map(({ key, label, cls }) => (
+          <span key={key}
+            className={`${styles.legendItem} ${hoveredElement === key ? styles.legendItemActive : ''}`}
+            onMouseEnter={() => hover(key)} onMouseLeave={unhover}
+            tabIndex={0} role="button" aria-label={`Resaltar ${label}`}>
+            <i className={cls} /> {label}
           </span>
+        ))}
+      </div>
+
+      {/* ── Slider ── */}
+      <div className={styles.controls}>
+        <label htmlFor="p-slider" className={styles.sliderLabel}>Potencia activa fotovoltaica</label>
+        <div className={styles.sliderRow}>
+          <input id="p-slider" type="range" min="0.2" max="0.98" step="0.01"
+            value={pRatio} onChange={(e) => setPRatio(parseFloat(e.target.value))}
+            className={styles.slider} />
+          <span className={styles.sliderValue}>{(pRatio * 100).toFixed(0)}% S<sub>max</sub></span>
         </div>
       </div>
 
-      {/* Estado operativo + valor Qmax */}
+      {/* ── Status ── */}
       <div className={styles.status}>
-        <span className={`${styles.statusBadge} ${marginData.className}`}>
-          {marginData.label}
-        </span>
-        <span className={styles.qValue}>
-          Q<sub>max</sub> = {qPercent} % S<sub>max</sub>
-        </span>
+        <span className={`${styles.statusBadge} ${marginData.cls}`}>{marginData.label}</span>
+        <span className={styles.qValue}>Q<sub>max</sub> = {qPercent} % S<sub>max</sub></span>
       </div>
 
-      {/* Texto pericial dinámico */}
-      <p className={styles.pericial}>{getPericialText()}</p>
+      {/* ── Expert text ── */}
+      <p className={styles.pericial}>{pericialText}</p>
 
-      {/* Bloque conceptual fijo – más ligero */}
-      <div className={styles.conceptual}>
-        <p>
-          La restricción P–Q no implica por sí sola un fallo individual del inversor:
-          expresa una limitación geométrica de operación. En escenarios de alta
-          irradiancia y baja fortaleza de red, maximizar <i>P</i> puede reducir la
-          capacidad agregada del parque IBR para participar en el control dinámico de
-          tensión.
-        </p>
+      <div className={styles.reading}>
+        <strong>Lectura técnica.</strong> La restricción P–Q expresa una limitación geométrica de operación. En alta irradiancia y baja fortaleza de red, maximizar P reduce la capacidad del parque IBR para el control dinámico de tensión.
       </div>
-    </div>
+    </figure>
   );
-};
-
-export default PQCapabilitySimulator;
+}

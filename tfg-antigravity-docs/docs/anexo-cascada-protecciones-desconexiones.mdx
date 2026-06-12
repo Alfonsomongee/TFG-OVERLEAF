@@ -8,8 +8,16 @@ hide_title: true
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PO74Timeline from '@site/src/components/PO74Timeline';
 import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
 
@@ -17,13 +25,25 @@ import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
   wide
   kicker="Anexo III"
   title="Protecciones, cascada y desconexiones"
-  description="Evidencias técnicas relacionadas con la propagación del colapso, disparos de protección, desconexiones de generación y mecanismos de cascada del 28-A."
+  description="Este anexo reconstruye la secuencia de actuaciones de protección, desconexiones de generación y deslastre de carga que transformaron una condición de sobretensión localizada en el sur peninsular en un colapso total del sistema ibérico en menos de cinco minutos."
   meta={[
     { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
     { label: 'Cobertura', value: 'Análisis forense de cascada' },
     { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    ¿Cómo se propagó la cascada de desconexiones entre el disparo raíz en la zona suroeste y el colapso total del sistema ibérico, y qué protecciones actuaron en cada fase?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    La cascada del 28-A se desarrolló en cuatro fases comprimidas en menos de cinco minutos: (1) propagación de sobretensiones por la red de 400 kV del suroeste, amplificadas por el efecto Ferranti y el Tap-Lag de los transformadores reguladores; (2) disparo masivo de protecciones ANSI 59 en inversores IBR con pérdida de ~4,5 GW en 11 segundos; (3) actuación de los mecanismos automáticos de defensa — deslastre UFLS y desconexión de bombeo — que resultaron insuficientes ante la velocidad de la perturbación; (4) colapso de frecuencia y pérdida total del sincronismo peninsular. Las protecciones funcionaron según especificación; la especificación no contemplaba un escenario de sobretensión generalizada con baja inercia.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Este anexo documenta la secuencia cronológica y la mecánica de disparos de protección que provocaron la cascada de desconexiones durante el evento del 28-A.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
     El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
   </AnnexMethodNote>
@@ -32,67 +52,110 @@ import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
     Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
   </AnnexMethodNote>
 
+  <em>El anexo se organiza en cuatro secciones argumentales que corresponden a las distintas fases del colapso: propagación de sobretensiones, cascada de desconexiones IBR, deslastre y defensa, e indicadores de estado final.</em>
+
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-cascada' },
-      { label: 'Tablas',       target: 'tablas-cascada' },
-      { label: 'Interactivos', target: 'interactivos-cascada' },
-      { label: 'Series',       target: 'series-cascada' },
+      { label: 'Propagación',   target: 'propagacion-sobretensiones' },
+      { label: 'Cascada IBR',   target: 'cascada-ibr' },
+      { label: 'Deslastre',     target: 'deslastre-defensa' },
+      { label: 'Estado final',  target: 'estado-final' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-cascada"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a la propagación del fallo."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['figures']} />
+  <AnnexSection id="propagacion-sobretensiones" eyebrow="Fase 1" title="Propagación de sobretensiones">
+    El mapa de calor muestra la propagación espacial de las sobretensiones entre la maniobra de mallado (12:30) y el disparo raíz (12:32:56).
+    <AnnexEvidenceLead
+      eyebrow="Evidencia principal"
+      title="Propagación de sobretensiones"
+      summary="El mapa de calor muestra la propagación espacial de las sobretensiones entre la maniobra de mallado y el disparo raíz, concentrando valores críticos en el suroeste."
+      insight="Zonas críticas en Andalucía y Extremadura · Precondición de disparos masivos de inversores."
+    >
+      <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
+    </AnnexEvidenceLead>
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
+      <AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
+    </AnnexEvidenceGrid>
+    <p>El desacoplamiento Tap-Lag amplificó las sobretensiones en la red colectora, haciéndolas invisibles al SCADA de REE. El aluvión de alertas en el sur documenta la rapidez de la expansión.</p>
+    El simulador del efecto Ferranti reproduce la sobretensión cuadrática en el extremo abierto de líneas de EAT descargadas — el mecanismo amplificador de la Fase 1.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    La secuencia Tap-Lag ilustra cómo el retraso mecánico de los OLTC (3–8 segundos por toma) ocultó la sobretensión de la red colectora al SCADA de REE.
+    <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
+    La cronología de sobretensiones permite explorar temporal y espacialmente cada registro de tensión en las subestaciones clave del suroeste.
+    <div style={{ margin: '1.5rem 0' }}>
+      <OvervoltageTimeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-cascada"
-    eyebrow="Registros técnicos"
-    title="Tablas forenses y eventos de protección"
-    description="Registros tabulados sobre desconexiones, protecciones y maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-cascada"
-    eyebrow="Exploración interactiva"
-    title="Herramientas de propagación y mecanismos de cascada"
-    description="Visualizaciones interactivas asociadas a la secuencia del colapso."
-    defaultOpen
-  >
+  <AnnexSection id="cascada-ibr" eyebrow="Fase 2" title="Cascada de desconexiones IBR">
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="cascada_desconexiones" level={1} />
+      <AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
+    </AnnexEvidenceGrid>
+    <p>La propagación geográfica en 11 segundos superó la capacidad de respuesta de los mecanismos automáticos. El estudio IEEE 39 muestra cómo las desconexiones sucesivas generan oscilaciones severas.</p>
+    Los 16 eventos de desconexión en el suroeste — tabla maestra para reproducción en software de estabilidad transitoria — se comprimieron en 11 segundos.
+    <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
+    El listado cronológico de actuaciones de protección detalla qué relé actuó, en qué planta, y en qué milisegundo.
+    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={2} />
+    El simulador ANSI 59 reproduce cómo la desconexión de un inversor eleva la tensión en los nudos adyacentes, disparando a los vecinos en cascada.
+    <AnnexEvidence type="interactive" id="ansi59" level={2} />
+    El mapa animado permite recorrer cronológicamente los disparos de generación distribuida, observando el patrón sur→norte y oeste→este.
     <span id="grafico-map"></span>
-    <span id="grafico-timeline"></span>
-    <span id="grafico-ansi59"></span>
+    <AnnexEvidence type="interactive" id="map" level={1} />
+    La visualización unificada superpone alertas del SCADA, disparos de protección y frecuencia del sistema en un panel sismográfico.
     <span id="grafico-sticky-collapse"></span>
-    <span id="grafico-ufls"></span>
-    <span id="grafico-tap-lag-sequence"></span>
+    <AnnexEvidence type="interactive" id="sticky-collapse" level={2} />
+    La cronología vertical detalla minuto a minuto la secuencia completa desde las 12:30 hasta las 12:38 CEST.
+    <span id="grafico-timeline"></span>
+    <AnnexEvidence type="interactive" id="timeline" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="deslastre-defensa" eyebrow="Fase 3" title="Deslastre y mecanismos de defensa">
+    Los escalones UFLS se activaron según diseño, pero presentaron una paradoja: al desconectar carga, la tensión subía adicionalmente, agravando el colapso capacitivo.
+    <AnnexEvidence type="table" id="escalones-ufls" level={1} />
+    El desglose del deslastre por nudos en España y Portugal cuantifica el volumen total de carga sacrificada en cada país.
+    <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
+    <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
+    La agregación por distribuidora y la distribución geográfica del deslastre revelan la concentración de la afectación en las zonas de mayor penetración IBR.
+    <AnnexEvidence type="table" id="load-shedding-es-pt" level={2} />
+    <AnnexEvidence type="table" id="dso-load-shedding" level={2} />
+    Los clientes electrointensivos portugueses sufrieron deslastre prioritario programado.
+    <AnnexEvidence type="table" id="electro-intensive-pt" level={3} />
+    La desconexión del bombeo hidráulico liberó ~2.150 MW de carga instantánea, contribuyendo a frenar la caída de frecuencia.
+    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={2} />
+    El desglose por central de bombeo en España y Portugal detalla la cronología de desacoplamiento.
+    <AnnexEvidence type="table" id="pump-storage-es" level={3} />
+    <AnnexEvidence type="table" id="pump-storage-pt" level={3} />
+    El indicador de indisponibilidad sobrevenida por nudo cuantifica qué porcentaje de la red quedó fuera de servicio en cada zona.
     <span id="grafico-grid-unavailability"></span>
-    <AnnexThemeEvidence theme="T3" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
+    La cronología del P.O. 7.4 documenta la evolución de las bandas muertas exigidas a los generadores — el vacío normativo que impidió la respuesta autónoma de los inversores ante sobretensiones.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PO74Timeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-cascada"
-    eyebrow="Series históricas"
-    title="Series asociadas al episodio de cascada"
-    description="Gráficas históricas disponibles asociadas a este tema, si existen."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['charts']} />
+  <AnnexSection id="estado-final" eyebrow="Fase 4" title="Estado final y topología post-colapso">
+    Las maniobras topológicas de REE y REN documentan la fragmentación controlada de la red para aislar zonas y preparar la re-energización por islas.
+    <AnnexEvidence type="table" id="re-topological-manoeuvres" level={3} />
+    <AnnexEvidence type="table" id="ren-topological-manoeuvres" level={3} />
+    El porcentaje de km de líneas fuera de servicio cuantifica la magnitud del daño topológico sufrido por la red de transporte.
+    <AnnexEvidence type="table" id="lines-outage-icai" level={3} />
+    <AnnexEvidence type="table" id="km-percentage-icai" level={3} />
+    Las cinco centrales nucleares ejecutaron disparos de emergencia controlados. Su supervivencia fue crítica para el Black Start posterior: Vandellós y Ascó lideraron la generación durante la reposición.
+    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
   </AnnexSection>
 
-  <PO74Timeline showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="La cascada del 28-A demostró que un sistema eléctrico puede perder la estabilidad en segundos cuando confluyen baja inercia, sobretensión no controlada e inversores con protecciones calibradas para fallos puntuales. Las protecciones no fallaron: operaron según especificación. El problema residía en que la especificación (P.O. 7.4 previo a la reforma, umbrales ANSI 59 estándar) no contemplaba un escenario de penetración IBR dominante con baja potencia de cortocircuito."
+    doesNotDemonstrate="Este anexo no determina responsabilidades; documenta la mecánica del fallo. La interpretación de si las protecciones debían haber sido reformadas antes del evento corresponde al análisis regulatorio de los capítulos principales."
+    connection="La lectura se complementa con el Anexo II (inestabilidad de tensión previa), el Anexo IV (pérdida de sincronismo transfronterizo) y el Anexo VI (reposición posterior)."
+  />
 
-  *Figura N4 — Calendario de implementación del P.O. 7.4. Fuentes: CNMC, BOE.*
-
-  <OvervoltageTimeline showCaption={false} />
-
-  *Figura N2 — Cronología del Overvoltage-Driven Blackout del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
+    { to: "/anexo-interconexiones-flujos", label: "Anexo IV: interconexiones y flujos transfronterizos" },
+    { to: "/anexo-reposicion-blackstart", label: "Anexo VI: reposición y operación de emergencia" }
+  ]} />
 </AnnexLayout>
