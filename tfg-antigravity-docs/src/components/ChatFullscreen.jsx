@@ -299,6 +299,7 @@ function extractInteractiveAnchors(text) {
 }
 
 // ── Labels UI multiidioma ──────────────────────────────────────
+// ── Labels UI multiidioma ──────────────────────────────────────
 const UI = {
   es: {
     exit: 'Cerrar',
@@ -310,6 +311,20 @@ const UI = {
     searching: 'Buscando...',
     generating: 'Generando...',
     synthesizing: 'Elaborando respuesta...',
+    artifactTable: '◈ Tabla Forense',
+    viewTable: 'Ver tabla en el anexo ↗',
+    artifactChart: '◈ Gráfica de Datos Reales',
+    artifactInteractive: '◈ Interactivo',
+    openSimulator: 'Abrir simulador ↗',
+    loadingInteractive: '⟳ Cargando interactivo...',
+    viewChartFull: 'VER GRÁFICA COMPLETA ↗',
+    viewTableFull: 'Ver tabla completa ↗',
+    forensicTable: '◈ TABLA FORENSE',
+    sourceLabel: 'Fuente:',
+    loadingChart: '⟳ Cargando gráfica...',
+    speechNotSupported: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome.',
+    tableLabel: 'Tabla',
+    chartSourceDescription: 'Gráfica construida con datos reales extraídos de las APIs de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.'
   },
   en: {
     exit: 'Close',
@@ -321,6 +336,20 @@ const UI = {
     searching: 'Searching...',
     generating: 'Generating...',
     synthesizing: 'Generating answer...',
+    artifactTable: '◈ Forensic Table',
+    viewTable: 'View table in the annex ↗',
+    artifactChart: '◈ Real Data Chart',
+    artifactInteractive: '◈ Interactive',
+    openSimulator: 'Open simulator ↗',
+    loadingInteractive: '⟳ Loading interactive...',
+    viewChartFull: 'VIEW FULL CHART ↗',
+    viewTableFull: 'View full table ↗',
+    forensicTable: '◈ FORENSIC TABLE',
+    sourceLabel: 'Source:',
+    loadingChart: '⟳ Loading chart...',
+    speechNotSupported: 'Your browser does not support speech recognition. Use Chrome.',
+    tableLabel: 'Table',
+    chartSourceDescription: 'Chart built with real data retrieved from the ESIOS, ENTSO-E, and OMIE APIs on April 28, 2025.'
   },
   de: {
     exit: 'Schließen',
@@ -332,6 +361,20 @@ const UI = {
     searching: 'Suche...',
     generating: 'Generiere...',
     synthesizing: 'Antwort wird erstellt...',
+    artifactTable: '◈ Forensische Tabelle',
+    viewTable: 'Tabelle im Anhang anzeigen ↗',
+    artifactChart: '◈ Reales Datendiagramm',
+    artifactInteractive: '◈ Interaktiv',
+    openSimulator: 'Simulator öffnen ↗',
+    loadingInteractive: '⟳ Interaktiver Inhalt wird geladen...',
+    viewChartFull: 'VOLLSTÄNDIGES DIAGRAMM ANZEIGEN ↗',
+    viewTableFull: 'Vollständige Tabelle anzeigen ↗',
+    forensicTable: '◈ FORENSISCHE TABELLE',
+    sourceLabel: 'Quelle:',
+    loadingChart: '⟳ Diagramm wird geladen...',
+    speechNotSupported: 'Ihr Browser unterstützt keine Spracherkennung. Bitte Chrome verwenden.',
+    tableLabel: 'Tabelle',
+    chartSourceDescription: 'Diagramm erstellt mit Realdaten, abgerufen von den APIs von ESIOS, ENTSO-E und OMIE am 28. April 2025.'
   },
   'zh-Hans': {
     exit: '关闭',
@@ -343,6 +386,20 @@ const UI = {
     searching: '搜索中...',
     generating: '生成中...',
     synthesizing: '正在生成回答...',
+    artifactTable: '◈ 分析表格',
+    viewTable: '在附录中查看表格 ↗',
+    artifactChart: '◈ 真实数据图表',
+    artifactInteractive: '◈ 互动模块',
+    openSimulator: '打开模拟器 ↗',
+    loadingInteractive: '⟳ 正在加载互动模块...',
+    viewChartFull: '查看完整图表 ↗',
+    viewTableFull: '查看完整表格 ↗',
+    forensicTable: '◈ 分析表格',
+    sourceLabel: '数据来源:',
+    loadingChart: '⟳ 正在加载图表...',
+    speechNotSupported: '您的浏览器不支持语音识别。请使用Chrome。',
+    tableLabel: '表格',
+    chartSourceDescription: '该图表基于2025年4月28日从ESIOS、ENTSO-E和OMIE API中获取的真实数据构建。'
   },
 };
 
@@ -392,20 +449,24 @@ const SUGGESTED_QUESTIONS = {
 };
 
 function VisualArtifactCard({ artifact }) {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = UI[currentLocale] || UI.es;
+
   if (artifact.type === 'table') {
     const tableData = artifact.data || [];
     const columns = artifact.columns || [];
     
     return (
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
-        <div style={{ fontSize: 10, color: 'var(--cfs-amber)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Tabla Forense</div>
+        <div style={{ fontSize: 10, color: 'var(--cfs-amber)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>{t.artifactTable}</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
         {artifact.origin && <div style={{ fontSize: 11, color: 'var(--cfs-text-3)', marginBottom: 8 }}>{artifact.origin}</div>}
         <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5 }}>{artifact.description}</p>
         
         {tableData.length === 0 ? (
           <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 12, fontSize: 12, color: 'var(--cfs-amber)', textDecoration: 'none', fontWeight: 600 }}>
-            Ver tabla en el anexo ↗
+            {t.viewTable}
           </a>
         ) : (
           <div style={{ overflowX: 'auto', marginTop: 12 }}>
@@ -439,7 +500,7 @@ function VisualArtifactCard({ artifact }) {
   if (artifact.type === 'image') {
     return (
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
-        <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Gráfica de Datos Reales</div>
+        <div style={{ fontSize: 10, color: 'var(--accent-electric, hsl(200 100% 60%))', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>{t.artifactChart}</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
         <div style={{ marginTop: 8 }}>
           <img src={artifact.path || artifact.url} alt={artifact.title} style={{ width: '100%', borderRadius: 8, border: '1px solid var(--cfs-border-soft)' }} loading="lazy" />
@@ -456,17 +517,17 @@ function VisualArtifactCard({ artifact }) {
     const Component = INTERACTIVE_MAP[artifact.id];
     return (
       <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--cfs-border-soft)', color: 'var(--cfs-text-1)' }}>
-        <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>◈ Interactivo</div>
+        <div style={{ fontSize: 10, color: '#a78bfa', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 4 }}>{t.artifactInteractive}</div>
         <h4 style={{ margin: '8px 0', fontSize: 15 }}>{artifact.title}</h4>
         <p style={{ fontSize: 13, color: 'var(--cfs-text-2)', lineHeight: 1.5, marginBottom: 12 }}>{artifact.description}</p>
         
         {!Component ? (
           <a href={artifact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', fontSize: 12, color: '#a78bfa', textDecoration: 'none', fontWeight: 600 }}>
-            Abrir simulador ↗
+            {t.openSimulator}
           </a>
         ) : (
           <ColorModeProvider>
-            <Suspense fallback={<div style={{ padding: 20, color: 'var(--cfs-text-2)' }}>⟳ Cargando interactivo...</div>}>
+            <Suspense fallback={<div style={{ padding: 20, color: 'var(--cfs-text-2)' }}>{t.loadingInteractive}</div>}>
               <Component />
             </Suspense>
           </ColorModeProvider>
@@ -515,7 +576,7 @@ export default function ChatFullscreen({
   const startListening = useCallback(() => {
     if (!('webkitSpeechRecognition' in window) && 
         !('SpeechRecognition' in window)) {
-      alert('Tu navegador no soporta reconocimiento de voz. Usa Chrome.');
+      alert(ui.speechNotSupported);
       return;
     }
     const SpeechRecognition = window.SpeechRecognition || 
@@ -751,7 +812,7 @@ export default function ChatFullscreen({
       id: 'table-' + i,
       label: table.title
         ? table.title.substring(0, 37) + (table.title.length > 37 ? '...' : '')
-        : 'Tabla',
+        : ui.tableLabel,
       type: 'table',
     })),
   ];
@@ -1078,12 +1139,12 @@ export default function ChatFullscreen({
                 <button 
                   onClick={() => handleFeedback(true)} 
                   style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === true ? 1 : 0.5 }}
-                  title="Explicación útil"
+                  title={ui.usefulTooltip}
                 >👍</button>
                 <button 
                   onClick={() => handleFeedback(false)} 
                   style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: voted === false ? 1 : 0.5 }}
-                  title="Explicación poco útil"
+                  title={ui.uselessTooltip}
                 >👎</button>
               </div>
             )}
@@ -1104,14 +1165,13 @@ export default function ChatFullscreen({
                     backgroundColor: 'hsla(220,40%,6%,0.4)',
                     lineHeight: 1.6,
                   }}>
-                    Gráfica construida con datos reales extraídos de las APIs
-                    de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+                    {ui.chartSourceDescription}
                   </div>
                   <div style={{ padding: '16px' }}>
                     <ColorModeProvider>
                       <Suspense fallback={
                         <div style={{ textAlign: 'center', padding: 40, color: 'var(--cfs-text-2)' }}>
-                          ⟳ Cargando gráfica...
+                          {ui.loadingChart}
                         </div>
                       }>
                         <ChartComponent />
@@ -1132,8 +1192,7 @@ export default function ChatFullscreen({
                 backgroundColor: 'hsla(220,40%,6%,0.6)',
               }}>
                 <div style={{ fontSize: 11, color: 'var(--cfs-text-2)', marginBottom: 12, lineHeight: 1.6 }}>
-                  Gráfica construida con datos reales extraídos de las APIs
-                  de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
+                  {ui.chartSourceDescription}
                 </div>
                 <a
                   href={fig.artifact.url}
@@ -1148,7 +1207,7 @@ export default function ChatFullscreen({
                     letterSpacing: '0.08em',
                   }}
                 >
-                  VER GRÁFICA COMPLETA ↗
+                  {ui.viewChartFull}
                 </a>
               </div>
             );
@@ -1203,13 +1262,13 @@ export default function ChatFullscreen({
               fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
               color: 'var(--cfs-amber)',
               marginBottom: 6, textTransform: 'uppercase',
-            }}>◈ TABLA FORENSE</div>
+            }}>{ui.forensicTable}</div>
             <p style={{ fontSize: 13, color: 'var(--cfs-text-1)', lineHeight: 1.7, margin: 0 }}>
               {table.description || table.title}
             </p>
             {table.origin && (
               <div style={{ fontSize: 11, color: 'var(--cfs-text-3)', marginTop: 6 }}>
-                Fuente: {table.origin}
+                {ui.sourceLabel} {table.origin}
               </div>
             )}
           </div>
@@ -1252,7 +1311,7 @@ export default function ChatFullscreen({
               style={{ display: 'inline-block', marginTop: 16, fontSize: 12,
                 color: 'var(--cfs-amber)',
                 textDecoration: 'none', fontWeight: 600 }}>
-              Ver tabla completa ↗
+              {ui.viewTableFull}
             </a>
           )}
         </div>

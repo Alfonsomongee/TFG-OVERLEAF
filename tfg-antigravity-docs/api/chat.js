@@ -1258,6 +1258,61 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
   return suggestions.slice(0, maxItems);
 }
 
+const API_ERRORS = {
+  es: {
+    rateLimit: 'Has enviado demasiadas preguntas en poco tiempo. Espera un momento.',
+    methodNotAllowed: 'Método HTTP no válido. Usa POST.',
+    emptyQuestion: 'No he podido procesar tu solicitud (pregunta vacía).',
+    tooShort: 'La pregunta es demasiado corta. Prueba a formularla con más detalle. Por ejemplo: "¿Qué es el Tap-Lag?" o "¿Cuánta demanda se perdió?"',
+    indexMissing: 'Error al buscar en el TFG (falta el archivo de índice).',
+    internalError: 'Error interno del servidor. Por favor, inténtalo más tarde.',
+    noEvidence: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
+    noEvidenceReason: 'No se recuperaron fragmentos útiles.',
+    defaultFollowUp1: '¿Cuál fue la causa principal del apagón del 28-A?',
+    defaultFollowUp2: '¿Dónde aparece explicado el Tap-Lag en el TFG?',
+    llmUnavailable: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo.'
+  },
+  en: {
+    rateLimit: 'You have sent too many questions in a short time. Please wait a moment.',
+    methodNotAllowed: 'Invalid HTTP method. Use POST.',
+    emptyQuestion: 'Could not process your request (empty question).',
+    tooShort: 'The question is too short. Try asking with more detail. For example: "What is the Tap-Lag effect?" or "How much demand was lost?"',
+    indexMissing: 'Error searching the thesis (missing index file).',
+    internalError: 'Internal server error. Please try again later.',
+    noEvidence: 'I could not find relevant information in the thesis to answer your question. Try rephrasing it or check the glossary.',
+    noEvidenceReason: 'No useful fragments were retrieved.',
+    defaultFollowUp1: 'What was the main cause of the April 28 blackout?',
+    defaultFollowUp2: 'Where is the Tap-Lag explained in the thesis?',
+    llmUnavailable: 'The RAG has retrieved context from the thesis, but the LLM provider is currently unavailable.'
+  },
+  de: {
+    rateLimit: 'Sie haben in kurzer Zeit zu viele Fragen gesendet. Bitte warten Sie einen Moment.',
+    methodNotAllowed: 'Ungültige HTTP-Methode. Verwenden Sie POST.',
+    emptyQuestion: 'Ihre Anfrage konnte nicht verarbeitet werden (leere Frage).',
+    tooShort: 'Die Frage ist zu kurz. Versuchen Sie, sie detaillierter zu formulieren. Zum Beispiel: "Was ist der Tap-Lag-Effekt?" oder "Wie viel Last wurde abgeworfen?"',
+    indexMissing: 'Fehler bei der Suche in der Arbeit (Indexdatei fehlt).',
+    internalError: 'Interner Serverfehler. Bitte versuchen Sie es später noch einmal.',
+    noEvidence: 'Ich konnte keine relevanten Informationen in der Arbeit finden, um Ihre Frage zu beantworten. Versuchen Sie, sie anders zu formulieren, oder schlagen Sie im Glossar nach.',
+    noEvidenceReason: 'Es wurden keine nützlichen Fragmente gefunden.',
+    defaultFollowUp1: 'Was war die Hauptursache des Stromausfalls vom 28. April?',
+    defaultFollowUp2: 'Wo wird der Tap-Lag in der Arbeit erklärt?',
+    llmUnavailable: 'Das RAG hat Kontext aus der Arbeit geladen, aber der KI-Dienst ist derzeit nicht verfügbar.'
+  },
+  'zh-Hans': {
+    rateLimit: '您在短时间内发送了太多问题。请稍等片刻。',
+    methodNotAllowed: '无效的HTTP方法。请使用POST。',
+    emptyQuestion: '无法处理您的请求（问题为空）。',
+    tooShort: '问题太短了。请尝试提供更多细节。例如：“什么是Tap-Lag效应？”或“损失了多少负荷？”',
+    indexMissing: '在论文中检索时出错（索引文件丢失）。',
+    internalError: '服务器内部错误。请稍后再试。',
+    noEvidence: '我未能在论文中找到相关信息来回答您的问题。请尝试重新表述或查看词汇表。',
+    noEvidenceReason: '未检索到有用的内容。',
+    defaultFollowUp1: '4月28日大停电的主要原因是什么？',
+    defaultFollowUp2: '论文中在哪里解释了Tap-Lag？',
+    llmUnavailable: 'RAG已从论文中检索到相关背景，但大语言模型服务目前不可用。'
+  }
+};
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -1265,6 +1320,9 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const { question, locale = 'es', mode = 'normal' } = req.body || {};
+  const t = API_ERRORS[locale] || API_ERRORS.es;
 
   const errResponse = (status, answer, errorMsg, detectedIntent = 'general') => {
     return res.status(status).json({
@@ -1276,17 +1334,14 @@ module.exports = async function handler(req, res) {
   const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
 
   if (!checkRateLimit(clientIp)) {
-    return errResponse(429, 'Has enviado demasiadas preguntas en poco tiempo. Espera un momento.', 'rate_limit_exceeded');
+    return errResponse(429, t.rateLimit, 'rate_limit_exceeded');
   }
 
-  if (req.method !== 'POST') return errResponse(405, 'Método HTTP no válido.', 'Método no permitido. Usa POST.');
+  if (req.method !== 'POST') return errResponse(405, t.methodNotAllowed, 'Método no permitido. Usa POST.');
 
-  const { question, locale = 'es', mode = 'normal' } = req.body || {};
   const trimmedQ = question?.trim() || '';
   if (!trimmedQ || typeof question !== 'string') {
-    return errResponse(400,
-      'No he podido procesar tu solicitud.',
-      'Pregunta vacía.');
+    return errResponse(400, t.emptyQuestion, 'Pregunta vacía.');
   }
 
   // Lista de acrónimos técnicos válidos aunque sean cortos
@@ -1305,10 +1360,7 @@ module.exports = async function handler(req, res) {
     VALID_SHORT_TERMS.has(trimmedQ.toLowerCase().replace(/[¿?.]/g, ''));
 
   if (trimmedQ.length < 10 && !isShortButValid) {
-    return errResponse(400,
-      'La pregunta es demasiado corta. Prueba a formularla con más detalle. ' +
-      'Por ejemplo: "¿Qué es el Tap-Lag?" o "¿Cuánta demanda se perdió?"',
-      'Pregunta demasiado corta (mínimo 10 caracteres).');
+    return errResponse(400, t.tooShort, 'Pregunta demasiado corta (mínimo 10 caracteres).');
   }
 
   const intent = classifyIntent(question, mode);
@@ -1318,8 +1370,7 @@ module.exports = async function handler(req, res) {
     try {
       searcher = await getSearch();
     } catch (e) {
-      return errResponse(500, 'Error al buscar en el TFG.',
-        'Falta el archivo de índice.', intent);
+      return errResponse(500, t.indexMissing, 'Falta el archivo de índice.', intent);
     }
 
     const SYNONYMS = {
@@ -1435,10 +1486,10 @@ module.exports = async function handler(req, res) {
 
     if (selectedPairs.length === 0) {
       return res.status(200).json({
-        answer: 'No he encontrado información relevante en el TFG para responder a tu pregunta. Prueba a reformularla o consulta el glosario.',
-        sources: [], confidence: 'sin_evidencia', confidence_reason: 'No se recuperaron fragmentos útiles.',
+        answer: t.noEvidence,
+        sources: [], confidence: 'sin_evidencia', confidence_reason: t.noEvidenceReason,
         relatedChapters: [], suggestedFigures: [], visualArtifacts: [],
-        followUps: ['¿Cuál fue la causa principal del apagón del 28-A?', '¿Dónde aparece explicado el Tap-Lag en el TFG?'],
+        followUps: [t.defaultFollowUp1, t.defaultFollowUp2],
         intent
       });
     }
@@ -1549,7 +1600,7 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
       console.error('[api/chat] LLM provider error:', llmError?.message);
 
       return res.status(llmError?.status || 502).json({
-        answer: 'El RAG ha recuperado contexto del TFG, pero el proveedor LLM no está disponible ahora mismo.',
+        answer: t.llmUnavailable,
         error: llmError?.message || 'LLM provider error',
         sources: typeof sources !== 'undefined' ? sources : [],
         confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
@@ -1581,6 +1632,6 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
     });
 
   } catch (error) {
-    return errResponse(500, 'Error interno del servidor.', error.message, intent);
+    return errResponse(500, t.internalError, error.message, intent);
   }
 }

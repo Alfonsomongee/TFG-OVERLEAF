@@ -16,6 +16,12 @@ const UI_STRINGS = {
     ariaClose: 'Cerrar chat con IA',
     title: 'Pregunta al TFG',
     simplify: 'SIMPLIFICAR',
+    expandTitle: 'Pantalla completa',
+    expandAria: 'Abrir en pantalla completa',
+    apiNonJson: 'La API respondió con formato no JSON (Status {status}). Inicio: {excerpt}',
+    apiNoBody: 'La API respondió sin cuerpo (Status {status}).',
+    apiErrorFallback: 'Error al obtener respuesta.',
+    endpointError: 'Error del endpoint ({status})'
   },
   en: {
     greeting: 'Hello! I am the assistant for the thesis on the 28-A blackout. Ask me anything about the content of this site.',
@@ -29,6 +35,12 @@ const UI_STRINGS = {
     ariaClose: 'Close AI chat',
     title: 'Ask the AI',
     simplify: 'SIMPLIFY',
+    expandTitle: 'Full screen',
+    expandAria: 'Open in full screen',
+    apiNonJson: 'The API responded with a non-JSON format (Status {status}). Beginning: {excerpt}',
+    apiNoBody: 'The API responded with an empty body (Status {status}).',
+    apiErrorFallback: 'Error retrieving response.',
+    endpointError: 'Endpoint error ({status})'
   },
   de: {
     greeting: 'Hallo! Ich bin der Assistent für die Abschlussarbeit über den Stromausfall vom 28. April. Stell mir gerne Fragen zum Inhalt dieser Seite.',
@@ -42,6 +54,12 @@ const UI_STRINGS = {
     ariaClose: 'KI-Chat schließen',
     title: 'Frage an die KI',
     simplify: 'VEREINFACHEN',
+    expandTitle: 'Vollbild',
+    expandAria: 'Im Vollbildmodus öffnen',
+    apiNonJson: 'Die API hat ein Nicht-JSON-Format zurückgegeben (Status {status}). Anfang: {excerpt}',
+    apiNoBody: 'Die API hat eine leere Antwort zurückgegeben (Status {status}).',
+    apiErrorFallback: 'Fehler beim Abrufen der Antwort.',
+    endpointError: 'Endpoint-Fehler ({status})'
   },
   'zh-Hans': {
     greeting: '你好！我是关于2025年4月28日伊比利亚大停电毕业论文的智能助手。欢迎向我提问本站的任何内容。',
@@ -55,6 +73,12 @@ const UI_STRINGS = {
     ariaClose: '关闭AI对话',
     title: '向AI提问',
     simplify: '简化',
+    expandTitle: '全屏',
+    expandAria: '打开全屏模式',
+    apiNonJson: 'API返回了非JSON格式的响应 (状态码 {status})。开头: {excerpt}',
+    apiNoBody: 'API返回了空响应 (状态码 {status})。',
+    apiErrorFallback: '获取回答失败。',
+    endpointError: '接口错误 ({status})'
   },
 };
 
@@ -90,13 +114,13 @@ export default function ChatWidget() {
     } catch {
       return {
         answer: raw
-          ? `La API respondió con formato no JSON. Status ${res.status}. Inicio: ${raw.slice(0, 180)}`
-          : `La API respondió sin cuerpo. Status ${res.status}.`
+          ? t.apiNonJson.replace('{status}', res.status).replace('{excerpt}', raw.slice(0, 180))
+          : t.apiNoBody.replace('{status}', res.status)
       };
     }
   };
 
-  const makeAssistantMessage = (data, fallbackText = 'Error al obtener respuesta.') => ({
+  const makeAssistantMessage = (data, fallbackText = t.apiErrorFallback) => ({
     role: 'assistant',
     text: data.answer || data.error || fallbackText,
     sources: data.sources || [],
@@ -127,7 +151,7 @@ export default function ChatWidget() {
       const data = await parseChatResponse(res);
       setMessages(prev => [
         ...prev,
-        makeAssistantMessage(data, `Error del endpoint (${res.status})`),
+        makeAssistantMessage(data, t.endpointError.replace('{status}', res.status)),
       ]);
     } catch {
       setMessages(prev => [
@@ -154,7 +178,7 @@ export default function ChatWidget() {
         }),
       });
       const data = await parseChatResponse(res);
-      setMessages(prev => [...prev, makeAssistantMessage(data, `Error del endpoint (${res.status})`)]);
+      setMessages(prev => [...prev, makeAssistantMessage(data, t.endpointError.replace('{status}', res.status))]);
     } catch {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -318,8 +342,8 @@ export default function ChatWidget() {
             </span>
             <button
               onClick={() => setFullscreen(true)}
-              title="Pantalla completa"
-              aria-label="Abrir en pantalla completa"
+              title={t.expandTitle}
+              aria-label={t.expandAria}
               style={{
                 background: 'transparent',
                 border: '1px solid var(--chat-widget-accent-border)',
