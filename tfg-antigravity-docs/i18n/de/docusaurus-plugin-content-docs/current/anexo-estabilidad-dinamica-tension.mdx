@@ -1,95 +1,143 @@
 ---
 id: anexo-estabilidad-dinamica-tension
-title: "Anexo II · Estabilidad dinámica, frecuencia y tensión"
-sidebar_label: "Anexo II · Estabilidad, frecuencia y tensión"
+title: "Anhang II · Dynamische Stabilität: Spannung, Frequenz und Trägheit"
+sidebar_label: "Anhang II · Stabilität, Frequenz und Spannung"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
-import MRSCRComparator from '@site/src/components/MRSCRComparator';
-import DynamicSecurityShift from '@site/src/components/DynamicSecurityShift';
-import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo II"
-  title="Estabilidad dinámica, frecuencia y tensión"
-  description="Evidencias asociadas a oscilaciones, RoCoF, perfiles de tensión, estabilidad dinámica y comportamiento electromecánico del sistema durante la perturbación."
+  kicker="Anhang II"
+  title="Dynamische Stabilität: Spannung, Frequenz und Trägheit"
+  description="Dieser Anhang analysiert die Bedingungen der dynamischen Stabilität, Frequenz und Spannung des spanischen Festlandsstromnetzes vor und während des Vorfalls vom 28. April 2025. Sein Ziel ist es zu zeigen, dass der Zusammenbruch ein durch Überspannung und Verlust der Blindleistungsregelung verursachtes Ereignis war, kein klassisches Unterfrequenzphänomen durch Generatorausfall."
   meta={[
-    { label: 'Eje técnico', value: 'Estabilidad y Tensión' },
-    { label: 'Cobertura', value: 'Comportamiento electromecánico' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technische Achse', value: 'Stabilität und Spannung' },
+    { label: 'Abdeckung', value: 'Elektromechanisches Verhalten' },
+    { label: 'Nachweise', value: 'Abbildungen · Tabellen · Interaktive · Reihen' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Warum war der Verlust der Spannungsstabilität – und nicht der Frequenzabfall – die Grundursache des Zusammenbruchs vom 28. April?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Die Aufzeichnungen der im Umspannwerk Carmona (400 kV) installierten PMU belegen, dass die Spannung Minuten vor dem Verlassen des Normalbands durch die Frequenz zu divergieren begann. Die Überspannungen im Süden der Iberischen Halbinsel überschritten die Schutzgrenzen der IBR-Wechselrichter und führten zu massiven Trennungen, die wiederum den Frequenzabfall verursachten. Die reduzierte Trägheit des Systems – eine Folge des in Anhang I dokumentierten Energiemixes – begrenzte die Fähigkeit des Netzes, Frequenzstörungen nach Beginn der Kaskade zu absorbieren. Die Unterscheidung zwischen Ursache und Wirkung von Spannung und Frequenz ist zentral für die regulatorischen Empfehlungen der Abschlussarbeit.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Dieser Anhang dokumentiert die Spannungsschwankungen und PMU-Aufzeichnungen, die zeigen, wie die Spannungsinstabilität dem Frequenzabfall vom 28. April vorausging und ihn verursachte.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Este apartado consolida los registros técnicos y visualizaciones dinámicas que permiten analizar las oscilaciones de frecuencia y la estabilidad del sistema eléctrico.
+    Dieser Abschnitt fasst die technischen Aufzeichnungen und dynamischen Visualisierungen zusammen, die eine Analyse der Frequenzschwankungen und der Stabilität des Stromnetzes ermöglichen.
   </AnnexMethodNote>
+
+  <em>Der Anhang ist in vier Abschnitte gegliedert: Spannungsinstabilität und Vorläufer, Frequenzdynamik und Trägheit, Blindleistungsbilanz und interaktive Analysetools. Seine Lektüre ergänzt Anhang I (Bedingungen des Energiemixes) und geht Anhang III (Schutzmaßnahmen) voraus.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t2' },
-      { label: 'Tablas',       target: 'tablas-t2' },
-      { label: 'Interactivos', target: 'interactivos-t2' },
-      { label: 'Series',       target: 'series-t2' },
+      { label: 'Spannungsinstabilität', target: 'inestabilidad-tension' },
+      { label: 'Frequenz und Trägheit',     target: 'frecuencia-inercia' },
+      { label: 'Blindleistungsbilanz',       target: 'balance-reactiva' },
+      { label: 'Analysetools',  target: 'herramientas-estabilidad' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t2"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['figures']} />
+  <AnnexSection id="inestabilidad-tension" eyebrow="Abschnitt 1" title="Spannungsinstabilität und Vorläufer">
+    Die Q-V-Kurven der Spannungsstabilität in Carmona zeigen, dass die Vermaschungsmanöver den Betriebspunkt in die Instabilitätszone verschoben haben.
+    <AnnexEvidenceLead
+      eyebrow="Hauptnachweis"
+      title="Ablauf des Spannungszusammenbruchs"
+      summary="Die Aufzeichnung von Spannung und Frequenz in den kritischen Sekunden zeigt den zeitlichen Ablauf des Zusammenbruchs: Die Spannung divergiert vor der Frequenz."
+      insight="Zeitliche Priorität der Spannungsstörung · Einstufung als Spannungszusammenbruch."
+    >
+      <AnnexEvidence type="figure" id="tension_frecuencia_colapso" level={1} />
+    </AnnexEvidenceLead>
+    Die Q-V-Kurven von Carmona zeigen, dass die Vermaschungsmanöver den Abstand zum Zusammenbruch um 57 % verringerten. Am 22. April – sechs Tage zuvor – wurde in derselben Zone ein Überspannungsvorläufer registriert: Die Anlagen, die am 28. April auslösten, hatten bereits identische Auslösungen erlitten.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="fluctuaciones_tension_previas" level={1} />
+      <AnnexEvidence type="figure" id="precursor_overvoltage_22april" level={1} />
+    </AnnexEvidenceGrid>
+    Die Existenz eines Vorläufers schließt die Hypothese eines isolierten Ereignisses aus und impliziert einen Zustand anhaltender Verwundbarkeit.
+    Die Aufzeichnungen von Núñez de Balboa (400 kV) dokumentieren die Abfolge der Überspannungsspitzen vom 22., 24. und 28. April – die fortschreitende Verengung der Blindleistungsspielräume.
+    <AnnexEvidence type="figure" id="nunez_balboa_precursores" level={2} />
+    Die Spannungen an den kritischen Transportknoten widerlegen die Erzählung einer weit verbreiteten Überspannung: Im 400-kV-Netz blieben sie größtenteils im Bereich 375–435 kV; das Problem lag auf der 220-kV-Seite und im Sammelnetz.
+    <AnnexEvidence type="table" id="tensiones-nudos-criticos" level={2} />
+    Die von REE in den vorangegangenen Stunden durchgeführten Blindleistungskompensationsmanöver dokumentieren die Versuche, den Spannungsanstieg einzudämmen, bevor er außer Kontrolle geriet.
+    <AnnexEvidence type="table" id="re-voltage-manoeuvres" level={2} />
+    Die PMU-Aufzeichnung von Carmona mit Millisekundenauflösung erfasst den Übergang Normal → Blackout: Die Spannung überschreitet 1,10 p.u., bevor die Frequenz das Band von 49,8–50,2 Hz verlässt.
+    <AnnexEvidence type="figure" id="frequency_voltage_carmona" level={1} />
+    Die zeitliche Priorität der Spannung gegenüber der Frequenz ist der direkteste Nachweis dafür, dass der Zusammenbruch kapazitiv und nicht trägheitsbedingt war.
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t2"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t2"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="frecuencia-inercia" eyebrow="Abschnitt 2" title="Frequenzdynamik und Trägheit">
+    Die endgültige Frequenzänderungsrate (RoCoF) überstieg 1,5 Hz/s – oberhalb der üblichen Schutzschwelle für Synchrongeneratoren.
+    <AnnexEvidence type="table" id="evolucion-frecuencia-rocof" level={2} />
+    Die Gesamtträgheit des Systems war gering, aber die Berichte von ENTSO-E und REE stimmen darin überein, dass dies nicht die Grundursache war: Das Problem war die Spannungsregelung, nicht die trägheitsbedingte RoCoF.
+    <AnnexEvidence type="table" id="inercia-sistema-htot" level={2} />
+    Die geringe Trägheit beschleunigte den Abfall, sobald die Kaskade begann, verursachte ihn aber nicht.
+    Es wurde eine erzwungene Schwingung von 0,63 Hz festgestellt, die möglicherweise von einer PV-Anlage in Badajoz ausging. Die von REE aktivierten Abhilfemaßnahmen verschlechterten paradoxerweise die Spannungsregelung.
+    <AnnexEvidence type="table" id="modos-oscilatorios" level={2} />
+    Die WAMS-Aufzeichnung von Carmona dokumentiert die bei 12:03 MESZ mit Millisekundenauflösung erfasste elektromechanische Schwingung von 0,6 Hz.
+    <AnnexEvidence type="figure" id="wams_oscilaciones_carmona" level={3} />
+    Die interaktive Frequenzgrafik ermöglicht die Beobachtung des momentanen RoCoF an jedem Netzknoten während der Sekunden des Zusammenbruchs.
     <span id="grafico-frequency"></span>
+    <AnnexEvidence type="interactive" id="frequency" level={2} />
+    Das Seismograf des Zusammenbruchs komprimiert die kritischen Sekunden in einer Visualisierung, in der die Spannungsdivergenz dem Frequenzabfall sichtbar vorausgeht.
     <span id="grafico-sismograph"></span>
+    <AnnexEvidence type="interactive" id="sismograph" level={1} />
+    Um 00:00 Uhr des 28. April verfügte das System über 39.077 MW Betriebsleistung bei einer Nachfrage von 25.000 MW. Die Gaskraftwerke hatten 16.660 MW verfügbar, erzeugten mittags aber nur 2.775 MW. Die Lücke ist der Abdruck der Merit-Order.
+    <AnnexEvidence type="chart" id="chart-4" level={2} />
+    Nach dem Zusammenbruch waren die einzigen Einheiten mit nennenswerter Erzeugung die Kernkraftwerke (Vandellós: 1.044 MW, Ascó 2: 1.004 MW) und die überlebenden Gaskraftwerke. Keine Solar- oder Windanlage erscheint in der Rangliste.
+    <AnnexEvidence type="chart" id="chart-6" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="balance-reactiva" eyebrow="Abschnitt 3" title="Blindleistungsbilanz">
+    Das Netto-Defizit von −0,6 GVAr um 12:30 MESZ im Süden der Iberischen Halbinsel dokumentiert die Sättigung der Blindleistungsunterstützung. Die Wärmekarten von REE zeigen die geografische Ausbreitung der Überspannung.
+    <AnnexEvidence type="figure" id="asimetria_balance_reactiva_sur" level={2} />
+    Die Verteilungsanlagen trugen praktisch nicht zur Spannungsregelung im Süden bei: Die Blindleistungseinspeisung auf dieser Ebene war symbolisch.
+    <AnnexEvidence type="table" id="inyeccion-reactiva-distribucion" level={2} />
+    REE hatte die konventionellen Kompensationsressourcen (Drosseln, Kondensatoren) vor 12:30 MESZ erschöpft – der Manövrierspielraum war gesättigt.
+    <AnnexEvidence type="table" id="maniobras-compensacion-reactiva" level={2} />
+    <AnnexEvidence type="figure" id="mapas_termicos_tension_ree" level={3} />
+  </AnnexSection>
+
+  <AnnexSection id="herramientas-estabilidad" eyebrow="Abschnitt 4" title="Interaktive Analysetools">
+    Der Simulator zeigt, wie sich die dynamische Sicherheitsgrenze mit zunehmender IBR-Durchdringung nach innen verschiebt und den stabilen Betriebsraum verkleinert.
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+    Der MRSCR erfasst die Interaktion zwischen nahen IBR-Wechselrichtern: Je höher die Konzentration im Süden der Iberischen Halbinsel, desto geringer die Netzfeste an diesen Knoten.
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    Die Winkelverläufe von Spannung und Strom in Carmona ermöglichen die Überprüfung der Synchronverlustsequenz in der Zeigerebene.
     <span id="grafico-phasor"></span>
-    <AnnexThemeEvidence theme="T2" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="phasor" level={2} />
+    Das Vorher/Nachher-Panel vergleicht die Betriebsregeln vor dem 28. April mit dem nach dem Ereignis verabschiedeten Reformpaket.
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    Die FutuRed-Prognose schätzt den zusätzlichen Bedarf an synchroner Kompensation, um sichere Trägheitsspielräume bis 2030 zu erhalten.
+    <AnnexEvidence type="figure" id="futured_grid_evolution" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t2"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="Die in diesem Anhang zusammengetragenen Nachweise stützen eine zentrale Schlussfolgerung der Abschlussarbeit: Der Blackout vom 28. April war kein klassisches Unterfrequenzereignis, sondern ein Spannungszusammenbruch in einem System mit geringer Trägheit und geringer Kurzschlussleistung. Die Frequenz fiel als Folge der massiven Trennungen, die durch die Überspannungsschutzvorrichtungen verursacht wurden, nicht als primäre Ursache."
+    doesNotDemonstrate="Dieser Anhang zeigt nicht, dass der Frequenzabfall irrelevant war – er war nach Beginn der Kaskade tödlich –, sondern dass die Spannungsstörung ihm vorausging und ihn verursachte. Die Unterscheidung ist relevant für die regulatorischen Empfehlungen: Ein System, das ausschließlich für die Reaktion auf Frequenzverluste ausgelegt ist, hätte den 28. April nicht verhindert."
+    connection="Die Lektüre wird durch Anhang III ergänzt, der die durch die Überspannungen ausgelöste Schutzschaltungskaskade rekonstruiert, und durch Anhang X, der die Gleichungen der Spannungsstabilität und des Jacobi-Zusammenbruchs formalisiert."
+  />
 
-  <MRSCRComparator showCaption={false} />
-
-  *Figura A2.1. Comparación de SCR y MRSCR en subestaciones ibéricas. Fuente: ENTSO‑E.*
-
-  <DynamicSecurityShift showCaption={false} />
-
-  *Figura A2.2. Transición del modelo de seguridad clásico a métricas dinámicas.*
-
-  <ThenVsNowPanel showCaption={false} />
-
-  *Figura A2.3. Comparación de métricas de vulnerabilidad entre el 28‑A y mayo de 2026. Fuentes: REE, ENTSO‑E, ESIOS.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anhang I: Nachfrage, Erzeugung und Bilanz" },
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "Anhang III: Kaskadenablauf und Schutzmaßnahmen" },
+    { to: "/anexo-ecuaciones-matematicas", label: "Anhang X: Gleichungen und Stabilitätssimulatoren" }
+  ]} />
 </AnnexLayout>

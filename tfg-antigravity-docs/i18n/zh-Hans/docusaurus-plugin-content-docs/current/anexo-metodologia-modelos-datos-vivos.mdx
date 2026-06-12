@@ -1,92 +1,122 @@
 ---
 id: anexo-metodologia-modelos-datos-vivos
-title: "Anexo IX · Metodología, datos vivos y modelos didácticos"
-sidebar_label: "Anexo IX · Metodología y modelos"
+title: "附录九 · 方法论、模型与来源对比"
+sidebar_label: "附录九 · 方法论与模型"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import ResolutionRoadmap from '@site/src/components/ResolutionRoadmap';
 import ResearchAgendaScatter from '@site/src/components/ResearchAgendaScatter';
 
 <AnnexLayout
   wide
-  kicker="Anexo IX"
-  title="Metodología, modelos y datos vivos"
-  description="Elementos metodológicos, simuladores didácticos, comparadores operativos y herramientas con posible componente vivo o actualizable, separados de la reconstrucción histórica estricta."
+  kicker="附录九"
+  title="方法论、模型与来源对比"
+  description="本附录详细阐述了本毕业论文的专家方法论、不同官方报告结论的系统性对比，以及所用仿真工具的技术论证。"
   meta={[
-    { label: 'Eje técnico', value: 'Metodología y Modelos' },
-    { label: 'Cobertura', value: 'Herramientas de análisis' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '方法论与模型' },
+    { label: '覆盖范围', value: '分析工具' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    哪些专家工具和文献来源能够解决关于4月28日连锁故障原因和顺序的分歧？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    对4月28日事件的取证分析需要对比政府委员会、ENTSO-E和外部顾问（Compass Lexecon）的结论，通过使用高分辨率PMU记录来解决数据不对称问题。本附录系统化了对比方法，验证了本论文主体部分所用简化模型的代表性，并论证了交互式模拟器的教学作用，使读者能够实时探索电网的敏感性。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录建立了文献验证和交叉专家对比的基础，为毕业论文的技术结论提供了依据。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="modelo-didactico">
-    Este anexo agrupa modelos, simuladores y herramientas de apoyo. Algunos elementos son didácticos o incorporan datos vivos, por lo que no deben confundirse con registros históricos brutos del 28-A.
+    本附录汇集了模型、模拟器和辅助工具。部分元素具有教学性质或包含实时数据，因此不应与4月28日事件的原始历史记录相混淆。
   </AnnexMethodNote>
+
+  <em>本附录按三个论证部分组织：取证方法与来源对比、支撑技术与传感器、教学模型与模拟器。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t9' },
-      { label: 'Tablas',       target: 'tablas-t9' },
-      { label: 'Interactivos', target: 'interactivos-t9' },
-      { label: 'Series',       target: 'series-t9' },
+      { label: '方法论与对比', target: 'metodologia' },
+      { label: '支撑技术',   target: 'tecnologias' },
+      { label: '模拟器与模型',   target: 'modelos-didacticos' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t9"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['figures']} />
+  <AnnexSection id="metodologia" eyebrow="第1节" title="取证方法与来源对比">
+    各实体的结论对比表对比了输电系统运营商（REE）、监管机构（CNMC）和欧洲委员会关于根因跳闸和连锁顺序的裁决。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="专家结论对比"
+      summary="对比REE、CNMC和欧洲电网ENTSO-E就停电根因和责任发布的结论。"
+      insight="因果分析中的分歧 · 多部门技术共识。"
+    >
+      <AnnexEvidence type="table" id="comparativa-conclusiones-entidades" level={1} />
+    </AnnexEvidenceLead>
+    Compass Lexecon/INESC TEC的报告提供了外部顾问的观点：强调REE在08:00至10:00 CEST期间解列了15台联合循环机组，质疑同步资源的充足性。
+    <AnnexEvidence type="table" id="compass-lexecon" level={2} />
+    SCR地图记录了半岛南部电网的物理薄弱性。之前的P.O. 7.4死区使系统无法防御快速容性暂态——这是逆变器无法弥补的监管空白。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="scr_iberia" level={2} />
+      <AnnexEvidence type="figure" id="po74_banda_muerta" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t9"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['tables']} />
+  <AnnexSection id="tecnologias" eyebrow="第2节" title="支撑技术：逆变器与传感器">
+    GFL逆变器（电流源型）需要“读取”电网才能运行；GFM逆变器（电压源型）则创造电网。日立能源提出的BESS-GFM混合架构结合了FFR与旋转惯量和Scc。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="gfl_vs_gfm_circuit1" level={2} />
+      <AnnexEvidence type="figure" id="hitachi_hybrid" level={3} />
+    </AnnexEvidenceGrid>
+    PMU覆盖密度对于独立验证崩溃前记录的区域间振荡至关重要。
+    <AnnexEvidence type="figure" id="pmu_sensors_europe" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t9"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <span id="grafico-phaseplane"></span>
-    <span id="grafico-swing"></span>
-    <span id="grafico-pvcurve"></span>
-    <span id="grafico-comparador-28a"></span>
-    <span id="grafico-radar-vulnerabilidad"></span>
-    <AnnexThemeEvidence theme="T9" include={['interactives']} />
+  <AnnexSection id="modelos-didacticos" eyebrow="第3节" title="教学模型与模拟器">
+    比较器允许将4月28日的实际物理条件与稳定日的概况进行对比，识别出偏离的参数。
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    雷达图从六个轴（惯量、Scc、无功、互联、市场、通信）评估系统——赤字最大的轴与崩溃的因果因素一致。
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    相平面、摇摆方程和P-V曲线的模拟器形式化了附录二和附录三中记录的现象。其方程详见附录十。
+    <AnnexEvidence type="interactive" id="phaseplane" level={3} />
+    <AnnexEvidence type="interactive" id="swing" level={3} />
+    <AnnexEvidence type="interactive" id="pvcurve" level={3} />
+    三难困境模拟器和前后对比面板允许评估事件后实施的改革及其对安全-可持续-可负担性平衡的影响。
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={3} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    解决路线图和科研议程图展示了未来发展：同步补偿、GFM电池以及辅助服务市场改革。
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResolutionRoadmap showCaption={false} />
+    </div>
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResearchAgendaScatter showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t9"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="对专家文献来源的方法论对比表明，4月28日事件是欧洲行业的一个技术学习里程碑。简化动态模型与变电站PMU记录的验证证明了本毕业论文技术分析的一致性。"
+    doesNotDemonstrate="本附录展示了交互式建模和动态模拟器在引导读者进行物理分析方面的实用性，作为通往附录十方程的方法论桥梁。"
+    connection="阅读时请结合附录一（发电组合）和附录十（支撑物理和数学方程）。"
+  />
 
-  <ResolutionRoadmap showCaption={false} />
-
-  *Figura A9.2. Hoja de ruta de soluciones técnicas, regulatorias y económicas post‑28‑A.*
-
-  <ResearchAgendaScatter showCaption={false} />
-
-  *Figura A9.3. Madurez técnica vs. regulatoria de las líneas de investigación futuras.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "附录一：需求、发电与平衡" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "附录二：电压与频率稳定性" },
+    { to: "/anexo-ecuaciones-matematicas", label: "附录十：稳定性方程与模拟器" }
+  ]} />
 </AnnexLayout>

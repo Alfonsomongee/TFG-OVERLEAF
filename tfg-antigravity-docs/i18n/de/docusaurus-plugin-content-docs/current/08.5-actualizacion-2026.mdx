@@ -1,54 +1,126 @@
 ---
+id: 08.5-actualizacion-2026
 sidebar_position: 8.8
 hide_title: true
 title: "Update 2026: Ein Jahr danach"
 ---
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import Comparador28A from "@site/src/components/Comparador28A";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import BESSBoomChart from "@site/src/components/BESSBoomChart";
+import CNMCSanctionsChart from "@site/src/components/CNMCSanctionsChart";
+import OvervoltageTimeline from "@site/src/components/OvervoltageTimeline";
+import PO74Timeline from "@site/src/components/PO74Timeline";
+import ThenVsNowPanel from "@site/src/components/ThenVsNowPanel";
 
 <GlitchTitle>Update 2026: Ein Jahr danach</GlitchTitle>
 
-Der Stromausfall vom 28. April 2025 markierte einen systemischen Wendepunkt. Bis Mai 2026 haben die Abschlussberichte der ENTSO-E (veröffentlicht am 20. März 2026) und unabhängige forensische Untersuchungen eine Reihe von technischen und regulatorischen Enthüllungen zutage gefördert, die das ursprüngliche Narrativ des Vorfalls drastisch verändern.
+*Stand Mai 2026. Die in diesem Kapitel erwähnten Regulierungsverfahren, Verwaltungsakten und technischen Reformen können sich nach diesem Datum weiterentwickelt haben.*
+
+Der Blackout vom 28. April 2025 stellte einen systemischen Wendepunkt dar. Zum Stand Mai 2026 haben die Abschlussberichte der ENTSO-E (veröffentlicht am 20. März 2026) und unabhängige forensische Untersuchungen eine Reihe technischer und regulatorischer Enthüllungen ans Licht gebracht, die die anfängliche Erzählung des Vorfalls drastisch verändern.
+
+## System heute vs. 28-A
+
+Die folgende Tabelle vergleicht die aktuellen Metriken der systemischen Verwundbarkeit mit den am 28. April 2025 um 12:30 Uhr MESZ aufgezeichneten Bedingungen.
+
+<figure id="fig-n1-thenvsnow">
+  <ThenVsNowPanel />
+  <figcaption>
+    <strong>Abbildung N1 - System heute vs. 28A.</strong> Jede Zeile stellt den Wert einer Systemsicherheitsmetrik unmittelbar vor dem Zusammenbruch (28A) dem entsprechenden Wert im Mai 2026 gegenüber. Die normalisierten Balken erleichtern den visuellen Vergleich des Ausmaßes der Veränderung. Die genauen Werte werden an den Enden angezeigt.
+  </figcaption>
+</figure>
+
+:::warning Methodischer Hinweis: Unterscheidung zwischen historischen und operativen Daten
+
+Die Daten des Blocks "Aktuelles System" stammen aus aktuellen operativen Quellen (ESIOS-API, Mai 2026) und können je nach Abfragezeitpunkt variieren.
+
+Die Daten des "28-A" sind als feste historische Werte zu behandeln, die dem Szenario vor dem Zusammenbruch entsprechen und aus dem ENTSO-E Factual Report und dem Analyseausschuss der Regierung stammen.
+
+Der Vergleich dient als Orientierungshilfe, um die Entwicklung des Systems seit der Krise aufzuzeigen. Er ersetzt nicht die forensische Rekonstruktion des historischen Ereignisses, die in den Kapiteln 2 bis 4 dokumentiert ist.
+
+:::
+
+<Collapsible label="Interaktiven Vergleich anzeigen (Aktuelles System vs. 28-A)">
+
+<div style={{marginTop:'1rem'}}>
+<Comparador28A />
+</div>
+
+</Collapsible>
 
 ## 1. Das Paradigma des "Overvoltage-Driven Blackout"
 
-Frühe Analysen deuteten auf einen klassischen Zusammenbruch durch mangelnde Trägheit oder Frequenzabweichung hin. Die unabhängige Studie des Instituto de Investigación Tecnológica (IIT) der Universidad Pontificia Comillas – in *ScienceDirect* durch Peer-Review validiert (Rouco, Lobato, Echavarren, 2026) – hat jedoch ein beispielloses technisches Konzept eingeführt: den **overvoltage-driven blackout** (durch Überspannung induzierter Stromausfall).
+Die ersten Analysen deuteten auf einen klassischen Zusammenbruch durch fehlende Trägheit oder Frequenzabweichung hin. Die unabhängige Studie des Instituts für Technologieforschung (IIT) der Päpstlichen Universität Comillas – peer-reviewed in *ScienceDirect* (Rouco, Lobato, Echavarren, 2026) – hat jedoch ein neuartiges technisches Konzept eingeführt: den Overvoltage-Driven Blackout (spannungsinduzierter Blackout).
 
 :::warning [Technische Enthüllung]
-Die fatale Sequenz war kein allgemeiner Spannungsabfall. Als die Schutzlogiken aktiviert wurden, erlitt das Netz eine Kaskade massiver Überspannungsauslösungen. Der Lastabwurf und die enorme kapazitive Energieeinspeisung der 400-kV-Leitungen (ohne ausreichend angeschlossene Drosselspulen) erhöhten die Spannungen über die Grenzen des Erzeugungsschutzes hinaus. Die Auslösung des 400/220-kV-Transformators in Granada um 12:32:57 Uhr, bei der 355 MW verloren gingen, war der Auslöser der Kaskade.
+Die fatale Sequenz war kein allgemeiner Spannungseinbruch. Bei Aktivierung der Schutzlogiken erlitt das Netz eine Kaskade von Auslösungen durch massive Überspannung. Die Lastabwürfe und die enorme Einspeisung kapazitiver Energie der 400-kV-Leitungen (ohne ausreichend angeschlossene Drosseln) trieben die Spannungen über die Grenzen der Generatorschutzauslösungen. Die Auslösung des 400/220-kV-Transformators in Granada um 12:32:57 Uhr, der 355 MW verlor, war der Auslöser der Kaskade.
 :::
 
-Laut der forensischen Rekonstruktion reagierten die durch Grid-Following-Wechselrichter verbundenen Anlagen, die in einem **festen Leistungsfaktor-Modus** betrieben wurden, auf die Wirkleistungsschwingungen durch die Einspeisung enormer Blindleistungsrampen. Angesichts eines geschwächten Netzes (mit niedrigem Short-Circuit Ratio) verursachte der Phasenregelkreis (PLL) dieser Wechselrichter Instabilitäten, die das System nicht dämpfen konnte.
+<figure id="fig-n2-overvoltage">
+  <OvervoltageTimeline />
+  <figcaption>
+    <strong>Abbildung N2 - Chronologie des "Overvoltage-Driven Blackout".</strong> Ereignissequenz, die zum Überspannungszusammenbruch am 28A führte. Die Farben geben die Art jeder Phase an: Blau (Oszillation), Bernstein (Überspannung), Rot (Kaskadenauslösung), Dunkelgrau (Totalausfall).
+  </figcaption>
+</figure>
 
-## 2. Operative Intransparenz und die Rolle von HVDC
+Laut der forensischen Rekonstruktion reagierten die über Grid-Following-Wechselrichter angeschlossenen Anlagen, die im Modus mit festem Leistungsfaktor arbeiteten, auf die Wirkleistungsschwankungen mit enormen Rampen von Blindleistung. In einem geschwächten Netz (mit niedrigem Kurzschlussverhältnis) verursachte die Phasenregelschleife (PLL) dieser Wechselrichter Instabilitäten, die das System nicht dämpfen konnte.
 
-Einer der umstrittensten Punkte der Untersuchung war das Vorgehen des Netzbetreibers (REE). Im Juli 2025 prangerte das unabhängige Konsortium (AELEC, INESC TEC, Compass Lexecon) einen gravierenden Mangel an Transparenz hinsichtlich der Daten der Zustandsschätzer und der Phasenzeigermesseinheiten (PMU) an.
+## 2. Operative Undurchsichtigkeit und die Rolle der HGÜ
 
-Die kritischste Erkenntnis der Untersuchungsausschüsse zeigt, dass REE nur wenige Minuten vor dem Stromausfall den Betriebsmodus der HVDC-Verbindung INELFE zwischen Spanien und Frankreich geändert hat. Die Verbindung wechselte von ihrem "AC-Emulationsmodus" zu einer konstanten DC-Leistungsregelung und verlor so ihre Fähigkeit, die fatale 0,6-Hz-Schwingung zu dämpfen.
+Einer der umstrittensten Punkte der Untersuchung war das Verhalten des Systembetreibers (REE). Im Juli 2025 prangerte das unabhängige Konsortium (AELEC, INESC TEC, Compass Lexecon) einen schwerwiegenden Mangel an Transparenz hinsichtlich der Daten der Zustandsschätzer und der Phasor Measurement Units (PMU) an.
 
-## 3. Institutionelle Konsequenzen und milliardenschwere Rechtsstreitigkeiten
+Die kritische Rolle der Betriebsartänderung der HGÜ INELFE-1 auf PMODE1 und ihre Auswirkungen auf die dynamische Stützfähigkeit werden in den Kapiteln [2](./02-contexto.mdx) und [3](./03-analisis-incidente.mdx) detailliert analysiert.
 
-Der Stromausfall hat nicht nur das Stromsystem zusammenbrechen lassen, sondern auch die institutionellen Beziehungen des Sektors zerstört und eine historische, beispiellose Welle von Gerichtsverfahren ausgelöst:
+## 3. Institutionelle Folgen und milliardenschwere Rechtsstreitigkeiten
 
-- **CNMC-Verfahren**: Seit April 2025 wurden 66 Sanktionsverfahren eingeleitet. REE und Almaraz sehen sich "sehr schweren" Vorwürfen (bis zu 60 Mio. €) gegenüber. Parallel dazu werden elf Erzeugern (darunter Endesa, Iberdrola und Mercuria Solar) "schwere" Verstöße gegen die Netzkodizes vorgeworfen.
-- **Massive Zivilklagen**: Nach Ablauf der Verjährungsfrist im April 2026 haben Industriegiganten wie **Repsol** formell Klagen gegen das System über **125 Millionen Euro** wegen entgangenen Gewinns und Schäden an petrochemischen Anlagen eingereicht. Auch Iryo und Moeve haben ihre Absicht zu klagen mitgeteilt.
-- **Geheime Audioaufnahmen**: Die Anhörungen des Untersuchungsausschusses des Senats haben Audioaufnahmen aus dem REE-Kontrollraum veröffentlicht. Darin führten die Betreiber die starken Spannungs- und Instabilitätsschwankungen ab 12:00 Uhr auf *"das schlechte Management einer großen Photovoltaikanlage in Badajoz"* zurück, was zeigt, dass das Risiko Minuten vor dem endgültigen Zusammenbruch unmittelbar bevorstand.
+Der Blackout zerriss nicht nur das Stromsystem, sondern auch die institutionellen Beziehungen der Branche und löste eine beispiellose Klagewelle aus:
 
-## 4. Die regulatorische Reaktion: Das Grid-Forming-Mandat
+- CNMC-Verfahren: Seit April 2025 wurden 66 Sanktionsverfahren eingeleitet. REE und der Eigentümer des Kernkraftwerks Almaraz sehen sich "sehr schwerwiegenden" Vorwürfen (bis zu 60 Mio. €) ausgesetzt. Parallel dazu drohen elf Erzeugern (darunter Endesa, Iberdrola und Mercuria Solar) "schwere" Vorwürfe wegen Verstoßes gegen die Netzanschlussregeln.
+- Massenhafte Zivilklagen: Nach Ablauf der Verjährungsfrist im April 2026 haben Industriegiganten wie Repsol Klagen gegen das System in Höhe von 125 Millionen Euro wegen entgangenen Gewinns und Schäden an petrochemischen Anlagen eingereicht. Auch Iryo und Moeve haben ihre Klageabsicht angekündigt.
+- Abgehörte Aufnahmen: Die Anhörungen des Untersuchungsausschusses des Senats haben Aufnahmen aus der REE-Leitstelle öffentlich gemacht. Darin führten die Operateure die schweren Oszillationen um 12:00 Uhr auf *"schlechtes Management"* der Betreiber der Photovoltaikanlage zurück. Die CNMC stellte jedoch klar, dass die 0,6-Hz-Oszillation durch einen Defekt in der Regelschleife der großen Photovoltaikanlage in Badajoz und nicht durch menschliches "Fehlmanagement" verursacht wurde. Dies zeigt, dass das Risiko Minuten vor dem endgültigen Zusammenbruch unmittelbar bevorstand, obwohl die Erstdiagnose im Kontrollraum falsch war.
 
-Angesichts der Beweise für das strukturelle Versagen veröffentlichte die ENTSO-E im November 2025 ihren mit Spannung erwarteten "Phase II Report" und legte damit den Grundstein für den neuen europäischen Netzkodex (NC RfG 2.0).
+## Verfahrens- und Regulierungsstand (Mai 2026)
 
-:::info [Der neue GFM-Standard]
-Der regulatorische Entwurf verlangt die obligatorische Grid-Forming-Technologie für alle neuen nicht-synchronen Anlagen und Speichersysteme über **1 MW**. Er erfordert eine Stromreaktionszeit von < 10 ms, Ride-Through gegenüber Phasenwinkelsprüngen und die Bereitstellung von synthetischer Trägheit, die der einer Synchronmaschine entspricht.
-:::
+<figure id="fig-n3-cnmc">
+  <CNMCSanctionsChart />
+  <figcaption>
+    <strong>Abbildung N3 - Von der CNMC nach dem 28A eingeleitete Sanktionsverfahren.</strong> Die Balken stellen die Anzahl der Verfahren dar; die Farbe gibt die Schwere des Verstoßes gemäß LSE an.
+  </figcaption>
+</figure>
 
-Trotz des iberischen Zusammenbruchs wurde die offizielle Verabschiedung des NC RfG 2.0 durch die Europäische Kommission bis Ende 2026 zurückgestellt. Länder wie das Vereinigte Königreich (Projekt Stability Pathfinder) und Spanien haben jedoch auf eigene Faust beschleunigt.
+### Implementierungszeitplan des P.O. 7.4
 
-### Der iberische Speicher-Boom
-Die systemischen Kosten, um das System nach dem Stromausfall mit Gas gestützt zu halten, beliefen sich in nur zehn Monaten auf zusätzliche **666 Millionen Euro**. Als direkte Reaktion erlebte der spanische Batteriemarkt einen "Elektroschock": Die installierte BESS-Kapazität (Battery Energy Storage Systems) hat sich **um 589 % vervielfacht** und stieg von symbolischen 28 MW auf fast 200 MW Betriebsleistung in einem einzigen Jahr, was eine native Netzarchitektur für Black Start-Dienste vorantreibt.
+<figure id="fig-n4-po74">
+  <PO74Timeline />
+  <figcaption>
+    <strong>Abbildung N4 - Implementierungszeitplan des P.O. 7.4.</strong> Meilensteine des Reformprozesses des P.O. 7.4 vom ersten REE-Vorschlag (2021) bis zum voraussichtlichen Abschluss der Übergangsausnahmen (Dez. 2026). Grün: abgeschlossen. Bernstein: ausstehend. Grau: geschätzt.
+  </figcaption>
+</figure>
 
-## Schlussfolgerung der Krise
+### Rechtsstreit Iberdrola vs. Redeia
 
-Rückblickend wird der "Stromausfall von 2025" im Jahr 2026 nicht mehr als zufälliger Unfall untersucht, der auf hydraulische Dürre oder solaren Überschuss zurückzuführen ist. Es ist das erste dokumentierte Beispiel für einen Zusammenbruch, der durch einen regulatorischen Engpass und einen technologischen Wandel verursacht wurde, bei dem Synchronmaschinen entfernt wurden, bevor ihre elektronischen Entsprechungen eingesetzt wurden. Die iberische Halbinsel wurde gezwungenermaßen zum lebenden Labor, das Europa gezwungen hat, die Regeln für die elektrische Stabilität des nächsten Jahrzehnts neu zu schreiben.
+Am 21. April 2026 wies das Handelsgericht Nr. 15 von Madrid (Richter Teodoro Ladrón) die von REE und Redeia eingelegte Zuständigkeitsrüge zurück und bestätigte die Zuständigkeit der Zivilgerichtsbarkeit für die Klage von Iberdrola wegen unlauteren Wettbewerbs. Der Beschluss stellt klar, dass das Verfahren nicht die technischen Ursachen des Blackouts beurteilt – ausschließliche Zuständigkeit der CNMC – sondern die Unternehmenspraktiken und öffentlichen Aussagen der Redeia-Führung, die laut Iberdrola deren Ruf und Börsenwert geschädigt haben.
+
+## 4. Die regulatorische Antwort: Das Grid-Forming-Mandat
+
+Angesichts der Beweise für das strukturelle Versagen veröffentlichte die ENTSO-E im November 2025 ihren lang erwarteten "Phase II Report" und legte damit die Grundlage für den neuen europäischen Netzanschlussregel (NC RfG 2.0).
+
+Die technischen Spezifikationen des NC RfG 2.0 und sein obligatorisches Grid-Forming-Mandat werden in [Kapitel 7](./07-resiliencia-futuro.mdx) detailliert beschrieben. Für das Update 2026 ist der Implementierungsstand relevant:
+
+Trotz des iberischen Zusammenbruchs wurde die offizielle Verabschiedung des NC RfG 2.0 durch die Europäische Kommission auf Ende 2026 zurückgestellt. Länder wie das Vereinigte Königreich (Projekt Stability Pathfinder) und Spanien haben jedoch eigenständig beschleunigt.
+
+### Der iberische Speicherboom
+Die systemischen Kosten für den Betrieb des mit Gas verstärkten Systems nach dem Blackout beliefen sich in nur zehn Monaten auf zusätzliche 666 Millionen Euro. Als direkte Reaktion erlebte der spanische Batteriemarkt eine beispiellose Beschleunigung: Die installierte BESS-Kapazität (Battery Energy Storage Systems) stieg um 589% von symbolischen 28 MW auf etwa 193 MW in Betrieb innerhalb eines Jahres, was eine native Netzarchitektur für Schwarzstartdienste vorantreibt.
+
+<figure id="fig-n5-bess">
+  <BESSBoomChart />
+  <figcaption>
+    <strong>Abbildung N5 - Der iberische Speicherboom.</strong> Entwicklung der kumulierten BESS-Kapazität in Spanien von Q1 2024 bis Mai 2026. Die Anmerkungen markieren die regulatorischen und marktbezogenen Meilensteine, die den Ausbau beschleunigt haben.
+  </figcaption>
+</figure>
+
+## Fazit der Krise
+
+Rückblickend wird der "Blackout von 2025" im Jahr 2026 nicht mehr als ein zufälliger Unfall betrachtet, der auf die hydrologische Trockenheit oder das Solarüberangebot zurückzuführen ist. Er ist der erste dokumentierte Beleg für einen Zusammenbruch, der durch die strukturelle Unangemessenheit des damaligen regulatorisch-technischen Rahmens für die Physik von Systemen mit hohem Anteil erneuerbarer Energien ausgelöst wurde. Die iberische Halbinsel wurde zwangsweise zum lebenden Labor, das Europa gezwungen hat, die Regeln für die elektrische Stabilität des nächsten Jahrzehnts neu zu schreiben.

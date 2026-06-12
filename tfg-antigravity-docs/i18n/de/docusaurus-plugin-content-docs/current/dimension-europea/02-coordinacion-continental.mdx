@@ -1,61 +1,87 @@
 ---
 sidebar_position: 2
 hide_title: true
-title: "Kontinentale Koordination"
+title: "Kontinentale Koordinierung"
 ---
 
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import CoordinationTimeline from '@site/src/components/CoordinationTimeline';
+import CommandArchitectureGraph from '@site/src/components/CommandArchitectureGraph';
+import EASStateTransition from '@site/src/components/EASStateTransition';
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
-<GlitchTitle>Kontinentale Koordination</GlitchTitle>
+<GlitchTitle>Kontinentale Koordinierung</GlitchTitle>
 
-Die abrupte Trennung der Iberischen Halbinsel vom synchronen Verbundsystem Kontinentaleuropas war nicht nur ein Infrastrukturvorfall: Es war der erste Test unter realen Bedingungen des paneuropäischen Governance-Systems für Stromnetze, das nach dem großen europäischen Stromausfall von 2006 entwickelt wurde. Dieses Kapitel dokumentiert, wie diese institutionelle Architektur reagierte – ihre Geschwindigkeiten, ihre Erfolge und ihre Grenzen – von den ersten Sekunden des Zusammenbruchs bis zur endgültigen Resynchronisation.
+Die abrupte Trennung der Iberischen Halbinsel vom synchronen Verbundsystem Kontinentaleuropas war nicht nur ein Infrastrukturvorfall: Es war der erste Test unter realen Bedingungen für das paneuropäische Governance-System der Stromnetze, das nach dem großen europäischen Stromausfall von 2006 entwickelt wurde. Dieses Kapitel dokumentiert, wie diese institutionelle Architektur reagierte – ihre Geschwindigkeiten, ihre Erfolge und ihre Grenzen – von den ersten Sekunden des Zusammenbruchs bis zur endgültigen Resynchronisation.
 
-## Die Synchronbereichsmonitore (SAM): Aktivierung der einheitlichen Führung
+## Die Synchronbereichs-Monitore (SAM): Aktivierung der einheitlichen Führung
 
-Die Governance-Architektur von ENTSO-E benennt die **Synchronbereichsmonitore** (SAM, Synchronous Area Monitors) mit der Übernahme der makroskopischen Koordinationskontrolle bei Ereignissen, die die Integrität Kontinentaleuropas bedrohen. Im April 2025 fielen diese Rollen auf *Swissgrid* (Schweiz) und *Amprion* (Deutschland). Die Kontingenzen vom 28. April in Spanien, Portugal und Frankreich fielen direkt in den Überwachungsbereich von Swissgrid.
+Die Governance-Architektur von ENTSO-E bestimmt die Synchronbereichs-Monitore (SAM, Synchronous Area Monitors) zur Übernahme der makroskopischen Koordinierungskontrolle bei Ereignissen, die die Integrität Kontinentaleuropas bedrohen. Im April 2025 fielen diese Rollen auf die *Swissgrid* (Schweiz) und *Amprion* (Deutschland). Die Kontingenzen vom 28. April in Spanien, Portugal und Frankreich fielen direkt in den Überwachungsbereich der Swissgrid.
 
-Das ENTSO-E Awareness System (EAS) – eine verschlüsselte und zentralisierte Kommunikationsplattform – fungierte als Nervensystem des Krisenmanagements. Die Chronologie der Meldungen offenbart die Geschwindigkeit, mit der eine einheitliche supranationale Führungsstruktur aufgebaut wurde:
+Das ENTSO-E Awareness System (EAS) – eine verschlüsselte und zentralisierte Kommunikationsplattform – fungierte als Nervensystem des Krisenmanagements. Die Chronologie der Depeschen offenbart die Geschwindigkeit, mit der eine einheitliche supranationale Führungsstruktur aufgebaut wurde:
 
 <ForensicTable 
-  title="TABELLE 12 | EUROPÄISCHE DIMENSIONSDATEN" 
+  title="Tabelle K1 — ENTSO-E EAS: Kommunikationsprotokoll"
   source="Eigene Darstellung"
 >
 
-| Zeit (CEST) | Absender | Empfänger | Nachricht / Strategische Entscheidung |
+| Uhrzeit (CEST) | Absender | Empfänger | Nachricht / Strategische Entscheidung |
 | --- | --- | --- | --- |
-| 12:34–12:36 | REE | REN | Gegenseitige Bestätigung des Totalausfalls; Vereinbarung zur Festlegung der Austauschprogramme auf 0 MW. |
-| 12:39 | Amprion | Swissgrid | Bestätigung der formellen System-Split-Warnung im EAS-Portal, Aktivierung des europäischen Notstands. |
-| 12:41 | Swissgrid | RTE | Aktualisierungsanfrage; RTE bestätigt Pläne zur Entsendung von 400 MW Ersteinspeisung an REE. |
-| 12:47 | REE | Swissgrid | Offizieller Blackout-Bericht aus Madrid; Weitergabe der ersten Top-Down-Wiederherstellungsschemata. |
-| 12:47 | TERNA | RTE | Der italienische ÜNB bietet aktive Unterstützung und flexible Flüsse an der französischen Ostgrenze an. |
+| 12:34–12:36 | REE | REN | Gegenseitige Bestätigung des Totalausfalls; Einigung auf Festlegung der Austauschprogramme auf 0 MW. |
+| 12:39 | Amprion | Swissgrid | Bestätigung der formellen Warnung vor einem _System Split_ im EAS-Portal, Aktivierung des europäischen Notstands. |
+| 12:41 | Swissgrid | RTE | Aktualisierungsanfrage; RTE bestätigt Pläne zur Bereitstellung von 400 MW Ersteinsatzunterstützung für REE. |
+| 12:47 | REE | Swissgrid | Offizieller Blackout-Bericht aus Madrid; Weitergabe der ersten _Top-Down_-Wiederherstellungsschemata. |
+| 12:47 | TERNA | RTE | Der italienische ÜNB bietet aktive Unterstützung und Flexibilität der Flüsse an der französischen Ostgrenze an. |
 | 12:49–12:54 | Swissgrid / Amprion | Alle (CE) | Formalisierung der einheitlichen Führungsstruktur. |
 | 15:50 | Amprion | RTE | Warnung vor anomalen Anforderungen von 2.500 MW in PICASSO im Zusammenhang mit negativen Preisen. |
 
 </ForensicTable>
 
-Das kritische Zeitfenster liegt zwischen **12:49 und 12:54 Uhr CEST**: In nur fünf Minuten wendeten die SAM das standardisierte ENTSO-E-Protokoll zur Systemtrennung an und wiesen drei unterschiedliche Rollen mit ausschließlicher und nicht überlappender Autorität zu:
+<figure id="fig-k1-cronologia-eas-sam">
+  <CoordinationTimeline />
+  <figcaption>
+    <strong>Abbildung K1 — EAS/SAM-Chronologie: Von der Trennung zur einheitlichen Führung.</strong> Abfolge kritischer Kommunikationen zwischen REE, REN, RTE, Swissgrid, Amprion und TERNA nach der physischen Trennung der Iberischen Halbinsel. Die Abbildung dokumentiert den Schritt von der Meldung des <em>System Split</em> bis zur Formalisierung der einheitlichen europäischen Führung zwischen 12:49 und 12:54 Uhr CEST, einschließlich der späteren PICASSO-Warnung und der Wiederherstellung des AGC von REE. Quelle: Eigene Darstellung basierend auf dem <em>Factual Report</em> der ENTSO-E und EAS-Aufzeichnungen.
+  </figcaption>
+</figure>
 
-**REE – Iberischer Frequenzführer.** Ausschließlicher Auftrag, das Verhältnis von Erzeugung zu Nachfrage innerhalb des isolierten Blocks auszugleichen, indem Lastabwurf und schrittweiser Wiederanlauf ohne externe Störungen gesteuert werden.
+Das kritische Zeitfenster liegt zwischen 12:49 und 12:54 Uhr CEST: In nur fünf Minuten wendeten die SAM das standardisierte Protokoll zur Systemtrennung der ENTSO-E an und wiesen drei unterschiedliche Rollen mit exklusiver und nicht überlappender Autorität zu:
 
-**Swissgrid – Frequenzführer Kontinentaleuropa.** Kontrolle über den Rest des Synchronbereichs, Orchestrierung der Frequenzhaltungsreserven (FCR) in über 20 Ländern, um die plötzliche Überfrequenz zu kompensieren, die durch den Verlust der Exporte zur Halbinsel und die Abschaltung des HVDC Baixas entstanden war.
+REE — Iberischer Frequenzführer. Exklusives Mandat zum Ausgleich des Verhältnisses von Erzeugung und Verbrauch innerhalb des isolierten Blocks, Steuerung des Lastabwurfs und des schrittweisen Wiederanlaufs ohne externe Störungen.
 
-**RTE – Resynchronisationsführer.** Absolute Autorität über die Schließungsoperationen an den Pyrenäenverbindungen. Weder REE noch eine andere Einheit durfte einen Grenzschalter ohne vorherige Validierung der Schlupf- und Spannungsparameter durch die Leitwarten von RTE in Paris und Toulouse betätigen.
+Swissgrid — Frequenzführer Kontinentaleuropa. Kontrolle über den Rest des Synchronbereichs, Orchestrierung der Frequenzhaltungsreserven (FCR) in über 20 Ländern, um die plötzliche Überfrequenz zu kompensieren, die durch den Verlust der Exporte zur Halbinsel und die Abschaltung der HVDC Baixas entstanden war.
+
+RTE — Resynchronisationsführer. Absolute Autorität über die Schließungsoperationen an den transpyrinäischen Verbindungen. Weder REE noch eine andere Einheit durfte einen Grenzschalter ohne vorherige Validierung der Gleit- und Spannungsparameter durch die Leitwarten von RTE in Paris und Toulouse betätigen.
+
+<figure id="fig-k2-arquitectura-mando-continental">
+  <CommandArchitectureGraph />
+  <figcaption>
+    <strong>Abbildung K2 — Kontinentale Führungsarchitektur nach der iberischen Trennung.</strong> Der Graph fasst die Neuzuweisung der operativen Autorität nach dem Zusammenbruch zusammen: REE agiert als Frequenzführer des isolierten iberischen Blocks, REN koordiniert die portugiesische Wiederherstellung innerhalb dieses Rahmens, Swissgrid und Amprion überwachen als SAM den kontinentalen Synchronbereich, und RTE bündelt die exklusive Autorität für die physische Resynchronisation mit Europa. Quelle: Eigene Darstellung basierend auf dem <em>Factual Report</em> der ENTSO-E, der SO GL-Richtlinie und den EAS/SAM-Verfahren.
+  </figcaption>
+</figure>
 
 ## Die Rolle von Coreso: Der mathematische Schild der Wiederherstellung
 
-Während die nationalen ÜNBs physische Schalter betätigten, führte das Regionale Koordinationszentrum (RCC) Coreso (Brüssel) eine immense Rechenarbeit durch, um sicherzustellen, dass die Lösungen der Krise keine neuen Stromausfälle verursachten.
+Während die nationalen Übertragungsnetzbetreiber physische Schalter betätigten, führte das Regionale Koordinierungszentrum (RCC) Coreso (Brüssel) eine immense Rechenarbeit durch, um sicherzustellen, dass die Lösungen der Krise keine neuen Stromausfälle verursachten.
 
-Im Laufe des Nachmittags stiegen die Notstromlieferungen von Frankreich nach Spanien, bis vorübergehende Importe von bis zu **2.000 MW** ausgehandelt wurden. Diese massiven Einspeisungen verändern die natürlichen Lastflüsse entlang der französischen, schweizerischen und deutschen Netze erheblich. Coreso verarbeitete mithilfe von Werkzeugen der **Koordinierten Sicherheitsanalyse** (CSA) nahezu in Echtzeit Wechselstrom-Lastflussberechnungen auf dem **einheitlichen europäischen Modell** (CGM).
+Im Laufe des Nachmittags stiegen die Notstromlieferungen von Frankreich nach Spanien, bis vorübergehende Importe von bis zu 2.000 MW ausgehandelt wurden. Diese massiven Einspeisungen verändern die natürlichen Lastflüsse entlang der französischen, schweizerischen und deutschen Netze erheblich. Coreso verarbeitete mithilfe von Werkzeugen der Koordinierten Sicherheitsanalyse (CSA) nahezu in Echtzeit Wechselstrom-Lastflussberechnungen auf dem vereinheitlichten europäischen Modell (CGM).
 
-Ihr Ziel war es, die strikte Einhaltung des N-1-Kriteriums zu überprüfen: durch Simulationen zu zertifizieren, dass, wenn während Frankreich diese 2.000 MW Unterstützung exportierte, plötzlich ein französischer oder deutscher interner Korridor ausfiele, das verbleibende Verbundnetz keine thermischen Überlastungen oder Spannungsbandverletzungen erleiden würde. Gleichzeitig führte das Nordic RCC die **Kurzfristige Angemessenheitsanalyse** (STA) durch und bestätigte den SAM, dass in Mitteleuropa ausreichend rotierende Reservekapazität verfügbar war, um diese Anstrengung zu unterstützen, ohne die nächtliche Spitzenlast der Geberländer zu gefährden.
+Ihr Ziel war es, die strikte Einhaltung des N−1-Kriteriums zu überprüfen: durch Simulationen zu zertifizieren, dass, wenn während Frankreich diese 2.000 MW Unterstützung exportierte, plötzlich ein französischer oder deutscher interner Korridor ausfiele, das verbleibende Verbundnetz keine thermischen Überlastungen oder Spannungsbandverletzungen erleiden würde. Gleichzeitig führte das Nordic RCC die Kurzfristige Angemessenheitsanalyse (STA) durch und bestätigte den SAM, dass in Mitteleuropa ausreichend rotierende Reservekapazität verfügbar war, um diese Anstrengung zu unterstützen, ohne die nächtliche Spitzenlast der Geberländer zu gefährden.
 
-Diese Validierung durch Coreso war der **mathematische Schild**, der es RTE ermöglichte, mit taktischem Vertrauen zu operieren. Ohne sie hätte das Risiko einer Ausbreitung der Instabilität von der Halbinsel in den Kern des kontinentalen Netzes gezwungen, die Unterstützung stark einzuschränken und die Erholung zu verlangsamen.
+Diese Validierung durch Coreso war der mathematische Schild, der es RTE ermöglichte, mit taktischem Vertrauen zu operieren. Ohne sie hätte das Risiko einer Ausbreitung der Instabilität von der Halbinsel in den Kern des kontinentalen Netzes die Unterstützung stark einschränken und die Erholung verlangsamen müssen.
 
 ## Die Grenzen, die das EAS nicht verbergen konnte
 
-Die multinationale Koordination funktionierte nach der Aktivierung des Notstands bemerkenswert effektiv. Der Vorfall offenbarte jedoch schonungslos die strukturellen Grenzen des europäischen Überwachungssystems in der Vorphase: Wie in der Analyse des spanischen Systems dokumentiert, wechselte der iberische Block direkt vom Zustand "Normal" in den Zustand "Blackout" (Kriterium OB3), ohne die in den Systembetriebsleitlinien vorgesehenen Zwischenzustände "Alarm" oder "Notstand" zu durchlaufen.
+Die multinationale Koordinierung funktionierte nach der Aktivierung des Notstands bemerkenswert effektiv. Der Vorfall offenbarte jedoch schonungslos die strukturellen Grenzen des europäischen Überwachungssystems in der Vorbereitungsphase: Wie in der Analyse des spanischen Systems dokumentiert, wechselte der iberische Block direkt vom Zustand „Normal“ in den Zustand „Blackout“ (Kriterium OB3), ohne die in den _System Operation Guidelines_ vorgesehenen Zwischenzustände „Alarm“ oder „Notstand“ zu durchlaufen.
 
-Die Folge war, dass die benachbarten Betreiber – RTE, Swissgrid, Coreso – keine vorausschauenden Signale über die dynamische Verwundbarkeit südlich der Pyrenäen erhielten. Die erste Aktion der SAM/EAS-Architektur war nicht präventiv, sondern reaktiv: Das EAS fungierte als *Post-Mortem*-Benachrichtiger des Zusammenbruchs, nicht als Frühwarninstrument. Diese Einschränkung – die Unfähigkeit des europäischen Überwachungssystems, die schnelle Spannungsdynamik in Netzen mit geringer Trägheit zu erfassen – ist eine der zentralen regulatorischen Lehren des Vorfalls und der Ausgangspunkt für die im folgenden Abschnitt dokumentierten Reformen.
+Die Folge war, dass die benachbarten Betreiber – RTE, Swissgrid, Coreso – keine vorausschauenden Signale über die dynamische Verwundbarkeit südlich der Pyrenäen erhielten.
 
-Die Kommunikation blieb bis zum Ende des Notstands konstant und gipfelte um **00:11 Uhr CEST am 29. April**, als RTE Swissgrid mitteilte, dass der Algorithmus der automatischen Generatorregelung (AGC) von REE wieder in einem stabilen geschlossenen Regelkreis war – ein Signal, das das Ende des kontinentalen Notstands besiegelte.
+<figure id="fig-k3-fallo-estructural-eas">
+  <EASStateTransition />
+  <figcaption>
+    <strong>Abbildung K3 — Falsche Normalität des EAS: Direkter Übergang von „Normal“ zu „Blackout“.</strong> Die Abbildung vergleicht die physische Degradation des iberischen Systems mit den im ENTSO-E Awareness System gemeldeten Zuständen und zeigt das Fehlen einer Zwischenphase von Alarm oder Notstand vor dem Zusammenbruch sowie den reaktiven Charakter der kontinentalen Koordinierung. Quelle: Eigene Darstellung basierend auf dem <em>Factual Report</em> der ENTSO-E, EAS-Aufzeichnungen und operativer Rekonstruktion des Vorfalls.
+  </figcaption>
+</figure>
+
+Die erste Aktion der SAM/EAS-Architektur war nicht präventiv, sondern reaktiv: Das EAS fungierte als _Post-Mortem_-Melder des Zusammenbruchs, nicht als Frühwarninstrument. Diese Einschränkung – die Unfähigkeit des europäischen Überwachungssystems, die schnelle Spannungsdynamik in Netzen mit geringer Trägheit zu erfassen – ist eine der zentralen regulatorischen Lehren des Vorfalls und der Ausgangspunkt für die im folgenden Abschnitt dokumentierten Reformen.
+
+Die Kommunikation blieb bis zum Ende des Notstands konstant und gipfelte am 29. April um 00:11 Uhr CEST, als RTE Swissgrid mitteilte, dass der Algorithmus der Automatischen Generatorregelung (AGC) von REE wieder in einem stabilen geschlossenen Regelkreis war – ein Signal, das das Ende des kontinentalen Notstands besiegelte.

@@ -1,92 +1,122 @@
 ---
 id: anexo-metodologia-modelos-datos-vivos
-title: "Anexo IX · Metodología, datos vivos y modelos didácticos"
-sidebar_label: "Anexo IX · Metodología y modelos"
+title: "Anhang IX · Methodik, Modelle und Quellenabgleich"
+sidebar_label: "Anhang IX · Methodik und Modelle"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import ResolutionRoadmap from '@site/src/components/ResolutionRoadmap';
 import ResearchAgendaScatter from '@site/src/components/ResearchAgendaScatter';
 
 <AnnexLayout
   wide
-  kicker="Anexo IX"
-  title="Metodología, modelos y datos vivos"
-  description="Elementos metodológicos, simuladores didácticos, comparadores operativos y herramientas con posible componente vivo o actualizable, separados de la reconstrucción histórica estricta."
+  kicker="Anhang IX"
+  title="Methodik, Modelle und Quellenabgleich"
+  description="Dieser Anhang beschreibt detailliert den methodischen Ansatz der Bachelorarbeit, den systematischen Abgleich der Schlussfolgerungen aus verschiedenen offiziellen Berichten und die technische Begründung der verwendeten Simulationswerkzeuge."
   meta={[
-    { label: 'Eje técnico', value: 'Metodología y Modelos' },
-    { label: 'Cobertura', value: 'Herramientas de análisis' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technische Achse', value: 'Methodik und Modelle' },
+    { label: 'Abdeckung', value: 'Analysewerkzeuge' },
+    { label: 'Nachweise', value: 'Abbildungen · Tabellen · Interaktive Elemente · Reihen' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Welche fachlichen Werkzeuge und Dokumentationsquellen ermöglichen es, die Unstimmigkeiten über die Ursachen und den Ablauf der Kaskade vom 28. April aufzuklären?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Die forensische Analyse des 28. April erfordert den Abgleich der Schlussfolgerungen des Regierungsausschusses, von ENTSO-E und externen Beratern (Compass Lexecon), wobei Datenasymmetrien durch die Verwendung hochauflösender PMU-Aufzeichnungen aufgelöst werden. Dieser Anhang systematisiert die Abgleichsmethodik, validiert die Repräsentativität der im Hauptteil der Bachelorarbeit verwendeten vereinfachten Modelle und begründet die didaktische Rolle der interaktiven Simulatoren, die es dem Leser ermöglichen, die Empfindlichkeit des Netzes in Echtzeit zu erkunden.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Dieser Anhang legt die Grundlagen für die dokumentarische Validierung und den fachübergreifenden Abgleich, die die technischen Schlussfolgerungen der Bachelorarbeit untermauern.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="modelo-didactico">
-    Este anexo agrupa modelos, simuladores y herramientas de apoyo. Algunos elementos son didácticos o incorporan datos vivos, por lo que no deben confundirse con registros históricos brutos del 28-A.
+    Dieser Anhang fasst Modelle, Simulatoren und Hilfswerkzeuge zusammen. Einige Elemente sind didaktischer Natur oder enthalten Live-Daten und sollten daher nicht mit rohen historischen Aufzeichnungen vom 28. April verwechselt werden.
   </AnnexMethodNote>
+
+  <em>Der Anhang ist in drei argumentative Abschnitte gegliedert: forensische Methodik und Quellenabgleich, unterstützende Technologien und Sensoren sowie didaktische Modelle und Simulatoren.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t9' },
-      { label: 'Tablas',       target: 'tablas-t9' },
-      { label: 'Interactivos', target: 'interactivos-t9' },
-      { label: 'Series',       target: 'series-t9' },
+      { label: 'Methodik und Abgleich', target: 'metodologia' },
+      { label: 'Unterstützende Technologien',   target: 'tecnologias' },
+      { label: 'Simulatoren und Modelle',   target: 'modelos-didacticos' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t9"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['figures']} />
+  <AnnexSection id="metodologia" eyebrow="Abschnitt 1" title="Forensische Methodik und Quellenabgleich">
+    Die Vergleichstabelle der Schlussfolgerungen der Institutionen stellt die Gutachten des Übertragungsnetzbetreibers (REE), des Regulators (CNMC) und des europäischen Ausschusses zur Auslöseursache und zum Kaskadenverlauf gegenüber.
+    <AnnexEvidenceLead
+      eyebrow="Hauptnachweis"
+      title="Abgleich der fachlichen Schlussfolgerungen"
+      summary="Vergleich der Schlussfolgerungen zu den Grundursachen und Verantwortlichkeiten des Blackouts, die von REE, der CNMC und dem europäischen Netzwerk ENTSO-E veröffentlicht wurden."
+      insight="Abweichungen in der Kausalanalyse · Multisektoraler technischer Konsens."
+    >
+      <AnnexEvidence type="table" id="comparativa-conclusiones-entidades" level={1} />
+    </AnnexEvidenceLead>
+    Der Bericht von Compass Lexecon/INESC TEC liefert die Sicht des externen Beraters: Er betont, dass REE zwischen 08:00 und 10:00 MESZ 15 Gaskraftwerke vom Netz nahm, und stellt die Angemessenheit der synchronen Ressource in Frage.
+    <AnnexEvidence type="table" id="compass-lexecon" level={2} />
+    Die SCR-Karte dokumentiert die physikalische Schwäche des Netzes im Süden der Iberischen Halbinsel. Die tote Zone der damaligen P.O. 7.4 machte die Systemabwehr gegen schnelle kapazitive Transienten unwirksam – die regulatorische Lücke, die die Wechselrichter nicht kompensieren konnten.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="scr_iberia" level={2} />
+      <AnnexEvidence type="figure" id="po74_banda_muerta" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t9"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['tables']} />
+  <AnnexSection id="tecnologias" eyebrow="Abschnitt 2" title="Unterstützende Technologien: Wechselrichter und Sensoren">
+    Der GFL-Wechselrichter (stromgeführte Quelle) muss das Netz „lesen“, um zu arbeiten; der GFM-Wechselrichter (spannungsbildende Quelle) erzeugt es. Die von Hitachi Energy vorgeschlagene hybride Architektur BESS-GFM + Synchrongenerator kombiniert FFR mit rotatorischer Trägheit und Scc.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="gfl_vs_gfm_circuit1" level={2} />
+      <AnnexEvidence type="figure" id="hitachi_hybrid" level={3} />
+    </AnnexEvidenceGrid>
+    Die PMU-Abdeckungsdichte war entscheidend für die unabhängige Überprüfung der vor dem Zusammenbruch aufgezeichneten Interarea-Oszillationen.
+    <AnnexEvidence type="figure" id="pmu_sensors_europe" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t9"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <span id="grafico-phaseplane"></span>
-    <span id="grafico-swing"></span>
-    <span id="grafico-pvcurve"></span>
-    <span id="grafico-comparador-28a"></span>
-    <span id="grafico-radar-vulnerabilidad"></span>
-    <AnnexThemeEvidence theme="T9" include={['interactives']} />
+  <AnnexSection id="modelos-didacticos" eyebrow="Abschnitt 3" title="Didaktische Modelle und Simulatoren">
+    Der Vergleicher ermöglicht es, die tatsächlichen physikalischen Bedingungen vom 28. April mit Profilen stabiler Tage zu vergleichen und die Parameter zu identifizieren, die abwichen.
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    Das Radar bewertet das System in sechs Achsen (Trägheit, Scc, Blindleistung, Verbundnetz, Markt, Kommunikation) – die Achsen mit dem größten Defizit stimmen mit den kausalen Faktoren des Zusammenbruchs überein.
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    Die Simulatoren der Phasenebene, der Schwunggleichung und der P-V-Kurve formalisieren die in den Anhängen II und III dokumentierten Phänomene. Ihre Gleichungen werden in Anhang X detailliert beschrieben.
+    <AnnexEvidence type="interactive" id="phaseplane" level={3} />
+    <AnnexEvidence type="interactive" id="swing" level={3} />
+    <AnnexEvidence type="interactive" id="pvcurve" level={3} />
+    Der Simulator des Trilemmas und das Vorher-Nachher-Panel ermöglichen die Bewertung der nach dem Ereignis umgesetzten Reformen und ihrer Auswirkung auf das Gleichgewicht von Sicherheit, Nachhaltigkeit und Wirtschaftlichkeit.
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={3} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    Der Lösungsfahrplan und die Forschungskarte zeigen die zukünftigen Entwicklungen auf: Synchrongeneratoren, GFM-Batterien und die Reform des Marktes für Systemdienstleistungen.
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResolutionRoadmap showCaption={false} />
+    </div>
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResearchAgendaScatter showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t9"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="Der methodische Abgleich der fachlichen Dokumentationsquellen zeigt, dass der 28. April einen technischen Lernmeilenstein für den europäischen Sektor darstellt. Die Validierung der vereinfachten dynamischen Modelle anhand der PMU-Aufzeichnungen der Umspannwerke belegt die Konsistenz der technischen Analyse der Bachelorarbeit."
+    doesNotDemonstrate="Dieser Anhang demonstriert den Nutzen des interaktiven Modellierens und der dynamischen Simulatoren, um den Leser durch die physikalische Analyse zu führen, und fungiert als methodische Brücke zu den Gleichungen in Anhang X."
+    connection="Die Lektüre wird ergänzt durch Anhang I (Erzeugungsmix) und Anhang X (physikalische und mathematische Stützgleichungen)."
+  />
 
-  <ResolutionRoadmap showCaption={false} />
-
-  *Figura A9.2. Hoja de ruta de soluciones técnicas, regulatorias y económicas post‑28‑A.*
-
-  <ResearchAgendaScatter showCaption={false} />
-
-  *Figura A9.3. Madurez técnica vs. regulatoria de las líneas de investigación futuras.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anhang I: Nachfrage, Erzeugung und Bilanz" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anhang II: Spannungs- und Frequenzstabilität" },
+    { to: "/anexo-ecuaciones-matematicas", label: "Anhang X: Gleichungen und Stabilitätssimulatoren" }
+  ]} />
 </AnnexLayout>

@@ -1,95 +1,143 @@
 ---
 id: anexo-estabilidad-dinamica-tension
-title: "Anexo II · Estabilidad dinámica, frecuencia y tensión"
-sidebar_label: "Anexo II · Estabilidad, frecuencia y tensión"
+title: "附录二 · 动态稳定性：电压、频率与惯量"
+sidebar_label: "附录二 · 稳定性、频率与电压"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
-import MRSCRComparator from '@site/src/components/MRSCRComparator';
-import DynamicSecurityShift from '@site/src/components/DynamicSecurityShift';
-import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo II"
-  title="Estabilidad dinámica, frecuencia y tensión"
-  description="Evidencias asociadas a oscilaciones, RoCoF, perfiles de tensión, estabilidad dinámica y comportamiento electromecánico del sistema durante la perturbación."
+  kicker="附录二"
+  title="动态稳定性：电压、频率与惯量"
+  description="本附录分析了2025年4月28日事件前后及期间，半岛电力系统的动态稳定性、频率和电压条件。其目的是证明此次崩溃是由过电压和无功控制丧失导致的定向事件，而非因发电损失引起的经典低频现象。"
   meta={[
-    { label: 'Eje técnico', value: 'Estabilidad y Tensión' },
-    { label: 'Cobertura', value: 'Comportamiento electromecánico' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '稳定性与电压' },
+    { label: '覆盖范围', value: '机电行为' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    为什么电压失稳——而非频率下降——是4月28日崩溃的根本原因？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    安装在卡莫纳变电站（400 kV）的PMU记录显示，电压在频率偏离正常带之前数分钟就开始发散。半岛南部的过电压超过了IBR逆变器的保护限值，导致大规模脱网，进而引起频率下降。系统惯量降低——这是附录一中记录的电源组合的结果——限制了电网在级联开始后吸收频率扰动的能力。电压与频率之间的因果区分对于本TFG的监管建议至关重要。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录记录了电压振荡和PMU数据，证明电压不稳定性如何先于并导致了4月28日的频率下降。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Este apartado consolida los registros técnicos y visualizaciones dinámicas que permiten analizar las oscilaciones de frecuencia y la estabilidad del sistema eléctrico.
+    本节整合了技术记录和动态可视化，用于分析频率振荡和电力系统的稳定性。
   </AnnexMethodNote>
+
+  <em>本附录分为四个部分：电压不稳定性与前兆、频率与惯量动态、无功功率平衡以及交互式分析工具。其阅读补充了附录一（电源组合条件），并为附录三（保护动作）奠定基础。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t2' },
-      { label: 'Tablas',       target: 'tablas-t2' },
-      { label: 'Interactivos', target: 'interactivos-t2' },
-      { label: 'Series',       target: 'series-t2' },
+      { label: '电压不稳定性', target: 'inestabilidad-tension' },
+      { label: '频率与惯量',     target: 'frecuencia-inercia' },
+      { label: '无功平衡',       target: 'balance-reactiva' },
+      { label: '分析工具',  target: 'herramientas-estabilidad' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t2"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['figures']} />
+  <AnnexSection id="inestabilidad-tension" eyebrow="第1节" title="电压不稳定性与前兆">
+    卡莫纳的电压稳定性Q-V曲线显示，网络重构操作将工作点移向了不稳定区域。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="电压崩溃序列"
+      summary="关键秒内的电压和频率记录证明了崩溃的时间序列：电压先于频率发散。"
+      insight="电压扰动的时间优先性 · 归类为电压崩溃。"
+    >
+      <AnnexEvidence type="figure" id="tension_frecuencia_colapso" level={1} />
+    </AnnexEvidenceLead>
+    卡莫纳的Q-V曲线显示，网络重构操作使崩溃裕度缩小了57%。4月22日——即六天前——在同一区域记录了一次过电压前兆：在4月28日跳闸的电站此前已发生过完全相同的跳闸。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="fluctuaciones_tension_previas" level={1} />
+      <AnnexEvidence type="figure" id="precursor_overvoltage_22april" level={1} />
+    </AnnexEvidenceGrid>
+    前兆的存在排除了孤立事件的假设，并意味着一种持续的脆弱性状态。
+    努涅斯·德·巴尔沃亚（400 kV）的记录记录了4月22日、24日和28日的过电压峰值序列——无功裕度逐步收窄。
+    <AnnexEvidence type="figure" id="nunez_balboa_precursores" level={2} />
+    关键输电节点的电压反驳了普遍过电压的说法：在400 kV网络中，电压大多保持在375–435 kV范围内；问题出在220 kV侧和汇集网络。
+    <AnnexEvidence type="table" id="tensiones-nudos-criticos" level={2} />
+    REE在事件前几小时执行的无功补偿操作记录了在电压失控前试图抑制其上升的尝试。
+    <AnnexEvidence type="table" id="re-voltage-manoeuvres" level={2} />
+    卡莫纳的PMU记录以毫秒分辨率捕捉了从正常到停电的过渡：电压在频率离开49.8–50.2 Hz带之前就超过了1.10 p.u.。
+    <AnnexEvidence type="figure" id="frequency_voltage_carmona" level={1} />
+    电压相对于频率的时间优先性是最直接的证据，表明此次崩溃是电容性的，而非惯性性的。
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t2"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t2"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="frecuencia-inercia" eyebrow="第2节" title="频率与惯量动态">
+    最终的频率变化率（RoCoF）超过了1.5 Hz/s——高于同步电机保护的标准阈值。
+    <AnnexEvidence type="table" id="evolucion-frecuencia-rocof" level={2} />
+    系统总惯量较低，但ENTSO-E和REE的报告一致认为这不是根本原因：问题在于电压控制，而非惯性RoCoF。
+    <AnnexEvidence type="table" id="inercia-sistema-htot" level={2} />
+    低惯量加速了级联开始后的下降，但并未引发它。
+    检测到一次0.63 Hz的强迫振荡，可能源自巴达霍斯的一座光伏电站。REE采取的缓解措施——矛盾地——恶化了电压控制。
+    <AnnexEvidence type="table" id="modos-oscilatorios" level={2} />
+    卡莫纳的WAMS记录以毫秒分辨率捕捉到了在12:03 CEST检测到的0.6 Hz机电振荡。
+    <AnnexEvidence type="figure" id="wams_oscilaciones_carmona" level={3} />
+    交互式频率图允许观察崩溃期间每个网络节点的瞬时RoCoF。
     <span id="grafico-frequency"></span>
+    <AnnexEvidence type="interactive" id="frequency" level={2} />
+    崩溃地震仪将关键秒压缩成一种可视化，其中电压发散明显先于频率下降。
     <span id="grafico-sismograph"></span>
+    <AnnexEvidence type="interactive" id="sismograph" level={1} />
+    在4月28日00:00，系统有39,077 MW的可用发电容量，而需求为25,000 MW。联合循环机组有16,660 MW可用，但中午仅发电2,775 MW。这一差距是经济调度顺序的印记。
+    <AnnexEvidence type="chart" id="chart-4" level={2} />
+    崩溃后，唯一具有显著发电量的机组是核电站（Vandellós：1,044 MW，Ascó 2：1,004 MW）和幸存的联合循环机组。排名中没有任何太阳能或风能设施。
+    <AnnexEvidence type="chart" id="chart-6" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="balance-reactiva" eyebrow="第3节" title="无功功率平衡">
+    12:30 CEST半岛南部的净缺额为−0.6 GVAr，记录了无功支撑的饱和状态。REE的热力图显示了过电压的地理演变。
+    <AnnexEvidence type="figure" id="asimetria_balance_reactiva_sur" level={2} />
+    配电电站几乎未对南部的电压控制做出贡献：来自该级别的无功注入微不足道。
+    <AnnexEvidence type="table" id="inyeccion-reactiva-distribucion" level={2} />
+    REE在12:30 CEST之前耗尽了常规补偿资源（电抗器、电容器）——操作裕度已饱和。
+    <AnnexEvidence type="table" id="maniobras-compensacion-reactiva" level={2} />
+    <AnnexEvidence type="figure" id="mapas_termicos_tension_ree" level={3} />
+  </AnnexSection>
+
+  <AnnexSection id="herramientas-estabilidad" eyebrow="第4节" title="交互式分析工具">
+    模拟器展示了动态安全边界如何随着IBR渗透率的增加而向内移动，从而缩小稳定运行空间。
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+    MRSCR捕捉了附近IBR逆变器之间的相互作用：半岛南部浓度越高，这些节点的网络强度越低。
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    卡莫纳的电压和电流角度轨迹允许在相量平面上验证失步序列。
     <span id="grafico-phasor"></span>
-    <AnnexThemeEvidence theme="T2" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="phasor" level={2} />
+    前后对比面板比较了4月28日之前的运行规则与事件后批准的一揽子改革措施。
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    FutuRed的预测估计了到2030年维持安全惯量裕度所需的额外同步补偿。
+    <AnnexEvidence type="figure" id="futured_grid_evolution" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t2"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="本附录收集的证据支持本TFG的一个核心结论：4月28日的停电并非经典的欠频事件，而是在低惯量和低短路容量的系统中发生的电压崩溃。频率下降是由过电压保护引起的大规模脱网的结果，而非主要原因。"
+    doesNotDemonstrate="本附录并未证明频率下降无关紧要——一旦级联开始，它是致命的——而是证明电压扰动先于并导致了它。这一区别对于监管建议至关重要：一个专门设计用于响应频率损失的系统无法避免4月28日的事件。"
+    connection="阅读内容与附录三相辅相成，后者重建了由过电压触发的保护级联，并与附录十相辅相成，后者形式化了电压稳定性和雅可比崩溃方程。"
+  />
 
-  <MRSCRComparator showCaption={false} />
-
-  *Figura A2.1. Comparación de SCR y MRSCR en subestaciones ibéricas. Fuente: ENTSO‑E.*
-
-  <DynamicSecurityShift showCaption={false} />
-
-  *Figura A2.2. Transición del modelo de seguridad clásico a métricas dinámicas.*
-
-  <ThenVsNowPanel showCaption={false} />
-
-  *Figura A2.3. Comparación de métricas de vulnerabilidad entre el 28‑A y mayo de 2026. Fuentes: REE, ENTSO‑E, ESIOS.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "附录一：需求、发电与平衡" },
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "附录三：级联序列与保护" },
+    { to: "/anexo-ecuaciones-matematicas", label: "附录十：稳定性方程与模拟器" }
+  ]} />
 </AnnexLayout>

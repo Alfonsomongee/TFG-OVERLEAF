@@ -1,95 +1,143 @@
 ---
 id: anexo-estabilidad-dinamica-tension
-title: "Anexo II · Estabilidad dinámica, frecuencia y tensión"
-sidebar_label: "Anexo II · Estabilidad, frecuencia y tensión"
+title: "Annex II · Dynamic stability: voltage, frequency and inertia"
+sidebar_label: "Annex II · Stability, frequency and voltage"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
-import MRSCRComparator from '@site/src/components/MRSCRComparator';
-import DynamicSecurityShift from '@site/src/components/DynamicSecurityShift';
-import ThenVsNowPanel from '@site/src/components/ThenVsNowPanel';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo II"
-  title="Estabilidad dinámica, frecuencia y tensión"
-  description="Evidencias asociadas a oscilaciones, RoCoF, perfiles de tensión, estabilidad dinámica y comportamiento electromecánico del sistema durante la perturbación."
+  kicker="Annex II"
+  title="Dynamic stability: voltage, frequency and inertia"
+  description="This annex analyzes the dynamic stability, frequency and voltage conditions of the peninsular electrical system before and during the incident of April 28, 2025. Its objective is to demonstrate that the collapse was an event driven by overvoltage and loss of reactive power control, not a classic underfrequency phenomenon due to generation loss."
   meta={[
-    { label: 'Eje técnico', value: 'Estabilidad y Tensión' },
-    { label: 'Cobertura', value: 'Comportamiento electromecánico' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical axis', value: 'Stability and Voltage' },
+    { label: 'Coverage', value: 'Electromechanical behavior' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Why was the loss of voltage stability — and not the frequency drop — the root cause of the April 28 collapse?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Records from PMUs installed at the Carmona substation (400 kV) document that voltage began to diverge minutes before frequency left its normal band. Overvoltages in the southern peninsula exceeded the protection limits of IBR inverters, causing massive disconnections that, in turn, caused the frequency drop. The system's reduced inertia — a consequence of the generation mix documented in Annex I — limited the grid's ability to absorb frequency disturbances once the cascade began. The cause-consequence distinction between voltage and frequency is central to the TFG's regulatory recommendations.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex documents the voltage oscillations and PMU records that demonstrate how voltage instability preceded and caused the frequency drop of April 28.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Este apartado consolida los registros técnicos y visualizaciones dinámicas que permiten analizar las oscilaciones de frecuencia y la estabilidad del sistema eléctrico.
+    This section consolidates the technical records and dynamic visualizations that allow analyzing the frequency oscillations and the stability of the electrical system.
   </AnnexMethodNote>
+
+  <em>The annex is organized into four sections: voltage instability and precursors, frequency and inertia dynamics, reactive power balance, and interactive analysis tools. Its reading complements Annex I (generation mix conditions) and precedes Annex III (protection system operation).</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t2' },
-      { label: 'Tablas',       target: 'tablas-t2' },
-      { label: 'Interactivos', target: 'interactivos-t2' },
-      { label: 'Series',       target: 'series-t2' },
+      { label: 'Voltage instability', target: 'inestabilidad-tension' },
+      { label: 'Frequency and inertia',     target: 'frecuencia-inercia' },
+      { label: 'Reactive balance',       target: 'balance-reactiva' },
+      { label: 'Analysis tools',  target: 'herramientas-estabilidad' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t2"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['figures']} />
+  <AnnexSection id="inestabilidad-tension" eyebrow="Section 1" title="Voltage instability and precursors">
+    The Q-V voltage stability curves at Carmona show that grid reconfiguration maneuvers shifted the operating point towards the instability zone.
+    <AnnexEvidenceLead
+      eyebrow="Main evidence"
+      title="Voltage collapse sequence"
+      summary="The voltage and frequency record in the critical seconds demonstrates the temporal sequence of the collapse: voltage diverges before frequency."
+      insight="Temporal priority of the voltage disturbance · Classification as a voltage collapse."
+    >
+      <AnnexEvidence type="figure" id="tension_frecuencia_colapso" level={1} />
+    </AnnexEvidenceLead>
+    The Q-V curves at Carmona show that grid reconfiguration maneuvers reduced the margin to collapse by 57%. On April 22 — six days earlier — an overvoltage precursor was recorded in the same area: the plants that tripped on April 28 had already suffered identical trips.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="fluctuaciones_tension_previas" level={1} />
+      <AnnexEvidence type="figure" id="precursor_overvoltage_22april" level={1} />
+    </AnnexEvidenceGrid>
+    The existence of a precursor rules out the hypothesis of an isolated event and implies a condition of sustained vulnerability.
+    Records from Núñez de Balboa (400 kV) document the succession of overvoltage peaks on April 22, 24, and 28 — the progressive narrowing of reactive power margins.
+    <AnnexEvidence type="figure" id="nunez_balboa_precursores" level={2} />
+    Voltages at critical transmission nodes refute the narrative of widespread overvoltage: in the 400 kV grid they remained mostly within the 375–435 kV range; the problem was on the 220 kV side and the collector grid.
+    <AnnexEvidence type="table" id="tensiones-nudos-criticos" level={2} />
+    The reactive compensation maneuvers executed by REE in the preceding hours document the attempts to contain the voltage rise before it became uncontrolled.
+    <AnnexEvidence type="table" id="re-voltage-manoeuvres" level={2} />
+    The Carmona PMU record with millisecond resolution captures the Normal → Blackout transition: voltage exceeds 1.10 p.u. before frequency leaves the 49.8–50.2 Hz band.
+    <AnnexEvidence type="figure" id="frequency_voltage_carmona" level={1} />
+    The temporal priority of voltage over frequency is the most direct evidence that the collapse was capacitive, not inertial.
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t2"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t2"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="frecuencia-inercia" eyebrow="Section 2" title="Frequency and inertia dynamics">
+    The final rate of change of frequency (RoCoF) exceeded 1.5 Hz/s — above the standard protection threshold for synchronous machines.
+    <AnnexEvidence type="table" id="evolucion-frecuencia-rocof" level={2} />
+    The total system inertia was low, but ENTSO-E and REE reports agree that it was not the root cause: the problem was voltage control, not inertial RoCoF.
+    <AnnexEvidence type="table" id="inercia-sistema-htot" level={2} />
+    Low inertia accelerated the drop once the cascade began, but did not cause it.
+    A forced oscillation of 0.63 Hz was detected, possibly originating from a PV plant in Badajoz. The mitigation measures activated by REE — paradoxically — degraded voltage control.
+    <AnnexEvidence type="table" id="modos-oscilatorios" level={2} />
+    The Carmona WAMS record documents the 0.6 Hz electromechanical oscillation captured at 12:03 CEST with millisecond resolution.
+    <AnnexEvidence type="figure" id="wams_oscilaciones_carmona" level={3} />
+    The interactive frequency graph allows observing the instantaneous RoCoF at each grid node during the seconds of the collapse.
     <span id="grafico-frequency"></span>
+    <AnnexEvidence type="interactive" id="frequency" level={2} />
+    The collapse seismograph compresses the critical seconds into a visualization where the voltage divergence visibly precedes the frequency drop.
     <span id="grafico-sismograph"></span>
+    <AnnexEvidence type="interactive" id="sismograph" level={1} />
+    At 00:00 on April 28, the system had 39,077 MW operational against 25,000 MW of demand. Combined cycle plants had 16,660 MW available but only generated 2,775 MW at noon. The gap is the footprint of the merit order.
+    <AnnexEvidence type="chart" id="chart-4" level={2} />
+    After the collapse, the only units with significant generation were nuclear plants (Vandellós: 1,044 MW, Ascó 2: 1,004 MW) and the surviving combined cycles. No solar or wind installation appears in the ranking.
+    <AnnexEvidence type="chart" id="chart-6" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="balance-reactiva" eyebrow="Section 3" title="Reactive power balance">
+    The net deficit of −0.6 GVAr at 12:30 CEST in the southern peninsula documents the saturation of reactive support. REE's thermal maps show the geographical progression of the overvoltage.
+    <AnnexEvidence type="figure" id="asimetria_balance_reactiva_sur" level={2} />
+    Distribution-level plants practically did not contribute to voltage control in the south: reactive injection from that level was testimonial.
+    <AnnexEvidence type="table" id="inyeccion-reactiva-distribucion" level={2} />
+    REE exhausted conventional compensation resources (reactors, capacitors) before 12:30 CEST — the operating margin was saturated.
+    <AnnexEvidence type="table" id="maniobras-compensacion-reactiva" level={2} />
+    <AnnexEvidence type="figure" id="mapas_termicos_tension_ree" level={3} />
+  </AnnexSection>
+
+  <AnnexSection id="herramientas-estabilidad" eyebrow="Section 4" title="Interactive analysis tools">
+    The simulator shows how the dynamic security boundary shifts inward as IBR penetration increases, reducing the stable operating space.
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+    The MRSCR captures the interaction between nearby IBR inverters: the higher the concentration in the southern peninsula, the lower the grid strength at those nodes.
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    The angular trajectories of voltage and current at Carmona allow verifying the loss of synchronism sequence in the phasor plane.
     <span id="grafico-phasor"></span>
-    <AnnexThemeEvidence theme="T2" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="phasor" level={2} />
+    The before/after panel compares the operating rules prior to April 28 with the reform package approved after the event.
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    The FutuRed projection estimates the need for additional synchronous compensation to maintain safe inertia margins towards 2030.
+    <AnnexEvidence type="figure" id="futured_grid_evolution" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t2"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T2" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="The evidence gathered in this annex supports a central conclusion of the TFG: the April 28 blackout was not a classic underfrequency event but a voltage collapse in a system with low inertia and low short-circuit power. Frequency fell as a consequence of the massive disconnections caused by overvoltage protections, not as a primary cause."
+    doesNotDemonstrate="This annex does not demonstrate that the frequency drop was irrelevant — it was lethal once the cascade began — but rather that the voltage disturbance preceded and caused it. The distinction is relevant for regulatory recommendations: a system designed exclusively to respond to frequency losses would not have prevented the April 28 event."
+    connection="The reading is complemented by Annex III, which reconstructs the protection cascade triggered by the overvoltages, and by Annex X, which formalizes the equations of voltage stability and Jacobian collapse."
+  />
 
-  <MRSCRComparator showCaption={false} />
-
-  *Figura A2.1. Comparación de SCR y MRSCR en subestaciones ibéricas. Fuente: ENTSO‑E.*
-
-  <DynamicSecurityShift showCaption={false} />
-
-  *Figura A2.2. Transición del modelo de seguridad clásico a métricas dinámicas.*
-
-  <ThenVsNowPanel showCaption={false} />
-
-  *Figura A2.3. Comparación de métricas de vulnerabilidad entre el 28‑A y mayo de 2026. Fuentes: REE, ENTSO‑E, ESIOS.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Annex I: demand, generation and balance" },
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "Annex III: cascade sequence and protections" },
+    { to: "/anexo-ecuaciones-matematicas", label: "Annex X: stability equations and simulators" }
+  ]} />
 </AnnexLayout>

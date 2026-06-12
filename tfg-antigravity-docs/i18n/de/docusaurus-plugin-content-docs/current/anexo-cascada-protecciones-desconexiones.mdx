@@ -1,98 +1,161 @@
 ---
 id: anexo-cascada-protecciones-desconexiones
-title: "Anexo III · Protecciones, cascada y desconexiones"
-sidebar_label: "Anexo III · Protecciones y desconexiones"
+title: "Anhang III · Schutzmaßnahmen, Kaskade und Trennungen"
+sidebar_label: "Anhang III · Schutzmaßnahmen und Trennungen"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PO74Timeline from '@site/src/components/PO74Timeline';
 import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
 
 <AnnexLayout
   wide
-  kicker="Anexo III"
-  title="Protecciones, cascada y desconexiones"
-  description="Evidencias técnicas relacionadas con la propagación del colapso, disparos de protección, desconexiones de generación y mecanismos de cascada del 28-A."
+  kicker="Anhang III"
+  title="Schutzmaßnahmen, Kaskade und Trennungen"
+  description="Dieser Anhang rekonstruiert die Abfolge von Schutzmaßnahmen, Erzeugungsabschaltungen und Lastabwürfen, die innerhalb von weniger als fünf Minuten aus einem lokalisierten Überspannungszustand im Süden der Iberischen Halbinsel einen totalen Zusammenbruch des iberischen Systems machten."
   meta={[
-    { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
-    { label: 'Cobertura', value: 'Análisis forense de cascada' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technische Achse', value: 'Schutzmaßnahmen und Trennungen' },
+    { label: 'Abdeckung', value: 'Forensische Kaskadenanalyse' },
+    { label: 'Nachweise', value: 'Abbildungen · Tabellen · Interaktive · Reihen' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Wie breitete sich die Kaskade von Trennungen zwischen der Wurzelauslösung im Südwesten und dem totalen Zusammenbruch des iberischen Systems aus, und welche Schutzmaßnahmen griffen in jeder Phase?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Die Kaskade vom 28. April entwickelte sich in vier Phasen, die sich auf weniger als fünf Minuten verdichteten: (1) Ausbreitung von Überspannungen im 400-kV-Netz des Südwestens, verstärkt durch den Ferranti-Effekt und die Tap-Lag-Verzögerung der Regeltransformatoren; (2) massenhafte Auslösung von ANSI-59-Schutzfunktionen in IBR-Wechselrichtern mit einem Verlust von ~4,5 GW in 11 Sekunden; (3) Eingreifen der automatischen Schutzmechanismen – UFLS-Lastabwurf und Abschaltung von Pumpspeicherung – die angesichts der Geschwindigkeit der Störung unzureichend waren; (4) Frequenzkollaps und vollständiger Synchronismusverlust der Iberischen Halbinsel. Die Schutzmaßnahmen funktionierten gemäß Spezifikation; die Spezifikation sah jedoch kein Szenario einer weit verbreiteten Überspannung bei niedriger Trägheit vor.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Dieser Anhang dokumentiert die chronologische Abfolge und die Mechanik der Schutzauslösungen, die während des Ereignisses vom 28. April zur Kaskade von Trennungen führten.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
+    Der vorliegende Anhang stellt die Abfolge von Auslösungen und Schutzmaßnahmen chronologisch dar, um eine systemische Perspektive des Zusammenbruchs zu bieten.
   </AnnexMethodNote>
 
   <AnnexMethodNote type="modelo-didactico">
-    Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
+    Einige interaktive Elemente stellen didaktische Modelle oder Rekonstruktionen dar. Sie sind als erklärende Unterstützung und nicht als eigenständiger Rohdatensatz zu verstehen.
   </AnnexMethodNote>
+
+  <em>Der Anhang ist in vier argumentative Abschnitte gegliedert, die den verschiedenen Phasen des Zusammenbruchs entsprechen: Ausbreitung von Überspannungen, IBR-Abschaltkaskade, Lastabwurf und Schutzmaßnahmen sowie Indikatoren des Endzustands.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-cascada' },
-      { label: 'Tablas',       target: 'tablas-cascada' },
-      { label: 'Interactivos', target: 'interactivos-cascada' },
-      { label: 'Series',       target: 'series-cascada' },
+      { label: 'Ausbreitung',   target: 'propagacion-sobretensiones' },
+      { label: 'IBR-Kaskade',   target: 'cascada-ibr' },
+      { label: 'Lastabwurf',     target: 'deslastre-defensa' },
+      { label: 'Endzustand',  target: 'estado-final' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-cascada"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a la propagación del fallo."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['figures']} />
+  <AnnexSection id="propagacion-sobretensiones" eyebrow="Phase 1" title="Ausbreitung von Überspannungen">
+    Die Heatmap zeigt die räumliche Ausbreitung der Überspannungen zwischen dem Netzzusammenschlussmanöver (12:30) und der Wurzelauslösung (12:32:56).
+    <AnnexEvidenceLead
+      eyebrow="Hauptnachweis"
+      title="Ausbreitung von Überspannungen"
+      summary="Die Heatmap zeigt die räumliche Ausbreitung der Überspannungen zwischen dem Netzzusammenschlussmanöver und der Wurzelauslösung, wobei sich kritische Werte im Südwesten konzentrieren."
+      insight="Kritische Zonen in Andalusien und der Extremadura · Vorbedingung für massenhafte Wechselrichterauslösungen."
+    >
+      <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
+    </AnnexEvidenceLead>
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
+      <AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
+    </AnnexEvidenceGrid>
+    <p>Die Tap-Lag-Entkopplung verstärkte die Überspannungen im Sammelnetz und machte sie für das SCADA von REE unsichtbar. Die Flut von Alarmen im Süden dokumentiert die Schnelligkeit der Ausbreitung.</p>
+    Der Simulator des Ferranti-Effekts reproduziert die quadratische Überspannung am offenen Ende unbelasteter Höchstspannungsleitungen – der verstärkende Mechanismus der Phase 1.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    Die Tap-Lag-Sequenz veranschaulicht, wie die mechanische Verzögerung der OLTCs (3–8 Sekunden pro Stufe) die Überspannung des Sammelnetzes vor dem SCADA von REE verbarg.
+    <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
+    Die Chronologie der Überspannungen ermöglicht eine zeitliche und räumliche Erkundung jedes Spannungsmesswerts in den wichtigsten Umspannwerken des Südwestens.
+    <div style={{ margin: '1.5rem 0' }}>
+      <OvervoltageTimeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-cascada"
-    eyebrow="Registros técnicos"
-    title="Tablas forenses y eventos de protección"
-    description="Registros tabulados sobre desconexiones, protecciones y maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-cascada"
-    eyebrow="Exploración interactiva"
-    title="Herramientas de propagación y mecanismos de cascada"
-    description="Visualizaciones interactivas asociadas a la secuencia del colapso."
-    defaultOpen
-  >
+  <AnnexSection id="cascada-ibr" eyebrow="Phase 2" title="Kaskade von IBR-Trennungen">
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="cascada_desconexiones" level={1} />
+      <AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
+    </AnnexEvidenceGrid>
+    <p>Die geografische Ausbreitung in 11 Sekunden überstieg die Reaktionsfähigkeit der automatischen Mechanismen. Die IEEE-39-Studie zeigt, wie aufeinanderfolgende Trennungen schwere Oszillationen erzeugen.</p>
+    Die 16 Trennungsereignisse im Südwesten – Mastertabelle für die Reproduktion in Software zur transienten Stabilität – verdichteten sich auf 11 Sekunden.
+    <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
+    Die chronologische Liste der Schutzmaßnahmen detailliert, welches Relais in welchem Kraftwerk und in welcher Millisekunde ausgelöst hat.
+    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={2} />
+    Der ANSI-59-Simulator reproduziert, wie die Trennung eines Wechselrichters die Spannung an den benachbarten Knoten erhöht und so die benachbarten Wechselrichter kaskadenartig auslöst.
+    <AnnexEvidence type="interactive" id="ansi59" level={2} />
+    Die animierte Karte ermöglicht es, die Auslösungen der dezentralen Erzeugung chronologisch zu verfolgen und das Muster Süd→Nord und West→Ost zu beobachten.
     <span id="grafico-map"></span>
-    <span id="grafico-timeline"></span>
-    <span id="grafico-ansi59"></span>
+    <AnnexEvidence type="interactive" id="map" level={1} />
+    Die einheitliche Visualisierung überlagert SCADA-Alarme, Schutzauslösungen und Systemfrequenz in einem seismografischen Panel.
     <span id="grafico-sticky-collapse"></span>
-    <span id="grafico-ufls"></span>
-    <span id="grafico-tap-lag-sequence"></span>
+    <AnnexEvidence type="interactive" id="sticky-collapse" level={2} />
+    Die vertikale Chronologie detailliert Minute für Minute die vollständige Abfolge von 12:30 bis 12:38 Uhr MESZ.
+    <span id="grafico-timeline"></span>
+    <AnnexEvidence type="interactive" id="timeline" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="deslastre-defensa" eyebrow="Phase 3" title="Lastabwurf und Schutzmechanismen">
+    Die UFLS-Stufen wurden wie vorgesehen aktiviert, zeigten jedoch ein Paradoxon: Durch das Trennen von Last stieg die Spannung zusätzlich an, was den kapazitiven Kollaps verschlimmerte.
+    <AnnexEvidence type="table" id="escalones-ufls" level={1} />
+    Die Aufschlüsselung des Lastabwurfs nach Knoten in Spanien und Portugal quantifiziert das gesamte in jedem Land geopferte Lastvolumen.
+    <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
+    <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
+    Die Aggregation nach Verteilnetzbetreiber und die geografische Verteilung des Lastabwurfs zeigen die Konzentration der Beeinträchtigung in Gebieten mit hoher IBR-Durchdringung.
+    <AnnexEvidence type="table" id="load-shedding-es-pt" level={2} />
+    <AnnexEvidence type="table" id="dso-load-shedding" level={2} />
+    Die portugiesischen stromintensiven Kunden erlitten einen priorisierten, programmierten Lastabwurf.
+    <AnnexEvidence type="table" id="electro-intensive-pt" level={3} />
+    Die Trennung der Pumpspeicherung entlastete das Netz um ~2.150 MW an momentaner Last und trug dazu bei, den Frequenzabfall zu bremsen.
+    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={2} />
+    Die Aufschlüsselung nach Pumpspeicherkraftwerken in Spanien und Portugal detailliert die Chronologie der Trennung.
+    <AnnexEvidence type="table" id="pump-storage-es" level={3} />
+    <AnnexEvidence type="table" id="pump-storage-pt" level={3} />
+    Der Indikator für die plötzliche Nichtverfügbarkeit pro Knoten quantifiziert, welcher Prozentsatz des Netzes in jeder Zone außer Betrieb war.
     <span id="grafico-grid-unavailability"></span>
-    <AnnexThemeEvidence theme="T3" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
+    Die Chronologie der P.O. 7.4 dokumentiert die Entwicklung der von den Erzeugern geforderten Totbänder – die regulatorische Lücke, die eine autonome Reaktion der Wechselrichter auf Überspannungen verhinderte.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PO74Timeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-cascada"
-    eyebrow="Series históricas"
-    title="Series asociadas al episodio de cascada"
-    description="Gráficas históricas disponibles asociadas a este tema, si existen."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['charts']} />
+  <AnnexSection id="estado-final" eyebrow="Phase 4" title="Endzustand und Topologie nach dem Kollaps">
+    Die topologischen Manöver von REE und REN dokumentieren die kontrollierte Fragmentierung des Netzes, um Zonen zu isolieren und die Wiederzuschaltung über Inseln vorzubereiten.
+    <AnnexEvidence type="table" id="re-topological-manoeuvres" level={3} />
+    <AnnexEvidence type="table" id="ren-topological-manoeuvres" level={3} />
+    Der Prozentsatz der außer Betrieb befindlichen Leitungskilometer quantifiziert das Ausmaß des topologischen Schadens, den das Übertragungsnetz erlitten hat.
+    <AnnexEvidence type="table" id="lines-outage-icai" level={3} />
+    <AnnexEvidence type="table" id="km-percentage-icai" level={3} />
+    Die fünf Kernkraftwerke führten kontrollierte Notabschaltungen durch. Ihr Überleben war für den späteren Schwarzstart entscheidend: Vandellòs und Ascó führten die Erzeugung während der Wiederherstellung an.
+    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
   </AnnexSection>
 
-  <PO74Timeline showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="Die Kaskade vom 28. April zeigte, dass ein Stromsystem innerhalb von Sekunden die Stabilität verlieren kann, wenn niedrige Trägheit, unkontrollierte Überspannung und Wechselrichter mit auf Einzelfehler kalibrierten Schutzfunktionen zusammentreffen. Die Schutzmaßnahmen versagten nicht: Sie arbeiteten gemäß Spezifikation. Das Problem lag darin, dass die Spezifikation (P.O. 7.4 vor der Reform, standardmäßige ANSI-59-Schwellenwerte) kein Szenario mit dominierender IBR-Durchdringung und niedriger Kurzschlussleistung vorsah."
+    doesNotDemonstrate="Dieser Anhang weist keine Verantwortlichkeiten zu; er dokumentiert die Mechanik des Fehlers. Die Interpretation, ob die Schutzmaßnahmen vor dem Ereignis hätten reformiert werden müssen, obliegt der regulatorischen Analyse in den Hauptkapiteln."
+    connection="Die Lektüre wird ergänzt durch Anhang II (vorherige Spannungsinstabilität), Anhang IV (grenzüberschreitender Synchronismusverlust) und Anhang VI (spätere Wiederherstellung)."
+  />
 
-  *Figura A3.1. Cronograma de implementación del P.O. 7.4. Fuentes: CNMC, BOE.*
-
-  <OvervoltageTimeline showCaption={false} />
-
-  *Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anhang II: Spannungs- und Frequenzstabilität" },
+    { to: "/anexo-interconexiones-flujos", label: "Anhang IV: Interkonnektoren und grenzüberschreitende Flüsse" },
+    { to: "/anexo-reposicion-blackstart", label: "Anhang VI: Wiederherstellung und Notbetrieb" }
+  ]} />
 </AnnexLayout>

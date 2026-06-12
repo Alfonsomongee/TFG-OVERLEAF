@@ -4,85 +4,128 @@ hide_title: true
 title: "Technischer Kontext"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
 import EnergyTransitionStreamgraph from "@site/src/components/EnergyTransitionStreamgraph";
+import CollapseSismograph from "@site/src/components/CollapseSismograph";
+import ThemedImage from '@theme/ThemedImage';
+import HvdcControlModeTransitionFigure from "@site/src/components/PMODEDiagram";
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 <GlitchTitle>Technischer Kontext</GlitchTitle>
 
-:::note Hinweis zur Chronologie des Vorfalls
-In diesem Kapitel wird auf die fünf Phasen verwiesen, in die der Analyseausschuss des Nationalen Sicherheitsrates den Vorfall strukturiert hat: **Phase 0** (Tage vor und Morgen des 28. April, latente Spannungsinstabilität); **Phase 1** (12:00–12:30 MESZ, elektromechanische Schwingungen vor der Grundabschaltung); **Phase 2** (12:32:00–12:33:18 MESZ, erste Erzeugungsverluste durch Überspannung); **Phase 3** (12:33:18–12:33:30 MESZ, Kaskade von Abschaltungen bis zum Spannungsnullpunkt); **Phase 4** (ab 12:33:30 MESZ, schrittweise Wiederherstellung der Versorgung). Die detaillierte Chronologie wird in den Kapiteln 4 und 5 behandelt.
-:::
+## Entwicklung des Kraftwerksparks: Von synchroner Erzeugung zu einem von IBR dominierten Mix
 
-## Entwicklung des Kraftwerksparks: Von der Synchronerzeugung zum IBR-dominierten Mix
+Im Folgenden veranschaulichen die offiziellen Transparenzdaten von ENTSO-E die aktuelle operative Realität des Systems im Vergleich zum Szenario vom 28. April:
 
-Obwohl die maximale Stromnachfrage in Spanien seit mehr als einem Jahrzehnt strukturell stagniert, hat der Erzeugungspark einen tiefgreifenden Wandel erfahren. Machten thermische und nukleare Quellen 2010 noch **65 % der Produktion** aus, so hatten die Erneuerbaren diesen Anteil bis 2024 umgekehrt und erreichten **59 % des Gesamtmixes**.
+Obwohl die Spitzennachfrage nach Strom in Spanien seit über einem Jahrzehnt strukturell stagniert, hat der Kraftwerkspark einen tiefgreifenden Wandel durchgemacht. Machten thermische und nukleare Quellen im Jahr 2010 noch 65 % der Produktion aus, so hatten die erneuerbaren Energien dieses Verhältnis bis 2024 umgekehrt und erreichten 59 % des Gesamtmixes.
 
-![Makroskopische Entwicklung des Erzeugungsmixes in Spanien (2010 vs. 2024)](/figuras/mix_comparativo_2010_2024.png) _Abbildung 4. Entwicklung des Erzeugungsmixes in Spanien: 2010 gegenüber 2024. Quelle: Centro Peter Huber / ESIOS._
+Im ersten Quartal 2025 festigte das Festlandsystem dieses Szenario und überschritt die Marke von 100 GW installierter erneuerbarer Kapazität. Bis Januar 2025 stammten fast 66 % der Gesamtkapazität aus dekarbonisierten Quellen, wobei Wind- und Solarenergie technisch gleichauf lagen (jeweils 24,9 %). Inklusive dezentraler Eigenverbrauchsanlagen betrug der gesamte Photovoltaik-Anteil über 48,1 GW, verglichen mit 33,1 GW Windkraft.
 
-Im ersten Jahresviertel 2025 konsolidierte das Halbinsel-System dieses Szenario, indem es **100 GW an installierter erneuerbarer Kapazität** übertraf. Bis Januar 2025 stammten fast 66 % der Gesamtkapazität aus dekarbonisierten Quellen, wobei Wind- und Photovoltaik-Solarenergie technisch gleichauf lagen (jeweils 24,9 %). Einschließlich des verteilten Eigenverbrauchs belief sich der weltweite Photovoltaikanteil auf mehr als **48,1 GW** im Vergleich zu **33,1 GW** Windenergie.
+<BrowserOnly>
+  {() => {
+    const InstalledCapacityChart = require('@site/src/components/EntsoeCharts/InstalledCapacityChart').default;
+    return (
+      <div style={{ marginBottom: '2rem', marginTop: '2rem' }}>
+        <InstalledCapacityChart hideFooter={true} />
+      </div>
+    );
+  }}
+</BrowserOnly>
 
-![Aufschlüsselung der installierten Erzeugungskapazität (Januar 2025)](/figuras/capacidad_instalada_2025.png) _Abbildung 5. Installierte Erzeugungskapazität im spanischen System zum 31. Januar 2025. Quelle: NREL / Red Eléctrica._
+_Abbildung B1. Installierte Leistung nach Technologie im iberischen System vor dem 28. April. Quelle: ENTSO-E, Serie Installed Capacity per Type, Januar 2025._
 
-Im Gegenzug wurde die konventionelle Synchronerzeugung schrittweise verdrängt: Kohle spielt eine restliche Rolle (*1,6 %** der installierten Kapazität), die Kernenergie (**5,5 %*) steht vor einem schrittweisen Stilllegungsplan, und die mehr als **26 GW Gas-und-Dampf-Kombikraftwerke** (*20,4 %*) arbeiten mit jährlichen Auslastungsfaktoren von weniger als 15 %.
+Im Gegenzug wurde die konventionelle synchrone Erzeugung zunehmend verdrängt: Kohle spielt eine untergeordnete Rolle (1,6 % der installierten Kapazität), die Kernenergie (5,5 %) steht vor einem schrittweisen Stilllegungsfahrplan, und die über 26 GW an Gas-Kombikraftwerken (20,4 %) arbeiten mit jährlichen Auslastungsfaktoren von unter 15 %.
 
-Aus der Perspektive des Energiesystem-Engineerings stellt diese Transformation strukturelle betriebliche Herausforderungen dar. Die historische Stabilität der Netze beruhte auf Synchrongeneratoren — thermisch, nuklear und hydraulisch — deren rotierende Massen sofortige kinetische Energie, physische Trägheit und hohe Kurzschlussströme bei jeder Störung lieferten. Die neuen Solar- und Windkraftanlagen werden über Wechselrichter (IBR) angeschlossen, die im Standardmodus als Netzfolger (grid-following) arbeiten: Sie synchronisieren ihren Export mit der externen Spannung und Frequenz durch PLL-Algorithmen und da ihnen rotierende Massen fehlen, tragen sie keine synchrone Trägheit bei und reagieren nicht intrinsisch auf Netzschwankungen. Das Ergebnis ist, dass das iberische System routinemäßig mit geringer Kurzschlusskapazität, hoher Knotenimpedanz und einem verstärkten RoCoF bei jedem Wirkleistungsungleichgewicht arbeitet.
+Aus der Perspektive der Energiesystemtechnik stellt dieser Wandel strukturelle operative Herausforderungen dar. Die historische Stabilität der Netze beruhte auf Synchrongeneratoren – thermischen, nuklearen und hydraulischen – deren rotierende Massen sofortige kinetische Energie, physikalische Trägheit und hohe Kurzschlussströme bei jeder Störung lieferten. Neue Solar- und Windkraftanlagen werden über Wechselrichter (IBR) angeschlossen, die im Standardmodus als netzfolgende Einheiten arbeiten: Sie synchronisieren ihre Einspeisung mit der externen Spannung und Frequenz über PLL-Algorithmen und liefern mangels rotierender Massen weder synchrone Trägheit noch reagieren sie inhärent auf Netzschwankungen. Diese Reduzierung der synchronen Masse wirkt sich gleichzeitig auf die beiden kritischen Stabilitätsparameter aus: einerseits die Trägheit (verbunden mit der Frequenz und modelliert durch die Schwingungsgleichung oder Swing Equation); andererseits die Kurzschlussleistung (verbunden mit der Spannungsstabilität). Das Ergebnis ist, dass das iberische System routinemäßig mit geringer Kurzschlussleistung, hoher Knotenimpedanz und einer verstärkten RoCoF bei jedem Wirkleistungsungleichgewicht arbeitet. Das Radar der Systemverwundbarkeit ist im Anhang IX · Methodik, Modelle und Daten verfügbar.
 
-## Dekarbonisierung und betriebliche Auswirkungen
+<KeyFact id="inercia-28a">
 
-Der ökologische Erfolg der iberischen Energiewende ist unbestreitbar. Die Emissionen des Stromsektors erreichten 2007 mit etwa **110 MtCO₂-Äq** ihren historischen Höchststand; Ende 2024, zusammenfallend mit dem historischen Rekord an erneuerbarer Erzeugung (*56,8 %*), fielen sie auf **27,0 Millionen Tonnen CO₂-Äq** — ein Rückgang von **75,7 %** gegenüber dem Höchststand. Der Emissionsfaktor fiel von 290 gCO₂/kWh im Jahr 2015 auf Werte um 80–100 gCO₂/kWh im Jahr 2024.
+Die Swing-Gleichung bestimmt das Frequenzverhalten bei Wirkleistungsstörungen. Der 28. April bestätigte jedoch, dass das System einen flächengewichteten Durchschnitt von $H = 2,3$ s auf der iberischen Halbinsel aufwies – über dem ENTSO-E-Schwellenwert von 2,0 s. Die zonalen Werte waren jedoch deutlich niedriger: 1,3 s im Süden und 1,84 s in der Mitte, beide unter dem Schwellenwert. Der Zusammenbruch begann in der schwächsten Zone, nicht im Durchschnitt – und brach dennoch zusammen. Der relevante Mechanismus war anderer Natur: der Verlust der Netzfestigkeit, gemessen am SCR, der die Spannungsdynamik in der Q-V-Ebene bestimmte. Diese Lesart legt die analytische Hierarchie des Vorfalls fest: zuerst Spannungsstabilität, dann Trägheit. Das didaktische Modell der Swing-Gleichung ist im Anhang IX · Methodik, Modelle und Daten verfügbar.
+
+</KeyFact>
+
+## Dekarbonisierung und operative Auswirkungen
+
+Der ökologische Erfolg der iberischen Energiewende ist unbestreitbar. Die Emissionen des Stromsektors erreichten 2007 mit rund 110 MtCO₂-Äq. ihren historischen Höchststand; bis Ende 2024, zeitgleich mit dem historischen Rekord der erneuerbaren Stromerzeugung (56,8 %), sanken sie auf 27,0 Millionen Tonnen CO₂-Äq. – ein Rückgang um 75,7 % gegenüber dem Höchststand. Der Emissionsfaktor fiel von 290 gCO₂/kWh im Jahr 2015 auf Werte nahe 80–100 gCO₂/kWh im Jahr 2024.
 
 <EnergyTransitionStreamgraph />
 
-Das operative Gegenstück ist dasjenige, das diese Untersuchung prüft: Der Ersatz thermischer Kraftwerke durch erneuerbare Quellen, die über Wechselrichter angeschlossen sind, bringt den schrittweisen Rückzug der synchronen Massen mit sich, die Trägheit, dynamische Blindleistung und Spannungsregelung bereitstellten. Das iberische System operiert gewohnheitsmäßig in Regimen mit geringer Trägheit und reduzierter Knotenrobustheit — Bedingungen, deren Zusammenhang mit der Spannungsinstabilität vom 28. April in Kapitel 4 analysiert wird.
+_Abbildung B2. Übergangsschichten des spanischen Stromsystems: Entwicklung des Erzeugungsmixes und der Emissionen, 1990–2025._
 
-## Betriebszustand vor dem Vorfall: Das Paradoxon des Überflusses
+Die operative Kehrseite ist das, was diese Untersuchung prüft: Die Ersetzung von Wärmekraftwerken durch erneuerbare Quellen, die über Wechselrichter angeschlossen sind, führt zur schrittweisen Stilllegung der synchronen Massen, die Trägheit, dynamische Blindleistung und Spannungsregelung bereitstellten. Das iberische System arbeitet gewöhnlich in Regimen mit niedriger Trägheit und reduzierter Knotenrobustheit – Bedingungen, deren Zusammenhang mit der Spannungsinstabilität vom 28. April in Kapitel 3 analysiert wird.
 
-In den Tagen vor dem Stromausfall arbeitete das Halbinsel-System unter dem, was die Fachliteratur als **„Paradoxon des Überflusses“** bezeichnet. Ungewöhnlich milde Frühlingstemperaturen (~25 °C) und der Feiertagskalender drückten die Nachfragekurve: Um 12:30 MESZ, wenige Minuten vor dem Kollaps, lag die augenblickliche Nachfrage bei **25.184 MW** — **56 % der historischen Spitzenlast**.
+Diese Konfiguration mit niedriger Trägheit und hohem IBR-Anteil ist nicht auf Iberien beschränkt: Die Zusammenbrüche in South Australia (2016) und Großbritannien (2019) zeigten ähnliche Verwundbarkeiten, deren regulatorische Lehren in [Kapitel 7](./07-resiliencia-futuro.mdx) untersucht werden.
 
-Dieses Schwachlast-Szenario fiel mit einer außergewöhnlichen Verfügbarkeit erneuerbarer Ressourcen zusammen, so dass die nicht-synchrone Erzeugung **82 % des momentanen Mixes** abdeckte: etwa **18.000 MW** Photovoltaik (*53 %*) und **3.500 MW** Windenergie (*11 %*). Um den Wirkleistungsüberschuss auszugleichen, griff das System gleichzeitig auf hydraulisches Pumpen (~3.000 MW) und Nettoexporte nach Frankreich, Portugal und Marokko zurück. Die konventionelle Synchronerzeugung wurde auf historische Tiefststände verdrängt: Kernenergie auf **10 %** (3,4 GW) und Gaskombikraftwerke auf spärliche **3 %** (~1.600 MW).
+## Betriebszustand vor dem Vorfall: Das Paradox des Überflusses
 
-![Erzeugungsprofil des Halbinsel-Systems am 28. April 2025](/figuras/ree_generation_mix_28april.png) _Abbildung 7. Erzeugungsprofil vom 28. April: Das Nachfragetal fiel mit der Spitze der Photovoltaikproduktion zusammen und verdrängte die Synchronerzeugung auf historische Tiefststände. Quelle: NREL / Red Eléctrica._
+In den Tagen vor dem Blackout arbeitete das Festlandsystem unter dem, was die Fachliteratur als „Paradox des Überflusses“ bezeichnet hat. Die ungewöhnlich milden Frühlingstemperaturen (ca. 25 °C) und der Feiertagskalender drückten die Nachfragekurve: Um 12:30 Uhr MESZ, wenige Minuten vor dem Zusammenbruch, lag die momentane Nachfrage bei 25.184 MW – 56 % der historischen Spitzennachfrage.
 
-Diese Reduzierung der rotierenden Massen führte zu außergewöhnlich niedrigen synchronen Trägheitswerten: **1,3 s** im Südgebiet und **1,84 s** im Zentralgebiet — beide unter der von ENTSO-E empfohlenen Schwelle von 2 s. Der verlängerte Betrieb unter diesen Bedingungen hatte bereits an den Tagen **16., 22. und 24. April** Anzeichen von dynamischem Stress mit Episoden von Spannungsinstabilität im Übertragungsnetz hervorgebracht.
+Dieses Nachfragemindestszenario fiel mit einer außergewöhnlichen Verfügbarkeit erneuerbarer Ressourcen zusammen, sodass die nicht-synchrone Erzeugung 82 % des momentanen Mixes abdeckte: etwa 18.000 MW Photovoltaik (53 %) und 3.500 MW Windkraft (11 %). Um den Wirkleistungsüberschuss auszugleichen, griff das System gleichzeitig auf Pumpspeicher (ca. 3.000 MW) und Nettoexporte nach Frankreich, Portugal und Marokko zurück. Die konventionelle synchrone Erzeugung wurde auf historische Tiefststände verdrängt: Kernkraft auf 10 % (3,4 GW) und Gas-Kombikraftwerke auf magere 3 % (ca. 1.600 MW). Der operative Vergleich mit aktuellen Daten bleibt dem Abschnitt Echtzeitdaten ESIOS/ENTSO-E vorbehalten.
 
-![Spannungsschwankungen in der Schaltanlage Núñez de Balboa, 22. April 2025](/figuras/precursor_overvoltage_22april.png) _Abbildung 8. Spannungsschwankungen, die während der vorausgehenden Episode am 22. April in Núñez de Balboa (400 kV) aufgezeichnet wurden. Mehrere Anlagen, die am 28. April abschalteten, hatten bei diesem vorherigen Ereignis bereits identische Abschaltungen erlitten. Quelle: IIT-ICAI / Compass Lexecon._
+Diese Reduzierung rotierender Massen führte zu außergewöhnlich niedrigen Werten der synchronen Trägheit: 1,3 s im Gebiet Süd und 1,84 s im Gebiet Mitte – beide unter dem von ENTSO-E empfohlenen Schwellenwert von 2 s. Der längere Betrieb unter diesen Bedingungen hatte bereits an den Tagen 16., 22. und 24. April zu Anzeichen dynamischer Belastung geführt, mit Episoden von Spannungsinstabilität im Übertragungsnetz.
 
-Die schwerste Episode ereignete sich am **22. April um ~19:00 Uhr**: Eine Überspannungsspitze von mehr als **430 kV** aktivierte den Schutz und trennte mehrere Photovoltaik- und Windkraftanlagen. Die Tatsache, dass mehrere der Anlagen, die in den ersten Sekunden des 28. April abschalteten, bereits bei diesem vorherigen Ereignis identische Abschaltungen erlitten hatten, wird im ICAI-Bericht als Beweis dafür gewertet, dass das System mit **strukturell engen** dynamischen Spannungsregelungsgrenzen arbeitete.
+Die schwerwiegendste Episode ereignete sich am 22. April gegen 19:00 Uhr: Eine Überspannungsspitze von über 430 kV löste die Schutzsysteme aus und trennte mehrere Photovoltaik- und Windparks. Die Tatsache, dass mehrere der Anlagen, die in den ersten Sekunden des 28. April auslösten, bereits bei diesem vorherigen Ereignis identische Auslösungen erlitten hatten, wird vom ICAI-Bericht als Beleg dafür gewertet, dass das System mit strukturell engen dynamischen Spannungsregelungsmargen arbeitete. Das Oszillogramm der Vorläuferepisode ist in Anhang II · Dynamische Stabilität, Frequenz und Spannung dokumentiert.
 
-## Verbindungskapazität: Die iberische Energieinsel
+## Interkonnektionskapazität: Die iberische Energieinsel
 
-### Der strukturelle Inselzustand
+<div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+  <ThemedImage
+    alt="Funktionale Interkonnektionen des iberischen Systems und Energieinsel-Bedingung."
+    sources={{
+      light: require('@site/static/figuras/figuraB3-light.png').default,
+      dark: require('@site/static/figuras/figuraB3-dark.png').default,
+    }}
+    style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+  />
+</div>
 
-Die iberische Halbinsel operiert unter der Bedingung einer **„Energieinsel“** innerhalb des Synchrongebiets Kontinentaleuropa. Ihre Austauschkapazität mit Frankreich liegt historisch zwischen **3 % und 5 %** der installierten Erzeugungskapazität — oder **7,9 %** gemessen an der Spitzenlast —, weit unter dem verbindlichen Ziel von **15 %**, das von der EU für 2030 festgelegt wurde. Diese Begrenzung bedingt die Versorgungssicherheit auf zweierlei Weise: Störungen, die im europäischen Trägheitszentrum entstehen, verstärken sich, wenn sie sich in die iberische Peripherie ausbreiten (*Peitscheneffekt*), und bei einem massiven Erzeugungsverlust begrenzt der Flaschenhals der Verbindungsleitungen physisch die dynamische Unterstützung, die aus den großen mitteleuropäischen Generatoren importiert werden kann.
+_Abbildung B3. Funktionale Interkonnektionen des iberischen Systems und Energieinsel-Bedingung._
 
-### Kommerzielle NTC gegenüber physikalischem Fluss
+### Die strukturelle Inselbedingung
 
-Es ist unerlässlich, zwischen kommerziellen Grenzen und tatsächlichen physikalischen Flüssen zu unterscheiden. Der Marktaustausch wird durch die Net Transfer Capacity (NTC) geregelt, die ex ante zwischen REE und RTE vereinbart wird. In schnellen transienten Zuständen gehorchen die Wirk- und Blindleistungsflüsse jedoch unabhängig vom Marktprogramm den Kirchhoffschen Gesetzen. Einen physikalischen Fluss über die Winkelstabilitätsgrenze — typischerweise 90° Differenz zwischen den Enden — zu erzwingen, erhöht nicht die übertragene Leistung, sondern verursacht eine Poldivergenz und den daraus resultierenden Verlust des Synchronismus: ein Mechanismus, die sich am 28. April um **12:33:21 MESZ** materialisierte.
+Die iberische Halbinsel arbeitet unter der Bedingung einer „Energieinsel“ innerhalb des synchronen Verbundnetzes Kontinentaleuropas. Ihre Austauschkapazität mit Frankreich liegt historisch zwischen 3 % und 5 % der installierten Erzeugungskapazität – oder 7,9 % gemessen an der Spitzennachfrage – weit unter dem verbindlichen EU-Ziel von 15 % für 2030. Diese Einschränkung beeinflusst die Versorgungssicherheit auf zweierlei Weise: Störungen, die im europäischen Trägheitszentrum entstehen, verstärken sich bei der Ausbreitung zur iberischen Peripherie (Peitscheneffekt), und bei einem massiven Erzeugungsausfall begrenzt der Flaschenhals der Interkonnektionen physikalisch die importierbare dynamische Unterstützung von den großen mitteleuropäischen Generatoren.
 
-![Abweichung zwischen kommerziellem NTC-Programm und physikalischem Fluss an der Grenze ES-FR](/figuras/entsoe_flow_deviation.png) _Abbildung 9. Abweichung zwischen dem kommerziellen Austauschprogramm (NTC) und dem tatsächlichen physikalischen Leistungsfluss an der spanisch-französischen Grenze am Morgen des 28. April. Quelle: ENTSO-E-Faktenbericht._
+### Kommerzielle NTC vs. physikalischer Fluss
 
-### Die HVDC-Verbindung INELFE-1 und die kritische Entscheidung über den Steuerungsmodus
+Es ist unerlässlich, zwischen kommerziellen Grenzen und tatsächlichen physikalischen Flüssen zu unterscheiden. Die Marktaustausche werden durch die Netto-Transferkapazität (NTC) geregelt, die zwischen REE und RTE im Voraus vereinbart wird. In schnellen transienten Regimen gehorchen die Wirk- und Blindleistungsflüsse jedoch unabhängig vom Marktfahrplan den Kirchhoffschen Gesetzen. Das Erzwingen eines physikalischen Flusses über die Grenze der Winkelstabilität – typischerweise 90° Differenz zwischen den Enden – erhöht nicht die übertragene Leistung, sondern verursacht eine Polabweichung und den daraus resultierenden Synchronismusverlust: ein Mechanismus, der sich am 28. April um 12:33:21 Uhr MESZ materialisierte. Die Abweichung NTC/physikalischer Fluss vom 28. April ist in Anhang IV · Interkonnektionen und grenzüberschreitende Flüsse dokumentiert.
 
-Die Verbindung mit Frankreich kombiniert transpyrenäische AC-Leitungen mit der unterirdischen HVDC VSC-Verbindung INELFE-1 (Santa Llogaia–Baixas, **2.000 MW** Nennleistung). Diese Verbindung unterstützt drei relevante Betriebsmodi: *PMODE1* (konstante Leistung, ohne dynamische Reaktion auf das Netz), *PMODE2* (Leistungsmodulation durch Frequenzabweichung) und *PMODE3* (AC-Emulation, reagiert auf die Winkeldifferenz zwischen den Enden).
+### Die HVDC-Verbindung INELFE-1 und die kritische Entscheidung des Steuermodus
 
-In der Vorlaufphase des Ausfalls operierte INELFE-1 in *PMODE3*. Um **12:08 MESZ** wurde der Modus jedoch zur Dämpfung der festgestellten 0,6-Hz-Schwingungen auf *PMODE1* geändert, wodurch ein Export von **1.000 MW** nach Frankreich festgelegt wurde. Die Folgen waren entscheidend: Zum Zeitpunkt des Kollapses versuchten die transpyrenäischen AC-Leitungen bis zu **4.609 MW** als Notimport aus Frankreich zu beziehen, während die auf PMODE1 fixierte HVDC-Verbindung weiterhin 1.000 MW aus dem iberischen System entzog, da ihr ein Frequenzregelkreis fehlte, der die Flussrichtung umkehren konnte. Die effektive Unterstützung durch das französische System wurde so im Vergleich zum theoretisch verfügbaren Maximum reduziert. Um **12:33:21 MESZ** öffneten die AC-Leitungen wegen Synchronismusverlust und isolierten die Halbinsel vollständig vom kontinentalen System.
+Die Interkonnektion mit Frankreich kombiniert transpyrinäische AC-Leitungen mit der unterirdischen HVDC-VSC-Verbindung INELFE-1 (Santa Llogaia–Baixas, 2.000 MW Nennleistung). Diese Verbindung erlaubt drei relevante Betriebsmodi: *PMODE1* (konstante Leistung, ohne dynamische Reaktion auf das Netz), *PMODE2* (Leistungsmodulation durch Frequenzabweichung) und *PMODE3* (AC-Emulation, reagiert auf den Winkelunterschied zwischen den Enden).
 
-![Änderung des Steuerungsmodus in der HVDC-Verbindung INELFE-1](/figuras/hvdc_control_transition.png) _Abbildung 10. Übergang PMODE3 → PMODE1 um 12:08 MESZ in der HVDC-Verbindung INELFE-1. Die Entscheidung begrenzte die dynamische Reaktionsfähigkeit der Verbindung auf die nachfolgende Kaskade. Quelle: IIT-ICAI / AELEC._
+Während der Vorphase des Blackouts arbeitete INELFE-1 im Modus *PMODE3*. Um 12:08 Uhr MESZ wurde der Modus jedoch auf *PMODE1* umgestellt, um die festgestellten 0,6-Hz-Oszillationen zu dämpfen, und ein Export von 1.000 MW nach Frankreich festgelegt. Die Folgen waren entscheidend: Im Moment des Zusammenbruchs versuchten die transpyrinäischen AC-Leitungen, bis zu 4.609 MVAr (Blindleistung) notfallmäßig aus Frankreich zu importieren, während die HVDC-Verbindung – auf PMODE1 festgelegt – weiterhin 1.000 MW aus dem iberischen System entnahm, da ihr eine Frequenzregelschleife fehlte, die die Flussrichtung hätte umkehren können. Die effektive Unterstützung aus dem französischen System wurde so im Vergleich zum theoretisch verfügbaren Maximum reduziert. Um 12:33:21 Uhr MESZ öffneten die AC-Leitungen aufgrund von Synchronismusverlust und trennten die Halbinsel vollständig vom kontinentalen Verbundnetz.
 
-### Südgrenze: Marokko und der autonome Start
+<HvdcControlModeTransitionFigure />
 
-Die Verbindung mit Marokko (AC-Seekabel, *900 MW* technisch) lieferte kurz vor dem Kollaps **314 MW** Import. Um **12:33:20 MESZ** lösten die Unterfrequenzrelais des marokkanischen Betreibers aus, als die Schwelle von **49,5 Hz** erreicht wurde, und trennten die Verbindung, um ihr Netz zu schützen. Diese Trennung, obwohl für Marokko schützend, hatte relevante Folgen für die Wiederherstellung: Die Spannungseinspeisung aus dem Süden lieferte Stunden später die notwendige Referenz, um die Black Start-Strategien der Kombikraftwerke in Andalusien einzuleiten.
+_Abbildung B4. Übergang der HVDC-Steuerung INELFE-1: von dynamischer Reaktion PMODE3 zu festem Sollwert PMODE1._
 
-## Das europäische Warnsystem (EAS) und die „falsche Normalität“ {#eas-falsa-normalidad}
+### Südgrenze: Marokko und der Schwarzstart
 
-### Klassifizierung von Betriebszuständen (SO GL)
+Die Verbindung mit Marokko (AC-Seekabel, technisch 900 MW) lieferte Momente vor dem Zusammenbruch 314 MW Import. Um 12:33:20 Uhr MESZ lösten die Unterfrequenzrelais des marokkanischen Betreibers bei Erreichen der Schwelle von 49,5 Hz aus und trennten die Verbindung, um das eigene Netz zu schützen. Diese Trennung, obwohl für Marokko schützend, hatte relevante Konsequenzen für die Wiederherstellung: Die Spannungseinspeisung aus dem Süden lieferte Stunden später die notwendige Referenz, um die Schwarzstart-Strategien der Gas-Kombikraftwerke in Andalusien zu initiieren.
 
-Die System Operation Guidelines von ENTSO-E legen fünf progressive Schweregrade fest: *Normal* (Einhaltung des N−1-Kriteriums), **Alert** (Verschlechterung der Margen, die vorbeugende Maßnahmen erfordert), **Emergency** (Verletzung von Sicherheitsgrenzen oder Aktivierung von UFLS), *Blackout* und **Restoration**.
+## Das Europäische Alarmierungssystem (EAS) und die „falsche Normalität“ {#eas-falsa-normalidad}
+
+### Klassifizierung der Betriebszustände (SO GL)
+
+Die System Operation Guidelines von ENTSO-E legen fünf Stufen zunehmender Schwere fest: *Normal* (Einhaltung des N−1-Kriteriums), Alarm (Verschlechterung der Margen, die vorbeugende Maßnahmen erfordert), Notfall (Verletzung von Sicherheitsgrenzen oder Aktivierung von UFLS), Blackout und Wiederherstellung.
 
 ### Der abrupte Übergang Normal → Blackout
 
-Die Analyse der Aufzeichnungen des EAS deckt eine kritische Dissonanz zwischen der tatsächlichen Dynamik des iberischen Netzes und seiner Darstellung in der europäischen Plattform auf. Am Morgen des 28. April erlitt das System mindestens zwei signifikante Schwingungen: eine erzwungene Schwingung von **0,6 Hz** um **12:03 MESZ** und einen Inter-Area-Modus von **0,2 Hz** um **12:19 MESZ**. Trotzdem erklärten weder REE noch REN den Alert-Zustand. Um **12:32:00 MESZ** war der offizielle Status weiterhin „Normal“. Die Aufzeichnungen bestätigen, dass das System um **12:33:29 MESZ** abrupt von *Normal* in *Blackout* (Kriterium OB3) überging, ohne eine Zwischenphase durchlaufen zu haben.
+Die Analyse der EAS-Aufzeichnungen offenbart eine kritische Dissonanz zwischen der tatsächlichen Dynamik des iberischen Netzes und ihrer Darstellung auf der europäischen Plattform. Am Morgen des 28. April erlitt das System mindestens zwei signifikante Oszillationen: eine erzwungene Oszillation von 0,6 Hz um 12:03 Uhr MESZ und eine Zwischengebietsmode von 0,2 Hz um 12:19 Uhr MESZ. Trotzdem erklärten weder REE noch REN den Alarmzustand. Um 12:32:00 Uhr MESZ war der offizielle Status immer noch „Normal“. Die Aufzeichnungen bestätigen, dass das System um 12:33:29 Uhr MESZ abrupt von *Normal* zu *Blackout* (Kriterium OB3) überging, ohne eine Zwischenphase durchlaufen zu haben.
 
-Dieses Fehlen einer Eskalation führte zu einer eingeschränkten Sichtbarkeit gegenüber benachbarten Betreibern. Der französische Betreiber (RTE) erhielt keine Signale dynamischer Verwundbarkeit südlich der Pyrenäen; da das EAS im Zustand „Normal“ verblieb, wurden keine Protokolle zur grenzüberschreitenden Zusammenarbeit aktiviert, noch wurde das französische Netz auf den Transienten vorbereitet, der die Grenze um 12:33:21 MESZ traf. Die Episode zeigt, dass das EAS nicht als Frühwarninstrument, sondern als **Post-mortem-Benachrichtiger** des Kollapses fungierte — eine strukturelle Einschränkung des europäischen Überwachungssystems bei der Erfassung der schnellen Spannungsdynamik in Netzen mit geringer Trägheit, und eine der zentralen regulatorischen Lehren aus dem Vorfall.
+Dieses Fehlen einer Eskalation führte zu einer eingeschränkten Sichtbarkeit für die benachbarten Betreiber. Der französische Betreiber (RTE) erhielt keine Signale über eine dynamische Verwundbarkeit südlich der Pyrenäen; da der EAS im Zustand „Normal“ verblieb, wurden keine Protokolle für die grenzüberschreitende Zusammenarbeit aktiviert, noch wurde das französische Netz auf den Transienten vorbereitet, der die Grenze um 12:33:21 Uhr MESZ traf. Die Episode zeigt, dass der EAS nicht als Frühwarninstrument, sondern als Post-Mortem-Benachrichtiger des Zusammenbruchs fungierte – eine strukturelle Einschränkung des europäischen Überwachungssystems zur Erfassung der schnellen Spannungsdynamik in Netzen mit niedriger Trägheit und eine der zentralen regulatorischen Lehren des Vorfalls.
 
-![Entwicklung von Frequenz und Spannung in der Schaltanlage Carmona (400 kV)](/figuras/frequency_voltage_carmona.png) _Abbildung 11. Frequenz und Spannung in den kritischen Sekunden des Vorfalls. Schaltanlage Carmona (400 kV). Der abrupte Übergang Normal → Blackout ist im gleichzeitigen Abfall beider Variablen dokumentiert. Quelle: ENTSO-E / REE._
+<CollapseSismograph />
+
+_Abbildung B5. Seismograph des Zusammenbruchs: Übergang von betrieblicher Normalität zum vollständigen Systemausfall._
+
+## Das Trilemma der Energiewende: Leitfaden der Analyse
+
+Der Blackout vom 28. April kann nicht auf einen einfachen Hardwarefehler oder eine unglückliche Abfolge von Relaisauslösungen reduziert werden. Wie im Laufe dieser Untersuchung dargelegt wird, war der Vorfall die physikalische Manifestation eines strukturellen Ungleichgewichts, das moderne Stromsysteme betrifft und als das **Trilemma der Energiewende** konzeptualisiert wird. Dieses Trilemma besagt, dass die Wende gleichzeitig in drei Eckpunkten ausbalanciert werden muss, um operativ nachhaltig zu sein:
+
+1. **Technischer Eckpunkt:** Die Ersetzung rotierender Massen (synchrone Trägheit und Kurzschlussleistung) durch Leistungselektronik (netzfolgende Wechselrichter), was die grundlegenden Stabilitätsdynamiken verändert. (*Analysiert in den Kapiteln 3 und 4*).
+2. **Regulatorischer Eckpunkt:** Die Veralterung der Netzanschlussregeln (Grid Codes), die von neuen IBR-Anlagen nicht verlangen, die verschlechterten Spannungsbedingungen zu unterstützen, die sie selbst durch die Verdrängung konventioneller Kraftwerke erzeugen. (*Analysiert in Kapitel 7*).
+3. **Wirtschaftlicher Eckpunkt:** Das Fehlen von Märkten für Systemdienstleistungen, die netzbildende Wechselrichter (Grid-Forming) oder Synchrongeneratoren wirtschaftlich vergüten, was deren Installation hemmt. (*Analysiert in Kapitel 7b*).
+
+In den folgenden Kapiteln wird dieses Trilemma als übergreifendes Gerüst dienen, um zu verstehen, warum der Zusammenbruch unter den Bedingungen vom April 2025 strukturell vorhersehbar war.
+
+Vor diesem Hintergrund maximaler Fragilität – 82 % nicht-synchrone Erzeugung, zonale Trägheit von 1,3 s, reduzierte Netzfestigkeit und EAS im Zustand Normal – rekonstruiert Kapitel 3 die 32 Sekunden, in denen das System vom Gleichgewicht zum totalen Zusammenbruch überging.

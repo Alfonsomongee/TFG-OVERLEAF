@@ -1,87 +1,107 @@
 ---
 id: anexo-comunicacion-fuentes
-title: "Anexo VIII · Comunicación, percepción pública y fuentes"
-sidebar_label: "Anexo VIII · Comunicación y fuentes"
+title: "附录八 · 沟通与公众认知"
+sidebar_label: "附录八 · 沟通与信息来源"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import EASStateTransition from '@site/src/components/EASStateTransition';
 import ConsensusMatrix from '@site/src/components/ConsensusMatrix';
 
 <AnnexLayout
   wide
-  kicker="Anexo VIII"
-  title="Comunicación, percepción pública y fuentes narrativas"
-  description="Evidencias sobre cobertura mediática, narrativas institucionales, tratamiento internacional, percepción ciudadana y construcción pública del episodio."
+  kicker="附录八"
+  title="沟通与公众认知"
+  description="本附录记录了4月28日大停电事件的信息处理、机构叙事及社会认知，分析了国内外媒体如何构建该事件的公共叙事。"
   meta={[
-    { label: 'Eje técnico', value: 'Comunicación y Percepción' },
-    { label: 'Cobertura', value: 'Narrativa institucional y mediática' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '沟通与认知' },
+    { label: '覆盖范围', value: '机构与媒体叙事' },
+    { label: '证据', value: '图表 · 表格 · 交互 · 系列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    在4月28日事件后，信息偏差和官方沟通的不对称性如何影响公众对电力系统安全性的认知？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日大停电的公共处理呈现出强烈的叙事两极分化。保守派媒体过早地强调可再生能源模式和生态转型的责任，而进步派媒体则将事件辩解为偶然故障，与市场设计无关。系统运营商官方报告的延迟以及REE新闻稿与政府委员会之间的矛盾，助长了阴谋论，并暂时降低了公众对系统稳健性的信任。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录汇集了报纸头版拼贴和专家共识矩阵，记录了危机的沟通维度和公共构建。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Este anexo reúne materiales de comunicación y percepción pública. Su función es contextualizar el tratamiento narrativo del apagón, no sustituir la evidencia técnica operacional.
+    本附录汇集了沟通和公众认知材料。其作用是背景化大停电的叙事处理，而非替代技术操作证据。
   </AnnexMethodNote>
+
+  <em>本附录按三个论证部分组织：国内外媒体报道、公民与政治认知，以及专家共识分析。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t8' },
-      { label: 'Tablas',       target: 'tablas-t8' },
-      { label: 'Interactivos', target: 'interactivos-t8' },
-      { label: 'Series',       target: 'series-t8' },
+      { label: '媒体报道', target: 'cobertura-mediatica' },
+      { label: '公众认知',  target: 'percepcion' },
+      { label: '专家共识',   target: 'consenso-pericial' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t8"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['figures']} />
+  <AnnexSection id="cobertura-mediatica" eyebrow="第一部分" title="国内外媒体报道">
+    保守派媒体的报道框架直接将其与可再生能源的大规模渗透联系起来，称该事件为绿色转型的失败。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="国际媒体报道处理"
+      summary="国际专业媒体的头版展示了此次大停电的全球影响以及最初脱离国内党派辩论的技术框架。"
+      insight="国际技术框架 · 报道不受当地政治紧张局势影响。"
+    >
+      <AnnexEvidence type="figure" id="collage_internacional" level={1} />
+    </AnnexEvidenceLead>
+    国内报道对称地两极分化：保守派媒体将崩溃归咎于可再生能源过剩；进步派媒体则将其辩解为与能源结构无关的偶然故障。这两种框架在专家报告发布之前就已固化。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_conservador" level={2} />
+      <AnnexEvidence type="figure" id="collage_progresista" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t8"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['tables']} />
+  <AnnexSection id="percepcion" eyebrow="第二部分" title="公众与政治认知">
+    在官方沉默的最初几小时内，社交媒体上传播着网络攻击和系统性短缺的谣言。没有政治领导人涉及技术方面：议会的工具化立即发生，并完全集中于责任归属。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_ciudadanos" level={2} />
+      <AnnexEvidence type="figure" id="collage_politicos" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t8"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['interactives']} />
+  <AnnexSection id="consenso-pericial" eyebrow="第三部分" title="专家共识与分歧">
+    共识矩阵对比了REE、CNMC和ENTSO-E的结论：它们在根本原因（过电压 + 低短路容量）上一致，但在最小惯量裕度和运营商责任上存在分歧。
+    <div style={{ margin: '1.5rem 0' }}>
+      <ConsensusMatrix showCaption={false} />
+    </div>
+    EAS状态地震仪记录了物理崩溃与大陆通知之间的时间差：欧洲快速动态事件预警系统的故障。
+    <div style={{ margin: '1.5rem 0' }}>
+      <EASStateTransition showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t8"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="4月28日事件的沟通维度表明，危机信息管理与电网技术响应同样关键。两极分化和有偏见的媒体框架填补了运营商留下的信息空白，凸显了实时透明度协议的必要性。"
+    doesNotDemonstrate="本附录并未证明媒体存在故意的恶意行为，而是展示了一个复杂的物理事件如何轻易地在先入为主的意识形态视角下被重新解读。"
+    connection="阅读可结合附录六（恢复与EAS状态）和附录九（方法论与虚假信息模型）进行。"
+  />
 
-  <EASStateTransition showCaption={false} />
-
-  *Figura A8.1. Fallo del EAS: transición directa Normal → Blackout. Fuente: ENTSO‑E.*
-
-  <ConsensusMatrix showCaption={false} />
-
-  *Figura A8.2. Matriz de consenso y discrepancia entre informes periciales.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-reposicion-blackstart", label: "附录六：恢复与应急运行" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "附录九：方法论与来源对比" }
+  ]} />
 </AnnexLayout>

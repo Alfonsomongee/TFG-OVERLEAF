@@ -1,83 +1,114 @@
 ---
 id: anexo-mercado-costes
-title: "Anexo V · Mercado eléctrico, precios y costes"
-sidebar_label: "Anexo V · Mercado, precios y costes"
+title: "附录五 · 电力市场：看不见的脆弱性"
+sidebar_label: "附录五 · 市场、价格与成本"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PicasoPriceChart from '@site/src/components/PicasoPriceChart';
 
 <AnnexLayout
   wide
-  kicker="Anexo V"
-  title="Mercado eléctrico, precios y costes de ajuste"
-  description="Evidencias económicas sobre precios marginales, PVPC, mercados diario e intradiario, costes de ajuste, desvíos y señales económicas asociadas al apagón."
+  kicker="附录五"
+  title="电力市场：看不见的脆弱性"
+  description="本附录记录了4月28日期间的价格信号和偏差成本，分析了边际定价机制和平衡市场如何在电网动态稳定性逐步恶化的情况下盲目运行。"
   meta={[
-    { label: 'Eje técnico', value: 'Mercado y Costes' },
-    { label: 'Cobertura', value: 'Impacto económico y precios' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '市场与成本' },
+    { label: '覆盖范围', value: '经济影响与价格' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    为什么电力市场和平衡服务的价格信号未能反映半岛系统日益增长的动态脆弱性？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日，由于可再生能源发电峰值导致边际成本为零，边际定价市场以正常甚至较低的价格水平结算了电力。然而，这种商业上的廉价掩盖了当前市场未明确补偿的动态安全成本：惯性和短路容量。日前市场和泛欧平衡服务（PICASSO）的价格信号对系统的物理脆弱性视而不见，表明当前的市场设计缺乏实时评估韧性的机制。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录汇集了OMIE价格记录、偏差成本以及平衡服务账单，这些证据揭示了4月28日市场经济学与电网物理安全之间的脱节。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    La documentación económica se presenta estructurada temáticamente para evaluar el comportamiento de los mercados y las señales de precio derivadas de la interrupción del suministro.
+    经济文档按主题结构呈现，以评估市场行为以及因供电中断而产生的价格信号。
   </AnnexMethodNote>
+
+  <em>本附录分为三个论证部分：4月28日的市场信号、平衡与运行偏差，以及电网支撑动态特性价格的缺失。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t5' },
-      { label: 'Tablas',       target: 'tablas-t5' },
-      { label: 'Interactivos', target: 'interactivos-t5' },
-      { label: 'Series',       target: 'series-t5' },
+      { label: '市场信号', target: 'senales-mercado' },
+      { label: '平衡与偏差',   target: 'balance-desvios' },
+      { label: '脆弱性',     target: 'vulnerabilidad-mercado' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t5"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['figures']} />
+  <AnnexSection id="senales-mercado" eyebrow="第一部分" title="4月28日的市场信号：价格与指标">
+    OMIE边际价格表记录了电价的逐时变化，证实了由于光伏发电的高渗透率而导致的低电价水平。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="ERS服务与惯性成本"
+      summary="崩溃当天，惯性及快速响应服务（ERS）的最优采购成本与市场不作为之间的比较。"
+      insight="监管与经济差距 · 同步稳定性的激励措施。"
+    >
+      <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
+    </AnnexEvidenceLead>
+    在12:00–13:00 CEST时段，现货价格跌至−3.00欧元/兆瓦时——这是在崩溃前24小时确定的。负价格表明，市场恰恰在最需要同步发电机惯性的时候，将其排挤出去。
+    <AnnexEvidence type="table" id="precios-marginales-omie" level={2} />
+    负价格并非停电的结果：它是系统未能解读的警报信号。
+    现货价格与PVPC的演变揭示了结构性差距：同一时段，批发价格为负，而零售电价却为130欧元/兆瓦时。停电后，由于强化运行中天然气使用增加，现货价格回升至35欧元/兆瓦时。
+    <AnnexEvidence type="chart" id="chart-9" level={2} />
+    揭示性的数据并非最终价格（51.52欧元/兆瓦时），而是其组成部分：技术约束成本（27.93欧元/兆瓦时）超过了市场价格（24.63欧元/兆瓦时）。在事件发生当天凌晨，稳定性成本已经超过了能源成本。
+    <AnnexEvidence type="chart" id="chart-10" level={2} />
+    欧洲PICASSO平台的激活价格记录了泛欧紧急情况下调用的快速调节储备的成本。
+    <div style={{ margin: '1.5rem 0' }}>
+      <PicasoPriceChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t5"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t5"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="balance-desvios" eyebrow="第二部分" title="平衡与运行偏差">
+    上调调节储备的成本以及已激活的调节能量量，记录了在11秒内损失4.5吉瓦后，为平衡电网所付出的技术和经济努力的程度。
+    <AnnexEvidence type="chart" id="chart-11" level={2} />
+    <AnnexEvidence type="chart" id="chart-12" level={2} />
+    偏差余额、不平衡价格、可用的FRR容量（第二季度最坏情况下约889兆瓦，而缺口约为1200兆瓦）以及阻塞管理成本，共同构成了运行崩溃的经济图景。
+    <AnnexEvidence type="chart" id="chart-18" level={2} />
+    <AnnexEvidence type="chart" id="chart-19" level={2} />
+    <AnnexEvidence type="chart" id="chart-20" level={2} />
+    <AnnexEvidence type="chart" id="chart-21" level={2} />
+    <AnnexEvidence type="chart" id="chart-22" level={2} />
+    热力调整成本交互矩阵允许探索因异常激活安全联合循环机组而产生的额外成本分配。
     <span id="grafico-matrix"></span>
-    <AnnexThemeEvidence theme="T5" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="matrix" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t5"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['charts']} />
+  <AnnexSection id="vulnerabilidad-mercado" eyebrow="第三部分" title="市场的无形脆弱性">
+    当明确补偿惯性（ERS）时，系统总成本最小化。最优成本与4月28日现实之间的差距，就是市场未予重视的辅助服务成本。BESS-GFM的收入叠加表明，对合成惯性的补偿将使私人投资于动态支撑成为可能。
+    <AnnexEvidence type="figure" id="ers_revenue_stacking" level={3} />
+    电池储能系统（BESS）的收入叠加显示了如何通过对合成惯性和快速调节的补偿，使私人投资成为可能。
   </AnnexSection>
 
-  <PicasoPriceChart showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="对4月28日的经济分析揭示了一个监管悖论：市场以完全的商业效率运行，同时却将系统引向物理崩溃。当前的边际定价设计既不重视也不补偿电网支撑的动态特性（惯性、短路容量），从而系统性地激励排挤提供这些特性的同步电机。"
+    doesNotDemonstrate="本附录证明了改革电力市场以纳入惯性和短路容量辅助服务市场的必要性，从而避免能源转型危及动态安全。"
+    connection="阅读时请结合附录一（之前的发电组合）和附录七（停电的社会经济影响量化）。"
+  />
 
-  *Figura A5.1. Incidentes de precios en PICASSO y efecto de la demanda elástica. Fuente: ACER.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "附录一：需求、发电与平衡" },
+    { to: "/anexo-impacto-resiliencia", label: "附录七：社会经济影响与韧性" }
+  ]} />
 </AnnexLayout>

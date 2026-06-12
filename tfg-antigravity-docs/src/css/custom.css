@@ -9,6 +9,8 @@
   --accent-electric: hsl(190 100% 60%);   /* cian CECOEL — datos fríos */
   --accent-amber: var(--forensic-amber-primary); /* ámbar — alarma / transición */
   --accent-magenta: hsl(322 100% 62%);   /* glitch / dato anómalo */
+  --glossary-term-light: #2c5d0f;
+  --glossary-term-dark: #D6DEE8;
 
   /* ── Gráficos (Variables inyectadas en .jsx) ────────── */
   --chart-cyan: hsl(190 100% 60%);
@@ -1714,8 +1716,10 @@ html[data-theme='dark'] main {
   color: #ffffff;
 }
 
-/* Transición suave al cambiar tema */
+/* Transición suave al cambiar tema y prevención de desbordamiento horizontal */
 html, body {
+  max-width: 100%;
+  overflow-x: hidden;
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
@@ -2000,7 +2004,7 @@ html[data-theme='light'] :target {
 /* ── Término marcado: más visible, sin subrayado, cursor help ── */
 .glossary-term {
   cursor: help;
-  color: rgba(174, 210, 255, 0.95);
+  color: var(--glossary-term-dark) !important;
   border-bottom: none !important;
   padding-bottom: 0 !important;
   transition: color 0.15s ease, text-shadow 0.15s ease;
@@ -2223,7 +2227,7 @@ html[data-theme='light'] body .glossary-term:focus,
 html[data-theme='light'] body .glossary-link-trigger,
 html[data-theme='light'] body .glossary-link-trigger:hover,
 html[data-theme='light'] body .glossary-link-trigger:focus {
-  color: #636E4F !important;
+  color: var(--glossary-term-light) !important;
   border-bottom: none !important;
   text-decoration: none !important;
   background: none !important;

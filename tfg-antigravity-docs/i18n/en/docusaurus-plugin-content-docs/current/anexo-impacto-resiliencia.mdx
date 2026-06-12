@@ -1,89 +1,109 @@
 ---
 id: anexo-impacto-resiliencia
-title: "Anexo VII · Impacto socioeconómico y resiliencia"
-sidebar_label: "Anexo VII · Impacto y resiliencia"
+title: "Annex VII · Socioeconomic Impact and Resilience"
+sidebar_label: "Annex VII · Impact and Resilience"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import TrilemmaTriangle from '@site/src/components/TrilemmaTriangle';
 import CNMCSanctionsChart from '@site/src/components/CNMCSanctionsChart';
 
 <AnnexLayout
   wide
-  kicker="Anexo VII"
-  title="Impacto socioeconómico y resiliencia"
-  description="Evidencias sobre costes económicos, comparación con apagones históricos, efectos en infraestructuras críticas y lecciones de resiliencia sistémica."
+  kicker="Annex VII"
+  title="Socioeconomic Impact and Resilience"
+  description="This annex quantifies the socioeconomic costs of the April 28 blackout and assesses the resilience of the affected critical infrastructures, comparing the incident with other historical collapses globally."
   meta={[
-    { label: 'Eje técnico', value: 'Impacto y Resiliencia' },
-    { label: 'Cobertura', value: 'Consecuencias socioeconómicas' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical Axis', value: 'Impact and Resilience' },
+    { label: 'Coverage', value: 'Socioeconomic Consequences' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    What was the real socioeconomic cost of the April 28 blackout, and what lessons about sectoral and institutional resilience can be drawn from the collapse?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The April 28 blackout caused estimated losses of over 240 million euros, primarily affecting the manufacturing sector and metropolitan transport. Comparison with other historical collapses shows that, although the total restoration time was relatively short (less than 10 hours) thanks to cross-border support, the vulnerability of the industrial fabric highlighted the need to review the Value of Lost Load (VoLL) standards. The regulatory sanction schemes (CNMC) and the energy trilemma balance require a thorough reassessment following the event.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex compiles sectoral losses and a resilience comparison of the Iberian system against large-scale interruption events internationally.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    El anexo sistematiza la información relativa al alcance social del evento y la resiliencia de las infraestructuras críticas afectadas por el apagón.
+    The annex systematizes information regarding the social scope of the event and the resilience of the critical infrastructures affected by the blackout.
   </AnnexMethodNote>
+
+  <em>The annex is organized into four argumentative sections: impact quantification, comparison with historical blackouts, sectoral infrastructure resilience, and regulatory regime and sanctions.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t7' },
-      { label: 'Tablas',       target: 'tablas-t7' },
-      { label: 'Interactivos', target: 'interactivos-t7' },
-      { label: 'Series',       target: 'series-t7' },
+      { label: 'Quantification',       target: 'cuantificacion' },
+      { label: 'Historical Comparison', target: 'comparacion-historica' },
+      { label: 'Sectoral Resilience',  target: 'resiliencia' },
+      { label: 'Regulatory Regime',   target: 'regulatorio' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t7"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['figures']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="tablas-t7"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t7"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="cuantificacion" eyebrow="Section 1" title="Quantification of Economic Impact">
+    The table of economic costs breaks down the estimated financial impact in millions of euros, revealing the high sensitivity of the industrial sector to rapid interruptions.
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="Economic Cost Estimation"
+      summary="Sectoral and conceptual breakdown of the direct and indirect economic losses from the blackout, estimated at over 240 M€ in the Iberian market."
+      insight="Industrial and domestic impact · Quantification of the cost of non-supply."
+    >
+      <AnnexEvidence type="table" id="costes-economicos" level={1} />
+    </AnnexEvidenceLead>
+    The financial waterfall breaks down the accumulation of direct costs (industrial interruptions, transport) and indirect costs (insurance, reputational). The estimated range is very wide: 200–4,500 M€, reflecting the difficulty of quantifying indirect VoLL.
     <span id="grafico-waterfall"></span>
+    <AnnexEvidence type="interactive" id="waterfall" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="comparacion-historica" eyebrow="Section 2" title="Comparison with Historical Blackouts">
+    The comparison places the April 28 event against blackouts such as the Northeast 2003 (55 million affected, 62 GW), Italy 2003 (56 million, 27 GW), and Argentina 2019 (48 million, 22 GW). The Iberian restoration time (~10 h) was relatively short thanks to French support, but the speed of the collapse (~5 min) was unusually high.
+    <AnnexEvidence type="table" id="comparativa-blackouts-historicos" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="resiliencia" eyebrow="Section 3" title="Sectoral Infrastructure Resilience">
+    The sectoral resilience analysis documents which critical infrastructures — transport, telecommunications, cold chain — took the longest to recover operability after the return of voltage.
     <span id="grafico-sectorial-resilience"></span>
-    <AnnexThemeEvidence theme="T7" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="sectorial-resilience" level={2} />
+    The energy trilemma visualizes the balance between security, sustainability, and affordability. The April 28 event demonstrated that prioritizing the latter two without ensuring the former has a cost greater than the savings achieved.
+    <div style={{ margin: '1.5rem 0' }}>
+      <TrilemmaTriangle showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t7"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['charts']} />
+  <AnnexSection id="regulatorio" eyebrow="Section 4" title="Regulatory Regime and Sanctions">
+    The history of CNMC sanctions reveals that the sanctioning regime prior to April 28 did not contain sufficient incentives to invest in dynamic grid support.
+    <div style={{ margin: '1.5rem 0' }}>
+      <CNMCSanctionsChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <TrilemmaTriangle showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="The economic quantification of the April 28 event demonstrates that the cost of dynamic instability is extremely high for a modern economy. Although the Iberian transmission system demonstrated notable restoration resilience compared to historical references, the vulnerability of the distribution network and the lack of regulatory incentives for dynamic support urgently require a review of quality standards."
+    doesNotDemonstrate="This annex demonstrates that the social cost of VoLL exceeds the cost of installing and remunerating additional inertia and reactive power services by orders of magnitude."
+    connection="The reading is complemented by Annex V (market economic mechanism) and Annex IX (expert calculation methodology)."
+  />
 
-  *Figura A7.1. Trilema de la transición energética y su manifestación el 28‑A.*
-
-  <CNMCSanctionsChart showCaption={false} />
-
-  *Figura A7.2. Expedientes sancionadores de la CNMC tras el 28‑A. Fuente: CNMC / BOE.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-mercado-costes", label: "Annex V: electricity market, prices and costs" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Annex IX: methodology and source verification" }
+  ]} />
 </AnnexLayout>

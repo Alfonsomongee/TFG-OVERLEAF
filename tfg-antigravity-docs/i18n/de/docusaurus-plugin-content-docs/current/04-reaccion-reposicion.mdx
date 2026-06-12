@@ -3,104 +3,143 @@ sidebar_position: 4
 hide_title: true
 title: "Reaktion und Wiederherstellung"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import ForensicReveal from "@site/src/components/ForensicReveal";
+import AnimatedRestorationMap from "@site/src/components/AnimatedRestorationMap";
+import SectorialResilienceChart from "@site/src/components/SectorialResilienceChart";
+import DemandaChart from '@site/src/components/EsiosCharts/DemandaChart';
+import RestorationLoadRampFigure from "@site/src/components/RestorationLoadRampFigure";
 
 <GlitchTitle>Reaktion und Wiederherstellung</GlitchTitle>
 
-Nach dem vollendeten Spannungsnullpunkt um 12:33:30 MESZ ging das Stromnetz der Halbinsel von einer unkontrollierbaren dynamischen Krise in eine Phase des Notfallmanagements und der strukturellen Wiederherstellung über. Der Verlust von mehr als 15 GW und die vollständige Trennung vom kontinentalen Synchronisationssystem zwangen REE, die Logik des stationären Betriebs aufzugeben, um die Notfallprotokolle des **Betriebsverfahrens P.O. 1.6** zu aktivieren. Die vollständige Wiederherstellung der Versorgung erforderte fast **19 Stunden** ununterbrochener Manöver.
+Nach dem Eintreten des Spannungsnullpunkts um 12:33:30 Uhr MESZ<KeyFact id="granada-disparo" mode="callback">Sequenz der Wurzelauslösung — Kapitel 3</KeyFact>, wechselte das elektrische System der Iberischen Halbinsel von einer unkontrollierbaren dynamischen Krise zu einer Phase des Notfallmanagements und der strukturellen Wiederherstellung. Der Verlust von mehr als 15 GW und die vollständige Trennung vom kontinentalen Synchronverbund zwangen REE, die Logik des Dauerbetriebs aufzugeben und die Notfallprotokolle des Betriebsverfahrens P.O. 1.6 zu aktivieren. Die vollständige Wiederherstellung der Versorgung erforderte etwa 18,5 Stunden ununterbrochener Manöver (bis 07:05 Uhr am 29. April, als die Wiederherstellung von 99,95 % der Versorgung bestätigt wurde).
 
-## Chronologie des Kollapses und der Wiederherstellung
+## Chronologie der Wiederherstellung
+
+Die technische Abfolge des Zusammenbruchs – von den vorausgehenden Schwingungen am Morgen bis zum Spannungsnullpunkt um 12:33:29 Uhr MESZ – ist in der [Chronologie von Kapitel 3](./03-analisis-incidente.mdx) dokumentiert. Dieses Kapitel befasst sich ausschließlich mit Phase 4: der Wiederherstellung der Versorgung.
 
 <ForensicTable 
-    title="TABELLE 14 | INCIDENT CHRONOLOGY — RECOVERY PHASES"
-    source="Comité de Análisis del Gobierno"
-    confidence="HIGH"
-  >
+  title="Tabelle D1 — Betriebschronologie der Wiederherstellung der Iberischen Halbinsel"
+  source="Analysekomitee der Regierung / REE / ENTSO-E"
+  confidence="HIGH"
+>
 
-| Phase | Zeitfenster | Beschreibung |
-| --- | --- | --- |
-| **Phase 0** | Tage vor und Morgen des 28. April | Latente Spannungsinstabilität |
-| **Phase 1** | 12:00–12:30 MESZ | Elektromechanische Schwingungen |
-| **Phase 2** | 12:32:00–12:33:18 MESZ | Erzeugungsverluste durch Überspannung |
-| **Phase 3** | 12:33:18–12:33:30 MESZ | Kaskade bis zum Spannungsnullpunkt |
-| **Phase 4** | 12:33:30 MESZ – 14:36 des 29. April | Schrittweise Wiederherstellung der Versorgung |
-
-
+| Uhrzeit (MESZ) | Ereignis |
+| :--- | :--- |
+| 12:33:30 | Spannungsnullpunkt bestätigt. REE aktiviert P.O. 1.6 |
+| 12:34 | Bestätigung mit REN: Portugal spannungslos |
+| 12:36 | EAS-Meldung: Status „Wiederherstellung“ |
+| 12:44 | Marktaussetzung. Umspannwerk Hernani erhält Spannung aus Frankreich |
+| 12:45 | Black Start: Castelo de Bode (Portugal, 138 MW Wasserkraft) |
+| 13:04 | Interkonnektion Marokko aktiviert: ≈900 MW Unterstützung |
+| 13:07 | Erste 31 MW von Irún eingespeist |
+| ≈16:00 | Black Start: Aldeadávila (Spanien, ≈1.100 MW Wasserkraft) |
+| 20:22 | Synchronisation der portugiesischen Inseln mit kontinentaler Frequenz |
+| 23:32 | 13.039 MW gedeckt (55 % der Nachfrage) mit 21 thermischen Einheiten |
+| 00:06 (29. Apr.) | REE reaktiviert aFRR-Regler (Sekundärregelung) |
+| 01:38 (29. Apr.) | Erste Vorgaben zur Wiedereingliederung von Windkraft und KWK |
+| 07:05 (29. Apr.) | 99,95 % der Versorgung wiederhergestellt |
 
 </ForensicTable>
 
-_Offizieller Phasenzeitplan laut dem Analyseausschuss der Regierung._
+_Tabelle D1 — Betriebschronologie der Wiederherstellung der Iberischen Halbinsel. Die Sequenz fasst den Schritt vom Spannungsnullpunkt bis zur nahezu vollständigen Wiederherstellung der Versorgung zusammen und trennt dabei den anfänglichen Notfall, die Inselbildung, die Resynchronisation und die endgültige Normalisierung. Quelle: REE / ENTSO-E / Analysekomitee der Regierung._
 
-## Notfallmanagement: Aktivierung von P.O. 1.1 und P.O. 1.6
+## Notfallmanagement: Vom P.O. 1.1 zum P.O. 1.6
 
-Das P.O. 1.1 legt die Kriterien für den stationären Betrieb fest, die auf der Einhaltung des N−1-Kriteriums und der Aufrechterhaltung von Spannungen zwischen 380 kV und 435 kV im Übertragungsnetz basieren. Die Kaskade vom 28. April zeigte die Grenzen der statischen Validierung dieser Kriterien gegenüber ultraschnellen dynamischen Transienten in Netzen mit geringer Trägheit: Die Sicherheitsgrenzen wurden in einem Fenster von elf Sekunden überschritten, und die automatischen Schutzschemata — einschließlich des UFLS — erwiesen sich als kontraproduktiv. REE übernahm die manuelle Kontrolle im Zustand des _Blackouts_ (Kriterium OB3).
+Der P.O. 1.1 legt die Betriebskriterien für den Dauerbetrieb fest, basierend auf der Einhaltung des N−1-Kriteriums und der Aufrechterhaltung von Spannungen zwischen 380 kV und 435 kV im Übertragungsnetz. Die Kaskade vom 28. April zeigte die Grenzen der statischen Validierung dieser Kriterien angesichts ultraschneller dynamischer Transienten in Netzen mit geringer Trägheit auf: Die Sicherheitsgrenzen wurden innerhalb eines Zeitfensters von elf Sekunden überschritten, und die automatischen Schutzsysteme – einschließlich des UFLS – erwiesen sich als kontraproduktiv. REE übernahm die manuelle Steuerung unter dem Blackout-Status (Kriterium OB3).
 
-Die institutionelle Reaktion erfolgte sofort und gleichzeitig an mehreren Fronten:
+Die institutionelle Reaktion erfolgte unverzüglich und gleichzeitig an mehreren Fronten:
 
-- **12:34 MESZ** — REE bestätigt mit REN, dass auch das gesamte portugiesische Netz spannungslos ist.
-- **12:36 MESZ** — Formelle Benachrichtigung an die übrigen europäischen Betreiber über das EAS,
-  wobei der Betriebszustand des iberischen Blocks auf „Restoration“ geändert wird.
-- **12:44 MESZ** — Aussetzung aller Intraday-Märkte und Regelleistungsdienste durch REE und OMIE, was die volle Befugnis verlieh, ausschließlich nach Kriterien der technischen Durchführbarkeit zu disponieren.
+- 12:34 Uhr MESZ — REE bestätigt mit REN, dass das gesamte portugiesische Netz ebenfalls spannungslos ist.
+- 12:36 Uhr MESZ — Formelle Meldung an die anderen europäischen Betreiber über das EAS, Änderung des Betriebsstatus des iberischen Blocks auf „Wiederherstellung“.
+- 12:44 Uhr MESZ — Aussetzung aller Intraday-Märkte und Regelenergiemärkte durch REE und OMIE, wodurch die volle Autorität erteilt wird, ausschließlich nach Kriterien der technischen Machbarkeit zu disponieren.
 
-Die Wiederherstellungsstrategie schrieb die kontrollierte Fragmentierung der Iberischen Halbinsel in **sieben unabhängige operative Zonen** — Zone Süd, Tajo-Zentrum, Levante und andere — während der schrittweisen Wiederunterspannungsetzung vor.
+Die Wiederherstellungsstrategie sah die kontrollierte Aufteilung der Iberischen Halbinsel in sieben unabhängige Betriebsbereiche vor – Südzone, Tajo-Zentrum, Levante und andere – während der schrittweisen Wiederenergetisierung.
 
-![Topologische Fragmentierung der Halbinsel in sieben elektrische Inseln während der Wiederherstellung](/figuras/islas_reposicion_entsoe.png) _Abbildung 20. Topologische Fragmentierung gemäß P.O. 1.6. Jede Insel musste einzeln in Spannung und Frequenz stabilisiert werden, bevor ihre Synchronisation mit den benachbarten Inseln genehmigt wurde. Quelle: ENTSO-E / REE._
+<AnimatedRestorationMap lang={frontMatter.locale || 'es'} />
 
-Das Manöver kombinierte zwei gleichzeitige Fronten: eine Top-Down-Strategie (externe Unterstützung aus Frankreich und Marokko als Spannungsreferenz) und eine Bottom-Up-Strategie (autonomer Start interner Wasserkraftwerke in Galicien, Asturien und im Duero-Becken).
+_Abbildung D1 — Betriebliche Aufteilung des Netzes der Iberischen Halbinsel während der Wiederherstellung. Die Visualisierung fasst die Aufteilung des Systems in kontrollierte elektrische Bereiche und die Kombination von Top-Down- und Bottom-Up-Strategien zusammen, die notwendig sind, um Spannung, Frequenz und Last nach dem Spannungsnullpunkt wiederherzustellen. Quelle: Eigene Darstellung basierend auf ENTSO-E / REE._
+
+Das Manöver kombinierte zwei gleichzeitige Fronten: eine Top-Down-Strategie (externe Unterstützung aus Frankreich und Marokko als Spannungsreferenz) und eine Bottom-Up-Strategie (autonomer Start interner Wasserkraftwerke in Galicien, Asturien und dem Duero-Becken) (siehe Abbildung D1).
 
 ## Black-Start-Strategie: Wasserkraftwerke und Gas-und-Dampf-Kombikraftwerke
 
-Da praktisch der gesamte Erzeugungspark aus IBR im Grid-Following-Modus bestand — technologisch unfähig, ohne ein stabiles externes Netz eine Spannungswelle zu erzeugen —, ruhte das Überleben und der Neustart des Systems ausschließlich auf den Synchronmaschinen, die zum autonomen Start fähig waren.
+Da praktisch der gesamte Erzeugungspark aus IBR im Grid-Following-Modus bestand – technologisch nicht in der Lage, ohne stabiles externes Netz eine Spannungswelle zu erzeugen –, hing das Überleben und der Neustart des Systems ausschließlich von den Synchrongeneratoren mit autonomer Startfähigkeit ab.
 
-![Duale Re-Energisierungsstrategie Top-Down und Bottom-Up](/figuras/estrategia_reenergizacion_dual.png) _Abbildung 21. Duale Re-Energisierungsstrategie: Top-Down von Frankreich und Marokko und Bottom-Up von internen Wasserkraftwerken. Quelle: ENTSO-E / REE._
+Die Wasserkraftwerke – Laufwasser- und Pumpspeicherkraftwerke – wurden als erste eingesetzt, um isolierte Abschnitte zu energetisieren und die ersten elektrischen Inseln zu schaffen. Der Betrieb dieser Mikrosysteme offenbarte jedoch die Schwierigkeit, mit minimalen Trägheiten zu arbeiten: Die Energetisierung von unbelasteten Leitungen führte zu erheblichen kapazitiven Transienten, die mehrere Startversuche scheitern ließen.
 
-Die Wasserkraftwerke — Laufwasser und Pumpspeicher — waren die ersten, die eingesetzt wurden, um isolierte Abschnitte mit Energie zu versorgen und die ersten elektrischen Inseln zu schaffen. Der Betrieb dieser Mikrosysteme offenbarte jedoch die Schwierigkeit, mit minimalen Trägheiten zu arbeiten: Das Einschalten von unbelasteten Leitungen verursachte erhebliche kapazitive Transienten, die verhinderten, dass mehrere Startversuche abgeschlossen werden konnten.
+![Zeitlicher Verlauf und Wirksamkeit des hydraulischen Black Starts](/figuras/black_start_hidroelectrico.png)
+_Abbildung D2 — Zeitlicher Verlauf des hydraulischen Black Starts. Die Abbildung unterscheidet erfolgreiche und fehlgeschlagene Energetisierungsversuche und zeigt, dass die anfängliche Wiederherstellung von Synchrongeneratoren abhing, die in der Lage waren, in elektrischen Inseln mit geringer Kurzschlussleistung Spannung aufzubauen. Quelle: ENTSO-E / REE._
 
-![Zeitlicher Verlauf und Wirksamkeit des Black Starts mit Wasserkraft](/figuras/black_start_hidroelectrico.png) _Abbildung 22. Versuche zum autonomen Start von Wasserkraftwerken während Phase 4. Die grauen Punkte entsprechen fehlgeschlagenen Versuchen. Der hohe Anteil an Ausfällen spiegelt die Komplexität der Energieversorgung eines Netzes ohne angekoppelte synchrone Masse wider. Quelle: ENTSO-E / REE._
+Die Fehlschläge waren signifikant: Die Inseln Kantabrien und Levante konnten nicht aufrechterhalten werden und mussten neu gestartet werden; das für Madrid vorgesehene Kraftwerk konnte seine Parameter nach mehreren aufeinanderfolgenden Versuchen nicht stabilisieren; und der autonome Start in Andalusien blieb erfolglos, was die Priorisierung der externen Unterstützung aus Marokko als Spannungsreferenz für die Südzone erzwang.
 
-Die Ausfälle waren erheblich: Die Inseln Kantabrien und Levante hielten sich nicht und mussten neu gestartet werden; das Madrid zugewiesene Kraftwerk konnte seine Parameter nach mehreren aufeinanderfolgenden Versuchen nicht stabilisieren; und der autonome Start in Andalusien erwies sich als erfolglos, was dazu zwang, der externen Unterstützung aus Marokko als Spannungsreferenz für die Südzone Priorität einzuräumen.
+Die Transienten bei der Energetisierung unbelasteter Leitungen erzeugten Magnetisierungseinschaltströme (*magnetizing inrush*) von bis zum 10-fachen des Nennstroms in den 400-kV-Autotransformatoren, was zu Spannungseinbrüchen von 10–20 % in den fragilen, neu gebildeten Inseln führte. Noch problematischer war das Phänomen des *sympathetic inrush*: Die Energetisierung eines neuen Transformators sättigte den magnetischen Fluss der bereits in Betrieb befindlichen Paralleltransformatoren, was zu schweren harmonischen Verzerrungen mit Abklingzeiten von über 10 Sekunden führte, die mehrere Inseln zum Zusammenbruch brachten, bevor sie sich stabilisieren konnten. In mindestens drei dokumentierten Fällen interpretierten die Differentialrelais der Transformatoren diese Transienten als interne Kurzschlüsse und lösten die Trennung aus, was einen Neustart des Inselprozesses von Grund auf erforderte.
 
-Sobald es den Wasserkraft-Inseln gelang, ihre Parameter minimal zu stabilisieren, verlagerte sich die Strategie auf ihre elektromechanische Konsolidierung durch Erdgas-Kombikraftwerke (CCGT) und die Hilfsdienste der Kernkraftwerke. Diese Maschinen wurden nicht zur Deckung der kommerziellen Nachfrage angeschlossen, sondern um das **„elektromagnetische Gerüst“** des Systems zu bilden: Sie lieferten die Kurzschlussleistung ($S_{sc}$), die Trägheit ($H$) und die Kapazität zum dynamischen Management der Blindleistung, die vor der Genehmigung zur massiven Wiederzuschaltung der Last unerlässlich waren.
+<ForensicReveal
+  lang="es"
+  l1="Das Netz einzuschalten ist schwieriger, als es auszuschalten: Jeder Transformator, den Sie anschließen, kann die bereits in Betrieb befindlichen zum Ausfall bringen."
+  l2="Black Start erfordert das Starten von Generatoren ohne externes Netz. Beim Energetisieren von 400-kV-Transformatoren in einem leeren Netz entstehen enorme transiente Ströme (Einschaltstrom), die die fragilen, neu geschaffenen elektrischen Inseln destabilisieren können. Das Phänomen des sympathetic inrush verschärft das Problem: Ein neuer Transformator kann die bereits angeschlossenen sättigen."
+  l3="Einschaltströme bis zum 10-fachen des Nennstroms mit einem Oberschwingungsgehalt von 8–20 % der zweiten Harmonischen (IEEE C57.91). Der sympathetic inrush hat Abklingzeiten >10 s (CIGRE WG A2). Am 28. April brachen die Inseln Kantabrien und Levante durch diesen Mechanismus zusammen und mussten neu gestartet werden. (ENTSO-E Factual / REE)"
+  source="IEEE C57.91 / CIGRE WG A2 / ENTSO-E Factual Report"
+/>
 
-Das portugiesische System führte ein ähnliches Schema durch, das vom Wasserkraftwerk HPP 1-Zentrum und dem Kombikraftwerk CCGT 1-Nord unterstützt wurde. Um **20:22 MESZ** garantierte die Synchronisation der portugiesischen Inseln mit den spanischen Zonen, die bereits mit der kontinentaleuropäischen Frequenz gekoppelt waren — verifiziert durch Synchro-Check-Relais —, die Machbarkeit der vollständigen Wiederherstellung der Iberischen Halbinsel.
+_Technische Anmerkung — Magnetisierungseinschaltströme während der Wiederherstellung. Die Energetisierung von Transformatoren und unbelasteten Leitungen führte zu Transienten mit hohem Blindleistungsbedarf, die die Stabilität der ersten elektrischen Inseln beeinträchtigten und mehrere fehlgeschlagene Black-Start-Versuche erklären._
 
-## Internationale Koordination: RCC, Swissgrid und die kontinentale Resynchronisierung
+Sobald die Wasserkraftinseln ihre Parameter minimal stabilisieren konnten, verlagerte sich die Strategie auf ihre elektromechanische Konsolidierung durch Gas-und-Dampf-Kombikraftwerke (CCGT) und die Hilfsdienste der Kernkraftwerke. Diese Maschinen wurden nicht angeschlossen, um die kommerzielle Nachfrage zu decken, sondern um das „elektromagnetische Gerüst“ des Systems zu bilden: Sie lieferten die Kurzschlussleistung ($S_{sc}$), die Trägheit ($H$) und die Fähigkeit zum dynamischen Blindleistungsmanagement, die unerlässlich waren, bevor die massenhafte Wiedereinschaltung der Last genehmigt werden konnte.
 
-Die Werkzeuge der Regional Coordination Centres (RCC) — insbesondere Coreso, zuständig für Südwesteuropa — bewerten die Sicherheit durch statische Lastflüsse im stationären Zustand, ohne die Fähigkeit, Phänomene der Spannungsinstabilität oder ultraschnelle Dynamiken im Zusammenhang mit geringer Trägheit zu antizipieren. Folglich ergaben alle Analysen vor dem Kollaps den Status „OK“, und der iberische Block blieb bis zum Moment des Ausfalls im EAS als „Normal“ gekennzeichnet.
+Das portugiesische System führte ein analoges Schema durch, gestützt auf das Wasserkraftwerk HPP 1-Centro und das Gas-und-Dampf-Kombikraftwerk CCGT 1-Norte. Um 20:22 Uhr MESZ gewährleistete die Synchronisation der portugiesischen Inseln mit den bereits an die kontinentaleuropäische Frequenz gekoppelten spanischen Zonen – verifiziert durch Synchrocheck-Relais – die Machbarkeit der vollständigen Wiederherstellung der Iberischen Halbinsel.
 
-Nach dem vollendeten Spannungsnullpunkt wurde die europäische Kommandohierarchie über die Synchronous Area Monitors (SAM) aktiviert, die von Swissgrid und Amprion betrieben werden. Zwischen **12:49 und 12:54 MESZ** wurde die einheitliche Kommandostruktur etabliert:
+## Internationale Koordination: RCC, Swissgrid und die kontinentale Resynchronisation
 
-- **REE** → Frequenzführer für die isolierte iberische Insel
+Die Werkzeuge der Regional Coordination Centres (RCC) – insbesondere Coreso, zuständig für Südwesteuropa – bewerten die Sicherheit mittels statischer Lastflussberechnungen im Dauerbetrieb, ohne die Fähigkeit, Spannungsinstabilitätsphänomene oder ultraschnelle Dynamiken im Zusammenhang mit geringer Trägheit vorherzusehen. Folglich zeigten alle ihre Analysen vor dem Zusammenbruch den Status „OK“ an, und der iberische Block blieb im EAS bis zum Moment des Blackouts als „Normal“ gekennzeichnet.
+
+Nach dem Eintreten des Spannungsnullpunkts wurde die europäische Befehlshierarchie über die von Swissgrid und Amprion betriebenen Synchron Area Monitors (SAM) aktiviert. Zwischen 12:49 und 12:54 Uhr MESZ wurde die einheitliche Befehlsstruktur etabliert:
+
+- REE → Frequenzführer für die abgetrennte iberische Insel
 - *Swissgrid* → Stabilisierung des restlichen Kontinents
-- **RTE (Frankreich)** → Führer der allgemeinen Resynchronisierung
+- RTE (Frankreich) → Führer der allgemeinen Resynchronisation
 
-Unter diesem Schema aktivierte RTE Angebote in seinem internen Ausgleichsmechanismus von bis zu **4.500 MW**, um den Export nach Spanien zu stützen, was die Energieversorgung der 400-kV-Korridore im Norden und Osten der Halbinsel ermöglichte.
+Unter diesem Schema aktivierte RTE Angebote in seinem internen Ausgleichsmechanismus von bis zu 4.500 MW, um die Exporte nach Spanien zu stützen und so die Energetisierung der 400-kV-Korridore im Norden und Osten der Halbinsel zu ermöglichen.
 
-![Entwicklung der grenzüberschreitenden Unterstützung aus Frankreich während der Wiederherstellung](/figuras/evolucion_carga_repuesta_francia.png) _Abbildung 23. Grenzüberschreitende Unterstützung aus Frankreich während der Wiederherstellung. Die Einspeisungen von RTE unterstützten die Spannungsstabilität während der Re-Energisierung der Nord- und Ostkorridore, bevor sich ausreichend interne Synchronblöcke koppelten. Quelle: Analyseausschuss der Regierung._
+<RestorationLoadRampFigure />
 
-An der Südgrenze wurde die Verbindung mit Marokko (ONEE) zum **elektromechanischen Anker Andalusiens**. Um **13:04 MESZ** wurde der Fluss durch die Leitung Puerto de la Cruz–Mellousa ermöglicht, wobei fast *900 MW* eingespeist wurden und die Spannungsreferenz bereitgestellt wurde, die erforderlich war, um den Süden der Halbinsel mit Energie zu versorgen, wo die internen Versuche eines _Black Starts_ gescheitert waren.
+_Abbildung D3 — Wiederherstellungsrampe der Nachfrage der Iberischen Halbinsel. Die Kurve dokumentiert den Übergang vom Spannungsnullpunkt bis zur nahezu vollständigen Wiederherstellung der Versorgung und zeigt, dass die Wiederherstellung ein Prozess der fortschreitenden Kopplung war, getragen von der internen Erzeugung und der Unterstützung aus Frankreich. Quelle: ESIOS / REE; eigene Darstellung._
 
-![Leistungseinspeisung aus Marokko für die Top-Down-Unterstützung in Andalusien](/figuras/intercambio_marruecos_topdown.png) _Abbildung 24. Top-Down-Unterstützung von der Südgrenze (ONEE). Die marokkanische Verbindung war entscheidend für die Bereitstellung der notwendigen Kurzschlussleistung zur Energieversorgung Andalusiens. Quelle: ENTSO-E / REE._
+An der Südgrenze wurde die Interkonnektion mit Marokko (ONEE) zum elektromechanischen Anker Andalusiens. Um 13:04 Uhr MESZ wurde der Fluss über die Leitung Puerto de la Cruz–Mellousa freigegeben, wobei nahezu *900 MW* eingespeist und die notwendige Spannungsreferenz geliefert wurden, um den Süden der Halbinsel zu energetisieren, wo die internen Black-Start-Versuche fehlgeschlagen waren.
 
-Das Expertenpanel von ENTSO-E anerkannte diese Zusammenarbeit später als einen Fall von **effektiver Koordination zwischen europäischen Betreibern** bei Vorfällen maximaler Schwere (OB3).
+![Leistungseinspeisung aus Marokko für die Top-Down-Unterstützung in Andalusien](/figuras/intercambio_marruecos_topdown.png)
+_Abbildung D4 — Externe Top-Down-Unterstützung aus Marokko. Die Einspeisung über die Interkonnektion mit Nordafrika lieferte die notwendige Kurzschlussleistung und Spannungsreferenz, um den Süden der Halbinsel (Andalusien) zu energetisieren, nachdem die lokalen autonomen Startversuche fehlgeschlagen waren. Quelle: Analysekomitee der Regierung / ENTSO-E / REE._
 
-## Entwicklung des Mixes und endgültige Stabilisierung
+Das Expertengremium von ENTSO-E würdigte diese Zusammenarbeit später als einen Fall effektiver Koordination zwischen europäischen Betreibern bei Ereignissen maximaler Schwere (OB3).
 
-Obwohl die Solar- und Windparks mit verfügbaren Primärressourcen physisch intakt waren, blieb ihre Wiederzuschaltung in den ersten kritischen Phasen eingeschränkt. Wechselrichter im Grid-Following-Modus müssen zuvor ein robustes externes Netz einlesen, um Strom durch ihre PLL-Schleifen einzuspeisen: Ohne diese Referenz sind sie nicht betriebsfähig. Die gesamte Verantwortung für die Re-Energisierung ruhte auf der sequentiellen Kopplung von CCGT, verbleibenden Kohlekraftwerken und Kernkraftwerken.
+## Entwicklung des Erzeugungsmixes und endgültige Stabilisierung
 
-![Entwicklung des Technologiemixes während der Re-Energisierung der Halbinsel](/figuras/evolucion_mix_reenergizacion.png) _Abbildung 25. Technologiemix während der Re-Energisierung. In den ersten Stunden wurde das System ausschließlich durch grenzüberschreitende Importe und Synchronerzeugung gestützt. Die Einbindung von IBR blieb beschränkt, bis die mindestens erforderliche Kurzschlussleistung und Trägheit nachgewiesen wurden. Quelle: ENTSO-E / REE._
+Obwohl die Solar- und Windparks physisch intakt waren und Primärenergie zur Verfügung stand, wurde ihre Wiedereinschaltung während der ersten kritischen Phasen eingeschränkt. Wechselrichter im Grid-Following-Modus müssen zuerst ein robustes externes Netz „lesen“, um über ihre PLL-Regelkreise Strom einzuspeisen: Ohne diese Referenz sind sie nicht betriebsfähig. Die gesamte Verantwortung für die Wiederenergetisierung lag auf der sequenziellen Kopplung von CCGT, verbleibenden Kohlekraftwerken und Kernkraftwerken.
 
-Die Last wurde in diskreten, sorgfältig berechneten Blöcken wieder zugeschaltet:
+![Entwicklung des Technologiemixes während der Wiederenergetisierung der Iberischen Halbinsel](/figuras/evolucion_mix_reenergizacion.png)
+_Abbildung D5 — Entwicklung des Technologiemixes während der Wiederenergetisierung. Die Sequenz zeigt, dass die Wiederherstellung anfänglich nicht von den verfügbaren IBR abhing, sondern von der fortschreitenden Verbindung synchroner Erzeugung – Wasserkraft, Gas-und-Dampf-Kombikraftwerke, verbleibende Kohle und Kernkraft –, die in der Lage war, Spannungsreferenz, Trägheit und Kurzschlussleistung bereitzustellen. Quelle: ENTSO-E / REE._
 
-- **13:07 MESZ** — Erste **31 MW**, gespeist aus dem Umspannwerk Irún.
-- **23:32 MESZ** — Mit 21 synchronisierten thermischen Blöcken erreichte die gedeckte Nachfrage **13.039 MW** (~55 % der erwarteten Last).
-- **00:06 MESZ (29. April)** — REE reaktivierte den Hauptcontroller der automatischen Frequenzwiederherstellungsreserve (aFRR), womit das System seine Kapazität zur automatisierten Sekundärregelung zurückerhielt.
-- **01:38 MESZ (29. April)** — Erste Sollwerte zur Wiedereingliederung von Windparks und Kraft-Wärme-Kopplungsanlagen.
-- **07:05 MESZ (29. April)** — Aufhebung der Beschränkungen für das gesamte RCR-Regime. REE bescheinigt die Wiederherstellung von **99,95 %** der nationalen Stromversorgung.
+Die Last wurde in sorgfältig berechneten diskreten Blöcken wieder zugeschaltet:
 
-![Einbruch und Erholung der Stromnachfrage der Halbinsel in den folgenden 19 Stunden](/figuras/recuperacion_demanda_peninsular.png) _Abbildung 26. Einbruch und Erholung der Nachfrage auf der Halbinsel. Der Ersatz der verlorenen 25 GW wurde nach fast 19 Stunden ununterbrochener Manöver abgeschlossen, mit gestaffelter Lastzuschaltung, um neue Unterfrequenzepisoden zu vermeiden. Quelle: Analyseausschuss der Regierung._
+- 13:07 Uhr MESZ — Erste 31 MW vom Umspannwerk Irún eingespeist.
+- 23:32 Uhr MESZ — Mit 21 synchronisierten thermischen Einheiten erreichte die gedeckte Nachfrage 13.039 MW (≈55 % der erwarteten Last).
+- 00:06 Uhr MESZ (29. Apr.) — REE reaktivierte den Master-Regler der automatischen Frequenzwiederherstellungsreserve (aFRR) und gab dem System seine automatisierte Sekundärregelfähigkeit zurück.
+- 01:38 Uhr MESZ (29. Apr.) — Erste Vorgaben zur Wiedereingliederung von Windparks und KWK-Anlagen.
+- 07:05 Uhr MESZ (29. Apr.) — Aufhebung der Beschränkungen für das gesamte RCR-Regime. REE bestätigt die Wiederherstellung von 99,95 % der nationalen Stromversorgung.
 
-Die Abfolge der Wiederherstellung stellt eine empirische Bestätigung des zentralen technischen Arguments dieser Arbeit: Die Synchronerzeugung — die im Betrieb vor dem Kollaps in unzureichenden Mengen vorhanden war — erwies sich als einzige elektromechanische Stütze, die in der Lage war, die Erholung zu tragen. Ihre Rolle als „Gerüst“ der Re-Energisierung ist kein operatives Artefakt, sondern eine direkte Folge der fundamentalen physikalischen Eigenschaften, die IBRs im Grid-Following-Modus nicht replizieren können.
+### Das Netz geheilt, die Wirtschaft pausiert
+
+Um 07:05 Uhr am 29. April hob REE die letzten Betriebsbeschränkungen auf. 99,95 % der Versorgungspunkte auf der Halbinsel hatten wieder Spannung. Die folgende Grafik dokumentiert diesen Verlauf mit einer Auflösung von fünf Minuten: das normale Nachfrageprofil am Morgen des 28., der Einbruch um 12:33 Uhr MESZ, die flache Linie des Blackouts und die gestufte Rampe der Wiederherstellung bis zur Normalisierung in den frühen Morgenstunden des 29.
+
+<DemandaChart />
+
+_Abbildung D6 — Entwicklung der tatsächlichen, programmierten und prognostizierten elektrischen Nachfrage der Iberischen Halbinsel (28.–29. April 2025). Die interaktive Kurve zeigt das normale Nachfrageprofil, den vertikalen Einbruch durch den Spannungsnullpunkt und die anschließende gestufte Erholung in Lastblöcken. Quelle: ESIOS / REE._
+
+Dass das Netz geheilt war, bedeutete nicht, dass die Wirtschaft es war. Die Dienstleistungen und Haushalte erholten ihren normalen Verbrauch innerhalb von Stunden. Die stromintensive Industrie – Lichtbogenöfen, Zementwerke, Raffinerien – benötigte eine ganze Woche. Ihre kontinuierlichen Prozesse erlauben keinen sofortigen Neustart: Es sind Qualitätstests, Neukalibrierung der Anlagen und Sicherheitsprotokolle erforderlich, bevor der Nennbetrieb wieder aufgenommen werden kann. Die folgende Grafik dokumentiert diese sektorale Kluft bis zum 5. Mai.
+
+<SectorialResilienceChart />
+
+_Abbildung D7 — Sektorale Erholung nach der elektrischen Normalisierung. Der Vergleich zwischen den Sektoren zeigt, dass die Wiederherstellung der Spannung keine sofortige wirtschaftliche Erholung bedeutete: Industrie, Dienstleistungen und Verkehr behielten nach der Normalisierung des Netzes ihre eigenen betrieblichen Trägheiten bei. Quelle: Eigene Darstellung basierend auf sektoralen Daten, die im Kapitel zitiert werden._
+
+Die Abfolge der Wiederherstellung stellt eine empirische Bestätigung des zentralen technischen Arguments dieser Arbeit dar: Die synchrone Erzeugung – die während des Betriebs vor dem Zusammenbruch in unzureichenden Mengen vorhanden war – erwies sich als die einzige elektromechanische Stütze, die die Erholung tragen konnte. Ihre Rolle als „Gerüst“ der Wiederenergetisierung ist kein betriebliches Artefakt, sondern eine direkte Folge der fundamentalen physikalischen Eigenschaften, die IBR im Grid-Following-Modus nicht replizieren können.

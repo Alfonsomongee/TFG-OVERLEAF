@@ -7,35 +7,35 @@ hide_title: true
 import Link from '@docusaurus/Link';
 import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
 
-:::info 方法说明：实时数据部分
+:::info 方法声明：实时数据部分
 
-本节展示从 ESIOS（西班牙电网公司）API 获取的伊比利亚电力系统**当前运行数据**，每 5 分钟更新一次。
+本节展示从西班牙电网（ESIOS）API获取的**伊比利亚电力系统当前运行数据**，每5分钟更新一次。
 
-**不属于 2025 年 4 月 28 日停电事件的历史法医重建。** 比较分析模块显示 4 月 28 日的固定历史数据作为背景参考，但主要目的是对系统变量进行实时监控。
+**不属于2025年4月28日停电事件的历史法医重建部分。** 比较分析模块显示4月28日的固定历史数据作为背景参考，但主要目的是对系统变量进行实时监测。
 
-有关事件因果分析及其技术决定因素，请参阅第 2-4 章（背景、分析、反应）及技术文档附录。
+有关事件因果分析及其技术决定因素，请参阅第2-4章（背景、分析、反应）及技术文件附录。
 
 :::
 
 <div className="custom-hero" style={{ textAlign: 'center', marginBottom: '3rem', marginTop: '1rem' }}>
   <div style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--ifm-color-primary)', marginBottom: '0.75rem' }}>
-    动态监控
+    动态监测
   </div>
   <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 800, margin: '0 0 1rem', letterSpacing: '-0.02em' }}>
     实时数据
   </h1>
   <p style={{ fontSize: '1.1rem', color: 'var(--ifm-color-emphasis-700)', maxWidth: '750px', margin: '0 auto 1.5rem', lineHeight: 1.7 }}>
-    伊比利亚电力系统高级监控部分。通过集成 ESIOS（西班牙电网公司）官方 API，本平台提供实时瞬态变量与 2025 年 4 月 28 日崩溃期间记录参数之间的系统比较。
+    伊比利亚电力系统高级监测部分。通过集成西班牙电网（ESIOS）官方API，本平台提供实时暂态变量与2025年4月28日崩溃期间记录参数之间的系统比较。
   </p>
   <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '20px' }}>
       ESIOS API 已激活
     </span>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '20px' }}>
-      每 5 分钟更新
+      每5分钟更新
     </span>
     <span style={{ fontFamily: 'var(--ifm-font-family-monospace)', fontSize: '0.7rem', padding: '0.25rem 0.75rem', border: '1px solid var(--ifm-color-primary)', color: 'var(--ifm-color-primary)', borderRadius: '20px' }}>
-      6 种度量工具
+      6种度量工具
     </span>
   </div>
 </div>
@@ -45,16 +45,16 @@ import DatosTiempoRealGrid from '@site/src/components/DatosTiempoRealGrid';
 基于系统运营商（REE）遥测数据构建的动态可视化，旨在评估发电组合的瞬时脆弱性。
 
 export const items1 = [
-  {title: '发电组合', description: '按技术分类的净发电量与系统不稳定时刻（82% 可再生能源）的行业比较。', href: '/datos-tiempo-real/mix-generacion'},
+  {title: '发电组合', description: '按技术分类的净发电量相对于系统不稳定时刻（82%可再生能源）的行业比较。', href: '/datos-tiempo-real/mix-generacion'},
   {title: '需求与可再生能源', description: '总聚合需求轨迹及风能和太阳能光伏贡献分析。', href: '/datos-tiempo-real/demanda-renovable'},
   {title: '风险温度计', description: '惯性裕度和瞬时系统脆弱性水平的估计器。', href: '/datos-tiempo-real/termometro-riesgo'},
   {title: '交换平衡', description: '通过法国和葡萄牙互联的跨境进出口流量。', href: '/datos-tiempo-real/balance-intercambios'},
-  {title: '现货价格 vs 需求', description: '批发电力市场日价格与系统负荷之间的实时相关性。', href: '/datos-tiempo-real/precio-spot'},
-  {title: '脆弱性雷达', description: '关于与 4 月 28 日临界状态相似性的多维几何分析。', href: '/datos-tiempo-real/radar-vulnerabilidad'}
+  {title: '现货价格 vs 需求', description: '电力批发日市场实时价格与系统负荷之间的相关性。', href: '/datos-tiempo-real/precio-spot'},
+  {title: '脆弱性雷达', description: '关于与4月28日临界状态相似性的多维几何分析。', href: '/datos-tiempo-real/radar-vulnerabilidad'}
 ];
 
 <DatosTiempoRealGrid items={items1} />
 
 <div style={{ fontSize: '0.8rem', color: 'var(--ifm-color-emphasis-500)', borderTop: '1px solid var(--ifm-color-emphasis-200)', paddingTop: '1rem', marginTop: '3rem', fontFamily: 'var(--ifm-font-family-monospace)', lineHeight: 1.5 }}>
-  方法安全说明：应用程序编程接口（API）的访问凭证存储在服务器的安全环境（Serverless Variables）中。动态向量的聚合和清理委托给端点 '/api/esios-multi'，确保令牌的保护。
+  方法安全说明：应用程序编程接口（API）的访问凭证存储在服务器的安全环境（Serverless Variables）中。动态向量的聚合和清理委托给端点'/api/esios-multi'，确保令牌的保护。
 </div>

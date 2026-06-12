@@ -12,166 +12,171 @@ import BlackoutPropagationMap from "@site/src/components/BlackoutPropagationMap"
 import ForensicReveal from "@site/src/components/ForensicReveal";
 import TapLagSequence from "@site/src/components/TapLagSequence";
 import FaultTreeCollapseFigure from '@site/src/components/FaultTreeCollapseFigure/FaultTreeCollapseFigure';
+import FerrantiCapacitiveLineSimulator from "@site/src/components/FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator";
 
 <GlitchTitle>Analyse des Vorfalls</GlitchTitle>
 
-Der Spannungseinbruch vom 28. April war kein augenblickliches Ereignis: Er war der Höhepunkt einer fortschreitenden und messbaren Verschlechterung der statischen und dynamischen Stabilität des Netzes. Die forensische Rekonstruktion der vier Phasen des Zusammenbruchs – von den morgendlichen Schwingungen bis zur endgültigen Trennung der Halbinsel um 12:33:29 Uhr MESZ – ermöglicht es, die physikalischen Mechanismen genau zu identifizieren, die keine konventionelle Schutzautomatik stoppen konnte. **Hier zeigt sich in seiner ganzen Tragweite die technische Spitze des Energietrilemmas: die physische Verwundbarkeit eines von Wechselrichtern dominierten Systems ohne traditionelle Trägheit.**
+Der Spannungseinbruch vom 28. April war kein augenblickliches Ereignis: Er war der Höhepunkt einer fortschreitenden und messbaren Verschlechterung der statischen und dynamischen Stabilität des Netzes. Die forensische Rekonstruktion der vier Phasen des Zusammenbruchs – von den morgendlichen Schwingungen bis zur endgültigen Trennung der Halbinsel um 12:33:29 MESZ – ermöglicht es, die physikalischen Mechanismen genau zu identifizieren, die keine konventionelle Schutzautomatik stoppen konnte. **Hier zeigt sich in seiner ganzen Tragweite der technische Scheitelpunkt des Energietrilemmas: die physische Verwundbarkeit eines von Wechselrichtern dominierten Systems ohne traditionelle Trägheit.**
 
 <div style={{overflowX:'auto', marginBottom:'2rem'}}>
 
 | t (MESZ) | Δt | Ereignis | Phase |
 | :--- | :---: | :--- | :---: |
 | 12:03:00 | — | Erzwungene Schwingung 0,6 Hz (Amplitude 70 mHz) in Badajoz. Dämpfung ≈1 %. | 0 |
-| 12:08:00 | — | HVDC INELFE-1 wechselt von PMODE3 → PMODE1. Verliert dynamische Reaktionsfähigkeit. | 0 |
+| 12:08:00 | — | HVDC INELFE-1 wechselt PMODE3 → PMODE1. Verliert dynamische Reaktionsfähigkeit. | 0 |
 | 12:19:00 | — | Inter-Area-Mode 0,2 Hz Ost-Zentrum-West. Halbinsel schwingt gegenphasig zu Europa. | 0 |
-| 12:30:00 | — | 82 % des momentanen Mix nicht-synchron. Zonale Trägheit Süden: 1,3 s. Nachfrage: 25.184 MW. | 1 |
+| 12:30:00 | — | 82 % des momentanen Mix nicht synchron. Zonale Trägheit Süden: 1,3 s. Nachfrage: 25.184 MW. | 1 |
 | **12:32:57** | **t = 0 s** | **Wurzelauslösung: Transformator 400/220 kV in Granada. −355 MW Wirkleistung, −165 MVAr Blindleistung.** | **2** |
 | 12:33:00 | t = 3 s | Tap-Lag aktiv: Sekundärseite 220 kV erreicht ≈244 kV (>1,10 p.u.), unsichtbar für SCADA REE. | 2 |
 | 12:33:16 | t = 19 s | IBR-Kaskade: Badajoz −730 MW. Beginn Phase 3. | 3 |
-| 12:33:18 | t = 21 s | Segovia, Sevilla, Huelva. UFLS aktiv bei 49,5 Hz → verschärft Überspannung (Paradoxon). | 3 |
+| 12:33:18 | t = 21 s | Segovia, Sevilla, Huelva. UFLS aktiviert bei 49,5 Hz → verschärft Überspannung (Paradoxon). | 3 |
 | 12:33:20 | t = 23 s | −15.000 MW gesamt in Kaskade. >25,2 GW Nachfrage ohne Versorgung. | 3 |
-| 12:33:21 | t = 24 s | OST-Schutz schaltet transpyrinäische AC-Verbindungen. Halbinsel vom europäischen System getrennt. | 3 |
+| 12:33:21 | t = 24 s | OST-Schutzschaltungen öffnen transpyrinäische AC-Verbindungen. Halbinsel vom europäischen System getrennt. | 3 |
 | **12:33:29.741** | **t = 32 s** | **Endgültiger Spannungseinbruch. Letzte Generatorgruppe löst aus.** | **3** |
 
 </div>
 
-> **Quellen:** Regierungsanalysausschuss (2025), ENTSO-E Factual Report (2025), IIT-ICAI / Compass Lexecon (2025), NREL PMU analysis (2025). Die physikalischen Mechanismen jeder Zeile werden in den folgenden Abschnitten entwickelt.
+> **Quellen:** Analysekomitee der Regierung (2025), ENTSO-E Factual Report (2025), IIT-ICAI / Compass Lexecon (2025), NREL PMU analysis (2025). Die physikalischen Mechanismen jeder Zeile werden in den folgenden Abschnitten entwickelt.
 
-## Phase 0: Das geschwächte Netz und das Vermaschungsmanöver {#fase-0}
+## Phase 0: Das geschwächte Netz und die Vermaschungsmanöver {#fase-0}
 
 <span id="t1"></span>
-Am Morgen des 28. April arbeitete das System auf einer extrem schwachen Topologie. Bei minimaler Nachfrage waren 35,8 % des 400-kV-Netzes in der Südzone und 34,3 % in der Zentralzone abgeschaltet, was ein Szenario mit hoher Übertragungsimpedanz darstellte. Auf diesem Netz manifestierte sich die Systemdynamik in Form von elektromechanischen Schwingungen mit zwei unterschiedlichen Modi:
+Am Morgen des 28. April arbeitete das System auf einer extrem schwachen Topologie. Bei minimaler Nachfrage waren 35,8 % des 400-kV-Netzes in der Südzone und 34,3 % in der Mittelzone abgeschaltet, was ein Szenario mit hoher Übertragungsimpedanz darstellte. In diesem Netz manifestierte sich die Systemdynamik in Form von elektromechanischen Schwingungen mit zwei unterschiedlichen Modi:
 
-- 12:03 Uhr MESZ — Erzwungene Schwingung von 0,6 Hz, Amplitude 70 mHz, die 4 Minuten und 42 Sekunden zum Abklingen brauchte.
-- 12:19 Uhr MESZ — Inter-Area-Mode von 0,2 Hz Ost-Zentrum-West: Die Iberische Halbinsel begann gegenphasig zum Kontinent zu schwingen und belastete die pyrinäischen Verbindungen.
+- 12:03 MESZ — Erzwungene Schwingung von 0,6 Hz, Amplitude 70 mHz, die 4 Minuten und 42 Sekunden zur Dämpfung benötigte.
+- 12:19 MESZ — Inter-Area-Mode von 0,2 Hz Ost-Zentrum-West: Die Iberische Halbinsel begann gegenphasig zum Kontinent zu schwingen, was die pyrinäischen Verbindungen belastete.
 
 Während beider Transienten fiel das Dämpfungsverhältnis auf Werte nahe 1 %, weit unter dem in der Fachliteratur geforderten Mindestschwellenwert von 5 % (Kundur, 1994). Dieses Verhalten war nicht neu: Analoge Episoden am 16., 22. und 24. April waren als isolierte Vorfälle behandelt worden, anstatt als Symptome einer systemischen Verschlechterung.
 
-![Schwingungen und Überspannungen in Núñez de Balboa](/figuras/nunez_balboa_precursores.png) _Abbildung C1. Núñez de Balboa / Vorläufer: Schwingungen und Überspannungen in Núñez de Balboa 400 kV während der Vorläuferereignisse. Die Abfolge der Spitzen zeigt die fortschreitende Verengung der Spielräume für die Blindleistungsregelung. Quelle: IIT-ICAI._
+![Schwingungen und Überspannungen in Núñez de Balboa](/figuras/nunez_balboa_precursores.png) _Abbildung C1. Núñez de Balboa / Vorläufer: Schwingungen und Überspannungen in Núñez de Balboa 400 kV während der Vorläuferereignisse. Die Abfolge der Spitzen zeigt die fortschreitende Verengung der Blindleistungsregelungsspielräume. Quelle: IIT-ICAI._
 
 <KeyFact id="mallado-ferranti">
 
-Um diese Schwingungen einzudämmen, führte REE ein Vermaschungsmanöver durch: Zwischen 12:03 und 12:30 Uhr MESZ wurden 11 400-kV-Leitungen wieder zugeschaltet, die aufgrund der geringen Nachfrage offen waren. Das Manöver erreichte sein unmittelbares Ziel – die Reduzierung der Impedanz und die Eindämmung der Schwingungspeitsche – führte aber laut dem IIT-ICAI-Bericht einen relevanten Nebeneffekt ein: Durch den Ferranti-Effekt injizierten die im Leerlauf wiederzugeschalteten Leitungen abrupt kapazitive Blindleistung in ein Netz, das bereits keine Aufnahmekapazität mehr hatte. Die Quantifizierung dieser Injektion ist eine der Achsen des technischen Streits: Der ICAI-Bericht beziffert sie auf bis zu 2,4 GVAr; die unabhängige Analyse des NREL geht von einer konservativeren Schätzung von 1.050 MVAr aus. Beide Zahlen stimmen darin überein, dass die Injektion die verbleibende Aufnahmekapazität des Systems überstieg, die zu diesem Zeitpunkt auf nur 3,3 GVAr geschätzt wurde, verglichen mit den üblichen 5,8 GVAr (siehe [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos), der Methodik, Modelle und Simulatoren gewidmet ist).
+Um diese Schwingungen einzudämmen, führte REE ein Vermaschungsmanöver durch: Zwischen 12:03 und 12:30 MESZ wurden 11 400-kV-Leitungen wieder zugeschaltet, die aufgrund der geringen Nachfrage offen waren. Das Manöver erreichte sein unmittelbares Ziel – die Reduzierung der Impedanz und die Eindämmung der Schwingungspeitsche – führte aber laut dem IIT-ICAI-Bericht einen relevanten Nebeneffekt ein: Durch den Ferranti-Effekt injizierten die im Leerlauf wiederzugeschalteten Leitungen abrupt kapazitive Blindleistung in ein Netz, dem bereits die Absorptionsmarge fehlte. Die Quantifizierung dieser Injektion ist einer der Schwerpunkte des technischen Disputs: Der ICAI-Bericht beziffert sie auf bis zu 2,4 GVAr; die unabhängige Analyse des NREL verwendet eine konservativere Schätzung von 1.050 MVAr. Beide Zahlen stimmen darin überein, dass die Injektion die verbleibende Absorptionskapazität des Systems überstieg, die zu diesem Zeitpunkt auf nur 3,3 GVAr geschätzt wurde, verglichen mit den üblichen 5,8 GVAr (siehe [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos), der Methodik, Modelle und Simulatoren gewidmet ist).
 
 </KeyFact>
 
+<FerrantiCapacitiveLineSimulator />
+
+_Abbildung C2. Konzeptioneller Simulator des Ferranti-Effekts und der kapazitiven Sättigung in Übertragungsleitungen. Die Abbildung zeigt, wie eine lange, schwach belastete und unzureichend kompensierte Leitung die Empfangsspannung erhöhen und das Risiko einer Überspannungsauslösung steigern kann. Eigene Darstellung basierend auf der Beziehung \\(Q_c = \\omega C V^2\\)._
+
 <span id="t3"></span>
-Die fachlichen Simulationen des IIT-ICAI schätzen, dass sich nach der Vermaschung der Abstand zum Kollaps-Punkt am Knoten Carmona 400 kV von einer Marge von 2.964 MW auf 1.268 MW verringerte – eine Reduzierung um 57 %, die das System an die Schwelle der kapazitiven Sättigung brachte.
+Die fachlichen Simulationen des IIT-ICAI schätzen, dass sich nach der Vermaschung der Abstand zum Kollapsknoten am Knoten Carmona 400 kV von einer Marge von 2.964 MW auf 1.268 MW verringerte – eine Reduzierung um 57 %, die das System an die Schwelle der kapazitiven Sättigung heranführte.
 
-![Oszillografische WAMS-Aufnahme (0,6 Hz)](/figuras/wams_oscilaciones_carmona.png) _Abbildung C2. WAMS / Schwingung von 0,6 Hz: Oszillografische Aufnahme in Carmona (12:03 Uhr MESZ). WAMS-Systeme ermöglichen die Beobachtung der kontinentalen Dynamik mit Millisekundenauflösung. Quelle: ENTSO-E / REE._
+![Oszillografische WAMS-Aufnahme (0,6 Hz)](/figuras/wams_oscilaciones_carmona.png) _Abbildung C3. WAMS / 0,6-Hz-Schwingung: Oszillografische Aufnahme in Carmona (12:03 MESZ). WAMS-Systeme ermöglichen die Beobachtung der kontinentalen Dynamik mit Millisekundenauflösung. Quelle: ENTSO-E / REE._
 
-## Phase 1: Dämpfungsverlust und Wurzelauslösung (12:32:57 Uhr MESZ) {#fase-1}
+## Phase 1: Dämpfungsverlust und Wurzelauslösung (12:32:57 MESZ) {#fase-1}
 
-Die Natur der ersten Transiente – die Schwingung von 0,6 Hz um 12:03 Uhr MESZ – ist Gegenstand einer direkten technischen Kontroverse. REE klassifiziert sie als eine erzwungene Schwingung, die ihren Ursprung im Regelkreis einer Photovoltaikanlage in Badajoz hatte. Der ICAI-Bericht argumentiert dagegen, dass es sich um einen natürlichen Inter-Area-Mode handelte, der durch ein systemisches Dämpfungsverhältnis von 1 % verschlimmert wurde, dessen Ursprung er auf das Fehlen von Power System Stabilizern (PSS) in den andalusischen Gaskraftwerken zurückführt, die abgeschaltet waren.
+Die Natur des ersten Transienten – der 0,6-Hz-Schwingung um 12:03 MESZ – ist Gegenstand einer direkten technischen Kontroverse. REE klassifiziert sie als eine erzwungene Schwingung, die im Regelkreis einer Photovoltaikanlage in Badajoz entstanden ist. Der ICAI-Bericht argumentiert hingegen, dass es sich um einen natürlichen Inter-Area-Mode handelte, der durch ein systemisches Dämpfungsverhältnis von 1 % verschärft wurde, dessen Ursprung er auf das Fehlen von Power System Stabilisatoren (PSS) in den andalusischen Gaskraftwerken zurückführt, die abgeschaltet waren.
 
 <FrequencyChart isGallery={true} />
 
-_Abbildung C3. Entwicklung der Frequenz während der Endphase des Zusammenbruchs. Daten: ENTSO-E / REE. Interaktive Visualisierung, eigene Darstellung._
+_Abbildung C4. Entwicklung der Frequenz während der Endphase des Zusammenbruchs. Daten: ENTSO-E / REE. Interaktive Visualisierung, eigene Darstellung._
 
-Die Entwicklung der Frequenz sollte nicht als primäre Ursache des Blackouts interpretiert werden, sondern als die terminale Manifestation einer Instabilität, die sich bereits auf der Ebene der Spannung und der Blindleistung entwickelte. Der Frequenzabfall tritt auf, wenn die Kaskade von Trennungen bereits einen wesentlichen Teil der verfügbaren Erzeugung zerstört hat. Daher ordnet die Frequenz die Endphase des Ereignisses chronologisch, erschöpft aber nicht ihren kausalen Mechanismus: Der physikalische Ursprung liegt in der kapazitiven Sättigung, der Verengung der Q-V-Marge und dem fortschreitenden Verlust der Blindleistungsaufnahmefähigkeit.
+Die Frequenzentwicklung sollte nicht als primäre Ursache des Blackouts interpretiert werden, sondern als terminale Manifestation einer Instabilität, die sich bereits auf der Ebene der Spannung und Blindleistung entwickelte. Der Frequenzabfall tritt auf, wenn die Kaskade von Trennungen bereits einen wesentlichen Teil der verfügbaren Erzeugung zerstört hat. Daher ordnet die Frequenz die Endphase des Ereignisses chronologisch, erschöpft aber nicht dessen kausalen Mechanismus: Der physikalische Ursprung liegt in der kapazitiven Sättigung, der Verengung der Q-V-Marge und dem fortschreitenden Verlust der Blindleistungsabsorptionsfähigkeit.
 
-Die Instabilität verstärkte sich um 12:19 Uhr MESZ mit dem 0,2-Hz-Mode, der durch europäische Phasor-Telemetrie als der natürliche Ost-Zentrum-West-Mode des synchronen Gebiets bestätigt wurde: Die reduzierte rotatorische Masse der Iberischen Halbinsel schwang gegenphasig zum europäischen Trägheitszentrum und materialisierte damit den im Kapitel 2 beschriebenen Peitscheneffekt.
+Die Instabilität verstärkte sich um 12:19 MESZ mit dem 0,2-Hz-Mode, der durch europäische Phasormess-Telemetrie als der natürliche Ost-Zentrum-West-Mode des synchronen Gebiets bestätigt wurde: Die reduzierte rotierende Masse der Iberischen Halbinsel schwang gegenphasig zum europäischen Trägheitszentrum und materialisierte damit den im Kapitel 2 beschriebenen Peitscheneffekt.
 
 <span id="t5"></span>
 <KeyFact id="granada-disparo">
 
-Der Point of no Return wurde um 12:32:57 Uhr MESZ erreicht. Ein Transformator 400/220 kV in einer Sammelschaltstation in der Provinz Granada wurde durch seine Überspannungsschutzauslösung abgeschaltet, nachdem auf der 220-kV-Sekundärseite ein Wert von etwa *244 kV* festgestellt wurde, der die dielektrische Sicherheitsschwelle überschritt. Die Größenordnung der Auswirkung lag nicht in den verlorenen 355 MW Wirkleistung – eine für das System beherrschbare Größe –, sondern im sofortigen und unwiederbringlichen Verlust von 165 MVAr an induktiver Blindleistungsaufnahmefähigkeit. In einem mit kapazitiver Blindleistung gesättigten System mit reduzierten Q-V-Margen verursachte das Verschwinden dieser Senke einen ansteigenden Spannungssprung an den umliegenden Knoten: den physikalischen Auslöser der Kettenreaktion (siehe [Anhang III · Schutz und Trennungen](./anexo-cascada-protecciones-desconexiones)).
+Der Punkt ohne Wiederkehr wurde um 12:32:57 MESZ erreicht. Ein 400/220-kV-Transformator in einer Sammelschienen-Umspannstation in der Provinz Granada trennte sich aufgrund des Ansprechens seiner Überspannungsschutzeinrichtungen, nachdem auf der 220-kV-Sekundärseite ein Wert von etwa *244 kV* festgestellt wurde, der die dielektrische Sicherheitsschwelle überschritt. Die Größenordnung der Auswirkung lag nicht in den verlorenen 355 MW Wirkleistung – eine für das System beherrschbare Größe –, sondern im sofortigen und unwiederbringlichen Verlust von 165 MVAr an induktiver Blindleistungsabsorptionsfähigkeit. In einem mit kapazitiver Blindleistung gesättigten System mit reduzierten Q-V-Margen verursachte das Verschwinden dieser Senke einen ansteigenden Spannungssprung in den umliegenden Knoten: den physikalischen Auslöser der Kettenreaktion (siehe [Anhang III · Schutzschaltungen und Trennungen](./anexo-cascada-protecciones-desconexiones)).
 
 </KeyFact>
 
-## Phase 2: Das Tap-Lag-Phänomen und die Spannungsentkopplung (12:32:57–12:33:18 Uhr MESZ) {#fase-2-taplag}
+## Phase 2: Das Tap-Lag-Phänomen und die Spannungsentkopplung (12:32:57–12:33:18 MESZ) {#fase-2-taplag}
 
 Die 21 Sekunden nach der Wurzelauslösung sind der technische Kern der forensischen Debatte.
 
 <span id="t4"></span>
 Nach der Trennung in Granada offenbarte der steigende Spannungstrend im Übertragungsnetz eine Divergenz zwischen dem Verhalten der 400-kV-Infrastrukturen und der darunterliegenden Sammelnetze: das Tap-Lag-Phänomen.
 
-Während der Phase 1 hatten die durch die Frequenzschwingungen verursachten Spannungsschwankungen und -abfälle dazu geführt, dass die Transformatoren 400/220 kV und 400/132 kV ihre OLTCs durch Erhöhen der Stufen anpassten, um die Spannung auf den Sekundärseiten anzuheben. Als die Überspannung im 400-kV-Netz ausbrach, waren diese Transformatoren in ihrer eigenen mechanischen Trägheit gefangen: Die Motor- und Getriebemechanismen der OLTCs sind absichtlich durch Zeitverzögerungen verlangsamt, um mechanische Schwingungen bei flüchtigen Störungen zu vermeiden. Angesichts einer ultraschnellen elektrischen Transiente erwiesen sich die Stufenschalter als zu langsam und konnten das Übersetzungsverhältnis nicht rechtzeitig reduzieren.
+Während Phase 1 hatten die durch die Frequenzschwingungen verursachten Spannungsschwankungen und -abfälle die 400/220-kV- und 400/132-kV-Transformatoren dazu veranlasst, ihre Stufenschalter (OLTC) durch Erhöhen der Stufen anzupassen, um die Spannung auf den Sekundärseiten anzuheben. Als die Überspannung im 400-kV-Netz ausbrach, waren diese Transformatoren in ihrer eigenen mechanischen Trägheit gefangen: Die Motor- und Getriebemechanismen der Stufenschalter sind absichtlich durch Zeitverzögerungen verlangsamt, um mechanische Schwingungen bei flüchtigen Störungen zu vermeiden. Angesichts einer extrem schnellen elektrischen Transiente erwiesen sich die Stufenschalter als zu langsam und konnten das Übersetzungsverhältnis nicht rechtzeitig reduzieren.
 
 Der erweiterte visuelle Nachweis der Tap-Lag-Entkopplung und der Ausbreitung von Überspannungen ist in Anhang III erhalten.
 
 <TapLagSequence />
 
-_Abbildung C4. Tap-Lag-Sequenz und Spannungsentkopplung zwischen Übertragungsnetz und Sammelnetz. Eigene Darstellung._
+_Abbildung C5. Tap-Lag-Sequenz und Spannungsentkopplung zwischen Übertragungsnetz und Sammelnetz. Eigene Darstellung._
 
-Das Tap-Lag verwandelt eine teilweise beobachtbare Überspannung in eine unsichtbare systemische Bedrohung. Das Übertragungsnetz konnte noch innerhalb zulässiger Grenzen erscheinen, während die nachgelagerten Sammelnetze bereits Schwellenwerte überschritten, die mit dem angeschlossenen Betrieb der Wechselrichter unvereinbar waren. Diese Divergenz erklärt, warum die Schutzsysteme der Anlagen von ihrem Anschlusspunkt aus korrekt handeln konnten und gleichzeitig aus der aggregierten Perspektive des Betreibers verfrüht erscheinen konnten. Das Phänomen war kein lokales Detail: Es war die physikalische Brücke zwischen der vorherigen Vermaschung und der Kaskade von ANSI-59-Auslösungen.
+Das Tap-Lag verwandelt eine teilweise beobachtbare Überspannung in eine unsichtbare systemische Bedrohung. Das Übertragungsnetz konnte noch innerhalb zulässiger Grenzen erscheinen, während die nachgelagerten Sammelnetze bereits Schwellenwerte überschritten, die mit dem angeschlossenen Betrieb der Wechselrichter unvereinbar waren. Diese Divergenz erklärt, warum die Schutzschaltungen der Anlagen von ihrem Anschlusspunkt aus korrekt funktionieren konnten und gleichzeitig aus der aggregierten Perspektive des Betreibers verfrüht erscheinen konnten. Das Phänomen war kein lokales Detail: Es war die physikalische Brücke zwischen der vorherigen Vermaschung und der Kaskade von ANSI-59-Auslösungen.
 
 <ForensicReveal
-  l1="Die Spannung in den Sammelnetzen der Solarparks stieg, ohne dass REE es bemerkte."
+  l1="Die Spannung in den Sammelnetzen der Solarparks stieg, ohne dass REE es erkannte."
   l2="Das Tap-Lag-Phänomen tritt auf, weil Transformatoren mit Laststufenschaltern (OLTC) mechanische Trägheit haben. Während der OLTC versuchte, die Spannung auf der Sekundärseite (Sammelnetz 220 kV) zu kompensieren, überwachte das SCADA von REE nur die Primärseite (400 kV), die normal erschien. Die Überspannung wuchs unsichtbar."
   l3="Die sekundäre Sammelschiene erreichte ≈242 kV (>1,10 p.u.), während die 400-kV-Primärseite innerhalb der Grenzen blieb. Dies machte die Überspannung für das SCADA-System von REE bis zur Auslösung des Transformators unsichtbar. (ENTSO-E Factual, S.28; IIT-ICAI / Compass Lexecon)"
   source="ENTSO-E Factual Report (2025), S.28"
 />
 
-Diese mechanische Unfähigkeit erzeugte eine „Fata Morgana" in der Leitwarte von REE. Das SCADA des Betreibers überwachte die 400-kV-Primärseite und beobachtete hohe, aber theoretisch unter dem außergewöhnlichen normativen Grenzwert von 435 kV (P.O. 1.1) liegende Spannungen. Jedoch stieg die Spannung auf den nachgelagerten 220-kV- und 132-kV-Netzen auf über 1,2 p.u. – Schwellenwerte, die für die nationale Leitstelle aufgrund der Nichtbeobachtbarkeit des darunterliegenden Netzes unsichtbar waren.
+Diese mechanische Unfähigkeit erzeugte eine „Fata Morgana" in der Leitwarte von REE. Das SCADA des Betreibers überwachte die 400-kV-Primärseite und beobachtete hohe, aber theoretisch unter dem außergewöhnlichen normativen Grenzwert von 435 kV (P.O. 1.1) liegende Spannungen. Jedoch stieg die Spannung in den nachgelagerten 220-kV- und 132-kV-Netzen auf über 1,2 p.u. – Schwellenwerte, die für die nationale Leitstelle aufgrund der Nichtbeobachtbarkeit des darunterliegenden Netzes unsichtbar waren.
 
 <ForensicReveal
-  l1="Als sich eine Solaranlage abschaltete, fielen auch die anderen in einer Kette aus."
-  l2="Bei der Auslösung des ersten Transformators (Granada, -165 MVAr Absorption) stieg die Spannung an den benachbarten Knoten. Auch diese Knoten überschritten die ANSI-59-Schwelle ihrer Wechselrichter, die wiederum auslösten. Jede Auslösung reduzierte die Blindleistungsaufnahmefähigkeit und erhöhte die Spannung weiter: eine positive Rückkopplungsschleife."
-  l3="Überprüfte Kettenauslösungen: Granada −355 MW, Badajoz −730 MW, Sevilla −550 MW = −1.635 MW gesamt in weniger als 30 Sekunden. (Regierungsanalysausschuss, S.38)"
-  source="Regierungsanalysausschuss (2025), S.38"
+  l1="Als sich eine Solaranlage trennte, fielen auch die anderen in einer Kaskade aus."
+  l2="Beim Auslösen des ersten Transformators (Granada, -165 MVAr Absorption) stieg die Spannung an den benachbarten Knoten. Diese Knoten überschritten ebenfalls die ANSI-59-Schwelle ihrer Wechselrichter, die daraufhin ebenfalls auslösten. Jede Auslösung reduzierte die Blindleistungsabsorptionsfähigkeit und erhöhte die Spannung weiter: eine positive Rückkopplungsschleife."
+  l3="Überprüfte Kettenauslösungen: Granada −355 MW, Badajoz −730 MW, Sevilla −550 MW = −1.635 MW gesamt in weniger als 30 Sekunden. (Analysekomitee der Regierung, S.38)"
+  source="Analysekomitee der Regierung (2025), S.38"
 />
 
-Angesichts für ihre Leistungselektronik unzumutbarer Spannungen aktivierten die Wechselrichter der Solar- und Windparks ihre internen Überspannungsschutzsysteme (ANSI-Funktion 59). Hier liegt eine der größten forensischen Diskrepanzen des Vorfalls: REE stufte diese Verluste als „unangemessene Auslösungen" ein, mit der Begründung, dass in ihrem 400-kV-Netz keine Trennwerte existierten; die ICAI-Analyse argumentiert, dass die Anlagen angesichts der tatsächlichen Überspannung an ihren Anschlusspunkten, nachgelagert zum Transformator mit OLTC, korrekt handelten. Das Tap-Lag schuf so die Bedingungen für eine positive Rückkopplungsschleife von Kaskadenauslösungen.
+Angesichts für ihre Leistungselektronik unannehmbarer Spannungen aktivierten die Wechselrichter der Solar- und Windkraftanlagen ihre internen Überspannungsschutzsysteme (ANSI-Funktion 59). Hier liegt eine der größten forensischen Diskrepanzen des Vorfalls: REE stufte diese Verluste als „unangemessene Auslösungen" ein mit der Begründung, dass in ihrem 400-kV-Netz keine Trennwerte existierten; die ICAI-Analyse hingegen argumentiert, dass die Anlagen korrekt auf die tatsächliche Überspannung an ihren Anschlusspunkten, nachgelagert zum Transformator mit Stufenschalter, reagierten. Das Tap-Lag schuf somit die Bedingungen für eine positive Rückkopplungsschleife von Kaskadenauslösungen.
 
-Der interaktive Simulator der P-V-Kurve für die Analyse der Spannungsstabilität ist registriert und verfügbar in [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos).
+Der interaktive Simulator der P-V-Kurve für die Spannungsstabilitätsanalyse ist in [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos) dokumentiert und verfügbar.
 
-Sobald die Spannung die Schwelle der ANSI-59-Schutzsysteme überschreitet, tritt das System in eine positive Rückkopplungsschleife ein. Der folgende Simulator reproduziert diese Kaskade.
+Sobald die Spannung die Schwelle der ANSI-59-Schutzschaltungen überschreitet, tritt das System in eine positive Rückkopplungsschleife ein. Der folgende Simulator reproduziert diese Kaskade.
 
 <ANSI59Cascade />
 
-_Abbildung C5. Schleife von ANSI-59-Auslösungen bei Überspannung in Wechselrichtern von Photovoltaik- und Windkraftanlagen. Eigene Darstellung._
+_Abbildung C6. Schleife von ANSI-59-Auslösungen bei Überspannung in Wechselrichtern von Photovoltaik- und Windkraftanlagen. Eigene Darstellung._
 
-## Phase 3: Der Weg zum Spannungseinbruch (12:33:18—12:33:29 Uhr MESZ) {#fase-3}
+## Phase 3: Der Weg zum Spannungseinbruch (12:33:18—12:33:29 MESZ) {#fase-3}
 
-In 11 Sekunden zerstörte sich das Festlandnetz selbst durch einen Teufelskreis, der von den Lastflussgleichungen diktiert wurde. Als sich die IBR-Anlagen massiv zum Selbstschutz abschalteten, verlor das Netz sofort seine Fähigkeit, Blindleistung zu absorbieren. Gleichzeitig reduzierte der Abfall der Wirkleistung den Fluss auf den 400-kV-Leitungen, erhöhte deren kapazitive Injektion durch den Ferranti-Effekt und trieb die Spannung an den am stärksten belasteten Knoten auf über 443 kV. Jede Trennung erhöhte die Spannung und erzwang weitere Trennungen.
+In 11 Sekunden zerstörte sich das Festlandnetz selbst durch einen Teufelskreis, der von den Lastflussgleichungen diktiert wurde. Als sich die IBR-Anlagen massenhaft zum Selbstschutz trennten, verlor das Netz sofort seine Fähigkeit, Blindleistung zu absorbieren. Gleichzeitig reduzierte der Abfall der Wirkleistung den Fluss in den 400-kV-Leitungen, erhöhte deren kapazitive Injektion durch den Ferranti-Effekt und trieb die Spannung an den am stärksten belasteten Knoten über 443 kV. Jede Trennung erhöhte die Spannung und erzwang weitere Trennungen.
 
 <BlackoutPropagationMap />
 
-_Abbildung C6. Geografische Ausbreitung der IBR-Kaskadenauslösungen während der Phase 3. Interaktive Simulation, eigene Darstellung, basierend auf ENTSO-E / Regierungsanalysausschuss-Daten._
+_Abbildung C7. Geografische Ausbreitung der IBR-Kaskadenauslösungen während Phase 3. Interaktive Simulation, eigene Darstellung basierend auf ENTSO-E / Analysekomitee-Daten._
 
 <span id="t6"></span>
-Die schwersten Schläge der Kaskade konzentrierten sich zunächst auf Badajoz (um 12:33:16 Uhr MESZ, *t=19 s*) und, in der unmittelbar darauffolgenden Sekunde, auf die Umspannwerke Segovia, Sevilla und Huelva. Im Fenster der kritischen fünf Sekunden (12:33:19–12:33:24 Uhr MESZ) trennte die Kettenreaktion <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> Erzeugung (mehr als 50 % der vorherigen iberischen Momentankapazität), ließ <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> der spanischen Nachfrage vollständig ohne Versorgung und brachte das System jenseits jeder Wiederherstellungsmöglichkeit. (Für die vollständige sekundengenaue Chronologie und die Leistungsvolumina jeder Trennung siehe [Anhang III · Schutz und Trennungen](./anexo-cascada-protecciones-desconexiones), wo die detaillierte Dokumentation der Schutzsysteme, Trennungen und der Kaskadenausbreitung erhalten ist).
+Die schwersten Schläge der Kaskade konzentrierten sich zunächst auf Badajoz (um 12:33:16 MESZ, *t=19 s*) und, in der unmittelbar darauffolgenden Sekunde, auf die Umspannwerke Segovia, Sevilla und Huelva. Im Fenster der fünf kritischen Sekunden (12:33:19–12:33:24 MESZ) trennte die Kettenreaktion <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> an Erzeugung (mehr als 50 % der vorherigen momentanen iberischen Kapazität), ließ <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> der spanischen Nachfrage vollständig ohne Versorgung und brachte das System jenseits jeder Erholungsmöglichkeit. (Für die erschöpfende Chronologie Sekunde für Sekunde und die Leistungsmengen jeder Trennung siehe [Anhang III · Schutzschaltungen und Trennungen](./anexo-cascada-protecciones-desconexiones), wo die detaillierte Dokumentation der Schutzschaltungen, Trennungen und der Kaskadenausbreitung erhalten ist).
 
-Während die Kaskade die verbleibende Erzeugung zerstörte, begann die Frequenz mit einer extremen RoCoF (mit geschätzten sekundären Spitzen von <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>) einzubrechen und aktivierte die UFLS-Schemata. Beim Überschreiten der Schwelle von 49,5 Hz um 12:33:20 Uhr MESZ wurden automatisch mehr als 2.000 MW Pumpspeicher abgeschaltet, und als das Netz unter <CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta> fiel, wurden die ersten Stufen der Industrienachfrage abgeworfen.
+Als die Kaskade die verbleibende Erzeugung zerstörte, begann die Frequenz mit einer extremen RoCoF (mit geschätzten sekundären Spitzen von <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>) einzubrechen, was die UFLS-Schemata aktivierte. Beim Überschreiten der Schwelle von 49,5 Hz um 12:33:20 MESZ wurden automatisch mehr als 2.000 MW Pumpspeicher abgeschaltet, und als das Netz unter <CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta> fiel, wurden die ersten Stufen der Industrienachfrage abgeworfen.
 
 <ForensicReveal
-  l1="Das System versuchte, sich durch Abschalten von Verbrauch zu verteidigen, aber das verschlimmerte das Spannungsproblem."
-  l2="Das UFLS (Under Frequency Load Shedding) schaltet Industrielasten ab, wenn die Frequenz unter die Schwellenwerte fällt. Viele dieser Lasten sind induktiv (Motoren, Pumpen) und absorbieren Blindleistung. Durch ihre Beseitigung verlor das System zusätzliche Blindleistungsaufnahmefähigkeit, was die Überspannung, die die Grundursache war, verschlimmerte."
+  l1="Das System versuchte sich zu verteidigen, indem es Verbrauch abschaltete, aber das verschlimmerte das Spannungsproblem."
+  l2="Das UFLS (Unterfrequenz-Lastabwurf) trennt Industrielasten, wenn die Frequenz unter die Schwellenwerte fällt. Viele dieser Lasten sind induktiv (Motoren, Pumpen) und absorbieren Blindleistung. Durch ihre Abschaltung verlor das System zusätzliche Blindleistungsabsorptionsfähigkeit, was die Überspannung, die die Grundursache war, verschärfte."
   l3="Pumpspeicher (≈3.000 MW aktiv) werden bei 49,5 Hz gemäß P.O. 1.6 abgeworfen. Industrienachfrage ab 49,0 Hz. Das UFLS-Schema ist zum Schutz vor Unterfrequenz ausgelegt, nicht vor Überspannung – dies ist das Paradoxon des 28. April. (P.O. 1.6 / datos28A.json)"
   source="P.O. 1.6 gültig April 2025 / ENTSO-E Factual"
 />
 
 <KeyFact id="paradoja-ufls">
 
-Das Eingreifen des UFLS offenbarte das sogenannte UFLS-Paradoxon: Durch das Abschalten von Wirkverbrauch zur Stabilisierung der Frequenz eliminierte das Schema gleichzeitig den induktiven Blindleistungsverbrauch dieser Nachfrage. In einem mit kapazitiver Blindleistung gesättigten Netz führte die Unterdrückung der letzten Senken – Motoren und Industrielasten – zu einem erneuten Anstieg der Überspannungen, was den Zusammenbruch, den das UFLS selbst bremsen sollte, verstärkte. Die für Frequenzdefizite ausgelegten Schutzlogiken erwiesen sich bei einem primär durch Spannungsinstabilität angetriebenen Zusammenbruch als kontraproduktiv.
+Das Eingreifen des UFLS offenbarte das sogenannte UFLS-Paradoxon: Durch das Abschalten von aktivem Verbrauch zur Stabilisierung der Frequenz eliminierte das Schema gleichzeitig den induktiven Blindleistungsverbrauch dieser Nachfrage. In einem mit kapazitiver Blindleistung gesättigten Netz führte die Unterdrückung der letzten Senken – Motoren und Industrielasten – zu einem erneuten Anstieg der Überspannungen, was den Zusammenbruch, den das UFLS selbst bremsen sollte, noch verstärkte. Die für Frequenzdefizite ausgelegten Schutzlogiken erwiesen sich bei einem primär durch Spannungsinstabilität angetriebenen Zusammenbruch als kontraproduktiv.
 
 </KeyFact>
 
-Der didaktische Simulator des UFLS-Paradoxons ist in [Anhang III · Schutz und Trennungen](./anexo-cascada-protecciones-desconexiones) verfügbar.
+Der didaktische Simulator des UFLS-Paradoxons ist in [Anhang III · Schutzschaltungen und Trennungen](./anexo-cascada-protecciones-desconexiones) verfügbar.
 
 <span id="t2"></span>
 <ForensicReveal
   l1="Das Hochspannungskabel nach Frankreich half nicht, als es am meisten gebraucht wurde."
-  l2="Die HVDC-Verbindung INELFE-1 hatte um etwa 12:08 Uhr MESZ von PMODE3 (dynamische Reaktion) auf PMODE1 (konstante Leistung) umgeschaltet. In PMODE1 hält die Verbindung den festen Leistungssollwert, ohne auf Frequenz- oder Spannungsänderungen im iberischen Netz zu reagieren."
-  l3="Der HVDC hielt während der gesamten Kaskade bis 12:33:24 Uhr MESZ 1.000 MW Export ES→FR aufrecht und war das letzte Element, das sich trennte. Er kehrte den Fluss nicht um. Die dokumentierten 3.800 MW Import entsprechen den AC-Leitungen über die Pyrenäen. (ENTSO-E Factual, S.12; S.108-109)"
+  l2="Die HVDC-Verbindung INELFE-1 war um etwa 12:08 MESZ von PMODE3 (dynamische Reaktion) auf PMODE1 (konstante Leistung) umgeschaltet worden. In PMODE1 hält die Verbindung den festen Leistungssollwert, ohne auf Frequenz- oder Spannungsänderungen im iberischen Netz zu reagieren."
+  l3="Der HVDC hielt während der gesamten Kaskade bis 12:33:24 MESZ 1.000 MW Export ES→FR aufrecht und war das letzte Element, das sich trennte. Er kehrte den Fluss nicht um. Die dokumentierten 3.800 MW Import entsprechen den transpyrinäischen AC-Leitungen. (ENTSO-E Factual, S.12; S.108-109)"
   source="ENTSO-E Factual Report (2025), S.12 und S.108-109"
 />
 
-In den letzten Augenblicken verursachte das massive Defizit an interner Erzeugung eine gewaltsame Umkehr der pyrinäischen Flüsse: Die AC-Leitungen erreichten eine transiente Importspitze von etwa 3.800 MW Wirkleistung (ENTSO-E Factual, S.108-109) aus Frankreich. Gleichzeitig entzog die HVDC-Verbindung INELFE-1 – seit 12:08 Uhr MESZ auf PMODE1 festgelegt – weiterhin Wirkleistung in der Größenordnung von 1 GW aus dem iberischen System (die genaue Aufschlüsselung nach Stromkreis und Kapazität kann in [Anhang IV · Interkonnektionen und Flüsse](./anexo-interconexiones-flujos) überprüft werden). Dieser asymmetrische Betrieb schränkte die Netto-Unterstützungskapazität vom Kontinent drastisch ein.
+In den letzten Augenblicken verursachte das massive Defizit an interner Erzeugung eine gewaltsame Umkehr der pyrinäischen Flüsse: Die AC-Leitungen erreichten eine transiente Importspitze von etwa 3.800 MW Wirkleistung (ENTSO-E Factual, S.108-109) aus Frankreich. Gleichzeitig entzog die HVDC-Verbindung INELFE-1 – seit 12:08 MESZ auf PMODE1 festgelegt – weiterhin Wirkleistung in der Größenordnung von 1 GW aus dem iberischen System (die genaue Aufschlüsselung nach Stromkreis und Kapazität kann in [Anhang IV · Interkonnektionen und Flüsse](./anexo-interconexiones-flujos) überprüft werden). Dieser asymmetrische Betrieb verringerte die Netto-Unterstützungskapazität vom Kontinent drastisch.
 
 Der erweiterte grafische Nachweis der grenzüberschreitenden Flüsse ist in Anhang IV erhalten.
 
 <span id="t7"></span>
-Um 12:33:21 Uhr MESZ öffneten die Schutzsysteme für Synchronismusverlust die AC-Verbindungen, um eine Ansteckung des kontinentaleuropäischen Systems zu verhindern, und isolierten die Iberische Halbinsel.
+Um 12:33:21 MESZ öffneten die Schutzschaltungen für Synchronismusverlust die AC-Verbindungen, um eine Ansteckung des kontinentaleuropäischen Systems zu verhindern, und trennten die Iberische Halbinsel ab.
 
 <span id="t8"></span>
-Der endgültige Spannungseinbruch wurde um 12:33:29.741 Uhr MESZ mit der Auslösung der letzten Generatorgruppe bestätigt – was den schwersten systemischen Vorfall in der Geschichte des kontinentaleuropäischen Stromsystems abschloss.
+Der endgültige Spannungseinbruch wurde um 12:33:29.741 MESZ mit der Auslösung der letzten Generatorgruppe bestätigt – was den schwersten systemischen Vorfall abschloss, der in der Geschichte des kontinentaleuropäischen Stromsystems dokumentiert ist.
 
 <FaultTreeCollapseFigure />
 
 <p className="figureCaption">
-  Abbildung C7. Kausalbaum des Zusammenbruchs: Technische Abfolge von der Vermaschung bis zum Spannungseinbruch.
+  Abbildung C8. Kausaler Baum des Zusammenbruchs: Technische Abfolge von der Vermaschung bis zum Spannungseinbruch.
 </p>
 
 Die Kaskade dauerte 32 Sekunden; die Wiederherstellung dauerte 18,5 Stunden. Kapitel 4 rekonstruiert diese zweite Phase.

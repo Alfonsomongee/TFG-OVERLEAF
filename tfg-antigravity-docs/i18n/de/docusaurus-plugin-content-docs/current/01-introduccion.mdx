@@ -2,73 +2,100 @@
 slug: /introduccion
 sidebar_position: 1
 hide_title: true
-title: "Einführung"
+title: "Einleitung"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import MetamorfosisIBR from '@site/src/components/MetamorfosisIBR/MetamorfosisIBR';
+import NarrativasInstitucionales from '@site/src/components/NarrativasInstitucionales/NarrativasInstitucionales';
+
+<GlitchTitle>Einleitung</GlitchTitle>
 
 
-<GlitchTitle>Einführung</GlitchTitle>
+:::info Ausmaße des Vorfalls
+| Parameter | Wert | Quelle |
+| :--- | :--- | :--- |
+| Zerstörte Erzeugung in der Kaskade | >15 GW in <30 s | Regierungsanalyseausschuss, 2025 |
+| Nicht versorgte Nachfrage (Spanien) | 25,2 GW | ESIOS / REE |
+| Nicht versorgte Nachfrage (Portugal) | ≈ 5,8 GW | REN / ENTSO-E |
+| Betroffene Personen | ≈ 57 Millionen | Regierungsanalyseausschuss |
+| Dauer des Blackouts (Wiederherstellung 99,95 %) | 18,5 Stunden | REE / ENTSO-E |
+| Geschätzter wirtschaftlicher Schaden (VoLL) | 1.000–1.500 Mio. € | CEOE / ATA / eigene Schätzung |
+| Kumulierte Kosten „Operation Verstärkt“ | >666 Mio. € (10 Monate) | Redeia, April 2026 |
+:::
 
-Am 28. April 2025 erlitt das iberische Verbundsystem einen Spannungskollaps, der in Sekundenschnelle mehr als **15 GW Erzeugung vernichtete** und rund **60 Millionen Menschen** ohne Stromversorgung ließ. Hinsichtlich Ausmaß und Ausbreitungsgeschwindigkeit ist dieser Vorfall im kontinentaleuropäischen System der letzten Jahrzehnte beispiellos. Diese Arbeit ist keine chronologische Rekonstruktion des Ereignisses: Sie ist eine kritische und vergleichende Analyse der technischen, regulatorischen und operativen Narrative, die darum wetteiferten, es zu erklären.
+Am 28. April 2025 erlitt das iberische Synchronsystem einen Spannungskollaps, der innerhalb von Sekunden mehr als 15 GW Erzeugung zerstörte (was zur Unterbrechung von etwa 25,2 GW Nachfrage führte) und etwa 57 Millionen Menschen ohne Stromversorgung zurückließ. In Bezug auf Ausmaß und Ausbreitungsgeschwindigkeit ist das Ereignis im kontinentaleuropäischen System seit über zwanzig Jahren beispiellos. Diese Arbeit ist keine chronologische Rekonstruktion des Ereignisses: Sie ist eine kritische und vergleichende Analyse der technischen, regulatorischen und operativen Narrative, die um seine Erklärung konkurriert haben.
 
 ## Gegenstand und Umfang
 
-Der Kollaps — gekennzeichnet durch eine Kaskade von Abschaltungen im Zusammenhang mit Überspannungsphänomenen in einem Kontext hoher Durchdringung von wechselrichterbasierten Ressourcen (IBR) —
-hat zu einer tiefgreifenden interpretativen Uneinigkeit über seine Grundursachen und die
-Zuweisung von Verantwortlichkeiten geführt. Die Untersuchung analysiert drei vorherrschende institutionelle
-Sichtweisen:
+Der Kollaps – gekennzeichnet durch eine Kaskade von Abschaltungen im Zusammenhang mit Überspannungsphänomenen in einem Kontext hoher Durchdringung mit umrichterbasierten Ressourcen (IBR) – hat zu tiefgreifenden interpretativen Meinungsverschiedenheiten über seine Grundursachen und die Zuweisung von Verantwortlichkeiten geführt. Die Untersuchung untersucht drei vorherrschende institutionelle Sichtweisen:
 
-**Sicht der Verwaltung (Regierung / Redeia).** Der Bericht des Analyseausschusses des Nationalen Sicherheitsrates interpretiert den Kollaps aus der Perspektive der Einhaltung von Vorschriften. Seine These führt die Verschärfung des Ereignisses auf ein Defizit bei der Absorption von induktiver Blindleistung zurück, was verhinderte, den Spannungsanstieg einzudämmen, und somit gegen die Anforderungen des Betriebsverfahrens P.O. 7.4 verstieß.
+*(Anmerkung: Die Analyse basiert auf vier Primärberichten – Regierung, REE, IIT-ICAI/AELEC und ENTSO-E –, die in drei Sichtweisen gruppiert sind, da die Berichte der Regierung und der REE grundlegende kausale Prämissen teilen.)*
 
-**Sicht des Erzeugersektors (ICAI / AELEC-Bericht).** Das Sachverständigengutachten von IIT-ICAI und Compass Lexecon verlagert die Verantwortung auf konkrete operative Entscheidungen von Redeia. Die zentrale These stellt das vom Betreiber durchgeführte Vermaschungsmanöver (*meshing*) in Frage und argumentiert, dass es den kapazitiven Beitrag des Netzes in einem Szenario geringer synchroner Festigkeit erhöhte und einen Überspannungsimpuls erzeugte, der durch die Einschränkungen der Beobachtbarkeit des 220-kV-Netzes verstärkt wurde — ein Phänomen, das als Tap-Lag bezeichnet wird.
+Sichtweise der Verwaltung (Regierung / REE, der Übertragungsnetzbetreiber, Tochtergesellschaft der Holdinggesellschaft Redeia). Der Bericht des Analyseausschusses des Nationalen Sicherheitsrates interpretiert den Kollaps aus der Perspektive der Einhaltung gesetzlicher Vorschriften. Seine These führt die Verschlimmerung des Ereignisses auf ein Defizit bei der Aufnahme induktiver Blindleistung zurück, das die Eindämmung des Spannungsanstiegs verhinderte, was gegen die Anforderungen der Betriebsverfahren P.O. 7.4 verstieß.
 
-**Sicht des europäischen Netzbetreibers (ENTSO-E).** Der Faktenbericht von ENTSO-E nimmt die Perspektive des kontinentalen Synchrongebiets ein: Er analysiert die Ausbreitung von Inter-Area-Schwingungen und hinterfragt die Hinlänglichkeit des N−1-Kriteriums angesichts ultraschneller dynamischer Phänomene, die typisch für von Leistungselektronik dominierte Systeme sind.
+Sichtweise des Erzeugungssektors (ICAI / AELEC-Bericht). Die Sachverständigenanalyse des IIT-ICAI und von Compass Lexecon verlagert die Verantwortung auf konkrete operative Entscheidungen von REE. Die zentrale These hinterfragt die vom Betreiber durchgeführte Vermaschungsmanöver (*meshing*) und argumentiert, dass es den kapazitiven Beitrag des Netzes in einem Szenario geringer synchroner Kurzschlussleistung erhöhte und einen Überspannungsimpuls erzeugte, der durch die eingeschränkte Beobachtbarkeit des 220-kV-Netzes verstärkt wurde – ein Phänomen, das als Tap-Lag bezeichnet wird.
 
-![Replikation der Sequenz des Kollapses](/figuras/albustami_ieee39_secuencia.png) _Abbildung 1. Sequenz des Kollapses vom 28. April, die die Interaktion zwischen Betreiberaktionen (OA) und automatischen Schutzaktionen (AA) zeigt. Quelle: Albustami et al., 2025._
+Sichtweise des europäischen Netzbetreibers (ENTSO-E). Der Tatsachenbericht von ENTSO-E nimmt eine kontinentale Synchrongebietsperspektive ein: Er analysiert die Ausbreitung von Inter-Area-Oszillationen und hinterfragt die Angemessenheit des (N-1)-Kriteriums angesichts ultraschneller dynamischer Phänomene, die für leistungselektronikdominierte Systeme charakteristisch sind.
+Der Umfang der Arbeit gliedert sich entlang des Kontrasts dieser drei Narrative mit den europäischen _Network Codes_ – insbesondere der RfG-Verordnung – und den modernen Prinzipien der Spannungsstabilität in umrichterdominierten Systemen, mit dem Ziel, strukturelle Lehren, methodische Einschränkungen und regulatorische Lücken zu identifizieren, die die Resilienz des europäischen Stromsystems im Übergang zur Dekarbonisierung beeinflussen. Die narrative Analyse basiert auf einer elektromagnetischen Rekonstruktion des transienten Vorgangs, die auf PMU- und WAMS-Aufzeichnungen aufbaut und mit der von den vier Akteuren veröffentlichten oszillografischen Evidenz kompatibel ist.
 
-Der Umfang der Arbeit basiert auf der Gegenüberstellung dieser drei Narrative mit den europäischen _Network Codes_ — insbesondere der RfG-Verordnung — und mit den modernen Prinzipien der Spannungsstabilität in wechselrichterdominierten Systemen. Ziel ist es, strukturelle Lehren, methodische Einschränkungen und regulatorische Lücken aufzuzeigen, die die Widerstandsfähigkeit des europäischen Stromsystems beim Übergang zur Dekarbonisierung bedingen.
 
 ## Die strukturelle Verwundbarkeit des iberischen Systems
 
-Die Energiewende hat die Dynamik des Halbinsel-Systems tiefgreifend verändert. Der beschleunigte Ersatz von Synchronkraftwerken durch IBR reduziert die an das Netz gekoppelten rotierenden Massen und damit gleichzeitig zwei kritische Parameter: die Systemträgheit (*H*) — die in den südlichen Zonen der Halbinsel auf Werte zwischen **1,3 s und 1,8 s** fiel, unter die Schwelle von 2 s, die in der Fachliteratur mit gefährdeten dynamischen Margen in Verbindung gebracht wird — und die an den Netzknoten verfügbare Kurzschlussleistung. Diese doppelte Abnahme betrifft nicht nur die Wirkleistungs-Frequenz-Achse: Sie untergräbt auf kritische Weise die Fähigkeit des Systems, dynamisch Blindleistung aufzunehmen und die Spannung bei schnellen Transienten aufrechtzuerhalten, was genau die Achse ist, um die sich der Kollaps drehte.
+Die Energiewende hat die Dynamik des Festlandsystems tiefgreifend verändert. Der beschleunigte Ersatz von Synchrongeneratoren durch IBR reduziert die an das Netz gekoppelten rotierenden Massen und mit ihnen gleichzeitig zwei kritische Parameter: die Systemträgheit (*H*) – die im Süden der Iberischen Halbinsel auf zonale Werte zwischen 1,3 s und 1,8 s fiel, unterhalb der Schwelle von 2 s, die die Fachliteratur mit gefährdeten dynamischen Reserven verbindet – und die an den Knoten verfügbare Kurzschlussleistung. Diese doppelte Beeinträchtigung betrifft nicht nur die Achse Frequenz–Wirkleistung: Sie untergräbt kritisch die Fähigkeit des Systems, dynamisch Blindleistung aufzunehmen und die Spannung bei schnellen Transienten zu halten, was genau die Achse ist, entlang derer sich der Kollaps vollzog.
 
-![Elektromechanische Metamorphose des Energiesystems](/figuras/futured_grid_evolution.png) _Abbildung 2. Die Verdrängung großer rotierender Massen durch IBR-Ressourcen reduziert die Gesamtträgheit des Systems drastisch. Quelle: FutuRed, 2024._
+<BrowserOnly fallback={<div style={{height: 220}} />}>
+  {() => <MetamorfosisIBR />}
+</BrowserOnly>
 
-Am Morgen des Vorfalls wurde das System mit einer **82 %igen Durchdringung an nicht-synchronen Erneuerbaren** bei geringer Nachfrage (Schwachlast) betrieben. Um die Erzeugung auszugleichen, entkoppelte Redeia fast alle verfügbaren thermischen Blöcke und reduzierte die Anzahl der Synchrongeneratoren auf ein historisches Minimum. Der IBR-Park arbeitete praktisch vollständig im Grid-Following-Modus: Wechselrichter, die eine stabile externe Spannung und Frequenz als Synchronisationsreferenz benötigen. Durch das Verschwinden der Synchronblöcke verlor das System seinen Hauptmechanismus zur dynamischen Blindleistungsabsorption und damit die natürliche Dämpfung gegenüber Spannungstransienten.
+Diese Metamorphose war weder allmählich noch unbemerkt: Sie hatte konkrete betriebliche Konsequenzen. Die verfügbare Kurzschlussleistung fiel parallel zum Verlust der synchronen Masse – Umrichter liefern nur das 1,1- bis 1,2-fache ihrer Nennleistung im Vergleich zum 5- bis 7-fachen bei Synchrongeneratoren – und die dynamische Reserve für die Blindleistungsaufnahme war gerade in den Momenten höchster Solareinspeisung, wie am Mittag des 28. April 2025, begrenzt.
 
-Zu dieser internen Fragilität kommt die strukturelle Isolation der Iberischen Halbinsel hinzu. Mit einer grenzüberschreitenden Verbindungskapazität von **7,9 %** bezogen auf die Spitzenlast — weit unter den EU-Zielen — kann das iberische System in Notsituationen keine dynamische Stabilität aus dem kontinentalen Kernland importieren. Das Zusammentreffen von geringer synchroner Festigkeit und relativer Netzisolation schuf die Verwundbarkeit, die es unmöglich machte, die Überspannungskaskade um **12:33:24 MESZ** zu stoppen.
+Am Morgen des Vorfalls arbeitete das System mit einem hohen Anteil nicht-synchroner erneuerbarer Erzeugung (deren detaillierte Struktur im Abschnitt Technischer Kontext beschrieben wird) unter Bedingungen einer Nachfrage im Tal. Um die Erzeugung auszugleichen, koppelte REE praktisch alle verfügbaren thermischen Einheiten ab und reduzierte die Anzahl der Synchrongeneratoren auf ein historisches Minimum. Der IBR-Park arbeitete praktisch vollständig im *Grid-Following*-Modus: Umrichter, die eine stabile externe Spannung und Frequenz als Synchronisationsreferenz benötigen. Mit dem Wegfall der Synchrongruppen verlor das System seinen Hauptmechanismus zur dynamischen Aufnahme von Blindleistung und damit die natürliche Dämpfung gegenüber Spannungstransienten.
+
+Zu dieser inneren Fragilität kommt die strukturelle Isolation der Iberischen Halbinsel hinzu. Mit einer grenzüberschreitenden Kuppelkapazität von 7,9 % der Spitzenlast – weit unter den gemeinschaftlichen Zielen – kann das iberische System in Notsituationen keine dynamische Stabilität aus dem kontinentalen Kern importieren. Das Zusammentreffen von geringer synchroner Kurzschlussleistung und relativer Netzisolation bildete die Verwundbarkeit, die es unmöglich machte, die Überspannungskaskade um 12:33:29.741 MESZ zu stoppen.
+
+:::note Geografischer Geltungsbereich
+Der Kollaps betraf gleichzeitig Spanien und Portugal. Das System von REN (Redes Energéticas Nacionais) war elektrisch mit REE über die Hochspannungsverbindungen synchronisiert; als der Spannungsnullpunkt im spanischen Festlandsystem eintrat, kollabierte das portugiesische Netz innerhalb von Millisekunden. Die nicht versorgte Nachfrage in Portugal erreichte etwa 5,8 GW, und die vollständige Wiederherstellung des portugiesischen Systems dauerte etwa 12 Stunden (im Vergleich zu etwa 15,5 Stunden im spanischen System). Die Kapitel 4 und 7c analysieren die portugiesische Dimension im Detail. Im Verlauf dieser Arbeit bezeichnet „iberisches System“ das gemeinsame Synchrongebiet ES+PT, und „Festlandsystem“ wird ausschließlich verwendet, wenn sich die Analyse auf das spanische Netz beschränkt.
+:::
 
 <ForensicTable 
-    title="TABELLE 1 | GRID INTERCONNECTION SNAPSHOT"
-    source="MIT CEEPR / Comisión Europea, 2025"
-    confidence="HIGH"
-  >
+  title="Tabelle A1 — Relative elektrische Kuppelkapazität"
+  source="MIT CEEPR / Europäische Kommission, 2025"
+  confidence="HOCH"
+>
 
-| Mitgliedstaat        | Verbindungsgrad / Spitzenlast (%) |
-| -------------------- | --------------------------------- |
-| **Iberia (ES + PT)** | **7,9**                           |
-| Frankreich           | ~14                               |
-| Deutschland          | ~17                               |
+| System / Mitgliedstaat | Kuppelkapazität bezogen auf Spitzenlast (%) |
+| :------------------- | :-------------------------------: |
+| Iberien (ES + PT) | 7,9                           |
+| Frankreich            | ≈ 14                               |
+| Deutschland           | ≈ 17                               |
 | EU-Ziel 2030         | 15                                |
-
-
 
 </ForensicTable>
 
-_Tabelle: Nomineller Stromverbindungsgrad im Verhältnis zur Spitzenlast (Auswahl). Quelle: MIT CEEPR / Europäische Kommission, 2025._
+<BrowserOnly fallback={<div style={{height: 280}} />}>
+  {() => <NarrativasInstitucionales />}
+</BrowserOnly>
 
 ## Methodik: Forensische Triangulation und Kreuzvalidierung
 
-Die Untersuchung verfolgt einen vergleichenden forensischen Analyseansatz, der in drei Phasen strukturiert ist:
+Die Untersuchung verfolgt einen Ansatz der vergleichenden forensischen Analyse, strukturiert in drei Phasen:
 
-**1. Zusammenstellung primärer Quellen.** Systematische Untersuchung der offiziellen Sachverständigengutachten, gestützt auf die Verarbeitung von mehr als **170 GB technischer Aufzeichnungen** des Systembetreibers, einschließlich Telemetriedaten des SCADA und oszillographischer Aufzeichnungen.
+1. Zusammenstellung von Primärquellen. Systematische Untersuchung der offiziellen Sachverständigenberichte, gestützt auf die Verarbeitung von über 170 GB technischer Aufzeichnungen des Übertragungsnetzbetreibers, einschließlich SCADA-Fernmessungen und Oszillogrammaufzeichnungen.
 
-**2. Triangulation von Narrativen.** Systematische Gegenüberstellung der These der Verwaltung mit der gutachterlichen Analyse des Erzeugersektors hinsichtlich der beiden Hauptachsen der Uneinigkeit: das Management des Vermaschungsmanövers und die fehlende Beobachtbarkeit des 220-kV-Netzes.
+2. Triangulation der Narrative. Systematischer Vergleich der These der Verwaltung mit der Sachverständigenanalyse des Erzeugungssektors entlang der beiden Hauptstreitpunkte: die Handhabung des Vermaschungsmanövers und die Nicht-Beobachtbarkeit des 220-kV-Netzes.
 
-**3. Technische Kreuzvalidierung.** Abgleich der chronologischen Sequenzen mit der unabhängigen NREL-Analyse zu Inter-Area-Schwingungen, die aus Aufzeichnungen von kontinental abdeckenden Zeigermessgeräten (PMU) gewonnen wurden — Daten, deren institutionelle Unabhängigkeit es erlaubt, zwischen abweichenden Versionen zu vermitteln.
+3. Technische Kreuzvalidierung. Abgleich der chronologischen Abläufe mit der unabhängigen Analyse des NREL zu Inter-Area-Oszillationen, basierend auf Aufzeichnungen von Phasor Measurement Units (PMU) mit kontinentaler Abdeckung – Daten, deren institutionelle Unabhängigkeit es erlaubt, zwischen abweichenden Versionen zu vermitteln.
 
-![Topologische Lokalisierung der PMUs im europäischen Synchrongebiet](/figuras/pmu_sensors_europe.png) _Abbildung 3. Die Abdeckungsdichte der PMUs war entscheidend für die unabhängige Überprüfung der Inter-Area-Schwingungen. Quelle: NREL._
 
-Große Sprachmodelle wurden als Werkzeug zur dokumentarischen Unterstützung eingesetzt — Klassifizierung, Synthese und Extraktion kritischer Daten — angesichts des außergewöhnlichen Volumens an technischer Dokumentation, das nach dem Vorfall erstellt wurde. Ihre Anwendung beschränkte sich strikt auf die dokumentarische Organisation: Sie weisen bekannte Einschränkungen bei schnellen dynamischen Phänomenen wie dem Tap-Lag-Mechanismus oder dem Paradoxon des UFLS auf. Die technische Vergleichsanalyse, die Bewertung der Kausalität und die Schlussfolgerungen der Arbeit obliegen ausschließlich dem Ermessen des Autors.
+Große Sprachmodelle wurden als Werkzeug zur Dokumentationsunterstützung eingesetzt – Klassifizierung, Synthese und Extraktion kritischer Daten – angesichts des außergewöhnlichen Umfangs der nach dem Vorfall erstellten technischen Dokumentation. Ihre Anwendung wurde streng auf die Dokumentenorganisation beschränkt: Sie weisen bekannte Einschränkungen bei Phänomenen schneller Dynamik wie dem Tap-Lag-Mechanismus oder dem UFLS-Paradoxon auf. Der technische Vergleich, die Kausalitätsbewertung und die Schlussfolgerungen der Arbeit liegen in der alleinigen Verantwortung des Autors.
+
+:::tip Technisches Glossar
+Die in dieser Arbeit verwendeten technischen Begriffe (IBR, SCR, GFM, UFLS, ANSI 59 usw.) werden mit normativer Strenge gemäß IEEE/ENTSO-E/CIGRE im [Technischen Glossar](/glossar) definiert.
+:::
+
+---
+
+Der Rahmen ist abgesteckt: ein System im strukturellen Wandel, drei institutionelle Lesarten seiner Konsequenzen und eine Methode der forensischen Triangulation, um zwischen ihnen zu navigieren.
+[Kapitel 2](/contexto) beschreibt detailliert den technischen Zustand des iberischen Systems zum Zeitpunkt des Vorfalls – das Paradoxon des erneuerbaren Überflusses und der verborgenen Fragilität –, der den 28. April 2025 zum Tag des Kollapses machte.

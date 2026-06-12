@@ -3,222 +3,280 @@ sidebar_position: 5
 hide_title: true
 title: "Analyse der offiziellen Berichte"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
-import InteractiveCTA from "@site/src/components/InteractiveCTA";
-import IberianGridTopologyBase from "@site/src/components/IberianGridTopologyBase";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import IberianGridTopology from "@site/src/components/IberianGridTopology";
 
 <GlitchTitle>Analyse der offiziellen Berichte</GlitchTitle>
 
-Die Kreuzanalyse der vier Berichte über den Stromausfall vom 28. April offenbart eine Architektur von Streitigkeiten, die über eine punktuelle technische Meinungsverschiedenheit hinausgeht: drei radikal unterschiedliche institutionelle Sichtweisen auf dieselbe Abfolge von Ereignissen mit direkten rechtlichen, wirtschaftlichen und regulatorischen Auswirkungen. Dieses Kapitel untersucht die innere Kohärenz jedes Narrativs, ihre verifizierten Konsenspunkte und ihre unüberbrückbaren Widersprüche.
+Die Queranalyse der vier Berichte über den Blackout vom 28. April offenbart eine Architektur von Streitigkeiten, die über die punktuelle technische Meinungsverschiedenheit hinausgeht: drei radikal unterschiedliche institutionelle Sichtweisen auf dieselbe Ereigniskette mit direkten rechtlichen, wirtschaftlichen und regulatorischen Implikationen. Dieses Kapitel untersucht die innere Kohärenz jeder Erzählung, ihre verifizierten Konsenspunkte und ihre unvereinbaren Widersprüche.
 
-## Die Sichtweise der Regierung und von REE: Multikausalität und Nichteinhaltung von Vorschriften
+## Die Sicht der Regierung und von REE: multifaktorielle Kausalität und Nichteinhaltung von Vorschriften
 
-Das offizielle Narrativ stuft den Ausfall weder als operativen Auslegungsfehler noch als direkte Folge der Manöver des Dispatchers ein, sondern als ein Ereignis **multikausaler Natur**: das Zusammentreffen von Schwachlast, massiver Durchdringung von IBR und unangemessenem technischen Verhalten privater Akteure, das bei gleichzeitigem Auftreten die Schwellenwerte des N−1-Kriteriums überschritt.
+Die offizielle Darstellung typisiert den Blackout nicht als Fehler im Betriebsdesign oder als direkte Folge der Schalthandlungen der Leitwarte, sondern als ein Ereignis multifaktorieller Natur: das Zusammentreffen von Nachfragetal, massivem IBR-Einspeisung und unangemessenem technischem Verhalten privater Akteure, das gleichzeitig wirkend die Schwellenwerte des N−1-Kriteriums überschritt.
 
 <ForensicTable 
-    title="TABELLE 4 | MULTI-FACTOR CAUSALITY MODEL"
-    source="Comité de Análisis del Gobierno / REE"
-  >
+  title="Tabelle E1 — Modell der multifaktoriellen Kausalität"
+  source="Analyseausschuss der Regierung / REE"
+>
 
 | Faktor | Beschreibung |
 | --- | --- |
-| **Unzureichende Spannungsregelung** | Nichteinhaltung von P.O. 7.4 durch Synchrongeneratoren und RCR |
-| **Elektromechanische Schwingungen** | Bedingende Faktoren des Systemzustands vor dem Kollaps |
-| **Abschaltungen von Erzeugungsanlagen** | Einige als verfrüht eingestuft → Endvektor der Überspannung |
-
-
+| Unzureichende Spannungsregelung | Nichteinhaltung des P.O. 7.4 durch Synchrongeneratoren und RCR |
+| Elektromechanische Schwingungen | Randbedingungen des Systemzustands vor dem Zusammenbruch |
+| Generatorabschaltungen | Einige als verfrüht eingestuft → letzter Vektor der Überspannung |
 
 </ForensicTable>
 
-_Schema der Multikausalität gemäß dem Analyseausschuss der Regierung._
 
-Die technische Verteidigung von REE bezüglich des Vermaschungsmanövers verdient eine genaue Prüfung. Der Bericht hebt einen in der Kritik häufig weggelassenen Aspekt hervor: Die anfänglichen Schwingungen verursachten keine Überspannungen, sondern **Spannungseinbrüche** an den Knoten des Übertragungsnetzes. Angesichts dieses Risikos führte die Leitwarte streng protokollierte Aktionen durch — Wiederzuschaltung von Stromkreisen, Kopplung von Drosselspulen, Koordination mit RTE zur Umschaltung des HVDC auf PMODE1 — und räumte ein, dass diese Manöver „zum Anstieg der Spannungen beigetragen haben“, stufte sie jedoch als notwendig ein. REE verteidigt, dass jeder spätere Spannungsanstieg absorbierbar gewesen wäre, wenn die Akteure ihre normativen Verpflichtungen erfüllt hätten.
+Die technische Verteidigung von REE bezüglich der Vermaschungsmaßnahme verdient eine genaue Prüfung. Der Bericht hebt einen in der Kritik oft übersehenen Aspekt hervor: Die anfänglichen Schwingungen verursachten keine Überspannungen, sondern Spannungseinbrüche in den Knoten des Übertragungsnetzes. Angesichts dieses Risikos führte die Leitwarte streng protokollierte Aktionen durch – Wiedereinschaltung von Leitungen, Zuschaltung von Drosselspulen, Koordination mit RTE zur Umschaltung des HVDC auf PMODE1 –, wobei eingeräumt wird, dass diese Manöver „zum Anstieg der Spannungen beigetragen haben“, sie aber als notwendig erachtet werden. REE argumentiert, dass jeder spätere Spannungsanstieg absorbierbar gewesen wäre, wenn die Akteure ihre regulatorischen Verpflichtungen erfüllt hätten.
 
-![Wärmekarten der Spannung im 400-kV-Netz in den Momenten vor der Grundabschaltung](/figuras/mapas_termicos_tension_ree.png) _Abbildung 27. Kartographie der Spannung im 400-kV-Netz (12:30–12:32:57 MESZ) nach der Analyse des Systembetreibers. REE behauptet, dass die Profile innerhalb der Bereiche von P.O. 1.1 blieben, bis die Abschaltungen in den Sammelnetzen begannen. Quelle: Red Eléctrica._
+Das Kernargument verlagert die Verantwortung auf den Generatorpark: Die Analyse der 850 größten Erzeugungsanlagen dokumentiert, dass etwa 22 % das gemäß der Königlichen Verordnung 413/2014 geforderte Leistungsfaktorkriterium nicht erfüllten, wobei der Bericht selbst einschränkt, dass ein Teil dieser Nichteinhaltung auf den kapazitiven Effekt der Evakuierungsinfrastruktur bei geringer Erzeugung zurückzuführen sein könnte. Insbesondere ein thermisches Kraftwerk im Süden absorbierte nicht nur keine induktive Blindleistung, sondern speiste zusätzliche kapazitive Blindleistung ein. Für REE beraubte die kollektive Zurückhaltung des privaten Parks das Systems der notwendigen dynamischen Reserve, um den transienten Vorgang zu begrenzen.
 
-Das zentrale Argument verlagert die Verantwortung auf den Erzeugungspark: Die Analyse der 850 Anlagen mit der höchsten Erzeugung dokumentiert, dass etwa **22 %** das geforderte Leistungsfaktorkriterium gemäß RD 413/2014 nicht erfüllten, obwohl der Bericht selbst einschränkt, dass ein Teil dieser Nichteinhaltung auf den kapazitiven Effekt der Ableitungsinfrastrukturen bei geringer Erzeugung zurückzuführen sein könnte. Insbesondere ein Wärmekraftwerk in der südlichen Zone absorbierte nicht nur keine induktive Blindleistung, sondern speiste zusätzliche kapazitive Blindleistung ein. Für REE beraubte die kollektive Zurückhaltung des privaten Parks das System des dynamischen Spielraums, der erforderlich war, um den Transienten einzudämmen.
+Bezüglich der Trägheit schließt REE explizit aus, dass diese die materielle Ursache war: Das System arbeitete mit $H = 2,3$ s, oberhalb der von ENTSO-E empfohlenen Schwelle von 2 s<KeyFact id="inercia-28a" mode="callback">H = 2,3 s Mittelwert / 1,3 s Südzone — Kapitel 2</KeyFact>, und „die Überspannungswelle hätte in jedem Fall den Kaskadeneffekt ausgelöst“, da die Überspannungsbedingungen unabhängig von der Frequenz bis 12:33:23 Uhr MESZ anhielten.
 
-In Bezug auf die Trägheit schließt REE ausdrücklich aus, dass sie die materielle Ursache war: Das System arbeitete mit $H = 2,3$ s, oberhalb der von ENTSO-E empfohlenen Schwelle von 2 s, und „die Überspannungswelle hätte den Kaskadeneffekt auf jeden Fall ausgelöst“, da die Überspannungsbedingungen unabhängig von der Frequenz bis 12:33:23 MESZ anhielten.
+Die Darstellung der Regierung weist eine beachtliche innere Kohärenz auf und identifiziert dokumentierte Verstöße gegen Vorschriften. Sie geht jedoch nicht auf zwei Argumente des ICAI-Gutachtens ein: das Ausmaß der durch die Vermaschung eingespeisten kapazitiven Blindleistung und die Nichtbeobachtbarkeit des 220-kV-Netzes durch den Betreiber aufgrund des Tap-Lag-Phänomens – zwei Elemente, die laut ICAI den Zusammenbruch unabhängig vom Erfüllungsgrad der Generatoren unvermeidlich gemacht hätten.
 
-Das Narrativ der Regierung weist eine beachtliche innere Kohärenz auf und identifiziert dokumentierte normative Verstöße. Es beantwortet jedoch nicht zwei Argumente des ICAI-Gutachtens: die Größenordnung der durch die Vermaschung eingespeisten kapazitiven Blindleistung und die fehlende Beobachtbarkeit des Betreibers im 220-kV-Netz aufgrund des Tap-Lag-Phänomens — zwei Elemente, die laut ICAI den Kollaps unabhängig vom Grad der Einhaltung durch die Erzeuger unvermeidlich gemacht hätten.
+Die vollständige Tabelle der offiziellen Sequenz von 18 auslösenden Ereignissen gemäß REE sowie ihre regulatorischen Vorschläge in vier Bereichen (Spannungsregelung, Betrieb, Beobachtbarkeit und Überwachung) sind unten aufgeführt:
 
-Die vollständige Tabelle der **offiziellen Abfolge von 18 auslösenden Ereignissen** laut REE und ihrer **regulatorischen Vorschläge** in vier Bereichen (dynamische Spannungsregelung, Betrieb, Beobachtbarkeit und Überwachung) sind nachfolgend aufgeführt:
+<details className="collapsible">
+<summary>
+  <span>▶ REE-Dossier: grafische Beweise, Sequenz von 18 Ereignissen und regulatorische Vorschläge (Tabellen E2–E3)</span>
+</summary>
+<div className="collapsibleBody">
 
-### Offizielle Abfolge der auslösenden Ereignisse (REE)
+![Wärmekarten der Spannung im 400-kV-Netz in den Momenten vor der Wurzelauslösung](/figuras/mapas_termicos_tension_ree.png)
+
+_Abbildung E1 — Wärmekarten der Spannung im 400-kV-Netz (12:30–12:32:57 MESZ). Die Bildsequenz zeigt den fortschreitenden Anstieg des Spannungsprofils in den Knoten der südlichen Halbinsel in den Momenten vor der Wurzelauslösung und belegt, dass die Überspannungen auf der Übertragungsebene sichtbar waren, nicht jedoch im durch den Tap-Lag verdeckten 220-kV-Netz. Quelle: Red Eléctrica (REE)._
+
+### Offizielle Sequenz der auslösenden Ereignisse (REE)
 
 <ForensicTable 
-    title="TABELLE 5 | OFFICIAL EVENT SEQUENCE LOG"
-    source="Red Eléctrica (REE)"
-  >
+  title="Tabelle E2 — Offizielle Sequenz der auslösenden Ereignisse"
+  source="Red Eléctrica (REE)"
+  timeBase="UTC+2 (MESZ)"
+>
 
-| Nr. | Ref. | Beschreibung |
-| --- | --- | --- |
-| 1 | N-1 | Erzwungene Schwingung 0,6 Hz (möglicher Ursprung: PV Badajoz). Protokollierte Manöver: Drosselspulen, Leitungsverkopplung, Programmänderungen. |
-| 2 | N-2 | Natürlicher Inter-Area-Modus 0,2 Hz. Weitere Dämpfungsmanöver. |
-| 3 | N-3 | Erzeugung P.O. 7.4 absorbiert die per Sollwert geforderte Blindleistung nicht. |
-| 4 | N-4 | RCR-Erzeugungsschwankungen beeinträchtigen die Spannungsregelung. ~22 % der Anlagen verfehlen den Leistungsfaktor. |
-| 5 | — | Konventionelle Erzeugung, die nach Schwingungen angefordert wurde, kann nicht gekoppelt werden. |
-| 6 | N-5 | Verluste der verteilten Erzeugung (<1 MW) und des Eigenverbrauchs (435 MW) vor 12:32:57. |
-| 7 | **N-6** | **Abschaltung des Ableitungstransformators in Granada um 12:32:57.** REE registriert 418 kV in 400 kV, innerhalb normativer Grenzen. |
-| 8 | N-7 | Abschaltung von Solarthermie und PV in Badajoz ohne Information an der Grenze zum Übertragungsnetz. |
-| 9 | N-8 | Abschaltung PV Badajoz (anderes Umspannwerk), ohne Sichtbarkeit an der Grenze. |
-| 10–14 | — | Abschaltungen in Segovia, Huelva, Sevilla, Cáceres und Badajoz (mehrere), ohne Information an der Grenze. |
-| 15 | N-11 | Abschaltung eines Kombikraftwerks in Valencia. |
-| 16 | — | UFLS verursacht zusätzlichen Spannungsanstieg durch Leitungsentladung. |
-| 17 | — | HVDC INELFE-1 exportiert weiterhin 1.000 MW im PMODE1. |
-| 18 | N-12 | Abschaltung eines Kernkraftwerksblocks. Synchronismusverlust und Spannungsnullpunkt um **12:33:29.741 MESZ**. |
-
-
-
+  <table>
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>Ref.</th>
+        <th>Beschreibung</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>N-1</td>
+        <td className="narrative-cell">Erzwungene Schwingung 0,6 Hz (möglicher Ursprung: PV Badajoz). Protokollierte Manöver: Drosselspulen, Kupplung von Leitungen, Programmänderungen.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>N-2</td>
+        <td className="narrative-cell">Natürlicher Inter-Area-Mode 0,2 Hz. Neue Dämpfungsmanöver.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>3</td>
+        <td>N-3</td>
+        <td className="narrative-cell">Erzeugung gemäß P.O. 7.4 absorbiert nicht die erforderliche Blindleistung gemäß Vorgabe.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>4</td>
+        <td>N-4</td>
+        <td className="narrative-cell">Änderungen der RCR-Erzeugung beeinflussen Spannungsregelung. ≈22 % der Anlagen erfüllen Leistungsfaktor nicht.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>—</td>
+        <td className="narrative-cell">Angeforderte konventionelle Erzeugung nach Schwingungen wird nicht zugeschaltet.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>6</td>
+        <td>N-5</td>
+        <td className="narrative-cell">Verluste von dezentraler Erzeugung (&lt;1 MW) und Eigenverbrauch (435 MW) vor 12:32:57.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>7</td>
+        <td><strong>N-6</strong></td>
+        <td className="narrative-cell"><strong>Auslösung des Evakuierungstransformators in Granada um 12:32:57.</strong> REE registriert 418 kV im 400-kV-Netz, innerhalb der normativen Grenzen.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>8</td>
+        <td>N-7</td>
+        <td className="narrative-cell">Auslösung von Solarthermie und PV in Badajoz ohne Information an der Grenze zum Übertragungsnetz.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>9</td>
+        <td>N-8</td>
+        <td className="narrative-cell">Auslösung PV Badajoz (anderes Umspannwerk), ohne Sichtbarkeit an der Grenze.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>10–14</td>
+        <td>—</td>
+        <td className="narrative-cell">Auslösungen in Segovia, Huelva, Sevilla, Cáceres und Badajoz (mehrere), ohne Information an der Grenze.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>15</td>
+        <td>N-11</td>
+        <td className="narrative-cell">Auslösung eines Gas-und-Dampf-Kombikraftwerks in Valencia.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>16</td>
+        <td>—</td>
+        <td className="narrative-cell">UFLS verursacht zusätzlichen Spannungsanstieg durch Entlastung von Leitungen.</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>—</td>
+        <td className="narrative-cell">HVDC INELFE-1 exportiert weiterhin 1.000 MW im PMODE1.</td>
+      </tr>
+      <tr className="state-blackout">
+        <td>18</td>
+        <td>N-12</td>
+        <td className="narrative-cell">Auslösung einer Kernkraftwerksgruppe. Synchronismusverlust und Spannungseinbruch auf Null um <strong>12:33:29.741 MESZ</strong>.</td>
+      </tr>
+    </tbody>
+  </table>
 </ForensicTable>
 
-### Regulatorische Vorschläge von Redeia
+### Regulatorische Vorschläge von REE
 
 <ForensicTable 
-    title="TABELLE 6 | PROPOSED REGULATORY AMENDMENTS"
-    source="Redeia / REE"
-  >
+  title="Tabelle E3 — Regulatorische Vorschläge von REE"
+  source="Redeia / REE"
+>
 
 | Bereich | Vorgeschlagene Maßnahme |
 | --- | --- |
-| **Dynamische Spannungsregelung** | Neue P.O. 7.4: Verpflichtung der gesamten Erzeugung mit Echtzeit-Regelfähigkeit, diese zu aktivieren, mit Strafen bei Nichteinhaltung. Überarbeitung der Überspannungsschwellenwerte in Ableitungsleitungen. Einsatz von Synchrone Phasenschieber oder STATCOM als Ersatz für diskrete Geräte. |
-| **Betrieb und Stabilität** | Verlängerung der Programmänderungsrampen auf mindestens 10 Minuten. Aktualisierung der RCR-Erzeugung vor dem Erlass TED/749/2020. Aktivierung der Wirkleistungs-Frequenz-Regelung in aktuellen und zukünftigen HVDC-Verbindungen. |
-| **Beobachtbarkeit** | Verstärkung der Spannungsregelung in der Verteilung. Ausstattung des Systembetreibers (OS) mit Beobachtbarkeit über den Eigenverbrauch. Erweiterung des WAMS mit PMUs für den Übertragungspark. |
-| **Überwachung** | Fehleraufzeichnungen mit einer minimalen Abtastrate von 20 ms und Zeitsynchronisation. Zentralisierte Plattform zur Erfassung von Vorfalldaten. |
-
-
+| Dynamische Spannungsregelung | Neuer P.O. 7.4: Verpflichtung aller Erzeugung mit Echtzeit-Regelfähigkeit zur Aktivierung, mit Strafen bei Nichteinhaltung. Überprüfung der Überspannungsschwellen in Evakuierungsleitungen. Einsatz von Synchronschwungrädern oder STATCOMs als Ersatz für diskrete Geräte. |
+| Betrieb und Stabilität | Ausweitung der Programmänderungsrampen auf mindestens 10 Minuten. Aktualisierung der RCR-Erzeugung vor der Verordnung TED/749/2020. Aktivierung der Leistungs-Frequenz-Regelung in aktuellen und zukünftigen HVDC-Verbindungen. |
+| Beobachtbarkeit | Verstärkung der Spannungsregelung im Verteilnetz. Ausstattung des ÜNB mit Beobachtbarkeit über den Eigenverbrauch. Erweiterung des WAMS mit PMUs pro Übertragungspark. |
+| Überwachung | Störungsaufzeichnungen mit einer Abtastrate von mindestens 20 ms und Zeitsynchronisation. Zentrale Plattform zur Erfassung von Störungsdaten. |
 
 </ForensicTable>
 
-## Die Sicht des Erzeugersektors (ICAI / AELEC): Übermäßige Vermaschung und unvermeidlicher Kollaps
+</div>
+</details>
 
-Gegenüber dem Regierungsnarrativ diagnostiziert das Gutachten des IIT-ICAI zusammen mit Compass Lexecon und INESC TEC das Ereignis formal als **Überspannungskollaps**: ein Phänomen der Spannungsinstabilität, angetrieben durch die Erschöpfung der Absorptionskapazität von Blindleistung, bei dem die präventiven Maßnahmen von REE selbst als primärer Vektor der Kaskade wirkten.
+## Die Sicht des Erzeugersektors (ICAI / AELEC): übermäßige Vermaschung und unvermeidlicher Zusammenbruch
 
-Der Kern der Kritik ist quantitativ. Angesichts der Schwingungen ab 12:03 MESZ koppelte REE **11 400-kV-Stromkreise** im Leerlauf. Durch den Ferranti-Effekt verhielten sich diese Leitungen wie große Kondensatorbänke und speisten zwischen **1,05 und 2,4 GVAr** kapazitive Blindleistung in ein Netz ein, dem es bereits an Absorptionsspielraum mangelte. Die Simulationen schätzen, dass die Marge bis zum Kollaps am Netzknoten Carmona 400 kV von **2.964 MW** auf **1.268 MW** schrumpfte — eine Verringerung um **57 %**, die das System an die Schwelle der kapazitiven Sättigung führte.
+Im Gegensatz zur Darstellung der Regierung diagnostiziert das Sachverständigengutachten des IIT-ICAI zusammen mit Compass Lexecon und INESC TEC das Ereignis formal als einen Überspannungszusammenbruch: ein Phänomen der Spannungsinstabilität, angetrieben durch die Erschöpfung der Blindleistungsaufnahmefähigkeit, bei dem die eigenen vorbeugenden Maßnahmen von REE als primärer Vektor der Kaskade wirkten.
 
-![Q-V-Kurven am Knoten Carmona 400 kV gemäß der gutachterlichen Analyse von ICAI](/figuras/fluctuaciones_tension_previas.png) _Abbildung 28. Q-V-Spannungsstabilitätskurven in Carmona 400 kV. Die Vermaschungsmanöver (LIN&SHN) verschoben den Betriebspunkt und verringerten die Kollapsmarge um 57 %. Die gestrichelte rote Linie markiert die Grenze V = 1,2 p.u. (480 kV). Quelle: IIT-ICAI / Compass Lexecon._
+Der Kern der Kritik ist quantitativ: Die ICAI-Simulationen schätzen, dass die Vermaschung den Abstand zum Zusammenbruch am Knoten Carmona von 2.964 MW auf 1.268 MW verringerte – eine Reduktion um 57 %. <KeyFact id="mallado-ferranti" mode="callback">Physik der Vermaschung und Ferranti-Effekt — Kapitel 3, §Phase 0</KeyFact>
 
-Die Diskrepanz zwischen den Zahlen von ICAI (2,4 GVAr) und der unabhängigen Analyse von NREL (1,05 GVAr) ändert nichts an der gemeinsamen Schlussfolgerung: In beiden Fällen überstieg die kapazitive Einspeisung die verbleibende Absorptionskapazität des Systems, die auf nur **3,3 GVAr** im Vergleich zu den üblichen 5,8 GVAr geschätzt wurde.
+![Q-V-Kurven am Knoten Carmona 400 kV gemäß der ICAI-Sachverständigenanalyse](/figuras/fluctuaciones_tension_previas.png)
 
-Bezüglich der Kaskadenabschaltungen widerlegt der Erzeugersektor die Einstufung als „unangemessene Abschaltungen“ und weist auf die eingeschränkte Beobachtbarkeit des Betreibers hin. Während das SCADA von REE 418 kV im 400-kV-Netz anzeigte — innerhalb der normativen Grenzen —, erzeugte das Tap-Lag-Phänomen einen blinden Fleck in den Sammelnetzen: Die mechanische Trägheit der OLTC verstärkte den Transienten zu den 220-kV-Netzen, wo *244 kV* (>110 % der Nennspannung) erreicht wurden. Der Eigentümer der Infrastruktur von Granada bestätigte, dass sein Schutz „korrekt eingestellt war und angemessen funktionierte“.
+_Abbildung E2 — Q-V-Kurven der Spannungsstabilität am Knoten Carmona 400 kV (ICAI-Sachverständigenanalyse). Das Diagramm quantifiziert die durch die Vermaschungsmanöver induzierte Verringerung des Abstands zum Zusammenbruch: von 2.964 MW auf 1.268 MW, eine Reduktion um 57 %, die das Gutachten als die Bedingung bezeichnet, die den Zusammenbruch mathematisch unvermeidlich machte. Quelle: IIT-ICAI / Compass Lexecon._
 
-![Oszillographische Aufzeichnung der Grundabschaltung in Granada um 12:32:56.993 MESZ](/figuras/aluvion_alertas_sobretension_sur.png) _Abbildung 29. Oszillogramm der Grundabschaltung (Granada, 12:32:56.993 MESZ). Oberes Feld: stabiler Drehstrom bis zum Auslösen des Schalters stromaufwärts. Unteres Feld: Spannung auf der Sammelsekundärseite — Phase A erreicht ~145 kV (>1,10 p.u.) —, unsichtbar für das SCADA von REE im 400-kV-Netz aufgrund des Tap-Lag-Effekts. Quelle: IIT-ICAI / AELEC._
+Die Diskrepanz zwischen den Zahlen von ICAI (2,4 GVAr) und der unabhängigen Analyse des NREL (1,05 GVAr) ändert nichts an der gemeinsamen Schlussfolgerung: In beiden Fällen überstieg die kapazitive Einspeisung die verbleibende Aufnahmefähigkeit des Systems, die auf nur 3,3 GVAr gegenüber den üblichen 5,8 GVAr geschätzt wurde.
 
-Die zweite Argumentationslinie zielt auf den normativen Rahmen: Die P.O. 7.4 zwang in ihrer Fassung vor der Reform die IBRs, mit einem **festen** Leistungsfaktor zu arbeiten, und verhinderte, dass ihre Leistungselektronik dynamisch Blindleistung absorbierte oder einspeiste, obwohl sie über diese technologische Kapazität verfügte. Diese Einschränkung schloss **82 % der momentanen Erzeugung** von der aktiven Spannungsregelung aus und konzentrierte die Verantwortung auf den knappen verfügbaren synchronen thermischen Park.
+Hinsichtlich der Kaskadenauslösungen widerlegt der Erzeugersektor die Einstufung als „unangemessene Auslösungen“, indem er auf die eingeschränkte Beobachtbarkeit des Betreibers hinweist. Das **Tap-Lag**-Phänomen verstärkte die Überspannung in die für das SCADA von REE unsichtbaren 220-kV-Netze. <KeyFact id="fase-2-taplag" mode="callback">vollständiger physikalischer Mechanismus des Tap-Lag — Kapitel 3, §Phase 2</KeyFact> Der Eigentümer der Infrastruktur in Granada bestätigte, dass sein Schutz „korrekt eingestellt war und angesichts der tatsächlich an seinem Anschlusspunkt auftretenden Spannungen ordnungsgemäß funktionierte“.<KeyFact id="granada-disparo" mode="callback">Wurzelauslösung Granada — Kapitel 3</KeyFact>
 
-Das resultierende quantitative Ungleichgewicht war laut dem Gutachten **mathematisch unüberwindbar**: In der südlichen Zone — Epizentrum der Schwingungen und der Vermaschung — verfügte REE über lediglich **0,2 GVAr** Absorptionskapazität für induktive Blindleistung im Vergleich zu einer kapazitiven Einspeisung, die auf mehr als **0,7 GVAr** geschätzt und durch die eigenen Manöver des Betreibers induziert wurde.
+Dieser tote Winkel macht die Darstellungen von REE und des Erzeugersektors technisch unvereinbar: Ohne Beobachtbarkeit des darunterliegenden Netzes konnte der Betreiber nicht korrigieren, was er nicht sah, und die Generatoren konnten nicht anders, als auf das zu reagieren, was sie sahen. Die Diskrepanz betrifft daher nicht die Fakten – sie betrifft die Zuschreibung von Verantwortung angesichts einer instrumentellen Einschränkung, die beide Seiten anerkennen.
 
-![Blindleistungsbilanz in der Südzone um 12:30 MESZ gemäß IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png) _Abbildung 30. Blindleistungsbilanz um 12:30 MESZ. Die Manöver von REE fügten den bereits vorhandenen 3,4 GVAr 0,7 kapazitive GVAr hinzu, während die konventionelle Synchronerzeugung nur 0,2 GVAr an Absorption lieferte. Netto-Defizit: −0,6 GVAr. Quelle: IIT-ICAI / Compass Lexecon._
+![Oszillografische Aufzeichnung der Wurzelauslösung in Granada um 12:32:56.993 MESZ](/figuras/aluvion_alertas_sobretension_sur.png)
 
-Die Schlussfolgerung des Gutachtens identifiziert **drei Faktoren, die direkt dem Betreiber und der Regulierungsbehörde zuzuschreiben sind**: die Vermaschung, die die Q-V-Margen sättigte, die strukturelle Nichtbeobachtbarkeit des 220-kV-Netzes durch das Tap-Lag und der normative Rahmen (P.O. 7.4), der 82 % des Parks von der Teilnahme an der dynamischen Spannungsregelung abhielt.
+_Abbildung E3 — Oszillografische Aufzeichnung der Wurzelauslösung in Granada (12:32:56.993 MESZ). Die Wellenform zeigt die Spannung auf der Sammelschiene der Sekundärseite Phase A ≈ 145 kV (>1,10 p.u.), einen Schwellenwert, der die Überspannungsschutzeinrichtungen korrekt aktivierte, der jedoch aufgrund des Tap-Lag-Effekts für das SCADA von REE unsichtbar war, wodurch der operative tote Winkel entstand, der ein präventives Eingreifen unmöglich machte. Quelle: IIT-ICAI / AELEC._
 
-## Die europäische Sichtweise (ENTSO-E): Unzulänglichkeit des NC RfG und Trennung des Synchrongebiets
+Die zweite Argumentationslinie zielt auf den regulatorischen Rahmen ab: Der P.O. 7.4 in seiner Fassung vor der Reform verpflichtete die IBR, mit einem festen Leistungsfaktor zu arbeiten, und verhinderte so, dass ihre Leistungselektronik dynamisch Blindleistung aufnehmen oder abgeben konnte, obwohl diese technologische Fähigkeit vorhanden war. Diese Einschränkung schloss 82 % der momentanen Erzeugung von der aktiven Spannungsregelung aus und konzentrierte die Verantwortung auf den knappen verfügbaren synchronen thermischen Park.
 
-Das Expertenpanel von ENTSO-E liefert die strukturellste Perspektive der drei. Seine zentrale These weist zurück, dass der Ausfall auf die erneuerbare Durchdringung _per se_ zurückzuführen sei: Der Kollaps war nicht die Folge eines Überflusses an erneuerbarer Erzeugung oder eines primären Trägheitsmangels, sondern der **Einschränkungen des Rahmens zur Steuerung von Spannungsprofilen**. Der Vorfall zeigt die Asymmetrie zwischen dem beschleunigten Einsatz erneuerbarer Anlagen und der teilweisen Veralterung der Network Codes, die ihr dynamisches Verhalten regeln.
+Das daraus resultierende quantitative Ungleichgewicht war laut Gutachten mathematisch nicht zu beheben: In der Südzone – dem Epizentrum der Schwingungen und der Vermaschung – standen REE nur 0,2 GVAr an induktiver Blindleistungsaufnahmekapazität gegenüber einer geschätzten kapazitiven Einspeisung von über 0,7 GVAr, die durch ihre eigenen Manöver induziert wurde.
 
-Die Analyse identifiziert eine grundlegende technische Spannung: Die meisten Anlagen, die sich abtrennten, verfügten über die erforderliche Leistungselektronik, um eine robuste Spannungsregelung durchzuführen, aber die geltenden spanischen Vorschriften **verboten es ihnen oder verlangten nicht von ihnen**, diesen dynamischen Dienst zu erbringen, was sie zwang, mit statischen Leistungsfaktoren gemäß RD 413/2014 zu operieren. Diese regulatorische Beschränkung beraubte das System der verteilten reaktiven Unterstützung, die die kapazitive Einspeisung der Leerlaufleitungen hätte dämpfen können.
+![Blindleistungsbilanz in der Südzone um 12:30 MESZ gemäß IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png)
 
-Als direkte Antwort hat ENTSO-E in seinem Phase-II-Bericht die Aktualisierung des **NC RfG 2.0** konsolidiert, der vorsieht, Grid-Forming als obligatorische Anforderung für alle nicht-synchronen Module ≥ 1 MW durchzusetzen:
+_Abbildung E4 — Blindleistungsbilanz in der Südzone um 12:30 MESZ. Das Diagramm dokumentiert das Netto-Defizit von −0,6 GVAr: nur 0,2 GVAr induktive Aufnahmekapazität gegenüber einer kapazitiven Einspeisung von über 0,7 GVAr, die durch die Vermaschungsmanöver induziert wurde – ein Zustand, den das ICAI-Gutachten als mathematisch nicht behebbar bezeichnet. Quelle: IIT-ICAI / Compass Lexecon._
+
+Die Schlussfolgerung des Gutachtens identifiziert drei Faktoren, die direkt dem Betreiber und dem Regulierer zuzuschreiben sind: die Vermaschung, die die Q-V-Margen sättigte, die strukturelle Nichtbeobachtbarkeit des 220-kV-Netzes durch den Tap-Lag und der regulatorische Rahmen (P.O. 7.4), der 82 % des Parks von der dynamischen Spannungsregelung ausschloss.
+
+## Die europäische Sicht (ENTSO-E): Unzulänglichkeit des NC RfG und Trennung vom synchronen Verbund
+
+Das Expertengremium von ENTSO-E liefert die strukturellste Perspektive der drei. Seine Kernthese lehnt ab, dass der Blackout auf die Erneuerbaren-Durchdringung _per se_ zurückzuführen sei: Der Zusammenbruch war weder die Folge eines Überschusses an erneuerbarer Erzeugung noch eines primären Trägheitsdefizits, sondern der Grenzen des Regelungsrahmens für Spannungsprofile. Der Vorfall verdeutlicht die Asymmetrie zwischen dem beschleunigten Ausbau erneuerbarer Anlagen und der teilweisen Veralterung der Netzanschlussregeln, die ihr dynamisches Verhalten bestimmen.
+
+Die Analyse identifiziert eine grundlegende technische Spannung: Die meisten der Anlagen, die sich abgeschaltet haben, verfügten über die notwendige Leistungselektronik für eine robuste Spannungsregelung, aber die geltende spanische Gesetzgebung verbot ihnen diese dynamische Dienstleistung oder forderte sie nicht, sondern zwang sie gemäß der Königlichen Verordnung 413/2014, mit statischen Leistungsfaktoren zu arbeiten. Diese regulatorische Einschränkung beraubte das System der verteilten Blindleistungsunterstützung, die die kapazitive Einspeisung der unbelasteten Leitungen hätte dämpfen können.
+
+Als direkte Reaktion hat ENTSO-E in seinem Phase-II-Bericht die Aktualisierung des NC RfG 2.0 konsolidiert, die vorsieht, Grid-Forming als verbindliche Anforderung für alle nicht-synchronen Module ≥ 1 MW durchzusetzen:
 
 <ForensicTable 
-    title="TABELLE 7 | NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
-    source="ENTSO-E (Phase II Report)"
-  >
+  title="Tabelle E4 — Vergleich der Anforderungen NC RfG aktuell / NC RfG 2.0"
+  source="ENTSO-E (Phase II Report)"
+>
 
-| Anforderung | Geltender NC RfG | NC RfG 2.0 (vorgeschlagen) |
+| Anforderung | Aktueller NC RfG | NC RfG 2.0 (vorgeschlagen) |
 | --- | --- | --- |
-| Betriebsmodus | Grid-following | Obligatorisches Grid-forming |
+| Betriebsmodus | Grid-Following | Grid-Forming verpflichtend |
 | Schwelle | Variiert nach Typ/Land | ≥ 1 MW (PPM und ESM) |
-| Spannungsregelung | Fester Leistungsfaktor | Kontinuierliche dynamische V- und Q-Regelung |
-| Trägheit | Nicht erforderlich in IBR | Obligatorische synthetische Trägheit |
-| Black Start | Nicht erforderlich in IBR | Inselstartfähigkeit |
-| Synchronisationsreferenz | Extern (PLL über Netz) | Intern generiert (ideale Spannungsquelle) |
-
-
+| Spannungsregelung | Fester Leistungsfaktor | Dynamische kontinuierliche V- und Q-Regelung |
+| Trägheit | Nicht erforderlich bei IBR | Synthetische Trägheit verpflichtend |
+| Schwarzstart | Nicht erforderlich bei IBR | Inselbetriebsfähigkeit |
+| Synchronisationsreferenz | Extern (PLL über Netz) | Intern erzeugt (ideale Spannungsquelle) |
 
 </ForensicTable>
 
-In Bezug auf die Topologie des Vorfalls analysiert ENTSO-E den Verlust des Synchronismus um **12:33:19 MESZ**: Das System ging vom Exportieren von 469 MW (12:32:57) auf den Import von maximal **3.807 MW** (12:33:19), dem Zeitpunkt des Synchronismusverlusts, über. Die Winkelpoldivergenz wurde unhaltbar, und der Out-of-Step-Schutz (OST) griff um **12:33:21 MESZ** ein und befahl die Öffnung der transpyrenäischen Stromkreise (Baixas-Vic, Argia-Arkale, Argia-Hernani).
+Bezüglich der Topologie des Vorfalls analysiert ENTSO-E den Synchronismusverlust um 12:33:19 MESZ: Das System wechselte von einem Export von 469 MW (12:32:57) zu einem Import von maximal 3.807 MW (12:33:19), dem Zeitpunkt des Synchronismusverlusts. Die Winkelpolabweichung wurde unhaltbar, und die Out-of-Step-Schutzeinrichtungen (OST) lösten um 12:33:21 MESZ aus und befahlen die Öffnung der transpyrinäischen Leitungen (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
-![Entwicklung des Austauschs Spanien-Frankreich und Synchronismusverlust (12:32:57–12:33:20 MESZ)](/figuras/perdida_sincronismo_frontera.png) _Abbildung 31. Wirkleistungsaustausch an der spanisch-französischen Grenze während Phase 3. Oberes Feld: gesamter Nettofluss (Export 469 MW → maximaler Import 3.807 MW). Unteres Feld: Aufschlüsselung nach Stromkreis. Die letzte Schwingung spiegelt die Poldivergenz vor der endgültigen Öffnung wider. Quelle: ENTSO-E._
+<IberianGridTopology lang={frontMatter.locale || 'es'} />
 
-Diese Trennung verhinderte, dass der kapazitive Kollaps und der Frequenzeinbruch — mit einem RoCoF von mehr als **1,5 Hz/s** — das französische System und den Rest von Kontinentaleuropa mitrissen.
+_Abbildung E5 — Topologie des iberischen Netzes und Ausbreitung des Zusammenbruchs bis zum Synchronismusverlust mit Frankreich (12:33:21 MESZ). Die interaktive Simulation zeigt den Zustand der Knoten und Flüsse in den kritischen Momenten und verdeutlicht das Fortschreiten der kapazitiven Instabilität von der südlichen Halbinsel bis zur Öffnung der transpyrinäischen Leitungen. Quelle: Eigene Darstellung basierend auf ENTSO-E._
 
-Die abschließende Warnung von ENTSO-E ist struktureller Natur: Die koordinierten Sicherheitsanalysen (CSA) und die Common Grid Models (CGM), die auf statischen Lastflüssen und dem N−1-Kriterium basieren, **bewerteten das System bis zu den Momenten vor dem Kollaps als „Normal“**. Für ENTSO-E zeigt diese Einschränkung, dass die Standards zur Bewertung der kontinentalen Betriebssicherheit, die für konventionelle Synchronmaschinen konzipiert wurden, strukturell unzureichend sind, um Kollapse in Systemen mit hoher Durchdringung von Leistungselektronik zu verhindern.
+Diese Trennung verhinderte, dass der kapazitive Zusammenbruch und der Frequenzeinbruch – mit einem RoCoF von über 1,5 Hz/s – das französische System und das übrige kontinentale Europa mitrissen.
 
-## Konsens und Diskrepanzen: Die technische Fraktur in drei Achsen
+Die abschließende Warnung von ENTSO-E ist struktureller Natur: Die koordinierten Sicherheitsanalysen (CSA) und die gemeinsamen Netzmodelle (CGM), die auf statischen Lastflussberechnungen und dem N−1-Kriterium basieren, bewerteten das System bis zu den Momenten vor dem Zusammenbruch als „Normal“. Für ENTSO-E deutet diese Einschränkung darauf hin, dass die für konventionelle Synchrongeneratoren ausgelegten Standards zur Bewertung der kontinentalen Betriebssicherheit strukturell unzureichend sind, um Zusammenbrüche in Systemen mit hohem Anteil an Leistungselektronik zu verhindern.
 
-### Verifizierte technische Konsenspunkte
+## Konsens und Diskrepanzen: der technische Bruch in drei Achsen
 
-Trotz der Polarisierung der Debatte konvergieren die vier Berichte auf eine Reihe technischer Schlussfolgerungen, die die am weitesten verbreiteten medialen Narrative nuancieren oder widerlegen:
+### Punkte des verifizierten technischen Konsenses
+
+Trotz der Polarisierung der Debatte konvergieren die vier Berichte in einer Reihe von technischen Schlussfolgerungen, die die am weitesten verbreiteten Mediendarstellungen relativieren oder widerlegen:
 
 <ForensicTable 
-    title="TABELLE 8 | TECHNICAL CONSENSUS MATRIX"
-    source="Elaboración propia"
-  >
+  title="Tabelle E5 — Matrix des technischen Konsenses"
+  source="Eigene Darstellung"
+>
 
-| Konsenspunkt | Gemeinsame technische Grundlage | REG | REE | ICAI | ENTSO-E |
+| Konsenspunkt | Gemeinsame technische Grundlage | GOB | REE | ICAI | ENTSO-E |
 | --- | --- | :-: | :-: | :-: | :-: |
-| **Trägheit war nicht die Grundursache** | Das System arbeitete mit H = 2,3 s (> Schwelle 2,0 s). Mehr Trägheit hätte den Frequenzabfall um Zehntelsekunden verzögert, ohne den Überspannungskollaps zu verhindern. | ✓ | ✓ | ✓ | ✓ |
-| **Überspannungskollaps, nicht durch Frequenzdefizit** | Die materielle Ursache war die kapazitive Instabilität (Q-Ungleichgewicht), nicht ein Verlust von Wirkleistung (P) oder ein primärer Frequenzabfall. | ✓ | ✓ | ✓ | ✓ |
-| **Wirkleistungsreserven waren ausreichend** | Die positive Tertiärreserve überschritt 7.000 MW. Es gab keine Krise der Erzeugungskapazität. | ✓ | ✓ | ✓ | ✓ |
-| **Das UFLS verschärfte den Spannungskollaps** | Der Lastabwurf eliminierte die letzten induktiven Blindleistungssenken und beschleunigte den Spannungsanstieg, der das Netz zerstörte. | ✓ | ✓ | ✓ | ✓ |
-| **Die Synchronismusschutzvorrichtungen funktionierten korrekt** | Die Öffnung der transpyrenäischen Stromkreise um 12:33:21 war technisch und normativ korrekt. | ✓ | ✓ | ✓ | ✓ |
-| **Die IBR-Vorschriften waren unzureichend** | Die P.O. 7.4 und das RD 413/2014 hinderten IBRs daran, sich an der dynamischen Spannungsregelung zu beteiligen, obwohl sie über die technologische Kapazität verfügten. | ✓ | ✓ | ✓ | ✓ |
-| **Das statische N−1-Kriterium ist unzureichend** | Die statischen Analysewerkzeuge bewerteten das System Stunden vor dem Kollaps als sicher, ohne die Fähigkeit, die ultraschnelle Dynamik der kapazitiven Instabilität zu antizipieren. | ✓ | ✓ | ✓ | ✓ |
-
-
+| Die Trägheit war nicht die Grundursache | Das System arbeitete mit H = 2,3 s (> Schwelle 2,0 s). Höhere Trägheit hätte den Frequenzabfall um Zehntelsekunden verzögert, ohne den Überspannungszusammenbruch zu verhindern. | ✓ | ✓ | ✓ | ✓ |
+| Zusammenbruch durch Überspannung, nicht durch Frequenzdefizit | Die materielle Ursache war die kapazitive Instabilität (Q-Ungleichgewicht), nicht ein Verlust an Wirkleistung P oder ein primärer Frequenzabfall. | ✓ | ✓ | ✓ | ✓ |
+| Wirkleistungsreserven waren ausreichend | Die tertiäre Reserve zum Hochfahren überstieg 7.000 MW. Es gab keine Erzeugungskapazitätskrise. | ✓ | ✓ | ✓ | ✓ |
+| Das UFLS verschlimmerte den Spannungszusammenbruch | Der Lastabwurf beseitigte die letzten induktiven Blindleistungssenken und beschleunigte den Spannungsanstieg, der das Netz zerstörte.<KeyFact id="paradoja-ufls" mode="callback">Paradoxon des UFLS — Kapitel 3</KeyFact> | ✓ | ✓ | ✓ | ✓ |
+| Die Synchronismusschutzeinrichtungen funktionierten korrekt | Die Öffnung der transpyrinäischen Leitungen um 12:33:21 war technisch und normativ korrekt. | ✓ | ✓ | ✓ | ✓ |
+| Die IBR-Normung war unzureichend | Der P.O. 7.4 und die Königliche Verordnung 413/2014 hinderten die IBR trotz vorhandener technologischer Fähigkeit an der Teilnahme an der dynamischen Spannungsregelung. | ✓ | ✓ | ✓ | ✓ |
+| Das statische N−1-Kriterium ist unzureichend | Die statischen Analysetools bewerteten das System Stunden vor dem Zusammenbruch als sicher, ohne die ultraschnelle Dynamik der kapazitiven Instabilität vorhersagen zu können. | ✓ | ✓ | ✓ | ✓ |
 
 </ForensicTable>
 
-### Unüberbrückbare technische Divergenzen
+### Unvereinbare technische Abweichungen
 
 <ForensicTable 
-    title="TABELLE 9 | TECHNICAL DIVERGENCE MATRIX"
-    source="Elaboración propia"
-  >
+  title="Tabelle E6 — Matrix der technischen Abweichungen"
+  source="Eigene Darstellung"
+>
 
 | Streitachse | Regierung / REE | ICAI / AELEC | ENTSO-E |
 | --- | --- | --- | --- |
-| **1. Ursprung der kapazitiven Sättigung** | Das System hatte ausreichende Margen. Die Sättigung trat ein, weil die Erzeuger die erforderliche Blindleistung nicht absorbierten. Die Vermaschung war eine protokollierte und notwendige Maßnahme. | Die Vermaschung von 11 Leerlaufleitungen speiste durch den Ferranti-Effekt 1,05–2,4 GVAr ein und verringerte die Q-V-Marge um 57 %. Der Kollaps war mathematisch unvermeidlich. | Schreibt der Vermaschung keine Kausalität zu, dokumentiert jedoch, dass die RCC die Sättigung nicht erkannt haben. Identifiziert die normative Einschränkung der IBR als primäre Verwundbarkeit. |
-| **2. Art der 0,6-Hz-Schwingung** | Erzwungene Schwingung mit Ursprung im Regelkreis einer PV-Anlage in Badajoz: Auslöser der Sequenz, die zum Kollaps führte. | Die Beweise sind nicht schlüssig. Es könnte sich um einen natürlichen Inter-Area-Modus gehandelt haben, der durch das Dämpfungsverhältnis von 1 % aufgrund fehlender PSS in den abgeschalteten CCGTs verstärkt wurde. | Dokumentiert die Schwingung als atypisch (bis nach Deutschland detektiert), weist ihr jedoch keine endgültige Kausalität zu. |
-| **3. Legitimität der Abschaltungen (Tap-Lag)** | Die ersten Abschaltungen waren „unangemessen“ oder verfrüht: Das SCADA registrierte 418 kV in 400 kV, innerhalb der Grenzen von P.O. 1.1. | Die Abschaltungen waren normativ korrekt. Das Tap-Lag schuf einen blinden Fleck: Die 220-kV-Netze erreichten 244 kV (>1,10 p.u.), unsichtbar für das SCADA. Der Eigentümer der Anlage in Granada bestätigte, dass sein Schutz korrekt auslöste. | Stuft die Abschaltungen nicht als unangemessen ein. Unterstreicht die mangelnde Beobachtbarkeit als systemische Einschränkung des Betreibers und der RCC. |
-| **4. Dispatching in der südlichen Zone** | Räumt die Nichtverfügbarkeit des andalusischen CCGT seit dem 27. April ein. Rechtfertigt den Nicht-Ersatz durch angemessene Spannungsniveaus und Verfügbarkeit anderer Ressourcen. | Die Südzone verfügte über nur 0,2 GVAr Absorption im Vergleich zu >0,7 GVAr kapazitiver Einspeisung, die vom Betreiber selbst induziert wurde. Der Nicht-Ersatz war die entscheidendste Dispatching-Entscheidung. | Weist auf die geringe Kurzschlussleistung in Andalusien als strukturell verschärfenden Faktor hin, ohne sich zur individuellen Entscheidung zu äußern. |
-| **5. Hauptverantwortung** | Die Erzeuger haben ihre Verpflichtungen zur Spannungsregelung nicht erfüllt. Der Ausfall war ein Versagen des privaten Erzeugungsparks. | REE führte das Netz durch die Vermaschung in einen unvermeidlichen Kollapszustand. Die Erzeuger handelten gemäß der Physik und den Vorschriften. Der Ausfall war ein Fehler des Betreibers und der Regulierungsbehörde. | Die Grundursache ist normativ: die Einschränkung, die IBR daran hinderte, die Spannung dynamisch zu regeln. Das Versagen liegt im europäischen und nationalen Regulierungssystem. |
-
-
+| 1. Ursprung der kapazitiven Sättigung | Das System hatte ausreichende Margen. Die Sättigung trat ein, weil die Generatoren die erforderliche Blindleistung nicht absorbierten. Die Vermaschung war eine protokollierte und notwendige Maßnahme. | Die Vermaschung von 11 unbelasteten Leitungen speiste 1,05–2,4 GVAr durch den Ferranti-Effekt ein und verringerte die Q-V-Marge um 57 %. Der Zusammenbruch war mathematisch unvermeidlich. | Schreibt der Vermaschung keine Kausalität zu, dokumentiert aber, dass die RCC die Sättigung nicht erkannten. Identifiziert die regulatorische Einschränkung der IBR als primäre Verwundbarkeit. |
+| 2. Natur der 0,6-Hz-Schwingung | Erzwungene Schwingung mit Ursprung im Regelkreis einer PV-Anlage in Badajoz: Auslöser der Sequenz, die zum Zusammenbruch führte. | Die Beweise sind nicht schlüssig. Es könnte sich um einen natürlichen Inter-Area-Mode gehandelt haben, der durch das Dämpfungsverhältnis von 1 % aufgrund fehlender PSS in den abgeschalteten GuD-Kraftwerken verstärkt wurde. | Dokumentiert die Schwingung als atypisch (bis nach Deutschland detektiert), schreibt aber keine endgültige Kausalität zu. |
+| 3. Legitimität der Auslösungen (Tap-Lag) | Die ersten Auslösungen waren "unangemessen" oder verfrüht: Das SCADA registrierte 418 kV im 400-kV-Netz, innerhalb der Grenzen des P.O. 1.1. | Die Auslösungen waren normativ korrekt. Der Tap-Lag erzeugte einen toten Winkel: Die 220-kV-Netze erreichten 244 kV (>1,10 p.u.), unsichtbar für das SCADA. Der Eigentümer der ICE in Granada bestätigte, dass sein Schutz korrekt funktionierte. | Stuft die Auslösungen nicht als unangemessen ein. Unterstreicht die Nichtbeobachtbarkeit als systemische Einschränkung des Betreibers und der RCC. |
+| 4. Dispatch in der Südzone | Erkennt die Nichtverfügbarkeit des andalusischen GuD-Kraftwerks seit dem 27. April an. Rechtfertigt die Nichtersetzung durch angemessene Spannungsniveaus und Verfügbarkeit anderer Ressourcen. | Die Südzone verfügte über nur 0,2 GVAr Absorption gegenüber >0,7 GVAr kapazitiver Einspeisung, die durch den Betreiber selbst induziert wurde. Die Nichtersetzung war die folgenreichste Dispatch-Entscheidung. | Weist auf die niedrige Kurzschlussleistung in Andalusien als strukturellen erschwerenden Faktor hin, ohne sich zur individuellen Entscheidung zu äußern. |
+| 5. Hauptverantwortung | Die Generatoren haben ihre Spannungsregelungspflichten nicht erfüllt. Der Blackout war ein Versagen des privaten Generatorparks. | REE brachte das Netz durch die Vermaschung in einen Zustand des unvermeidlichen Zusammenbruchs. Die Generatoren handelten gemäß der Physik und den Vorschriften. Der Blackout war ein Versagen des Betreibers und des Regulierers. | Die Grundursache ist normativ: die Einschränkung, die IBR an der dynamischen Spannungsregelung hinderte. Das Versagen liegt im europäischen und nationalen Regulierungssystem. |
 
 </ForensicTable>
 
-<InteractiveCTA 
-  title="GUTACHTER-SIMULATOR: KAPAZITIVER BEITRAG" 
-  description="Aktivieren Sie diesmal die Kurzschlussleistungsschicht aus dem ICAI-Gutachten und prüfen Sie, wie viele MVAr die Vermaschung in Granada einspeist."
-  icon="⚖️"
->
-  <IberianGridTopologyBase />
-</InteractiveCTA>
+Die gutachterlichen Simulationen des kapazitiven Beitrags der Vermaschung im Verhältnis zur Kurzschlussleistung an Knoten wie Granada können in Abbildung E5 und ergänzend im [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos) erkundet werden.
 
-## Interpretierende Synthese: Drei Frakturen der Governance
+## Interpretative Synthese: drei Governance-Brüche
 
-Die vergleichende Prüfung ermöglicht es, den Streit zwischen den Parteien zu überwinden und eine Diagnose zweiter Ordnung zu formulieren: Der Ausfall vom 28. April war weder ein unvorhersehbarer „Schwarzer Schwan“ noch das Versagen einer bestimmten Technologie, sondern die **konvergierende Manifestation von drei Governance-Frakturen**, die im iberischen Stromsystem koexistierten.
+Die vergleichende Prüfung ermöglicht es, über den Streit zwischen den Parteien hinauszugehen und eine Diagnose zweiter Ordnung zu formulieren: Der Blackout vom 28. April war weder ein unvorhersehbarer „schwarzer Schwan“ noch das Scheitern einer bestimmten Technologie, sondern die konvergente Manifestation von drei Governance-Brüchen, die im iberischen Stromsystem nebeneinander existierten.
 
-### Operative Fraktur: Kausalität versus Verantwortung
+### Operativer Bruch: Kausalität versus Verantwortung
 
-Die These der Vermaschung als Auslöser (ICAI) und die These der kollektiven Nichteinhaltung als Ursache (REE / Regierung) schließen sich technisch nicht gegenseitig aus: Beide Faktoren trugen zur kapazitiven Sättigung bei, die die Q-V-Margen verengte. Was sich jedoch gegenseitig ausschließt, sind ihre rechtlichen und wirtschaftlichen Implikationen. Diese kausale Zweideutigkeit ist das vorhersehbare Ergebnis des Betriebs eines Netzes ohne ausreichende dynamische Instrumentierung: Wenn das System nicht an allen kritischen Knotenpunkten über PMUs oder Echtzeit-Berechnungswerkzeuge für die Spannungsstabilität verfügt, unterliegt die forensische Rekonstruktion unweigerlich der Interpretation. Der stillschweigende Konsens zwischen den Parteien — den kein Bericht ausdrücklich ausspricht — ist, dass die **Überwachungsarchitektur unzureichend war**, sowohl um den Vorfall in Echtzeit zu steuern als auch ihn im Nachhinein eindeutig zu klären.
+Die These der Vermaschung als Auslöser (ICAI) und die These der kollektiven Nichteinhaltung als Ursache (REE / Regierung) schließen sich technisch nicht gegenseitig aus: Beide Faktoren trugen zur kapazitiven Sättigung bei, die die Q-V-Margen verengte. Was sich jedoch gegenseitig ausschließt, ist ihre rechtliche und wirtschaftliche Implikation. Diese kausale Ambiguität ist das vorhersehbare Ergebnis des Betriebs eines Netzes ohne ausreichende dynamische Instrumentierung: Wenn das System weder über PMUs an allen kritischen Knoten noch über Echtzeit-Tools zur Berechnung der Spannungsstabilität verfügt, bleibt die forensische Rekonstruktion zwangsläufig der Interpretation unterworfen. Der stillschweigende Konsens zwischen den Parteien – den kein Bericht explizit ausspricht – ist, dass die Überwachungsarchitektur sowohl für das Echtzeit-Management des Vorfalls als auch für seine eindeutige nachträgliche Aufklärung unzureichend war.
 
-### Regulatorische Fraktur: Vorschriften des 20. Jahrhunderts angewandt auf ein Netz des 21. Jahrhunderts
+### Regulatorischer Bruch: eine Norm des 20. Jahrhunderts angewandt auf ein Netz des 21. Jahrhunderts
 
-Die Position von ENTSO-E deutet darauf hin, dass sowohl der Betreiber als auch die Erzeuger innerhalb der Grenzen einer Regelung handelten, die für das System, das sie regeln sollte, ungeeignet war. Das P.O. 7.4 und das RD 413/2014 entwarfen ein Spannungsregelungsschema für ein Netz, das von synchronen Massen mit langsamer Reaktion dominiert wurde; dies auf ein Netz mit 82 % IBR-Durchdringung anzuwenden, entspricht aus regelungstechnischer Sicht dem Versuch, ein System mit Millisekunden-Reaktion mit einem Regler zu stabilisieren, der für Minutendynamiken ausgelegt ist. Diese Unzulänglichkeit war nicht unbekannt: Der Vorschlag zur Aktualisierung von P.O. 7.4 befand sich **seit Jahren im regulatorischen Genehmigungsverfahren**. Der Regierungsbericht räumt selbst ein, dass sein Inkrafttreten die wichtigste Änderung gewesen wäre, um den Kollaps zu vermeiden. Der Ausfall vom 28. April ist in diesem Sinne der **messbare Preis einer regulatorischen Verzögerung**.
+Die Position von ENTSO-E deutet darauf hin, dass sowohl der Betreiber als auch die Generatoren innerhalb der Grenzen einer Norm handelten, die für das zu regelnde System ungeeignet war. Der P.O. 7.4 und die Königliche Verordnung 413/2014 entwarfen ein Spannungsregelungsschema für ein von trägen synchronen Massen dominiertes Netz; seine Anwendung auf ein Netz mit 82 % IBR-Durchdringung entspricht, in Begriffen der Regelungstechnik, dem Versuch, ein System mit einer Antwortzeit im Millisekundenbereich mit einem Regler zu stabilisieren, der für Dynamiken im Minutenbereich ausgelegt ist. Diese Unangemessenheit war nicht unbekannt: Der Vorschlag zur Aktualisierung des P.O. 7.4 befand sich seit Jahren im regulatorischen Genehmigungsprozess. Der eigene Bericht der Regierung erkennt an, dass sein Inkrafttreten die relevanteste Änderung gewesen wäre, um den Zusammenbruch zu verhindern. Der Blackout vom 28. April ist in diesem Sinne die messbare Kosten einer regulatorischen Verzögerung.
 
-### Systemische Fraktur: Statische Sicherheitswerkzeuge in einem dynamischen Netz
+### Systemischer Bruch: statische Sicherheitstools in einem dynamischen Netz
 
-Der einstimmige Konsens über die Unzulänglichkeit des statischen N−1-Kriteriums weist auf eine Verwundbarkeit hin, die über den iberischen Fall hinausgeht. Die Lastflussmodelle, die das System als „Normal“ bewerteten, sind mathematisch nicht in der Lage, Phänomene der kapazitiven Instabilität in Netzen mit geringer Trägheit darzustellen: Sie lösen keine Differentialgleichungen, modellieren nicht die Dynamik der Wechselrichter-Regelkreise und berechnen keine Q-V-Margen in Echtzeit. Die Fortschrittsgeschwindigkeit des Kollapses — von den ersten Abschaltungen bis zum Spannungsnullpunkt in weniger als **90 Sekunden** — verlagert das Phänomen außerhalb des Zeithorizonts jeglichen menschlichen Eingreifens: Als der Betreiber die Schwere des Transienten erkannte, war das System bereits unwiederbringlich. Die einzig tragfähige Antwort ist die **strukturelle Prävention durch dynamische Sicherheitsanalysen in Echtzeit**, deren Einsatz in den europäischen Regional Coordination Centres eine der dringlichsten von ENTSO-E identifizierten Reformen darstellt.
-
-### Die Grenze des zentralisierten Paradigmas
-
-Den drei Frakturen liegt eine tiefere Spannung zugrunde, die die Berichte nur bruchstückhaft behandeln: Das Paradigma des zentralisierten Betriebs — ein einziger Betreiber mit begrenzter Sichtbarkeit auf der 400-kV-Ebene, der die Spannung mit diskret schaltenden Drosselspulen regelt und die Synchronerzeugung über stündliche Marktsignale dispatcht — wurde für ein Netz entwickelt, in dem die synchrone Masse eine natürliche Dämpfung bot und die Generatoren in Sekunden reagierten. In einem Netz, in dem **82 % der Erzeugung aus Wechselrichtern besteht, die in Millisekunden reagieren**, sich selbst durch PLL mit Synchronisationsreferenzen versorgen und deren dynamisches Verhalten für das 400-kV-SCADA undurchsichtig ist, hat dieses Paradigma die Grenzen seiner Managementkapazität erreicht.
-
-Der 28. April ist nicht nur die Fallstudie eines Stromausfalls: Es ist das Ereignis, das die **Erschöpfung des zentralisierten Dispatch-Modells** in Systemen mit hoher Durchdringung von Leistungselektronik signalisiert und der zwingende Ausgangspunkt für eine neue Architektur verteilter und in Echtzeit agierender Kontrolle für das europäische Netz des 21. Jahrhunderts.
+Der einhellige Konsens über die Unzulänglichkeit des statischen N−1-Kriteriums weist auf eine Verwundbarkeit hin, die über den iberischen Fall hinausgeht. Die Lastflussmodelle, die das System als „Normal“ bewerteten, sind mathematisch nicht in der Lage, Phänomene der kapazitiven Instabilität in Netzen mit niedriger Trägheit darzustellen: Sie lösen keine Differentialgleichungen, modellieren nicht die Dynamik der Regelkreise der Wechselrichter und berechnen keine Q-V-Margen in Echtzeit. Die Geschwindigkeit des Zusammenbruchs – von den ersten Auslösungen bis zum Spannungseinbruch auf Null in weniger als 90 Sekunden – liegt außerhalb des Zeithorizonts jedes menschlichen

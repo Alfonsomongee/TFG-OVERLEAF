@@ -1,83 +1,114 @@
 ---
 id: anexo-mercado-costes
-title: "Anexo V · Mercado eléctrico, precios y costes"
-sidebar_label: "Anexo V · Mercado, precios y costes"
+title: "Anhang V · Strommarkt: Die unsichtbare Verwundbarkeit"
+sidebar_label: "Anhang V · Markt, Preise und Kosten"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PicasoPriceChart from '@site/src/components/PicasoPriceChart';
 
 <AnnexLayout
   wide
-  kicker="Anexo V"
-  title="Mercado eléctrico, precios y costes de ajuste"
-  description="Evidencias económicas sobre precios marginales, PVPC, mercados diario e intradiario, costes de ajuste, desvíos y señales económicas asociadas al apagón."
+  kicker="Anhang V"
+  title="Strommarkt: Die unsichtbare Verwundbarkeit"
+  description="Dieser Anhang dokumentiert die Preis- und Kostenabweichungssignale während des 28. April und analysiert, wie das marginalistische Design und die Ausgleichsmärkte blind gegenüber der fortschreitenden Verschlechterung der dynamischen Stabilität des Netzes operierten."
   meta={[
-    { label: 'Eje técnico', value: 'Mercado y Costes' },
-    { label: 'Cobertura', value: 'Impacto económico y precios' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technische Achse', value: 'Markt und Kosten' },
+    { label: 'Abdeckung', value: 'Wirtschaftliche Auswirkungen und Preise' },
+    { label: 'Nachweise', value: 'Abbildungen · Tabellen · Interaktive · Reihen' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Warum spiegelten die Preissignale des Strommarktes und der Systemdienstleistungen die zunehmende dynamische Verwundbarkeit des iberischen Festlandsystems nicht wider?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Am 28. April wickelte der marginalistische Markt die Energie zu normalen oder sogar niedrigen Preisniveaus ab, bedingt durch den Spitzenwert der erneuerbaren Erzeugung zu Grenzkosten von null. Diese kommerzielle Verbilligung verbarg jedoch dynamische Sicherheitskosten, die der derzeitige Markt nicht explizit vergütet: Trägheit und Kurzschlussleistung. Die Preissignale des Day-Ahead-Marktes und der paneuropäischen Ausgleichsmärkte (PICASSO) erwiesen sich als blind für die physische Fragilität des Systems und zeigten, dass das aktuelle Marktdesign keine Mechanismen zur Bewertung der Resilienz in Echtzeit besitzt.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Dieser Anhang fasst die OMIE-Preisaufzeichnungen, die Abweichungskosten und die Abrechnung von Systemdienstleistungen zusammen, die die Diskrepanz zwischen der Marktwirtschaft und der physischen Netzsicherheit am 28. April belegen.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    La documentación económica se presenta estructurada temáticamente para evaluar el comportamiento de los mercados y las señales de precio derivadas de la interrupción del suministro.
+    Die wirtschaftliche Dokumentation wird thematisch strukturiert präsentiert, um das Verhalten der Märkte und die aus der Unterbrechung der Stromversorgung resultierenden Preissignale zu bewerten.
   </AnnexMethodNote>
+
+  <em>Der Anhang ist in drei argumentative Abschnitte gegliedert: Marktsignale am 28. April, Ausgleich und operative Abweichungen sowie das Fehlen von Preisen für dynamische Netzdienstleistungseigenschaften.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t5' },
-      { label: 'Tablas',       target: 'tablas-t5' },
-      { label: 'Interactivos', target: 'interactivos-t5' },
-      { label: 'Series',       target: 'series-t5' },
+      { label: 'Marktsignale', target: 'senales-mercado' },
+      { label: 'Ausgleich und Abweichungen',   target: 'balance-desvios' },
+      { label: 'Verwundbarkeit',     target: 'vulnerabilidad-mercado' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t5"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['figures']} />
+  <AnnexSection id="senales-mercado" eyebrow="Abschnitt 1" title="Marktsignale am 28. April: Preise und Indikatoren">
+    Die Tabelle der OMIE-Grenzpreise zeigt die stündliche Entwicklung des Energiepreises und bestätigt niedrige Niveaus aufgrund des hohen Anteils an Photovoltaik.
+    <AnnexEvidenceLead
+      eyebrow="Hauptnachweis"
+      title="Kosten des ERS-Dienstes und Trägheit"
+      summary="Vergleich der optimalen Beschaffungskosten des Trägheits- und Schnellreaktionsdienstes (ERS) mit der Untätigkeit des Marktes am Tag des Zusammenbruchs."
+      insight="Regulatorische und wirtschaftliche Lücke · Anreize für synchrone Stabilität."
+    >
+      <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
+    </AnnexEvidenceLead>
+    Der SPOT-Preis fiel auf −3,00 €/MWh in der Stunde 12:00–13:00 MESZ — festgelegt 24 Stunden vor dem Zusammenbruch. Ein negativer Preis zeigt an, dass der Markt die synchrone Erzeugung genau dann aktiv aus dem Markt drängte, als ihre Trägheit am dringendsten benötigt wurde.
+    <AnnexEvidence type="table" id="precios-marginales-omie" level={2} />
+    Der negative Preis war keine Folge des Blackouts: Er war ein Alarmsignal, das das System nicht interpretierte.
+    Die SPOT- vs. PVPC-Entwicklung offenbart die strukturelle Kluft: negativer Großhandelspreis gegenüber einem Endkundentarif von 130 €/MWh zur gleichen Stunde. Nach dem Blackout erholte sich der SPOT auf 35 €/MWh aufgrund des höheren Gaseinsatzes im verstärkten Betrieb.
+    <AnnexEvidence type="chart" id="chart-9" level={2} />
+    Der aufschlussreiche Wert ist nicht der Endpreis (51,52 €/MWh), sondern seine Komponenten: Die technischen Einschränkungen (27,93 €/MWh) überstiegen den Marktpreis (24,63 €/MWh). Die Kosten der Stabilität überstiegen bereits in den frühen Morgenstunden des Ereignisses die Energiekosten.
+    <AnnexEvidence type="chart" id="chart-10" level={2} />
+    Die Aktivierungspreise auf der europäischen Plattform PICASSO dokumentieren die Kosten der während des paneuropäischen Notfalls mobilisierten Schnellregelreserven.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PicasoPriceChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t5"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t5"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="balance-desvios" eyebrow="Abschnitt 2" title="Ausgleich und operative Abweichungen">
+    Die Kosten der Aufwärtsregelreserven und das aktivierte Regelenergievolumen dokumentieren das Ausmaß des technischen und wirtschaftlichen Aufwands, um das Netz nach dem Verlust von 4,5 GW in 11 Sekunden wieder ins Gleichgewicht zu bringen.
+    <AnnexEvidence type="chart" id="chart-11" level={2} />
+    <AnnexEvidence type="chart" id="chart-12" level={2} />
+    Die Abweichungssalden, die Ausgleichsenergiepreise, die verfügbare FRR-Kapazität (~889 MW im schlechtesten Fall des Q2 gegenüber einem Defizit von ~1.200 MW) und die Kosten des Engpassmanagements vervollständigen das wirtschaftliche Bild des operativen Zusammenbruchs.
+    <AnnexEvidence type="chart" id="chart-18" level={2} />
+    <AnnexEvidence type="chart" id="chart-19" level={2} />
+    <AnnexEvidence type="chart" id="chart-20" level={2} />
+    <AnnexEvidence type="chart" id="chart-21" level={2} />
+    <AnnexEvidence type="chart" id="chart-22" level={2} />
+    Die interaktive Matrix der thermischen Anpassungskosten ermöglicht die Erkundung der Verteilung der Mehrkosten durch die außergewöhnliche Aktivierung von Sicherheits-GuD-Kraftwerken.
     <span id="grafico-matrix"></span>
-    <AnnexThemeEvidence theme="T5" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="matrix" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t5"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['charts']} />
+  <AnnexSection id="vulnerabilidad-mercado" eyebrow="Abschnitt 3" title="Die unsichtbare Verwundbarkeit des Marktes">
+    Die Gesamtsystemkosten werden minimiert, wenn Trägheit (ERS) explizit vergütet wird. Die Differenz zwischen dem Optimum und der Realität des 28. April sind die Kosten der Systemdienstleistungen, die der Markt nicht bewertet. Das Revenue Stacking für BESS-GFM zeigt, dass die Vergütung synthetischer Trägheit private Investitionen in dynamische Unterstützung ermöglichen würde.
+    <AnnexEvidence type="figure" id="ers_revenue_stacking" level={3} />
+    Das Revenue Stacking für Batteriespeicher (BESS) zeigt, wie die Vergütung synthetischer Trägheit und schneller Regelung private Investitionen ermöglicht.
   </AnnexSection>
 
-  <PicasoPriceChart showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="Die wirtschaftliche Analyse des 28. April offenbart ein regulatorisches Paradoxon: Der Markt operierte mit vollständiger kommerzieller Effizienz, während er das System in den physischen Zusammenbruch führte. Das aktuelle marginalistische Design bewertet und vergütet die dynamischen Netzdienstleistungseigenschaften (Trägheit, Kurzschlussleistung) nicht und schafft so einen systematischen Anreiz, die sie bereitstellenden synchronen Maschinen aus dem Markt zu drängen."
+    doesNotDemonstrate="Dieser Anhang zeigt die Notwendigkeit einer Reform des Strommarktes, um Märkte für Systemdienstleistungen wie Trägheit und Kurzschlussleistung zu integrieren und zu verhindern, dass die Energiewende die dynamische Sicherheit gefährdet."
+    connection="Die Lektüre wird ergänzt durch Anhang I (vorheriger Erzeugungsmix) und Anhang VII (Quantifizierung der sozioökonomischen Auswirkungen des Blackouts)."
+  />
 
-  *Figura A5.1. Incidentes de precios en PICASSO y efecto de la demanda elástica. Fuente: ACER.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anhang I: Nachfrage, Erzeugung und Bilanz" },
+    { to: "/anexo-impacto-resiliencia", label: "Anhang VII: Sozioökonomische Auswirkungen und Resilienz" }
+  ]} />
 </AnnexLayout>

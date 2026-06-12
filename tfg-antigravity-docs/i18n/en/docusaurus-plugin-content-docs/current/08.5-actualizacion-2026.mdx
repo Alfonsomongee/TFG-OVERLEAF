@@ -1,54 +1,126 @@
 ---
+id: 08.5-actualizacion-2026
 sidebar_position: 8.8
 hide_title: true
 title: "2026 Update: One Year Later"
 ---
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
 import BrowserOnly from "@docusaurus/BrowserOnly";
+import Comparador28A from "@site/src/components/Comparador28A";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import BESSBoomChart from "@site/src/components/BESSBoomChart";
+import CNMCSanctionsChart from "@site/src/components/CNMCSanctionsChart";
+import OvervoltageTimeline from "@site/src/components/OvervoltageTimeline";
+import PO74Timeline from "@site/src/components/PO74Timeline";
+import ThenVsNowPanel from "@site/src/components/ThenVsNowPanel";
 
 <GlitchTitle>2026 Update: One Year Later</GlitchTitle>
 
-The blackout of April 28, 2025 marked a systemic turning point. As of May 2026, the final reports from ENTSO-E (published on March 20, 2026) and independent forensic investigations have brought to light a series of technical and regulatory revelations that drastically alter the initial narrative of the incident.
+*Status updated as of May 2026. The regulatory procedures, administrative files, and technical reforms mentioned in this chapter may have evolved after that date.*
+
+The blackout of April 28, 2025, marked a systemic turning point. As of May 2026, the final reports from ENTSO-E (published on March 20, 2026) and independent forensic investigations have brought to light a series of technical and regulatory revelations that drastically alter the initial narrative of the incident.
+
+## System Now vs. 28-A
+
+The following panel compares current systemic vulnerability metrics with the conditions recorded on April 28, 2025, at 12:30 CEST.
+
+<figure id="fig-n1-thenvsnow">
+  <ThenVsNowPanel />
+  <figcaption>
+    <strong>Figure N1 - System Now vs. 28A.</strong> Each row compares the value of a system security metric at the instant before the collapse (28A) with its equivalent in May 2026. Normalized bars facilitate visual comparison of the magnitude of change. Exact values are shown at the ends.
+  </figcaption>
+</figure>
+
+:::warning Methodological Warning: Distinction between Historical and Operational Data
+
+Data in the "Current System" block come from current operational sources (ESIOS API, May 2026) and may vary depending on the query time.
+
+Data for "28-A" should be treated as fixed historical values corresponding to the pre-collapse scenario, obtained from the ENTSO-E Factual Report and the Government Analysis Committee.
+
+The comparison is indicative, showing the system's evolution since the crisis. It does not replace the forensic reconstruction of the historical event documented in Chapters 2 to 4.
+
+:::
+
+<Collapsible label="View interactive comparator (Current System vs 28-A)">
+
+<div style={{marginTop:'1rem'}}>
+<Comparador28A />
+</div>
+
+</Collapsible>
 
 ## 1. The "Overvoltage-Driven Blackout" Paradigm
 
-Initial analyses suggested a classic collapse due to lack of inertia or frequency deviation. However, the independent study by the Institute for Research in Technology (IIT) at Universidad Pontificia Comillas —peer-reviewed in *ScienceDirect* (Rouco, Lobato, Echavarren, 2026)— has introduced an unprecedented technical concept: the **overvoltage-driven blackout**.
+Initial analyses suggested a classic collapse due to lack of inertia or frequency deviation. However, the independent study by the Institute for Technological Research (IIT) of Comillas Pontifical University — peer-reviewed in *ScienceDirect* (Rouco, Lobato, Echavarren, 2026) — has introduced an unprecedented technical concept: the overvoltage-driven blackout.
 
 :::warning [Technical Revelation]
-The fatal sequence was not a generalized voltage drop. Upon activation of the protection logics, the grid suffered a cascade of massive overvoltage trips. The load shedding and the enormous injection of capacitive energy from the 400 kV lines (without sufficient connected reactors) raised voltages above the generation protection limits. The trip of the 400/220 kV transformer in Granada at 12:32:57, which lost 355 MW, was the trigger for the cascade.
+The fatal sequence was not a widespread voltage drop. When the protection logics activated, the grid suffered a cascade of massive overvoltage trips. The disconnection of load and the enormous injection of capacitive energy from the 400 kV lines (without sufficient reactors connected) raised voltages above the limit of generation protections. The trip of the 400/220 kV transformer in Granada at 12:32:57, which lost 355 MW, was the trigger for the cascade.
 :::
 
-According to the forensic reconstruction, the plants connected via Grid-Following inverters operating in **fixed power factor** mode reacted to active power oscillations by injecting enormous reactive power ramps. In a weakened grid (with a low Short-Circuit Ratio), the PLL of these inverters caused instabilities that the system was unable to dampen.
+<figure id="fig-n2-overvoltage">
+  <OvervoltageTimeline />
+  <figcaption>
+    <strong>Figure N2 - "Overvoltage-Driven Blackout" Timeline.</strong> Sequence of events leading to the 28A overvoltage collapse. Colors indicate the nature of each phase: blue (oscillation), amber (overvoltage), red (cascading trip), dark gray (total collapse).
+  </figcaption>
+</figure>
+
+According to the forensic reconstruction, Grid-Following inverter-connected plants operating in fixed power factor mode reacted to active power oscillations by injecting enormous ramps of reactive power. Faced with a weakened grid (with a low Short-Circuit Ratio), the Phase-Locked Loop (PLL) of these inverters caused instabilities that the system was unable to dampen.
 
 ## 2. Operational Opacity and the Role of HVDC
 
-One of the most controversial points of the investigation has been the actions of the system operator (REE). In July 2025, the independent consortium (AELEC, INESC TEC, Compass Lexecon) denounced a severe lack of transparency regarding the data from state estimators and Phasor Measurement Units (PMU). 
+One of the most controversial points of the investigation has been the performance of the system operator (REE). In July 2025, the independent consortium (AELEC, INESC TEC, Compass Lexecon) denounced a severe lack of transparency regarding data from state estimators and Phasor Measurement Units (PMUs).
 
-The most critical finding of the investigation commissions reveals that, just minutes before the blackout, REE modified the operating mode of the INELFE HVDC link between Spain and France. The link went from its "AC emulation" mode to constant DC power control, neutralizing its ability to dampen the lethal 0.6 Hz oscillation.
+The critical role of the HVDC INELFE-1 mode change to PMODE1 and its consequences on dynamic support capability are analyzed in detail in Chapters [2](./02-context.mdx) and [3](./03-incident-analysis.mdx).
 
-## 3. Institutional Consequences and Multimillion-Dollar Litigation
+## 3. Institutional Consequences and Multi-Million Dollar Lawsuits
 
-The blackout not only broke the electrical system, but also the institutional relations of the sector, sparking an unprecedented judicial avalanche:
+The blackout not only broke the electrical system but also the institutional relationships within the sector, triggering an unprecedented judicial avalanche:
 
-- **CNMC Proceedings**: Since April 2025, 66 disciplinary proceedings have been initiated. REE and Almaraz face "very serious" charges (up to €60M). Concurrently, eleven generation companies (including Endesa, Iberdrola, and Mercuria Solar) face "serious" charges for non-compliance with grid codes.
-- **Massive Civil Lawsuits**: Upon expiration of the statute of limitations in April 2026, industrial giants like **Repsol** have formally filed lawsuits against the system for **125 million euros** in lost profits and damages to petrochemical complexes. Iryo and Moeve have also notified their intention to sue.
-- **Classified Audios**: The hearings of the Senate Investigation Commission have made public audios from the REE control room. In them, the operators attributed the severe oscillations and voltage instabilities at 12:00 to *"the poor management of a high-power photovoltaic plant in Badajoz"*, revealing that the risk was imminent minutes before the final collapse.
+- CNMC Files: Since April 2025, 66 sanctioning proceedings have been initiated. REE and the company owning the Almaraz power plant face "very serious" charges (up to €60M). Concurrently, eleven producers (including Endesa, Iberdrola, and Mercuria Solar) face "serious" charges for non-compliance with grid codes.
+- Massive Civil Lawsuits: As the statute of limitations expired in April 2026, industrial giants like Repsol have filed lawsuits against the system for €125 million in lost profits and damages to petrochemical complexes. Iryo and Moeve have also notified their intention to sue.
+- Classified Audio: Hearings of the Senate Investigation Commission have made public audio from the REE control room. In them, operators attributed the severe oscillations at 12:00 to the *"poor management"* of the photovoltaic plant operators. However, the CNMC clarified that the 0.6 Hz oscillation was caused by a defect in the control loop of the large photovoltaic plant in Badajoz, not by human "poor management." This reveals that the risk was imminent minutes before the final collapse, even though the initial diagnosis in the control room was erroneous.
+
+## Procedural and Regulatory Status (May 2026)
+
+<figure id="fig-n3-cnmc">
+  <CNMCSanctionsChart />
+  <figcaption>
+    <strong>Figure N3 - Sanctioning proceedings initiated by the CNMC after 28A.</strong> Bars represent the number of proceedings; color indicates the severity of the infraction according to the LSE.
+  </figcaption>
+</figure>
+
+### P.O. 7.4 Implementation Schedule
+
+<figure id="fig-n4-po74">
+  <PO74Timeline />
+  <figcaption>
+    <strong>Figure N4 - P.O. 7.4 Implementation Schedule.</strong> Milestones of the P.O. 7.4 reform process from the initial REE proposal (2021) to the expected completion of transitional exemptions (Dec 2026). Green: completed. Amber: pending. Gray: estimated.
+  </figcaption>
+</figure>
+
+### Iberdrola vs. Redeia Litigation
+
+On April 21, 2026, the Commercial Court No. 15 of Madrid (Judge Teodoro Ladrón) rejected the jurisdictional challenge filed by REE and Redeia, confirming the jurisdiction of civil courts to hear Iberdrola's lawsuit for unfair competition. The order delimits that the proceeding will not judge the technical causes of the blackout — the exclusive competence of the CNMC — but rather the corporate conduct and public statements of Redeia's management that, according to Iberdrola, damaged its reputation and stock market value.
 
 ## 4. The Regulatory Response: The Grid-Forming Mandate
 
-Faced with the evidence of structural failure, ENTSO-E published its awaited "Phase II Report" in November 2025, laying the foundations for the new European grid code (NC RfG 2.0).
+Given the evidence of the structural failure, ENTSO-E published its long-awaited "Phase II Report" in November 2025, laying the groundwork for the new European grid code (NC RfG 2.0).
 
-:::info [The New GFM Standard]
-The regulatory draft mandates Grid-Forming technology for all new non-synchronous plants and storage systems larger than **1 MW**. It requires a current response time of < 10 ms, ride-through against phase angle jumps, and the provision of synthetic inertia equivalent to that of a synchronous machine.
-:::
+The technical specifications of NC RfG 2.0 and its mandatory Grid-Forming mandate are detailed in [Chapter 7](./07-future-resilience.mdx). What is relevant for the 2026 update is the implementation status:
 
-Despite the Iberian collapse, the official adoption of NC RfG 2.0 by the European Commission has been deprioritized until late 2026. However, countries like the UK (Stability Pathfinder project) and Spain have accelerated on their own.
+Despite the Iberian collapse, the official adoption of NC RfG 2.0 by the European Commission has been deprioritized until late 2026. However, countries like the United Kingdom (Stability Pathfinder project) and Spain have accelerated on their own.
 
 ### The Iberian Storage Boom
-The systemic cost of keeping the system reinforced with gas after the blackout amounted to an additional **666 million euros** in just ten months. As a direct reaction, the Spanish battery market experienced an "electroshock": the installed BESS (Battery Energy Storage Systems) capacity has **multiplied by 589%**, going from a symbolic 28 MW to almost 200 MW operational in a single year, driving a native grid architecture for Black Start services.
+The systemic cost of maintaining the system reinforced with gas after the blackout amounted to an additional €666 million in just ten months. As a direct reaction, the Spanish battery market experienced unprecedented acceleration: installed BESS (Battery Energy Storage Systems) capacity increased by 589%, from a symbolic 28 MW to approximately 193 MW operational in a single year, driving a native grid architecture for Black Start services.
+
+<figure id="fig-n5-bess">
+  <BESSBoomChart />
+  <figcaption>
+    <strong>Figure N5 - The Iberian Storage Boom.</strong> Evolution of cumulative BESS capacity in Spain from Q1 2024 to May 2026. Annotations mark the regulatory and market milestones that accelerated deployment.
+  </figcaption>
+</figure>
 
 ## Conclusion of the Crisis
 
-In retrospect, the "2025 blackout" is no longer studied in 2026 as a fortuitous accident derived from the hydraulic drought or the solar surplus. It is the first documented exponent of a collapse caused by regulatory strangulation and a technological transition that removed synchronous machines before deploying their electronic equivalents. The Iberian Peninsula became by force the living laboratory that has forced Europe to rewrite the rules of electrical stability for the next decade.
+In retrospect, the "2025 blackout" is no longer studied in 2026 as a fortuitous accident derived from hydraulic drought or solar excess. It is the first documented example of a collapse precipitated by the structural inadequacy of the prevailing regulatory-technical framework to the physics of high renewable penetration systems. The Iberian Peninsula forcibly became the living laboratory that forced Europe to rewrite the rules of electrical stability for the next decade.

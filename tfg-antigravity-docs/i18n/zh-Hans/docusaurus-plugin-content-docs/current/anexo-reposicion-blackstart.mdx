@@ -1,77 +1,107 @@
 ---
 id: anexo-reposicion-blackstart
-title: "Anexo VI · Reposición, Black Start y operación de emergencia"
-sidebar_label: "Anexo VI · Reposición y emergencia"
+title: "附录六 · 恢复、黑启动与紧急运行"
+sidebar_label: "附录六 · 恢复与紧急运行"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo VI"
-  title="Reposición, Black Start y operación de emergencia"
-  description="Evidencias sobre fragmentación en islas, arranque autónomo, recuperación de demanda, apoyo transfronterizo y cambios de estado durante la restauración del sistema."
+  kicker="附录六"
+  title="恢复、黑启动与紧急运行"
+  description="本附录记录了伊比利亚半岛电力供应在4月28日崩溃后的恢复过程，详细说明了自主启动操作、分区孤岛运行以及负荷的逐步并网。"
   meta={[
-    { label: 'Eje técnico', value: 'Reposición y Black Start' },
-    { label: 'Cobertura', value: 'Restauración del sistema' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '恢复与黑启动' },
+    { label: '覆盖范围', value: '系统恢复' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    在全面崩溃后，伊比利亚半岛如何协调黑启动和参考功率输入以恢复供电？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日伊比利亚半岛的恢复过程结合了两种并行且协调的策略：本地水电站和火电站的黑启动以构建孤立子系统（恢复孤岛），以及从法国互联电网引入参考电压以重新为北部输电干线供电。尽管联合循环机组并网初期存在延迟，但利用欧洲大陆参考电压和抽水控制甩负荷，使得在不到10小时内恢复了90%的供电，证明了协调应急计划的有效性。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录汇集了4月28日恢复过程中的启动操作记录、孤岛划分以及需求恢复曲线。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Se recopilan en este dossier técnico los registros y evidencias operativas que ilustran el proceso de arranque autónomo y la paulatina reconexión de la demanda.
+    本技术档案收集了说明黑启动过程和逐步恢复负荷连接的记录和运行证据。
   </AnnexMethodNote>
+
+  <em>本附录分为三个论证部分：恢复策略与黑启动、按区域的需求恢复、以及国际协调与EAS状态。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t6' },
-      { label: 'Tablas',       target: 'tablas-t6' },
-      { label: 'Interactivos', target: 'interactivos-t6' },
-      { label: 'Series',       target: 'series-t6' },
+      { label: '恢复策略', target: 'estrategia-reposicion' },
+      { label: '需求恢复',  target: 'recuperacion-demanda' },
+      { label: 'EAS状态与协调', target: 'estados-eas' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t6"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['figures']} />
+  <AnnexSection id="estrategia-reposicion" eyebrow="第1节" title="恢复策略与黑启动">
+    双重重启策略示意图展示了比利牛斯山脉轴线（北部）与由自主水电站供电的南部恢复孤岛的同时并网过程。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="双重重启策略"
+      summary="恢复过程结合了从法国边境向北部注入参考电压，以及通过黑启动在南部激活自主同步孤岛。"
+      insight="法国的跨境支持 · 恢复孤岛的协调。"
+    >
+      <AnnexEvidence type="figure" id="estrategia_reenergizacion_dual" level={1} />
+    </AnnexEvidenceLead>
+    具备黑启动能力的电站列表显示了对水库式水电站的依赖——这在干旱情况下是一个重要的限制因素。
+    <AnnexEvidence type="table" id="centrales-black-start" level={1} />
+    自主启动尝试的失败率很高（图中灰色点），反映了在没有同步质量接入的情况下为电网供电的复杂性。每个孤岛必须在与相邻孤岛同步之前稳定其电压和频率。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="black_start_hidroelectrico" level={2} />
+      <AnnexEvidence type="figure" id="islas_reposicion_entsoe" level={2} />
+    </AnnexEvidenceGrid>
+    各孤岛的实际恢复时间记录了每个区域特有的困难——南部始终比北部慢。
+    <AnnexEvidence type="table" id="tiempos-restauracion-islas" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t6"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['tables']} />
+  <AnnexSection id="recuperacion-demanda" eyebrow="第2节" title="按区域的需求恢复">
+    恢复损失的25 GW负荷需要18.5小时的不间断操作，并采用阶梯式负荷接入以避免新的低频事件。Torrão的同步补偿操作（欧洲中部夏令时间17:23）稳定了Zêzere 220 kV孤岛：水电机组作为纯同步补偿器运行，注入无功功率而不输出有功功率。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="recuperacion_demanda_peninsular" level={1} />
+      <AnnexEvidence type="figure" id="figuraB3-light" level={2} />
+    </AnnexEvidenceGrid>
+    按配电节点划分的详细数据以及西班牙（16小时）与葡萄牙（12小时）的对比，记录了恢复过程的地理不对称性。
+    <AnnexEvidence type="table" id="recuperacion-demanda-espana" level={2} />
+    <AnnexEvidence type="table" id="recuperacion-portugal" level={2} />
+    欧洲警报系统在欧洲中部夏令时间12:32:00将西班牙标记为“正常”，在欧洲中部夏令时间12:33:29标记为“大停电”——没有任何中间状态。其他输电系统运营商（爱沙尼亚、拉脱维亚、芬兰）也因多米诺骨牌效应触发了备用方案。
+    <AnnexEvidence type="chart" id="chart-23" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t6"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['interactives']} />
+  <AnnexSection id="estados-eas" eyebrow="第3节" title="国际协调与EAS状态">
+    EAS状态转换表量化了官方状态声明与实际物理情况之间的延迟：当EAS仍声明“正常”时，电网实际上已经崩溃。
+    <AnnexEvidence type="table" id="eas-state-changes" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t6"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="4月28日之后伊比利亚电力系统的恢复表明，恢复的成功取决于一项协调策略，该策略结合了本地黑启动资源与邻近欧洲大陆同步系统的强度。法国提供的参考电压显著缩短了400 kV输电干线的恢复时间。"
+    doesNotDemonstrate="本附录证明了需要修订恢复计划，以适应常规电站贡献减少以及分布式储能在未来中的关键作用。"
+    connection="阅读本附录时，请结合附录三（先前的级联序列）和附录四（跨境潮流与北部重启）。"
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "附录三：级联序列与保护" },
+    { to: "/anexo-interconexiones-flujos", label: "附录四：互联与跨境潮流" }
+  ]} />
 </AnnexLayout>

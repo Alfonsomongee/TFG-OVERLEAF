@@ -1,90 +1,138 @@
 ---
 id: anexo-demanda-generacion-balance
-title: "Anexo I · Demanda, generación y balance"
-sidebar_label: "Anexo I · Demanda, generación y balance"
+title: "附录一 · 需求、发电与平衡：前提条件"
+sidebar_label: "附录一 · 需求、发电与平衡"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
-import LOLEBarChart from '@site/src/components/LOLEBarChart';
-import BESSBoomChart from '@site/src/components/BESSBoomChart';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo I"
-  title="Demanda, generación y balance eléctrico"
-  description="Evidencias sobre carga peninsular, mix de generación, potencia disponible, previsiones de demanda y equilibrio operativo del sistema antes, durante y después del 28-A."
+  kicker="附录一"
+  title="需求、发电与平衡：前提条件"
+  description="本附录汇集了2025年4月28日伊比利亚半岛电力系统在事件发生前、中、后关于需求、发电组合和运行平衡的相关证据。"
   meta={[
-    { label: 'Eje técnico', value: 'Demanda y Balance' },
-    { label: 'Cobertura', value: 'Sistema Eléctrico Peninsular' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '需求与平衡' },
+    { label: '覆盖范围', value: '半岛电力系统' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    2025年4月28日上午，预测需求、发电组合和半岛系统的运行平衡如何制约可用的动态安全裕度？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日上午，半岛发电量充裕地满足了需求，但发电组合的构成——82%来自基于逆变器的电源，仅11台同步机组并网——使系统处于全年最低惯量状态，且半岛南部的短路容量低于安全运行阈值。需求预测并未预示任何异常情况；预测值与实际值的偏差低于5%。脆弱性不在于可用功率的数量，而在于这些功率的动态特性。本附录确立了后续崩溃的必要——尽管非充分——条件。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录记录了降低半岛系统惯量和短路容量至安全阈值以下的先前运行条件，为4月28日大停电创造了前提条件。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Las evidencias documentales se organizan en este anexo para facilitar una lectura integrada de la evolución de la demanda y el balance de generación durante el incidente.
+    本附录中的文献证据经过组织，以便于综合阅读事件期间需求和发电平衡的演变过程。
   </AnnexMethodNote>
+
+  <em>本附录分为四个部分。第一部分介绍4月28日的运行状况：发电概况、并网机组以及欧洲中部夏令时12:30的发电组合。第二部分将需求预测与实际情况进行对比，证明从常规信号来看，脆弱性是不可见的。第三部分汇集了中期指标作为结构性背景。第四部分将事件置于伊比利亚能源转型的背景下。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t1' },
-      { label: 'Tablas',       target: 'tablas-t1' },
-      { label: 'Interactivos', target: 'interactivos-t1' },
-      { label: 'Series',       target: 'series-t1' },
+      { label: '前提条件',           target: 'condicion-previa' },
+      { label: '需求预测',     target: 'previsiones-demanda' },
+      { label: '容量与指标',    target: 'capacidad-indicadores' },
+      { label: '转型与重新供电', target: 'transicion-reenergizacion' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t1"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T1" include={['figures']} />
+  <AnnexSection id="condicion-previa" eyebrow="第1节" title="前提条件：发电组合、机组与惯量">
+    4月28日的发电概况说明了崩溃前即刻的运行状况：光伏发电达到峰值，而常规同步发电降至历史最低水平。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="4月28日的发电概况"
+      summary="在正午时段，光伏发电达到峰值，而同步发电降至历史最低水平。"
+      insight="~82% 基于逆变器的发电 · 仅11台同步机组并网。"
+    >
+      <AnnexEvidence type="figure" id="ree_generation_mix_28april" level={1} />
+    </AnnexEvidenceLead>
+    在欧洲中部夏令时12:30，仅有11台常规机组保持并网——这是2025年的最低值。下图记录了前几个月的下降趋势。
+    <AnnexEvidence type="figure" id="conventionalunits" level={1} />
+    按经济调度顺序的系统性淘汰每天都在减少可用于维持惯量和短路容量的同步资源。
+    欧洲中部夏令时12:30——即根故障发生前一刻——的确切发电组合构成以及按技术分类的不可用功率，界定了运营商可用的实际裕度。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="table" id="mix-generacion-12-30" level={2} />
+      <AnnexEvidence type="table" id="unavailable-capacity" level={2} />
+    </AnnexEvidenceGrid>
+    REE数据与政府委员会数据之间3,028兆瓦的差异是专家争议点之一：REE声称在08:00至10:00（欧洲中部夏令时）之间解列了15台联合循环机组。
+    <AnnexEvidence type="table" id="indisponibilidad-generacion-convencional" level={2} />
+    如果运营商确实拥有额外的同步容量，那么不调度该容量的决定就是连锁故障中的第一个故障点。
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t1"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T1" include={['tables']} />
+  <AnnexSection id="previsiones-demanda" eyebrow="第2节" title="需求预测：无警报信号">
+    针对西班牙的D-2、D-1和08:00预测均未预示任何异常情况。
+    <AnnexEvidence type="table" id="spanish-demand-forecast" level={2} />
+    预测值与实际值的偏差低于5%——需求不是问题所在。
+    葡萄牙的预测也证实了同样的正常模式。
+    <AnnexEvidence type="table" id="portuguese-demand-forecast" level={2} />
+    分辨率为5分钟的ESIOS半岛需求序列是系统的心电图：需求稳定直至欧洲中部夏令时12:33，然后垂直下降至0兆瓦，随后是19小时的恢复过程。
+    <AnnexEvidence type="chart" id="chart-1" level={2} />
+    西班牙和葡萄牙的综合负荷证实，崩溃在两国同时发生——西班牙和葡萄牙的下降之间没有明显的时差。
+    <AnnexEvidence type="chart" id="chart-2" level={2} />
+    P48发电计划在欧洲中部夏令时12:33瞬间被取消。估计的未供电能量（150,000–180,000兆瓦时）是日计划量（27,812兆瓦时）的数倍。
+    <AnnexEvidence type="chart" id="chart-3" level={2} />
+    预测的正常性恰恰是证据所在：4月28日的脆弱性对于常规需求信号是不可见的。
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t1"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="capacidad-indicadores" eyebrow="第3节" title="容量、储备与中期指标">
+    半岛发电厂拥有超过121吉瓦的装机容量，其中约61吉瓦为常规同步机组。在4月28日中午，仅调度了7吉瓦。装机容量与实际发电量之间的差距是经济调度顺序的印记。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="capacidad_instalada_2025" level={3} />
+      <AnnexEvidence type="chart" id="chart-5" level={3} />
+    </AnnexEvidenceGrid>
+    第18周储存了15太瓦时，伊比利亚水库接近历史最高水位。这一储备使得水力黑启动在数小时内（而非数天内）成为可能。
+    <AnnexEvidence type="chart" id="chart-7" level={3} />
+    无二氧化碳发电指标在欧洲中部夏令时11:30达到91.2%——2025年工作日的最高值。系统在其最大脱碳点崩溃。
+    <AnnexEvidence type="chart" id="chart-8" level={3} />
+    REE的SCADA系统无法观测到的约700兆瓦分布式自耗电的断开，为需求-发电平衡增加了一层运行不确定性。
+    <AnnexEvidence type="table" id="variacion-demanda-desconexion-gd" level={3} />
+  </AnnexSection>
+
+  <AnnexSection id="transicion-reenergizacion" eyebrow="第4节" title="能源转型与重新供电">
+    14年间，基于逆变器的发电从补充地位转变为主导地位。崩溃后，重新供电排除了基于逆变器的电源，直到达到最低短路容量和惯量水平——在数小时内逆转了十年的转型进程。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="mix_comparativo_2010_2024" level={3} />
+      <AnnexEvidence type="figure" id="evolucion_mix_reenergizacion" level={3} />
+    </AnnexEvidenceGrid>
+    流图允许逐年探索能源转型如何逐步取代提供惯量和固有电压控制的电源。
     <span id="grafico-streamgraph"></span>
+    <AnnexEvidence type="interactive" id="streamgraph" level={3} />
+    运行发电组合分解工具允许将4月28日的技术构成与同一时期的稳定工作日进行比较。
     <span id="grafico-mix-generacion"></span>
+    <AnnexEvidence type="interactive" id="mix-generacion" level={3} />
+    可再生能源渗透率与脱碳之间的相关性有其反面：排放量的减少与系统旋转惯量的减少同时发生。
     <span id="grafico-emissions-renewables"></span>
-    <AnnexThemeEvidence theme="T1" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="emissions-renewables" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t1"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T1" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="4月28日的需求-发电平衡不包含常规警报信号：需求得到满足，市场价格未预示紧张，预测也相当准确。脆弱性并非源于功率短缺，而是源于可用功率的动态特性不足：惯量、短路容量和电压控制能力。"
+    doesNotDemonstrate="本附录并未证明停电是不可避免的，也未证明运营商缺乏管理局势的工具。它证明了4月28日上午的运行状况构成了后续崩溃的必要前提条件：一个功率裕度充足但动态裕度不足的系统。"
+    connection="阅读本附录时，应结合附录二（分析发电组合构成如何降低电压稳定性）和附录五（解释市场设计为何未为缺失的动态特性产生价格信号）。"
+  />
 
-  <LOLEBarChart showCaption={false} />
-
-  *Figura A1.1. Evolución de la LOLE por zona de oferta según la Decisión 06/2026 de ACER. Fuente: ACER.*
-
-  <BESSBoomChart showCaption={false} />
-
-  *Figura A1.2. Capacidad BESS acumulada en España (Q1 2024 – mayo 2026). Fuentes: APPA, REE, MITECO.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "附录二：对动态稳定性的影响" },
+    { to: "/anexo-mercado-costes", label: "附录五：市场机制" }
+  ]} />
 </AnnexLayout>

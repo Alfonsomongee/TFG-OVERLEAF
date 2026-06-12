@@ -1,83 +1,114 @@
 ---
 id: anexo-mercado-costes
-title: "Anexo V · Mercado eléctrico, precios y costes"
-sidebar_label: "Anexo V · Mercado, precios y costes"
+title: "Annex V · Electricity Market: The Invisible Vulnerability"
+sidebar_label: "Annex V · Market, Prices and Costs"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PicasoPriceChart from '@site/src/components/PicasoPriceChart';
 
 <AnnexLayout
   wide
-  kicker="Anexo V"
-  title="Mercado eléctrico, precios y costes de ajuste"
-  description="Evidencias económicas sobre precios marginales, PVPC, mercados diario e intradiario, costes de ajuste, desvíos y señales económicas asociadas al apagón."
+  kicker="Annex V"
+  title="Electricity Market: The Invisible Vulnerability"
+  description="This annex documents price signals and deviation costs during the April 28 event, analyzing how the marginalist design and balancing markets operated blindly in the face of the progressive degradation of the grid's dynamic stability."
   meta={[
-    { label: 'Eje técnico', value: 'Mercado y Costes' },
-    { label: 'Cobertura', value: 'Impacto económico y precios' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical Axis', value: 'Market and Costs' },
+    { label: 'Coverage', value: 'Economic Impact and Prices' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    Why did the price signals from the electricity market and balancing services fail to reflect the growing dynamic vulnerability of the peninsular system?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    On April 28, the marginalist market settled energy at normal or even low price levels due to the peak in renewable generation at zero marginal cost. However, this commercial cheapening concealed a dynamic security cost that the current market does not explicitly remunerate: inertia and short-circuit power. The price signals from the day-ahead market and the pan-European balancing services (PICASSO) proved blind to the physical fragility of the system, demonstrating that the current market design lacks mechanisms to value resilience in real time.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex compiles OMIE price records, deviation costs, and balancing service billing that evidence the disconnect between market economics and the physical security of the grid on April 28.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    La documentación económica se presenta estructurada temáticamente para evaluar el comportamiento de los mercados y las señales de precio derivadas de la interrupción del suministro.
+    The economic documentation is presented thematically to assess market behavior and price signals resulting from the supply interruption.
   </AnnexMethodNote>
+
+  <em>The annex is organized into three argumentative sections: market signals on April 28, balancing and operational deviations, and the absence of prices for dynamic grid-support properties.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t5' },
-      { label: 'Tablas',       target: 'tablas-t5' },
-      { label: 'Interactivos', target: 'interactivos-t5' },
-      { label: 'Series',       target: 'series-t5' },
+      { label: 'Market Signals', target: 'senales-mercado' },
+      { label: 'Balancing and Deviations',   target: 'balance-desvios' },
+      { label: 'Vulnerability',     target: 'vulnerabilidad-mercado' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t5"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['figures']} />
+  <AnnexSection id="senales-mercado" eyebrow="Section 1" title="Market Signals on April 28: Prices and Indicators">
+    The OMIE marginal price table records the hourly evolution of the energy price, confirming low levels due to high solar photovoltaic penetration.
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="Cost of ERS Service and Inertia"
+      summary="Comparison of the optimal acquisition cost of the inertia and fast response (ERS) service versus market inaction on the day of the collapse."
+      insight="Regulatory and economic gap · Incentives for synchronous firmness."
+    >
+      <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
+    </AnnexEvidenceLead>
+    The SPOT price fell to −3.00 €/MWh during the 12:00–13:00 CEST hour — set 24 hours before the collapse. A negative price indicates that the market was actively expelling synchronous generation precisely when its inertia was most needed.
+    <AnnexEvidence type="table" id="precios-marginales-omie" level={2} />
+    The negative price was not a consequence of the blackout: it was an alarm signal that the system failed to interpret.
+    The SPOT vs. PVPC evolution reveals the structural gap: a negative wholesale price versus a retail tariff of 130 €/MWh in the same hour. After the blackout, the SPOT recovered to 35 €/MWh due to increased gas usage in the Reinforced Operation.
+    <AnnexEvidence type="chart" id="chart-9" level={2} />
+    The revealing data is not the final price (51.52 €/MWh) but its components: technical constraints (27.93 €/MWh) exceeded the market price (24.63 €/MWh). The cost of stability already surpassed the cost of energy in the early hours of the event.
+    <AnnexEvidence type="chart" id="chart-10" level={2} />
+    The activation prices on the European PICASSO platform document the cost of fast regulation reserves mobilized during the pan-European emergency.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PicasoPriceChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t5"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t5"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="balance-desvios" eyebrow="Section 2" title="Balancing and Operational Deviations">
+    The cost of upward regulation reserves and the volume of activated regulation energy document the magnitude of the technical and economic effort to balance the grid after the loss of 4.5 GW in 11 seconds.
+    <AnnexEvidence type="chart" id="chart-11" level={2} />
+    <AnnexEvidence type="chart" id="chart-12" level={2} />
+    Deviation balances, imbalance prices, available FRR capacity (~889 MW in the worst Q2 case versus a deficit of ~1,200 MW), and congestion management costs complete the economic picture of the operational collapse.
+    <AnnexEvidence type="chart" id="chart-18" level={2} />
+    <AnnexEvidence type="chart" id="chart-19" level={2} />
+    <AnnexEvidence type="chart" id="chart-20" level={2} />
+    <AnnexEvidence type="chart" id="chart-21" level={2} />
+    <AnnexEvidence type="chart" id="chart-22" level={2} />
+    The interactive matrix of thermal adjustment costs allows exploration of the distribution of cost overruns due to the exceptional activation of safety combined cycles.
     <span id="grafico-matrix"></span>
-    <AnnexThemeEvidence theme="T5" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="matrix" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t5"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T5" include={['charts']} />
+  <AnnexSection id="vulnerabilidad-mercado" eyebrow="Section 3" title="The Invisible Vulnerability of the Market">
+    The total system cost is minimized when inertia (ERS) is explicitly remunerated. The difference between the optimum and the reality of April 28 is the cost of ancillary services that the market does not value. The revenue stacking for BESS-GFM shows that remuneration for synthetic inertia would make private investment in dynamic support viable.
+    <AnnexEvidence type="figure" id="ers_revenue_stacking" level={3} />
+    Revenue stacking for battery energy storage systems (BESS) shows how remuneration for synthetic inertia and fast regulation makes private investment viable.
   </AnnexSection>
 
-  <PicasoPriceChart showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="The economic analysis of April 28 reveals a regulatory paradox: the market operated with full commercial efficiency while leading the system to physical collapse. The current marginalist design neither values nor remunerates the dynamic grid-support properties (inertia, Scc), creating a systematic incentive to expel the synchronous machines that provide them."
+    doesNotDemonstrate="This annex demonstrates the need to reform the electricity market to incorporate ancillary service markets for inertia and short-circuit power, preventing the energy transition from compromising dynamic security."
+    connection="This reading is complemented by Annex I (prior generation mix) and Annex VII (quantification of the blackout's socioeconomic impact)."
+  />
 
-  *Figura A5.1. Incidentes de precios en PICASSO y efecto de la demanda elástica. Fuente: ACER.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Annex I: Demand, Generation and Balance" },
+    { to: "/anexo-impacto-resiliencia", label: "Annex VII: Socioeconomic Impact and Resilience" }
+  ]} />
 </AnnexLayout>

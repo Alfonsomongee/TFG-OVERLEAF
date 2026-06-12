@@ -3,210 +3,286 @@ sidebar_position: 5
 hide_title: true
 title: "Analysis of Official Reports"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import IberianGridTopology from "@site/src/components/IberianGridTopology";
 
 <GlitchTitle>Analysis of Official Reports</GlitchTitle>
 
-The cross-analysis of the four reports on the 28 April blackout reveals an architecture of disputes that goes well beyond technical disagreement: three institutionally opposed narratives of the same sequence of events, with direct legal, economic and regulatory implications. This chapter examines the internal coherence of each narrative, their verified points of consensus, and their irreconcilable contradictions.
+The cross-analysis of the four reports on the April 28 blackout reveals an architecture of disputes that goes beyond specific technical disagreements: three radically different institutional views on the same sequence of events, with direct legal, economic, and regulatory implications. This chapter examines the internal coherence of each narrative, their verified points of consensus, and their irreconcilable contradictions.
 
-## The Government and REE position: multifactorial causality and regulatory non-compliance
+## The Government and REE's View: Multifactorial Causality and Regulatory Non-Compliance
 
-The official narrative classifies the blackout not as an operational design error or a direct consequence of dispatch manoeuvres, but as a **multifactorial event**: the convergence of valley demand, massive IBR penetration and inadequate technical behaviour by private agents that, acting simultaneously, exceeded the thresholds of the N−1 Security Criterion.
+The official narrative characterizes the blackout not as an operational design error or a direct consequence of dispatch maneuvers, but as a multifactorial event: the convergence of valley demand, massive IBR penetration, and inadequate technical behavior by private agents that, acting simultaneously, exceeded the thresholds of the N−1 Criterion.
 
 <ForensicTable 
-    title="TABLE 4 | MULTI-FACTOR CAUSALITY MODEL"
-    source="Comité de Análisis del Gobierno / REE"
-  >
+  title="Table E1 — Multifactorial Causality Model"
+  source="Government Analysis Committee / REE"
+>
 
 | Factor | Description |
 | --- | --- |
-| **Insufficient voltage control** | Non-compliance with P.O. 7.4 by synchronous generators and RCR installations |
-| **Electromechanical oscillations** | Conditioning factors for the pre-collapse system state |
-| **Generation disconnections** | Some classified as premature → final vector of the overvoltage cascade |
-
-
+| Insufficient voltage control | Non-compliance with P.O. 7.4 by synchronous generators and RCR |
+| Electromechanical oscillations | Conditioning factors of the system state prior to collapse |
+| Generation disconnections | Some classified as premature → final vector of overvoltage |
 
 </ForensicTable>
 
-_Multifactorial causality scheme per the Government Analysis Committee._
 
-REE's technical defence of the meshing manoeuvre merits careful examination. The report highlights an aspect frequently omitted from criticism: the initial oscillations produced not overvoltages but **voltage drops** at transmission network nodes. Against this risk, the Control Centre executed strictly protocolised actions — circuit reconnection, shunt reactor coupling, HVDC coordination to switch to PMODE1 — acknowledging that these manoeuvres «contributed to the voltage rise» but classifying them as necessary. REE argues that any subsequent voltage increase would have been absorbable had agents complied with their regulatory obligations.
+REE's technical defense of the meshing maneuver deserves precise examination. The report highlights an aspect frequently omitted in criticisms: the initial oscillations did not cause overvoltages but voltage drops at transmission network nodes. Faced with this risk, the Control Center executed strictly protocolized actions — reconnection of circuits, coupling of reactors, coordination with RTE to switch the HVDC to PMODE1 — acknowledging that these maneuvers "contributed to the rise in voltages," but classifying them as necessary. REE argues that any subsequent voltage increase would have been absorbable if the agents had fulfilled their regulatory obligations.
 
-![Thermal voltage maps of the 400 kV network in the moments preceding the root trip](/figuras/mapas_termicos_tension_ree.png) _Figure 27. Voltage mapping of the 400 kV network (12:30–12:32:57 CEST) per the System Operator's analysis. REE maintains that voltage profiles remained within P.O. 1.1 operating ranges until the onset of disconnections in the underlying collector networks. Source: Red Eléctrica._
+The central argument shifts responsibility to the generation fleet: the analysis of the 850 largest generation facilities documents that approximately 22% did not meet the power factor requirement under RD 413/2014, although the report itself notes that part of this non-compliance could be attributed to the capacitive effect of evacuation infrastructures with low generation. Notably, one thermal power plant in the southern zone not only failed to absorb inductive reactive power but injected additional capacitive reactive power. For REE, the collective inhibition of the private fleet deprived the system of the dynamic margin needed to contain the transient.
 
-The central argument transfers responsibility to the generation fleet: analysis of the 850 highest-generating installations documents that approximately **22%** did not meet the power factor criterion under RD 413/2014, though the report itself notes this may be partly attributable to the capacitive effect of evacuation infrastructure under low generation. A thermal plant in the southern zone not only failed to absorb inductive reactive power, but injected additional capacitive reactive power into the system. For REE, the collective inhibition of the private fleet deprived the system of the dynamic margin needed to contain the transient.
+Regarding inertia, REE explicitly rules it out as the material cause: the system operated with $H = 2.3$ s, above the 2 s threshold<KeyFact id="inercia-28a" mode="callback">H = 2.3 s average / 1.3 s southern zone — Chapter 2</KeyFact> recommended by ENTSO-E, and "the overvoltage wave would have caused the cascade effect in any case," since the overvoltage conditions persisted until 12:33:23 CEST regardless of frequency.
 
-On inertia, REE explicitly rules it out as the material cause: the system operated with $H = 2.3$ s, above the 2 s threshold recommended by ENTSO-E, and «the overvoltage wave would have triggered the cascade effect in any case», since overvoltage conditions persisted until 12:33:23 CEST independently of frequency.
+The governmental narrative shows appreciable internal coherence and identifies documented regulatory non-compliance. However, it does not address two arguments from the ICAI expert report: the magnitude of capacitive reactive power injected by the meshing and the operator's unobservability of the 220 kV network due to the Tap-Lag phenomenon — two elements that, according to ICAI, would have made the collapse inevitable regardless of the generators' level of compliance.
 
-The government narrative shows appreciable internal coherence and identifies documented regulatory breaches. However, it does not address two key arguments from the ICAI expert report: the magnitude of the capacitive reactive power injected by the meshing manoeuvre, and the operator's observability limitation on the 220 kV network through the Tap-Lag phenomenon — two elements which, according to ICAI, would have made the collapse inevitable regardless of generator compliance levels.
+The complete table of the official sequence of 18 triggering events according to REE, and its regulatory proposals in four areas (voltage control, operation, observability, and monitoring), are presented below:
 
-### Official sequence of triggering events (REE)
+<details className="collapsible">
+<summary>
+  <span>▶ REE Dossier: Graphical Evidence, Sequence of 18 Events, and Regulatory Proposals (Tables E2–E3)</span>
+</summary>
+<div className="collapsibleBody">
+
+![Thermal voltage maps of the 400 kV network in the moments prior to the root trip](/figuras/mapas_termicos_tension_ree.png)
+
+_Figure E1 — Thermal voltage maps of the 400 kV network (12:30–12:32:57 CEST). The sequence of frames shows the progressive rise of the voltage profile at nodes in the southern peninsular zone in the moments prior to the root trip, evidencing that overvoltages were visible at the transmission level but not in the 220 kV network hidden by Tap-Lag. Source: Red Eléctrica (REE)._
+
+### Official Sequence of Triggering Events (REE)
 
 <ForensicTable 
-    title="TABLE 5 | OFFICIAL EVENT SEQUENCE LOG"
-    source="Red Eléctrica (REE)"
-  >
+  title="Table E2 — Official Sequence of Triggering Events"
+  source="Red Eléctrica (REE)"
+  timeBase="UTC+2 (CEST)"
+>
 
-| No. | Ref. | Description |
-| --- | --- | --- |
-| 1 | N-1 | Forced oscillation at 0.6 Hz (possible origin: PV plant, Badajoz). Protocolised measures: reactors, line coupling, programme changes. |
-| 2 | N-2 | Natural inter-area mode at 0.2 Hz. Further damping manoeuvres. |
-| 3 | N-3 | P.O. 7.4 generation does not absorb required reactive power by setpoint. |
-| 4 | N-4 | RCR generation variations affect voltage control. ~22% of plants fail power factor criterion. |
-| 5 | — | Requested conventional generation after oscillations fails to couple. |
-| 6 | N-5 | Distributed generation (&lt;1 MW) and self-consumption losses (435 MW) before 12:32:57. |
-| 7 | **N-6** | **Root trip of evacuation transformer in Granada at 12:32:57.** REE records 418 kV at 400 kV — within normative limits. |
-| 8 | N-7 | CSP and PV trips in Badajoz, no information at transmission network border. |
-| 9 | N-8 | PV trip in Badajoz (different substation), no visibility at border. |
-| 10–14 | — | Trips in Segovia, Huelva, Seville, Cáceres and Badajoz, no border information. |
-| 15 | N-11 | Combined-cycle trip in Valencia. |
-| 16 | — | UFLS triggers additional voltage rise through line discharge. |
-| 17 | — | HVDC INELFE-1 continues exporting 1,000 MW in PMODE1. |
-| 18 | N-12 | Nuclear unit trip. Loss of synchronism and voltage zero at **12:33:29.741 CEST**. |
-
-
-
+  <table>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Ref.</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>N-1</td>
+        <td className="narrative-cell">Forced oscillation 0.6 Hz (possible origin: PV Badajoz). Protocolized maneuvers: reactors, line coupling, program changes.</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>N-2</td>
+        <td className="narrative-cell">Natural inter-area mode 0.2 Hz. New damping maneuvers.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>3</td>
+        <td>N-3</td>
+        <td className="narrative-cell">Generation P.O. 7.4 does not absorb required reactive power per setpoint.</td>
+      </tr>
+      <tr className="state-warning">
+        <td>4</td>
+        <td>N-4</td>
+        <td className="narrative-cell">RCR generation variations affect voltage control. ≈22% of plants fail power factor.</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>—</td>
+        <td className="narrative-cell">Conventional generation requested after oscillations does not synchronize.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>6</td>
+        <td>N-5</td>
+        <td className="narrative-cell">Losses of distributed generation (&lt;1 MW) and self-consumption (435 MW) before 12:32:57.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>7</td>
+        <td><strong>N-6</strong></td>
+        <td className="narrative-cell"><strong>Trip of the evacuation transformer in Granada at 12:32:57.</strong> REE records 418 kV at 400 kV, within regulatory limits.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>8</td>
+        <td>N-7</td>
+        <td className="narrative-cell">CSP and PV trip in Badajoz without information at the transmission network boundary.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>9</td>
+        <td>N-8</td>
+        <td className="narrative-cell">PV trip Badajoz (different substation), without visibility at boundary.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>10–14</td>
+        <td>—</td>
+        <td className="narrative-cell">Trips in Segovia, Huelva, Seville, Cáceres, and Badajoz (various), without information at boundary.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>15</td>
+        <td>N-11</td>
+        <td className="narrative-cell">Combined cycle trip in Valencia.</td>
+      </tr>
+      <tr className="state-critical">
+        <td>16</td>
+        <td>—</td>
+        <td className="narrative-cell">UFLS causes additional voltage increase due to line discharge.</td>
+      </tr>
+      <tr>
+        <td>17</td>
+        <td>—</td>
+        <td className="narrative-cell">HVDC INELFE-1 continues exporting 1,000 MW in PMODE1.</td>
+      </tr>
+      <tr className="state-blackout">
+        <td>18</td>
+        <td>N-12</td>
+        <td className="narrative-cell">Nuclear unit trip. Loss of synchronism and voltage collapse at <strong>12:33:29.741 CEST</strong>.</td>
+      </tr>
+    </tbody>
+  </table>
 </ForensicTable>
 
-### Redeia's regulatory proposals
+### REE Regulatory Proposals
 
 <ForensicTable 
-    title="TABLE 6 | PROPOSED REGULATORY AMENDMENTS"
-    source="Redeia / REE"
-  >
+  title="Table E3 — REE Regulatory Proposals"
+  source="Redeia / REE"
+>
 
-| Area | Proposed measure |
+| Area | Proposed Measure |
 | --- | --- |
-| **Dynamic voltage control** | New P.O. 7.4: mandate real-time voltage control for all capable generation, with penalties for non-compliance. Revision of overvoltage thresholds. Deployment of synchronous condensers or STATCOMs. |
-| **Operation and stability** | Extension of generation programme change ramps to minimum 10 minutes. Update of pre-Orden TED/749/2020 RCR generation. Activation of power-frequency control on HVDC links. |
-| **Observability** | Enhanced voltage control in distribution. System Operator access to self-consumption observability. Expansion of WAMS with one PMU per transmission park. |
-| **Monitoring** | Fault recording at minimum 20 ms sampling with time synchronisation. Centralised incident data collection platform. |
-
-
+| Dynamic voltage control | New P.O. 7.4: require all generation with real-time control capability to activate it, with penalties for non-compliance. Revision of overvoltage thresholds in evacuation lines. Deployment of synchronous condensers or STATCOMs to replace discrete devices. |
+| Operation and stability | Extension of program change ramps to a minimum of 10 minutes. Update of RCR generation prior to Order TED/749/2020. Activation of power-frequency control in current and future HVDC links. |
+| Observability | Reinforcement of voltage control in distribution. Provide the SO with observability over self-consumption. Expansion of WAMS with PMUs per transmission park. |
+| Monitoring | Fault records with minimum sampling of 20 ms and time synchronization. Centralized platform for incident data collection. |
 
 </ForensicTable>
 
-## The generator sector position (ICAI / AELEC): excessive meshing and inevitable collapse
+</div>
+</details>
 
-In contrast to the government narrative, the IIT-ICAI expert report — together with Compass Lexecon and INESC TEC — formally diagnoses the event as a **voltage collapse**: a voltage instability phenomenon driven by the exhaustion of reactive power absorption capacity, in which REE's own preventive actions acted as the primary cascade vector.
+## The Generation Sector's View (ICAI / AELEC): Excessive Meshing and Inevitable Collapse
 
-The core of the critique is quantitative. In response to oscillations from 12:03 CEST, REE coupled **11 no-load 400 kV circuits**. Through the Ferranti Effect, these lines behaved as large capacitor banks, injecting between **1.05 and 2.4 GVAr** of capacitive reactive power into a network already lacking absorption margin. Simulations estimate that the collapse margin at the Carmona 400 kV bus contracted from **2,964 MW** to **1,268 MW** — a **57% reduction** bringing the system to the threshold of capacitive saturation.
+In contrast to the governmental narrative, the expert opinion of IIT-ICAI together with Compass Lexecon and INESC TEC formally diagnoses the event as an overvoltage collapse: a voltage instability phenomenon driven by the exhaustion of reactive power absorption capacity, in which REE's own preventive actions acted as the primary vector of the cascade.
 
-![Q-V curves at Carmona 400 kV bus per ICAI expert analysis](/figuras/fluctuaciones_tension_previas.png) _Figure 28. Q-V voltage stability curves at Carmona 400 kV. The meshing manoeuvres (LIN&SHN) displaced the operating point, contracting the collapse margin by 57%. The red dashed line marks the V = 1.2 p.u. limit (480 kV). Source: IIT-ICAI / Compass Lexecon._
+The core of the criticism is quantitative: ICAI simulations estimate that the meshing contracted the margin to collapse at the Carmona node from 2,964 MW to 1,268 MW — a reduction of 57%. <KeyFact id="mallado-ferranti" mode="callback">physics of meshing and Ferranti effect — Chapter 3, §Phase 0</KeyFact>
 
-The discrepancy between ICAI's (2.4 GVAr) and NREL's independent (1.05 GVAr) estimates does not alter the shared conclusion: in both cases, the capacitive injection exceeded the system's residual absorption capacity, estimated at barely **3.3 GVAr** against the usual 5.8 GVAr.
+![Q-V curves at the Carmona 400 kV node according to the ICAI expert analysis](/figuras/fluctuaciones_tension_previas.png)
 
-On the cascade disconnections, the generator sector refutes the «inadequate trips» classification by pointing to the operator's observability limitation. While the SCADA showed 418 kV on the 400 kV network — within normative limits — the Tap-Lag phenomenon created a blind spot in the collector networks: the mechanical inertia of the OLTCs amplified the transient to the 220 kV networks, where *244 kV* (>110% nominal voltage) was reached. The owner of the Granada substation confirmed that its protection «was correctly set and operated correctly».
+_Figure E2 — Q-V voltage stability curves at the Carmona 400 kV node (ICAI expert analysis). The diagram quantifies the contraction of the margin to collapse induced by the meshing maneuvers: from 2,964 MW to 1,268 MW, a 57% reduction, which the expert report classifies as the condition that made the collapse mathematically inevitable. Source: IIT-ICAI / Compass Lexecon._
 
-![Oscillographic record of the root trip in Granada at 12:32:56.993 CEST](/figuras/aluvion_alertas_sobretension_sur.png) _Figure 29. Oscillogram of the root trip (Granada, 12:32:56.993 CEST). Upper panel: three-phase current stable until upstream breaker trip. Lower panel: collector secondary voltage — phase A reaches ~145 kV (>1.10 p.u.) — invisible to REE's SCADA on the 400 kV network through the Tap-Lag effect. Source: IIT-ICAI / AELEC._
+The discrepancy between ICAI's figures (2.4 GVAr) and the independent NREL analysis (1.05 GVAr) does not alter the shared conclusion: in both cases, the capacitive injection exceeded the system's residual absorption capacity, estimated at barely 3.3 GVAr compared to the usual 5.8 GVAr.
 
-The second argument line targets the regulatory framework: P.O. 7.4, in its pre-reform version, forced IBR to operate at a **fixed power factor**, preventing their power electronics from dynamically absorbing or injecting reactive power despite possessing this technological capability. This restriction excluded **82% of instantaneous generation** from active voltage control, concentrating operational responsibility on the scarce available synchronous thermal fleet.
+Regarding the cascade trips, the generation sector refutes the classification of "inadequate trips" by pointing out the operator's observability limitation. The **Tap-Lag** phenomenon amplified the overvoltage towards the 220 kV networks, invisible to REE's SCADA. <KeyFact id="fase-2-taplag" mode="callback">complete physical mechanism of Tap-Lag — Chapter 3, §Phase 2</KeyFact> The owner of the Granada infrastructure confirmed that its protection "was correctly set and functioned adequately" given the actual voltages experienced at its connection point.<KeyFact id="granada-disparo" mode="callback">root trip Granada — Chapter 3</KeyFact>
 
-The resulting quantitative imbalance was, per the expert report, **mathematically insurmountable**: in the southern zone, REE had barely **0.2 GVAr** of inductive reactive absorption capacity against an estimated capacitive injection exceeding **0.7 GVAr** induced by its own manoeuvres.
+This blind spot is what makes the narratives of REE and the generation sector technically incompatible: without observability over the underlying network, the operator could not correct what it did not see, and the generators could not stop tripping on what they did see. The discrepancy is not, therefore, about the facts — it is about the attribution of responsibility given an instrumental limitation that both parties acknowledge.
 
-![Reactive power balance in the southern zone at 12:30 CEST per IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png) _Figure 30. Reactive power balance at 12:30 CEST. REE's manoeuvres added 0.7 GVAr capacitive on top of the existing 3.4 GVAr, while conventional synchronous generation provided barely 0.2 GVAr of absorption. Net deficit: −0.6 GVAr. Source: IIT-ICAI / Compass Lexecon._
+![Oscillographic record of the root trip in Granada at 12:32:56.993 CEST](/figuras/aluvion_alertas_sobretension_sur.png)
 
-The expert report's conclusion identifies **three factors directly attributable to the operator and regulator**: the meshing manoeuvre that saturated Q-V margins, the structural inobservability of the 220 kV network through Tap-Lag, and the regulatory framework (P.O. 7.4) that prevented 82% of the generation fleet from participating in dynamic voltage control.
+_Figure E3 — Oscillographic record of the root trip in Granada (12:32:56.993 CEST). The waveform shows the voltage on the secondary collector phase A ≈ 145 kV (>1.10 p.u.), a threshold that correctly activated the overvoltage protections but was invisible to REE's SCADA due to the Tap-Lag effect, creating the operational blind spot that made preventive intervention impossible. Source: IIT-ICAI / AELEC._
 
-## The European perspective (ENTSO-E): NC RfG inadequacy and synchronous separation
+The second line of argument points to the regulatory framework: P.O. 7.4, in its wording prior to the reform, required IBRs to operate with a fixed power factor, preventing their power electronics from dynamically absorbing or injecting reactive power despite having that technological capability. This restriction excluded 82% of instantaneous generation from active voltage control, concentrating responsibility on the scarce available synchronous thermal fleet.
 
-ENTSO-E's expert panel offers the most structural of the three perspectives. Its central thesis rejects attribution of the blackout to renewable penetration _per se_: the collapse resulted not from excess renewable generation or primary inertia shortage, but from the **limitations of the voltage profile control framework**. The incident reveals the asymmetry between accelerated renewable asset deployment and the partial obsolescence of the network codes governing their dynamic behaviour.
+The resulting quantitative imbalance was, according to the expert report, mathematically insurmountable: in the southern zone — the epicenter of the oscillations and meshing — REE had barely 0.2 GVAr of inductive reactive absorption capacity against an estimated capacitive injection exceeding 0.7 GVAr induced by its own maneuvers.
 
-The analysis identifies a fundamental technical tension: most of the installations that disconnected possessed the power electronics needed for robust voltage control, but Spanish regulations **prohibited or did not require** this dynamic service, forcing them to operate at static power factors under RD 413/2014. This regulatory restriction deprived the system of the distributed reactive support that could have damped the capacitive injection from no-load lines.
+![Reactive power balance in the southern zone at 12:30 CEST according to IIT-ICAI](/figuras/asimetria_balance_reactiva_sur.png)
 
-In direct response, ENTSO-E has consolidated in its Phase II Report the update to **NC RfG 2.0**, which proposes mandating grid-forming operation for all non-synchronous modules ≥ 1 MW:
+_Figure E4 — Reactive power balance in the southern zone at 12:30 CEST. The diagram documents a net deficit of −0.6 GVAr: barely 0.2 GVAr of inductive absorption capacity against a capacitive injection exceeding 0.7 GVAr induced by the meshing maneuvers, a condition that the ICAI expert report classifies as mathematically insurmountable. Source: IIT-ICAI / Compass Lexecon._
+
+The expert report's conclusion identifies three factors directly attributable to the operator and regulator: the meshing that saturated the Q-V margins, the structural unobservability of the 220 kV network due to Tap-Lag, and the regulatory framework (P.O. 7.4) that prevented 82% of the fleet from participating in dynamic voltage control.
+
+## The European View (ENTSO-E): Insufficiency of NC RfG and Separation of the Synchronous System
+
+The ENTSO-E expert panel provides the most structural perspective of the three. Its central thesis rejects that the blackout was due to renewable penetration _per se_: the collapse was not a consequence of an excess of renewable generation or a primary inertial shortage, but of the limitations of the voltage profile control framework. The incident highlights the asymmetry between the accelerated deployment of renewable assets and the partial obsolescence of the grid codes governing their dynamic behavior.
+
+The analysis identifies a fundamental technical tension: most of the installations that disconnected had the necessary power electronics to perform robust voltage control, but the current Spanish regulations prohibited or did not require them to provide this dynamic service, forcing them to operate with static power factors under RD 413/2014. This regulatory restriction deprived the system of the distributed reactive support that could have dampened the capacitive injection from the unloaded lines.
+
+As a direct response, ENTSO-E has consolidated in its Phase II Report the update of NC RfG 2.0, which plans to impose grid-forming as a mandatory requirement for all non-synchronous modules ≥ 1 MW:
 
 <ForensicTable 
-    title="TABLE 7 | NC RFG 2.0 (PROPOSED) REQUIREMENTS COMPARISON"
-    source="ENTSO-E (Phase II Report)"
-  >
+  title="Table E4 — Comparison of Current NC RfG / NC RfG 2.0 Requirements"
+  source="ENTSO-E (Phase II Report)"
+>
 
 | Requirement | Current NC RfG | NC RfG 2.0 (proposed) |
 | --- | --- | --- |
-| Operating mode | Grid-following | Grid-forming mandatory |
+| Operating mode | Grid-following | Mandatory grid-forming |
 | Threshold | Varies by type/country | ≥ 1 MW (PPM and ESM) |
 | Voltage control | Fixed power factor | Continuous dynamic V and Q control |
-| Inertia | Not required for IBR | Synthetic inertia mandatory |
-| Black Start | Not required for IBR | Island start-up capability |
+| Inertia | Not required for IBR | Mandatory synthetic inertia |
+| Black Start | Not required for IBR | Island start capability |
 | Synchronism reference | External (PLL on grid) | Internally generated (ideal voltage source) |
 
-
-
 </ForensicTable>
 
-On the topology of the incident, ENTSO-E analyses the loss of synchronism at **12:33:19 CEST**: the system passed from exporting 469 MW (12:32:57) to importing a maximum of **3,807 MW** (12:33:19), at which point the angular pole slip became unsustainable and Out-of-Step (OST) protections acted at **12:33:21 CEST**, ordering the opening of the transpyrenean circuits.
+Regarding the topology of the incident, ENTSO-E analyzes the loss of synchronism at 12:33:19 CEST: the system went from exporting 469 MW (12:32:57) to importing a maximum of 3,807 MW (12:33:19), the moment of loss of synchronism. The angular pole divergence became unsustainable and the Out-of-Step (OST) protections acted at 12:33:21 CEST, ordering the opening of the cross-Pyrenean circuits (Baixas-Vic, Argia-Arkale, Argia-Hernani).
 
-![Spain-France exchange evolution and loss of synchronism (12:32:57–12:33:20 CEST)](/figuras/perdida_sincronismo_frontera.png) _Figure 31. Active power exchange at the Spain-France border during Phase 3. Upper panel: total net flow (469 MW export → 3,807 MW maximum import). Lower panel: per-circuit breakdown. The terminal oscillation reflects pole divergence prior to definitive breaker opening. Source: ENTSO-E._
+<IberianGridTopology lang={frontMatter.locale || 'es'} />
 
-This separation prevented the capacitive collapse and frequency collapse — with a RoCoF exceeding **1.5 Hz/s** — from propagating to the French system and the rest of Continental Europe.
+_Figure E5 — Topology of the Iberian network and propagation of the collapse up to the loss of synchronism with France (12:33:21 CEST). The interactive simulation shows the state of the nodes and flows at the critical moments, evidencing the progression of capacitive instability from the southern peninsula to the opening of the cross-Pyrenean circuits. Source: own elaboration based on ENTSO-E._
 
-ENTSO-E's final warning is structural: coordinated security analyses (CSA) and Common Grid Models (CGM), based on static load flows and the N−1 Criterion, **assessed the system as «Normal»** until moments before the collapse. For ENTSO-E, this limitation indicates that continental operative security assessment standards — designed for conventional synchronous machines — are structurally insufficient to prevent collapses in systems with high power electronics penetration.
+This separation prevented the capacitive collapse and the frequency plunge — with a RoCoF exceeding 1.5 Hz/s — from dragging down the French system and the rest of Continental Europe.
 
-## Consensus and divergences: the technical fracture across three axes
+ENTSO-E's final warning is structural: the coordinated security analyses (CSA) and common grid models (CGM), based on static load flows and the N−1 Criterion, evaluated the system as "Normal" until the moments before the collapse. For ENTSO-E, this limitation indicates that the continental operational security assessment standards, designed for conventional synchronous machines, are structurally insufficient to prevent collapses in systems with high power electronics penetration.
 
-### Verified technical consensus
+## Consensus and Discrepancies: The Technical Fracture on Three Axes
 
-Despite the polarisation of the debate, the four reports converge on a set of technical conclusions that qualify or refute the most widespread media narratives:
+### Verified Technical Consensus Points
+
+Despite the polarization of the debate, the four reports converge on a set of technical conclusions that qualify or refute the most widespread media narratives:
 
 <ForensicTable 
-    title="TABLE 8 | TECHNICAL CONSENSUS MATRIX"
-    source="Elaboración propia"
-  >
+  title="Table E5 — Technical Consensus Matrix"
+  source="Own elaboration"
+>
 
-| Consensus point | Shared technical basis | GOV | REE | ICAI | ENTSO-E |
+| Point of Consensus | Shared Technical Basis | GOB | REE | ICAI | ENTSO-E |
 | --- | --- | :-: | :-: | :-: | :-: |
-| **Inertia was not the root cause** | System operated at H = 2.3 s (above 2.0 s threshold). Greater inertia would have slowed the frequency collapse by fractions of a second, without preventing the overvoltage collapse. | ✓ | ✓ | ✓ | ✓ |
-| **Overvoltage collapse, not frequency deficit** | The material cause was capacitive instability (reactive power Q imbalance), not active power P loss or primary frequency drop. | ✓ | ✓ | ✓ | ✓ |
-| **Active power reserves were sufficient** | Upward tertiary reserve exceeded 7,000 MW. No generation capacity crisis occurred. | ✓ | ✓ | ✓ | ✓ |
-| **UFLS aggravated the voltage collapse** | Load shedding eliminated the last inductive reactive sinks, accelerating the voltage escalation. | ✓ | ✓ | ✓ | ✓ |
-| **Synchronism protections acted correctly** | The opening of transpyrenean circuits at 12:33:21 was technically and normatively correct. | ✓ | ✓ | ✓ | ✓ |
-| **IBR regulatory framework was inadequate** | P.O. 7.4 and RD 413/2014 prevented IBR from participating in dynamic voltage control despite possessing the technological capability. | ✓ | ✓ | ✓ | ✓ |
-| **Static N−1 criterion is insufficient** | Static security tools assessed the system as safe hours before the collapse, unable to anticipate ultra-fast capacitive instability dynamics. | ✓ | ✓ | ✓ | ✓ |
-
-
+| Inertia was not the root cause | The system operated with H = 2.3 s (> 2.0 s threshold). Greater inertia would have delayed the frequency drop by tenths of a second, without preventing the overvoltage collapse. | ✓ | ✓ | ✓ | ✓ |
+| Collapse due to overvoltage, not frequency deficit | The material cause was capacitive instability (Q imbalance), not a loss of active P or a primary frequency drop. | ✓ | ✓ | ✓ | ✓ |
+| Active power reserves were sufficient | The upward tertiary reserve exceeded 7,000 MW. There was no generation capacity crisis. | ✓ | ✓ | ✓ | ✓ |
+| UFLS aggravated the voltage collapse | The load shedding eliminated the last sinks of inductive reactive power, accelerating the voltage escalation that destroyed the network.<KeyFact id="paradoja-ufls" mode="callback">UFLS paradox — Chapter 3</KeyFact> | ✓ | ✓ | ✓ | ✓ |
+| Synchronism protections acted correctly | The opening of the cross-Pyrenean circuits at 12:33:21 was technically and normatively correct. | ✓ | ✓ | ✓ | ✓ |
+| IBR regulations were insufficient | P.O. 7.4 and RD 413/2014 prevented IBRs from participating in dynamic voltage control despite having the technological capability. | ✓ | ✓ | ✓ | ✓ |
+| The static N−1 Criterion is insufficient | Static analysis tools evaluated the system as safe hours before the collapse, without the ability to anticipate the ultra-fast dynamics of capacitive instability. | ✓ | ✓ | ✓ | ✓ |
 
 </ForensicTable>
 
-### Irreconcilable technical divergences
+### Irreconcilable Technical Divergences
 
 <ForensicTable 
-    title="TABLE 9 | TECHNICAL DIVERGENCE MATRIX"
-    source="Elaboración propia"
-  >
+  title="Table E6 — Technical Divergence Matrix"
+  source="Own elaboration"
+>
 
-| Dispute axis | Government / REE | ICAI / AELEC | ENTSO-E |
+| Axis of Dispute | Government / REE | ICAI / AELEC | ENTSO-E |
 | --- | --- | --- | --- |
-| **1. Origin of capacitive saturation** | The system had sufficient margins. Saturation occurred because generators failed to absorb required reactive power. The meshing manoeuvre was protocolised and necessary. | Meshing 11 no-load lines injected 1.05–2.4 GVAr capacitive via the Ferranti Effect, contracting the Q-V margin at Carmona by 57%. The collapse was mathematically inevitable. | Does not attribute causality to meshing but documents that RCCs did not detect the saturation. Identifies IBR regulatory restriction as the primary structural vulnerability. |
-| **2. Nature of the 0.6 Hz oscillation** | Forced oscillation originating in the control loop of a PV plant in Badajoz: trigger of the sequence leading to collapse. | Evidence is inconclusive. Could be a natural inter-area mode amplified by the ~1% damping ratio, due to absence of active PSS in the offline southern CCGTs. | Documents the oscillation as atypical (detected as far as Germany) but assigns no definitive causality. |
-| **3. Legitimacy of cascade trips (Tap-Lag)** | First trips (12:32:57–12:33:18) were «inadequate» or premature: SCADA recorded 418 kV on the 400 kV network, within P.O. 1.1 limits. | Trips were normatively correct. Tap-Lag created a blind spot: 220 kV collector networks reached 244 kV (>1.10 p.u.), invisible to SCADA. The Granada substation owner confirmed the protection operated correctly. | Does not classify trips as inadequate. Highlights network inobservability as a systemic limitation of both the operator and RCCs. |
-| **4. Southern zone dispatch** | Acknowledges unavailability of the Andalusian CCGT from 27 April afternoon. Justifies non-substitution by adequate voltage levels at that time. | The southern zone had only 0.2 GVAr of absorption against >0.7 GVAr of capacitive injection induced by the operator itself. Non-substitution was the most determinative dispatch decision of the incident. | Identifies low short-circuit power in Andalusia as a structural aggravating factor, without commenting on the individual decision. |
-| **5. Primary responsibility** | Generators breached their voltage control obligations. The blackout was a failure of the private generation fleet. | REE drove the network to an inevitable collapse state through meshing, with insufficient observability and inadequate dispatch. Generators acted per physics and regulation. The blackout was a failure of the operator and regulator. | The root cause is regulatory: the restriction preventing IBR from dynamically controlling voltage. The failure belongs to the European and national regulatory system, not attributable exclusively to any single agent. |
-
-
+| 1. Origin of capacitive saturation | The system had sufficient margins. Saturation occurred because generators did not absorb the required reactive power. Meshing was a protocolized and necessary measure. | The meshing of 11 unloaded lines injected 1.05–2.4 GVAr via the Ferranti Effect, contracting the Q-V margin by 57%. The collapse was mathematically inevitable. | Does not attribute causality to meshing but documents that RCCs did not detect the saturation. Identifies the regulatory restriction on IBRs as the primary vulnerability. |
+| 2. Nature of the 0.6 Hz oscillation | Forced oscillation originating in the control loop of a PV plant in Badajoz: trigger of the sequence leading to collapse. | Evidence is inconclusive. Could have been a natural inter-area mode amplified by the 1% damping ratio, due to absence of PSS in the shut-down CCGTs. | Documents the oscillation as atypical (detected as far as Germany) but does not attribute definitive causality. |
+| 3. Legitimacy of trips (Tap-Lag) | The first trips were "inadequate" or premature: the SCADA recorded 418 kV at 400 kV, within the limits of P.O. 1.1. | The trips were normatively correct. Tap-Lag created a blind spot: the 220 kV networks reached 244 kV (>1.10 p.u.), invisible to SCADA. The owner of the Granada ICE confirmed its protection acted correctly. | Does not classify the trips as inadequate. Highlights unobservability as a systemic limitation of the operator and RCCs. |
+| 4. Dispatch in the southern zone | Acknowledges the unavailability of the Andalusian CCGT since April 27. Justifies non-replacement by adequate voltage levels and availability of other resources. | The southern zone had only 0.2 GVAr of absorption against >0.7 GVAr of capacitive injection induced by the operator itself. Non-replacement was the most decisive dispatch decision. | Points to the low short-circuit power in Andalusia as an aggravating structural factor, without ruling on the individual decision. |
+| 5. Primary responsibility | Generators failed to meet their voltage control obligations. The blackout was a failure of the private generation fleet. | REE drove the network to a state of inevitable collapse through meshing. Generators acted according to physics and regulations. The blackout was a failure of the operator and regulator. | The root cause is regulatory: the restriction preventing IBRs from dynamically controlling voltage. The failure is of the European and national regulatory system. |
 
 </ForensicTable>
 
-## Interpretive synthesis: three governance fractures
+The expert simulations of the capacitive contribution of meshing versus the short-circuit power at nodes like Granada can be explored in Figure E5 and, complementarily, in [Annex IX · Methodology and Models](./anexo-metodologia-modelos-datos-vivos).
 
-The comparative analysis allows the inter-party dispute to be transcended in favour of a second-order diagnosis: the 28 April 2025 blackout was neither an unforeseeable «black swan» nor the failure of a specific technology, but the **convergent manifestation of three governance fractures** coexisting in the Iberian power system.
+## Interpretive Synthesis: Three Governance Fractures
 
-### Operational fracture: causality versus responsibility
+The comparative scrutiny allows us to transcend the dispute between parties and formulate a second-order diagnosis: the April 28 blackout was neither an unpredictable "black swan" nor the failure of a specific technology, but the convergent manifestation of three governance fractures that coexisted in the Iberian electricity system.
 
-The meshing-as-trigger thesis (ICAI) and the collective non-compliance thesis (REE / Government) are not mutually exclusive in technical terms: both factors contributed to the capacitive saturation that narrowed the Q-V margins. What they are mutually exclusive in is their legal and economic implication. This causal ambiguity is the predictable result of operating a network without sufficient dynamic instrumentation: when the system lacks PMU coverage at all critical nodes and real-time voltage stability calculation tools, subsequent forensic reconstruction is inevitably subject to interpretation. The tacit consensus among all parties — which no report states explicitly — is that the **monitoring architecture proved insufficient** both for managing the incident in real time and for resolving it unambiguously after the fact.
+### Operational Fracture: Causality vs. Responsibility
 
-### Regulatory fracture: 20th-century regulation applied to a 21st-century grid
+The thesis of meshing as the trigger (ICAI) and the thesis of collective non-compliance as the cause (REE / Government) are not mutually exclusive in technical terms: both factors contributed to the capacitive saturation that narrowed the Q-V margins. What are mutually exclusive are their legal and economic implications. This causal ambiguity is the predictable result of operating a network without sufficient dynamic instrumentation: when the system lacks PMUs at all critical nodes and real-time voltage stability calculation tools, forensic reconstruction inevitably remains subject to interpretation. The tacit consensus among the parties — which no report explicitly states — is that the monitoring architecture proved insufficient both for managing the incident in real time and for resolving it unequivocally a posteriori.
 
-ENTSO-E's position — the most structural of the three — argues that both the operator and generators acted within the limits of a regulatory framework that was inadequate for the system it purported to govern. P.O. 7.4 and RD 413/2014 designed a voltage control scheme for a network dominated by slowly-responding synchronous masses; applying this to a grid with 82% IBR penetration is, in control engineering terms, equivalent to attempting to stabilise a millisecond-response system with a regulator designed for minute-scale dynamics. This inadequacy was not unknown: the P.O. 7.4 update proposal had been **pending regulatory approval for years**. The Government's own report acknowledges that its entry into force would have been the most relevant change to have prevented the collapse. The 28 April blackout is, in this sense, the **measurable cost of a regulatory delay**.
+### Regulatory Fracture: 20th Century Regulations Applied to a 21st Century Grid
 
-### Systemic fracture: static security tools in a dynamic network
+ENTSO-E's position points to the fact that both the operator and the generators acted within the limits of regulations that were inadequate for the system they were intended to govern. P.O. 7.4 and RD 413/2014 designed a voltage control scheme for a network dominated by slow-response synchronous masses; applying it to a network with 82% IBR penetration is equivalent, in control engineering terms, to trying to stabilize a system with millisecond response times using a regulator designed for minute-scale dynamics. This inadequacy was not unknown: the proposed update of P.O. 7.4 had been in the regulatory approval process for years. The Government's own report acknowledges that its entry into force would have been the most relevant change to have avoided the collapse. The April 28 blackout is, in this sense, the measurable cost of a regulatory delay.
 
-The unanimous consensus on the insufficiency of the static N−1 Criterion points to a vulnerability that extends well beyond the Iberian case. The load flow models that evaluated the system as «Normal» are mathematically incapable of representing capacitive instability phenomena in low-inertia networks: they do not solve differential equations, do not model inverter control loop dynamics, and do not calculate Q-V margins in real time. The speed of collapse progression — from first trips to voltage zero in under **90 seconds** — places the phenomenon outside the temporal horizon of any human intervention: when the operator perceived the severity of the transient, the system was already irrecoverable. The only viable response at this timescale is **structural prevention through real-time dynamic security analysis**, whose deployment at European regional coordination centres constitutes one of the most urgent reforms identified by ENTSO-E.
+### Systemic Fracture: Static Security Tools in a Dynamic Grid
 
-### The limit of the centralised paradigm
+The unanimous consensus on the insufficiency of the static N−1 Criterion points to a vulnerability that transcends the Iberian case. The load flow models that evaluated the system as "Normal" are mathematically incapable of representing capacitive instability phenomena in low-inertia networks: they do not solve differential equations, do not model the dynamics of inverter control loops, and do not calculate Q-V margins in real time. The speed of the collapse progression — from the first trips to voltage collapse in less than 90 seconds — places the phenomenon outside the time horizon of any human intervention: by the time the operator perceived the severity of the transient, the system was already unrecoverable. The only viable response is structural prevention through real-time dynamic security analysis, the deployment of which in European regional coordination centers constitutes one of the most urgent reforms identified by ENTSO-E.
 
-Underlying the three fractures is a deeper tension that the reports address fragmentarily but which comparative analysis allows to be formulated clearly: the centralised operation paradigm — a single operator with visibility limited to the 400 kV level, managing voltage with discrete switched reactors and dispatching synchronous generation through hourly market signals — was designed for a network where synchronous mass provided natural damping and generators responded in seconds. In a network where **82% of generation consists of inverters that respond in milliseconds**, self- provide synchronism references via PLL, and whose dynamic behaviour is opaque to the 400 kV SCADA, that paradigm has reached the limits of its management capacity.
+### The Limit of the Centralized Paradigm
 
-28 April 2025 is not merely the case study of a blackout: it is the event that marks the **exhaustion of the centralised dispatch model** in systems with high power electronics penetration, and the mandatory starting point of a new architecture of distributed, real-time control for the 21st-century European grid.
+Underlying the three fractures is a deeper tension that the reports address only fragmentarily: the centralized operation paradigm — a single operator with limited visibility at the 400 kV level, managing voltage with discrete switching reactors and dispatching synchronous generation via hourly market signals — was designed for a grid where synchronous mass provided natural damping and generators responded in seconds. In a grid where 82% of generation consists of inverters that respond in milliseconds, self-provide synchronism references via PLLs, and whose dynamic behavior is opaque to the 400 kV SCADA, this paradigm has reached the limits of its management capacity.
+
+April 28 is not merely a blackout case study: it is the event that signals the exhaustion of the centralized dispatch model in systems with high power electronics penetration and the mandatory starting point for a new architecture of distributed, real-time control for the 21st-century European grid.

@@ -1,0 +1,127 @@
+---
+id: anexo-ecuaciones-matematicas
+title: "Annex X · Equations, Mathematical Models, and Simulators"
+sidebar_label: "Annex X · Equations and Simulators"
+hide_title: true
+---
+
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+
+<AnnexLayout
+  wide
+  kicker="Annex X"
+  title="Equations, Mathematical Models, and Simulators"
+  description="This annex constitutes the central mathematical laboratory of the TFG. It centralizes interactive simulators organized by physical, economic, and system dynamics domains to reproduce the phenomena of April 28."
+  meta={[
+    { label: 'Technical Axis', value: 'Mathematics and Simulation' },
+    { label: 'Interactivity', value: 'Real-time' }
+  ]}
+>
+  <AnnexKeyQuestion>
+    What equations, models, and simulations allow for the quantitative reproduction of the physical, financial, and communicative phenomena that converged in the blackout of April 28?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The collapse of April 28 was a multiscale phenomenon governed by the physical laws of electrical engineering, marginalist market incentives, and social dynamics of information propagation. This annex brings together the interactive simulators that model these behaviors quantitatively, allowing independent variables to be varied to analyze grid stability, deviation costs, the collapse of the power flow Jacobian, or the delay in institutional communication.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex provides the formulation support and interactive models that quantitatively validate the empirical analysis developed in the chapters and factual annexes of the TFG.
+  </AnnexBlackoutRelevance>
+
+  <AnnexMethodNote type="reconstruccion">
+    This annex isolates and groups all the interactive tools in the document that are not based on static historical data, but on mathematical, financial, and electrical physics equations. The user can alter the independent variables of the formulas to observe the dynamic behavior of the resulting curves.
+  </AnnexMethodNote>
+
+  <em>The annex is organized into five sections covering the different mathematical domains of the study: grid strength and voltage collapse, reactive power and electromagnetic transients, frequency control and inertia, market and grid economics, and system dynamics models.</em>
+
+  <AnnexEvidenceNav
+    items={[
+      { label: 'Strength and Voltage',      target: 'red-tension' },
+      { label: 'Reactive and Transients',  target: 'reactiva-transitorios' },
+      { label: 'Control and Frequency',     target: 'control-frecuencia' },
+      { label: 'Market and Economics',       target: 'mercado-coste' },
+      { label: 'Systemic Models',       target: 'sistemicos' },
+    ]}
+  />
+
+  <AnnexSection id="red-tension" eyebrow="Domain 1" title="Grid Strength and Voltage Collapse">
+    The SCR measures the strength of the grid at a node. In the southern peninsula on April 28, the SCR fell below 3 at nodes with a high concentration of inverters — a risk zone for voltage stability.
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="P-V Curve Simulator"
+      summary="This simulator allows interactive exploration of the active and reactive power transmission limit before reaching the voltage collapse point (saddle-node bifurcation)."
+      insight="Static voltage stability · Identification of the loadability margin."
+    >
+      <AnnexEvidence type="interactive" id="pvcurve" level={1} />
+    </AnnexEvidenceLead>
+    The SCR and MRSCR capture the mutual interaction and angular decoupling between nearby IBR inverters.
+    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    <AnnexEvidence type="interactive" id="power-flow-jacobian" level={2} />
+    <AnnexEvidence type="interactive" id="pq-capability" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="reactiva-transitorios" eyebrow="Domain 2" title="Reactive Power and Electromagnetic Transients">
+    The Ferranti effect amplified overvoltages on the 400 kV lines in the southwest. For a 300 km line, the overvoltage can reach 15–20% — enough to trip the ANSI 59 protections of the inverters.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    The magnetizing inrush current when energizing a transformer decays exponentially, introducing asymmetric transients rich in second harmonics.
+    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
+    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="control-frecuencia" eyebrow="Domain 3" title="Frequency Control and Inertia">
+    The swing equation predicts the inertial response: with the H of the Iberian system on April 28 (~2.5 s), a 4.5 GW imbalance produces a RoCoF greater than 1.5 Hz/s.
+    <AnnexEvidence type="interactive" id="swing" level={2} />
+    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
+    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+    <AnnexEvidence type="interactive" id="ufls" level={2} />
+    <AnnexEvidence type="interactive" id="bess-boom-chart" level={2} />
+    <AnnexEvidence type="interactive" id="lole-chart" level={2} />
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="mercado-coste" eyebrow="Domain 4" title="Market and Grid Economics">
+    Locational Marginal Prices (LMP) would have revealed the congestion cost overrun at nodes in the southern peninsula — information that the Iberian zonal market does not provide.
+    <AnnexEvidence type="interactive" id="lmp-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="dcopf-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="voll-sector" level={2} />
+    <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
+    <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-triangle" level={2} />
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="sistemicos" eyebrow="Domain 5" title="System Dynamics Models">
+    The SIR model calibrated with data from April 28 shows that REE's communication delay (~4 hours until the first official note) allowed cyberattack narratives to reach 30% penetration before the first correction.
+    <AnnexEvidence type="interactive" id="sir-disinformation" level={2} />
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
+    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={2} />
+    <AnnexEvidence type="interactive" id="resolution-roadmap" level={2} />
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="This mathematical laboratory consolidates the validation of the TFG analysis. The confluence of power flow, rotor oscillation, and marginalist economics models demonstrates that the collapse of April 28 responds to precise and predictable physical dynamics that require rigorous modeling to propose effective regulatory solutions."
+    doesNotDemonstrate="The integrated use of interactive simulators allows the reader to contrast hypotheses and experiment with grid sensitivity parameters."
+    connection="The reading is cross-referenced with factual annexes I, II, V, and VII of the report."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Annex I: Demand, Generation, and Balance" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Annex II: Voltage and Frequency Stability" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Annex IX: Methodology and Source Contrast" }
+  ]} />
+</AnnexLayout>

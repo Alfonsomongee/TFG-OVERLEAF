@@ -29,6 +29,7 @@ function PanelInner() {
   const [isClosing, setIsClosing] = useState(false);
   const timeoutRef = useRef(null);
   const fadeOutRef = useRef(null);
+  const openTimeoutRef = useRef(null);
   const { i18n: { currentLocale: lang } } = useDocusaurusContext();
 
   const termsMap = useMemo(() => {
@@ -55,12 +56,20 @@ function PanelInner() {
     if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
     setIsClosing(false);
 
-    // Solo cambiamos la palabra si estamos encima de un término (no de la tarjeta)
+    // Si es un término de glosario, iniciamos un temporizador de 500ms para abrirlo
     if (el.classList.contains('glossary-term')) {
       const termRaw = el.dataset.term || '';
       const key = termRaw.toLowerCase();
       const entry = termsMap[key] || Object.values(termsMap).find(t => t.term === termRaw || t.term.toLowerCase().startsWith(key));
-      if (entry) setActive(entry);
+      
+      if (entry) {
+        // Cancelar cualquier temporizador de apertura anterior para evitar duplicaciones
+        if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
+        
+        openTimeoutRef.current = setTimeout(() => {
+          setActive(entry);
+        }, 500); // 0.5 segundos de retraso
+      }
     }
   }, [termsMap]);
 
@@ -69,6 +78,12 @@ function PanelInner() {
       ? e.target.closest('.glossary-term, .glossary-definition-panel')
       : null;
     
+    // Si salimos de la palabra o de la tarjeta, cancelamos cualquier apertura pendiente
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current);
+      openTimeoutRef.current = null;
+    }
+
     // Si salimos de la palabra o de la tarjeta, iniciamos el temporizador de cierre
     if (el) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -91,6 +106,7 @@ function PanelInner() {
       document.removeEventListener('mouseleave', handleLeave, true);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
+      if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
     };
   }, [handleEnter, handleLeave]);
 

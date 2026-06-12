@@ -1,89 +1,109 @@
 ---
 id: anexo-impacto-resiliencia
-title: "Anexo VII · Impacto socioeconómico y resiliencia"
-sidebar_label: "Anexo VII · Impacto y resiliencia"
+title: "附录七 · 社会经济影响与韧性"
+sidebar_label: "附录七 · 影响与韧性"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import TrilemmaTriangle from '@site/src/components/TrilemmaTriangle';
 import CNMCSanctionsChart from '@site/src/components/CNMCSanctionsChart';
 
 <AnnexLayout
   wide
-  kicker="Anexo VII"
-  title="Impacto socioeconómico y resiliencia"
-  description="Evidencias sobre costes económicos, comparación con apagones históricos, efectos en infraestructuras críticas y lecciones de resiliencia sistémica."
+  kicker="附录七"
+  title="社会经济影响与韧性"
+  description="本附录量化了4月28日大停电的社会经济成本，评估了受影响关键基础设施的韧性，并将该事件与全球历史上的其他崩溃事件进行了对比。"
   meta={[
-    { label: 'Eje técnico', value: 'Impacto y Resiliencia' },
-    { label: 'Cobertura', value: 'Consecuencias socioeconómicas' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴心', value: '影响与韧性' },
+    { label: '覆盖范围', value: '社会经济后果' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    4月28日大停电的真实社会经济成本是多少？从此次崩溃中，我们可以汲取哪些关于行业和机构韧性的教训？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日大停电造成的损失估计超过2.4亿欧元，主要影响制造业和城市交通。与其他历史崩溃事件的比较表明，尽管得益于跨境支援，总恢复时间相对较短（不到10小时），但工业体系的脆弱性凸显了修订未供电价值（VoLL）标准的必要性。此次事件后，国家市场与竞争委员会（CNMC）的监管处罚机制以及能源三难困境的平衡需要深刻反思。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录汇集了各部门的损失以及伊比利亚系统相对于国际大规模停电事件的韧性比较。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    El anexo sistematiza la información relativa al alcance social del evento y la resiliencia de las infraestructuras críticas afectadas por el apagón.
+    本附录系统整理了有关事件社会影响范围以及受停电影响关键基础设施韧性的信息。
   </AnnexMethodNote>
+
+  <em>本附录按四个论证部分组织：影响量化、与历史停电事件的比较、基础设施的行业韧性，以及监管与处罚制度。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t7' },
-      { label: 'Tablas',       target: 'tablas-t7' },
-      { label: 'Interactivos', target: 'interactivos-t7' },
-      { label: 'Series',       target: 'series-t7' },
+      { label: '量化',       target: 'cuantificacion' },
+      { label: '历史比较', target: 'comparacion-historica' },
+      { label: '行业韧性',  target: 'resiliencia' },
+      { label: '监管制度',   target: 'regulatorio' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t7"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['figures']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="tablas-t7"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t7"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
+  <AnnexSection id="cuantificacion" eyebrow="第1节" title="经济影响量化">
+    经济成本表以百万欧元为单位细化了预估的财务影响，揭示了工业部门对快速中断的高度敏感性。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="经济成本估算"
+      summary="停电造成的直接和间接经济损失按部门和概念细分，在伊比利亚市场估计超过2.4亿欧元。"
+      insight="工业与家庭影响 · 未供电成本量化。"
+    >
+      <AnnexEvidence type="table" id="costes-economicos" level={1} />
+    </AnnexEvidenceLead>
+    财务瀑布图分解了直接成本（工业中断、交通）和间接成本（保险、声誉）的累积过程。估计范围非常宽泛：2亿至45亿欧元，反映了量化间接未供电量（ENS）的难度。
     <span id="grafico-waterfall"></span>
+    <AnnexEvidence type="interactive" id="waterfall" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="comparacion-historica" eyebrow="第2节" title="与历史停电事件的比较">
+    此次比较将4月28日事件与2003年北美大停电（5500万人受影响，62吉瓦）、2003年意大利大停电（5600万人，27吉瓦）和2019年阿根廷大停电（4800万人，22吉瓦）等事件并列。得益于法国的支援，伊比利亚系统的恢复时间（约10小时）相对较短，但崩溃速度（约5分钟）异常之快。
+    <AnnexEvidence type="table" id="comparativa-blackouts-historicos" level={1} />
+  </AnnexSection>
+
+  <AnnexSection id="resiliencia" eyebrow="第3节" title="基础设施的行业韧性">
+    行业韧性分析记录了哪些关键基础设施——交通、电信、冷链——在电压恢复后恢复运行所需时间最长。
     <span id="grafico-sectorial-resilience"></span>
-    <AnnexThemeEvidence theme="T7" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="sectorial-resilience" level={2} />
+    能源三难困境图展示了安全、可持续性和可负担性之间的平衡。4月28日事件表明，在未确保安全性的前提下优先考虑后两者，其成本将超过所获得的节约。
+    <div style={{ margin: '1.5rem 0' }}>
+      <TrilemmaTriangle showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t7"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T7" include={['charts']} />
+  <AnnexSection id="regulatorio" eyebrow="第4节" title="监管制度与处罚">
+    国家市场与竞争委员会（CNMC）的处罚历史表明，4月28日事件之前的处罚制度未能提供足够的激励来投资于动态电网支撑。
+    <div style={{ margin: '1.5rem 0' }}>
+      <CNMCSanctionsChart showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <TrilemmaTriangle showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="4月28日事件的经济量化表明，动态不稳定的成本对现代经济而言极其高昂。尽管伊比利亚输电系统在恢复韧性方面与历史参考相比表现显著，但配电网络的脆弱性以及缺乏对动态支撑的监管激励，迫切需要对质量标准进行修订。"
+    doesNotDemonstrate="本附录表明，未供电量（VoLL）的社会成本在数量级上远超安装和补偿额外惯量与无功服务的成本。"
+    connection="本部分内容可与附录五（市场经济机制）和附录九（专家计算方法）结合阅读。"
+  />
 
-  *Figura A7.1. Trilema de la transición energética y su manifestación el 28‑A.*
-
-  <CNMCSanctionsChart showCaption={false} />
-
-  *Figura A7.2. Expedientes sancionadores de la CNMC tras el 28‑A. Fuente: CNMC / BOE.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-mercado-costes", label: "附录五：电力市场、价格与成本" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "附录九：方法论与来源对比" }
+  ]} />
 </AnnexLayout>

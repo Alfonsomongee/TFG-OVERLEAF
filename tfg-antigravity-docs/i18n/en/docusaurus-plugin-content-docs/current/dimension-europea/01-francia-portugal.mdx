@@ -4,61 +4,71 @@ hide_title: true
 title: "The Impact on France and Portugal"
 ---
 
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import BlackoutTimeline from "@site/src/components/BlackoutTimeline/BlackoutTimeline";
+import TorraoSynchronousCompensatorFigure from '@site/src/components/TorraoSynchronousCompensatorFigure';
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>The Impact on France and Portugal</GlitchTitle>
 
-The collapse of the Iberian electrical system did not stop at the Pyrenees or the Guadiana River. The violence of the 28-A electrodynamic transient radiated a shockwave through the interconnections, subjecting the French grid to extreme operational stress and dragging the Portuguese system into a total blackout from which it could only emerge through a seventeen-hour restoration from zero. These two episodes — one contained, the other catastrophic — precisely illustrate the conditions that determine whether a system can reject a disturbance of this magnitude or succumb to it.
+The collapse of the Iberian power system did not stop at the Pyrenees or the Guadiana River. The violence of the 28-A electrodynamic transient radiated a shockwave through the interconnections, subjecting the French grid to extreme operational stress and dragging the Portuguese system into a total blackout from which it could only emerge through a seventeen-hour restoration from zero. These two episodes — one contained, the other catastrophic — precisely illustrate the conditions that determine whether a system can reject a disturbance of this magnitude or succumb to it.
 
 ## France (RTE): The System That Held at the Limit
 
 ### The Trip of Golfech 1 and Negative Sequence Currents
 
-The propagation mechanism towards France was dominated by a sudden and massive excess of capacitive reactive power. Seconds before the separation, the Baixas–Santa Llogaia HVDC link was absorbing *870 MVAr*, acting as a dynamic voltage regulation sink at the border. The instantaneous loss of this sink, combined with the opening of the 400 kV lines that remained energized from the French side — generating reactive power via the capacitive Ferranti effect — induced a severe transient overvoltage profile that propagated rapidly throughout southwestern France.
+The propagation mechanism towards France was dominated by a sudden and massive excess of capacitive reactive power. Seconds before the separation, the Baixas–Santa Llogaia HVDC link was absorbing *870 MVAr*, acting as a dynamic voltage regulation sink at the border. The instantaneous loss of this sink, combined with the opening of the 400 kV lines that remained energized from the French side — generating reactive power due to the capacitive Ferranti effect — induced a severe transient overvoltage profile that propagated rapidly throughout southwestern France.
 
-Faced with this escalation, RTE's secondary voltage control forced the large synchronous alternators in the region to operate in deep underexcitation. The most critical case was **Unit 1 of the Golfech nuclear power plant**, a **1,290 MW** block of nominal power. To contain the voltage profile, its automatic voltage regulators (AVRs) drastically reduced the rotor excitation current, causing the machine to absorb *426 MVAr* at 12:33 CEST.
+Faced with this escalation, RTE's secondary voltage control forced the large synchronous alternators in the region to operate in deep underexcitation. The most critical case was Unit 1 of the Golfech nuclear power plant, a 1,290 MW nominal capacity block. To contain the voltage profile, its automatic voltage regulators (AVRs) drastically reduced the rotor excitation current, causing the machine to absorb *426 MVAr* at 12:33 CEST.
 
-This extreme condition severely compromises machine stability. As the magnetic flux in the air gap decreases, the synchronizing torque that keeps the rotor coupled to the grid frequency weakens. Simultaneously, the asymmetric nature of the opening transients at the border generated considerable negative sequence currents in the 400 kV network. Symmetrical component theory establishes that these currents produce a rotating magnetic field in the opposite direction to the rotor's rotation, inducing double-frequency (100 Hz) eddy currents in the solid rotor body and retaining rings, leading to severe adiabatic heating within seconds.
+This extreme condition severely compromises machine stability. As the magnetic flux in the air gap decreases, the synchronizing torque that keeps the rotor coupled to the grid frequency weakens. Simultaneously, the asymmetric nature of the opening transients at the border generated considerable negative sequence currents in the 400 kV network. Symmetrical component theory establishes that these currents produce a rotating magnetic field opposite to the rotor's rotation, inducing double-frequency (100 Hz) eddy currents in the solid rotor body and retaining rings, leading to severe adiabatic heating within seconds.
 
-At **12:33:35.759 CEST** — barely **fifteen seconds** after the Iberian collapse — the combination of underexcitation instability and phase imbalance heating activated the generator's internal protection relays (loss-of-excitation relay ANSI 40 and imbalance/negative sequence current relay ANSI 46), forcing the trip and total disconnection of Golfech 1. The simultaneous loss of the HVDC link and this nuclear pillar forced RTE to reconfigure its flows from more northern regions to avoid its own cascading collapse. The reactor was successfully resynchronized to the grid on April 29.
+At 12:33:35.759 CEST — barely fifteen seconds after the Iberian collapse — the combination of underexcitation instability and phase imbalance heating activated the generator's internal protection relays (loss-of-excitation relay ANSI 40 and imbalance/negative sequence current relay ANSI 46), forcing the trip and total disconnection of Golfech 1. The simultaneous loss of the HVDC link and this nuclear mainstay forced RTE to reconfigure its power flows from more northern regions to avoid its own cascading collapse. The reactor was successfully resynchronized to the grid on April 29.
 
 ### Trip in the Subtransmission Network: The Dax-Arriosses Line (63 kV)
 
-The impact was not limited to conventional generation. The most revealing record of the transient's violence in France was the trip of the **63 kV Dax–Arriosses overhead line** at **12:33:20.551 CEST**, ordered by loss-of-synchronism protections (ANSI 78 relay), configured to act on the first beat of the oscillation.
+The impact was not limited to conventional generation. The most revealing record of the transient's violence in France was the trip of the 63 kV Dax–Arriosses overhead line at 12:33:20.551 CEST, ordered by the loss-of-synchronism protections (ANSI 78 relay), configured to act on the first beat of the oscillation.
 
-The operation of a loss-of-synchronism protection at a 63 kV level is extraordinarily anomalous: power swings are usually detected on 400 kV corridors. Their appearance at 63 kV indicates that the PLLs of a massive aggregation of inverters in Aquitaine lost their angular reference relative to the main grid due to the asymmetric transient and overvoltage. The relay interpreted the cyclic current reversal of the uncontrolled inverters as a classic loss of synchronism of rotating machines, isolating the subgrid.
+The operation of a loss-of-synchronism protection at a 63 kV level is extraordinarily anomalous: power swings are typically detected on 400 kV corridors. Its appearance at 63 kV indicates that the PLLs of a massive aggregation of inverters in Aquitaine lost their angular reference relative to the main grid due to the asymmetric transient and overvoltage. The relay interpreted the cyclic current reversal of the uncontrolled inverters as a classic loss of synchronism of rotating machines, isolating the subnetwork.
 
 <ForensicTable 
-  title="TABLE 10 | EUROPEAN DIMENSION DATA" 
+  title="Table J1 — Critical Events in France"
   source="Own elaboration"
 >
 
 | Critical Element in France | Time (CEST) | Technical Cause | Systemic Impact |
 | --- | --- | --- | --- |
 | Baixas–Santa Llogaia HVDC Link | 12:33:20 | Loss of receiving Iberian grid | Sudden loss of 870 MVAr sink |
-| 63 kV Dax–Arriosses Line | 12:33:20.551 | Loss-of-synchronism relay (1st beat) | Subgrid isolation and disconnection of local IBRs |
+| 63 kV Dax–Arriosses Line | 12:33:20.551 | Loss-of-synchronism relay (1st beat) | Subnetwork isolation and disconnection of local IBRs |
 | Golfech 1 Nuclear Unit (1,290 MW) | 12:33:35.759 | Underexcitation limit / ANSI 40 and 46 relays | Loss of 426 MVAr absorption; structural stress |
 
 </ForensicTable>
 
 ### RTE as an "Infinite Bus" During Top-Down Restoration
 
-At **12:40 CEST**, the voltage profile in southwestern France managed to stabilize. From that moment, the RTE grid assumed an irreplaceable structural role: providing a firm electromagnetic anchor for the restoration of the Spanish system through a Top-Down strategy.
+At 12:40 CEST, the voltage profile in southwestern France managed to stabilize. From that moment, the RTE grid assumed an irreplaceable structural role: providing a firm electromagnetic anchor for the restoration of the Spanish system using a *Top-Down* strategy.
 
-In power system theory, an **"infinite bus"** is a voltage source with infinite inertia and zero equivalent Thévenin impedance. In practice, because France is solidly connected to the immense inertial mass of Continental Europe, its 400 kV network behaved operationally as an infinite bus for the collapsed Iberian grid.
+In power system theory, an "infinite bus" is a voltage source with infinite inertia and zero equivalent Thévenin impedance. In practice, with France solidly connected to the immense inertial mass of Continental Europe, its 400 kV grid operationally behaved as an infinite bus for the collapsed Iberian grid.
 
-At **12:39 CEST**, REE formally requested RTE to restore voltage at the Hernani substation from the French Argia substation. At **12:41 CEST**, RTE agreed to channel up to **400 MW initially** to stabilize the first reconnections in northern Spain. When the border circuit breaker closed, France imposed its nominal frequency (50.00 Hz) and its rigid voltage control on the first Spanish node. This imported short-circuit power absorbed the brutal reactive imbalances and inevitable active load steps when energizing 400 kV lines. Without the inertial anchoring of this French infinite bus, REE's attempts to restore voltage would have been subject to unbearable oscillations that would have tripped its protections again. Throughout the afternoon, the stabilizing French flow increased to **1,400 MW**, forming the backbone of the normalization of the Spanish system.
+At 12:39 CEST, REE formally requested RTE to restore voltage at the Hernani substation from the French Argia substation. At 12:41 CEST, RTE agreed to channel up to 400 MW initially to stabilize the first reconnections in northern Spain. Upon closing the border circuit breaker, France imposed its nominal frequency (50.00 Hz) and its rigid voltage control on the first Spanish node. This imported short-circuit power absorbed the brutal reactive imbalances and inevitable active load steps when energizing 400 kV lines in vacuum. Without the inertial anchoring of this French infinite bus, REE's attempts to restore voltage would have been subject to unbearable oscillations that would have tripped its protections again. Throughout the afternoon, the stabilizing French flow increased to 1,400 MW, forming the backbone of the normalization of the Spanish system.
+
+---
+
+<BlackoutTimeline />
+
+_Figure J1 — Divergent responses of RTE and REN to the Iberian transient. The timeline compares the French operational containment — a stressed but preserved grid, later converted into a Top-Down anchor for Spain — with the total Portuguese collapse and its subsequent Bottom-Up recovery via electrical islands, restoration failures, synchronous compensation at Torrão, and final synchronization at 0 MW. Source: own elaboration based on ENTSO-E, RTE, and REN._
+
+---
 
 ## Portugal (REN): The Dragged Collapse and Bottom-Up Restoration
 
 ### Why Portugal Could Not Isolate Itself
 
-While France had a rigid grid capable of rejecting the disturbance by cutting links, REN's infrastructure operated with such dense electrical and geographical coupling with Spain that configuring an isolated island operation in time was physically impossible. Portugal succumbed in a dragged collapse dominated by reactive-voltage (Q-V) coupling: trips in southern Spain removed critical reactive absorption nodes, overvoltage propagated without resistance towards Portuguese substations, and the frequency drop activated the combined UFLS schemes of REE and REN. Despite massive load shedding, the RoCoF was so pronounced that the mechanical delays of circuit breakers (50–100 ms) made it impossible to balance the system before under-frequency protections disconnected the last thermal turbines.
+While France had a rigid grid capable of rejecting the disturbance by cutting links, REN's infrastructure operated with such dense electrical and geographical coupling with Spain that configuring a timely isolated island operation was physically impossible. Portugal succumbed in a dragged collapse dominated by reactive power-voltage (Q-V) coupling: trips in southern Spain removed critical reactive absorption nodes, the overvoltage propagated without resistance towards Portuguese substations, and the frequency decline activated the combined UFLS schemes of REE and REN. Despite massive load shedding, the RoCoF was so pronounced that the mechanical delays of circuit breakers (50–100 ms) made it impossible to balance the system before under-frequency protections disconnected the last thermal turbines.
 
 <ForensicTable 
-  title="TABLE 11 | EUROPEAN DIMENSION DATA" 
-  source="Own elaboration"
+  title="Table J2 — UFLS: Load Shed in the Peninsula"
+  source="PMU records from REN and REE"
 >
 
 | Frequency Threshold (Hz) | Load Shed in Portugal (MW) | Load Shed in Spain (MW) | Total (MW) |
@@ -72,36 +82,40 @@ While France had a rigid grid capable of rejecting the disturbance by cutting li
 
 </ForensicTable>
 
-
-
 ### The Restoration: Chronicle of Failures and Solutions
 
-With no external link available, REN executed a Bottom-Up restoration based entirely on its own black-start resources. The sequence exposes the severe limitations that the laws of electromagnetism impose on the process.
+With no external link available, REN executed a *Bottom-Up* restoration based entirely on its own black-start resources. The sequence exposes the severe limitations that the laws of electromagnetism impose on the process.
 
-**12:35–12:45 CEST — First Island at Zêzere.** REN ordered the black start of HPP 1-Centro. At 12:45, the plant was operating in isochronous mode and managed to energize the 220 kV busbar at the Zêzere substation. The first island had formed.
+12:35–12:45 CEST — First island at Zêzere. REN ordered the black start of HPP 1-Centro. At 12:45, the plant was operating in isochronous mode and managed to energize the 220 kV busbar at the Zêzere substation. The first island had been formed.
 
-**12:49 CEST — Collapse due to Sympathetic Inrush.** The protocol required energizing the Zêzere Transformer 4 (170 MVA, 220/60 kV ratio). When the circuit breaker closed, HPP 1-Centro tripped instantly. The cause was the **phenomenon of sympathetic inrush current**: a 170 MVA transformer, when energized from a weak grid — a single hydroelectric machine with low short-circuit power and high subtransient impedance — demands a magnetizing current that can exceed the rated current by an order of magnitude, with a high content of second-order harmonics and extremely low power factor. The isolated generator could not supply this burst of reactive power; the transient voltage dip activated the protection relays. Attempts to start small auxiliary units within the same plant failed for the next three hours.
+12:49 CEST — Collapse due to magnetizing inrush in a low-SCR network. The protocol required energizing the Zêzere Transformer 4 (170 MVA, 220/60 kV ratio). Upon closing the circuit breaker, HPP 1-Centro tripped instantly. The cause was the magnetizing inrush phenomenon in a low-SCR network: a 170 MVA transformer, when energized from a weak grid — a single hydro unit with low short-circuit power and high subtransient impedance — demands a magnetizing current that can exceed the nominal current by an order of magnitude, with high second-order harmonic content and extremely low power factor. The isolated generator could not supply this burst of reactive power; the transient voltage dip activated the protection relays. Attempts to start small auxiliary units within the same plant failed for the next three hours.
 
-**12:43–16:38 CEST — Failures in Combined Cycles.** In parallel, REN dispatched the black start order for CCGT 1-Norte at 12:43. Although the gas turbine responded mechanically, the plant was unable to close the generator circuit breaker for hours: the DC battery banks at the substation had voltage drop due to prolonged discharge, leaving the closing coils of the high-voltage circuit breakers without power. The blockage was finally resolved at **16:38 CEST**.
+12:43–16:38 CEST — Failures in combined cycle plants. In parallel, REN dispatched the black start order for CCGT 1-Norte at 12:43. Although the gas turbine responded mechanically, the plant was unable to close the generator circuit breaker for hours: the substation's DC battery banks showed voltage drop due to prolonged discharge, leaving the closing coils of the high-voltage circuit breakers without power. The lockout was finally resolved at 16:38 CEST.
 
-**15:40–15:55 CEST — Second Attempt and New Collapse.** After reconfiguration work, HPP 1-Centro restarted at 15:40 and managed to re-energize the 220 kV busbar. At 15:51, a local demand block of *5 MW* was connected, but the inertial fragility of the island was such that fluctuations caused another trip at 15:55.
+15:40–15:55 CEST — Second attempt and new collapse. After reconfiguration work, HPP 1-Centro restarted at 15:40 and managed to re-energize the 220 kV busbar. At 15:51, a block of local demand of *5 MW* was connected, but the inertial fragility of the island was such that fluctuations caused another trip at 15:55.
 
-### The Decisive Maneuver: Torrão as a Pure Synchronous Condenser
+<TorraoSynchronousCompensatorFigure />
 
-It was evident that the island lacked the necessary stiffness (short-circuit power) to absorb load steps. After restarting HPP 1-Centro at **16:13 CEST**, REN executed at **17:23 CEST** a maneuver of maximum technical sophistication: it started **Unit 2 of HPP Torrão**, but not to inject active power, rather in **pure synchronous condenser mode**.
+_Figure J2 — Torrão as a synchronous compensator during the Portuguese restoration. The diagram compares conventional hydroelectric operation with synchronous compensation mode, showing the transition of a machine from exporting active power to a resource that consumes minimal power to cover mechanical and electrical losses and provides voltage regulation through reactive power. Source: own elaboration based on ENTSO-E and REN._
 
-Operating a hydroelectric plant as a synchronous condenser involves emptying the turbine chamber by injecting compressed air (depressing the tail water), allowing the runner to spin freely in the air coupled to the grid. The generator consumes a marginal amount of active power to overcome mechanical friction, but through the control of its excitation system, it injects or absorbs massive amounts of reactive power instantaneously. More critically: the enormous rotating mass of the Torrão rotor provided pure kinematic inertia and multiplied the short-circuit power of the Zêzere island.
+### The Decisive Maneuver: Torrão as a Pure Synchronous Compensator
 
-This maneuver acted as an electrodynamic damper. The voltage on the island stabilized, allowing from **16:26 CEST** the progressive restoration of load on the 60 kV and 150 kV networks and the extension of voltage to the HPP 2 and HPP 3 Centro plants. At **16:38 CEST**, the second safe restoration zone was established from CCGT 1-Norte.
+It was evident that the island lacked the necessary rigidity (short-circuit power) to absorb load steps. After restarting HPP 1-Centro at 16:13 CEST, REN executed a maneuver of maximum technical sophistication at 17:23 CEST: it started Unit 2 of HPP Torrão, not to inject active power, but in pure synchronous compensator mode.
+
+Operating a hydroelectric plant as a synchronous compensator involves emptying the turbine chamber by injecting compressed air (depressing the tailwater), allowing the runner to spin freely in the air coupled to the grid. The generator consumes a marginal amount of active power to overcome mechanical friction, but through the control of its excitation system, it injects or absorbs massive amounts of reactive power instantaneously. More critically: the enormous rotating mass of the Torrão rotor provided pure kinetic inertia and multiplied the short-circuit power of the Zêzere island.
+
+This maneuver acted as an electrodynamic damper. The voltage on the island stabilized, allowing from 16:26 CEST the progressive restoration of load on the 60 kV and 150 kV networks and the extension of voltage to the HPP 2 and HPP 3 Centro plants. At 16:38 CEST, the second safe restoration zone was established from CCGT 1-Norte.
 
 ### Synchronization at 0 MW and Total Normalization
 
 Towards 20:00 CEST, the two Portuguese islands had been internally meshed, but they continued to operate asynchronously relative to Spain and the rest of Europe. The most delicate step was the coupling with the REE grid, already synchronized with the French infinite bus.
 
-At **20:25 CEST**, the interconnection was closed under a non-negotiable technical requirement: an **exchange program of 0 MW**. The underlying physics is governed by the power transfer equation between two synchronous areas:
+At 20:25 CEST, the interconnection was closed under a non-negotiable technical requirement: an exchange program of 0 MW. The underlying physics is governed by the power transfer equation between two synchronous areas:
 
-$$P = \frac{V1 V2}{X} \sin\delta$$
+$$
+P_{12} = \frac{V_1 V_2}{X_{12}} \sin(\delta_1 - \delta_2)
+$$
 
-To close the interconnection circuit breaker without generating a destructive synchronizing power transient, the phase angle difference ($\delta$) between the Portuguese and Spanish nodes had to be exactly zero and the voltage magnitudes equal. By setting a 0 MW setpoint in the Automatic Generation Control (AGC) systems, the operators guaranteed that neither grid would attempt to export inertia towards the other at the moment of coupling. An error would have forced a violent flow, tripping directional protections and plunging Portugal into a second blackout.
+To close the interconnection circuit breaker without generating a destructive synchronizing power transient, the phase angle difference ($\delta$) between the Portuguese and Spanish nodes had to be exactly zero and the voltage magnitudes equal. By setting a 0 MW setpoint in the Automatic Generation Control (AGC) systems, the operators ensured that neither grid attempted to export inertia towards the other at the moment of coupling. An error would have forced a violent power flow, tripping directional protections and plunging Portugal into a second blackout.
 
-With the success of the maneuver, Portugal recovered the continental synchronous reference. The robustness provided by the interconnection allowed accelerating the restoration of the remaining demand, reaching total normalization at **00:22 on April 29** — **seventeen hours** after the voltage zero.
+With the success of the maneuver, Portugal regained the continental synchronous reference. The robustness provided by the interconnection allowed accelerating the restoration of the remaining demand, reaching total normalization at 00:22 on April 29 — seventeen hours after the voltage zero.

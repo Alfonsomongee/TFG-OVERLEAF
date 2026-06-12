@@ -1,98 +1,161 @@
 ---
 id: anexo-cascada-protecciones-desconexiones
-title: "Anexo III · Protecciones, cascada y desconexiones"
-sidebar_label: "Anexo III · Protecciones y desconexiones"
+title: "Annex III · Protections, Cascade, and Disconnections"
+sidebar_label: "Annex III · Protections and Disconnections"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PO74Timeline from '@site/src/components/PO74Timeline';
 import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
 
 <AnnexLayout
   wide
-  kicker="Anexo III"
-  title="Protecciones, cascada y desconexiones"
-  description="Evidencias técnicas relacionadas con la propagación del colapso, disparos de protección, desconexiones de generación y mecanismos de cascada del 28-A."
+  kicker="Annex III"
+  title="Protections, Cascade, and Disconnections"
+  description="This annex reconstructs the sequence of protection actions, generation disconnections, and load shedding that transformed a localized overvoltage condition in the southern Iberian Peninsula into a total collapse of the Iberian system in less than five minutes."
   meta={[
-    { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
-    { label: 'Cobertura', value: 'Análisis forense de cascada' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical Axis', value: 'Protections and Disconnections' },
+    { label: 'Coverage', value: 'Forensic Cascade Analysis' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    How did the cascade of disconnections propagate from the root trip in the southwestern zone to the total collapse of the Iberian system, and which protections acted at each phase?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The April 28 cascade unfolded in four phases compressed into less than five minutes: (1) propagation of overvoltages through the southwestern 400 kV network, amplified by the Ferranti effect and the Tap-Lag of regulating transformers; (2) massive tripping of ANSI 59 protections in IBR inverters with a loss of ~4.5 GW in 11 seconds; (3) activation of automatic defense mechanisms — UFLS load shedding and pumping disconnection — which proved insufficient given the speed of the disturbance; (4) frequency collapse and total loss of peninsular synchronism. The protections operated as specified; the specification did not contemplate a scenario of widespread overvoltage with low inertia.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex documents the chronological sequence and mechanics of protection trips that caused the cascade of disconnections during the April 28 event.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
+    This annex chronologically articulates the sequence of trips and protection actions to offer a systemic perspective of the collapse.
   </AnnexMethodNote>
 
   <AnnexMethodNote type="modelo-didactico">
-    Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
+    Some interactive elements represent didactic models or reconstructions. They should be read as explanatory support and not as an independent raw record.
   </AnnexMethodNote>
+
+  <em>The annex is organized into four argumentative sections corresponding to the different phases of the collapse: overvoltage propagation, IBR disconnection cascade, load shedding and defense, and final state indicators.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-cascada' },
-      { label: 'Tablas',       target: 'tablas-cascada' },
-      { label: 'Interactivos', target: 'interactivos-cascada' },
-      { label: 'Series',       target: 'series-cascada' },
+      { label: 'Propagation',   target: 'propagacion-sobretensiones' },
+      { label: 'IBR Cascade',   target: 'cascada-ibr' },
+      { label: 'Load Shedding',     target: 'deslastre-defensa' },
+      { label: 'Final State',  target: 'estado-final' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-cascada"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a la propagación del fallo."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['figures']} />
+  <AnnexSection id="propagacion-sobretensiones" eyebrow="Phase 1" title="Overvoltage Propagation">
+    The heat map shows the spatial propagation of overvoltages between the meshing maneuver (12:30) and the root trip (12:32:56).
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="Overvoltage Propagation"
+      summary="The heat map shows the spatial propagation of overvoltages between the meshing maneuver and the root trip, concentrating critical values in the southwest."
+      insight="Critical zones in Andalusia and Extremadura · Precondition for massive inverter trips."
+    >
+      <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
+    </AnnexEvidenceLead>
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
+      <AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
+    </AnnexEvidenceGrid>
+    <p>The Tap-Lag decoupling amplified overvoltages in the collector network, making them invisible to REE's SCADA. The flood of alerts in the south documents the speed of the expansion.</p>
+    The Ferranti effect simulator reproduces the quadratic overvoltage at the open end of unloaded EHV lines — the amplifying mechanism of Phase 1.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    The Tap-Lag sequence illustrates how the mechanical delay of OLTCs (3–8 seconds per tap) hid the collector network overvoltage from REE's SCADA.
+    <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
+    The overvoltage timeline allows temporal and spatial exploration of each voltage record at key southwestern substations.
+    <div style={{ margin: '1.5rem 0' }}>
+      <OvervoltageTimeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-cascada"
-    eyebrow="Registros técnicos"
-    title="Tablas forenses y eventos de protección"
-    description="Registros tabulados sobre desconexiones, protecciones y maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-cascada"
-    eyebrow="Exploración interactiva"
-    title="Herramientas de propagación y mecanismos de cascada"
-    description="Visualizaciones interactivas asociadas a la secuencia del colapso."
-    defaultOpen
-  >
+  <AnnexSection id="cascada-ibr" eyebrow="Phase 2" title="IBR Disconnection Cascade">
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="cascada_desconexiones" level={1} />
+      <AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
+    </AnnexEvidenceGrid>
+    <p>The geographical propagation in 11 seconds exceeded the response capacity of automatic mechanisms. The IEEE 39 study shows how successive disconnections generate severe oscillations.</p>
+    The 16 disconnection events in the southwest — master table for reproduction in transient stability software — were compressed into 11 seconds.
+    <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
+    The chronological list of protection actions details which relay acted, at which plant, and at which millisecond.
+    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={2} />
+    The ANSI 59 simulator reproduces how the disconnection of one inverter raises the voltage at adjacent nodes, tripping neighbors in cascade.
+    <AnnexEvidence type="interactive" id="ansi59" level={2} />
+    The animated map allows chronological exploration of distributed generation trips, observing the south→north and west→east pattern.
     <span id="grafico-map"></span>
-    <span id="grafico-timeline"></span>
-    <span id="grafico-ansi59"></span>
+    <AnnexEvidence type="interactive" id="map" level={1} />
+    The unified visualization overlays SCADA alerts, protection trips, and system frequency in a seismographic panel.
     <span id="grafico-sticky-collapse"></span>
-    <span id="grafico-ufls"></span>
-    <span id="grafico-tap-lag-sequence"></span>
+    <AnnexEvidence type="interactive" id="sticky-collapse" level={2} />
+    The vertical timeline details the complete sequence minute by minute from 12:30 to 12:38 CEST.
+    <span id="grafico-timeline"></span>
+    <AnnexEvidence type="interactive" id="timeline" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="deslastre-defensa" eyebrow="Phase 3" title="Load Shedding and Defense Mechanisms">
+    The UFLS steps were activated as designed, but presented a paradox: by disconnecting load, the voltage rose further, worsening the capacitive collapse.
+    <AnnexEvidence type="table" id="escalones-ufls" level={1} />
+    The breakdown of load shedding by nodes in Spain and Portugal quantifies the total volume of load sacrificed in each country.
+    <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
+    <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
+    The aggregation by distributor and the geographical distribution of load shedding reveal the concentration of impact in areas with the highest IBR penetration.
+    <AnnexEvidence type="table" id="load-shedding-es-pt" level={2} />
+    <AnnexEvidence type="table" id="dso-load-shedding" level={2} />
+    Portuguese electro-intensive customers suffered scheduled priority load shedding.
+    <AnnexEvidence type="table" id="electro-intensive-pt" level={3} />
+    The disconnection of hydraulic pumping released ~2,150 MW of instantaneous load, helping to slow the frequency drop.
+    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={2} />
+    The breakdown by pumping plant in Spain and Portugal details the decoupling chronology.
+    <AnnexEvidence type="table" id="pump-storage-es" level={3} />
+    <AnnexEvidence type="table" id="pump-storage-pt" level={3} />
+    The indicator of sudden unavailability by node quantifies what percentage of the network was out of service in each zone.
     <span id="grafico-grid-unavailability"></span>
-    <AnnexThemeEvidence theme="T3" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
+    The P.O. 7.4 timeline documents the evolution of the dead bands required for generators — the regulatory gap that prevented autonomous inverter response to overvoltages.
+    <div style={{ margin: '1.5rem 0' }}>
+      <PO74Timeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-cascada"
-    eyebrow="Series históricas"
-    title="Series asociadas al episodio de cascada"
-    description="Gráficas históricas disponibles asociadas a este tema, si existen."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['charts']} />
+  <AnnexSection id="estado-final" eyebrow="Phase 4" title="Final State and Post-Collapse Topology">
+    The topological maneuvers of REE and REN document the controlled fragmentation of the network to isolate zones and prepare for re-energization by islands.
+    <AnnexEvidence type="table" id="re-topological-manoeuvres" level={3} />
+    <AnnexEvidence type="table" id="ren-topological-manoeuvres" level={3} />
+    The percentage of km of lines out of service quantifies the magnitude of topological damage suffered by the transmission network.
+    <AnnexEvidence type="table" id="lines-outage-icai" level={3} />
+    <AnnexEvidence type="table" id="km-percentage-icai" level={3} />
+    The five nuclear power plants executed controlled emergency trips. Their survival was critical for the subsequent Black Start: Vandellós and Ascó led generation during restoration.
+    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
   </AnnexSection>
 
-  <PO74Timeline showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="The April 28 cascade demonstrated that an electrical system can lose stability in seconds when low inertia, uncontrolled overvoltage, and inverters with protections calibrated for point faults converge. The protections did not fail: they operated as specified. The problem was that the specification (P.O. 7.4 prior to the reform, standard ANSI 59 thresholds) did not contemplate a scenario of dominant IBR penetration with low short-circuit power."
+    doesNotDemonstrate="This annex does not determine responsibilities; it documents the mechanics of the failure. The interpretation of whether protections should have been reformed before the event corresponds to the regulatory analysis in the main chapters."
+    connection="This reading is complemented by Annex II (prior voltage instability), Annex IV (cross-border loss of synchronism), and Annex VI (subsequent restoration)."
+  />
 
-  *Figura A3.1. Cronograma de implementación del P.O. 7.4. Fuentes: CNMC, BOE.*
-
-  <OvervoltageTimeline showCaption={false} />
-
-  *Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Annex II: Voltage and Frequency Stability" },
+    { to: "/anexo-interconexiones-flujos", label: "Annex IV: Interconnections and Cross-Border Flows" },
+    { to: "/anexo-reposicion-blackstart", label: "Annex VI: Restoration and Emergency Operation" }
+  ]} />
 </AnnexLayout>

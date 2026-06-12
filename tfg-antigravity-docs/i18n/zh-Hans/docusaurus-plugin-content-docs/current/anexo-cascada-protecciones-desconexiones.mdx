@@ -1,98 +1,161 @@
 ---
 id: anexo-cascada-protecciones-desconexiones
-title: "Anexo III · Protecciones, cascada y desconexiones"
-sidebar_label: "Anexo III · Protecciones y desconexiones"
+title: "附录三 · 保护、级联与解列"
+sidebar_label: "附录三 · 保护与解列"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import PO74Timeline from '@site/src/components/PO74Timeline';
 import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
 
 <AnnexLayout
   wide
-  kicker="Anexo III"
-  title="Protecciones, cascada y desconexiones"
-  description="Evidencias técnicas relacionadas con la propagación del colapso, disparos de protección, desconexiones de generación y mecanismos de cascada del 28-A."
+  kicker="附录三"
+  title="保护、级联与解列"
+  description="本附录重构了保护动作、发电解列与负荷减载的序列，这些动作在不到五分钟内将伊比利亚半岛南部局部过电压条件转变为整个系统的全面崩溃。"
   meta={[
-    { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
-    { label: 'Cobertura', value: 'Análisis forense de cascada' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术轴线', value: '保护与解列' },
+    { label: '覆盖范围', value: '级联故障法医分析' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    从西南地区的根源跳闸到伊比利亚系统的全面崩溃，解列级联是如何传播的？在每个阶段有哪些保护动作？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日的级联故障在不到五分钟内经历了四个阶段：(1) 过电压通过西南部400千伏网络传播，因费兰梯效应和调压变压器抽头滞后而放大；(2) 逆变器型电源的ANSI 59保护大规模跳闸，在11秒内损失约4.5吉瓦；(3) 自动防御机制——低频减载和抽水蓄能解列——启动，但面对扰动速度显得不足；(4) 频率崩溃和半岛同步性完全丧失。保护装置按规范动作；但规范本身并未考虑低惯量下普遍过电压的场景。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录记录了4月28日事件期间导致解列级联的保护跳闸的时间顺序和机制。
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
+    本附录按时间顺序阐述了跳闸和保护动作的序列，以提供系统崩溃的系统性视角。
   </AnnexMethodNote>
 
   <AnnexMethodNote type="modelo-didactico">
-    Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
+    某些交互元素代表教学模型或重构。应将其视为解释性辅助，而非独立的原始记录。
   </AnnexMethodNote>
+
+  <em>本附录按四个论证部分组织，对应崩溃的不同阶段：过电压传播、逆变器型电源解列级联、减载与防御，以及最终状态指标。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-cascada' },
-      { label: 'Tablas',       target: 'tablas-cascada' },
-      { label: 'Interactivos', target: 'interactivos-cascada' },
-      { label: 'Series',       target: 'series-cascada' },
+      { label: '传播',   target: 'propagacion-sobretensiones' },
+      { label: '逆变器级联',   target: 'cascada-ibr' },
+      { label: '减载',     target: 'deslastre-defensa' },
+      { label: '最终状态',  target: 'estado-final' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-cascada"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a la propagación del fallo."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['figures']} />
+  <AnnexSection id="propagacion-sobretensiones" eyebrow="第一阶段" title="过电压传播">
+    热力图显示了从合环操作（12:30）到根源跳闸（12:32:56）期间过电压的空间传播。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="过电压传播"
+      summary="热力图显示了从合环操作到根源跳闸期间过电压的空间传播，关键值集中在西南部。"
+      insight="安达卢西亚和埃斯特雷马杜拉的关键区域 · 逆变器大规模跳闸的前提条件。"
+    >
+      <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
+    </AnnexEvidenceLead>
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
+      <AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
+    </AnnexEvidenceGrid>
+    <p>抽头滞后解耦放大了汇集网络中的过电压，使其对REE的SCADA系统不可见。南部的警报洪流记录了扩张的速度。</p>
+    费兰梯效应模拟器再现了空载超高压线路开路端的二次过电压——第一阶段放大的机制。
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    抽头滞后序列说明了有载调压变压器的机械延迟（每档3-8秒）如何向REE的SCADA系统隐藏了汇集网络的过电压。
+    <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
+    过电压时间线允许在时间和空间上探索西南部关键变电站的每个电压记录。
+    <div style={{ margin: '1.5rem 0' }}>
+      <OvervoltageTimeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-cascada"
-    eyebrow="Registros técnicos"
-    title="Tablas forenses y eventos de protección"
-    description="Registros tabulados sobre desconexiones, protecciones y maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-cascada"
-    eyebrow="Exploración interactiva"
-    title="Herramientas de propagación y mecanismos de cascada"
-    description="Visualizaciones interactivas asociadas a la secuencia del colapso."
-    defaultOpen
-  >
+  <AnnexSection id="cascada-ibr" eyebrow="第二阶段" title="逆变器型电源解列级联">
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="cascada_desconexiones" level={1} />
+      <AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
+    </AnnexEvidenceGrid>
+    <p>11秒内的地理传播超过了自动机制的响应能力。IEEE 39节点研究显示了连续解列如何产生严重振荡。</p>
+    西南部的16个解列事件——用于暂态稳定软件复现的主表——压缩在11秒内。
+    <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
+    保护动作的时间顺序列表详细说明了哪个继电器动作、在哪个电站以及在哪毫秒。
+    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={2} />
+    ANSI 59模拟器再现了逆变器解列如何提高相邻节点的电压，从而级联触发邻近逆变器。
+    <AnnexEvidence type="interactive" id="ansi59" level={2} />
+    动画地图允许按时间顺序浏览分布式发电的跳闸，观察从南到北和从西到东的模式。
     <span id="grafico-map"></span>
-    <span id="grafico-timeline"></span>
-    <span id="grafico-ansi59"></span>
+    <AnnexEvidence type="interactive" id="map" level={1} />
+    统一可视化将SCADA警报、保护跳闸和系统频率叠加在一个地震图面板上。
     <span id="grafico-sticky-collapse"></span>
-    <span id="grafico-ufls"></span>
-    <span id="grafico-tap-lag-sequence"></span>
+    <AnnexEvidence type="interactive" id="sticky-collapse" level={2} />
+    垂直时间线详细列出了从12:30到12:38 CEST的完整序列，逐分钟呈现。
+    <span id="grafico-timeline"></span>
+    <AnnexEvidence type="interactive" id="timeline" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="deslastre-defensa" eyebrow="第三阶段" title="减载与防御机制">
+    低频减载阶梯按设计激活，但存在一个悖论：减载时电压进一步升高，加剧了容性崩溃。
+    <AnnexEvidence type="table" id="escalones-ufls" level={1} />
+    西班牙和葡萄牙各节点的减载明细量化了每个国家牺牲的总负荷量。
+    <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
+    <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
+    按配电公司汇总和减载的地理分布揭示了受影响区域集中在逆变器型电源渗透率最高的地区。
+    <AnnexEvidence type="table" id="load-shedding-es-pt" level={2} />
+    <AnnexEvidence type="table" id="dso-load-shedding" level={2} />
+    葡萄牙的电力密集型客户遭受了计划中的优先减载。
+    <AnnexEvidence type="table" id="electro-intensive-pt" level={3} />
+    抽水蓄能解列释放了约2,150兆瓦的瞬时负荷，有助于减缓频率下降。
+    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={2} />
+    西班牙和葡萄牙各抽水蓄能电站的明细详细说明了解列的时间顺序。
+    <AnnexEvidence type="table" id="pump-storage-es" level={3} />
+    <AnnexEvidence type="table" id="pump-storage-pt" level={3} />
+    按节点统计的突发不可用性指标量化了每个区域电网停运的百分比。
     <span id="grafico-grid-unavailability"></span>
-    <AnnexThemeEvidence theme="T3" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
+    P.O. 7.4时间线记录了发电机所需死区的演变——这一监管空白阻止了逆变器在过电压情况下的自主响应。
+    <div style={{ margin: '1.5rem 0' }}>
+      <PO74Timeline showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-cascada"
-    eyebrow="Series históricas"
-    title="Series asociadas al episodio de cascada"
-    description="Gráficas históricas disponibles asociadas a este tema, si existen."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T3" include={['charts']} />
+  <AnnexSection id="estado-final" eyebrow="第四阶段" title="最终状态与崩溃后拓扑">
+    REE和REN的拓扑操作记录了为隔离区域和准备孤岛再通电而进行的受控网络分割。
+    <AnnexEvidence type="table" id="re-topological-manoeuvres" level={3} />
+    <AnnexEvidence type="table" id="ren-topological-manoeuvres" level={3} />
+    停运线路公里数百分比量化了输电网络遭受的拓扑损坏程度。
+    <AnnexEvidence type="table" id="lines-outage-icai" level={3} />
+    <AnnexEvidence type="table" id="km-percentage-icai" level={3} />
+    五座核电站执行了受控紧急跳闸。它们的存活对后续的黑启动至关重要：Vandellòs和Ascó在恢复期间主导了发电。
+    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
   </AnnexSection>
 
-  <PO74Timeline showCaption={false} />
+  <AnnexSectionSummary
+    demonstrates="4月28日的级联故障表明，当低惯量、不受控的过电压和针对点故障校准的逆变器保护同时出现时，电力系统可能在数秒内失去稳定性。保护装置没有失效：它们按规范动作。问题在于规范（改革前的P.O. 7.4、标准ANSI 59阈值）并未考虑逆变器型电源主导且短路容量低的场景。"
+    doesNotDemonstrate="本附录不判定责任；它记录了故障的机制。关于保护装置是否应在事件前进行改革的解释属于主要章节的监管分析范畴。"
+    connection="阅读时请结合附录二（前期电压不稳定）、附录四（跨境同步性丧失）和附录六（后续恢复）。"
+  />
 
-  *Figura A3.1. Cronograma de implementación del P.O. 7.4. Fuentes: CNMC, BOE.*
-
-  <OvervoltageTimeline showCaption={false} />
-
-  *Figura A3.2. Cronología del colapso por sobretensión del 28‑A. Fuentes: ENTSO‑E, REE, IIT‑ICAI.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "附录二：电压与频率稳定性" },
+    { to: "/anexo-interconexiones-flujos", label: "附录四：互联与跨境潮流" },
+    { to: "/anexo-reposicion-blackstart", label: "附录六：恢复与紧急运行" }
+  ]} />
 </AnnexLayout>

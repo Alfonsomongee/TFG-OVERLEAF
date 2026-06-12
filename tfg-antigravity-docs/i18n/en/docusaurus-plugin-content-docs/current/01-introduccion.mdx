@@ -4,68 +4,113 @@ sidebar_position: 1
 hide_title: true
 title: "Introduction"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import MetamorfosisIBR from '@site/src/components/MetamorfosisIBR/MetamorfosisIBR';
+import NarrativasInstitucionales from '@site/src/components/NarrativasInstitucionales/NarrativasInstitucionales';
 
 <GlitchTitle>Introduction</GlitchTitle>
 
-On 28 April 2025, the Iberian synchronous system suffered a voltage collapse that destroyed more than **15 GW of generation within seconds** and left nearly **60 million people** without electricity. In terms of magnitude and propagation speed, the event has no precedent in the continental European power system in recent decades. This work is not a chronological reconstruction of the blackout: it is a critical, comparative analysis of the competing technical, regulatory and operational narratives formulated in its aftermath.
 
-## Scope and objectives
+:::info Incident Magnitudes
+| Parameter | Value | Source |
+| :--- | :--- | :--- |
+| Generation destroyed in the cascade | >15 GW in <30 s | Government Analysis Committee, 2025 |
+| Demand without supply (Spain) | 25.2 GW | ESIOS / REE |
+| Demand without supply (Portugal) | ≈ 5.8 GW | REN / ENTSO-E |
+| People affected | ≈ 57 million | Government Analysis Committee |
+| Blackout duration (99.95% restoration) | 18.5 hours | REE / ENTSO-E |
+| Estimated economic loss (VoLL) | €1,000–1,500 M | CEOE / ATA / own estimate |
+| Accumulated cost "Reinforced Operation" | >€666 M (10 months) | Redeia, April 2026 |
+:::
 
-The collapse — characterised by a cascade of disconnections triggered by overvoltage phenomena in a context of high penetration of Inverter-Based Resources (IBR) — has generated deep interpretive disagreement over its root causes and the allocation of technical and operational responsibility. The research examines three dominant institutional narratives:
+On April 28, 2025, the Iberian synchronous system suffered a voltage collapse that destroyed more than 15 GW of generation in a matter of seconds (leading to the interruption of approximately 25.2 GW of demand) and left approximately 57 million people without electricity supply. In terms of magnitude and propagation speed, the event is unprecedented in the continental European system in over twenty years. This work is not a chronological reconstruction of the event: it is a critical and comparative analysis of the technical, regulatory, and operational narratives that have competed to explain it.
 
-**Government / Redeia narrative.** The report of the National Security Council's Analysis Committee interprets the collapse through the lens of regulatory compliance. Its central thesis attributes the escalation to a deficit in inductive reactive power absorption that prevented the containment of the voltage surge, in contravention of the requirements established in Operating Procedure P.O. 7.4.
+## Purpose and Scope
 
-**Generator sector narrative (ICAI / AELEC Report).** The independent expert analysis by IIT-ICAI and Compass Lexecon shifts responsibility towards specific operational decisions by the System Operator. The central thesis challenges the meshing (_mallado_) manoeuvre executed by Redeia, arguing that it increased the capacitive contribution of the network under conditions of low synchronous strength, generating an overvoltage pulse amplified by the operator's limited observability of the 220 kV network — a phenomenon termed Tap-Lag.
+The collapse —characterized by a cascade of disconnections associated with overvoltage phenomena in a context of high penetration of inverter-based resources (IBR)—
+has generated profound interpretive disagreement regarding its root causes and the
+allocation of responsibilities. The investigation examines three predominant
+institutional perspectives:
 
-**European system manager narrative (ENTSO-E).** ENTSO-E's factual report adopts a continental synchronous area perspective, analysing the propagation of inter-area oscillations and questioning the adequacy of the N−1 Security Criterion against the ultra-fast dynamic phenomena characteristic of power-electronics- dominated systems.
+*(Note: the analysis operates on four primary reports —Government, REE, IIT-ICAI/AELEC, and ENTSO-E— grouped into three perspectives, given that the Government and REE reports share fundamental causal premises.)*
 
-![Replication of collapse sequence](/figuras/albustami_ieee39_secuencia.png) _Figure 1. Collapse sequence for 28 April, highlighting the interaction between Operator Actions (OA) and Automatic Protection Actions (AA). Source: Albustami et al., 2025._
+Administration Perspective (Government / REE, the System Operator, subsidiary of the holding company Redeia). The report from the Analysis Committee of the National Security Council interprets the collapse from the standpoint of regulatory compliance. Its thesis attributes the worsening of the event to a deficit in inductive reactive power absorption that prevented containing the voltage escalation, in contravention of the requirements of Operating Procedure P.O. 7.4.
 
-The scope of the work is defined by the systematic contrast of these three narratives against European Network Codes — particularly the RfG Regulation — and against modern principles of voltage stability in inverter-dominated systems, with the aim of identifying structural lessons, methodological limitations and regulatory gaps that condition the resilience of the European power system during its decarbonisation transition.
+Generator Sector Perspective (ICAI / AELEC Report). The expert analysis by IIT-ICAI and Compass Lexecon shifts responsibility towards specific operational decisions made by REE. The central thesis questions the meshing maneuver executed by the operator, arguing that it increased the capacitive contribution of the network in a scenario of low synchronous strength and generated an overvoltage pulse amplified by observability limitations on the 220 kV network —a phenomenon termed Tap-Lag.
 
-## The structural vulnerability of the Iberian system
+European Operator Perspective (ENTSO-E). ENTSO-E's factual report adopts a continental synchronous area perspective: it analyzes the propagation of inter-area oscillations and questions the sufficiency of the N−1 Criterion against
+ultra-fast dynamic phenomena characteristic of power-electronics-dominated
+systems.
+The scope of the work is structured around contrasting these three narratives with European _Network Codes_ —particularly the RfG Regulation— and with modern principles of voltage stability in inverter-dominated systems, aiming to identify structural lessons, methodological limitations, and regulatory gaps that condition the resilience of the European electricity system in the transition towards decarbonization. The narrative analysis is based on an electromagnetic reconstruction of the transient, built upon PMU and WAMS records, and is compatible with the oscillographic evidence published by the four agents.
 
-The energy transition has profoundly and irreversibly altered the dynamics of the peninsular system. The accelerated displacement of synchronous generation by IBR reduces the rotating masses coupled to the network and, with them, two critical parameters simultaneously: system inertia (_H_) — which fell to zonal values of **1.3 s to 1.8 s** in the southern peninsula, below the 2 s threshold that the technical literature associates with compromised dynamic margins — and short-circuit power available at network nodes. This dual reduction does not only affect the frequency–active power axis: it critically undermines the system's ability to dynamically absorb reactive power and sustain voltage under fast transients, which is precisely the axis on which the 28 April collapse unfolded.
 
-![Electromechanical metamorphosis of the power system](/figuras/futured_grid_evolution.png) _Figure 2. Electromechanical metamorphosis of the power system. The displacement of large rotating masses by IBR resources drastically reduces total system inertia. Source: FutuRed, 2024._
+## The Structural Vulnerability of the Iberian System
 
-On the morning of the incident, the system was operating with **82% non-synchronous renewable penetration** under valley demand conditions. To balance generation, Redeia decoupled virtually all available thermal units, reducing the number of online synchronous generators to historical lows. The IBR fleet was operating almost entirely in grid-following mode: inverters that require a stable external voltage and frequency as a synchronisation reference. With synchronous units removed from the dispatch, the system lost its primary mechanism for dynamic reactive power absorption and, with it, the natural damping against voltage transients.
+The energy transition has profoundly altered the dynamics of the peninsular system. The accelerated replacement of synchronous plants by IBR reduces the rotating masses coupled to the grid and, with them, two critical parameters simultaneously: system inertia (*H*) —which
+fell to zonal values between 1.3 s and 1.8 s in the southern peninsula, below the 2 s threshold that technical literature associates with compromised dynamic
+margins— and the available short-circuit power at the nodes. This
+dual reduction does not only affect the frequency–active power axis: it critically erodes the system's ability to dynamically absorb reactive power and sustain voltage during fast transients, which is precisely the axis around which the collapse unfolded.
 
-Added to this internal fragility is the structural isolation of the Iberian Peninsula. With a cross-border interconnection capacity of **7.9%** relative to peak demand — well below EU targets — the Iberian system cannot import dynamic stability from the continental core in emergency conditions. The convergence of low synchronous strength and relative network isolation created the vulnerability that made it impossible to arrest the overvoltage cascade at **12:33:24 CEST**.
+<BrowserOnly fallback={<div style={{height: 220}} />}>
+  {() => <MetamorfosisIBR />}
+</BrowserOnly>
+
+This metamorphosis was neither gradual nor imperceptible: it had concrete operational consequences. Available short-circuit power fell in parallel with the loss of synchronous mass —inverters only contribute 1.1–1.2 times their nominal power compared to the 5–7 times of synchronous generators— and the dynamic margin for reactive absorption became limited precisely during periods of highest solar penetration, such as midday on April 28, 2025.
+
+On the morning of the incident, the system operated with high penetration of non-synchronous renewable generation (whose detailed structure is described in the Technical Context section) under valley demand conditions. To balance generation, REE disconnected practically all available thermal units, bringing the number of synchronous generators to historic lows. The IBR fleet operated almost entirely in grid-following mode:
+inverters that require stable external voltage and frequency as a synchronization reference. As synchronous units disappeared, the system lost its primary mechanism for dynamic reactive power absorption and, with it, the natural damping against voltage transients.
+
+Added to this internal fragility is the structural isolation of the Iberian Peninsula. With a cross-border interconnection capacity of 7.9% of peak demand —well below community targets— the Iberian system cannot import dynamic stability from the continental core in emergency situations. The confluence of low synchronous strength and relative network isolation configured the vulnerability that made it impossible to halt the overvoltage cascade at 12:33:29.741 CEST.
+
+:::note Geographic Scope
+The collapse simultaneously affected Spain and Portugal. REN's (Redes Energéticas Nacionais) system was electrically synchronized with REE via high-voltage interconnections; when the voltage zero occurred in the Spanish peninsular system, the Portuguese network collapsed in milliseconds. Demand without supply in Portugal reached approximately 5.8 GW, and full restoration of the Portuguese system required approximately 12 hours (compared to approximately 15.5 hours for the Spanish system). Chapters 4 and 7c analyze the Portuguese dimension in detail. Throughout this work, "Iberian system" designates the joint synchronous area ES+PT, and "peninsular system" is used exclusively when the analysis is restricted to the Spanish network.
+:::
 
 <ForensicTable 
-    title="TABLE 1 | GRID INTERCONNECTION SNAPSHOT"
-    source="MIT CEEPR / Comisión Europea, 2025"
-    confidence="HIGH"
-  >
+  title="Table A1 — Relative Electrical Interconnection Capacity"
+  source="MIT CEEPR / European Commission, 2025"
+  confidence="HIGH"
+>
 
-| Member State         | Interconnection / Peak Demand (%) |
-| -------------------- | --------------------------------- |
-| **Iberia (ES + PT)** | **7.9**                           |
-| France               | ~14                               |
-| Germany              | ~17                               |
-| EU 2030 Target       | 15                                |
-
-
+| System / Member State | Interconnection over peak demand (%) |
+| :------------------- | :-------------------------------: |
+| Iberia (ES + PT) | 7.9                           |
+| France              | ≈ 14                               |
+| Germany             | ≈ 17                               |
+| EU 2030 Target     | 15                                |
 
 </ForensicTable>
 
-_Table: Nominal electrical interconnection level relative to peak demand (selected countries). Source: MIT CEEPR / European Commission, 2025._
+<BrowserOnly fallback={<div style={{height: 280}} />}>
+  {() => <NarrativasInstitucionales />}
+</BrowserOnly>
 
-## Methodology: forensic triangulation and cross-validation
+## Methodology: Forensic Triangulation and Cross-Validation
 
-The research adopts a comparative forensic analysis approach, structured in three phases:
+The investigation adopts a comparative forensic analysis approach, structured in three phases:
 
-**1. Primary source compilation.** Systematic study of official expert reports, underpinned by the processing of more than **170 GB of technical records** from the System Operator, including SCADA telemetry and oscillographic records.
+1. Compilation of primary sources. Systematic study of official expert reports, supported by the processing of over 170 GB of technical records from the System Operator, including SCADA telemetry and oscillographic records.
 
-**2. Narrative triangulation.** Systematic comparison of the government thesis against the generator sector's expert analysis, focused on the two main axes of disagreement: the management of the meshing manoeuvre and the observability limitations of the 220 kV network.
+2. Triangulation of narratives. Systematic contrast of the Administration's thesis against the generator sector's expert analysis around the two main axes of disagreement: the management of the meshing maneuver and the unobservability of the 220 kV network.
 
-**3. Cross-technical validation.** Comparison of chronological sequences against the NREL's independent inter-area oscillation analysis, derived from Phasor Measurement Unit (PMU) data with continental coverage — recordings whose institutional independence allows arbitration between conflicting accounts.
+3. Cross-technical validation. Cross-referencing of chronological sequences with NREL's independent analysis of inter-area oscillations, obtained from continental-coverage Phasor Measurement Unit (PMU) records —data whose institutional independence allows
+arbitration between divergent versions.
 
-![Topological location of PMU sensors in the European synchronous system](/figuras/pmu_sensors_europe.png) _Figure 3. Topological location of PMU sensors in the European synchronous system. Coverage density proved critical for inter-area oscillation verification. Source: NREL._
 
-Large language models were employed as documentary assistance tools — classification, synthesis and critical data extraction — given the exceptional volume of technical documentation generated after the incident. Their application was strictly limited to document organisation: these models have known limitations when handling fast-dynamic phenomena such as the Tap-Lag mechanism or the UFLS paradox. Technical comparison, causal evaluation and the conclusions of this work remain the sole responsibility of the author's judgement.
+Large language models have been used as a documentary assistance tool —classification, synthesis, and extraction of critical data— given the exceptional volume of technical documentation generated after the incident. Their application has been strictly limited to documentary organization: they have known limitations when faced with fast dynamic phenomena such as the Tap-Lag mechanism or the UFLS paradox. The
+technical comparison, causality assessment, and conclusions of the work
+are the sole responsibility of the author's judgment.
+
+:::tip Technical Glossary
+The technical terms used in this work (IBR, SCR, GFM, UFLS, ANSI 59, etc.) are rigorously defined according to IEEE/ENTSO-E/CIGRE standards in the [Technical Glossary](/glosario).
+:::
+
+---
+
+The framework is set: a system in structural transition, three institutional readings
+of its consequences, and a forensic triangulation method to navigate between them.
+[Chapter 2](/contexto) describes in detail the technical condition of the Iberian system
+at the time of the incident —the paradox of renewable abundance and hidden fragility—
+that made April 28, 2025, the day of the collapse.

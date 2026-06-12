@@ -1,92 +1,122 @@
 ---
 id: anexo-metodologia-modelos-datos-vivos
-title: "Anexo IX · Metodología, datos vivos y modelos didácticos"
-sidebar_label: "Anexo IX · Metodología y modelos"
+title: "Annex IX · Methodology, Models, and Source Cross-Referencing"
+sidebar_label: "Annex IX · Methodology and Models"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import ResolutionRoadmap from '@site/src/components/ResolutionRoadmap';
 import ResearchAgendaScatter from '@site/src/components/ResearchAgendaScatter';
 
 <AnnexLayout
   wide
-  kicker="Anexo IX"
-  title="Metodología, modelos y datos vivos"
-  description="Elementos metodológicos, simuladores didácticos, comparadores operativos y herramientas con posible componente vivo o actualizable, separados de la reconstrucción histórica estricta."
+  kicker="Annex IX"
+  title="Methodology, Models, and Source Cross-Referencing"
+  description="This annex details the expert methodological approach of the TFG, the systematic cross-referencing of conclusions among different official reports, and the technical justification for the simulation tools employed."
   meta={[
-    { label: 'Eje técnico', value: 'Metodología y Modelos' },
-    { label: 'Cobertura', value: 'Herramientas de análisis' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical Axis', value: 'Methodology and Models' },
+    { label: 'Coverage', value: 'Analysis Tools' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    What expert tools and documentary sources allow resolving the discrepancies regarding the causes and sequence of the April 28 cascade?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The forensic analysis of April 28 requires cross-referencing the conclusions of the Government Committee, ENTSO-E, and external consultants (Compass Lexecon), resolving data asymmetries through the use of high-resolution PMU records. This annex systematizes the cross-referencing methodology, validates the representativeness of the simplified models used in the body of the TFG, and justifies the didactic role of the interactive simulators that allow the reader to explore network sensitivity in real time.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex establishes the basis for documentary validation and cross-expert comparison that underpin the technical conclusions of the TFG.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="modelo-didactico">
-    Este anexo agrupa modelos, simuladores y herramientas de apoyo. Algunos elementos son didácticos o incorporan datos vivos, por lo que no deben confundirse con registros históricos brutos del 28-A.
+    This annex groups models, simulators, and support tools. Some elements are didactic or incorporate live data, so they should not be confused with raw historical records from April 28.
   </AnnexMethodNote>
+
+  <em>The annex is organized into three argumentative sections: forensic methodology and source cross-referencing, support technologies and sensors, and didactic models and simulators.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t9' },
-      { label: 'Tablas',       target: 'tablas-t9' },
-      { label: 'Interactivos', target: 'interactivos-t9' },
-      { label: 'Series',       target: 'series-t9' },
+      { label: 'Methodology and Cross-Referencing', target: 'metodologia' },
+      { label: 'Support Technologies',   target: 'tecnologias' },
+      { label: 'Simulators and Models',   target: 'modelos-didacticos' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t9"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['figures']} />
+  <AnnexSection id="metodologia" eyebrow="Section 1" title="Forensic Methodology and Source Cross-Referencing">
+    The comparative table of entity conclusions contrasts the findings of the transmission system operator (REE), the regulator (CNMC), and the European committee regarding the root trip and the cascade sequence.
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="Cross-Referencing of Expert Conclusions"
+      summary="Comparison of the conclusions on root causes and responsibilities for the blackout issued by REE, the CNMC, and the European network ENTSO-E."
+      insight="Divergences in causal analysis · Multi-sector technical consensus."
+    >
+      <AnnexEvidence type="table" id="comparativa-conclusiones-entidades" level={1} />
+    </AnnexEvidenceLead>
+    The Compass Lexecon/INESC TEC report provides the external consultant's perspective: it highlights that REE disconnected 15 combined cycle plants between 08:00 and 10:00 CEST, questioning the sufficiency of synchronous resources.
+    <AnnexEvidence type="table" id="compass-lexecon" level={2} />
+    The SCR map documents the physical weakness of the network in the southern peninsula. The dead band of the previous P.O. 7.4 disabled the system's defense against fast capacitive transients — the regulatory gap that inverters could not compensate for.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="scr_iberia" level={2} />
+      <AnnexEvidence type="figure" id="po74_banda_muerta" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t9"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['tables']} />
+  <AnnexSection id="tecnologias" eyebrow="Section 2" title="Support Technologies: Inverters and Sensors">
+    The GFL inverter (dependent current source) needs to "read" the grid to operate; the GFM (autonomous voltage source) creates it. The hybrid BESS-GFM + synchronous compensator architecture proposed by Hitachi Energy combines FFR with rotational inertia and Scc.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="gfl_vs_gfm_circuit1" level={2} />
+      <AnnexEvidence type="figure" id="hitachi_hybrid" level={3} />
+    </AnnexEvidenceGrid>
+    The density of PMU coverage was decisive for the independent verification of the inter-area oscillations recorded before the collapse.
+    <AnnexEvidence type="figure" id="pmu_sensors_europe" level={3} />
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t9"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <span id="grafico-phaseplane"></span>
-    <span id="grafico-swing"></span>
-    <span id="grafico-pvcurve"></span>
-    <span id="grafico-comparador-28a"></span>
-    <span id="grafico-radar-vulnerabilidad"></span>
-    <AnnexThemeEvidence theme="T9" include={['interactives']} />
+  <AnnexSection id="modelos-didacticos" eyebrow="Section 3" title="Didactic Models and Simulators">
+    The comparator allows contrasting the actual physical conditions of April 28 with profiles from stable days, identifying the parameters that diverged.
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    The radar evaluates the system on six axes (inertia, Scc, reactive power, interconnection, market, communication) — the axes with the greatest deficit coincide with the causal factors of the collapse.
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    The phase plane, swing equation, and P-V curve simulators formalize the phenomena documented in Annexes II and III. Their equations are detailed in Annex X.
+    <AnnexEvidence type="interactive" id="phaseplane" level={3} />
+    <AnnexEvidence type="interactive" id="swing" level={3} />
+    <AnnexEvidence type="interactive" id="pvcurve" level={3} />
+    The trilemma simulator and the before/after panel allow evaluating the reforms implemented after the event and their effect on the security-sustainability-affordability balance.
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={3} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+    The resolution roadmap and the research agenda map outline future developments: synchronous compensation, GFM batteries, and ancillary services market reform.
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResolutionRoadmap showCaption={false} />
+    </div>
+    <div style={{ margin: '1.5rem 0' }}>
+      <ResearchAgendaScatter showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t9"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T9" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="The methodological cross-referencing of expert documentary sources reveals that April 28 constitutes a technical learning milestone for the European sector. The validation of simplified dynamic models against substation PMU records demonstrates the consistency of the TFG's technical analysis."
+    doesNotDemonstrate="This annex demonstrates the usefulness of interactive modeling and dynamic simulators to guide the reader in physical analysis, acting as the methodological bridge to the equations in Annex X."
+    connection="The reading is complemented by Annex I (generation mix) and Annex X (supporting physical and mathematical equations)."
+  />
 
-  <ResolutionRoadmap showCaption={false} />
-
-  *Figura A9.2. Hoja de ruta de soluciones técnicas, regulatorias y económicas post‑28‑A.*
-
-  <ResearchAgendaScatter showCaption={false} />
-
-  *Figura A9.3. Madurez técnica vs. regulatoria de las líneas de investigación futuras.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Annex I: demand, generation, and balance" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Annex II: voltage and frequency stability" },
+    { to: "/anexo-ecuaciones-matematicas", label: "Annex X: stability equations and simulators" }
+  ]} />
 </AnnexLayout>

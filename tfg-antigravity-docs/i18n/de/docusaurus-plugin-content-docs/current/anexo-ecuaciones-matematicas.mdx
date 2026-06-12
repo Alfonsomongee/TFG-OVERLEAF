@@ -1,0 +1,127 @@
+---
+id: anexo-ecuaciones-matematicas
+title: "Anhang X · Gleichungen, mathematische Modelle und Simulatoren"
+sidebar_label: "Anhang X · Gleichungen und Simulatoren"
+hide_title: true
+---
+
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+
+<AnnexLayout
+  wide
+  kicker="Anhang X"
+  title="Gleichungen, mathematische Modelle und Simulatoren"
+  description="Dieser Anhang bildet das zentrale mathematische Labor der Bachelorarbeit. Er bündelt die interaktiven Simulatoren, geordnet nach physikalischen, wirtschaftlichen und systemdynamischen Domänen, um die Phänomene des 28. April nachzubilden."
+  meta={[
+    { label: 'Technische Achse', value: 'Mathematik und Simulation' },
+    { label: 'Interaktivität', value: 'Echtzeit' }
+  ]}
+>
+  <AnnexKeyQuestion>
+    Welche Gleichungen, Modelle und Simulationen ermöglichen es, die physikalischen, finanziellen und kommunikativen Phänomene, die beim Blackout am 28. April zusammenwirkten, quantitativ nachzubilden?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    Der Kollaps vom 28. April war ein multiskalares Phänomen, das von physikalischen Gesetzen der Elektrotechnik, marginalistischen Marktanreizen und sozialen Dynamiken der Informationsverbreitung bestimmt wurde. Dieser Anhang vereint die interaktiven Simulatoren, die dieses Verhalten quantitativ modellieren und es ermöglichen, die unabhängigen Variablen zu variieren, um die Netzstabilität, die Kosten von Abweichungen, den Zusammenbruch der Jacobi-Matrix der Leistungsflüsse oder die Verzögerung in der institutionellen Kommunikation zu analysieren.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    Dieser Anhang liefert die Formulierungsgrundlage und die interaktiven Modelle, die die empirische Analyse der Kapitel und faktischen Anhänge der Bachelorarbeit quantitativ validieren.
+  </AnnexBlackoutRelevance>
+
+  <AnnexMethodNote type="reconstruccion">
+    Dieser Anhang isoliert und gruppiert alle interaktiven Werkzeuge des Dokuments, die nicht auf statischen historischen Daten basieren, sondern auf mathematischen, finanziellen und elektrophysikalischen Gleichungen. Der Benutzer kann die unabhängigen Variablen der Formeln verändern, um das dynamische Verhalten der resultierenden Kurven zu beobachten.
+  </AnnexMethodNote>
+
+  <em>Der Anhang ist in fünf Abschnitte gegliedert, die die verschiedenen mathematischen Domänen der Studie abdecken: Netzfestigkeit und Spannungskollaps, Blindleistung und elektromagnetische Transienten, Frequenzregelung und -trägheit, Markt und Netzökonomie sowie Modelle der Systemdynamik.</em>
+
+  <AnnexEvidenceNav
+    items={[
+      { label: 'Festigkeit und Spannung',      target: 'red-tension' },
+      { label: 'Blindleistung und Transienten',  target: 'reactiva-transitorios' },
+      { label: 'Regelung und Frequenz',     target: 'control-frecuencia' },
+      { label: 'Markt und Wirtschaft',       target: 'mercado-coste' },
+      { label: 'Systemmodelle',       target: 'sistemicos' },
+    ]}
+  />
+
+  <AnnexSection id="red-tension" eyebrow="Domäne 1" title="Netzfestigkeit und Spannungskollaps">
+    Der SCR misst die Netzfestigkeit an einem Knoten. In Südspanien fiel der SCR am 28. April an Knoten mit hoher Konzentration von Wechselrichtern unter 3 – ein Risikobereich für die Spannungsstabilität.
+    <AnnexEvidenceLead
+      eyebrow="Hauptnachweis"
+      title="Simulator der P-V-Kurve"
+      summary="Dieser Simulator ermöglicht die interaktive Erkundung der Grenze der Wirk- und Blindleistungsübertragung vor Erreichen des Spannungskollapspunkts (Sattel-Knoten-Bifurkation)."
+      insight="Statische Spannungsstabilität · Identifikation der Belastbarkeitsmarge."
+    >
+      <AnnexEvidence type="interactive" id="pvcurve" level={1} />
+    </AnnexEvidenceLead>
+    Der SCR und der MRSCR erfassen die gegenseitige Wechselwirkung und die Winkelentkopplung zwischen nahen IBR-Wechselrichtern.
+    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    <AnnexEvidence type="interactive" id="power-flow-jacobian" level={2} />
+    <AnnexEvidence type="interactive" id="pq-capability" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="reactiva-transitorios" eyebrow="Domäne 2" title="Blindleistung und elektromagnetische Transienten">
+    Der Ferranti-Effekt verstärkte die Überspannungen in den 400-kV-Leitungen im Südwesten. Bei einer 300 km langen Leitung kann die Überspannung 15–20 % erreichen – genug, um die ANSI-59-Schutzrelais der Wechselrichter auszulösen.
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    Der magnetisierende Einschaltstrom beim Einschalten eines Transformators klingt exponentiell ab und führt zu asymmetrischen Transienten, die reich an zweiten Oberschwingungen sind.
+    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
+    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="control-frecuencia" eyebrow="Domäne 3" title="Frequenzregelung und -trägheit">
+    Die Schwunggleichung sagt das Trägheitsverhalten voraus: Mit der H-Konstante des iberischen Systems am 28. April (~2,5 s) führt ein Ungleichgewicht von 4,5 GW zu einem RoCoF von über 1,5 Hz/s.
+    <AnnexEvidence type="interactive" id="swing" level={2} />
+    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
+    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+    <AnnexEvidence type="interactive" id="ufls" level={2} />
+    <AnnexEvidence type="interactive" id="bess-boom-chart" level={2} />
+    <AnnexEvidence type="interactive" id="lole-chart" level={2} />
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="mercado-coste" eyebrow="Domäne 4" title="Markt und Netzökonomie">
+    Die Knotenpreise (LMP) hätten die Mehrkosten durch Engpässe an den Knoten in Südspanien offengelegt – Informationen, die der iberische Zonenmarkt nicht liefert.
+    <AnnexEvidence type="interactive" id="lmp-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="dcopf-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="voll-sector" level={2} />
+    <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
+    <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-triangle" level={2} />
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="sistemicos" eyebrow="Domäne 5" title="Modelle der Systemdynamik">
+    Das mit den Daten vom 28. April kalibrierte SIR-Modell zeigt, dass die Kommunikationsverzögerung von REE (~4 Stunden bis zur ersten offiziellen Mitteilung) es den Cyberangriffs-Narrativen ermöglichte, vor der ersten Richtigstellung eine Penetration von 30 % zu erreichen.
+    <AnnexEvidence type="interactive" id="sir-disinformation" level={2} />
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
+    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={2} />
+    <AnnexEvidence type="interactive" id="resolution-roadmap" level={2} />
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="Dieses mathematische Labor festigt die Validierung der Analyse der Bachelorarbeit. Das Zusammenwirken von Modellen des Leistungsflusses, der Rotorschwingungen und der marginalistischen Ökonomie zeigt, dass der Kollaps vom 28. April auf präzise und vorhersehbare physikalische Dynamiken zurückgeht, die eine rigorose Modellierung erfordern, um wirksame regulatorische Lösungen zu entwickeln."
+    doesNotDemonstrate="Die integrierte Nutzung der interaktiven Simulatoren ermöglicht es dem Leser, die Hypothesen zu überprüfen und mit den Sensitivitätsparametern des Netzes zu experimentieren."
+    connection="Die Lektüre wird durch Querverweise mit den faktischen Anhängen I, II, V und VII des Berichts ergänzt."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "Anhang I: Nachfrage, Erzeugung und Bilanz" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "Anhang II: Spannungs- und Frequenzstabilität" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anhang IX: Methodik und Quellenvergleich" }
+  ]} />
+</AnnexLayout>

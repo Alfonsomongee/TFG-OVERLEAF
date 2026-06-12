@@ -4,104 +4,130 @@ hide_title: true
 title: "The Day After: Institutional Reforms"
 ---
 
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import LOLEBarChart from "@site/src/components/LOLEBarChart";
+import PicasoPriceChart from "@site/src/components/PicasoPriceChart";
+import MRSCRComparator from "@site/src/components/MRSCRComparator";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>The Day After: Institutional Reforms</GlitchTitle>
 
-The effects of April 28, 2025 did not end with the restoration of electricity supply. It opened a period of accelerated institutional review in which ENTSO-E, ACER, and national regulators across the European Union rewrote, within eight months, a set of methodologies that had remained unchanged for decades. This section documents the reforms that the TFG does not cover — those related to reserve architecture, resource adequacy, the PICASSO platform, the new grid strength metric, and national policy responses — and which complete the picture of the incident's consequences on a continental scale.
+The effects of April 28, 2025, did not end with the restoration of electricity supply. It opened a period of accelerated institutional review in which ENTSO-E, ACER, and national regulators across the European Union rewrote, within eight months, a set of methodologies that had remained unchanged for decades. This section completes the analysis with reforms related to reserve architecture, resource adequacy, the PICASSO platform, the new grid strength metric, and national policy responses, closing the picture of the incident's consequences on a continental scale.
 
 ## First Amendment to the Regional Reserve Dimensioning Methodology (December 2025)
 
-Approved in December 2025 under Article 37(1)(j) of Regulation (EU) 2019/943, the **First Amendment to the Methodology for Regional Reserve Capacity Dimensioning** represented a tectonic shift in how Europe calculates its secondary and tertiary reserve needs.
+Approved in December 2025 under Article 37(1)(j) of Regulation (EU) 2019/943, the First Amendment to the Methodology for Regional Reserve Capacity Dimensioning represented a substantial revision of how Europe calculates its secondary and tertiary reserve needs.
 
-Before 28-A, the probabilistic calculation of reserve margins per Scheduling Area (SOR) was based on statistical distributions of historical deviations, assuming an acceptable risk of non-coverage. The Amendment introduced a drastic reconfiguration of confidence levels **X%** (percentile for sizing positive reserves) and **Y%** (percentile for negative reserves), mandating the use of imbalance data at 15-minute granularity instead of previous hourly averages.
+Before 28-A, the probabilistic calculation of reserve margins per Scheduling Area (SOR) was based on statistical distributions of historical deviations, assuming an acceptable risk of non-coverage. The Amendment introduced a drastic reconfiguration of confidence levels X% (percentile for sizing positive reserves) and Y% (percentile for negative reserves), mandating the use of imbalance data at 15-minute granularity instead of the previous hourly averages.
 
 The application of the amendment forced a regulatory divergence based on the technical vulnerability of each region:
 
 <ForensicTable 
-  title="TABLE 13 | EUROPEAN DIMENSION DATA" 
+  title="Table L1 — First amendment: reserve methodology"
   source="Own elaboration"
 >
 
-| Scheduling Area (SOR) | Historical Parameter | New Percentile (X% / Y%) | Justification |
+| Scheduling Area (SOR) | Historical parameter | New percentile (X% / Y%) | Justification |
 | --- | --- | --- | --- |
-| **Central Europe (CE)** | 99.00% | **99.50%** | Buffers tail events from extreme solar ramps and cross-border N-2/N-3 failures without immobilizing excessive capital. |
-| **Southeastern Europe (SEE)** | 99.00% | **99.99%** | Pre-2024 historical data does not represent future risk with the current proliferation of renewables. Coverage of extreme probability events (six sigma). |
-| **Nordic** | — | **99.90%–99.99%** | Disaggregated between upward and downward regulation for high-variability imbalances. |
+| Central Europe (CE) | 99.00% | 99.50% | Buffers tail events from extreme solar ramps and cross-border N-2/N-3 faults without immobilizing excessive capital. |
+| Southeast Europe (SEE) | 99.00% | 99.99% | Pre-2024 historical data does not represent future risk with the current proliferation of renewables. Coverage of extreme probability events (six sigma). |
+| Nordic | — | 99.90%–99.99% | Disaggregated between upward and downward regulation for high-variability imbalances. |
 
 </ForensicTable>
 
-The underlying reasoning is relevant: the Amendment recognizes that the tails of imbalance distributions in high-renewable-penetration systems are significantly thicker than those that historical models calibrated with thermal plants could capture. 28-A demonstrated that "tail risk" scenarios are no longer statistically exceptional.
+The underlying reasoning is relevant: the Amendment recognizes that the tails of the imbalance distribution in high-renewable-penetration systems are significantly thicker than those that historical models calibrated with thermal plants could capture. 28-A demonstrated that tail risk scenarios are no longer statistically exceptional.
 
-Concurrently, under Article 157 of the SO GL, the mandatory formalization and real-time instrumentation of **Reserve Sharing Agreements** was mandated. The *PICASSO* platform for cross-border exchange of aFRR transitions from being considered an optional economic efficiency scheme to becoming a mandatory structural resilience safeguard, whose mechanisms are developed in the following section.
+Concurrently, under Article 157 of the SO GL, the mandatory formalization and real-time instrumentation of Reserve Sharing Agreements was mandated. The *PICASSO* platform for cross-border aFRR exchange transitions from being considered an optional economic efficiency scheme to becoming a mandatory structural resilience safeguard, whose mechanisms are developed in the following section.
 
 ## Post-2025 ERAA Reform: From Probabilistic LOLE to Multifactorial
 
-The **European Resource Adequacy Assessment** (ERAA) is the pillar on which member states justify the implementation of Capacity Remuneration Mechanisms (CRMs) to the European Commission. After 28-A, **ACER Decision 06/2026 on the ERAA 2025** dismantled fundamental methodologies.
+The European Resource Adequacy Assessment (ERAA) is the pillar on which member states justify the implementation of Capacity Remuneration Mechanisms (CRMs) to the European Commission. After 28-A, ACER Decision 06/2026 on the 2025 ERAA questioned fundamental methodologies.
 
-**Recalibration of the CARA function.** ENTSO-E used a Constant Absolute Risk Aversion (CARA) coefficient of 0.0075 to simulate the behavior of combined cycle investors facing volatile prices. ACER ruled that this coefficient lacked empirical evidence post-blackout: the risks of operational instabilities generate significantly higher risk aversion in investors than simple hourly price volatility. The modeling of "target years repeated to infinity" (TY2035) in the EVA methodology was also criticized, as it generated artificial returns that discouraged the simulated decommissioning of obsolete coal plants in countries like Poland, falsifying system security.
+Recalibration of the CARA function. ENTSO-E used a Constant Absolute Risk Aversion (CARA) coefficient of 0.0075 to simulate the behavior of combined cycle investors facing volatile prices. ACER ruled that this coefficient lacked empirical evidence post-blackout: the risks of operational instabilities generate significantly higher risk aversion in investors than simple hourly price volatility. The modeling of "target years repeated to infinity" (TY2035) in the EVA methodology was also criticized, as it generated artificial returns that discouraged the simulated decommissioning of obsolete coal plants in countries like Poland, distorting system security.
 
-**Reformulation of LOLE.** ENTSO-E presented probabilistic adequacy results using ranges (e.g., for Portugal in 2028: between 1 and 6 h/year, against a reliability standard of 1.46 h). ACER ruled that using statistical ranges undermines the legal robustness necessary for applying capacity mechanisms. The new directive mandates the delivery of a **single deterministic value** that integrates **multifactorial instability scenarios**: ERAA Monte Carlo simulations can no longer be limited to modeling wind deficits and high demand but must calculate the **joint probability** of renewable unavailability crossed with topological grid failures, overvoltage profiles on the 400 kV network, and spinning reserve insufficiency — exactly as occurred on 28-A.
+Reformulation of LOLE. ENTSO-E presented probabilistic adequacy results using ranges (e.g., for Portugal in 2028: between 1 and 6 h/year, against a reliability standard of 1.46 h). ACER ruled that using statistical ranges undermines the legal robustness necessary to apply capacity mechanisms. The new directive mandates the delivery of a single deterministic value that integrates multifactorial instability scenarios: ERAA Monte Carlo simulations can no longer be limited to modeling wind deficits and high demand but must calculate the joint probability of renewable unavailability crossed with topological grid failures, overvoltage profiles on the 400 kV network, and spinning reserve insufficiency — exactly as occurred on 28-A.
+
+<figure id="fig-l1-lole">
+  <LOLEBarChart />
+  <figcaption>
+    <strong>Figure L1 — Annual LOLE hours by bidding zone (Amended ERAA 2025).</strong> Annual LOLE hours by bidding zone according to ACER Decision 06/2026. The red dashed line marks the reliability standard (3 h for most zones, 8 h for ISEM).
+  </figcaption>
+</figure>
 
 ## Metamorphosis of PICASSO: From Economic Efficiency to Structural Resilience
 
-The *PICASSO* (Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation) platform was primarily conceived as a market optimization tool: its algorithm sought the cheapest cross-border matching of aFRR bids with 15-minute granularity, minimizing cost for consumers under normal conditions.
+The *PICASSO* (Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation) platform was primarily conceived as a market optimization tool: its algorithm sought the cheapest cross-border matching of aFRR bids with 15-minute granularity, minimizing costs for consumers under normal conditions.
 
-During crisis management, at **15:50 CEST** on 28-A, Amprion alerted RTE about massive computational requests of up to **2,500 MW** dumped into PICASSO associated with **strongly negative prices**. These financial distortions evidenced that, amidst an islanding and massive load shedding, the purely economic algorithm conceptually collapses.
+During crisis management, at 15:50 CEST on 28-A, Amprion alerted RTE about massive computational requests of up to 2,500 MW dumped into PICASSO associated with strongly negative prices. These financial distortions evidenced that, amidst an islanding event and massive load shedding, the purely economic algorithm conceptually collapses.
 
-The subsequent institutional reform dictated the formalization of PICASSO as a **mandatory structural resilience tool**. The operational amendments grant TSO control desks the authority to execute immediate **overrides** (manual overwrites) on the platform's LFC algorithms during an EAS alert state. The interconnected capacity managed by PICASSO is no longer subject solely to the marginal price: it is preventively blocked to inject macroscopic directional stabilization flows, shielding vulnerable borders against inertia collapses or rapid asynchronous imbalances.
+The subsequent institutional reform dictated the formalization of PICASSO as a mandatory structural resilience tool. The operational amendments grant control dispatches of transmission system operators the authority to execute immediate overrides (manual overwrites) on the platform's LFC algorithms during an EAS alert state. The interconnected capacity managed by PICASSO is no longer subject solely to the marginal price: it is preventively blocked to inject macroscopic directional stabilization flows, shielding vulnerable borders against inertia collapses or rapid asynchronous imbalances.
 
-## The New MRSCR Metric: The Death Certificate of Traditional SCR
+<figure id="fig-l2-picasso">
+  <PicasoPriceChart />
+  <figcaption>
+    <strong>Figure L2 — Price incidents in PICASSO and impact of elastic demand.</strong> CBMP (€/MWh) without elasticity (red dashed) and with elastic demand (green) for aFRR activations. Mitigating effect of ACER Decisions 08/2024 and 09/2024.
+  </figcaption>
+</figure>
 
-From the perspective of fundamental electrical engineering, the deepest contribution of the post-28A analysis was the death certificate of the traditional **Short-Circuit Ratio** (SCR) as a valid metric for evaluating high-renewable-penetration networks.
+## The New MRSCR Metric: The Death Certificate of the Traditional SCR
+
+From a fundamental electrical engineering perspective, one of the most relevant contributions of the post-28-A analysis was to highlight the limits of the traditional short-circuit ratio (SCR) as a metric for evaluating high-renewable-penetration networks.
 
 The simultaneous collapse of photovoltaic inverters in Spain and the Dax–Arriosses sub-grid in France demonstrated that SCR, by evaluating a single isolated node, blindly ignores the resonant oscillations and destructive interactions that occur between multiple nearby power electronic converters. European grid codes forcibly adopted the MRSCR (Multiple Renewable Energy Stations Short-Circuit Ratio) metric:
 
-$$\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}$$
+$$
+\mathrm{MRSCR}_i = \frac{S_{ac,i}}{P_i + \sum_{j \neq i} \mathrm{MIIF}_{ji} \cdot P_j}
+$$
 
 <div className="formula-legend">
-  <strong>Legend of Terms:</strong>
+  <strong>Term Legend:</strong>
   <ul>
-    <li><b>MRSCR<sub>i</sub>:</b> Multiple Renewable Energy Stations Short-Circuit Ratio at bus <i>i</i>.</li>
-    <li><b>S<sub>ac,i</sub>:</b> AC short-circuit capacity (MVA) contributed by synchronous generators and external network at bus <i>i</i>.</li>
-    <li><b>P<sub>i</sub>:</b> Rated power (MW) of the inverter under analysis at bus <i>i</i>.</li>
-    <li><b>P<sub>j</sub>:</b> Rated power (MW) of the adjacent inverter at bus <i>j</i>.</li>
-    <li><b>MIIF<sub>ji</sub>:</b> Multi-Infeed Interaction Factor between bus <i>j</i> and bus <i>i</i>, quantifying their electrical coupling.</li>
+    <li><b>MRSCR<sub>i</sub>:</b> Multiple Renewable Energy Stations Short-Circuit Ratio at node <i>i</i>.</li>
+    <li><b>S<sub>ac,i</sub>:</b> AC short-circuit capacity (MVA) provided by synchronous generators and external network at node <i>i</i>.</li>
+    <li><b>P<sub>i</sub>:</b> Rated power (MW) of the inverter under analysis at node <i>i</i>.</li>
+    <li><b>P<sub>j</sub>:</b> Rated power (MW) of the adjacent inverter at node <i>j</i>.</li>
+    <li><b>MIIF<sub>ji</sub>:</b> Multi-Infeed Interaction Factor between node <i>j</i> and node <i>i</i>, quantifying their electrical coupling.</li>
   </ul>
 </div>
 
-Institutionally, the new grid codes establish the **Critical Value** (CMRSCR): by mandatory legal regulation, the MRSCR calculated on the low-voltage side of the step-up transformer of any new IBR plant must not be less than **1.5**. An MRSCR below 1.5 indicates unbearable systemic weakness: facing a grid voltage dip, the inverter control loops will become unstable and disconnect. TSOs are legally empowered to **block the connection** of any wind or solar farm that does not meet this ratio, forcing developers to install distributed synchronous compensators at the point of connection (mandatory hybridization) to raise <i>S<sub>ac</sub></i> to the threshold.
+Institutionally, the new grid codes establish the critical value (CMRSCR): by mandatory legal regulation, the MRSCR calculated on the low-voltage side of the step-up transformer of any new IBR plant must not be less than 1.5. An MRSCR below 1.5 indicates unbearable systemic weakness: facing a grid voltage dip, the control loops of the inverters will become unstable and disconnect. Transmission system operators are legally empowered to block the connection of any wind or solar farm that does not meet this ratio, forcing developers to install distributed synchronous compensators at the connection point (mandatory hybridization) to raise <i>S<sub>ac</sub></i> to the threshold.
+
+<figure id="fig-l3-mrscr">
+  <MRSCRComparator />
+  <figcaption>
+    <strong>Figure L3 — Grid strength: Traditional SCR vs. Real MRSCR.</strong> Comparison of the traditional Short-Circuit Ratio (SCR) and the real Multi-Infeed SCR (MRSCR) at the Franco-Iberian interconnection nodes. The MRSCR ≤ 2.0 threshold indicates a weak grid with risk of dynamic instability.
+  </figcaption>
+</figure>
 
 ## Political and Institutional Reactions in Europe
 
 ### Germany: From the N-1 Criterion to Dynamic N-k Assessments
 
-In Germany, the blackout forced **urgent interpellations in the Bundestag** regarding the vulnerability of the large HVDC corridors connecting North Sea wind farms to Bavarian industrial centers. The ministerial debate acknowledged that the N−1 Criterion — the sacrosanct dogma of European electrical security — has become obsolete in the face of the **non-linear cascade effects** of the 21st century, where the loss of a single line can trigger multiple inverters simultaneously in milliseconds. As a result, the Federal Ministry for Economic Affairs and Climate Action ordered German TSOs (Amprion, TenneT, 50Hertz, TransnetBW) to immediately review their National Resilience Plans, requiring them to transition towards **dynamic N-k risk assessments** that assume in topological planning the joint probability of synchronous collapses and combined failures.
+In Germany, the blackout forced urgent interpellations in the Bundestag regarding the vulnerability of the large HVDC corridors connecting North Sea wind farms with Bavarian industrial centers. The ministerial debate acknowledged that the N−1 Criterion — the sacrosanct dogma of European electrical security — has become obsolete in the face of the non-linear cascade effects of the 21st century, where the loss of a single line can simultaneously trip multiple inverters in milliseconds. As a result, the Federal Ministry for Economic Affairs and Climate Action ordered the German transmission system operators (Amprion, TenneT, 50Hertz, TransnetBW) to immediately review their National Resilience Plans, requiring them to transition towards dynamic N-k risk assessments that assume in topological planning the joint probability of synchronous collapses and combined failures.
 
 ### Italy: The Fast-Track of Interconnections as Critical Infrastructure
 
-In Italy, the analysis of 28-A focused on the **interconnection ratio** as a determining factor in the Iberian fate. Spain and Portugal had a meager exchange capacity with France of 3–5%, which confined the disturbance and prevented its dilution into the continental block — exactly the mechanism that had sealed the fate of the Italian electrical system in the **2003 blackout**.
+In Italy, the analysis of 28-A focused on the interconnection ratio as a determining factor in the Iberian fate. Spain and Portugal had a meager exchange capacity with France of 3–5%, which confined the disturbance and prevented it from being diluted into the continental block — exactly the mechanism that had sealed the fate of the Italian electricity system in the 2003 blackout.
 
-The analysis served as a political battering ram for the Italian TSO (Terna) and the Ministry of Environment and Energy Security. Debates in the Italian Parliament culminated in the approval of **administrative fast-track** laws for HVDC submarine interconnection projects historically paralyzed by environmental bureaucracy:
+The analysis served as a political battering ram for the Italian TSO (Terna) and the Ministry of Environment and Energy Security. Debates in the Italian Parliament culminated in the approval of administrative fast-track laws for HVDC submarine interconnection projects historically paralyzed by environmental bureaucracy:
 
-- **Italy–Tunisia Link** (2 GW): reclassified as "Critical Infrastructure for National Survival."
-- **Italy–Montenegro Submarine Cable** (1 GW) under the Adriatic Sea: same.
+- Italy–Tunisia link (2 GW): reclassified as "critical infrastructure for national survival."
+- Italy–Montenegro submarine cable (1 GW) under the Adriatic Sea: same.
 
-The justification for the investment no longer rests on market efficiency or price arbitrage, but purely on its function as **lifeline channels for cross-border short-circuit support**.
+The justification for the investment no longer rests on market efficiency or price arbitrage, but purely on its function as life-saving channels for cross-border short-circuit support.
 
-### Netherlands and Denmark: HVDC Meshed Grids in the North Sea
+### Netherlands and Denmark: HVDC Meshed Networks in the North Sea
 
-TenneT (Netherlands) and Energinet (Denmark) were drafting their Offshore Network Development Plans when 28-A demonstrated the border chaos caused by isolated inverters in France and Spain. Budgets from 2026 onwards **partially canceled the development of simple radial lines** and were redirected towards building **HVDC Meshed Grids** (Multi-terminal HVDC) in the North Sea, designed with intrinsic overcapacity to compensate for instantaneous frequency oscillations and withstand deviations without relying on continental bottlenecks.
+TenneT (Netherlands) and Energinet (Denmark) were drafting their Offshore Network Development Plans when 28-A demonstrated the border chaos caused by isolated inverters in France and Spain. Budgets from 2026 onwards partially canceled the development of simple radial lines and were redirected towards the construction of HVDC Meshed Networks (Multi-terminal HVDC) in the North Sea, designed with intrinsic overcapacity to compensate for instantaneous frequency oscillations and withstand deviations without relying on continental bottlenecks.
 
 ### The ACER–ENTSO-E Institutional War and the Principle of Technical Subsidiarity
 
-At the macro-institutional level, 28-A reignited a power dispute between ACER and ENTSO-E linked to the **Clean Energy Package**. ENTSO-E had harshly criticized the European Commission's guidelines that aimed to grant binding powers to Regional Operation Centers (ROCs) over the dimensioning of member states' reserves, arguing that ceding this power to ROCs conflicted with the civil and criminal liability of national TSOs for the security of their own supply.
+At the macro-institutional level, 28-A reignited a power dispute between ACER and ENTSO-E linked to the Clean Energy Package. ENTSO-E had strongly criticized the European Commission's guidelines that aimed to grant binding powers to Regional Operational Centers (ROCs) over the sizing of member states' reserves, arguing that ceding this power to ROCs conflicted with the civil and criminal liability of national transmission system operators for the security of their own supply.
 
-The Iberian blackout **retroactively justified the TSOs' stance**: at the critical moment of frequency collapse, responses must be commanded locally under hard technical directives. Geopolitical reserve allocations — such as the strict 99.99% quota in the Balkans — must belong to the technical jurisdiction of the entities that physically operate the switches on the precipice of instability, not to market algorithms optimized from Brussels.
+The Iberian blackout retroactively justified the TSOs' stance: at the critical moment of frequency collapse, responses must be commanded locally under strict technical directives. Geopolitical reserve allocations — such as the strict 99.99% quota in the Balkans — must belong to the technical jurisdiction of the entities that physically operate the switches on the precipice of instability, not to market algorithms optimized from Brussels.
 
 ## The Continental Lesson
 
-The emerging paradigm consolidated by the post-28A reforms assumes that energy (MWh) will become an abundant _commodity_ in European auctions, ceding its critical scarcity position to Essential Reliability Services (ERS): dynamically stabilized voltage via synchronous compensators and STATCOMs, inertia, and short-circuit power. As the Stockholm Environment Institute (SEI) notes: the frenetic pace of renewable integration has rendered obsolete the speed at which governments invest in the structural resilience of transmission grids.
+The emerging paradigm consolidated by the post-28-A reforms assumes that energy (MWh) will become an abundant commodity in European auctions, ceding its critical scarcity position to Essential Reliability Services (ERS): dynamically stabilized voltage via synchronous compensators and STATCOMs, inertia, and short-circuit power. As the Stockholm Environment Institute (SEI) points out: the frenetic pace of renewable integration has rendered obsolete the speed at which governments invest in the structural resilience of transmission networks.
 
-The Iberian blackout dictated an inexorable lesson: progress towards continental decarbonization cannot be decoupled from the fundamental laws of electromagnetism nor from the urgent need to **hyper-interconnect and shield cross-border transmission infrastructures**. April 28, 2025 was not just the first systemic European blackout in two decades — it was the empirical demonstration that this disconnect can no longer be deferred.
+The Iberian blackout left a difficult lesson to avoid: progress towards continental decarbonization cannot be decoupled from the fundamental laws of electromagnetism nor from the urgent need to hyper-interconnect and shield cross-border transmission infrastructures. April 28, 2025, was not just the first systemic European blackout in two decades — it was the empirical demonstration that this disconnect can no longer be postponed.

@@ -7,6 +7,8 @@ import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import ForensicReveal from "@site/src/components/ForensicReveal";
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
+import VulnerabilityRiskMatrix from '@site/src/components/VulnerabilityRiskMatrix';
+import CrisisTimelineDual from '@site/src/components/CrisisTimelineDual';
 
 <GlitchTitle>Social Impact and Emergency Response</GlitchTitle>
 
@@ -16,25 +18,25 @@ This chapter analyzes the first 18 hours after the electrical zero
 developed in Chapter 3; the economic effects in Chapter 7b.
 :::
 
-The electrical collapse of April 28 was not solely a technical infrastructure
-failure: it was an empirical demonstration that modern societies are
+The electrical collapse of 28-A was not solely a technical infrastructure failure:
+it was the empirical demonstration that modern societies are
 highly interdependent systems where energy, telecommunications,
 water, transportation, and healthcare form a network of networks. When the first fell,
 the others followed in cascade.
 
 ## 1. Emergency system response
 
-### Spain: declaration of a national interest emergency
+### Spain: declaration of a national emergency
 
 The magnitude of the power outage forced a response at the highest
-institutional level. The Ministry of the Interior activated the declaration of
-a national interest emergency under Article 28 of
-Law 17/2015 of the National Civil Protection System via
+institutional level. The Ministry of the Interior activated the
+declaration of a national emergency under Article 28 of
+Law 17/2015 of the National Civil Protection System through
 Order INT/399/2025, subsequently expanded (Order INT/400/2025) to
 include Castilla-La Mancha, Galicia, and the Valencian Community.
 
 <ForensicTable
-  title="TABLE A | INCIDENTS MANAGED BY CIVIL PROTECTION"
+  title="Table H1 — Incidents managed by Civil Protection"
   source="Territorial Emergency Plan of Andalusia / Ministry of the Interior"
   confidence="HIGH"
 >
@@ -42,13 +44,13 @@ include Castilla-La Mancha, Galicia, and the Valencian Community.
 | Autonomous Community | Situation | Activation |
 | :--- | :--- | :--- |
 | Andalusia, Extremadura, La Rioja, Madrid, Murcia | Autonomous emergency + request for state intervention | 12:33–14:00 CEST |
-| Castilla-La Mancha, Galicia, Valencian Community | Included in Order INT/400/2025 | ~16:00 CEST |
+| Castilla-La Mancha, Galicia, Valencian Community | Included in Order INT/400/2025 | approximately 16:00 CEST |
 | Total incidents (Andalusia) | 6,429 critical incidents managed during the blackout | Until April 29 |
 
 </ForensicTable>
 
 The 061 health information lines collapsed due to saturation,
-forcing all critical traffic to be redirected to 112. Authorities
+forcing all critical traffic to be redirected to 112. The authorities
 issued continuous messages via analog radio asking citizens
 not to call 112 for information about the blackout,
 reserving the channel for life-threatening emergencies.
@@ -59,52 +61,65 @@ The National Authority for Emergency and Civil Protection (ANEPC) activated the
 National Operational Coordination Center (CCON) immediately.
 
 <ForensicTable
-  title="TABLE B | CCON OPERATIONAL TIMELINE — PORTUGAL"
-  source="ANEPC / Parliamentary documents (investigation commission, 2025)"
+  title="Table H2 — CCON operational timeline in Portugal"
+  source="ANEPC / Parliamentary documents (investigation committee, 2025)"
   confidence="HIGH"
 >
 
-| Time (Apr 28, 2025) | Action | Strategic Focus |
+| Time (Apr 28, 2025) | Action | Strategic focus |
 | :--- | :--- | :--- |
 | 13:15 CEST | Priority setting | Fuel for hospitals, dialysis, respiratory patients |
-| 13:30 CEST | Multidisciplinary meeting (29 entities) | Energy, telecommunications, water, healthcare, banking, armed forces |
+| 13:30 CEST | Multidisciplinary meeting (29 entities) | Energy, telecommunications, water, health, banking, Armed Forces |
 | 13:45–14:00 CEST | Deficit mapping | Mobile generators + hospital diesel supply |
-| 17:15 CEST | SMS alerts sent | ~11 million messages — arrived late |
+| 17:15 CEST | SMS alerts sent | approximately 11 million messages — arrived late |
 | 20:30 CEST | Declaration of "Energy Crisis Situation" | Activation of Emergency Network (REPA) |
 
 </ForensicTable>
 
 <ForensicReveal
   l1="The emergency SMS alert system was useless during the blackout."
-  l2="ANEPC loaded over 11 million emergency SMS into the operators' systems
-      minutes after the outage. But mobile phone towers
-      operate on backup batteries lasting a maximum of 2–3 hours. When
+  l2="ANEPC loaded over 11 million emergency SMS into the operators'
+      systems minutes after the outage. But mobile phone towers
+      run on backup batteries lasting a maximum of 2–3 hours. When
       the messages attempted to be sent, the antennas were already off."
   l3="The alert SMS did not reach users until 17:15 CEST,
       when electricity was beginning to be sporadically restored — more than
       4 hours after the collapse. The safety instructions were
       untimely. The president of ANEPC admitted before Parliament that the
       sending depended on the technological resilience of private
-      telecommunications networks, outside its direct competence."
-  source="ANEPC / Parliamentary investigation commission (Portugal, 2025)"
+      telecommunications networks, outside their direct competence."
+  source="ANEPC / Parliamentary investigation committee (Portugal, 2025)"
 />
 
+<CrisisTimelineDual />
+
+<p className="figure-caption">
+  _Figure H1 — Emergency friction: dual timeline of the 28-A blackout.
+  Left track: physical infrastructure collapse events.
+  Right track: institutional response. The time gap between
+  the electrical zero (12:33 CEST) and the sending of SMS alerts in Portugal
+  (17:15 CEST) — approximately 5 hours — defines the window of maximum vulnerability
+  and constitutes the main operational lesson for crisis communication
+  protocols.
+  Source: own elaboration based on REE, ENTSO-E, ANEPC, BOE, and ANAC Portugal._
+</p>
+
 The blackout revealed critical vulnerabilities in the SIRESP
-(Integrated System of Emergency and Security Networks of Portugal)
-radio communication system, which prompted the immediate approval of a
-technical-strategic modernization study on May 1, 2025.
+(Integrated System of Emergency and Security Networks of Portugal) radio communication system,
+which motivated the immediate approval of a technical-strategic
+modernization study on May 1, 2025.
 
 ---
 
-## 2. Impact on hospitals and healthcare services
+## 2. Impact on hospitals and health services
 
 ### Energy triage
 
-In most hospitals, generators started within the first
-15 minutes, preserving ICUs, active operating rooms, and life support.
+In most hospitals, generator sets started within the
+first 15 minutes, preserving ICUs, active operating rooms, and life support.
 However, given the uncertainty about the duration of the outage, hospital
-management executed energy triage policies: suspension of
-elective procedures, outpatient consultations, and auxiliary services to
+managements implemented energy triage policies: suspension of
+elective interventions, outpatient consultations, and auxiliary services to
 extend fuel reserves.
 
 <ForensicReveal
@@ -116,34 +131,34 @@ extend fuel reserves.
       hospitals at once, with gas stations without electricity to
       extract fuel and streets gridlocked by traffic, was logistically
       nearly impossible."
-  l3="The national commander of ANEPC, Mário Silvestre, stated before the
-      parliamentary commission that the most alarming finding was confirming that,
+  l3="The national commander of ANEPC, Mário Silvestre, declared before the
+      parliamentary committee that the most alarming finding was that,
       barely two hours after the start of the blackout, there were hospitals with
-      fuel reserves totally or practically exhausted. The logistics of
-      simultaneous resupply under conditions of road network collapse constituted
+      completely or practically depleted fuel reserves. The logistics of
+      simultaneous resupply under conditions of road collapse constituted
       a national security challenge."
-  source="ANEPC / Parliamentary investigation commission (Portugal, 2025)"
+  source="ANEPC / Parliamentary investigation committee (Portugal, 2025)"
 />
 
 ### Victims and hoaxes
 
 No deaths were recorded within protected clinical settings.
 Massive hoaxes circulated about fatalities in hospitals in Toledo, Albacete,
-Valencia, and Ourense — categorically denied by the directors
-of those centers. The official toll was 8 fatalities
+Valencia, and Ourense — categorically denied by the
+directors of the centers. The official toll was 8 deaths
 indirectly related to the blackout:
 
 - Carbon monoxide poisoning: use of domestic generators
   in enclosed spaces without ventilation.
 - Fires: falling emergency lighting candles.
-- Failures of home medical equipment: devices without the
+- Failures in home medical equipment: devices without the
   rigorous maintenance of the hospital environment.
 
-:::danger Verified fatality — Portugal
+:::danger Verified death — Portugal
 A 77-year-old woman, on 24-hour home mechanical ventilation,
 died when the respirator's battery bank ran out. The collapse of telephone
-networks prevented INEM (National Institute of Medical Emergency)
-from receiving the distress call in time.
+networks prevented INEM (National Institute of Medical Emergency) from
+receiving the distress call in time.
 :::
 
 ---
@@ -153,7 +168,7 @@ from receiving the distress call in time.
 ### Railway network: 35,000 people trapped
 
 At 13:13 CEST, ADIF and RENFE confirmed the interruption of all
-peninsular rail traffic. Approximately 35,000 passengers were
+peninsular rail traffic. Approximately 35,000 passengers were left
 trapped in trains stopped on open tracks and in metro tunnels
 (Madrid, Barcelona, Lisbon).
 
@@ -163,11 +178,11 @@ trapped in trains stopped on open tracks and in metro tunnels
   l2="Electric trains cannot move without the catenary. Underground
       metros were left without lighting, air conditioning, or public address systems.
       Evacuations on foot along the railway ballast required police
-      coordination to prevent accidents."
+      coordination to avoid accidents."
   l3="Portugal required an extraordinary deployment of police forces
       to evacuate the Fertagus network. ADIF and RENFE mobilized emergency
       buses and published extraordinary guidelines for ticket
-      refunds and baggage recovery. Post-28A ministerial reports
+      refunds and baggage recovery. Post-28-A ministerial reports
       in Portugal propose installing large-format batteries in railway
       vehicles to give them minimum autonomy to reach the nearest station."
   source="ADIF / RENFE / Ministry of Transport (2025) / ANEPC"
@@ -175,20 +190,20 @@ trapped in trains stopped on open tracks and in metro tunnels
 
 ### Aviation: Lisbon, Porto, and Faro paralyzed
 
-Control towers (ENAIRE/NAV) remained operational thanks to their
+Control towers (ENAIRE/NAV) maintained operability thanks to their
 redundant systems. The land side collapsed.
 
 <ForensicTable
-  title="TABLE C | AIRPORT IMPACT IN PORTUGAL"
+  title="Table H3 — Airport impact in Portugal"
   source="ANAC (National Civil Aviation Authority) — Portugal, 2025"
   confidence="HIGH"
 >
 
-| Airport | Consequence | Flights cancelled | Passengers affected |
+| Airport | Consequence | Flights canceled | Passengers affected |
 | :--- | :--- | :---: | :---: |
-| Humberto Delgado (Lisbon) | Perimeter closure at 13:00 CEST | 348 | ~66,000 |
-| Francisco Sá Carneiro (Porto) | Precarious operation with generators | 60 | ~7,000 |
-| Gago Coutinho (Faro) | Precarious operation with generators | 29 | ~5,000 |
+| Humberto Delgado (Lisbon) | Perimeter closure at 13:00 CEST | 348 | ≈66,000 |
+| Francisco Sá Carneiro (Porto) | Precarious operation with generators | 60 | ≈7,000 |
+| Gago Coutinho (Faro) | Precarious operation with generators | 29 | ≈5,000 |
 
 </ForensicTable>
 
@@ -196,7 +211,7 @@ redundant systems. The land side collapsed.
 
 The simultaneous deactivation of tens of thousands of traffic lights caused
 monumental gridlock. The A-6 in Madrid was completely blocked. The mayor
-confirmed by radio that it was *"extremely difficult to travel on any main axis"*,
+confirmed by radio that it was _«extremely difficult to circulate on any main axis»_,
 recommending the cessation of non-essential travel.
 
 ---
@@ -209,68 +224,66 @@ Mobile base stations have backup batteries lasting a maximum of 2–3 hours.
 As they discharged without the possibility of recharging:
 
 <ForensicTable
-  title="TABLE D | IMPACT ON TELECOMMUNICATIONS AND DIGITAL SERVICES"
+  title="Table H4 — Impact on telecommunications and digital services"
   source="ANACOM (Portugal) / CNMC (Spain) / Internet traffic records"
   confidence="HIGH"
 >
 
 | Sector | Impact | Technical cause |
 | :--- | :--- | :--- |
-| Mobile and internet traffic | Drop >85–90% at 3 hours | Depletion of backup batteries in antennas |
+| Mobile and Internet traffic | Drop >85–90% at 3 hours | Depletion of backup batteries in antennas |
 | Internet traffic Portugal | Drop to 10% of historical baseline | Cities like Porto or Vila Real: >90% loss |
 | POS terminals | Inoperative | No communication with banking servers |
 | ATMs | Shut down | No electricity or connectivity |
-| Cold chains (distribution) | >53 M€ in losses | Cold chain break for perishable food |
-| Electro-intensive industry | >12 M€/hour of inactivity | Uncontrolled shutdown of furnaces and refineries |
 
 </ForensicTable>
 
 <ForensicReveal
-  l1="The internet blackout collapsed the digital economy in a matter of hours."
-  l2="Without a mobile network or internet, POS terminals became inoperative, ATMs
-      were shut down, and online banking was inaccessible. The forced return to cash
+  l1="The Internet blackout collapsed the digital economy within hours."
+  l2="Without a mobile network or Internet, POS terminals became inoperative, ATMs
+      were off, and online banking was inaccessible. The forced return to cash
       triggered panic buying in supermarkets. Food distribution
-      companies lost more than 53 million euros due to cold chain
-      breakage."
+      companies lost more than 53 million euros due to the breakdown of the cold
+      chain."
   l3="ANACOM (Portugal) documented that 98% of serious
       telecommunications incidents originated from third-party electrical
       supply failures. The report by director Sandra Maximiano before Parliament
       stated that the guarantee of communications ceased to be a consumer
-      service and became the primary pillar of State survival."
-  source="ANACOM — Annual report on network and service security (2025)"
+      service and became the primary pillar of the State's survival."
+  source="ANACOM — Annual network and service security report (2025)"
 />
 
 ### The resurrection of analog radio
 
-In the most digitized society in history, FM was the only information
+In the most digitalized society in history, FM was the only informational
 lifeline between authorities and citizens. Radio Nacional de España
-(RNE) broadcast continuous bulletins from infrastructure with its own
-diesel generators, preventing the social panic that often accompanies
-prolonged information vacuums.
+(RNE) broadcast continuous bulletins from infrastructures with their own
+diesel generators, preventing the social panic that often accompanies prolonged
+information vacuums.
 
 ---
 
 ## 5. The water-energy nexus
 
-### WTPs, WWTPs, and pumping stations
+### WTP, WWTP, and pumping stations
 
 Minutes after the electrical zero, large environmental plants lost
-power. Drinking Water Treatment Plants (WTPs),
-Wastewater Treatment Plants (WWTPs), and high-capacity
-pumping stations were paralyzed.
+traction. Water Treatment Plants (WTP),
+Wastewater Treatment Plants (WWTP), and high-capacity pumping stations
+were paralyzed.
 
 <ForensicReveal
   l1="In several areas, the tap stopped working a few hours after the blackout."
   l2="Modern urban water does not work by pure gravity: it requires electric
       pumps to overcome topography and maintain pressure. Without electricity,
-      network pressure decayed within minutes. In elevated neighborhoods, the
+      network pressure dropped within minutes. In elevated neighborhoods, the
       shortage was immediate."
   l3="In the Region of Murcia and Toledo, a 70% reduction
       in available flows was monitored. The Horta-Guinardó neighborhood (Barcelona)
       suffered drinking water cuts for more than 18 hours. Águas de Portugal issued
-      'extreme moderation' alerts for consumption. The stoppage of WWTPs
-      placed receiving water basins under direct risk of raw sewage
-      discharges if the event had exceeded 24 hours."
+      alerts for «extreme moderation» in consumption. The stoppage of WWTPs put
+      receiving basins under direct risk of raw sewage spills if the
+      event had exceeded 24 hours."
   source="Águas de Portugal / Barcelona City Council / ANEPC Analysis"
 />
 
@@ -278,10 +291,10 @@ pumping stations were paralyzed.
 
 The blackout accelerated two public policy initiatives:
 
-1. PERTE for the Digitalization of the Urban Water Cycle (>550 M€): network
+1. PERTE for Digitalization of the Urban Water Cycle (>€550M): network
    sectorization, smart sensors, predictive leak control.
-2. Energy self-consumption in treatment plants: promotion of anaerobic sludge
-   digestion for biogas. The water sector in Spain already produced ~787 GWh
+2. Energy self-consumption in treatment plants: promotion of anaerobic
+   sludge digestion for biogas. The water sector in Spain already produced ≈787 GWh
    annually of bioenergy — goal: self-sufficiency and grid disconnection.
 
 ---
@@ -298,50 +311,63 @@ oxygen concentrators, infusion pumps, home hemodialysis.
   l1="People with home medical equipment were completely
       abandoned during the blackout."
   l2="Unlike hospitals, private residences do not have
-      generators. Home equipment operates on the electrical grid
+      generator sets. Home equipment runs on the electrical grid
       or internal batteries with a few hours of autonomy. There is no proactive
       official census of electrodependent individuals that would allow prioritizing
       the delivery of portable generators."
   l3="The ALCER Federation documented that home hemodialysis patients
       could not contact their nephrologists because telephone networks had
-      failed. Treatments were rescheduled to the early morning as
+      fallen. Treatments were rescheduled to the early morning as
       electricity was restored, avoiding direct fatalities. One documented
       case: a family of a child with cerebral palsy connected the
-      oxygen concentrator to the family van battery to keep him
-      alive."
-  source="ALCER Federation / ANEPC / Post-28A care documentation"
+      oxygen concentrator to the family van battery to
+      keep him alive."
+  source="ALCER Federation / ANEPC / Post-28-A care documentation"
 />
+
+<VulnerabilityRiskMatrix />
+
+<p className="figure-caption">
+  _Figure H2 — Asymmetric impact matrix on vulnerable populations
+  during the 28-A blackout. Y-axis: severity of the consequence
+  (from reversible to lethal/irreversible). X-axis: estimated population
+  incidence (from individual/isolated to massive/generalized). The six
+  documented cases reflect the dissonant nature of the collapse:
+  low-incidence lethal consequences coexisted with massive impacts
+  of lower individual severity.
+  Source: own elaboration based on IGAS, ANEPC, ALCER Federation, CNSE, Civil Guard, and parliamentary sources (Portugal, 2025)._
+</p>
 
 ### Deaf people: total isolation
 
 The State Confederation of Deaf People (CNSE) formally denounced that
 emergency information systems were exclusively focused on
-oral messages via analog radio broadcasting. With the fall of digital terrestrial
-television and internet access, the deaf community was left in a state of total
-informational isolation, without guidelines on causes, dangers, or forecasts.
+oral messages via analog radio broadcasting. With the fall of digital terrestrial television (DTT) and
+Internet access, the deaf community was left in a state of total informational
+isolation, without guidelines on causes, dangers, or forecasts.
 
 ### Elevator entrapments
 
 The Portuguese ANEPC documented more than 400 simultaneous incidents of people
-trapped in elevators nationwide, draining resources from
+trapped in elevators across the national territory, draining resources from
 fire departments that were needed for other major contingencies.
 
 ---
 
-## 7. Lessons and post-28A reforms
+## 7. Lessons and post-28-A reforms
 
 <ForensicTable
-  title="TABLE E | REFORMS ACTIVATED BY THE SOCIAL IMPACT OF 28-A"
+  title="Table H5 — Reforms triggered by the social impact of 28-A"
   source="Own elaboration based on parliamentary and regulatory documents"
   confidence="MEDIUM"
 >
 
 | Area | Deficiency exposed | Reform initiated |
 | :--- | :--- | :--- |
-| Emergency alerts | SMS useless with fallen antennas | SIRESP modernization study (Portugal, May 1, 2025) |
+| Emergency alerts | Useless SMS with downed antennas | SIRESP modernization study (Portugal, May 1, 2025) |
 | Hospitals | Generators without autonomy for regional blackout | Review of fuel protocols + CAPEX for generators |
 | Railway | Trains without autonomy on dead catenary | Study of integrated batteries in vehicles (Portugal) |
-| Water | WTPs/WWTPs paralyzed without backup power | PERTE urban cycle + WWTP biogas (>550 M€) |
+| Water | WTP/WWTP paralyzed without backup power | PERTE urban cycle + WWTP biogas (>€550M) |
 | Electrodependent individuals | No census or priority protocol | <CuestionAbierta metricKey="impacto_social.censo_electrodependientes">Proposal for redundant digital census under study (no verified date)</CuestionAbierta> |
 | Deaf people | Excluded from alert protocols | Proposal for redundant visual channels (under processing) |
 | Telecommunications | Antenna batteries: 2–3 h autonomy | CNMC investigation files + contractual review |
@@ -350,15 +376,15 @@ fire departments that were needed for other major contingencies.
 
 ## Conclusion: interdependence as systemic vulnerability
 
-The sectoral analysis of the first 18 hours of the blackout demonstrates that the resilience of a modern society cannot be measured by the robustness of each infrastructure separately, but by the strength of the weakest link in the chain of interdependencies. 28-A revealed that this link was electrical energy: its absence triggered cascading failures in telecommunications, transportation, healthcare, water, and food security that amplified the impact of the collapse far beyond the interruption of supply. The reforms initiated — modernization of alert systems, energy autonomy in critical infrastructures, creation of censuses of electrodependent individuals — constitute a necessary but partial response: the structural lesson of 28-A is that resilience planning must be transversal, not sectoral.
+The sectoral analysis of the first 18 hours of the blackout allows for a concrete regulatory conclusion: the resilience of critical infrastructures cannot be planned sectorally. Reforming the water cycle, modernizing SIRESP, or reviewing hospital protocols are necessary but not sufficient conditions if they are not coordinated under a cross-cutting resilience framework that treats energy interdependence as a design variable, not an externality. 28-A demonstrated that the cost of that omission can be measured in lives, not just in megawatts.
 
 :::info Primary sources for this chapter
-- ANEPC — Parliamentary documents and minutes of the investigation commission (Portugal, 2025)
-- ANACOM — Annual report on network and service security (2025)
+- ANEPC — Parliamentary documents and minutes of the investigation committee (Portugal, 2025)
+- ANACOM — Annual network and service security report (2025)
 - ANAC — Airport impact report (Portugal, 2025)
 - Ministry of the Interior — Orders INT/399/2025 and INT/400/2025 (Spain)
 - Territorial Emergency Plan of Andalusia — Incident log
 - ALCER Federation — Report on impact on kidney patients
-- CNSE — Formal complaint regarding informational exclusion of deaf people
+- CNSE — Formal complaint about informational exclusion of deaf people
 - Ortiz-Barrios et al. — Study on emergency medical services (PMC12818971)
 :::

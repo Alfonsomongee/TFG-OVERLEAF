@@ -1,87 +1,107 @@
 ---
 id: anexo-comunicacion-fuentes
-title: "Anexo VIII · Comunicación, percepción pública y fuentes"
-sidebar_label: "Anexo VIII · Comunicación y fuentes"
+title: "Annex VIII · Communication and Public Perception"
+sidebar_label: "Annex VIII · Communication and Sources"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import EASStateTransition from '@site/src/components/EASStateTransition';
 import ConsensusMatrix from '@site/src/components/ConsensusMatrix';
 
 <AnnexLayout
   wide
-  kicker="Anexo VIII"
-  title="Comunicación, percepción pública y fuentes narrativas"
-  description="Evidencias sobre cobertura mediática, narrativas institucionales, tratamiento internacional, percepción ciudadana y construcción pública del episodio."
+  kicker="Annex VIII"
+  title="Communication and Public Perception"
+  description="This annex documents the media coverage, institutional narratives, and social perception of the April 28 collapse, analyzing how the public account of the incident was constructed in national and international media."
   meta={[
-    { label: 'Eje técnico', value: 'Comunicación y Percepción' },
-    { label: 'Cobertura', value: 'Narrativa institucional y mediática' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical Axis', value: 'Communication and Perception' },
+    { label: 'Coverage', value: 'Institutional and Media Narrative' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    How did information biases and the asymmetry of official communication influence citizens' perception of the electrical system's security after April 28?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The public treatment of the April 28 blackout was marked by strong narrative polarization. While conservative media prematurely emphasized the culpability of the renewable model and the ecological transition, progressive media justified the incident as a fortuitous failure unrelated to market design. The delay in the system operator's official reports and the contradictions between REE's press releases and the Government Committee fueled conspiracy theories and temporarily reduced public confidence in the system's robustness.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex compiles the press front-page collages and expert consensus matrices that document the communicative dimension and the public construction of the crisis.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Este anexo reúne materiales de comunicación y percepción pública. Su función es contextualizar el tratamiento narrativo del apagón, no sustituir la evidencia técnica operacional.
+    This annex compiles materials on communication and public perception. Its function is to contextualize the narrative treatment of the blackout, not to replace operational technical evidence.
   </AnnexMethodNote>
+
+  <em>The annex is organized into three argumentative sections: national and international media coverage, citizen and political perception, and expert consensus analysis.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t8' },
-      { label: 'Tablas',       target: 'tablas-t8' },
-      { label: 'Interactivos', target: 'interactivos-t8' },
-      { label: 'Series',       target: 'series-t8' },
+      { label: 'Media Coverage', target: 'cobertura-mediatica' },
+      { label: 'Public Perception',  target: 'percepcion' },
+      { label: 'Expert Consensus',   target: 'consenso-pericial' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t8"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['figures']} />
+  <AnnexSection id="cobertura-mediatica" eyebrow="Section 1" title="National and International Media Coverage">
+    The framing of the conservative press focused on directly linking instability with the massive penetration of renewable energy, characterizing the event as the failure of the green transition.
+    <AnnexEvidenceLead
+      eyebrow="Main Evidence"
+      title="Treatment in International Press"
+      summary="The front pages of the specialized international press illustrate the global impact of the blackout and the initial technical framing outside the domestic partisan debate."
+      insight="International technical framing · Coverage free from local political tensions."
+    >
+      <AnnexEvidence type="figure" id="collage_internacional" level={1} />
+    </AnnexEvidenceLead>
+    National coverage was symmetrically polarized: the conservative press attributed the collapse to an excess of renewables; the progressive press justified it as a fortuitous failure unrelated to the energy mix. Both framings were consolidated before any expert report was published.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_conservador" level={2} />
+      <AnnexEvidence type="figure" id="collage_progresista" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t8"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['tables']} />
+  <AnnexSection id="percepcion" eyebrow="Section 2" title="Public and Political Perception">
+    Rumors of a cyberattack and systemic shortage spread on social media during the first hours of official silence. No political leader addressed technical aspects: parliamentary instrumentalization was immediate and focused exclusively on attributing responsibility.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="collage_ciudadanos" level={2} />
+      <AnnexEvidence type="figure" id="collage_politicos" level={2} />
+    </AnnexEvidenceGrid>
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t8"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['interactives']} />
+  <AnnexSection id="consenso-pericial" eyebrow="Section 3" title="Expert Consensus and Discrepancies">
+    The consensus matrix contrasts the conclusions of REE, CNMC, and ENTSO-E: they agree on the root cause (overvoltage + low Scc) but disagree on the minimum inertia margin and the operator's responsibilities.
+    <div style={{ margin: '1.5rem 0' }}>
+      <ConsensusMatrix showCaption={false} />
+    </div>
+    The EAS state seismograph documents the gap between the physical collapse and the continental notification: a failure of the European early warning system for fast dynamic events.
+    <div style={{ margin: '1.5rem 0' }}>
+      <EASStateTransition showCaption={false} />
+    </div>
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t8"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T8" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="The communicative dimension of April 28 demonstrated that crisis information management is as critical as the technical response of the grid. Polarization and biased media framings filled the information vacuum left by the operator, highlighting the need for real-time transparency protocols."
+    doesNotDemonstrate="This annex does not demonstrate intentional misconduct by the media, but rather the ease with which a complex physical event is reinterpreted through preconceived ideological lenses."
+    connection="This reading is complemented by Annex VI (restoration and EAS states) and Annex IX (methodology and disinformation models)."
+  />
 
-  <EASStateTransition showCaption={false} />
-
-  *Figura A8.1. Fallo del EAS: transición directa Normal → Blackout. Fuente: ENTSO‑E.*
-
-  <ConsensusMatrix showCaption={false} />
-
-  *Figura A8.2. Matriz de consenso y discrepancia entre informes periciales.*
+  <AnnexCrossLinks links={[
+    { to: "/anexo-reposicion-blackstart", label: "Annex VI: restoration and emergency operation" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Annex IX: methodology and source contrast" }
+  ]} />
 </AnnexLayout>

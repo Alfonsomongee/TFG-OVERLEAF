@@ -1,86 +1,136 @@
 ---
 id: anexo-interconexiones-flujos
-title: "Anexo IV · Interconexiones y flujos transfronterizos"
-sidebar_label: "Anexo IV · Interconexiones y flujos"
+title: "附录四 · 互联与跨境潮流"
+sidebar_label: "附录四 · 互联与潮流"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
+
 import CoordinationTimeline from '@site/src/components/CoordinationTimeline';
 import CommandArchitectureGraph from '@site/src/components/CommandArchitectureGraph';
 
 <AnnexLayout
   wide
-  kicker="Anexo IV"
-  title="Interconexiones y flujos transfronterizos"
-  description="Evidencias sobre flujos físicos y programados, frontera España-Francia, enlaces HVDC, intercambios con Portugal, Marruecos y el papel de las interconexiones en la dinámica del incidente."
+  kicker="附录四"
+  title="互联与跨境潮流"
+  description="本附录记录了4月28日大停电期间国际互联线路的行为，分析了它们最初如何作为不稳定的传播者，随后又如何成为伊比利亚系统快速恢复的关键载体。"
   meta={[
-    { label: 'Eje técnico', value: 'Interconexiones' },
-    { label: 'Cobertura', value: 'España · Francia · Portugal · Marruecos' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: '技术主题', value: '互联' },
+    { label: '覆盖范围', value: '西班牙 · 法国 · 葡萄牙 · 摩洛哥' },
+    { label: '证据', value: '图表 · 表格 · 交互式 · 序列' },
   ]}
 >
+  <AnnexKeyQuestion>
+    跨境互联在伊比利亚系统不稳定传播及后续恢复中发挥了什么作用？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    在4月28日大停电期间，互联线路发挥了关键的双重作用。最初，由于伊比利亚同步发电损失导致不平衡，从法国输入的潮流急剧增加，超过了传输能力，导致比利牛斯边境失去同步。然而，在恢复阶段，与法国的互联成为西班牙输电网重新通电的主要载体，使得关键变电站能够在本地备用发电厂可用之前就恢复供电。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录汇集了决定4月28日伊比利亚半岛电气隔离的联络线潮流和大陆失步事件。
+  </AnnexBlackoutRelevance>
+
+  <AnnexMethodNote type="reconstruccion">
+    本附录中的文档证据经过组织，以便于对潮流和国际协调序列进行综合解读。
+  </AnnexMethodNote>
+
+  <em>本附录分为四个论证部分：跨境失步、HVDC与联络技术、前期计划与交换、以及由法国引导的重新通电。</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t4' },
-      { label: 'Tablas',       target: 'tablas-t4' },
-      { label: 'Interactivos', target: 'interactivos-t4' },
-      { label: 'Series',       target: 'series-t4' },
+      { label: '失步', target: 'perdida-sincronismo' },
+      { label: 'HVDC与技术',       target: 'hvdc-tecnologia' },
+      { label: '前期交换',   target: 'intercambios-previos' },
+      { label: '重新通电',        target: 'reenergizacion-francia' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t4"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['figures']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="tablas-t4"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['tables']} />
-  </AnnexSection>
-
-  <AnnexSection
-    id="interactivos-t4"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <span id="grafico-topology"></span>
+  <AnnexSection id="perdida-sincronismo" eyebrow="第1节" title="跨境失步">
+    法国边境的潮流记录显示，在线路跳闸前几秒钟，进口的急剧跃升超过了热稳定和暂态稳定极限。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="跨境潮流偏差"
+      summary="与法国互联线路的意外断开导致实际潮流相对于ENTSO-E系统计划值出现大规模偏差。"
+      insight="过渡到孤岛运行 · 数秒内偏差超过3,000兆瓦。"
+    >
+      <AnnexEvidence type="figure" id="entsoe_flow_deviation" level={1} />
+    </AnnexEvidenceLead>
+    在10:33 UTC，西班牙试图从法国紧急进口超过4,600兆瓦——是申报容量550兆瓦的八倍。最终的极振荡先于跨比利牛斯交流线路的最终断开。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="interconexion_francia_colapso" level={1} />
+      <AnnexEvidence type="figure" id="perdida_sincronismo_frontera" level={2} />
+    </AnnexEvidenceGrid>
+    四个边境（法国、葡萄牙、摩洛哥、安道尔）的逐分钟记录记录了隔离时刻的净平衡。
+    <AnnexEvidence type="table" id="intercambios-internacionales-minuto" level={2} />
+    交互式面板允许探索每个互联线路在崩溃时刻的传输能力和饱和程度。
     <span id="grafico-interconnection"></span>
-    <AnnexThemeEvidence theme="T4" include={['interactives']} />
+    <AnnexEvidence type="interactive" id="interconnection" level={2} />
+    实际潮流显示，法国边境首先关闭；葡萄牙边境随后。关闭时间线重建了伊比利亚隔离的确切顺序。
+    <AnnexEvidence type="chart" id="chart-14" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t4"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T4" include={['charts']} />
-
-    <CoordinationTimeline showCaption={false} />
-
-    *Figura A4.1. Cronología de comunicaciones EAS/SAM durante la reposición ibérica. Fuente: ENTSO‑E.*
-
-    <CommandArchitectureGraph showCaption={false} />
-
-    *Figura A4.2. Arquitectura de mando durante el System Split. Fuente: ENTSO‑E.*
+  <AnnexSection id="hvdc-tecnologia" eyebrow="第2节" title="HVDC与联络技术">
+    在12:08 CEST，INELFE-1 HVDC联络线从PMODE3过渡到PMODE1，限制了其在后续级联中的动态响应能力。该决定是一个开放的专家分析点。
+    <AnnexEvidence type="figure" id="hvdc_control_transition" level={2} />
+    Santa Llogaia的标称参数记录了一个典型案例：没有频率响应的HVDC联络线可能加剧而非缓解崩溃。
+    <AnnexEvidence type="table" id="hvdc-santa-llogaia-parametros" level={2} />
+    伊比利亚互联系统的拓扑结构显示了北部边境交流与HVDC联络线的布局。
+    <span id="grafico-topology"></span>
+    <AnnexEvidence type="interactive" id="topology" level={2} />
   </AnnexSection>
+
+  <AnnexSection id="intercambios-previos" eyebrow="第3节" title="前期计划与交换">
+    在11:00 CEST，总进口余额达到-4,755兆瓦——历史最高。商业计划仍标记为出口2,500兆瓦：市场与实际之间的差距为7,255兆瓦。
+    <AnnexEvidence type="table" id="programa-intercambios-pre-apagon" level={3} />
+    摩洛哥在上午以适度出口模式运行——南部联络线未对稳定性提供支持。
+    <AnnexEvidence type="figure" id="intercambio_marruecos_topdown" level={3} />
+    各边境的P48余额证实，在崩溃前90分钟，西班牙依赖来自法国的创纪录进口，而商业计划显示正常。
+    <AnnexEvidence type="chart" id="chart-13" level={2} />
+    计划商业交换、容量拍卖和传输容量预测的序列记录了静态安全模型与实际电网动态之间的脱节。
+    <AnnexEvidence type="chart" id="chart-15" level={2} />
+    <AnnexEvidence type="chart" id="chart-16" level={2} />
+    <AnnexEvidence type="chart" id="chart-17" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="reenergizacion-francia" eyebrow="第4节" title="由法国引导的重新通电">
+    来自法国的RTE注入在内部同步机组并网之前，支撑了北部和东部走廊重新通电期间的电压。时间线比较了法国的遏制（保留的网络，自上而下的锚点）与葡萄牙的完全崩溃及其自下而上的恢复。
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="evolucion_carga_repuesta_francia" level={1} />
+      <AnnexEvidence type="figure" id="timeline-light" level={2} />
+    </AnnexEvidenceGrid>
+    大陆指挥图显示了危机期间欧洲TSO之间激活的紧急决策层级。
+    <div style={{ margin: '1.5rem 0' }}>
+      <CommandArchitectureGraph showCaption={false} />
+    </div>
+    协调操作时间线详细说明了跨境重新同步序列的时间。
+    <div style={{ margin: '1.5rem 0' }}>
+      <CoordinationTimeline showCaption={false} />
+    </div>
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="对跨境潮流的分析证明了电力安全的系统性和跨国性。与大陆系统的互联最初因本地惯量下降而成为不稳定的进口载体，但最终成为缩短伊比利亚系统恢复时间的生命线。"
+    doesNotDemonstrate="本附录并未证明通过增加常规交流交换容量可以避免隔离。它表明，HVDC快速联络线的动态响应以及欧洲备用共享规则需要深入的技术审查。"
+    connection="阅读时请结合附录二（频率和电压的先前稳定性）、附录三（断开序列）和附录六（恢复序列和黑启动）。"
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-estabilidad-dinamica-tension", label: "附录二：电压和频率稳定性" },
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "附录三：级联和保护序列" },
+    { to: "/anexo-reposicion-blackstart", label: "附录六：恢复和紧急运行" }
+  ]} />
 </AnnexLayout>

@@ -1,77 +1,107 @@
 ---
 id: anexo-reposicion-blackstart
-title: "Anexo VI · Reposición, Black Start y operación de emergencia"
-sidebar_label: "Anexo VI · Reposición y emergencia"
+title: "Annex VI · Restoration, Black Start, and Emergency Operation"
+sidebar_label: "Annex VI · Restoration and Emergency"
 hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
-import AnnexThemeEvidence from '@site/src/components/annex/AnnexThemeEvidence';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
-  kicker="Anexo VI"
-  title="Reposición, Black Start y operación de emergencia"
-  description="Evidencias sobre fragmentación en islas, arranque autónomo, recuperación de demanda, apoyo transfronterizo y cambios de estado durante la restauración del sistema."
+  kicker="Annex VI"
+  title="Restoration, Black Start, and Emergency Operation"
+  description="This annex documents the restoration process of the Iberian Peninsula's electricity supply after the collapse on April 28, detailing autonomous start-up maneuvers, island division, and the progressive reconnection of demand."
   meta={[
-    { label: 'Eje técnico', value: 'Reposición y Black Start' },
-    { label: 'Cobertura', value: 'Restauración del sistema' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+    { label: 'Technical axis', value: 'Restoration and Black Start' },
+    { label: 'Coverage', value: 'System restoration' },
+    { label: 'Evidence', value: 'Figures · Tables · Interactives · Series' },
   ]}
 >
+  <AnnexKeyQuestion>
+    How were autonomous start-up (Black Start) and reference imports coordinated to restore supply in the Iberian Peninsula after the total collapse?
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    The restoration process of the Iberian Peninsula on April 28 combined two parallel and coordinated strategies: the autonomous start-up (Black Start) of local hydro and thermal plants to form isolated subsystems (restoration islands), and the injection of reference voltage from the French interconnection to re-energize the northern transmission corridor. Despite initial delays in coupling combined cycle units, the use of the continental reference and pumped-storage load shedding allowed 90% of supply to be recovered in less than 10 hours, demonstrating the effectiveness of coordinated contingency plans.
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    This annex compiles the records of start-up maneuvers, island fragmentation, and demand recovery profiles from the restoration process of April 28.
+  </AnnexBlackoutRelevance>
+
   <AnnexMethodNote type="reconstruccion">
-    Se recopilan en este dossier técnico los registros y evidencias operativas que ilustran el proceso de arranque autónomo y la paulatina reconexión de la demanda.
+    This technical dossier collects operational records and evidence illustrating the autonomous start-up process and the gradual reconnection of demand.
   </AnnexMethodNote>
+
+  <em>The annex is organized into three argumentative sections: restoration strategy and autonomous start-up, demand recovery by region, and international coordination and EAS states.</em>
 
   <AnnexEvidenceNav
     items={[
-      { label: 'Figuras',      target: 'figuras-t6' },
-      { label: 'Tablas',       target: 'tablas-t6' },
-      { label: 'Interactivos', target: 'interactivos-t6' },
-      { label: 'Series',       target: 'series-t6' },
+      { label: 'Restoration strategy', target: 'estrategia-reposicion' },
+      { label: 'Demand recovery',  target: 'recuperacion-demanda' },
+      { label: 'EAS states and coordination', target: 'estados-eas' },
     ]}
   />
 
-  <AnnexSection
-    id="figuras-t6"
-    eyebrow="Evidencia visual"
-    title="Figuras y reconstrucciones gráficas"
-    description="Imágenes, mapas y esquemas asociados a este tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['figures']} />
+  <AnnexSection id="estrategia-reposicion" eyebrow="Section 1" title="Restoration Strategy and Autonomous Start-up">
+    The dual re-energization strategy scheme illustrates the simultaneous coupling of the Pyrenean axis (north) and the southern restoration islands powered by autonomous hydro plants.
+    <AnnexEvidenceLead
+      eyebrow="Main evidence"
+      title="Dual re-energization strategy"
+      summary="The restoration process combined the injection of reference voltage from the French border in the north with the activation of autonomous synchronous islands via Black Start in the south."
+      insight="Cross-border support from France · Coordination of restoration islands."
+    >
+      <AnnexEvidence type="figure" id="estrategia_reenergizacion_dual" level={1} />
+    </AnnexEvidenceLead>
+    The list of plants enabled for Black Start shows the dependence on reservoir hydro — a significant limitation in drought scenarios.
+    <AnnexEvidence type="table" id="centrales-black-start" level={1} />
+    Autonomous start-up attempts had a high proportion of failures (gray dots in the figure), reflecting the complexity of energizing a network without coupled synchronous mass. Each island had to stabilize in voltage and frequency before synchronizing with adjacent ones.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="black_start_hidroelectrico" level={2} />
+      <AnnexEvidence type="figure" id="islas_reposicion_entsoe" level={2} />
+    </AnnexEvidenceGrid>
+    The actual restoration times per island document the unique difficulties of each area — the south was consistently slower than the north.
+    <AnnexEvidence type="table" id="tiempos-restauracion-islas" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="tablas-t6"
-    eyebrow="Registros técnicos"
-    title="Tablas y registros"
-    description="Registros tabulados detallados y listas de maniobras."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['tables']} />
+  <AnnexSection id="recuperacion-demanda" eyebrow="Section 2" title="Demand Recovery by Region">
+    Restoring the 25 GW lost required 18.5 hours of uninterrupted maneuvers, with staggered load connection to avoid new under-frequency events. The synchronous compensation maneuver at Torrão (17:23 CEST) stabilized the Zêzere 220 kV island: the hydro unit operated as a pure synchronous compensator, injecting reactive power without exporting active power.
+    <AnnexEvidenceGrid>
+      <AnnexEvidence type="figure" id="recuperacion_demanda_peninsular" level={1} />
+      <AnnexEvidence type="figure" id="figuraB3-light" level={2} />
+    </AnnexEvidenceGrid>
+    The breakdown by distribution nodes and the comparison Spain (16 h) vs Portugal (12 h) document the geographic asymmetry of the recovery.
+    <AnnexEvidence type="table" id="recuperacion-demanda-espana" level={2} />
+    <AnnexEvidence type="table" id="recuperacion-portugal" level={2} />
+    The European alert system labeled Spain as "Normal" at 12:32:00 CEST and as "Blackout" at 12:33:29 CEST — without any intermediate state. Other TSOs (Estonia, Latvia, Finland) also activated fallbacks as a domino effect.
+    <AnnexEvidence type="chart" id="chart-23" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="interactivos-t6"
-    eyebrow="Exploración interactiva"
-    title="Herramientas interactivas"
-    description="Visualizaciones dinámicas asociadas al tema."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['interactives']} />
+  <AnnexSection id="estados-eas" eyebrow="Section 3" title="International Coordination and EAS States">
+    The EAS transition table quantifies the gap between the official state declaration and the actual physical situation: the grid was already in collapse when the EAS still declared "Normal".
+    <AnnexEvidence type="table" id="eas-state-changes" level={2} />
   </AnnexSection>
 
-  <AnnexSection
-    id="series-t6"
-    eyebrow="Series históricas"
-    title="Series históricas"
-    description="Gráficas y series temporales operativas."
-    defaultOpen
-  >
-    <AnnexThemeEvidence theme="T6" include={['charts']} />
-  </AnnexSection>
+  <AnnexSectionSummary
+    demonstrates="The restoration of the Iberian electrical system after April 28 showed that successful restoration depends on a coordinated strategy combining local autonomous start-up resources with the strength of the neighboring continental synchronous system. The reference voltage provided by France significantly shortened the restoration of the 400 kV corridor."
+    doesNotDemonstrate="This annex demonstrates the need to revise restoration plans to accommodate the reduced contribution of conventional plants and the critical role of distributed storage in the future."
+    connection="This reading is complemented by Annex III (prior cascade sequence) and Annex IV (cross-border flows and northern re-energization)."
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-cascada-protecciones-desconexiones", label: "Annex III: cascade sequence and protections" },
+    { to: "/anexo-interconexiones-flujos", label: "Annex IV: interconnections and cross-border flows" }
+  ]} />
 </AnnexLayout>

@@ -3,282 +3,263 @@ sidebar_position: 7
 hide_title: true
 title: "Resilienz und Zukunft"
 ---
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
-
-import InteractiveCTA from "@site/src/components/InteractiveCTA";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
+import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
 import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
-import TermometroRiesgo from "@site/src/components/TermometroRiesgo";
-import FrequencyChart from "@site/src/components/FrequencyChart";
+import PQCapabilitySimulator from '@site/src/components/PQCapabilitySimulator/PQCapabilitySimulator';
 
 <GlitchTitle>Resilienz und Zukunft</GlitchTitle>
 
-Die strukturelle Lehre des 28. Aprils liegt nicht im Zusammenbruch selbst, sondern in der Art der Verwundbarkeit, die er aufdeckte. Die forensische Analyse zeigte, dass der Spannungsabfall auf null weder ein Mangel an aktiver Leistungsreserve noch ein punktueller Betriebsfehler war: Es war die endgültige Manifestation einer grundlegenden Inkompatibilität zwischen der Physik eines von Wechselrichtern dominierten Systems und einem technisch-regulatorischen Rahmen, der für synchrone Netze ausgelegt ist. Das Szenario, das den 28-A begünstigte – hohe Durchdringung von IBR, Mangel an gekoppelter synchroner Erzeugung und gedrückte Nettolast – war keine klimatische Anomalie, sondern ein Vorbote von Bedingungen, die sich mit fortschreitender Dekarbonisierung immer häufiger wiederholen werden.
+Die strukturelle Lehre des 28. April liegt nicht im Zusammenbruch selbst, sondern in der Art der Verwundbarkeit, die er offenbarte. Die forensische Analyse zeigte, dass der Spannungsnullpunkt weder ein Fehler der Wirkleistungsreserve noch ein punktueller Betriebsfehler war: Es war die terminale Manifestation einer grundlegenden Inkompatibilität zwischen der Physik eines von Wechselrichtern dominierten Systems und einem technisch-regulatorischen Rahmen, der für synchrone Netze ausgelegt war. Das Szenario, das den 28. April begünstigte – hohe IBR-Durchdringung, Mangel an gekoppelter synchroner Erzeugung und gedämpfte Nettolast – war keine klimatische Anomalie, sondern ein Vorgeschmack auf Bedingungen, die sich mit fortschreitender Dekarbonisierung immer häufiger wiederholen werden.
 
 ## Die Physik der systemischen Fragilität
 
 ### Trägheit, RoCoF und die Schwingungsgleichung
 
-Die dynamische Frequenzstabilität in einem Stromnetz wird durch die **Schwingungsgleichung** (Swing Equation) bestimmt:
+Die Trägheitskonstante $H$ bestimmt die Geschwindigkeit des Frequenzgangs bei Wirkleistungsungleichgewichten. Ihre Reduktion – eine direkte Folge der Ersetzung rotierender Massen durch _Grid-Following_-Wechselrichter, die über ihre DC-Zwischenkreise von der Netzfrequenz entkoppelt sind – verkürzt das Zeitfenster, das den Regelsystemen zur Verfügung steht. Die Dynamik wird durch die Schwingungsgleichung bestimmt:
 
 $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
 $$
 
-wobei $H$ die äquivalente Trägheitskonstante des Systems (in Sekunden) ist, $f_0$ die Nennfrequenz (50 Hz), $df/dt$ die RoCoF, $P_m$ die gesamte mechanische Leistung, die den gekoppelten synchronen Rotoren zugeführt wird, $P_e$ die geforderte elektrische Nettoleistung und $D$ der Dämpfungskoeffizient der frequenzabhängigen Lasten.
+wobei $H$ die äquivalente Trägheitskonstante des Systems (in Sekunden), $f_0$ die Nennfrequenz (50 Hz), $df/dt$ die RoCoF, $P_m$ die gesamte mechanische Leistung, die den gekoppelten Synchrongeneratoren zugeführt wird, $P_e$ die erzeugte elektrische Leistung und $D$ der Dämpfungskoeffizient der frequenzabhängigen Lasten ist.
 
-Der zentrale Parameter ist $H$: Seine Verringerung bedeutet, dass sich jedes Leistungsungleichgewicht in eine proportional schärfere RoCoF übersetzt, was das verfügbare Zeitfenster für das Eingreifen der Regelsysteme verkürzt. Die grid-following-Wechselrichter sind durch ihre Gleichstromverbindungen von der Netzfrequenz entkoppelt und **tragen keine inhärente elektromechanische Trägheit** zur Schwingungsgleichung bei.
+Das System wies zum Zeitpunkt des Zusammenbruchs $H = 2,3$ s auf<KeyFact id="inercia-28a" mode="callback">H = 2,3 s Mittelwert / 1,3 s Südzone – Kapitel 2</KeyFact> – über dem von ENTSO-E empfohlenen Schwellenwert von 2,0 s: Der 28. April war kein Frequenzkollaps aufgrund eines Mangels an synchroner Masse. Die relevante Dynamik war jedoch nicht die der Frequenz, sondern die der Spannung: Die zonalen $H$-Werte im Süden (1,3 s) und die Verschlechterung des SCR unter 2 an den kritischen Knoten bildeten die Bedingungen für die kapazitive Instabilität, die [Kapitel 3](./03-analisis-incidente.mdx) rekonstruiert. In Szenarien mit einer IBR-Durchdringung von über 80 % verschlechtern sich beide Metriken – Trägheit und Netzfestigkeit – gleichzeitig, und es ist die zweite, die die Anfälligkeit für ultraschnelle Spannungstransienten bestimmt.
 
-Das System wies zum Zeitpunkt des Zusammenbruchs $H = 2,3$ s auf – über dem von ENTSO-E empfohlenen Schwellenwert von 2,0 s. Der 28-A war kein Frequenzkollaps durch einen Mangel an synchroner Masse. In Szenarien mit einer IBR-Durchdringung von über 80 % verwandelt jedoch die anhaltende Reduzierung von $H$ Störungen moderater Amplitude in kritische Ausfälle, da sich die vor der Aktivierung des UFLS verfügbare Zeit so weit verkürzt, dass diese angesichts der mechanischen Öffnungsgeschwindigkeit der Schalter wirkungslos wird.
+### Kurzschlussverschlechterung: Die Metrik der Netzfestigkeit
 
-### Kurzschlussverschlechterung: Die Metrik der Netzstärke
+Die Dimension, die am direktesten mit dem kausalen Mechanismus des 28. April verbunden ist, ist die Verschlechterung der Kurzschlussleistung ($S_{sc}$) an den Netzknoten. Ein konventioneller Synchrongenerator kann in den ersten Zyklen eines Transienten Kurzschlussströme zwischen dem 5- und 7-fachen seines Nennwerts einspeisen. Wechselrichter begrenzen die Einspeisung auf 1,1–1,2 p.u., um das Schmelzen von Halbleitern zu vermeiden.
 
-Die Dimension, die am direktesten mit dem kausalen Mechanismus des 28-A verbunden ist, ist die Verschlechterung der Kurzschlussleistung ($S_{sc}$) an den Netzknoten. Ein konventioneller Synchrongenerator kann während der ersten Zyklen eines Transienten Kurzschlussströme vom **5- bis 7-Fachen** seines Nennwerts einspeisen. Wechselrichter begrenzen die Einspeisung auf **1,1–1,2 p.u.**, um ein Schmelzen der Halbleiter zu verhindern.
-
-Die übliche Parametrierung dieses Verlusts ist die Short Circuit Ratio (SCR):
+Die übliche Parametrisierung dieses Verlusts ist das Short Circuit Ratio (SCR):
 
 $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
 <ForensicTable 
-    title="TABELLE 16 | SHORT CIRCUIT RATIO (SCR) THRESHOLDS"
-    source="Estándar ENTSO-E / literatura técnica"
-  >
+  title="Tabelle I1 — Schwellenwerte des Short Circuit Ratio (SCR)"
+  source="Standard ENTSO-E / technische Literatur"
+>
 
-| Kategorie | SCR-Schwellenwert | Operative Auswirkung |
+| Kategorie | SCR-Schwelle | Betriebliche Implikation |
 | --- | --- | --- |
-| **Starkes Netz** | SCR > 3 | Die GFL-Wechselrichter arbeiten mit Kleinsignalstabilität. Distanzschutzrelais behalten ihre Selektivität. |
-| **Schwaches Netz** | 2 ≤ SCR ≤ 3 | Verschlechterung der Stabilitätsmarge des PLL bei schnellen Störungen. Risiko einer nachteiligen Interaktion zwischen benachbarten Regelkreisen. |
-| **Sehr schwaches Netz** | SCR &lt; 2 | PLLs neigen bei geringfügigen Spannungsschwankungen zum Synchronitätsverlust. Distanzschutzrelais verlieren ihre Richtungsabhängigkeit. |
-
-
+| Starkes Netz | SCR > 3 | GFL-Wechselrichter arbeiten mit Kleinsignalstabilität. Distanzschutz behält Selektivität. |
+| Schwaches Netz | 2 ≤ SCR ≤ 3 | Verschlechterung der PLL-Stabilitätsmarge bei schnellen Störungen. Risiko nachteiliger Wechselwirkungen zwischen nahen Regelkreisen. |
+| Sehr schwaches Netz | SCR < 2 | PLL neigen bei kleineren Spannungsänderungen zum Synchronismusverlust. Distanzschutz verliert Richtwirkung.<br/>*(Anmerkung: In Gebieten mit hoher Wechselrichterdichte wird diese strukturelle Schwäche mittels der MRSCR-Metrik bewertet, die im Abschnitt Europäische Dimension diskutiert wird)* |
 
 </ForensicTable>
 
-<InteractiveCTA 
-  title="RADAR FÜR KNOTENPUNKTVULNERABILITÄT" 
-  description="Das Knotenpunktradar überlagert die fünf kritischen Umspannwerke mit ihren tatsächlichen SCR-Werten vom 28. April. Vergleichen Sie, welche die Schwellenwerte der Tabelle erfüllten und welche nicht."
-  icon="🎯"
->
-  <RadarVulnerabilidad />
-</InteractiveCTA>
+Die tatsächlichen Vulnerabilitätsschwellen gegenüber dem SCR können im folgenden Radar bewertet werden:
 
-In den Stunden vor dem Zusammenbruch arbeiteten weite Teile der Halbinsel als **sehr schwache Netze** (SCR &lt; 2): Die massive Solarproduktion hatte die Gas-und-Dampf-Kombikraftwerke in der Merit-Order verdrängt, deren Abschaltung genau die Quellen von $S_{sc}$ beseitigte, die den Knotenpunkten des Übertragungsnetzes Stabilität verleihen. Unter diesen Bedingungen, mit hohem $X/R$, aber $\mathrm{SCR} \ll 2$, führt die Gesamtimpedanz dazu, dass die Spannung auch auf Schwankungen der Wirkleistung reagiert: Solare Einspeiserampen erlangen eine spannungsstörende Kraft, die in konventionellen synchronen Netzen harmlos wäre.
+<details className="collapsible">
+<summary>
+  <span>▶ Interaktives Vulnerabilitätsradar anzeigen</span>
+</summary>
 
-![Spannungskarten im 400-kV-Netz der Halbinsel in der kritischen Phase vor dem Zusammenbruch](/figuras/scr_iberia.png) _Abbildung 37. Geografische Entwicklung der Spannungen im 400-kV-Netz vor dem Zusammenbruch (Sequenz a–d). Die warm gefärbten Zonen zeigen die Ausbreitung und Konzentration schwerer Überspannungen im Süden und Südwesten der Halbinsel – genau an den Knoten mit dem größten strukturellen Mangel an Kurzschlussleistung. Quelle: IIT-ICAI._
+<div className="collapsibleBody">
+<RadarVulnerabilidad lang="de" />
+</div>
+
+</details>
+
+In den Stunden vor dem Zusammenbruch operierten weite Teile der Iberischen Halbinsel als sehr schwache Netze (SCR < 2): Die massive Solarproduktion hatte Gaskraftwerke aufgrund der Merit Order verdrängt, deren Abschaltung genau die $S_{sc}$-Quellen beseitigte, die den Knoten des Übertragungsnetzes Steifigkeit verleihen. Unter diesen Bedingungen, mit hohem $X/R$ aber $\mathrm{SCR} \ll 2$, macht die Gesamtimpedanz die Spannung auch empfindlich gegenüber Wirkleistungsänderungen: Die Rampen der Solareinspeisung erhalten ein Spannungsstörungspotential, das in konventionellen synchronen Netzen harmlos wäre.
+
+![Spannungskarten im 400-kV-Übertragungsnetz der Iberischen Halbinsel im kritischen Zeitfenster vor dem Zusammenbruch](/figuras/scr_iberia.png)
+
+_Abbildung I1 — Spannungskarten im 400-kV-Übertragungsnetz der Iberischen Halbinsel im kritischen Zeitfenster vor dem Zusammenbruch. Die räumliche Verteilung des SCR unter 2 in weiten Teilen Andalusiens und der Extremadura veranschaulicht die Knotenfragilität, die diese Gebiete besonders anfällig für den kapazitiven Transienten machte. Quelle: IIT-ICAI._
 
 ### Das geometrische Paradoxon der Wechselrichter: P-Q-Konflikt
 
-Es gibt einen strukturellen Widerspruch, der der Geometrie des Leistungsdreiecks innewohnt. Die maximale Scheinleistung eines Wechselrichters wird begrenzt durch:
+Es besteht ein struktureller Widerspruch, der der Geometrie des Leistungsdreiecks innewohnt. Die maximale Scheinleistung eines Wechselrichters ist begrenzt durch:
 
-$$S_{\max} = \sqrt{P^2 + Q^2}$$
+$$
+S_{\max} = \sqrt{P^2 + Q^2}
+$$
 
-Wenn eine Photovoltaikanlage eine plötzliche Wolkenauflösung erfährt, weisen ihre MPPT-Algorithmen Wirkleistungs-Einspeiserampen $P$ von Tausenden MW/h an. Um $S_{\max}$ nicht zu überschreiten, muss der Regler gleichzeitig seine Marge an Blindleistung $Q$ reduzieren. Das Paradoxon: Genau in dem Moment, in dem der plötzliche Anstieg von $P$ in einem Netz mit SCR &lt; 2 eine schwere Überspannung verursacht, muss der Wechselrichter massiv Blindleistung aufnehmen, um diese einzudämmen. Der Wechselrichter steht vor zwei **gleichzeitig unvereinbaren** physikalischen Verpflichtungen: Maximierung von $P$ aufgrund von Marktsignalen und Maximierung von $Q$ aufgrund der Notwendigkeit der Spannungsstabilität.
+Wenn eine Photovoltaikanlage eine plötzliche Aufhellung der Bewölkung erfährt, ordnen ihre MPPT-Algorithmen Rampen der Wirkleistungseinspeisung $P$ von Tausenden von MW/h an. Um $S_{\max}$ nicht zu überschreiten, muss die Steuerung gleichzeitig ihre Blindleistungsreserve $Q$ reduzieren. Das Paradoxon: Genau in diesem Moment verursacht der plötzliche Anstieg von $P$ in einem Netz mit SCR < 2 eine schwere Überspannung, die vom Wechselrichter eine massive Blindleistungsaufnahme zur Eindämmung erfordert. Der Wechselrichter steht vor zwei gleichzeitig unvereinbaren physikalischen Verpflichtungen: Maximierung von $P$ aufgrund des Marktsignals und Maximierung von $Q$ aufgrund der Spannungsstabilitätsanforderung.
 
-Dieser Widerspruch erklärt, warum der 28-A kein Energie-, sondern ein Kontrollkollaps war: Das System verfügte über ausreichende Ressourcen, aber es fehlte die erforderliche Kontrollarchitektur, um sie kohärent zu mobilisieren.
+<PQCapabilitySimulator />
 
-### Die Duck-Curve und der Effekt des verteilten Eigenverbrauchs
+<FigCaption>
+Abbildung I2 — Konzeptioneller Simulator des P–Q-Konflikts in Photovoltaik-Wechselrichtern. Die Kurve der Scheinleistungskapazität zeigt, wie der Anstieg der Wirkleistung die für die Spannungsregelung verfügbare Blindleistungsreserve verringert. Eigene Darstellung basierend auf der Beziehung S² = P² + Q².
+</FigCaption>
 
-Das operative Szenario des 28-A befand sich im **tiefen Tal der _Duck-Curve_**: strukturell niedrige Bruttonachfrage – vergleichbar mit den Tiefstwerten vor zwei Jahrzehnten – bei einer Sonneneinstrahlung nahe den sommerlichen Höchstwerten aufgrund der geringeren thermischen Degradation im Frühling.
+Dieser Widerspruch erklärt, warum der 28. April kein Energie-, sondern ein Regelungszusammenbruch war: Das System verfügte über ausreichende Ressourcen, aber es fehlte die notwendige Regelungsarchitektur, um sie kohärent zu mobilisieren.
 
-![Entwicklung der Anzahl der zwischen 12 und 13 Uhr gekoppelten konventionellen synchronen Einheiten](/figuras/conventionalunits.png) _Abbildung 38. Täglich zwischen 12 und 13 Uhr gekoppelte konventionelle synchrone Einheiten. Der Abwärtstrend in den Monaten vor dem 28-A spiegelt die systematische Verdrängung durch die Merit-Order wider – was das System im kritischen Moment seiner elektromechanischen Trägheit beraubte. Quelle: ENTSO-E / Eigene Darstellung._
+### Die Duck-Kurve und der Effekt der dezentralen Eigenversorgung
 
-Um 12:30 Uhr MESZ hatte REE seine manuellen Managementwerkzeuge ausgeschöpft: vorbeugende Öffnung Dutzender Höchstspannungsleitungen zur Erhöhung der Serienimpedanz sowie der Betrieb von Drosselspulen mit 85 % ihrer Kapazität – ohne den Spannungsanstieg eindämmen zu können.
+Das Betriebsszenario des 28. April befand sich im tiefen Tal der _Duck-Kurve_: strukturell niedrige Bruttonachfrage – analog zu den Minima vor zwei Jahrzehnten – mit einer Einstrahlung nahe den sommerlichen Maxima aufgrund der geringeren thermischen Degradation im Frühjahr.
 
-Ein zusätzlicher, als relevant identifizierter Faktor war der **verteilte Photovoltaik-Eigenverbrauch**: Die dezentrale Erzeugung reduziert die sichtbare Nachfrage, ohne dass sie mit der erforderlichen zeitlichen Auflösung telemetrisch erfassbar ist. Während der vorhergehenden Schwingungsphänomene aktivierten die Spannungsschwankungen die Anti-Islanding-Relais privater und leichter industrieller Anlagen, die sich blockweise vom Netz trennten, wodurch die von ihnen gedeckte Nachfrage plötzlich sichtbar wurde: Der Effekt entsprach einer nicht antizipierten positiven Laststufe in einem Moment, in dem das System bereits keine Blindleistungsmarge mehr hatte, um sie abzufangen.
+![Entwicklung der Anzahl gekoppelter konventioneller Synchroneinheiten zwischen 12:00 und 13:00 Uhr](/figuras/conventionalunits.png)
+
+_Abbildung I3 — Täglich gekoppelte konventionelle Synchroneinheiten im Zeitfenster 12–13 Uhr an den Tagen vor dem 28. April. Der abnehmende Trend spiegelt die systematische Verdrängung des thermischen Kraftwerksparks durch die Merit Order wider, der genau diejenige ist, die den Knoten des Übertragungsnetzes echte Rotationsträgheit und Kurzschlussleistung liefert. Quelle: ENTSO-E._
+
+Um 12:30 Uhr MESZ hatte REE seine manuellen Managementwerkzeuge erschöpft: präventive Abschaltung von Dutzenden von Höchstspannungsleitungen zur Erhöhung der Serienimpedanz, plus Betrieb der Drosselspulen bei 85 % ihrer Kapazität – ohne den Spannungsanstieg eindämmen zu können.
+
+Ein zusätzlicher, als relevant identifizierter Faktor war die dezentrale Photovoltaik-Eigenversorgung: Die dezentrale Erzeugung entzieht der sichtbaren Nachfrage, ohne in der erforderlichen zeitlichen Auflösung telemetrisch beobachtbar zu sein. Während der vorhergehenden Oszillationsphänomene aktivierten Spannungsschwankungen die Anti-Islanding-Relais von Haus- und leichten Industrieanlagen, die sich blockweise abschalteten und die von ihnen gedeckte Nachfrage plötzlich hervortreten ließen: Der Effekt entsprach einem nicht antizipierten positiven Lastsprung zu einem Zeitpunkt, als dem System bereits die Blindleistungsreserve fehlte, um ihn aufzunehmen.
+
+## Internationale Präzedenzfälle: Regulatorische Lehren aus fünf Blackouts
+
+Die Überprüfung der fünf großen Blackouts, die dem 28. April chronologisch vorausgingen, offenbart ein wiederkehrendes Muster: Die physikalischen Mechanismen des iberischen Zusammenbruchs – OLTC ohne hierarchische Blockierung, Wechselrichter ohne dynamische Regelung, Fehlen einer obligatorischen Mindestträgheit – waren in anderen Jurisdiktionen vor April 2025 dokumentiert und teilweise gelöst.
+
+<ForensicTable 
+  title="Tabelle I2 — Internationale Präzedenzfälle und regulatorische Reaktion"
+  source="Eigene Darstellung (Quellen: UCTE, NERC/FERC, ENTSO-E, AEMO, NGESO)"
+>
+
+| Ereignis | Dominante Grundursache | Ergriffene regulatorische Maßnahme | Umsetzungszeitraum | Verifizierte Wirksamkeit |
+| :--- | :--- | :--- | :--- | :--- |
+| Italien 2003 | Thermische Kaskade + Q-V-Kollaps verstärkt durch OLTCs | UCTE Operation Handbook: OLTC-Blockierung im Notfall obligatorisch | 21 Monate | Hoch: Verhinderte Wiederholung bei Trennung 2021 |
+| USA/Kanada 2003 | Verlust des Situationsbewusstseins (Alarmfehler) + N-1-Verletzung | EPAct 2005: NERC als ERO mit verbindlichen und sanktionierbaren Standards | 4 Jahre | Vollständig: Kein vergleichbarer kontinentaler Blackout seit 2007 |
+| Europa 2006 | Grenzüberschreitende mangelnde Koordination: Manuelle Trennung ohne N-1-Neuanalyse | EAS + Gründung ENTSO-E + verbindliche Network Codes | 3–11 Jahre | Hoch: EAS ermöglichte koordinierte Eindämmung bei Trennung Januar 2021 |
+| Südaustralien 2016 | Mangelhafte LVRT bei Windwechselrichtern + niedrige Trägheit | System Strength obligatorisch + FFR + aktualisierte Wechselrichter-Firmware | 1–2 Jahre | Hoch: Routinemäßiger Betrieb >70 % erneuerbar ohne Vorfälle |
+| UK 2019 | Vector Shift + übermäßige RoCoF: Kaskade von DER durch Anti-Islanding-Relais | ALoMCP: Verbot von Vector Shift + RoCoF bei 1 Hz/s | 3 Jahre | Hoch: Keine nachfolgende Kaskade dezentraler Erzeugung |
+
+</ForensicTable>
+
+Die übergreifende Lehre ist zweifach. Erstens: Die regulatorischen Maßnahmen nach einem Vorfall erweisen sich nach ihrer Umsetzung als durchweg hochwirksam. Zweitens: Die Umsetzung dauert zwischen 1 und 11 Jahren, während derer das System der bereits dokumentierten Verwundbarkeit ausgesetzt bleibt. Der iberische 28. April fügt sich in dieses Muster ein: Er reproduziert bereits bekannte kausale Mechanismen – insbesondere die zerstörerische Rolle der OLTCs (Italien 2003) und die Fragilität von Wechselrichtern ohne dynamische Regelung (Südaustralien 2016, UK 2019) – deren Integration in den iberischen Regulierungsrahmen noch ausstand.
+
+Die im Folgenden untersuchten technologischen Lösungen stellen die industrielle Übersetzung dieser Lehren dar.
 
 ## Emissionsfreie Schlüsseltechnologien
 
-Die Überwindung der Verwundbarkeit erfordert einen Übergang in der Kontrollarchitektur: von einem Erzeugungspark, der Spannung und Frequenz _folgt_, zu einer Infrastruktur, die in der Lage ist, diese autonom zu _bilden_. Drei komplementäre Technologiefamilien artikulieren die Antwort.
+Die Überwindung der Verwundbarkeit erfordert einen Wandel in der Regelungsarchitektur: vom Erzeugungspark, der Spannung und Frequenz _folgt_, hin zu einer Infrastruktur, die sie autonom _bilden_ kann. Drei komplementäre Technologiefamilien artikulieren die Antwort.
 
-### BESS mit Grid-Forming-Steuerung: Geschwindigkeit und Präzision
+### BESS mit Grid-Forming-Regelung: Geschwindigkeit und Präzision
 
-Im Gegensatz zum GFL-Wechselrichter arbeitet ein Grid-Forming (GFM)-Wechselrichter als Thévenin-Äquivalent: Er synthetisiert autonom eine interne Spannungsreferenz in Betrag und Winkel ($V\angle\delta$) hinter einer virtuellen Kopplungsimpedanz. Durch die sofortige Aufprägung dieses Vektors speist der GFM-Wechselrichter bei jeder Netzänderung inhärent Wirk- und Blindstrom ein oder absorbiert ihn, ohne von externen Phasenmessungen oder Berechnungsverzögerungen abhängig zu sein.
+Im Gegensatz zu einem GFL-Wechselrichter arbeitet ein _Grid-Forming_-Wechselrichter (GFM) als Thévenin-Äquivalent: Er synthetisiert autonom eine interne Spannungsreferenz in Betrag und Winkel ($V\angle\delta$) hinter einer virtuellen Koppelimpedanz. Durch die sofortige Aufprägung dieses Vektors injiziert oder absorbiert der GFM-Wechselrichter bei jeder Netzänderung inhärent Wirk- und Blindstrom, ohne auf externe Phasenmessungen oder Berechnungsverzögerungen angewiesen zu sein.
 
-![Ersatzschaltbilder der Grid-Following (GFL) und Grid-Forming (GFM) Topologien](/figuras/gfl_vs_gfm_circuit1.png) _Abbildung 39. Links: GFL-Wechselrichter als geregelte Stromquelle in Abhängigkeit vom PLL. Rechts: GFM-Wechselrichter als autonome Spannungsquelle hinter einer virtuellen Impedanz $Z_{\mathrm{GFM}}$. Der fundamentale Unterschied ist, dass der GFM das Netz nicht „lesen“ muss, um zu funktionieren – er erschafft es._
+<details className="collapsible">
+<summary>
+  <span>▶ Interaktives Phasenebenen-Diagramm anzeigen (GFM vs. GFL vs. Synchrongenerator)</span>
+</summary>
 
-Wenn der GFM-Wechselrichter von einer Batteriebank (BESS-GFM) gestützt wird, bietet die Kombination zwei zusätzliche Dienste:
+<div className="collapsibleBody">
+<PhasePlanePlot lang={frontMatter.locale || 'de'} />
 
-- **Synthetische Trägheit**: Der Algorithmus misst kontinuierlich $df/dt$ und passt die Ausgangsleistung im Bereich von **Dutzenden von Millisekunden** proportional an, wodurch das Verhalten einer rotierenden Masse emuliert wird.
-- **FFR**: Bei Überschreiten eines RoCoF-Schwellenwerts oder einer Frequenzabweichung speist das BESS **subzyklisch** (≤ 0,25 s) einen vordefinierten Wirkleistungsblock ein und bremst den Abfall, bevor die Drehzahlregler der Synchrongruppen die Störung verarbeiten konnten.
+_Abbildung I4 — Phasenebenen-Diagramm: Dynamische Konvergenz von GFM-Wechselrichtern im Vergleich zu GFL und Synchrongenerator bei einer Störung. Das nichtlineare gedämpfte Oszillatormodell (RK4) quantifiziert die Überlegenheit der GFM-Antwort hinsichtlich Wiedereinschaltgeschwindigkeit und Dämpfung von Leistungsschwingungen, ein zentrales Argument für die Einführung von Grid-Forming als verbindliche Anforderung im NC RfG 2.0. Quelle: Eigene Darstellung._
+</div>
 
-Die operativen Erfahrungen von ERCOT (Texas) quantifizieren den Wert dieses Dienstes. Der strukturelle kritische Trägheitsschwellenwert liegt bei etwa **100.000 MW·s**: Unterhalb dieses Niveaus senkt der RoCoF bei einem Ausfall der Kategorie C (~2.750 MW) die Frequenz, bevor die mechanischen Regler eingreifen können. Das System arbeitet mit drei Warnzonen: **grün** (>120.000 MW·s), **gelb** (110.000–119.999 MW·s) und **rot** (&lt;100.000 MW·s, mit erzwungenem Dispatch von synchronen Einheiten außerhalb der Merit-Order).
+</details>
 
-Der _Responsive Reserve Service – Fast Frequency Response_ (RRS-FFR) Markt von ERCOT verlangt: autonome Erkennung eines Abfalls unter 59,85 Hz, Einspeisung von 100 % der vertraglich vereinbarten Leistung in maximal **0,25 s** und Aufrechterhaltung für mindestens 15 Minuten. Verifizierte Ergebnisse zeigen, dass die Integration von **450 MW** unter diesem Schema den kritischen Trägheitsschwellenwert von 100.000 MW·s auf **88.000 MW·s** senken konnte – ein Rückgang von 12 %, der die funktionale Äquivalenz zwischen der Subsekunden-Aktion der Leistungselektronik und der kinetischen Masse der Synchronmaschinen widerspiegelt.
+Wenn der GFM-Wechselrichter durch einen Batteriespeicher (BESS-GFM) gestützt wird, bietet die Kombination zwei zusätzliche Dienste:
 
-Das weltweite Fundament-Erfolgsbeispiel in diesem Bereich ist die **Hornsdale Power Reserve** in Südaustralien (betrieben von Neoen und Tesla). Nach dem Firmware-Update auf Grid-Forming im Jahr 2022 konnte dieses BESS-System mit 150 MW / 193,5 MWh die operative Bereitstellung von **2.000 MWs äquivalenter Trägheit** zertifizieren. Der australische Betreiber AEMO genehmigte diesen Beitrag, der allein etwa 15 % der im Staat erforderlichen Mindestträgheit abdecken kann, und bewies damit empirisch die Machbarkeit der Aufrechterhaltung großer Netze rein durch Leistungselektronik.
+- Synthetische Trägheit: Der Algorithmus misst kontinuierlich $df/dt$ und passt die Ausgangsleistung proportional im Bereich von zehn Millisekunden an, wodurch das Verhalten einer rotierenden Masse nachgeahmt wird.
+- FFR: Bei Überschreitung einer RoCoF-Schwelle oder Frequenzabweichung injiziert der BESS einen vordefinierten Wirkleistungsblock subzyklisch (≤ 0,25 s), wodurch die Abfallflanke abgebremst wird, bevor die Drehzahlregler der Synchrongruppen die Störung verarbeiten konnten.
 
-IGBT-Halbleiter halten jedoch selten Strömen stand, die das **1,2- bis 1,5-Fache** ihres Nennwerts überschreiten. Diese Einschränkung bedeutet, dass der Beitrag der BESS-GFM zur am Knoten verfügbaren Kurzschlussleistung quantitativ begrenzt ist. Das fortschrittlichste Paper zu dieser Grenze ist *Cross-Forming Control* (Dörfler et al., ETH Zürich, 2024), das hybride Steuerungsarchitekturen vorschlägt, um eine Stromsättigung während Fehlerfällen zu vermeiden.
+Die Betriebserfahrung von ERCOT (Texas) quantifiziert den Wert dieses Dienstes. Die strukturelle kritische Trägheitsschwelle liegt bei etwa 100.000 MW·s: Unterhalb dieses Niveaus senkt die RoCoF bei einer Kontingenz der Kategorie C (≈ 2.750 MW) die Frequenz, bevor die mechanischen Regler eingreifen können. Das System arbeitet mit drei Alarmzonen: Grün (> 120.000 MW·s), Gelb (110.000–119.999 MW·s) und Rot (< 100.000 MW·s, mit erzwungenem Dispatch synchroner Einheiten außerhalb der Merit Order).
 
-### Phasenschieber: Kurzschluss und echte Rotationsträgheit
+Der Markt _Responsive Reserve Service – Fast Frequency Response_ (RRS-FFR) von ERCOT erfordert: autonome Erkennung eines Abfalls unter 59,85 Hz, Injektion von 100 % der kontrahierten Leistung in maximal 0,25 s und Aufrechterhaltung für mindestens 15 Minuten. Die verifizierten Ergebnisse zeigen, dass die Integration von 450 MW unter diesem Schema es ermöglichte, die kritische Trägheitsschwelle von 100.000 MW·s auf 88.000 MW·s zu senken – ein Rückgang von 12 %, der die funktionale Äquivalenz zwischen der subsekündlichen Aktion der Leistungselektronik und der kinetischen Masse der Synchrongeneratoren widerspiegelt.
 
-Die Strombegrenzung von Wechselrichtern rechtfertigt den ergänzenden Einsatz von Phasenschiebern (SynCons): rotierende Maschinen mit großer Masse, die synchron gekoppelt, aber im Leerlauf betrieben werden und je nach Erregungsniveau frei Blindleistung austauschen.
+Das weltweit grundlegende Erfolgsbeispiel in diesem Bereich ist die Hornsdale Power Reserve in Südaustralien (betrieben von Neoen und Tesla). Nach ihrem Firmware-Update auf _Grid-Forming_ im Jahr 2022 konnte dieses BESS-System mit 150 MW / 193,5 MWh die operative Bereitstellung von 2.000 MWs äquivalenter Trägheit zertifizieren. Der australische Betreiber AEMO genehmigte diesen Beitrag, der allein etwa 15 % der im Bundesstaat erforderlichen Mindestträgheit decken kann, und demonstrierte empirisch die Machbarkeit, große Netze rein mit Leistungselektronik zu stützen.
 
-Ihr Beitrag ist zweifach: Kurzschlussströme in der Größenordnung von **300–400 %** ihres Nennwerts in den ersten Zyklen, was das SCR am Anschlusspunkt erhöht; und echte Rotationsträgheit, die physikalisch in der **ersten Millisekunde** eines Transienten verfügbar ist, ohne Vermittlung eines Algorithmus oder Kontrolllatenz.
+Allerdings halten IGBT-Halbleiter selten Ströme über dem 1,2- bis 1,5-fachen ihres Nennwerts aus. Diese Einschränkung bedeutet, dass der Beitrag von BESS-GFM zur am Knoten verfügbaren Kurzschlussleistung quantitativ begrenzt ist. Das fortschrittlichste Paper zu dieser Grenze ist *Cross-Forming Control* (Dörfler et al., ETH Zürich, 2024), das hybride Regelungsarchitekturen vorschlägt, um die Stromsättigung während Fehlern zu vermeiden.
 
-Die **Brownfield-Strategie** schlägt einen Einsatzweg vor, der die Investitionen in neue Bauwerke minimiert: Die Umrüstung der großen Generatoren von im Rückbau befindlichen Kohle-, Gas-und-Dampf- oder Kernkraftwerken in Phasenschieber, sobald die Turbinen-Generator-Einheit entkoppelt ist. Diese Umrüstung verwandelt gestrandete Vermögenswerte in Ressourcen für die Systemstabilität und erhält den Wert der bereits installierten 400-kV-Einspeisepunkte.
+### Synchrongeneratoren: Kurzschluss und echte Rotationsträgheit
+
+Die Strombegrenzung von Wechselrichtern rechtfertigt den komplementären Einsatz von Synchrongeneratoren (SynCons): rotierende Maschinen großer Masse, die synchron gekoppelt, aber im Leerlauf betrieben werden und je nach Erregungsniveau frei Blindleistung austauschen.
+
+Ihr Beitrag ist zweifach: Kurzschlussströme in der Größenordnung von 300–400 % ihres Nennwerts während der ersten Zyklen, wodurch der SCR am Anschlusspunkt erhöht wird; und echte Rotationsträgheit, die im ersten Millisekunde eines Transienten physikalisch verfügbar ist, ohne Algorithmusvermittlung oder Regelungslatenz.
+
+Die Brownfield-Strategie schlägt einen Ausbaupfad vor, der die Investitionen in neue Tiefbauarbeiten minimiert: die Umrüstung der großen Generatoren von Kohle-, Gas- oder Kernkraftwerken, die sich im Rückbau befinden, zu Synchrongeneratoren, sobald der Turbinen-Generator-Satz entkoppelt ist. Diese Umrüstung verwandelt gestrandete Vermögenswerte in Ressourcen für die Systemstabilität und bewahrt den Wert der bereits installierten 400-kV-Einspeiseknoten.
 
 ### Hybride Architektur: Komplementarität als Bedingung für Resilienz
 
-Keine der drei Technologiefamilien reicht isoliert eingesetzt aus:
+Keine der drei Technologiefamilien ist isoliert betrachtet ausreichend:
 
-- Die **BESS-GFM** bieten Reaktionsgeschwindigkeit, Regelpräzision und Schwarzstartfähigkeit, sind aber in ihrem Kurzschlussstrom begrenzt.
-- Die SynCons bieten echte Rotationsträgheit und hohe Kurzschlussleistung, aber es fehlt ihnen die subzyklische Agilität der Leistungselektronik und sie verwalten keine Wirkenergie.
-- Die **synthetische Trägheit und FFR** maximieren die Ausnutzung der Energiemarge der Batteriebank, sind aber auf eine minimale Knotenfestigkeit angewiesen – bereitgestellt von den SynCons –, damit ihre Algorithmen effektiv sind.
+- BESS-GFM bieten Reaktionsgeschwindigkeit, Regelungspräzision und _Black-Start_-Fähigkeit, sind aber im Kurzschlussstrom begrenzt.
+- SynCons bieten echte Rotationsträgheit und hohe Kurzschlussleistung, entbehren jedoch der subzyklischen Agilität der Leistungselektronik und verwalten keine Wirkenergie.
+- Synthetische Trägheit und FFR maximieren die Nutzung der Energiereserve des Batteriespeichers, sind aber auf eine minimale Knotensteifigkeit – bereitgestellt durch die SynCons – angewiesen, damit ihre Algorithmen wirksam sind.
 
-![Hybride Architektur für systemische Resilienz in dekarbonisierten Netzen](/figuras/hitachi_hybrid.png) _Abbildung 40. Schema einer hybriden Architektur: Die BESS-GFM steuern die Spannung in Echtzeit und liefern FFR; die Phasenschieber bieten Rotationsträgheit und Kurzschlussleistung für die Knotenfestigkeit. Die Resilienz erfordert beide Komponenten – keine ist ein Ersatz für die andere. Quelle: Hitachi Energy / FUTURED._
+<details className="collapsible">
+<summary>
+  <span>▶ Hybride Architektur und techno-ökonomische Optimierung (Abb. 30–31)</span>
+</summary>
+<div className="collapsibleBody">
 
-Die Minimierung der Gesamtsystemkosten deckt sich nicht mit der Minimierung der LCOE, sondern erfordert die Internalisierung der Essentiellen Zuverlässigkeitsdienste (ERS), die Synchronmaschinen implizit bereitstellten, in das Marktdesign.
+![Hybride Architektur für systemische Resilienz in dekarbonisierten Netzen](/figuras/hitachi_hybrid.png)
 
-![Techno-ökonomische Optimierung der Resilienz in von IBR dominierten Systemen](/figuras/coste_optimo_ers.png) _Abbildung 41. Das Minimum der Gesamtsystemkosten wird mit einem Mix erreicht, der ERS vergütet, nicht durch die einfache Maximierung der Durchdringung mit Erneuerbaren. Die Differenz zwischen dem LCOE-Optimum und dem Systemoptimum sind die Kosten für nicht vergütete Systemdienstleistungen. Quelle: Julia Matevosyan (ESIG) / FUTURED._
+_Abbildung I5 — Hybride Architektur für systemische Resilienz in dekarbonisierten Netzen (BESS-GFM + Synchrongeneratoren). Das Schema veranschaulicht die Komplementarität zwischen der subzyklischen Reaktionsgeschwindigkeit der Wechselrichter und der echten Rotationsträgheit der Synchrongeneratoren, deren Kombination das gesamte Spektrum der Stabilitätsdienste abdeckt. Quelle: Hitachi Energy / FUTURED._
 
-### KI und Graph Neural Networks (GNN) für die Stabilität
+Die Minimierung der Gesamtsystemkosten fällt nicht mit der Minimierung des LCOE zusammen, sondern erfordert die Internalisierung der Essential Reliability Services (ERS) in der Marktgestaltung, die von Synchrongeneratoren implizit bereitgestellt wurden.
 
-Die Lücke zwischen dem akademischen Stand der Technik und der operativen Realität der europäischen Übertragungsnetzbetreiber wurde beim Stromausfall auf der Iberischen Halbinsel deutlich. Während Netzleitstellen wie die von REE oder RTE (Frankreich) weiterhin traditionelle Werkzeuge der Modalanalyse verwenden, um Phasenzeigermessgeräte (PMU) zu überwachen, hat die Forschungsfront die Vorhersage von Zusammenbrüchen mithilfe von Deep Learning gelöst.
+![Techno-ökonomische Optimierung der Resilienz in IBR-dominierten Systemen](/figuras/coste_optimo_ers.png)
 
-Die Architekturen von **Graph Neural Networks (GNN)** sind inhärent topologisch: Sie verstehen das Stromnetz nicht als unabhängige Variablen, sondern als ein zusammenhängendes Diagramm von Impedanzen. Jüngste mathematische Modelle (wie die von Nauck et al., 2023) wenden GNNs auf Phasendaten an, um das *Stabilitätsbecken* eines Knotens (SNBS) vorherzusagen, bevor die Spannung zu fallen beginnt. In ähnlicher Weise haben auf *Transformern* basierende Architekturen (wie das StaaT-Modell, 2024) gezeigt, dass sie LSTM-Netze bei der Vorhersage der kurzfristigen Spannungsstabilität unter ausschließlicher Verwendung von PMU-Zeitreihen deutlich übertreffen. Die Implementierung eines auf diesen Architekturen basierenden KI-Systems hätte die Verengung der Q-V-Marge am Knoten Granada Minuten vor dem thermischen Zusammenbruch des Transformators erkannt.
+_Abbildung I6 — Techno-ökonomische Optimierung der Resilienz in IBR-dominierten Systemen. Die Kurve zeigt, dass die Minimierung der Gesamtsystemkosten nicht mit der Minimierung des LCOE zusammenfällt, sondern die Internalisierung der Kosten der Essential Reliability Services (ERS) erfordert, die von Synchrongeneratoren implizit bereitgestellt wurden. Quelle: Julia Matevosyan (ESIG) / FUTURED._
 
-### Multi-Agenten-Schwärme für dezentralen Schwarzstart
+</div>
+</details>
 
-Der iberische Schwarzstart 2025 benötigte fast 16 Stunden, um die Halbinsel vollständig wiederherzustellen, und operierte unter dem klassischen zentralisierten Top-Down-Modell. Die Zukunft der Versorgungswiederherstellung, insbesondere mit dem Einsatz von Grid-Forming, deutet auf ein verteiltes Modell hin. Mittels Multi-Agenten-Systemen (MAS) können sich mehrere mit GFM ausgestattete Mikronetze autonom vorsynchronisieren (indem sie durch Konsensalgorithmen miteinander kommunizieren) und so „lebende Inseln“ bilden, die sich anschließend miteinander verbinden. Diese Technik, die bereits in Pilotprojekten wie dem von Holy Cross Energy in Colorado (NREL, 2024) erprobt wurde, hat das Potenzial, die Wiederherstellungszeiten von Tagen auf wenige Stunden zu reduzieren.
+### KI und Graph Neural Networks (GNN) für Stabilität
 
-## Die regulatorische Antwort: Vom veralteten P.O. 7.4 zu obligatorischem Grid-Forming
+Die Kluft zwischen dem akademischen Stand der Technik und der betrieblichen Realität der europäischen ÜNB wurde beim iberischen Blackout deutlich. Während Leitstellen wie die von REE oder RTE (Frankreich) weiterhin klassische Modalanalysetools zur Überwachung von Phasormesseinheiten (PMU) verwenden, hat die Forschung die Kollapsvorhersage durch Deep Learning gelöst.
 
-### Die Mängel des bisherigen Rahmens
+Graph Neural Network (GNN)-Architekturen sind inhärent topologisch: Sie verstehen das Stromnetz nicht als unabhängige Variablen, sondern als einen verbundenen Graphen von Impedanzen. Neuere mathematische Modelle (wie die von Nauck et al., 2023) wenden GNNs auf Phasordaten an, um das *Stabilitätsbecken* eines Knotens (SNBS) vorherzusagen, bevor die Spannung zu fallen beginnt. In ähnlicher Weise haben Architekturen, die auf *Transformern* basieren (wie das Modell StaaT, 2024), gezeigt, dass sie LSTM-Netze bei der Kurzzeit-Spannungsstabilitätsvorhersage unter ausschließlicher Verwendung von PMU-Zeitreihen deutlich übertreffen. Die Implementierung eines auf diesen Architekturen basierenden KI-Systems hätte die Verengung der Q-V-Marge am Knoten Granada Minuten vor dem thermischen Kollaps des Transformators erkannt.
 
-Das zum Zeitpunkt des Stromausfalls geltende Betriebsprotokoll P.O. 7.4 war seit etwa **fünfundzwanzig Jahren** nicht grundlegend überarbeitet worden. Es wies zwei kritische Mängel auf:
+### Multi-Agenten-Schwärme für dezentralen Black-Start
 
-1. **Asymmetrie der Teilnahme**: 82 % des Erzeugungsparks arbeiteten mit einem festen Leistungsfaktor und waren nicht in der Lage, dynamisch Blindleistung einzuspeisen oder zu absorbieren.
-2. **Totzone**: Synchrongeneratoren waren von Maßnahmen ausgenommen, wenn die Spannung zwischen 405 kV und 410 kV blieb, was zu einer stufenweisen Reaktion führte, die strukturell mit der Geschwindigkeit des dokumentierten kapazitiven Transienten unvereinbar war.
+Der iberische _Black-Start_ von 2025 benötigte fast 16 Stunden, um die Halbinsel vollständig wiederherzustellen, wobei das klassische zentralisierte Top-Down-Modell angewendet wurde. Die Zukunft der Versorgungswiederherstellung, insbesondere mit dem Einsatz von _Grid-Forming_, weist auf ein verteiltes Modell hin. Mittels Multi-Agenten-Systemen (MAS) können mehrere mit GFM ausgestattete Mikronetze autonom (durch Kommunikation mittels Konsensalgorithmen) vor-synchronisieren und so „lebende Inseln“ bilden, die später miteinander verbunden werden. Diese Technik, bereits in Pilotprojekten wie dem von Holy Cross Energy in Colorado (NREL, 2024) erprobt, hat das Potenzial, die Wiederherstellungszeiten von Tagen auf bloße Stunden zu reduzieren.
 
-![Kennlinie des ursprünglichen P.O. 7.4: Totzone zwischen 405 kV und 410 kV](/figuras/po74_banda_muerta.png) _Der schattierte Bereich veranschaulicht die „Totzone“ des alten P.O. 7.4: Ein Bereich, in dem der Erzeugungspark nicht verpflichtet war, eine dynamische Antwort zu liefern, was die Abwehr des Systems gegen schnelle kapazitive Transienten außer Kraft setzte. Quelle: REE._
+## Die normative Antwort: Vom veralteten P.O. 7.4 zur obligatorischen Grid-Forming-Regelung
 
-### Überarbeitung des P.O. 7.4, VOLTAIRE-System und neues Vergütungsschema
+### Die Mängel des bestehenden Rahmens
 
-Der Beschluss der CNMC vom 12. Juni 2025 (BOE-A-2025-13076) formulierte das P.O. 7.4 im neuen Rahmen von Nicht-Frequenz-Diensten neu. Die grundlegende Innovation ist der Ersatz des Modells der statischen Sollwerte durch eine **vergütete dynamische Leistung**: präzise Verfolgung von Echtzeit-_Setpoints_, die telematisch vom CECOEL über das CECRE gesendet werden.
+Der zum Zeitpunkt des Blackouts gültige P.O. 7.4 war seit etwa fünfundzwanzig Jahren nicht wesentlich überarbeitet worden. Er wies zwei kritische Mängel auf:
 
-Der Kommunikationskanal wird durch das **VOLTAIRE**-System strukturiert: ein Proportional-Integral-Regelkreis in zwei hierarchischen Schichten. Die Tertiärregelung optimiert global das Spannungsprofil durch reaktive optimale Lastflüsse. Die Sekundärregelung sendet telematische Echtzeitvorgaben mit einer **Abtastauflösung von 4 s**, schließt den Regelkreis auf Parkebene und beseitigt die Abhängigkeit von manuellen Eingriffen des Betreibers bei Transienten geringer Amplitude. Diese Architektur transformiert die Rolle des Erneuerbaren-Parks: vom passiven Verbraucher der Netzspannung zum **aktiven Aktor des nationalen Regelsystems**.
+1. Asymmetrie der Teilnahme: 82 % des Erzeugungsparks arbeiteten mit festem Leistungsfaktor und waren nicht in der Lage, dynamisch Blindleistung zu injizieren oder zu absorbieren.
+2. Totband: Synchrongeneratoren waren von einer Reaktion befreit, wenn die Spannung zwischen 405 kV und 410 kV blieb, was eine stufenweise Reaktion konfigurierte, die strukturell mit der Geschwindigkeit des dokumentierten kapazitiven Transienten unvereinbar war.
 
-Die damit verbundene Vergütung umfasst: **2 €/MVArh** für die Bereitstellung in Echtzeit während der Stunden mit positiver Nettoproduktion; und für Stunden mit null Produktion – die nächtliche Periode, in der der Ferranti-Effekt der unbelasteten Leitungen Überspannungen erzeugt – eine an den durchschnittlichen Tagespreis gekoppelte Vergütung:
+![Kennlinie des ursprünglichen P.O. 7.4: Totband zwischen 405 kV und 410 kV](/figuras/po74_banda_muerta.png)
 
-$$r_Q = 0,05 \times 1,15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]$$
+_Abbildung I7 — Kennlinie des ursprünglichen P.O. 7.4: Totband zwischen 405 kV und 410 kV. Der schattierte Bereich veranschaulicht den Bereich, in dem der Erzeugungspark nicht zur dynamischen Reaktion verpflichtet war, was die Systemabwehr gegen schnelle kapazitive Transienten strukturell behinderte, deren Zeitskala – unter 100 ms – mit der in der Norm vorgesehenen stufenweisen Reaktion unvereinbar war. Quelle: REE._
 
-BESS-Systeme erhalten zusätzlich eine Verfügbarkeitszahlung von **2,7 €/MW/Tag**, bedingt durch die Aufrechterhaltung einer Erfüllungsquote gültiger Stichproben von über **90 %**.
+### Überarbeitung des P.O. 7.4, System VOLTAIRE und neues Vergütungsschema
+
+Der Beschluss der CNMC vom 12. Juni 2025 (BOE-A-2025-13076) formulierte den P.O. 7.4 im neuen Rahmen der Nicht-Frequenz-Dienstleistungen neu. Die grundlegende Innovation ist die Ersetzung des Modells statischer Vorgaben durch eine dynamische, vergütete Leistung: präzise Verfolgung von _Setpoints_ in Echtzeit, die vom CECOEL über das CECRE telemetrisch gesendet werden.
+
+Der Kommunikationskanal wird über das System VOLTAIRE realisiert: ein proportional-integraler Regelkreis in zwei hierarchischen Ebenen. Die Tertiärregelung optimiert global das Spannungsprofil mittels reaktiver optimaler Lastflussberechnung. Die Sekundärregelung sendet Echtzeit-Sollwerte mit einer Abtastauflösung von 4 s, schließt den Regelkreis auf Parkebene und beseitigt die Abhängigkeit von der manuellen Reaktion des Bedieners bei Transienten kleiner Amplitude. Diese Architektur wandelt die Rolle des Erneuerbaren-Parks: vom passiven Verbraucher der Netzspannung zum aktiven Stellglied des nationalen Regelsystems.
+
+Die zugehörige Vergütung umfasst: 2 €/MVArh für die Echtzeiterbringung in Stunden mit positiver Nettoproduktion; und für Stunden mit Nullproduktion – Nachtzeit, in der der Ferranti-Effekt der unbelasteten Leitungen Überspannungen erzeugt – eine Vergütung, die an den durchschnittlichen Tagespreis (PMD) indexiert ist:
+
+$$
+r_Q = 0{,}05 \times 1{,}15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]
+$$
+
+*(Formel: BOE-A-2025-13076, Beschluss CNMC 12. Juni 2025)*
+
+BESS-Systeme erhalten zusätzlich eine Verfügbarkeitszahlung von 2,7 €/MW/Tag, gekoppelt an die Aufrechterhaltung einer Erfüllungsquote gültiger Proben von über 90 %.
 
 <ForensicTable 
-    title="TABELLE 17 | P.O. 7.4 REGULATORY FRAMEWORK COMPARISON"
-    source="CNMC / REE"
-  >
-
-| Operatives Merkmal | Ursprüngliches P.O. 7.4 (vor 2025) | Aktualisierter Rahmen (nach 2025) |
-| --- | --- | --- |
-| Natur der Regelung | Statisch und asymmetrisch. Betrieb in Stufen. | Dynamisch, kontinuierlich und proportional zur Abweichung. |
-| IBR-Beteiligung | Passives Grid-following mit festem Leistungsfaktor. | Obligatorisches Grid-forming. Aktive Regelung von $V$ und $Q$. |
-| Totzone | 405–410 kV ohne obligatorische Reaktion. | Eliminiert oder reduziert auf ±0,5 % von $U_n$. |
-| Blindleistungsreaktion | Langsame Sollwertstufen auf Anforderung des Netzbetreibers. | Automatische Reaktion im geschlossenen Regelkreis (Droop Control). |
-| Vergütung von Q | Basierend auf der deklarierten technischen Verfügbarkeit. | Zonale Märkte für ERS-Dienste. |
-| Beobachtbarkeit | SCADA 400-kV-Telemetrie, Auflösung von mehreren Sekunden. | PMU und 4-s-Telemetrie für verteilte IBR. |
-| Sanktionssystem | Keine spezifischen Sanktionen bei Nichterfüllung der Blindleistung. | Sanktionen bei Nichterfüllung der Mindestquote von 90 %. |
-
-
-
-</ForensicTable>
-
-<InteractiveCTA 
-  title="SIMULATOR: AUTOMATISCHE DROOP-ANTWORT" 
-  description="Simulieren Sie die automatische Droop-Antwort des Rahmens nach 2025: Wie viele Millisekunden Unterschied gibt es zwischen der Antwort der ursprünglichen P.O. 7.4 und dem neuen Protokoll bei einem Schritt von 1.050 MVAr?"
-  icon="🌡️"
+  title="Tabelle I3 — Regulatorischer Vergleich des P.O. 7.4"
+  source="CNMC / REE"
 >
-  <TermometroRiesgo />
-</InteractiveCTA>
 
-Das **Königliche Dekret 997/2025** ergänzte die Reform durch vier Dringlichkeitsmaßnahmen: die rechtliche Neudefinition von BESS als Vermögenswerte für Systemstabilitätsdienste; die Bereinigung des Registers veralteter Netzanschlusszusagen; die Verpflichtung zur Telemetrie mit einer Auflösung von &lt; 4 s für den gesamten bedeutenden IBR-Park; und die Verpflichtung zum PSS/POD-Modul in allen neu installierten GFM-Wechselrichtern mit einer Leistung > 10 MW.
-
-Eine aufschlussreiche Spannung entstand während des Prozesses: Im Oktober 2025 beantragte REE, die Erfüllungsanforderung von 75 % auf 90 % der Zeit zu erhöhen. Die CNMC lehnte dies mit der Begründung ab, es sei den **bestehenden Synchrongruppen technisch unmöglich**, dieses Niveau mit den geforderten Anpassungsrampen zu erreichen. Diese Tatsache ist im umgekehrten Sinne bedeutsam: GFM-Wechselrichter könnten diese Anforderung problemlos erfüllen. Die Anpassung des operativen Rahmens an die Fähigkeiten der IBR-GFM schreitet schneller voran als die der synchronen Anlagen, welche die Norm als Anbieter von Systemdienstleistungen ersetzen.
-
-### Der europäische Rahmen: NC RfG 2.0 und Phase I und Phase II Berichte von ENTSO-E
-
-Der im letzten Jahrzehnt geltende NC RfG wurde nach dem GFL-Paradigma entwickelt: Er standardisierte Einbruchsprofile und Frequenzschwellenwerte, berücksichtigte aber nicht die Möglichkeit, dass keine schwere rotierende Maschine mehr vorhanden sein könnte, der man folgen kann. Dieses konzeptionelle Defizit wurde in den 8 Sekunden des iberischen Zusammenbruchs bewiesen.
-
-Die technische Gruppe von ENTSO-E (TG GFC) fasste ihre Arbeit in zwei Dokumenten zusammen:
-
-- **Phase-I-Bericht (Mai 2024)**: Grundlegende technische Definition von GFM, die vom neuen Kodex gefordert wird – „Spannungsquelle hinter einer konstanten effektiven Reaktanz“ während der ersten Millisekunden. Dieses Zeigermodell verbietet de facto die direkten Abhängigkeiten von PLL-Algorithmen für die Primärregelung.
-- **Phase-II-Bericht (November 2025)**: Veröffentlicht unter dem Eindruck des iberischen Zusammenbruchs, mit der breiten Unterstützung von CENELEC, WindEurope, SolarPower Europe und EASE. Legt verbindlich fest, wie die neuen wechselrichterbasierten Anlagen das System stabilisieren müssen.
-
-Die Verpflichtungen des **NC RfG 2.0** werden technologieunabhängig angewandt und klassifizieren die Module in vier Typen:
-
-<ForensicTable 
-    title="TABELLE 18 | NC RFG 2.0 (PROPOSED) COMPLIANCE TIERS"
-    source="ENTSO-E / Comisión Europea"
-  >
-
-| Typ | Leistung / Anschluss | GFM-Anforderung | Zeitplan |
-| --- | --- | --- | --- |
-| **Typ A** | &lt; 1 MW | Freiwillig. Kriterium des DSO. | N/A |
-| **Typ B** | 1–50 MW | Obligatorisch. Synthetische Trägheit und grundlegende dynamische Unterstützung. | Max. 3 Jahre nach Veröffentlichung des ENTSO-E IGD. |
-| **Typ C** | > 50 MW | Obligatorisch und umfassend. Voller Betrieb als Spannungsquelle; Fehlerstromprofile; POD-Funktionalität. | 3 Jahre nach Verabschiedung durch die Europäische Kommission. |
-| **Typ D** | ≥ 110 kV oder > 75 MW | Wie Typ C plus Zertifizierungstests. | 3 Jahre nach Verabschiedung durch die Europäische Kommission. |
-| **ESM (BESS)** | Je nach Kategorie | Wie äquivalentes PPM. V2G-Systeme mit gemeinsamer Kapazität > 1 MW als ESM Typ B klassifiziert. | Je nach Kategorie. |
-
-
-
-</ForensicTable>
-
-<InteractiveCTA 
-  title="SIMULATOR: AUSWIRKUNG DES GRID-FORMING" 
-  description="Konfigurieren Sie die Simulation mit 15 % aktiver BESS-Grid-Forming-Kapazität. Der Frequenz-Nadir fällt nicht unter 49,5 Hz. Ohne BESS fällt er auf 47,8 Hz."
-  icon="📊"
->
-  <FrequencyChart />
-</InteractiveCTA>
-
-Zum Zeitpunkt der Erstellung dieses Dokuments ist die formelle Annahme des NC RfG 2.0 durch die Europäische Kommission **entpriorisiert und ohne offiziellen Zeitplan**, was ein Fenster regulatorischer Unsicherheit schafft, das die nationalen Betreiber durch präventive Maßnahmen außerhalb des Kodex verwalten.
-
-## Märkte für Essentielle Zuverlässigkeitsdienste (ERS)
-
-### Das Headroom-Problem: Warum der Energiemarkt Stabilität nicht vergütet
-
-Damit ein GFM-Wechselrichter bei einem schweren RoCoF oder einer Störung als Spannungsquelle wirken kann, muss er zwingend eine Reserve seiner Scheinleistung ($S_{\max}$) beibehalten, die im stationären Zustand nicht genutzt wird. Diese Reserve – der *Headroom* – erfordert entweder eine bewusste Begrenzung der auf dem Day-Ahead-Markt eingespeisten Wirkleistung oder eine drastische Überdimensionierung der Leistungsstufe seiner IGBTs, was die CAPEX erhöht. Ohne direkte finanzielle Entschädigung ist keine der beiden Optionen kommerziell tragfähig.
-
-Das strukturelle Versagen der regulatorischen Architektur bis zum 28-A lag in ihrem strafenden Ansatz: technische Abweichungen zu ahnden, ohne die Festigkeitsattribute zu vergüten. Die ERS korrigieren diese Asymmetrie.
-
-### Drei Vergütungsmechanismen
-
-**1. Regionale Märkte für synthetische Trägheit und FFR.** Das Design wird in Richtung von Auktionen gehen, bei denen eine Verfügbarkeitszahlung an Anlagen geleistet wird, die in der Lage sind, in Margen von &lt; 5 ms inertyielle Unterstützung zu leisten. Die Logik des Mechanismus ist das **_Revenue Stacking_**: BESS-Systeme erzielen gleichzeitige Einnahmen aus der Energiearbitrage auf dem Day-Ahead-Markt, aus den Auktionen der Sekundär- und Tertiärregelung (aFRR/mFRR) und aus Zahlungen für synthetische Trägheits- und FFR-Kapazitäten. Diese Vielfalt der Einnahmequellen kompensiert die hohen CAPEX der Überdimensionierung und die Einnahmeverluste durch den Blindleistungs-Headroom.
-
-**2. Geografische Signale des Kurzschlussniveaus.** Im Gegensatz zur Frequenz – einer globalen Metrik – sind SCR und Überspannungen **radikal lokale** Phänomene. Die gefährdeten Knotenpunkte des 28-A fallen nicht mit denen der größten installierten Leistungsdichte zusammen. Die ERS-Märkte werden feingranulare räumliche Preissignale übernehmen: vergünstigte Anschlusstarife oder Auktionen für Blindleistungskapazitäten in den peripheren Knotenpunkten, die von den Übertragungsnetzbetreibern mathematisch als Enklaven mit SCR &lt; 2 identifiziert wurden. Der Standort der BESS-GFM an den richtigen Knotenpunkten wird entscheidend für die wirtschaftliche Tragfähigkeit des Projekts.
-
-**3. Ex-ante-Vergütung für SynCons.** Für Infrastrukturen wie SynCons – die reine physikalische Trägheit und massive Kurzschlussströme liefern, aber keine Energie auf dem Stundenmarkt verkaufen können – sieht die Regulierung _Rate of Return Regulation_-Modelle ohne Aussetzung des Energiepreisrisikos oder langfristige Zuschläge vor, die die Kapitalinvestition absichern.
-
-![Revenue-Stacking-Diagramm für ein BESS-GFM-System im Post-28A-Rahmen](/figuras/ers_revenue_stacking.png) _Gestapelte Einnahmequellen für ein BESS-GFM-System: Day-Ahead-Energiemarkt, Märkte für Frequenzausgleich (aFRR/mFRR), Auktionen für synthetische Trägheit und FFR, und Zahlungen für die Verfügbarkeit von ERS-Blindleistung. Die Vielfalt der Einnahmeströme kompensiert die erforderliche technische Überdimensionierung. Quelle: Eigene Darstellung basierend auf ENTSO-E-Struktur._
-
-### Referenzmodelle: DS3 von EirGrid und RRS-FFR von ERCOT
-
-EirGrid (Irland) und ERCOT (Texas) sind die bewährten operativen Referenzen, auf die das europäische Design zusteuert: Beide Betreiber sind im Vorfeld auf die Herausforderungen von nicht-synchronen Durchdringungen von über 75 % gestoßen.
-
-Das **DS3**-Programm von EirGrid hat die Bereitstellung von Stabilität in 14 spezialisierte Produkte aufgeteilt. Die drei relevantesten für den Kontext des 28-A:
-
-<ForensicTable 
-    title="TABELLE 19 | EIRGRID DS3 SERVICES - CORE PARAMETERS"
-    source="EirGrid / ENTSO-E"
-  >
-
-| Dienst | Technische Definition | Schwellenwert / Fenster |
+| Betriebliches Attribut | Ursprünglicher P.O. 7.4 (vor 2025) | Aktualisierter Rahmen (nach 2025) |
 | --- | --- | --- |
-| **Synchronous Inertial Response (SIR)** | Quasi-sofortige Bereitstellung von Wirkleistung und synchronisierendem Drehmoment bei Frequenzeinbrüchen. Vergütet durch den SIRF-Index = $E_k / P_{\min}$, der die Dispatchierung von Anlagen bestraft, die ungewollt Leistung einspeisen, nur um marginale Trägheit zu liefern. | SIRF ≥ 15 s |
-| **Fast Frequency Response (FFR)** | Schnelle Einspeisung von Wirkleistung nach plötzlichem Frequenzeinbruch. Die validierbare Energie ist das Integral der in den ersten 10 s zusätzlich eingespeisten Leistung. Es wird gefordert, dass die bereitgestellte Energie größer ist als der Verlust bei der Erholung (T+10s → T+20s). | Reaktion zwischen 0,15 s und 2 s |
-| **Steady-State Reactive Power (SSRP)** | Gesamter disponierbarer Blindleistungsbereich ($Q_{\mathrm{range}}$), den der Wechselrichter im kontinuierlichen Betrieb über seinen gesamten Wirkleistungsbereich einspeisen oder aufnehmen kann. Beinhaltet einen günstigen Vergütungsskalierer für IBR, die Blindleistung im Leerlauf liefern können (watt-less VARs). | Stationärer Zustand; jährliche Bewertung durch PLEXOS-Modelle |
-
-
+| Art der Regelung | Statisch und asymmetrisch. Stufenweiser Betrieb. | Dynamisch, kontinuierlich und proportional zur Abweichung. |
+| IBR-Teilnahme | Passives _Grid-Following_ mit festem Leistungsfaktor. | Obligatorisches _Grid-Forming_. Aktive Regelung von $V$ und $Q$. |
+| Totband | 405–410 kV ohne obligatorische Reaktion. | Abgeschafft oder auf ±0,5 % von $U_n$ reduziert. |
+| Blindleistungsantwort | Langsame Sollwertstufen nach Aufforderung durch den ÜNB. | Automatische Reaktion im geschlossenen Regelkreis (_Droop Control_). |
+| Vergütung von Q | Basierend auf erklärter technischer Verfügbarkeit. | Zonale Märkte für ERS-Dienstleistungen. |
+| Beobachtbarkeit | SCADA-Telemetrie 400 kV, Auflösung mehrere Sekunden. | PMU und 4-s-Telemetrie für verteilte IBR. |
+| Sanktionsregime | Keine spezifischen Strafen für Nichteinhaltung der Blindleistung. | Strafen für Nichteinhaltung der Mindestquote von 90 %. |
 
 </ForensicTable>
 
-Der Vergleich zwischen DS3 und RRS-FFR legt eine Architektur von **zweischichtigen ERS-Märkten** für den europäischen Kontext nahe: eine Schicht von geografischen Kurzschlusssignalen – analog zum SSRP von EirGrid – und eine Schicht der subzyklischen Frequenzantwort – analog zum RRS-FFR von ERCOT.
+Der Unterschied in der Reaktionsgeschwindigkeit zwischen dem ursprünglichen Rahmen und der neuen Regulierung kann im [Anhang IX · Methodik und Modelle](./anexo-metodologia-modelos-datos-vivos.mdx) überprüft werden, wo der Simulator der automatischen _Droop_-Antwort erhalten bleibt.
 
-### Entwicklung des spanischen Rahmens im Jahr 2026
+Das Königliche Dekret 997/2025 ergänzte die Reform um vier dringende Maßnahmen: rechtliche Neudefinition von BESS als Vermögenswerte für Systemstabilitätsdienste; Bereinigung des Registers veralteter Netzanschlussgenehmigungen; Verpflichtung zur Telemetrie mit einer Auflösung < 4 s für den gesamten signifikanten IBR-Park; und Verpflichtung zum PSS/POD-Modul in allen neu installierten GFM-Wechselrichtern mit einer Leistung > 10 MW.
 
-Am 8. Mai 2026 eröffnete die CNMC ein öffentliches Anhörungsverfahren zur Änderung der Betriebsprotokolle P.O. 7.4 und P.O. 14.4 (Aktenzeichen DCOOR/DE/006/26), das auf die Schaffung von zonalen Märkten für Nicht-Frequenz-Dienste mit aktiver Beteiligung von IBR und BESS abzielt.
+Eine aufschlussreiche Spannung trat während des Prozesses zutage: Im Oktober 2025 beantragte REE, die Erfüllungsanforderung von 75 % auf 90 % der Zeit zu erhöhen. Die CNMC lehnte dies mit der Begründung der technischen Unmöglichkeit für die bestehenden Synchrongruppen ab, dieses Niveau mit den erforderlichen Anpassungsrampen zu erreichen. Die Tatsache ist in umgekehrter Richtung bedeutsam: GFM-Wechselrichter könnten diese Anforderung problemlos erfüllen. Die Anpassung des Betriebsrahmens an die Fähigkeiten der IBR-GFM schreitet schneller voran als die der synchronen Anlagen, die die Norm als Anbieter von Systemdienstleistungen ersetzt.
 
-Die strukturelle Lehre des 28-A schreibt eine Konsequenz von weitaus größerer Tragweite in das europäische Regulierungsdesign ein als jede inkrementelle Anpassung der Betriebsprotokolle: Die physikalischen Eigenschaften, die synchrone Systeme inhärent bereitstellten – Trägheit, Kurzschlussleistung, autonome Spannungsregelung – **sind keine kostenlosen Externalitäten mehr**, sondern Dienstleistungen, deren Bereitstellung definiert, verifiziert und explizit vergütet werden muss. Das reine Grenzkostenmodell für Energie ist strukturell unfähig, diese Attribute zu vergüten. Ohne diese wirtschaftliche Übersetzung der Resilienz wird auf mittlere Sicht keine technische Anforderung des NC RfG 2.0 tragfähig sein.
+### Der europäische Rahmen: NC RfG 2.0 und die Phase-I- und Phase-II-Berichte von ENTSO-E
+
+Der in den letzten zehn Jahren gültige NC RfG wurde unter dem GFL-Paradigma entworfen: Er standardisierte Spannungseinbruchsprofile und Frequenzschwellen, berücksichtigte aber nicht die Möglichkeit, dass keine schwere rotierende Maschine mehr vorhanden ist, der gefolgt werden kann. Dieses konzeptionelle Defizit wurde in den 8 Sekunden des iberischen Zusammenbruchs demonstriert.
+
+Die technische Gruppe von ENTSO-E (TG GFC) kristallisierte ihre Arbeit in zwei Dokumenten:
+
+- Phase-I-Bericht (Mai 2024): Grundlegende technische Definition des GFM, die vom neuen Code gefordert wird – „Spannungsquelle hinter einer konstanten effektiven Reaktanz“ während der ersten Millisekunden. Dieses Zeigermodell verbietet de facto direkte Abhängigkeiten von PLL-Algorithmen für die Primärregelung.
+- Phase-II-Bericht (November 2025): Veröffentlicht unter dem Gewicht der Beweise des iberischen Zusammenbruchs, mit der übergreifenden Unterstützung von CENELEC, WindEurope, SolarPower Europe und EASE. Er legt taxativ fest, wie neue wechselrichterbasierte Anlagen das System stabilisieren müssen.
+
+Die Verpflichtungen des NC RfG

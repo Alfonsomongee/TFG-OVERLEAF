@@ -4,61 +4,71 @@ hide_title: true
 title: "Die Auswirkungen in Frankreich und Portugal"
 ---
 
-
 import GlitchTitle from "@site/src/components/GlitchTitle";
+import BlackoutTimeline from "@site/src/components/BlackoutTimeline/BlackoutTimeline";
+import TorraoSynchronousCompensatorFigure from '@site/src/components/TorraoSynchronousCompensatorFigure';
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>Die Auswirkungen in Frankreich und Portugal</GlitchTitle>
 
-Der Zusammenbruch des iberischen Stromsystems machte weder an den Pyrenäen noch am Guadiana halt. Die Gewalt des elektrodynamischen Einschwingvorgangs vom 28. April strahlte eine Schockwelle über die Verbundnetze aus, die das französische Netz extremem Betriebsstress aussetzte und das portugiesische System in einen Totalausfall riss, aus dem es erst nach einer siebzehnstündigen Wiederherstellung von Null an wieder herauskommen konnte. Diese beiden Episoden – eine abgefangen, die andere katastrophal – veranschaulichen präzise die Bedingungen, die darüber entscheiden, ob ein System eine Störung dieser Größenordnung abweisen kann oder ihr erliegt.
+Der Zusammenbruch des iberischen Stromsystems machte weder an den Pyrenäen noch am Guadiana halt. Die Wucht des elektrodynamischen Einschwingvorgangs vom 28. April strahlte eine Schockwelle über die Verbundnetze aus, die das französische Netz extremen Betriebsbelastungen aussetzte und das portugiesische System in einen Totalausfall riss, aus dem es nur durch eine siebzehnstündige Wiederherstellung aus dem Nichts befreit werden konnte. Diese beiden Episoden – eine eingedämmt, die andere katastrophal – veranschaulichen präzise die Bedingungen, die darüber entscheiden, ob ein System eine Störung dieser Größenordnung abweisen kann oder ihr erliegen muss.
 
 ## Frankreich (RTE): Das System, das an der Grenze widerstand
 
-### Die Auslösung von Golfech 1 und die Gegenstromkomponenten
+### Die Abschaltung von Golfech 1 und die Gegenstromkomponenten
 
-Der Ausbreitungsmechanismus nach Frankreich wurde von einem plötzlichen und massiven Überschuss an kapazitiver Blindleistung dominiert. Sekunden vor der Trennung absorbierte die HVDC-Verbindung Baixas–Santa Llogaia *870 MVAr* als dynamische Senke für die Spannungsregelung an der Grenze. Der sofortige Verlust dieser Senke, kombiniert mit der Öffnung der 400-kV-Leitungen, die von der französischen Seite aus im Leerlauf blieben – wodurch durch den kapazitiven Ferranti-Effekt Blindleistung erzeugt wurde –, führte zu einem Profil schwerer transienter Überspannungen, das sich schnell über den gesamten Südwesten Frankreichs ausbreitete.
+Der Ausbreitungsmechanismus nach Frankreich wurde durch einen plötzlichen und massiven Überschuss an kapazitiver Blindleistung dominiert. Sekunden vor der Trennung absorbierte die HVDC-Verbindung Baixas–Santa Llogaia *870 MVAr* als dynamische Senke für die Spannungsregelung an der Grenze. Der sofortige Verlust dieser Senke, kombiniert mit der Öffnung der 400-kV-Leitungen, die von der französischen Seite aus im Leerlauf blieben – wodurch durch den kapazitiven Ferranti-Effekt Blindleistung erzeugt wurde –, führte zu einem Profil schwerer transienter Überspannungen, das sich schnell im gesamten Südwesten Frankreichs ausbreitete.
 
-Angesichts dieses Anstiegs zwang die sekundäre Spannungsregelung von RTE die großen Synchrongeneratoren der Region zu einem tiefen Untererregungsbetrieb. Der kritischste Fall war **Block 1 des Kernkraftwerks Golfech**, ein Block mit einer Nennleistung von **1.290 MW**. Um das Spannungsprofil zu halten, reduzierten seine automatischen Spannungsregler (AVR) den Erregerstrom des Rotors drastisch, was dazu führte, dass die Maschine um 12:33 Uhr MESZ *426 MVAr* absorbierte.
+Angesichts dieser Eskalation zwang die sekundäre Spannungsregelung von RTE die großen Synchrongeneratoren der Region zu einem tiefen Untererregungsbetrieb. Der kritischste Fall war Block 1 des Kernkraftwerks Golfech, ein Block mit einer Nennleistung von 1.290 MW. Um das Spannungsprofil zu halten, reduzierten seine automatischen Spannungsregler (AVR) den Erregerstrom des Rotors drastisch, was dazu führte, dass die Maschine um 12:33 Uhr MESZ *426 MVAr* aufnahm.
 
-Dieser extreme Zustand gefährdet die Stabilität der Maschine erheblich. Durch die Verringerung des magnetischen Flusses im Luftspalt wird das synchronisierende Drehmoment, das den Rotor an die Netzfrequenz koppelt, geschwächt. Gleichzeitig erzeugte der asymmetrische Charakter der Trennvorgänge an der Grenze beträchtliche Gegenstromkomponenten im 400-kV-Netz. Die Theorie der symmetrischen Komponenten besagt, dass diese Ströme ein magnetisches Drehfeld erzeugen, das sich entgegen der Rotordrehrichtung bewegt, wodurch Wirbelströme mit doppelter Frequenz (100 Hz) im massiven Rotorkörper und in den Stirnringen induziert werden, was innerhalb von Sekunden zu einer schweren adiabatischen Erwärmung führt.
+Dieser extreme Zustand gefährdet die Stabilität der Maschine erheblich. Durch die Verringerung des magnetischen Flusses im Luftspalt wird das synchronisierende Drehmoment, das den Rotor an die Netzfrequenz koppelt, geschwächt. Gleichzeitig erzeugte der asymmetrische Charakter der Trenntransienten an der Grenze beträchtliche Gegenstromkomponenten im 400-kV-Netz. Die Theorie der symmetrischen Komponenten besagt, dass diese Ströme ein magnetisches Drehfeld erzeugen, das sich entgegen der Rotordrehrichtung bewegt, wodurch in der massiven Rotorwelle und in den Stirnringen Wirbelströme mit doppelter Frequenz (100 Hz) induziert werden, die innerhalb von Sekunden zu einer schweren adiabatischen Erwärmung führen.
 
-Um **12:33:35.759 Uhr MESZ** – nur **fünfzehn Sekunden** nach dem iberischen Zusammenbruch – aktivierte die Kombination aus Untererregungsinstabilität und Erwärmung durch Phasenunsymmetrie die internen Generatorschutzrelais (Erregerverlustrelais ANSI 40 und Unsymmetrie-/Gegenstromrelais ANSI 46), was die Auslösung und vollständige Trennung von Golfech 1 erzwang. Der gleichzeitige Verlust der HVDC-Verbindung und dieses nuklearen Pfeilers zwang RTE, seine Lastflüsse aus nördlicheren Regionen neu zu konfigurieren, um einen eigenen Kaskadenzusammenbruch zu vermeiden. Der Reaktor wurde am 29. April erfolgreich wieder mit dem Netz synchronisiert.
+Um 12:33:35.759 Uhr MESZ – nur fünfzehn Sekunden nach dem iberischen Zusammenbruch – aktivierte die Kombination aus Untererregungsinstabilität und Erwärmung durch Phasenunsymmetrie die internen Generatorschutzrelais (Erregerverlustrelais ANSI 40 und Unsymmetrie-/Gegenstromrelais ANSI 46), was die Abschaltung und vollständige Trennung von Golfech 1 erzwang. Der gleichzeitige Verlust der HVDC-Verbindung und dieses nuklearen Eckpfeilers zwang RTE, seine Leistungsflüsse aus nördlicheren Regionen umzukonfigurieren, um einen eigenen Kaskadenzusammenbruch zu vermeiden. Der Reaktor wurde am 29. April erfolgreich wieder mit dem Netz synchronisiert.
 
-### Auslösung im Subtransmissionsnetz: Die Leitung Dax-Arriosses (63 kV)
+### Abschaltung im Subtransmissionsnetz: Die Leitung Dax-Arriosses (63 kV)
 
-Die Auswirkungen beschränkten sich nicht auf die konventionelle Erzeugung. Der aufschlussreichste Eintrag über die Gewalt des Einschwingvorgangs in Frankreich war die Auslösung der **63-kV-Freileitung Dax–Arriosses** um **12:33:20.551 Uhr MESZ**, ausgelöst durch den Pendelungsschutz (ANSI 78), der für die Auslösung beim ersten Ausschlag (first beat) der Schwingung konfiguriert war.
+Die Auswirkungen beschränkten sich nicht auf die konventionelle Erzeugung. Der aufschlussreichste Beleg für die Wucht der Transienten in Frankreich war die Abschaltung der 63-kV-Freileitung Dax–Arriosses um 12:33:20.551 Uhr MESZ, ausgelöst durch den Pendelungsschutz (ANSI 78 Relais), der für die Auslösung beim ersten Ausschwingvorgang (_first beat_) der Pendelung konfiguriert war.
 
-Das Ansprechen eines Pendelungsschutzes auf einer 63-kV-Ebene ist außergewöhnlich anomal: Leistungspendelungen (power swinging) werden normalerweise auf 400-kV-Korridoren erfasst. Ihr Auftreten auf 63 kV deutet darauf hin, dass die PLLs einer massiven Ansammlung von Wechselrichtern in Aquitanien aufgrund des asymmetrischen Einschwingvorgangs und der Überspannung ihre Winkelreferenz zum Hauptnetz verloren. Das Relais interpretierte die zyklische Umkehr der Ströme der unkontrollierten Wechselrichter als klassischen Pendelungsverlust von rotierenden Maschinen und trennte das Teilnetz.
+Das Ansprechen eines Pendelungsschutzes auf einer 63-kV-Ebene ist außergewöhnlich anomal: Leistungspendelungen (_power swinging_) werden normalerweise auf 400-kV-Korridoren erfasst. Ihr Auftreten auf 63 kV deutet darauf hin, dass die PLLs einer massiven Ansammlung von Wechselrichtern in Aquitanien aufgrund der asymmetrischen Transienten und der Überspannung ihre Winkelreferenz zum Hauptnetz verloren. Das Relais interpretierte die zyklische Umkehr der Ströme der ungeregelten Wechselrichter als klassischen Pendelungsverlust von rotierenden Maschinen und trennte das Teilnetz.
 
 <ForensicTable 
-  title="TABELLE 10 | EUROPÄISCHE DIMENSIONSDATEN" 
+  title="Tabelle J1 — Kritische Ereignisse in Frankreich"
   source="Eigene Darstellung"
 >
 
 | Kritisches Element in Frankreich | Zeit (MESZ) | Technische Ursache | Systemische Auswirkung |
 | --- | --- | --- | --- |
-| HVDC-Verbindung Baixas–Santa Llogaia | 12:33:20 | Verlust des empfangenden iberischen Netzes | Plötzlicher Verlust einer 870-MVAr-Senke |
-| 63-kV-Leitung Dax–Arriosses | 12:33:20.551 | Pendelungsschutz (1. Ausschlag) | Trennung eines Teilnetzes und Abwurf lokaler IBRs |
-| Kernkraftwerk Golfech 1 (1.290 MW) | 12:33:35.759 | Untererregungsgrenze / Relais ANSI 40 und 46 | Verlust der Absorption von 426 MVAr; strukturelle Belastung |
+| HVDC-Verbindung Baixas–Santa Llogaia | 12:33:20 | Verlust des iberischen Empfangsnetzes | Plötzlicher Verlust der 870 MVAr-Senke |
+| 63-kV-Leitung Dax–Arriosses | 12:33:20.551 | Pendelungsschutz (1. Ausschwingvorgang) | Trennung des Teilnetzes und Abschaltung lokaler IBR |
+| Kernkraftwerk Golfech Block 1 (1.290 MW) | 12:33:35.759 | Untererregungsgrenze / ANSI 40 und 46 Relais | Verlust der 426 MVAr-Aufnahme; strukturelle Belastung |
 
 </ForensicTable>
 
-### RTE als "unendlicher Knoten" während der Top-Down-Wiederherstellung
+### RTE als «unendlicher Knoten» während der _Top-Down_-Wiederherstellung
 
-Um **12:40 Uhr MESZ** stabilisierte sich das Spannungsprofil im Südwesten Frankreichs. Von diesem Moment an übernahm das RTE-Netz eine strukturell unersetzliche Rolle: Es bot einen festen elektromagnetischen Anker für die Wiederherstellung des spanischen Systems mittels einer Top-Down-Strategie.
+Um 12:40 Uhr MESZ stabilisierte sich das Spannungsprofil im Südwesten Frankreichs. Von diesem Moment an übernahm das RTE-Netz eine strukturell unersetzliche Rolle: Es bot einen festen elektromagnetischen Anker für die Wiederherstellung des spanischen Systems mittels einer _Top-Down_-Strategie.
 
-In der Theorie der elektrischen Energieversorgungssysteme ist ein **"unendlicher Knoten"** (infinite bus) eine Spannungsquelle mit unendlicher Trägheit und einer äquivalenten Thévenin-Impedanz von Null. In der Praxis verhielt sich das französische 400-kV-Netz, da Frankreich fest mit der enormen Trägheitsmasse Kontinentaleuropas verbunden ist, betrieblich wie ein unendlicher Knoten für das zusammengebrochene iberische Netz.
+In der Theorie der Energieversorgungssysteme ist ein «unendlicher Knoten» (_infinite bus_) eine Spannungsquelle mit unendlicher Trägheit und einer äquivalenten Thévenin-Impedanz von Null. In der Praxis verhielt sich das 400-kV-Netz Frankreichs, das fest mit der enormen Trägheitsmasse Kontinentaleuropas verbunden ist, betriebstechnisch wie ein unendlicher Knoten für das zusammengebrochene iberische Netz.
 
-Um **12:39 Uhr MESZ** forderte REE formell von RTE die Spannungswiederherstellung im Umspannwerk Hernani vom französischen Umspannwerk Argia aus an. Um **12:41 Uhr MESZ** stimmte RTE zu, zunächst bis zu **400 MW** bereitzustellen, um die ersten Wiedereinschaltungen im Norden Spaniens zu stabilisieren. Beim Schließen des Grenzschalters gab Frankreich seine Nennfrequenz (50,00 Hz) und seine starre Spannungsregelung auf den ersten spanischen Knoten vor. Diese importierte Kurzschlussleistung absorbierte die brutalen Blindleistungsungleichgewichte und die unvermeidlichen Wirkleistungssprünge beim Einschalten leerer 400-kV-Leitungen. Ohne die Trägheitsverankerung dieses französischen unendlichen Knotens wären die Versuche von REE, die Spannung wiederherzustellen, unerträglichen Schwingungen ausgesetzt gewesen, die ihre Schutzrelais erneut ausgelöst hätten. Im Laufe des Nachmittags stieg der stabilisierende französische Leistungsfluss auf **1.400 MW** an und bildete das Rückgrat der Normalisierung des spanischen Systems.
+Um 12:39 Uhr MESZ forderte REE formell von RTE die Wiederherstellung der Spannung im Umspannwerk Hernani vom französischen Umspannwerk Argia aus. Um 12:41 Uhr MESZ stimmte RTE zu, zunächst bis zu 400 MW bereitzustellen, um die ersten Wiedereinschaltungen im Norden Spaniens zu stabilisieren. Beim Schließen des Grenzschalters gab Frankreich seine Nennfrequenz (50,00 Hz) und seine starre Spannungsregelung auf den ersten spanischen Knoten vor. Diese importierte Kurzschlussleistung absorbierte die brutalen Blindleistungsungleichgewichte und die unvermeidlichen Wirkleistungssprünge beim Einschalten der leeren 400-kV-Leitungen. Ohne die Trägheitsverankerung dieses französischen unendlichen Knotens wären die Versuche von REE, die Spannung wiederherzustellen, unerträglichen Schwingungen ausgesetzt gewesen, die erneut ihre Schutzrelais ausgelöst hätten. Im Laufe des Nachmittags stieg der stabilisierende französische Leistungsfluss auf bis zu 1.400 MW an und bildete das Rückgrat der Normalisierung des spanischen Systems.
 
-## Portugal (REN): Der mitgerissene Zusammenbruch und die Bottom-Up-Wiederherstellung
+---
+
+<BlackoutTimeline />
+
+_Abbildung J1 — Unterschiedliche Reaktionen von RTE und REN auf die iberische Transiente. Die Zeitachse vergleicht die operative Eindämmung Frankreichs – belastetes, aber erhaltenes Netz, das später zum _Top-Down_-Anker für Spanien wurde – mit dem totalen Zusammenbruch Portugals und dessen anschließender _Bottom-Up_-Wiederherstellung mittels Inselnetzen, Wiedereinschaltfehlern, Synchronschwungradbetrieb in Torrão und endgültiger Synchronisation bei 0 MW. Quelle: Eigene Darstellung basierend auf ENTSO-E, RTE und REN._
+
+---
+
+## Portugal (REN): Der mitgerissene Zusammenbruch und die _Bottom-Up_-Wiederherstellung
 
 ### Warum Portugal sich nicht isolieren konnte
 
-Während Frankreich über ein starres Netz verfügte, das die Störung durch Trennung der Verbindungen abweisen konnte, war die Infrastruktur von REN elektrisch und geografisch so eng mit Spanien gekoppelt, dass die Einrichtung eines rechtzeitigen Inselbetriebs physikalisch unmöglich war. Portugal erlag einem mitgerissenen Zusammenbruch, der von der Blindleistungs-Spannungs-Kopplung (Q-V) dominiert wurde: Die Auslösungen in Südspanien entfernten kritische Knoten für die Blindleistungsaufnahme, die Überspannung breitete sich ungehindert auf portugiesische Umspannwerke aus, und der Frequenzabfall aktivierte die kombinierten UFLS-Schemata von REE und REN. Trotz des massiven Lastabwurfs war der RoCoF so ausgeprägt, dass die mechanischen Verzögerungen der Leistungsschalter (50–100 ms) es unmöglich machten, das System auszugleichen, bevor die Unterfrequenzschutzrelais die letzten thermischen Turbinen abwarfen.
+Während Frankreich über ein starres Netz verfügte, das die Störung durch Trennung der Verbindungen abweisen konnte, war die Infrastruktur von REN elektrisch und geografisch so eng mit Spanien gekoppelt, dass die Einrichtung eines isolierten Inselbetriebs rechtzeitig physikalisch unmöglich war. Portugal erlag einem mitgerissenen Zusammenbruch, der durch die Blindleistungs-Spannungs-Kopplung (Q-V) dominiert wurde: Die Abschaltungen in Südspanien entzogen kritische Knoten der Blindleistungsaufnahme, die Überspannung breitete sich ungehindert zu den portugiesischen Umspannwerken aus, und der Frequenzabfall aktivierte die kombinierten UFLS-Schemata von REE und REN. Trotz der massiven Lastabwürfe war die Frequenzänderungsrate (RoCoF) so ausgeprägt, dass die mechanischen Verzögerungen der Leistungsschalter (50–100 ms) es unmöglich machten, das System auszugleichen, bevor die Unterfrequenzschutzrelais die letzten thermischen Turbinen abkoppelten.
 
 <ForensicTable 
-  title="TABELLE 11 | EUROPÄISCHE DIMENSIONSDATEN" 
-  source="Eigene Darstellung"
+  title="Tabelle J2 — UFLS: Abgeworfene Last auf der Halbinsel"
+  source="PMU-Aufzeichnungen von REN und REE"
 >
 
 | Frequenzschwelle (Hz) | Abgeworfene Last in Portugal (MW) | Abgeworfene Last in Spanien (MW) | Gesamt (MW) |
@@ -72,36 +82,40 @@ Während Frankreich über ein starres Netz verfügte, das die Störung durch Tre
 
 </ForensicTable>
 
-
-
 ### Die Wiederherstellung: Chronik von Fehlern und Lösungen
 
-Ohne verfügbare externe Verbindungen führte REN eine Bottom-Up-Wiederherstellung durch, die vollständig auf eigenen Schwarzstartfähigkeiten basierte. Die Abfolge offenbart die strengen Grenzen, die die Gesetze des Elektromagnetismus dem Prozess auferlegen.
+Ohne verfügbare externe Verbindungen führte REN eine _Bottom-Up_-Wiederherstellung durch, die vollständig auf eigenen Schwarzstartfähigkeiten basierte. Die Abfolge zeigt die strengen Grenzen auf, die die Gesetze des Elektromagnetismus dem Prozess auferlegen.
 
-**12:35–12:45 Uhr MESZ – Erste Insel in Zêzere.** REN ordnete den Schwarzstart des HPP 1-Centro an. Um 12:45 Uhr arbeitete das Kraftwerk im isochronen Modus und konnte die 220-kV-Sammelschiene des Umspannwerks Zêzere unter Spannung setzen. Die erste Insel war gebildet.
+12:35–12:45 Uhr MESZ — Erstes Inselnetz in Zêzere. REN ordnete den Schwarzstart des Pumpspeicherkraftwerks HPP 1-Centro an. Um 12:45 Uhr arbeitete das Kraftwerk im isochronen Modus und konnte die 220-kV-Sammelschiene des Umspannwerks Zêzere erfolgreich unter Spannung setzen. Das erste Inselnetz war gebildet.
 
-**12:49 Uhr MESZ – Zusammenbruch durch sympathetic inrush.** Das Protokoll verlangte die Spannungszuschaltung des Transformators 4 von Zêzere (170 MVA, Übersetzung 220/60 kV). Beim Schließen des Schalters löste HPP 1-Centro sofort aus. Die Ursache war das **Phänomen des sympathetic inrush current**: Ein 170-MVA-Transformator, der von einem schwachen Netz aus – einer einzelnen Wasserkraftmaschine mit geringer Kurzschlussleistung und hoher subtransienter Impedanz – zugeschaltet wird, fordert einen Magnetisierungsstrom an, der die Nennstromstärke um eine Größenordnung übersteigen kann, mit einem hohen Anteil an Oberschwingungen zweiter Ordnung und einem extrem niedrigen Leistungsfaktor. Der isolierte Generator konnte diesen Blindleistungsstoß nicht liefern; der transiente Spannungseinbruch aktivierte die Schutzrelais. Versuche, kleine Hilfsaggregate innerhalb desselben Kraftwerks zu starten, scheiterten in den folgenden drei Stunden.
+12:49 Uhr MESZ — Zusammenbruch durch _Magnetizing Inrush_ in einem Netz mit niedriger Kurzschlussleistung (SCR). Das Protokoll verlangte die Inbetriebnahme des Transformators 4 von Zêzere (170 MVA, Übersetzung 220/60 kV). Beim Schließen des Leistungsschalters löste HPP 1-Centro sofort aus. Die Ursache war das Phänomen des _Magnetizing Inrush_ in einem Netz mit niedrigem SCR: Ein 170-MVA-Transformator, der von einem schwachen Netz aus – einer einzelnen Wasserkraftmaschine mit geringer Kurzschlussleistung und hoher subtransienter Impedanz – eingeschaltet wird, zieht einen Magnetisierungsstrom, der die Nennstromstärke um eine Größenordnung übersteigen kann, mit einem hohen Anteil an Oberschwingungen zweiter Ordnung und einem extrem niedrigen Leistungsfaktor. Der isolierte Generator konnte diesen Blindleistungsstoß nicht liefern; der transiente Spannungseinbruch aktivierte die Schutzrelais. Versuche, kleine Hilfsaggregate innerhalb desselben Kraftwerks zu starten, scheiterten in den folgenden drei Stunden.
 
-**12:43–16:38 Uhr MESZ – Fehler bei den GuD-Kraftwerken.** Parallel dazu erteilte REN um 12:43 Uhr den Befehl zum Schwarzstart für das CCGT 1-Norte. Obwohl die Gasturbine mechanisch ansprach, war das Kraftwerk stundenlang nicht in der Lage, den Generatorschalter zu schließen: Die Gleichstrombatteriebänke des Umspannwerks wiesen aufgrund langer Entladung einen Spannungsabfall auf, wodurch die Schließspulen der Hochspannungsleistungsschalter nicht mit Strom versorgt wurden. Die Blockade wurde schließlich um **16:38 Uhr MESZ** behoben.
+12:43–16:38 Uhr MESZ — Fehlschläge bei den GuD-Kraftwerken. Parallel dazu erteilte REN um 12:43 Uhr den Befehl zum Schwarzstart für das GuD-Kraftwerk CCGT 1-Norte. Obwohl die Gasturbine mechanisch ansprach, war das Kraftwerk stundenlang nicht in der Lage, den Generatorschalter zu schließen: Die Gleichstrombatteriebänke des Umspannwerks wiesen aufgrund langer Entladung einen Spannungsabfall auf, sodass die Schließspulen der Hochspannungsschalter nicht mit Energie versorgt wurden. Die Blockade wurde schließlich um 16:38 Uhr MESZ behoben.
 
-**15:40–15:55 Uhr MESZ – Zweiter Versuch und erneuter Zusammenbruch.** Nach Rekonfigurationsarbeiten startete HPP 1-Centro um 15:40 Uhr neu und konnte die 220-kV-Sammelschiene erneut unter Spannung setzen. Um 15:51 Uhr wurde ein lokaler Lastblock von *5 MW* zugeschaltet, aber die Trägheitsanfälligkeit der Insel war so groß, dass die Schwankungen um 15:55 Uhr zu einer erneuten Auslösung führten.
+15:40–15:55 Uhr MESZ — Zweiter Versuch und erneuter Zusammenbruch. Nach Rekonfigurationsarbeiten startete HPP 1-Centro um 15:40 Uhr neu und konnte die 220-kV-Sammelschiene erneut unter Spannung setzen. Um 15:51 Uhr wurde ein lokaler Lastblock von *5 MW* zugeschaltet, aber die Trägheitsanfälligkeit des Inselnetzes war so groß, dass die Fluktuationen um 15:55 Uhr zu einer erneuten Abschaltung führten.
 
-### Die entscheidende Maßnahme: Torrão als reiner Phasenschieber
+<TorraoSynchronousCompensatorFigure />
 
-Es war offensichtlich, dass der Insel die nötige Steifigkeit (Kurzschlussleistung) fehlte, um Lastsprünge zu absorbieren. Nach dem Neustart von HPP 1-Centro um **16:13 Uhr MESZ** führte REN um **17:23 Uhr MESZ** eine technisch höchst anspruchsvolle Maßnahme durch: Es startete **Block 2 des HPP Torrão**, jedoch nicht zur Einspeisung von Wirkleistung, sondern im **reinen Phasenschieberbetrieb**.
+_Abbildung J2 — Torrão als Synchronschwungrad während der portugiesischen Wiederherstellung. Das Schema vergleicht den konventionellen Wasserkraftbetrieb mit dem Synchronschwungradbetrieb und zeigt den Übergang von einer Maschine, die Wirkleistung exportiert, zu einer Ressource, die eine minimale Leistung zur Deckung mechanischer und elektrischer Verluste verbraucht und durch Blindleistung zur Spannungsregelung beiträgt. Quelle: Eigene Darstellung basierend auf ENTSO-E und REN._
 
-Der Betrieb eines Wasserkraftwerks als Phasenschieber bedeutet, die Turbinenkammer zu entleeren, indem Druckluft eingeblasen wird (Absenkung des Unterwasserspiegels), sodass sich das Laufrad frei in der Luft drehen kann, gekoppelt an das Netz. Der Generator verbraucht eine marginale Menge an Wirkleistung, um die mechanische Reibung zu überwinden, kann aber durch die Steuerung seines Erregersystems sofort massive Mengen an Blindleistung einspeisen oder aufnehmen. Noch entscheidender: Die enorme rotierende Masse des Torrão-Rotors lieferte reine kinematische Trägheit und vervielfachte die Kurzschlussleistung der Insel Zêzere.
+### Die entscheidende Maßnahme: Torrão als reiner Synchronschwungrad
 
-Diese Maßnahme wirkte als elektrodynamischer Dämpfer. Die Spannung in der Insel stabilisierte sich, was ab **16:26 Uhr MESZ** die schrittweise Wiederzuschaltung von Last in den 60-kV- und 150-kV-Netzen und die Spannungsausweitung auf die Kraftwerke HPP 2 und HPP 3 Centro ermöglichte. Um **16:38 Uhr MESZ** wurde die zweite sichere Wiederherstellungszone vom CCGT 1-Norte aus etabliert.
+Es war offensichtlich, dass dem Inselnetz die nötige Steifigkeit (Kurzschlussleistung) fehlte, um Lastsprünge zu absorbieren. Nach dem Neustart von HPP 1-Centro um 16:13 Uhr MESZ führte REN um 17:23 Uhr MESZ eine technisch höchst anspruchsvolle Maßnahme durch: Es startete Block 2 des Pumpspeicherkraftwerks Torrão, jedoch nicht zur Einspeisung von Wirkleistung, sondern im reinen Synchronschwungradbetrieb.
+
+Der Betrieb eines Wasserkraftwerks als Synchronschwungrad bedeutet, die Turbinenkammer zu entleeren, indem Druckluft eingeblasen wird (Absenkung des Wasserspiegels im Saugrohr), sodass sich das Laufrad frei in der Luft drehen kann, während es mit dem Netz verbunden ist. Der Generator verbraucht eine marginale Menge an Wirkleistung, um die mechanische Reibung zu überwinden, kann aber durch die Steuerung seines Erregersystems sofort massive Mengen an Blindleistung einspeisen oder aufnehmen. Noch entscheidender: Die enorme rotierende Masse des Torrão-Rotors lieferte reine kinematische Trägheit und vervielfachte die Kurzschlussleistung des Inselnetzes von Zêzere.
+
+Diese Maßnahme wirkte als elektrodynamischer Dämpfer. Die Spannung im Inselnetz stabilisierte sich, was ab 16:26 Uhr MESZ die schrittweise Wiederzuschaltung von Last in den 60-kV- und 150-kV-Netzen und die Ausdehnung der Spannung auf die Kraftwerke HPP 2 und HPP 3 Centro ermöglichte. Um 16:38 Uhr MESZ wurde die zweite sichere Wiederherstellungszone vom GuD-Kraftwerk CCGT 1-Norte aus etabliert.
 
 ### Synchronisation bei 0 MW und vollständige Normalisierung
 
-Gegen 20:00 Uhr MESZ waren die beiden portugiesischen Inseln intern vermascht, arbeiteten aber weiterhin asynchron zu Spanien und dem Rest Europas. Der heikelste Schritt war die Kopplung mit dem REE-Netz, das bereits mit dem französischen unendlichen Knoten synchronisiert war.
+Gegen 20:00 Uhr MESZ waren die beiden portugiesischen Inselnetze intern vermascht, arbeiteten jedoch weiterhin asynchron zu Spanien und dem Rest Europas. Der heikelste Schritt war die Kopplung mit dem REE-Netz, das bereits mit dem französischen unendlichen Knoten synchronisiert war.
 
-Um **20:25 Uhr MESZ** wurde die Verbindung unter einer unverhandelbaren technischen Anforderung geschlossen: einem **Austauschprogramm von 0 MW**. Die zugrundeliegende Physik wird durch die Leistungsübertragungsgleichung zwischen zwei synchronen Gebieten bestimmt:
+Um 20:25 Uhr MESZ wurde die Verbindung unter einer unverhandelbaren technischen Bedingung geschlossen: einem Austauschprogramm von 0 MW. Die zugrundeliegende Physik wird durch die Gleichung für die Leistungsübertragung zwischen zwei synchronen Gebieten beschrieben:
 
-$$P = \frac{V1 V2}{X} \sin\delta$$
+$$
+P_{12} = \frac{V_1 V_2}{X_{12}} \sin(\delta_1 - \delta_2)
+$$
 
-Um den Verbindungsschalter zu schließen, ohne einen zerstörerischen Einschwingvorgang synchronisierender Leistung zu erzeugen, musste die Phasenwinkeldifferenz ($\delta$) zwischen dem portugiesischen und dem spanischen Knoten exakt Null sein und die Spannungsbeträge gleich sein. Durch die Festlegung eines Sollwerts von 0 MW in den Systemen zur automatischen Generatorregelung (AGC) stellten die Operatoren sicher, dass keines der beiden Netze im Moment der Kopplung versuchte, Trägheit in das andere zu exportieren. Ein Fehler hätte einen heftigen Leistungsfluss erzwungen, die Richtungsschutzrelais ausgelöst und Portugal in einen zweiten Blackout gestürzt.
+Um den Verbindungsschalter zu schließen, ohne eine zerstörerische transiente Synchronisationsleistung zu erzeugen, musste die Phasenwinkeldifferenz ($\delta$) zwischen dem portugiesischen und dem spanischen Knoten exakt Null sein und die Spannungsbeträge gleich sein. Durch die Festlegung eines Sollwerts von 0 MW in den Systemen zur automatischen Generierungsregelung (AGC) stellten die Operatoren sicher, dass keines der beiden Netze im Moment der Kopplung versuchte, Trägheit in das andere zu exportieren. Ein Fehler hätte einen heftigen Leistungsfluss erzwungen, die Richtungsschutzrelais ausgelöst und Portugal in einen zweiten Blackout gestürzt.
 
-Mit dem Erfolg der Maßnahme gewann Portugal die kontinentale synchrone Referenz zurück. Die durch die Verbindung bereitgestellte Robustheit ermöglichte es, die Wiederherstellung der restlichen Last zu beschleunigen, sodass um **00:22 Uhr am 29. April** die vollständige Normalisierung erreicht wurde – **siebzehn Stunden** nach dem Spannungsnullpunkt.
+Mit dem Erfolg dieser Maßnahme gewann Portugal die kontinentale Synchronsynchronreferenz zurück. Die durch die Verbindung bereitgestellte Robustheit ermöglichte es, die Wiederherstellung der restlichen Last zu beschleunigen, sodass um 00:22 Uhr am 29. April die vollständige Normalisierung erreicht wurde – siebzehn Stunden nach dem Spannungsnullpunkt.

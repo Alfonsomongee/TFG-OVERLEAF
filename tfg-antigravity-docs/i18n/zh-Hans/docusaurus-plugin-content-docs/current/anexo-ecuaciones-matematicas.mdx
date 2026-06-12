@@ -1,0 +1,127 @@
+---
+id: anexo-ecuaciones-matematicas
+title: "附录X · 方程、数学模型与模拟器"
+sidebar_label: "附录X · 方程与模拟器"
+hide_title: true
+---
+
+import AnnexLayout from '@site/src/components/annex/AnnexLayout';
+import AnnexSection from '@site/src/components/annex/AnnexSection';
+import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
+import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
+import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
+import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
+import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
+import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
+import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
+import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+
+<AnnexLayout
+  wide
+  kicker="附录X"
+  title="方程、数学模型与模拟器"
+  description="本附录构成了TFG的核心数学实验室。它集中了按物理、经济和系统动力学领域组织的交互式模拟器，用于重现4月28日停电事件的现象。"
+  meta={[
+    { label: '技术轴', value: '数学与模拟' },
+    { label: '交互性', value: '实时' }
+  ]}
+>
+  <AnnexKeyQuestion>
+    哪些方程、模型和模拟能够定量重现导致4月28日停电的物理、金融和通信现象？
+  </AnnexKeyQuestion>
+
+  <AnnexThesisBox>
+    4月28日的崩溃是一个多尺度现象，受电工学物理定律、边际主义市场激励和信息传播社会动态的支配。本附录汇集了交互式模拟器，这些模拟器定量地模拟了这些行为，允许改变自变量以分析电网稳定性、偏差成本、潮流雅可比矩阵的崩溃或机构通信延迟。
+  </AnnexThesisBox>
+
+  <AnnexBlackoutRelevance>
+    本附录提供了公式支持和交互式模型，这些模型定量验证了TFG各章节和事实附录中开展的实证分析。
+  </AnnexBlackoutRelevance>
+
+  <AnnexMethodNote type="reconstruccion">
+    本附录隔离并汇集了文档中所有不基于静态历史数据，而是基于数学、金融和电物理方程的交互式工具。用户可以改变公式中的自变量，以观察所得曲线的动态行为。
+  </AnnexMethodNote>
+
+  <em>本附录分为五个部分，涵盖研究的各个数学领域：电网强度与电压崩溃、无功与电磁暂态、频率控制与惯量、市场与电网经济，以及系统动力学模型。</em>
+
+  <AnnexEvidenceNav
+    items={[
+      { label: '强度与电压',      target: 'red-tension' },
+      { label: '无功与暂态',  target: 'reactiva-transitorios' },
+      { label: '控制与频率',     target: 'control-frecuencia' },
+      { label: '市场与经济',       target: 'mercado-coste' },
+      { label: '系统模型',       target: 'sistemicos' },
+    ]}
+  />
+
+  <AnnexSection id="red-tension" eyebrow="领域1" title="电网强度与电压崩溃">
+    SCR衡量节点处的电网强度。在4月28日的半岛南部，逆变器高度集中的节点处SCR降至3以下——这是电压稳定性的风险区域。
+    <AnnexEvidenceLead
+      eyebrow="主要证据"
+      title="P-V曲线模拟器"
+      summary="该模拟器允许交互式探索在达到电压崩溃点（鞍结分岔）之前有功和无功功率传输的极限。"
+      insight="静态电压稳定性 · 可载裕度的识别。"
+    >
+      <AnnexEvidence type="interactive" id="pvcurve" level={1} />
+    </AnnexEvidenceLead>
+    SCR和MRSCR捕捉了附近IBR逆变器之间的相互影响和角度解耦。
+    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
+    <AnnexEvidence type="interactive" id="power-flow-jacobian" level={2} />
+    <AnnexEvidence type="interactive" id="pq-capability" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="reactiva-transitorios" eyebrow="领域2" title="无功与电磁暂态">
+    费兰蒂效应放大了西南部400 kV线路的过电压。对于300公里的线路，过电压可达15–20%——足以触发逆变器的ANSI 59保护。
+    <AnnexEvidence type="interactive" id="ferranti" level={2} />
+    变压器励磁时的涌流呈指数衰减，引入富含二次谐波的非对称暂态。
+    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
+    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="control-frecuencia" eyebrow="领域3" title="频率控制与惯量">
+    摇摆方程预测了惯性响应：以4月28日伊比利亚系统的H值（约2.5秒）为例，4.5 GW的不平衡会产生超过1.5 Hz/s的RoCoF。
+    <AnnexEvidence type="interactive" id="swing" level={2} />
+    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
+    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+    <AnnexEvidence type="interactive" id="ufls" level={2} />
+    <AnnexEvidence type="interactive" id="bess-boom-chart" level={2} />
+    <AnnexEvidence type="interactive" id="lole-chart" level={2} />
+    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="mercado-coste" eyebrow="领域4" title="市场与电网经济">
+    节点电价（LMP）本应揭示半岛南部节点的拥堵额外成本——这是伊比利亚区域市场所不提供的信息。
+    <AnnexEvidence type="interactive" id="lmp-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="dcopf-congestion" level={2} />
+    <AnnexEvidence type="interactive" id="voll-sector" level={2} />
+    <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
+    <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-triangle" level={2} />
+    <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+    <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
+  </AnnexSection>
+
+  <AnnexSection id="sistemicos" eyebrow="领域5" title="系统动力学模型">
+    根据4月28日数据校准的SIR模型显示，REE的通信延迟（约4小时才发布第一份官方说明）使得网络攻击叙事在首次更正之前就达到了30%的渗透率。
+    <AnnexEvidence type="interactive" id="sir-disinformation" level={2} />
+    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
+    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={2} />
+    <AnnexEvidence type="interactive" id="resolution-roadmap" level={2} />
+  </AnnexSection>
+
+  <AnnexSectionSummary
+    demonstrates="这个数学实验室巩固了对TFG分析的验证。潮流模型、转子振荡和边际主义经济模型的融合表明，4月28日的崩溃响应于精确且可预测的物理动态，需要严谨的建模才能提出有效的监管解决方案。"
+    doesNotDemonstrate="交互式模拟器的集成使用使读者能够对比假设并试验电网的灵敏度参数。"
+    connection="阅读内容与报告的事实附录I、II、V和VII交叉互补。"
+  />
+
+  <AnnexCrossLinks links={[
+    { to: "/anexo-demanda-generacion-balance", label: "附录I：需求、发电与平衡" },
+    { to: "/anexo-estabilidad-dinamica-tension", label: "附录II：电压与频率稳定性" },
+    { to: "/anexo-metodologia-modelos-datos-vivos", label: "附录IX：方法论与来源对比" }
+  ]} />
+</AnnexLayout>
