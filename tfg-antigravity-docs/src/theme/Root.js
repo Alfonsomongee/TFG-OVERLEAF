@@ -55,8 +55,39 @@ export default function Root({ children }) {
   }, []);
 
   useEffect(() => {
+    // Sincronización inicial de clases en el elemento raíz
     document.documentElement.classList.toggle('zen-mode', !sidebarOpen);
     document.documentElement.classList.toggle('toc-visible', tocVisible);
+
+    // Observador para reaccionar ante cambios de atributos (ej. reseteos de clases por React Helmet / Docusaurus)
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const hasZen = document.documentElement.classList.contains('zen-mode');
+          const shouldHaveZen = !sidebarOpen;
+          if (shouldHaveZen && !hasZen) {
+            document.documentElement.classList.add('zen-mode');
+          } else if (!shouldHaveZen && hasZen) {
+            document.documentElement.classList.remove('zen-mode');
+          }
+
+          const hasToc = document.documentElement.classList.contains('toc-visible');
+          const shouldHaveToc = tocVisible;
+          if (shouldHaveToc && !hasToc) {
+            document.documentElement.classList.add('toc-visible');
+          } else if (!shouldHaveToc && hasToc) {
+            document.documentElement.classList.remove('toc-visible');
+          }
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
   }, [location.pathname, sidebarOpen, tocVisible]);
 
   const toggleSidebar = () => {
