@@ -33,7 +33,7 @@ const IconToc = () => (
 );
 
 export default function Root({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tocVisible, setTocVisible] = useState(false);
   const location = useLocation();
 
@@ -42,6 +42,8 @@ export default function Root({ children }) {
     ? rawPath.slice(0, -1)
     : rawPath;
 
+  const isHomepage = path === '/' || path === '/en' || path === '/de' || path === '/zh-hans';
+
   const hideButtonsPaths = [
     '/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor',
   ];
@@ -49,7 +51,7 @@ export default function Root({ children }) {
 
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
-    setSidebarOpen(saved !== 'true');
+    setSidebarOpen(saved === 'false');
   }, []);
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function Root({ children }) {
       {!shouldHideButtons && (
         <>
           {/* Abrir sidebar — visible solo cuando está cerrado */}
-          {!sidebarOpen && (
+          {!sidebarOpen && !isHomepage && (
             <button
               className="global-sidebar-btn"
               onClick={toggleSidebar}
@@ -118,7 +120,7 @@ export default function Root({ children }) {
           )}
 
           {/* Cerrar sidebar — visible solo cuando está abierto */}
-          {sidebarOpen && (
+          {sidebarOpen && !isHomepage && (
             <button
               className="global-sidebar-close-btn"
               onClick={toggleSidebar}
@@ -135,8 +137,8 @@ export default function Root({ children }) {
             </button>
           )}
 
-          {/* TOC — visible en todas las páginas excepto anexos */}
-          {!path.includes('/anexo') && (
+          {/* TOC — visible en todas las páginas excepto anexos e homepage */}
+          {!path.includes('/anexo') && !isHomepage && (
             <button
               className={`global-toc-btn${tocVisible ? ' active' : ''}`}
               onClick={toggleToc}

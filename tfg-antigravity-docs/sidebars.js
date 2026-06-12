@@ -2,6 +2,11 @@
 module.exports = {
   docs: [
     {
+      type: 'link',
+      label: 'Homepage',
+      href: '/',
+    },
+    {
       type: 'category',
       label: 'I · El incidente',
       className: 'sidebar-icon-zap', // rayo rojo
