@@ -465,9 +465,11 @@ function VisualArtifactCard({ artifact }) {
             Abrir simulador ↗
           </a>
         ) : (
-          <Suspense fallback={<div style={{ padding: 20, color: 'var(--cfs-text-2)' }}>⟳ Cargando interactivo...</div>}>
-            <Component />
-          </Suspense>
+          <ColorModeProvider>
+            <Suspense fallback={<div style={{ padding: 20, color: 'var(--cfs-text-2)' }}>⟳ Cargando interactivo...</div>}>
+              <Component />
+            </Suspense>
+          </ColorModeProvider>
         )}
       </div>
     );
@@ -1106,13 +1108,15 @@ export default function ChatFullscreen({
                     de ESIOS, ENTSO-E y OMIE el 28 de abril de 2025.
                   </div>
                   <div style={{ padding: '16px' }}>
-                    <Suspense fallback={
-                      <div style={{ textAlign: 'center', padding: 40, color: 'var(--cfs-text-2)' }}>
-                        ⟳ Cargando gráfica...
-                      </div>
-                    }>
-                      <ChartComponent />
-                    </Suspense>
+                    <ColorModeProvider>
+                      <Suspense fallback={
+                        <div style={{ textAlign: 'center', padding: 40, color: 'var(--cfs-text-2)' }}>
+                          ⟳ Cargando gráfica...
+                        </div>
+                      }>
+                        <ChartComponent />
+                      </Suspense>
+                    </ColorModeProvider>
                   </div>
                 </div>
               );
