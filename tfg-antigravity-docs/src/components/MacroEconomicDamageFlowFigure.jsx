@@ -302,10 +302,6 @@ export default function MacroEconomicDamageFlowFigure() {
         <span className={styles.methodNoteIcon} aria-hidden="true">⚠</span>
         {t.warning}
       </div>
-
-      <figcaption className={styles.caption}>
-        {t.figCaption}
-      </figcaption>
     </figure>
   );
 }
