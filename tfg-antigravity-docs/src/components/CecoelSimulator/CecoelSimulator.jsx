@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useRef } from 'react';
+import React, { useReducer, useEffect, useRef, useState } from 'react';
 import Translate, { translate } from '@docusaurus/Translate';
 import styles from './CecoelSimulator.module.css';
 
