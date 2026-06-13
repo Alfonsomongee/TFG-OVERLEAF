@@ -39,6 +39,8 @@ html[data-theme='dark'] .container {
   --calc-shadow: rgba(0, 0, 0, 0.3);
 }
 
+/* ── Cabecera ── */
+
 .header {
   margin-bottom: 1.5rem;
 }
@@ -70,6 +72,8 @@ html[data-theme='dark'] .container {
   color: var(--calc-muted);
 }
 
+/* ── Layout ── */
+
 .layout {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -82,6 +86,8 @@ html[data-theme='dark'] .container {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Mapa SVG ── */
 
 .mapContainer {
   background: var(--calc-surface);
@@ -114,6 +120,8 @@ html[data-theme='dark'] .container {
   opacity: 0.85;
 }
 
+/* ── Líneas ── */
+
 .lineActive {
   stroke: var(--calc-active-line);
   stroke-width: 3.5;
@@ -133,19 +141,26 @@ html[data-theme='dark'] .container {
   stroke-width: 5;
   stroke-linecap: round;
   transition: stroke 0.3s ease, stroke-width 0.3s ease;
+  filter: drop-shadow(0 0 3px var(--calc-critical-line));
 }
+
+/* ── Nodos ── */
 
 .nodeGroup {
   cursor: pointer;
 }
 
+/* FIX: transform-box: fill-box es necesario para que transform-origin
+   funcione correctamente en elementos SVG. Sin él, el origen de
+   rotación se calcula sobre el viewport, no sobre el propio elemento. */
 .genActiveRing {
   fill: none;
   stroke: var(--calc-active-gen);
   stroke-width: 1.5;
   stroke-dasharray: 3 2;
-  animation: rotateClockwise 15s linear infinite;
+  transform-box: fill-box;
   transform-origin: center;
+  animation: rotateClockwise 15s linear infinite;
 }
 
 .genInactiveRing {
@@ -157,7 +172,7 @@ html[data-theme='dark'] .container {
 
 @keyframes rotateClockwise {
   from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .nodeLabel {
@@ -166,8 +181,14 @@ html[data-theme='dark'] .container {
   fill: var(--calc-text);
   font-family: var(--ifm-font-family-monospace, monospace);
   pointer-events: none;
-  text-shadow: 0 1px 2px var(--calc-surface), 0 -1px 2px var(--calc-surface), 1px 0 2px var(--calc-surface), -1px 0 2px var(--calc-surface);
+  text-shadow:
+    0  1px 2px var(--calc-surface),
+    0 -1px 2px var(--calc-surface),
+    1px  0  2px var(--calc-surface),
+   -1px  0  2px var(--calc-surface);
 }
+
+/* ── Panel de Telemetría ── */
 
 .telemetryPanel {
   display: flex;
@@ -181,6 +202,11 @@ html[data-theme='dark'] .container {
   border-radius: 8px;
   padding: 1.2rem;
   box-shadow: 0 4px 6px var(--calc-shadow);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 12px var(--calc-shadow);
 }
 
 .cardTitle {
@@ -197,6 +223,8 @@ html[data-theme='dark'] .container {
   line-height: 1.4;
 }
 
+/* ── Toggles de Generadores ── */
+
 .togglesList {
   display: flex;
   flex-direction: column;
@@ -211,6 +239,11 @@ html[data-theme='dark'] .container {
   background: var(--calc-surface-2);
   border-radius: 6px;
   border: 1px solid var(--calc-border);
+  transition: border-color 0.2s ease;
+}
+
+.toggleItem:has(.switchOn) {
+  border-color: rgba(51, 255, 87, 0.3);
 }
 
 .toggleName {
@@ -239,10 +272,19 @@ html[data-theme='dark'] .container {
   text-align: center;
 }
 
+.switchBtn:focus-visible {
+  outline: 2px solid var(--calc-teal);
+  outline-offset: 2px;
+}
+
 .switchOn {
   background: var(--calc-active-gen);
   color: #0b1827;
   box-shadow: 0 0 8px rgba(51, 255, 87, 0.4);
+}
+
+.switchOn:hover {
+  filter: brightness(1.1);
 }
 
 .switchOff {
@@ -250,6 +292,12 @@ html[data-theme='dark'] .container {
   color: #ffffff;
   box-shadow: 0 0 8px rgba(255, 51, 51, 0.3);
 }
+
+.switchOff:hover {
+  filter: brightness(1.1);
+}
+
+/* ── Tarjeta de Detalle de Nodo ── */
 
 .detailCard {
   min-height: 180px;
@@ -294,6 +342,39 @@ html[data-theme='dark'] .container {
   padding: 1.5rem 0;
 }
 
+/* ── Indicador de Fortaleza SCR ── */
+
+.scrMeter {
+  margin-top: 0.8rem;
+}
+
+.scrMeterLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--calc-muted);
+  margin-bottom: 0.3rem;
+}
+
+.scrMeterTrack {
+  height: 6px;
+  background: var(--calc-surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.scrMeterFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+.scrStrong  { background: var(--calc-active-gen); }
+.scrWeak    { background: var(--calc-weak-line); }
+.scrCritical{ background: var(--calc-critical-line); }
+
+/* ── Leyenda de Fórmulas ── */
+
 .formulaLegend {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -328,4 +409,20 @@ html[data-theme='dark'] .container {
 
 .formulaItem span {
   color: var(--calc-muted);
+}
+
+/* ── Accesibilidad: prefers-reduced-motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .genActiveRing {
+    animation: none;
+  }
+  .lineActive,
+  .lineWeak,
+  .lineCritical {
+    transition: none;
+  }
+  .card {
+    transition: none;
+  }
 }

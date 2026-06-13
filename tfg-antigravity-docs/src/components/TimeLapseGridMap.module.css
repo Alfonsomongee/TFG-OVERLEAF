@@ -35,6 +35,8 @@ html[data-theme='dark'] .container {
   --map-glow: rgba(255, 30, 30, 0.9);
 }
 
+/* ── Cabecera ── */
+
 .header {
   margin-bottom: 1.5rem;
 }
@@ -66,6 +68,8 @@ html[data-theme='dark'] .container {
   color: var(--map-muted);
 }
 
+/* ── Layout ── */
+
 .layout {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -78,6 +82,8 @@ html[data-theme='dark'] .container {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Mapa SVG ── */
 
 .mapContainer {
   background: var(--map-surface);
@@ -110,7 +116,8 @@ html[data-theme='dark'] .container {
   opacity: 0.85;
 }
 
-/* ═══ Líneas de Transporte y Efecto Ferranti ═══ */
+/* ══ Líneas de Transporte y Efecto Ferranti ══ */
+
 .lineActive {
   stroke: var(--map-active-line);
   stroke-width: 3.5;
@@ -119,41 +126,49 @@ html[data-theme='dark'] .container {
 }
 
 .lineFerrantiActive {
-  stroke: #ff3333 !important;
-  stroke-width: 5.5px !important;
+  stroke: #ff4040;
+  stroke-width: 5.5px;
   stroke-linecap: round;
+  /* will-change limita la carga del compositor a las propiedades que
+     realmente mutan, evitando rasterizaciones innecesarias */
+  will-change: filter;
   animation: ferrantiPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: stroke, filter;
   transition: all 0.3s ease;
 }
 
+/* Keyframes con opacity para evitar glitches de stroke-color en Safari */
 @keyframes ferrantiPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 2px var(--map-glow));
     stroke: #ff8080;
+    stroke-width: 4.5px;
+    filter: drop-shadow(0 0 2px var(--map-glow));
+    opacity: 0.85;
   }
   50% {
-    filter: drop-shadow(0 0 12px var(--map-glow));
     stroke: #ff1a1a;
+    stroke-width: 6px;
+    filter: drop-shadow(0 0 10px var(--map-glow));
+    opacity: 1;
   }
 }
 
 .lineTripOff {
-  stroke: var(--map-trip-line) !important;
-  stroke-width: 1.5px !important;
+  stroke: var(--map-trip-line);
+  stroke-width: 1.5px;
   stroke-dasharray: 6 4;
   opacity: 0.35;
   transition: all 0.4s ease;
 }
 
 .lineBlackout {
-  stroke: #222c3c !important;
-  stroke-width: 1px !important;
+  stroke: #222c3c;
+  stroke-width: 1px;
   opacity: 0.15;
   transition: all 0.5s ease;
 }
 
-/* ═══ Nodos y Disparos ANSI 59 ═══ */
+/* ══ Nodos ══ */
+
 .nodeGroup {
   pointer-events: none;
 }
@@ -170,26 +185,25 @@ html[data-theme='dark'] .container {
   stroke: #33ff57;
   stroke-width: 1.5;
   stroke-dasharray: 4 2;
+  /* FIX: transform-box necesario para que transform-origin funcione en SVG */
+  transform-box: fill-box;
+  transform-origin: center;
   transition: all 0.3s ease;
 }
 
+/* Disparo ANSI 59: animación de alerta de sobretensión */
 .nodeWarning {
   fill: #ffcc00 !important;
   stroke: #ff3300 !important;
-  animation: ansi59Warning 0.15s infinite;
+  transform-box: fill-box;
   transform-origin: center;
-  will-change: transform, fill;
+  animation: ansi59Warning 0.5s ease-in-out infinite;
+  will-change: r;
 }
 
 @keyframes ansi59Warning {
-  0%, 100% {
-    fill: #ffcc00;
-    r: 14;
-  }
-  50% {
-    fill: #ff3300;
-    r: 18;
-  }
+  0%, 100% { opacity: 1; r: 12; }
+  50%       { opacity: 0.7; r: 16; }
 }
 
 .nodeTripOff {
@@ -213,14 +227,19 @@ html[data-theme='dark'] .container {
   fill: var(--map-text);
   font-family: var(--ifm-font-family-monospace, monospace);
   pointer-events: none;
-  text-shadow: 0 1px 2px var(--map-surface), 0 -1px 2px var(--map-surface), 1px 0 2px var(--map-surface), -1px 0 2px var(--map-surface);
+  text-shadow:
+    0  1px 2px var(--map-surface),
+    0 -1px 2px var(--map-surface),
+    1px  0  2px var(--map-surface),
+   -1px  0  2px var(--map-surface);
 }
 
-/* ═══ Overlay de Blackout ═══ */
+/* ══ Overlay de Blackout Total ══ */
+
 .blackoutOverlay {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 1.5s ease, visibility 1.5s ease;
+  transition: opacity 1.5s ease, visibility 0s 1.5s;
   pointer-events: none;
 }
 
@@ -233,7 +252,7 @@ html[data-theme='dark'] .container {
   font-size: 24px;
   font-weight: 900;
   fill: #ff3333;
-  text-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
+  filter: drop-shadow(0 0 8px rgba(255, 51, 51, 0.7));
 }
 
 .overlaySubtitle {
@@ -245,9 +264,12 @@ html[data-theme='dark'] .container {
 .overlayVisible {
   opacity: 1;
   visibility: visible;
+  /* Corrección: cuando se hace visible se elimina el delay de visibility */
+  transition: opacity 1.5s ease, visibility 0s 0s;
 }
 
-/* ═══ Telemetría y Controles ═══ */
+/* ══ Telemetría y Controles ══ */
+
 .telemetryPanel {
   display: flex;
   flex-direction: column;
@@ -299,13 +321,17 @@ html[data-theme='dark'] .container {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, #ffcc00, #ff3333);
-  transition: width 0.1s linear;
+  transition: width 0.08s linear;
+  border-radius: 3px;
 }
+
+/* ── Fila de controles de reproducción ── */
 
 .playControls {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.8rem;
+  flex-wrap: wrap;
 }
 
 .playBtn {
@@ -322,12 +348,82 @@ html[data-theme='dark'] .container {
   min-width: 90px;
 }
 
-.playBtn:hover, .btnActive {
+.playBtn:hover,
+.btnActive {
   background: var(--map-teal);
   color: var(--map-surface);
   box-shadow: 0 0 10px rgba(131, 189, 194, 0.4);
 }
 
+.playBtn:focus-visible {
+  outline: 2px solid var(--map-teal);
+  outline-offset: 2px;
+}
+
+/* Botón de restart */
+.btnRestart {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 51, 51, 0.4);
+  border-radius: 4px;
+  background: transparent;
+  color: #ff3333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnRestart:hover {
+  background: #ff3333;
+  color: #fff;
+  border-color: #ff3333;
+}
+
+.btnRestart:focus-visible {
+  outline: 2px solid #ff3333;
+  outline-offset: 2px;
+}
+
+/* Botones de velocidad */
+.speedGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+
+.speedLabel {
+  font-size: 0.68rem;
+  color: var(--map-muted);
+  font-family: var(--ifm-font-family-monospace, monospace);
+}
+
+.speedBtn {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--map-border);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--map-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.speedBtn:hover {
+  border-color: var(--map-teal);
+  color: var(--map-teal);
+}
+
+.speedBtnActive {
+  background: var(--map-surface-2);
+  border-color: var(--map-teal);
+  color: var(--map-teal);
+}
+
+/* Slider */
 .slider {
   flex-grow: 1;
   -webkit-appearance: none;
@@ -359,6 +455,8 @@ html[data-theme='dark'] .container {
   box-shadow: 0 0 4px var(--map-shadow);
 }
 
+/* ── Tarjeta de Evento Activo ── */
+
 .eventCard {
   border-left: 4px solid #ff3333;
   min-height: 110px;
@@ -380,6 +478,8 @@ html[data-theme='dark'] .container {
   color: var(--map-muted);
   line-height: 1.45;
 }
+
+/* ── Leyenda ── */
 
 .legendCard {
   background: var(--map-surface);
@@ -414,9 +514,30 @@ html[data-theme='dark'] .container {
   height: 10px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
-.dotStable { background: #33ff57; }
+.dotStable  { background: #33ff57; }
 .dotWarning { background: #ffcc00; }
-.dotTrip { background: #555555; }
-.dotFerranti { background: #ff3333; }
+.dotTrip    { background: #555555; }
+.dotFerranti{ background: #ff3333; box-shadow: 0 0 4px rgba(255, 51, 51, 0.6); }
+
+/* ── Nota de teclado ── */
+
+.keyboardHint {
+  font-size: 0.68rem;
+  color: var(--map-muted);
+  text-align: center;
+  margin-top: 0.4rem;
+  opacity: 0.7;
+}
+
+/* ── Accesibilidad: prefers-reduced-motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .lineFerrantiActive { animation: none; }
+  .nodeWarning        { animation: none; }
+  .blackoutOverlay    { transition: opacity 0.3s ease; }
+  .overlayVisible     { transition: opacity 0.3s ease; }
+  .progressBar        { transition: none; }
+}

@@ -1,349 +1,417 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import BrowserOnly from '@docusaurus/BrowserOnly';
-import Translate, { translate } from '@docusaurus/Translate';
+import Translate from '@docusaurus/Translate';
 import styles from './GridStrengthCalculator.module.css';
 
-// ─── Proyección geográfica simplificada (viewBox 1000x800) ───────────────────
+// ─── Proyección geográfica (viewBox 1000×800) ────────────────────────────────
 const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
-const VIEWBOX = { width: 1000, height: 800 };
+const VIEWBOX    = { width: 1000, height: 800 };
 
 function geoToSvg(lat, lon) {
-  const x = ((lon - GEO_BOUNDS.west) / (GEO_BOUNDS.east - GEO_BOUNDS.west)) * VIEWBOX.width;
+  const x = ((lon - GEO_BOUNDS.west)  / (GEO_BOUNDS.east  - GEO_BOUNDS.west))  * VIEWBOX.width;
   const y = ((GEO_BOUNDS.north - lat) / (GEO_BOUNDS.north - GEO_BOUNDS.south)) * VIEWBOX.height;
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+// ─── Contornos geográficos ────────────────────────────────────────────────────
 const IBERIA_OUTLINE = [
-  [43.78, -7.86],  [43.47, -8.45],  [42.88, -9.28],  [42.03, -8.87],  [41.87, -8.87],
-  [41.38, -8.73],  [40.64, -8.75],  [39.36, -9.40],  [38.62, -9.50],  [37.01, -8.91],
-  [36.97, -7.85],  [36.01, -5.61],  [36.17, -5.36],  [36.69, -4.41],  [36.72, -3.48],
-  [37.20, -1.90],  [37.64, -0.69],  [38.68,  0.23],  [39.58,  0.34],  [40.72,  0.73],
-  [41.29,  1.83],  [41.42,  2.22],  [42.43,  3.16],  [42.80,  1.72],  [43.37, -1.79],
-  [43.49, -3.80],  [43.57, -5.66],  [43.78, -7.86]
+  [43.78, -7.86], [43.47, -8.45], [42.88, -9.28], [42.03, -8.87], [41.87, -8.87],
+  [41.38, -8.73], [40.64, -8.75], [39.36, -9.40], [38.62, -9.50], [37.01, -8.91],
+  [36.97, -7.85], [36.01, -5.61], [36.17, -5.36], [36.69, -4.41], [36.72, -3.48],
+  [37.20, -1.90], [37.64, -0.69], [38.68,  0.23], [39.58,  0.34], [40.72,  0.73],
+  [41.29,  1.83], [41.42,  2.22], [42.43,  3.16], [42.80,  1.72], [43.37, -1.79],
+  [43.49, -3.80], [43.57, -5.66], [43.78, -7.86],
 ];
 
 const PORTUGAL_OUTLINE = [
-  [41.87, -8.87],  [41.52, -6.92],  [39.67, -7.06],  [37.43, -7.44],  [36.97, -7.85],
-  [37.01, -8.91],  [38.62, -9.50],  [39.36, -9.40],  [40.64, -8.75],  [41.38, -8.73],
-  [41.87, -8.87]
+  [41.87, -8.87], [41.52, -6.92], [39.67, -7.06], [37.43, -7.44], [36.97, -7.85],
+  [37.01, -8.91], [38.62, -9.50], [39.36, -9.40], [40.64, -8.75], [41.38, -8.73],
+  [41.87, -8.87],
 ];
 
-function pointsToPath(points) {
-  return points.map((p, i) => {
+function pointsToPath(pts) {
+  return pts.map((p, i) => {
     const { x, y } = geoToSvg(p[0], p[1]);
     return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
   }).join(' ') + ' Z';
 }
 
-const IBERIA_PATH = pointsToPath(IBERIA_OUTLINE);
+const IBERIA_PATH  = pointsToPath(IBERIA_OUTLINE);
 const PORTUGAL_PATH = pointsToPath(PORTUGAL_OUTLINE);
 
-// ─── Algoritmo de inversión de matriz de Gauss-Jordan ────────────────────────
-function invertMatrix(A) {
-  const n = A.length;
-  const M = [];
-  for (let i = 0; i < n; i++) {
-    M[i] = [];
-    for (let j = 0; j < n; j++) {
-      M[i][j] = A[i][j];
-    }
-    for (let j = 0; j < n; j++) {
-      M[i][j + n] = (i === j) ? 1.0 : 0.0;
-    }
-  }
+// ─── Nudos de la red 400 kV — eje sur-occidental ibérico ─────────────────────
+const NODES = [
+  { id: 'almaraz',     name: 'C.N. Almaraz',  lat: 39.808, lon: -5.696 },
+  { id: 'san_servan',  name: 'San Serván',     lat: 38.865, lon: -6.350 },
+  { id: 'brovales',    name: 'Brovales',       lat: 38.312, lon: -6.753 },
+  { id: 'guillena',    name: 'Guillena',       lat: 37.545, lon: -6.054 },
+  { id: 'don_rodrigo', name: 'Don Rodrigo',    lat: 37.234, lon: -5.882 },
+  { id: 'carmona',     name: 'Carmona',        lat: 37.471, lon: -5.638 },
+  { id: 'caparacena',  name: 'Caparacena',     lat: 37.235, lon: -3.684 },
+  { id: 'hueneja',     name: 'Huéneja',        lat: 37.165, lon: -3.001 },
+];
 
-  for (let i = 0; i < n; i++) {
-    let maxRow = i;
-    for (let r = i + 1; r < n; r++) {
-      if (Math.abs(M[r][i]) > Math.abs(M[maxRow][i])) {
-        maxRow = r;
-      }
-    }
-    const temp = M[i];
-    M[i] = M[maxRow];
-    M[maxRow] = temp;
+// ─── Arcos de transporte 400 kV ───────────────────────────────────────────────
+const EDGES = [
+  { from: 'almaraz',     to: 'san_servan'  },
+  { from: 'san_servan',  to: 'brovales'    },
+  { from: 'brovales',    to: 'guillena'    },
+  { from: 'guillena',    to: 'don_rodrigo' },
+  { from: 'guillena',    to: 'carmona'     },
+  { from: 'carmona',     to: 'don_rodrigo' },
+  { from: 'carmona',     to: 'caparacena'  },
+  { from: 'caparacena',  to: 'hueneja'     },
+];
 
-    const pivot = M[i][i];
-    if (Math.abs(pivot) < 1e-9) return null; // Singular
+// ─── Parque generador: síncronos e IBR ────────────────────────────────────────
+// scc_mva: contribución a la potencia de cortocircuito del nudo propio.
+// Los IBR (isIBR: true) aumentan el denominador del SCR sin aportar Scc significativa.
+const GENERATORS = [
+  {
+    id:            'almaraz_nc',
+    name:          'C.N. Almaraz',
+    nodeId:        'almaraz',
+    type:          'nuclear',
+    label:         'Nuclear · 2.100 MW',
+    scc_mva:       4200,
+    power_mw:      2100,
+    isIBR:         false,
+    initialActive: true,
+    detail:
+      'Dos reactores PWR de 1.050 MW. Alternador síncrono de gran masa inercial (H ≈ 6 s). ' +
+      'Contribuye ~4.200 MVA a la Scc local y sostiene la tensión de referencia de los nudos adyacentes.',
+  },
+  {
+    id:            'ccgt_carmona',
+    name:          'CCGT Carmona',
+    nodeId:        'carmona',
+    type:          'ccgt',
+    label:         'CCGT · 800 MW',
+    scc_mva:       1600,
+    power_mw:      800,
+    isIBR:         false,
+    initialActive: true,
+    detail:
+      'Ciclo combinado de gas 800 MW. Alternador síncrono con AVR de regulación de tensión. ' +
+      'Absorbe potencia reactiva capacitiva en zonas de sobretensión (Q-droop activo).',
+  },
+  {
+    id:            'ccgt_malaga',
+    name:          'CCGT Málaga',
+    nodeId:        'caparacena',
+    type:          'ccgt',
+    label:         'CCGT · 800 MW',
+    scc_mva:       1600,
+    power_mw:      800,
+    isIBR:         false,
+    initialActive: false, // ← DESACOPLADO en el 28-A por razones de mercado
+    detail:
+      '⚠ CONDICIÓN 28-A: Este CCGT estaba fuera de servicio el 28/04/2025. ' +
+      'Su ausencia redujo la Scc en el eje Granada-Málaga a valores críticos, ' +
+      'desestabilizando los PLL de los inversores fotovoltaicos conectados a Caparacena.',
+  },
+  {
+    id:            'solar_guillena',
+    name:          'FV Guillena',
+    nodeId:        'guillena',
+    type:          'solar',
+    label:         'Solar FV · 600 MW',
+    scc_mva:       60,   // IBR: ~10 % de contribución real a Scc
+    power_mw:      600,
+    isIBR:         true,
+    initialActive: true,
+    detail:
+      'Parque fotovoltaico de 600 MW (IBR puro, Type-4). El PLL del inversor necesita una ' +
+      'tensión de referencia estable para sincronizarse. Con SCR < 1,5, la tensión oscila ' +
+      'más rápido de lo que el PLL puede seguir, iniciando inestabilidad subsincrónica.',
+  },
+  {
+    id:            'wind_brovales',
+    name:          'Eólica Brovales',
+    nodeId:        'brovales',
+    type:          'wind',
+    label:         'Eólica · 400 MW',
+    scc_mva:       40,   // IBR: prácticamente nula
+    power_mw:      400,
+    isIBR:         true,
+    initialActive: true,
+    detail:
+      'Parque eólico de 400 MW (full-converter, Type-4). Prácticamente nula aportación ' +
+      'a la Scc. Consume "fortaleza de red" sin generarla: aumenta el denominador del SCR ' +
+      'mientras el numerador (Scc) permanece constante.',
+  },
+];
 
-    for (let j = i; j < 2 * n; j++) {
-      M[i][j] /= pivot;
-    }
+// ─── Parámetros del modelo ────────────────────────────────────────────────────
+// Scc de red base (sin ningún generador local conectado): solo la malla de transporte.
+const SCC_BASE_MVA = 3000;
 
-    for (let r = 0; r < n; r++) {
-      if (r !== i) {
-        const factor = M[r][i];
-        for (let j = i; j < 2 * n; j++) {
-          M[r][j] -= factor * M[i][j];
-        }
-      }
-    }
-  }
+// Factor de atenuación de Scc en función de la distancia eléctrica (saltos de línea).
+// Basado en el decaimiento aproximado de la corriente de cortocircuito en redes malladas.
+const DIST_FACTORS = [1.00, 0.58, 0.32, 0.14, 0.05];
 
-  const inv = [];
-  for (let i = 0; i < n; i++) {
-    inv[i] = [];
-    for (let j = 0; j < n; j++) {
-      inv[i][j] = M[i][j + n];
-    }
-  }
-  return inv;
+// ─── BFS — distancias eléctricas entre nudos ──────────────────────────────────
+function buildAdj(nodes, edges) {
+  const adj = {};
+  nodes.forEach(n => { adj[n.id] = []; });
+  edges.forEach(e => {
+    adj[e.from].push(e.to);
+    adj[e.to].push(e.from);
+  });
+  return adj;
 }
 
-// ─── Definición del modelo de red en p.u. (Sbase = 1000 MVA) ─────────────────
-const NETWORK_DATA = {
-  baseMVA: 1000,
-  nodes: [
-    { id: 'N_GUILLENA_400', name: 'Guillena', lat: 37.545, lon: -6.054, voltage_kv: 400, ssc_base_mva: 25010, ibr_capacity_mw: 850, x_boundary: 0.045, generator: null },
-    { id: 'N_ALMARAZ_400', name: 'C.N. Almaraz', lat: 39.808, lon: -5.696, voltage_kv: 400, ssc_base_mva: 19500, ibr_capacity_mw: 0, x_boundary: 0.070, generator: { type: 'nuclear', s_nom_mva: 1180, xd_subtransient_pu: 0.236, x_sys_base: 0.20 } },
-    { id: 'N_DON_RODRIGO_400', name: 'Don Rodrigo', lat: 37.234, lon: -5.882, voltage_kv: 400, ssc_base_mva: 15400, ibr_capacity_mw: 1200, x_boundary: 0.075, generator: null },
-    { id: 'N_CARMONA_400', name: 'Carmona', lat: 37.471, lon: -5.638, voltage_kv: 400, ssc_base_mva: 14200, ibr_capacity_mw: 940, x_boundary: 0.090, generator: { type: 'ccgt', s_nom_mva: 800, xd_subtransient_pu: 0.185, x_sys_base: 0.23125 } },
-    { id: 'N_BROVALES_400', name: 'Brovales', lat: 38.312, lon: -6.753, voltage_kv: 400, ssc_base_mva: 11200, ibr_capacity_mw: 650, x_boundary: 0.110, generator: null },
-    { id: 'N_HUENEJA_400', name: 'Huéneja', lat: 37.165, lon: -3.001, voltage_kv: 400, ssc_base_mva: 6500, ibr_capacity_mw: 1400, x_boundary: 0.180, generator: null },
-    { id: 'N_CAPARACENA_400', name: 'Caparacena', lat: 37.235, lon: -3.684, voltage_kv: 400, ssc_base_mva: 9800, ibr_capacity_mw: 500, x_boundary: 0.120, generator: null },
-    { id: 'N_SAN_SERVAN_400', name: 'San Serván', lat: 38.865, lon: -6.350, voltage_kv: 400, ssc_base_mva: 12300, ibr_capacity_mw: 1100, x_boundary: 0.095, generator: null }
-  ],
-  edges: [
-    { from: 'N_ALMARAZ_400', to: 'N_SAN_SERVAN_400', x: 0.050 },
-    { from: 'N_SAN_SERVAN_400', to: 'N_BROVALES_400', x: 0.040 },
-    { from: 'N_BROVALES_400', to: 'N_GUILLENA_400', x: 0.045 },
-    { from: 'N_GUILLENA_400', to: 'N_CARMONA_400', x: 0.015 },
-    { from: 'N_GUILLENA_400', to: 'N_DON_RODRIGO_400', x: 0.020 },
-    { from: 'N_CARMONA_400', to: 'N_DON_RODRIGO_400', x: 0.025 },
-    { from: 'N_CARMONA_400', to: 'N_CAPARACENA_400', x: 0.070 },
-    { from: 'N_CAPARACENA_400', to: 'N_HUENEJA_400', x: 0.030 }
-  ]
-};
-
-// Precalcula el Zbus base con todos los generadores encendidos
-const ZBUS_BASE = (() => {
-  const n = NETWORK_DATA.nodes.length;
-  const Y = Array(n).fill(null).map(() => Array(n).fill(0));
-
-  // Agregar líneas a Ybus
-  NETWORK_DATA.edges.forEach(edge => {
-    const u = NETWORK_DATA.nodes.findIndex(node => node.id === edge.from);
-    const v = NETWORK_DATA.nodes.findIndex(node => node.id === edge.to);
-    Y[u][v] -= 1 / edge.x;
-    Y[v][u] -= 1 / edge.x;
-    Y[u][u] += 1 / edge.x;
-    Y[v][v] += 1 / edge.x;
-  });
-
-  // Agregar shunts y generadores
-  NETWORK_DATA.nodes.forEach((node, idx) => {
-    Y[idx][idx] += 1 / node.x_boundary;
-    if (node.generator) {
-      Y[idx][idx] += 1 / node.generator.x_sys_base;
+function bfs(startId, adj) {
+  const dist = { [startId]: 0 };
+  const queue = [startId];
+  while (queue.length) {
+    const cur = queue.shift();
+    for (const nb of adj[cur]) {
+      if (dist[nb] === undefined) {
+        dist[nb] = dist[cur] + 1;
+        queue.push(nb);
+      }
     }
-  });
-
-  return invertMatrix(Y) || Array(n).fill(null).map(() => Array(n).fill(0));
-})();
-
-function getScrColor(scr) {
-  if (scr === Infinity) return '#808080'; 
-  if (scr < 2.0) return '#FF3333';        
-  if (scr >= 2.0 && scr < 3.0) return '#FFC300'; 
-  return '#33FF57';                       
+  }
+  return dist;
 }
 
-function CalculatorContent() {
-  const [activeGenerators, setActiveGenerators] = useState(
-    () => new Set(NETWORK_DATA.nodes.filter(n => n.generator).map(n => n.id))
-  );
-  const [hoveredNode, setHoveredNode] = useState(null);
+// Pre-computados a nivel de módulo (constantes, no dependen de estado)
+const ADJ           = buildAdj(NODES, EDGES);
+const ALL_DISTANCES = Object.fromEntries(NODES.map(n => [n.id, bfs(n.id, ADJ)]));
+const PROJECTED     = NODES.map(n => ({ ...n, ...geoToSvg(n.lat, n.lon) }));
+const NODE_MAP      = Object.fromEntries(PROJECTED.map(n => [n.id, n]));
 
-  // Recálculo dinámico usando el Lema de Sherman-Morrison
-  const networkMetrics = useMemo(() => {
-    const nodes = NETWORK_DATA.nodes;
-    const baseMVA = NETWORK_DATA.baseMVA;
+// Estado inicial de generadores (escenario histórico 28-A)
+const INITIAL_STATES = Object.fromEntries(GENERATORS.map(g => [g.id, g.initialActive]));
 
-    // Empezamos con la matriz Zbus de base (ambos encendidos)
-    let currentZbus = ZBUS_BASE.map(row => [...row]);
+// ─── Clasificación del SCR ────────────────────────────────────────────────────
+function classifySCR(scr) {
+  if (!isFinite(scr) || scr > 99) {
+    return {
+      label: 'N/D',
+      color: 'var(--calc-muted)',
+      lineClass: 'active',
+      desc: 'Sin generación IBR conectada en este nudo. La potencia de cortocircuito no limita la estabilidad.',
+    };
+  }
+  if (scr >= 3.0) {
+    return {
+      label: 'FUERTE',
+      color: 'var(--calc-active-gen)',
+      lineClass: 'active',
+      desc: 'Red robusta (SCR ≥ 3,0). Los inversores IBR pueden operar con PLL estable y sin riesgo de resonancia subsincrónica.',
+    };
+  }
+  if (scr >= 2.0) {
+    return {
+      label: 'MODERADO',
+      color: '#ffc300',
+      lineClass: 'weak',
+      desc: 'Red moderadamente débil (2,0 ≤ SCR < 3,0). Oscilaciones subsincrónicas posibles bajo perturbación. Monitorización recomendada.',
+    };
+  }
+  if (scr >= 1.5) {
+    return {
+      label: 'DÉBIL',
+      color: '#ff8800',
+      lineClass: 'weak',
+      desc: 'Red débil (1,5 ≤ SCR < 2,0). Alta probabilidad de pérdida de sincronismo del PLL ante variaciones de tensión. Condición pre-crítica.',
+    };
+  }
+  return {
+    label: 'CRÍTICO',
+    color: 'var(--calc-critical-line)',
+    lineClass: 'critical',
+    desc: '⚠ Condición 28-A (SCR < 1,5). La tensión de referencia oscila más rápido de lo que el PLL puede seguir. Inicio del bucle de retroalimentación positiva ANSI 59.',
+  };
+}
 
-    // Aplicar Sherman-Morrison por cada generador desconectado
-    nodes.forEach((node, idx) => {
-      if (node.generator && !activeGenerators.has(node.id)) {
-        const k = idx;
-        // La reactancia del generador en base de sistema
-        const x_g = node.generator.x_sys_base;
-        // Desconectar equivale a agregar en paralelo una reactancia de -x_g
-        const deltaZ = -x_g;
+// ─── Componente ───────────────────────────────────────────────────────────────
+export default function GridStrengthCalculator() {
+  const [genStates, setGenStates]       = useState(INITIAL_STATES);
+  const [selectedNodeId, setSelectedNodeId] = useState(null);
 
-        const nextZbus = Array(nodes.length).fill(null).map(() => Array(nodes.length).fill(0));
-        const z_kk = currentZbus[k][k];
-
-        for (let i = 0; i < nodes.length; i++) {
-          for (let j = 0; j < nodes.length; j++) {
-            const z_ij = currentZbus[i][j];
-            const z_ik = currentZbus[i][k];
-            const z_kj = currentZbus[k][j];
-            // Lema de Sherman-Morrison general
-            nextZbus[i][j] = z_ij - (z_ik * z_kj) / (z_kk + deltaZ);
-          }
-        }
-        currentZbus = nextZbus;
-      }
-    });
-
-    // Mapear los elementos diagonales resultantes a Ssc y SCR
-    return nodes.map((node, i) => {
-      const z_ii = Math.abs(currentZbus[i][i]);
-      const sscDynamic = baseMVA / z_ii;
-      const scr = node.ibr_capacity_mw > 0 ? sscDynamic / node.ibr_capacity_mw : Infinity;
-      return {
-        id: node.id,
-        name: node.name,
-        voltage_kv: node.voltage_kv,
-        ibr_capacity_mw: node.ibr_capacity_mw,
-        generator: node.generator,
-        sscDynamic: sscDynamic,
-        scr: scr,
-        statusColor: getScrColor(scr),
-        x: geoToSvg(node.lat, node.lon).x,
-        y: geoToSvg(node.lat, node.lon).y
-      };
-    });
-  }, [activeGenerators]);
-
-  const metricsMap = useMemo(() => {
-    return Object.fromEntries(networkMetrics.map(m => [m.id, m]));
-  }, [networkMetrics]);
-
-  const toggleGenerator = useCallback((nodeId) => {
-    setActiveGenerators(prev => {
-      const nextState = new Set(prev);
-      if (nextState.has(nodeId)) {
-        nextState.delete(nodeId);
-      } else {
-        nextState.add(nodeId);
-      }
-      return nextState;
-    });
+  const toggleGen = useCallback((id) => {
+    setGenStates(prev => ({ ...prev, [id]: !prev[id] }));
   }, []);
 
-  const hoveredData = hoveredNode ? metricsMap[hoveredNode] : null;
+  const applyScenario28A = () => {
+    setGenStates(INITIAL_STATES);
+    setSelectedNodeId(null);
+  };
+
+  const applyScenarioAllOnline = () => {
+    setGenStates(Object.fromEntries(GENERATORS.map(g => [g.id, true])));
+    setSelectedNodeId(null);
+  };
+
+  // ── Cómputo de métricas SCR (solo recalcula cuando cambia genStates) ─────
+  const metrics = useMemo(() => {
+    const activeGens = GENERATORS.filter(g => genStates[g.id]);
+
+    // Scc en cada nudo: base de red + suma de contribuciones atenuadas por distancia eléctrica
+    const nodeScc = {};
+    NODES.forEach(n => {
+      let scc = SCC_BASE_MVA;
+      activeGens.forEach(gen => {
+        const hops   = ALL_DISTANCES[gen.nodeId]?.[n.id] ?? 99;
+        const factor = DIST_FACTORS[Math.min(hops, DIST_FACTORS.length - 1)];
+        scc += gen.scc_mva * factor;
+      });
+      nodeScc[n.id] = Math.round(scc);
+    });
+
+    // Potencia IBR acoplada a cada nudo (denominador del SCR)
+    const nodeIBR = Object.fromEntries(NODES.map(n => [n.id, 0]));
+    activeGens.filter(g => g.isIBR).forEach(gen => {
+      nodeIBR[gen.nodeId] += gen.power_mw;
+    });
+
+    // SCR = Scc / P_IBR en cada nudo
+    const nodeSCR = {};
+    NODES.forEach(n => {
+      nodeSCR[n.id] = nodeIBR[n.id] > 0
+        ? nodeScc[n.id] / nodeIBR[n.id]
+        : Infinity;
+    });
+
+    // Estado de cada arco: mínimo SCR de los dos extremos
+    const edgeClass = {};
+    EDGES.forEach(e => {
+      const key    = `${e.from}--${e.to}`;
+      const minSCR = Math.min(
+        isFinite(nodeSCR[e.from]) ? nodeSCR[e.from] : 99,
+        isFinite(nodeSCR[e.to])   ? nodeSCR[e.to]   : 99,
+      );
+      edgeClass[key] = classifySCR(minSCR).lineClass;
+    });
+
+    // SCR mínimo global (solo nudos con IBR)
+    const finiteScrs   = Object.values(nodeSCR).filter(s => isFinite(s));
+    const globalMinSCR = finiteScrs.length ? Math.min(...finiteScrs) : Infinity;
+    const globalStatus = classifySCR(globalMinSCR);
+
+    // Scc media del sistema (indicador de robustez general)
+    const avgScc = Math.round(
+      Object.values(nodeScc).reduce((a, b) => a + b, 0) / NODES.length,
+    );
+
+    return { nodeScc, nodeIBR, nodeSCR, edgeClass, globalMinSCR, globalStatus, avgScc };
+  }, [genStates]);
+
+  // ── Datos del nudo seleccionado ───────────────────────────────────────────
+  const selNode    = selectedNodeId ? NODES.find(n => n.id === selectedNodeId) : null;
+  const selSCR     = selNode ? metrics.nodeSCR[selNode.id]  : null;
+  const selStatus  = selNode ? classifySCR(selSCR)           : null;
+  const selScc     = selNode ? metrics.nodeScc[selNode.id]   : null;
+  const selIBR     = selNode ? metrics.nodeIBR[selNode.id]   : null;
+  const nodeGens   = selNode ? GENERATORS.filter(g => g.nodeId === selNode.id) : [];
 
   return (
     <div className={styles.container}>
+      {/* ── Cabecera ── */}
       <div className={styles.header}>
         <span className={styles.badge}>
-          <Translate id="calculator.badge">Simulador Dinámico de Impedancia</Translate>
+          <Translate id="scr.badge">Análisis de Fortaleza de Red · 28-A</Translate>
         </span>
         <h3 className={styles.title}>
-          <Translate id="calculator.title">Calculadora de Fortaleza de Red (SCR / Ssc)</Translate>
+          <Translate id="scr.title">Calculadora de SCR — Short Circuit Ratio</Translate>
         </h3>
         <p className={styles.subtitle}>
-          <Translate id="calculator.subtitle">
-            Conecta o desconecta generadores síncronos para evaluar el impacto en el Short Circuit Ratio (SCR) nodal en tiempo real mediante el Lema de Sherman-Morrison.
+          <Translate id="scr.subtitle">
+            Conecta o desacopla generadores síncronos e IBR para visualizar cómo varía la potencia de cortocircuito (Scc)
+            y el SCR en cada nudo. SCR {'<'} 1,5 reproduce la condición exacta del eje sur-occidental durante el 28-A.
           </Translate>
         </p>
       </div>
 
       <div className={styles.layout}>
-        {/* Mapa vectorial */}
+        {/* ── Mapa SVG ── */}
         <div className={styles.mapContainer}>
           <svg viewBox="0 0 1000 800" className={styles.svg}>
-            <defs>
-              <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="glowYellow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="glowRed" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="8" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* Dibujo de fondo del mapa */}
-            <path d={IBERIA_PATH} className={styles.landES} />
+            {/* Contornos geográficos */}
+            <path d={IBERIA_PATH}   className={styles.landES} />
             <path d={PORTUGAL_PATH} className={styles.landPT} />
 
-            {/* Líneas de transporte */}
-            {NETWORK_DATA.edges.map((edge, idx) => {
-              const src = metricsMap[edge.from];
-              const tgt = metricsMap[edge.to];
+            {/* Líneas de transporte (color = fortaleza local de red) */}
+            {EDGES.map((edge, idx) => {
+              const src = NODE_MAP[edge.from];
+              const tgt = NODE_MAP[edge.to];
               if (!src || !tgt) return null;
 
-              const isWeak = src.scr < 3.0 || tgt.scr < 3.0;
-              const isCritical = src.scr < 2.0 || tgt.scr < 2.0;
-
-              let lineClass = styles.lineActive;
-              if (isCritical) lineClass = styles.lineCritical;
-              else if (isWeak) lineClass = styles.lineWeak;
+              const cls = metrics.edgeClass[`${edge.from}--${edge.to}`];
+              const lineClass =
+                cls === 'critical' ? styles.lineCritical :
+                cls === 'weak'     ? styles.lineWeak     :
+                                     styles.lineActive;
 
               return (
                 <line
                   key={idx}
-                  x1={src.x} y1={src.y} x2={tgt.x} y2={tgt.y}
+                  x1={src.x} y1={src.y}
+                  x2={tgt.x} y2={tgt.y}
                   className={lineClass}
                 />
               );
             })}
 
-            {/* Nodos interactivos */}
-            {networkMetrics.map(node => {
-              const isHovered = hoveredNode === node.id;
-              const hasGen = !!node.generator;
-              const isGenActive = hasGen && activeGenerators.has(node.id);
+            {/* Nudos */}
+            {PROJECTED.map(node => {
+              const nodeGensAll  = GENERATORS.filter(g => g.nodeId === node.id);
+              const hasGen       = nodeGensAll.length > 0;
+              const hasActiveGen = nodeGensAll.some(g => genStates[g.id]);
+              const isSelected   = selectedNodeId === node.id;
 
-              let filterUrl = 'none';
-              if (node.scr < 2.0) filterUrl = 'url(#glowRed)';
-              else if (node.scr < 3.0) filterUrl = 'url(#glowYellow)';
-              else if (node.scr !== Infinity) filterUrl = 'url(#glowGreen)';
+              const scr       = metrics.nodeSCR[node.id];
+              const { color } = classifySCR(scr);
+              const nodeR     = hasGen ? 12 : 8;
+              const ringR     = nodeR + 8;
 
               return (
                 <g
                   key={node.id}
                   className={styles.nodeGroup}
-                  onMouseEnter={() => setHoveredNode(node.id)}
-                  onMouseLeave={() => setHoveredNode(null)}
-                  onClick={() => hasGen && toggleGenerator(node.id)}
+                  onClick={() => setSelectedNodeId(prev => prev === node.id ? null : node.id)}
+                  role="button"
+                  aria-label={node.name}
+                  tabIndex={0}
+                  onKeyDown={e => e.key === 'Enter' && setSelectedNodeId(prev => prev === node.id ? null : node.id)}
                 >
-                  {/* Halo interactivo */}
+                  {/* Anillo de generador (rotante si activo) */}
                   {hasGen && (
                     <circle
-                      cx={node.x} cy={node.y} r={isHovered ? 28 : 22}
-                      className={isGenActive ? styles.genActiveRing : styles.genInactiveRing}
+                      cx={node.x} cy={node.y} r={ringR}
+                      className={hasActiveGen ? styles.genActiveRing : styles.genInactiveRing}
+                      style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
                     />
                   )}
 
-                  {/* Círculo del nodo */}
+                  {/* Anillo de selección */}
+                  {isSelected && (
+                    <circle
+                      cx={node.x} cy={node.y}
+                      r={hasGen ? ringR + 6 : nodeR + 6}
+                      fill="none"
+                      stroke="var(--calc-teal)"
+                      strokeWidth="2"
+                      strokeDasharray="5 3"
+                      opacity="0.9"
+                    />
+                  )}
+
+                  {/* Nodo principal (color = SCR del nudo) */}
                   <circle
-                    cx={node.x} cy={node.y}
-                    r={hasGen ? 14 : 9}
-                    fill={node.statusColor}
-                    stroke={isHovered ? '#FFFFFF' : 'rgba(255,255,255,0.4)'}
-                    strokeWidth={isHovered ? 3 : 1.5}
-                    filter={filterUrl}
-                    style={{ transition: 'all 0.3s ease' }}
+                    cx={node.x} cy={node.y} r={nodeR}
+                    fill={color}
+                    stroke="var(--calc-surface, #fffdf7)"
+                    strokeWidth="2"
+                    style={{ transition: 'fill 0.35s ease' }}
                   />
 
-                  {/* Indicador de estado del generador */}
-                  {hasGen && (
-                    <circle
-                      cx={node.x} cy={node.y} r={5}
-                      fill={isGenActive ? '#33FF57' : '#FF3333'}
-                    />
-                  )}
-
-                  {/* Etiqueta del nodo */}
+                  {/* Etiqueta */}
                   <text
-                    x={node.x} y={node.y - 20}
+                    x={node.x}
+                    y={node.y - (hasGen ? ringR + 8 : nodeR + 6)}
                     className={styles.nodeLabel}
                     textAnchor="middle"
                   >
@@ -355,30 +423,34 @@ function CalculatorContent() {
           </svg>
         </div>
 
-        {/* Panel de control y telemetría */}
+        {/* ── Panel de telemetría ── */}
         <div className={styles.telemetryPanel}>
-          <div className={styles.card}>
-            <h4 className={styles.cardTitle}>
-              <Translate id="calculator.control_panel">Panel de Control de Generación</Translate>
-            </h4>
-            <p className={styles.cardDesc}>
-              <Translate id="calculator.control_panel_desc">Haz clic en los nudos de generación síncrona en el mapa o utiliza los interruptores inferiores para simular su desconexión.</Translate>
-            </p>
 
+          {/* Card 1: Parque generador con toggles */}
+          <div className={styles.card}>
+            <h4 className={styles.cardTitle}>Parque Generador</h4>
+            <p className={styles.cardDesc}>
+              Los alternadores síncronos elevan la Scc (SCR sube). Los IBR la consumen sin aportarla (SCR baja).
+            </p>
             <div className={styles.togglesList}>
-              {NETWORK_DATA.nodes.filter(n => n.generator).map(node => {
-                const isActive = activeGenerators.has(node.id);
+              {GENERATORS.map(gen => {
+                const isActive = genStates[gen.id];
                 return (
-                  <div key={node.id} className={styles.toggleItem}>
+                  <div key={gen.id} className={styles.toggleItem}>
                     <div>
-                      <span className={styles.toggleName}>{node.name}</span>
+                      <span className={styles.toggleName}>{gen.name}</span>
                       <span className={styles.toggleDetail}>
-                        {node.generator.type === 'nuclear' ? 'Central Nuclear' : 'Ciclo Combinado'} ({node.generator.s_nom_mva} MVA)
+                        {gen.label}
+                        {' · '}
+                        {gen.isIBR
+                          ? 'IBR — Scc ≈ 0'
+                          : `+${gen.scc_mva.toLocaleString('es-ES')} MVA`}
                       </span>
                     </div>
                     <button
                       className={`${styles.switchBtn} ${isActive ? styles.switchOn : styles.switchOff}`}
-                      onClick={() => toggleGenerator(node.id)}
+                      onClick={() => toggleGen(gen.id)}
+                      aria-pressed={isActive}
                     >
                       {isActive ? 'ON' : 'OFF'}
                     </button>
@@ -388,84 +460,105 @@ function CalculatorContent() {
             </div>
           </div>
 
-          {/* Información del nodo seleccionado o hovered */}
+          {/* Card 2: Estado del nudo seleccionado (o estado global) */}
           <div className={`${styles.card} ${styles.detailCard}`}>
-            {hoveredData ? (
+            {selNode ? (
               <>
-                <h4 className={styles.cardTitle} style={{ color: hoveredData.statusColor }}>
-                  {hoveredData.name}
-                </h4>
+                <h4 className={styles.cardTitle}>{selNode.name}</h4>
+
                 <div className={styles.metaRow}>
-                  <span>Tensión Nominal:</span>
-                  <strong>{hoveredData.voltage_kv} kV</strong>
+                  <span>Scc local</span>
+                  <strong>{selScc.toLocaleString('es-ES')} MVA</strong>
                 </div>
                 <div className={styles.metaRow}>
-                  <span>Capacidad IBR:</span>
-                  <strong>{hoveredData.ibr_capacity_mw > 0 ? `${hoveredData.ibr_capacity_mw} MW` : 'N/A'}</strong>
-                </div>
-                <div className={styles.metaRow}>
-                  <span>Potencia Cortocircuito (S<sub>sc</sub>):</span>
-                  <strong>{Math.round(hoveredData.sscDynamic).toLocaleString()} MVA</strong>
-                </div>
-                <div className={styles.metaRow}>
-                  <span>Short Circuit Ratio (SCR):</span>
-                  <strong style={{ color: hoveredData.statusColor }}>
-                    {hoveredData.scr === Infinity ? '∞' : hoveredData.scr.toFixed(2)}
+                  <span>IBR acoplada</span>
+                  <strong>
+                    {selIBR > 0 ? `${selIBR.toLocaleString('es-ES')} MW` : '— (sin IBR)'}
                   </strong>
                 </div>
+                <div className={styles.metaRow}>
+                  <span>SCR local</span>
+                  <strong style={{ color: selStatus.color }}>
+                    {isFinite(selSCR) ? selSCR.toFixed(2) : '∞'}
+                  </strong>
+                </div>
+                <div className={styles.metaRow}>
+                  <span>Estado</span>
+                  <strong style={{ color: selStatus.color }}>{selStatus.label}</strong>
+                </div>
+
                 <div className={styles.statusDescription}>
-                  {hoveredData.scr === Infinity ? (
-                    <p>Nudo pasivo de transporte. Sin generación renovable inyectada en barras.</p>
-                  ) : hoveredData.scr < 2.0 ? (
-                    <p style={{ color: '#FF3333' }}>
-                      <strong>CRÍTICO (SCR &lt; 2.0):</strong> Nudo en red extremadamente débil. Los lazos de control de los inversores (PLL) perderán sincronismo de forma inminente ante faltas de red.
+                  <p>{selStatus.desc}</p>
+                  {nodeGens.map(gen => (
+                    <p key={gen.id} style={{ marginTop: '0.6rem' }}>
+                      <strong
+                        style={{
+                          color: genStates[gen.id]
+                            ? 'var(--calc-active-gen)'
+                            : 'var(--calc-inactive-gen)',
+                        }}
+                      >
+                        [{genStates[gen.id] ? 'ONLINE' : 'OFFLINE'}]
+                      </strong>
+                      {' '}{gen.detail}
                     </p>
-                  ) : hoveredData.scr < 3.0 ? (
-                    <p style={{ color: '#FFC300' }}>
-                      <strong>MARGINAL (2.0 &le; SCR &lt; 3.0):</strong> Red débil con baja estabilidad dinámica. Requiere control dinámico de tensión rápido y reactancia controlada.
-                    </p>
-                  ) : (
-                    <p style={{ color: '#33FF57' }}>
-                      <strong>FUERTE (SCR &ge; 3.0):</strong> Red rígida y estable. Capacidad síncrona suficiente para amortiguar transitorios rápidos de tensión.
-                    </p>
-                  )}
+                  ))}
                 </div>
               </>
             ) : (
               <div className={styles.emptyDetail}>
-                <p>Pasa el cursor sobre cualquier subestación del mapa para analizar la telemetría dinámica de potencia y estabilidad.</p>
+                <p>Haz clic en un nudo del mapa para inspeccionar su SCR local y telemetría.</p>
+                <p style={{ marginTop: '0.8rem' }}>
+                  SCR mín. del sistema:{' '}
+                  <strong style={{ color: metrics.globalStatus.color }}>
+                    {isFinite(metrics.globalMinSCR)
+                      ? `${metrics.globalMinSCR.toFixed(2)} — ${metrics.globalStatus.label}`
+                      : '∞ — Sin IBR activa'}
+                  </strong>
+                </p>
+                <p style={{ marginTop: '0.4rem', fontSize: '0.78rem', opacity: 0.75 }}>
+                  Scc media del sistema:{' '}
+                  <strong>{metrics.avgScc.toLocaleString('es-ES')} MVA</strong>
+                </p>
               </div>
             )}
           </div>
+
+          {/* Botones de escenario */}
+          <div style={{ display: 'flex', gap: '0.6rem' }}>
+            <button
+              className={`${styles.switchBtn} ${styles.switchOff}`}
+              onClick={applyScenario28A}
+              style={{ flex: 1, padding: '0.45rem 0.5rem', fontSize: '0.72rem' }}
+            >
+              ↺ Escenario 28-A
+            </button>
+            <button
+              className={`${styles.switchBtn} ${styles.switchOn}`}
+              onClick={applyScenarioAllOnline}
+              style={{ flex: 1, padding: '0.45rem 0.5rem', fontSize: '0.72rem' }}
+            >
+              ✓ Todo Online
+            </button>
+          </div>
         </div>
       </div>
-      
+
+      {/* ── Leyenda de fórmulas ── */}
       <div className={styles.formulaLegend}>
         <div className={styles.formulaItem}>
-          <code>SCR = S_sc / P_IBR</code>
-          <span>Short Circuit Ratio</span>
+          <code>SCR = Scc [MVA] / P_IBR [MW]</code>
+          <span>Short Circuit Ratio en el punto de conexión del inversor</span>
         </div>
         <div className={styles.formulaItem}>
-          <code>S_sc = S_base / Z_ii</code>
-          <span>Potencia de Cortocircuito Dinámica</span>
+          <code>Scc ≈ SCC_base + Σ Sgen × k(d)</code>
+          <span>k(d) es el factor de atenuación por distancia eléctrica entre nudos</span>
         </div>
         <div className={styles.formulaItem}>
-          <code>Z_new_ii = Z_ii - (Z_ik)² / (Z_kk + &Delta;Z)</code>
-          <span>Lema de Sherman-Morrison (O(N) update)</span>
+          <code>SCR {'<'} 1,5 → Inestabilidad de PLL</code>
+          <span>Condición reproducida el 28-A en el eje sur-occidental: inicio de cascada ANSI 59</span>
         </div>
       </div>
     </div>
-  );
-}
-
-export default function GridStrengthCalculator(props) {
-  return (
-    <BrowserOnly fallback={
-      <div style={{ padding: '2rem', textAlign: 'center', background: '#071326', borderRadius: '8px', color: '#808080' }}>
-        Inicializando visor matemático de fortaleza de red...
-      </div>
-    }>
-      {() => <CalculatorContent {...props} />}
-    </BrowserOnly>
   );
 }

@@ -1,11 +1,47 @@
 .scadaWrapper {
+  /* Default light theme (analogic, bordeaux, pistachio) */
+  --scada-bg: #fff8ec;
+  --scada-surface: #fffdf7;
+  --scada-surface-2: #f6eddc;
+  --scada-border: rgba(77, 60, 38, 0.16);
+  --scada-border-strong: rgba(77, 60, 38, 0.28);
+  --scada-text: #6f675c;
+  --scada-text-strong: #24211c;
+  --scada-teal: #28666e;
+  
+  --scada-active-dot: #4c8b6b; /* Pistachio */
+  --scada-alarm: #8b2635; /* Bourdeos */
+  --scada-warning: #c58b35; /* Ocre/Amber */
+  
+  --scada-shadow: rgba(58, 49, 35, 0.08);
+  --scada-crt-opacity: 0.12;
+  
   position: relative;
   width: 100%;
   margin: 2rem 0;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(131, 189, 194, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--scada-border);
+  box-shadow: 0 4px 20px var(--scada-shadow);
+}
+
+html[data-theme='dark'] .scadaWrapper {
+  /* Dark theme (azules, blancos, retro SCADA) */
+  --scada-bg: #0d1e38;      /* Azul oscuro */
+  --scada-surface: #122846; /* Azul intermedio */
+  --scada-surface-2: #183452; /* Azul claro */
+  --scada-border: rgba(210, 225, 245, 0.14);
+  --scada-border-strong: rgba(210, 225, 245, 0.25);
+  --scada-text: #aab7c8;
+  --scada-text-strong: #e8eef7;
+  --scada-teal: #83bdc2;
+  
+  --scada-active-dot: #39FF14; /* Verde neón retro */
+  --scada-alarm: #FF073A; /* Rojo neón retro */
+  --scada-warning: #FFEA00; /* Amarillo neón retro */
+  
+  --scada-shadow: rgba(0, 0, 0, 0.25);
+  --scada-crt-opacity: 0.75;
 }
 
 /* ── Efecto CRT Scanlines ── */
@@ -15,24 +51,33 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.25) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.06),
-    rgba(0, 255, 0, 0.02),
-    rgba(0, 0, 255, 0.06)
-  );
+  background:
+    linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.15) 50%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 0,   0, 0.03),
+      rgba(0,   255, 0, 0.01),
+      rgba(0,   0, 255, 0.03)
+    );
   background-size: 100% 4px, 6px 100%;
   pointer-events: none;
   z-index: 10;
-  opacity: 0.85;
+  opacity: var(--scada-crt-opacity);
+  animation: crtFlicker 8s linear infinite;
 }
 
+@keyframes crtFlicker {
+  0%, 98%, 100% { opacity: var(--scada-crt-opacity); }
+  99%            { opacity: calc(var(--scada-crt-opacity) * 0.75); }
+}
+
+/* ── Contenedor principal ── */
 .scadaContainer {
-  background-color: #0a0a0a;
-  color: #a0a0a0;
+  background-color: var(--scada-bg);
+  color: var(--scada-text);
   padding: 1.5rem;
   font-family: 'Share Tech Mono', 'JetBrains Mono', 'Fira Code', monospace;
   position: relative;
@@ -46,7 +91,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #282828;
+  border-bottom: 2px solid var(--scada-border-strong);
   padding-bottom: 0.8rem;
 }
 
@@ -59,31 +104,32 @@
 .blinkingDot {
   width: 8px;
   height: 8px;
-  background-color: #39FF14;
+  background-color: var(--scada-active-dot);
   border-radius: 50%;
-  box-shadow: 0 0 8px #39FF14;
-  animation: alarmPulse 1s infinite;
+  box-shadow: 0 0 8px var(--scada-active-dot);
+  animation: alarmPulse 1s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes alarmPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.2; transform: scale(0.85); }
 }
 
 .systemStatus {
   font-weight: 700;
-  color: #39FF14;
+  color: var(--scada-active-dot);
   letter-spacing: 0.05em;
   font-size: 0.95rem;
 }
 
 .timeGroup {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--scada-text);
 }
 
 .timeVal {
-  color: #39FF14;
+  color: var(--scada-active-dot);
   margin-left: 0.4rem;
   font-size: 1.1rem;
 }
@@ -96,20 +142,16 @@
 }
 
 @media (max-width: 768px) {
-  .telemetryGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .telemetryGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 480px) {
-  .telemetryGrid {
-    grid-template-columns: 1fr;
-  }
+  .telemetryGrid { grid-template-columns: 1fr; }
 }
 
 .telemetryItem {
-  background-color: #111111;
-  border: 1px solid #222222;
+  background-color: var(--scada-surface);
+  border: 1px solid var(--scada-border);
   border-radius: 6px;
   padding: 1rem;
   display: flex;
@@ -117,11 +159,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  transition: border-color 0.3s ease;
 }
 
 .telemetryLabel {
   font-size: 0.75rem;
-  color: #808080;
+  color: var(--scada-text);
   font-weight: 700;
   margin-bottom: 0.4rem;
   letter-spacing: 0.05em;
@@ -135,15 +178,34 @@
   margin-bottom: 0.4rem;
   transition: color 0.3s ease;
   text-shadow: 0 0 6px currentColor;
+  font-variant-numeric: tabular-nums;
 }
 
 .telemetryLimits {
-  font-size: 0.65rem;
-  color: #555555;
+  font-size: 0.62rem;
+  color: var(--scada-text);
+  opacity: 0.7;
   text-align: center;
+  line-height: 1.3;
 }
 
-/* ── Layout de Controles e Historial ── */
+/* Mini barra de medida dentro de cada celda de telemetría */
+.telemetryBar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--scada-surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+
+.telemetryBarFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+/* ── Layout de Controles ── */
 .controlLayout {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
@@ -151,14 +213,13 @@
 }
 
 @media (max-width: 900px) {
-  .controlLayout {
-    grid-template-columns: 1fr;
-  }
+  .controlLayout { grid-template-columns: 1fr; }
 }
 
-.actionsPanel, .logsPanel {
-  background-color: #111111;
-  border: 1px solid #222222;
+.actionsPanel,
+.logsPanel {
+  background-color: var(--scada-surface);
+  border: 1px solid var(--scada-border);
   border-radius: 8px;
   padding: 1.2rem;
   display: flex;
@@ -169,8 +230,8 @@
   margin: 0 0 0.4rem 0;
   font-size: 1rem;
   font-weight: 800;
-  color: #e2e8f0;
-  border-left: 3px solid var(--map-teal, #83bdc2);
+  color: var(--scada-text-strong);
+  border-left: 3px solid var(--scada-teal);
   padding-left: 0.5rem;
   letter-spacing: 0.05em;
 }
@@ -178,10 +239,12 @@
 .panelDesc {
   margin: 0 0 1.2rem 0;
   font-size: 0.8rem;
-  color: #666666;
+  color: var(--scada-text);
+  opacity: 0.8;
   line-height: 1.4;
 }
 
+/* ── Acciones de Despacho ── */
 .togglesList {
   display: flex;
   flex-direction: column;
@@ -193,11 +256,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #151515;
-  border: 1px solid #252525;
+  background-color: var(--scada-surface-2);
+  border: 1px solid var(--scada-border);
   border-radius: 6px;
   padding: 0.8rem 1rem;
   gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.toggleRow:has(.btnOn) {
+  border-color: var(--scada-active-dot);
 }
 
 @media (max-width: 480px) {
@@ -216,12 +284,14 @@
 
 .actionName {
   font-size: 0.85rem;
-  color: #e2e8f0;
+  color: var(--scada-text-strong);
+  font-weight: 700;
 }
 
 .actionDesc {
   font-size: 0.72rem;
-  color: #777777;
+  color: var(--scada-text);
+  opacity: 0.8;
   line-height: 1.3;
 }
 
@@ -236,36 +306,47 @@
   transition: all 0.2s ease;
   min-width: 140px;
   text-align: center;
+  flex-shrink: 0;
+}
+
+.actionBtn:focus-visible {
+  outline: 2px solid var(--scada-teal);
+  outline-offset: 2px;
+}
+
+.actionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btnOff {
-  background-color: #2b2b2b;
-  color: #a0a0a0;
-  border: 1px solid #444;
+  background-color: var(--scada-surface-2);
+  color: var(--scada-text);
+  border: 1px solid var(--scada-border);
 }
 
-.btnOff:hover {
-  background-color: #3b3b3b;
-  color: #ffffff;
+.btnOff:not(:disabled):hover {
+  background-color: var(--scada-surface);
+  color: var(--scada-text-strong);
 }
 
 .btnOn {
-  background-color: #39FF14;
-  color: #050a14;
-  box-shadow: 0 0 12px rgba(57, 255, 20, 0.45);
+  background-color: var(--scada-active-dot);
+  color: var(--scada-bg);
+  box-shadow: 0 0 12px var(--scada-active-dot);
 }
 
 .btnSync {
-  background-color: #39FF14;
-  color: #050a14;
-  box-shadow: 0 0 12px rgba(57, 255, 20, 0.45);
+  background-color: var(--scada-active-dot);
+  color: var(--scada-bg);
+  box-shadow: 0 0 12px var(--scada-active-dot);
   cursor: default;
 }
 
 .btnWait {
-  background-color: #FFEA00;
-  color: #050a14;
-  animation: alarmPulse 1.2s infinite;
+  background-color: var(--scada-warning);
+  color: var(--scada-bg);
+  animation: alarmPulse 1.2s ease-in-out infinite;
 }
 
 /* ── Controles de Reproducción ── */
@@ -273,9 +354,36 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  border-top: 1px solid #222222;
+  border-top: 1px solid var(--scada-border);
   padding-top: 1.2rem;
   margin-top: auto;
+}
+
+/* Fila con botones y selector de velocidad */
+.playbackRow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.speedToggle {
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--scada-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--scada-teal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.speedToggle:hover {
+  background-color: var(--scada-surface-2);
+  border-color: var(--scada-teal);
 }
 
 .playbackBtn {
@@ -283,44 +391,54 @@
   font-size: 0.8rem;
   font-weight: 700;
   padding: 0.6rem 1rem;
-  border: 1px solid #444;
-  background-color: #1b1b1b;
-  color: #aab7c8;
+  border: 1px solid var(--scada-border);
+  background-color: var(--scada-surface-2);
+  color: var(--scada-text);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.playbackBtn:hover {
-  background-color: #282828;
-  color: #ffffff;
-  border-color: #666;
+.playbackBtn:hover:not(:disabled) {
+  background-color: var(--scada-surface);
+  color: var(--scada-text-strong);
+  border-color: var(--scada-border-strong);
+}
+
+.playbackBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.playbackBtn:focus-visible {
+  outline: 2px solid var(--scada-teal);
+  outline-offset: 2px;
 }
 
 .activePlayback {
-  background-color: rgba(57, 255, 20, 0.08);
-  border-color: #39FF14;
-  color: #39FF14;
-  box-shadow: inset 0 0 6px rgba(57, 255, 20, 0.15);
+  background-color: var(--scada-surface-2);
+  border-color: var(--scada-active-dot);
+  color: var(--scada-active-dot);
+  box-shadow: inset 0 0 6px var(--scada-active-dot);
 }
 
 .btnRestart {
-  border-color: rgba(255, 7, 58, 0.3);
-  color: #FF073A;
-  background-color: rgba(255, 7, 58, 0.05);
+  border-color: var(--scada-alarm);
+  color: var(--scada-alarm);
+  background-color: var(--scada-surface-2);
 }
 
-.btnRestart:hover {
-  background-color: #FF073A;
-  color: #ffffff;
-  border-color: #FF073A;
-  box-shadow: 0 0 8px rgba(255, 7, 58, 0.35);
+.btnRestart:hover:not(:disabled) {
+  background-color: var(--scada-alarm);
+  color: var(--scada-bg);
+  border-color: var(--scada-alarm);
+  box-shadow: 0 0 8px var(--scada-alarm);
 }
 
-/* ── Panel de Logs e Historial ── */
+/* ── Panel de Logs ── */
 .budgetDisplay {
-  background-color: #181818;
-  border: 1px dashed #333333;
+  background-color: var(--scada-surface-2);
+  border: 1px dashed var(--scada-border-strong);
   border-radius: 6px;
   padding: 0.6rem 0.8rem;
   display: flex;
@@ -328,10 +446,13 @@
   align-items: center;
   font-size: 0.8rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .budgetDisplay span {
-  color: #777777;
+  color: var(--scada-text);
+  opacity: 0.7;
 }
 
 .logsContainer {
@@ -344,41 +465,30 @@
   padding-right: 0.5rem;
 }
 
-.logsContainer::-webkit-scrollbar {
-  width: 4px;
-}
-
+.logsContainer::-webkit-scrollbar { width: 4px; }
 .logsContainer::-webkit-scrollbar-thumb {
-  background-color: #333333;
+  background-color: var(--scada-border-strong);
   border-radius: 2px;
 }
 
 .logItem {
   font-size: 0.72rem;
-  line-height: 1.35;
+  line-height: 1.4;
   border-left: 2px solid transparent;
   padding-left: 0.5rem;
 }
 
-.logInfo {
-  color: #8892b0;
-  border-color: #3b82f6;
-}
+.logInfo   { color: var(--scada-text); border-color: var(--scada-teal); }
+.logWarn   { color: var(--scada-warning); border-color: var(--scada-warning); }
+.logDanger { color: var(--scada-alarm); border-color: var(--scada-alarm); }
 
-.logWarn {
-  color: #FFEA00;
-  border-color: #FFEA00;
-  text-shadow: 0 0 1px rgba(255, 234, 0, 0.2);
-}
-
-.logDanger {
-  color: #FF073A;
-  border-color: #FF073A;
-  text-shadow: 0 0 2px rgba(255, 7, 58, 0.3);
+.logText {
+  display: inline;
 }
 
 .logTime {
-  color: #555555;
+  color: var(--scada-text);
+  opacity: 0.6;
   margin-right: 0.4rem;
   font-weight: 700;
 }
@@ -390,34 +500,41 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(5, 5, 5, 0.92);
+  background-color: rgba(5, 5, 5, 0.88);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
   padding: 1.5rem;
+  animation: overlayFadeIn 0.4s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .resolutionModal {
-  max-width: 580px;
-  background-color: #0f0f0f;
+  max-width: 600px;
+  width: 100%;
+  background-color: var(--scada-surface);
   border-radius: 8px;
   padding: 1.8rem;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  border: 1px solid #333;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--scada-border);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
 }
 
 .modalSuccess {
-  border-color: #39FF14;
-  box-shadow: 0 0 25px rgba(57, 255, 20, 0.15);
+  border-color: var(--scada-active-dot);
+  box-shadow: 0 0 25px var(--scada-active-dot);
 }
 
 .modalDanger {
-  border-color: #FF073A;
-  box-shadow: 0 0 25px rgba(255, 7, 58, 0.15);
+  border-color: var(--scada-alarm);
+  box-shadow: 0 0 25px var(--scada-alarm);
 }
 
 .resolutionTitle {
@@ -428,20 +545,20 @@
 }
 
 .modalSuccess .resolutionTitle {
-  color: #39FF14;
-  text-shadow: 0 0 5px #39FF14;
+  color: var(--scada-active-dot);
+  text-shadow: 0 0 5px var(--scada-active-dot);
 }
 
 .modalDanger .resolutionTitle {
-  color: #FF073A;
-  text-shadow: 0 0 5px #FF073A;
+  color: var(--scada-alarm);
+  text-shadow: 0 0 5px var(--scada-alarm);
 }
 
 .resolutionBody {
   font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
   font-size: 0.85rem;
   line-height: 1.5;
-  color: #a9b2c3;
+  color: var(--scada-text);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -451,8 +568,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background-color: #151515;
-  border: 1px solid #222;
+  background-color: var(--scada-surface-2);
+  border: 1px solid var(--scada-border);
   border-radius: 6px;
   padding: 0.8rem 1rem;
   font-family: monospace;
@@ -464,9 +581,7 @@
   font-size: 0.8rem;
 }
 
-.statLine span {
-  color: #666;
-}
+.statLine span { color: var(--scada-text); opacity: 0.7; }
 
 .modalRestartBtn {
   font-family: inherit;
@@ -478,22 +593,30 @@
   cursor: pointer;
   align-self: center;
   transition: all 0.2s ease;
-  min-width: 180px;
+  min-width: 200px;
   text-align: center;
 }
 
 .modalSuccess .modalRestartBtn {
-  background-color: #39FF14;
-  color: #050a14;
-  box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+  background-color: var(--scada-active-dot);
+  color: var(--scada-bg);
+  box-shadow: 0 0 10px var(--scada-active-dot);
 }
 
 .modalDanger .modalRestartBtn {
-  background-color: #FF073A;
+  background-color: var(--scada-alarm);
   color: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 7, 58, 0.4);
+  box-shadow: 0 0 10px var(--scada-alarm);
 }
 
-.modalRestartBtn:hover {
-  filter: brightness(1.2);
+.modalRestartBtn:hover { filter: brightness(1.15); }
+
+/* ── Accesibilidad: prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .crtOverlay       { animation: none; }
+  .blinkingDot      { animation: none; }
+  .btnWait          { animation: none; }
+  .resolutionOverlay{ animation: none; }
+  .telemetryBarFill { transition: none; }
+  .telemetryValue   { transition: none; }
 }
