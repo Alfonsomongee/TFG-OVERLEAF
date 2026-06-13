@@ -1,0 +1,331 @@
+.container {
+  --calc-bg: #fff8ec;
+  --calc-surface: #fffdf7;
+  --calc-surface-2: #f6eddc;
+  --calc-text: #24211c;
+  --calc-muted: #6f675c;
+  --calc-border: rgba(77, 60, 38, 0.16);
+  --calc-teal: #28666e;
+  --calc-active-gen: #33ff57;
+  --calc-inactive-gen: #ff3333;
+  --calc-weak-line: #ffc300;
+  --calc-critical-line: #ff3333;
+  --calc-active-line: #00b0ff;
+  --calc-shadow: rgba(0, 0, 0, 0.05);
+
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--calc-border);
+  border-radius: 14px;
+  background: var(--calc-bg);
+  color: var(--calc-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .container {
+  --calc-bg: #0d1e38;
+  --calc-surface: #122846;
+  --calc-surface-2: #183452;
+  --calc-text: #e8eef7;
+  --calc-muted: #aab7c8;
+  --calc-border: rgba(210, 225, 245, 0.14);
+  --calc-teal: #83bdc2;
+  --calc-active-gen: #33ff57;
+  --calc-inactive-gen: #ff3333;
+  --calc-weak-line: #ffc300;
+  --calc-critical-line: #ff3333;
+  --calc-active-line: #00d9ff;
+  --calc-shadow: rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--calc-teal);
+  background: var(--calc-surface-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--calc-text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--calc-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mapContainer {
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px var(--calc-shadow);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.landES {
+  fill: var(--calc-surface-2);
+  stroke: var(--calc-border);
+  stroke-width: 1.5;
+  transition: fill 0.3s ease;
+}
+
+.landPT {
+  fill: var(--calc-surface-2);
+  stroke: var(--calc-border);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+  transition: fill 0.3s ease;
+  opacity: 0.85;
+}
+
+.lineActive {
+  stroke: var(--calc-active-line);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.lineWeak {
+  stroke: var(--calc-weak-line);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.lineCritical {
+  stroke: var(--calc-critical-line);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.nodeGroup {
+  cursor: pointer;
+}
+
+.genActiveRing {
+  fill: none;
+  stroke: var(--calc-active-gen);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+  animation: rotateClockwise 15s linear infinite;
+  transform-origin: center;
+}
+
+.genInactiveRing {
+  fill: none;
+  stroke: var(--calc-inactive-gen);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 2;
+}
+
+@keyframes rotateClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.nodeLabel {
+  font-size: 10px;
+  font-weight: 650;
+  fill: var(--calc-text);
+  font-family: var(--ifm-font-family-monospace, monospace);
+  pointer-events: none;
+  text-shadow: 0 1px 2px var(--calc-surface), 0 -1px 2px var(--calc-surface), 1px 0 2px var(--calc-surface), -1px 0 2px var(--calc-surface);
+}
+
+.telemetryPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.card {
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 6px var(--calc-shadow);
+}
+
+.cardTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--calc-text);
+}
+
+.cardDesc {
+  margin: 0 0 1rem 0;
+  font-size: 0.8rem;
+  color: var(--calc-muted);
+  line-height: 1.4;
+}
+
+.togglesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.toggleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background: var(--calc-surface-2);
+  border-radius: 6px;
+  border: 1px solid var(--calc-border);
+}
+
+.toggleName {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--calc-text);
+}
+
+.toggleDetail {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--calc-muted);
+}
+
+.switchBtn {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--ifm-font-family-monospace, monospace);
+  min-width: 50px;
+  text-align: center;
+}
+
+.switchOn {
+  background: var(--calc-active-gen);
+  color: #0b1827;
+  box-shadow: 0 0 8px rgba(51, 255, 87, 0.4);
+}
+
+.switchOff {
+  background: var(--calc-inactive-gen);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.3);
+}
+
+.detailCard {
+  min-height: 180px;
+  border-left: 4px solid var(--calc-teal);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed var(--calc-border);
+}
+
+.metaRow span {
+  color: var(--calc-muted);
+}
+
+.metaRow strong {
+  color: var(--calc-text);
+  font-family: var(--ifm-font-family-monospace, monospace);
+}
+
+.statusDescription {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.statusDescription p {
+  margin: 0;
+}
+
+.emptyDetail {
+  text-align: center;
+  color: var(--calc-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 1.5rem 0;
+}
+
+.formulaLegend {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 650px) {
+  .formulaLegend {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+}
+
+.formulaItem {
+  background: var(--calc-surface);
+  border: 1px solid var(--calc-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+}
+
+.formulaItem code {
+  font-weight: 700;
+  color: var(--calc-teal);
+  background: transparent;
+  padding: 0;
+}
+
+.formulaItem span {
+  color: var(--calc-muted);
+}

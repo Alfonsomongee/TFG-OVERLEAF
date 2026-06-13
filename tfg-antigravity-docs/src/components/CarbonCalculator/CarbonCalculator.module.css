@@ -1,0 +1,334 @@
+.calcContainer {
+  --car-bg: #fff8ec;
+  --car-surface: #fffdf7;
+  --car-surface-2: #f6eddc;
+  --car-text: #24211c;
+  --car-muted: #6f675c;
+  --car-border: rgba(77, 60, 38, 0.16);
+  --car-teal: #28666e;
+  --car-shadow: rgba(0, 0, 0, 0.05);
+
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  background: var(--car-bg);
+  color: var(--car-text);
+  border-radius: 12px;
+  border: 1px solid var(--car-border);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .calcContainer {
+  --car-bg: #0d1e38;
+  --car-surface: #122846;
+  --car-surface-2: #183452;
+  --car-text: #e8eef7;
+  --car-muted: #aab7c8;
+  --car-border: rgba(210, 225, 245, 0.14);
+  --car-teal: #83bdc2;
+  --car-shadow: rgba(0, 0, 0, 0.25);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--car-teal);
+  background: var(--car-surface-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--car-text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--car-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.controlsPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.card {
+  background: var(--car-surface);
+  border: 1px solid var(--car-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 6px var(--car-shadow);
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.sliderLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--car-teal);
+  letter-spacing: 0.05em;
+}
+
+.monthVal {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--car-teal);
+  background: var(--car-surface-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--car-surface-2);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  margin-bottom: 0.4rem;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--car-teal);
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--car-shadow);
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--car-teal);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 4px var(--car-shadow);
+}
+
+.sliderTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--car-muted);
+  font-family: var(--ifm-font-family-monospace, monospace);
+  padding: 0 0.2rem;
+}
+
+/* ── Rejilla de Métricas ── */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 580px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metricCard {
+  background: var(--car-surface);
+  border: 1px solid var(--car-border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 6px var(--car-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metricLabel {
+  font-size: 0.72rem;
+  font-weight: 750;
+  color: var(--car-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--car-text);
+  line-height: 1.1;
+  font-family: var(--ifm-font-family-monospace, monospace);
+  margin-bottom: 0.3rem;
+}
+
+.unit {
+  font-size: 0.8rem;
+  font-weight: 550;
+  color: var(--car-muted);
+  margin-left: 0.2rem;
+}
+
+.metricSub {
+  font-size: 0.68rem;
+  color: var(--car-muted);
+  opacity: 0.8;
+}
+
+/* ── Panel Visual del Mapa ── */
+.visualPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.visualTitle {
+  margin: 0 0 0.8rem 0;
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: var(--car-text);
+  text-align: center;
+}
+
+.mapContainer {
+  background: var(--car-surface-2);
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid var(--car-border);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mapSvg {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  display: block;
+}
+
+.landES {
+  stroke: var(--car-border);
+  stroke-width: 2.5px;
+  transition: fill 0.4s ease;
+}
+
+.landPT {
+  stroke: var(--car-border);
+  stroke-width: 1.8px;
+  stroke-dasharray: 4 3;
+  transition: fill 0.4s ease;
+}
+
+.colorLegend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  font-size: 0.7rem;
+  color: var(--car-muted);
+}
+
+.colorNode {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  border: 1px solid var(--car-border);
+}
+
+.arrow {
+  color: var(--car-muted);
+}
+
+/* ── Equivalencias Psicológicas ── */
+.equivalencesRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 820px) {
+  .equivalencesRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.equivCard {
+  background: var(--car-surface);
+  border: 1px solid var(--car-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 6px var(--car-shadow);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.equivIcon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.equivContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.equivTitle {
+  margin: 0 0 0.2rem 0;
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--car-teal);
+  text-transform: uppercase;
+}
+
+.equivValue {
+  font-size: 1.3rem;
+  font-weight: 850;
+  color: var(--car-text);
+  line-height: 1.1;
+  margin-bottom: 0.3rem;
+  font-family: var(--ifm-font-family-monospace, monospace);
+}
+
+.equivDesc {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--car-muted);
+  line-height: 1.4;
+}

@@ -4,7 +4,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './InteractiveGraphicsGallery.module.css';
 
 const FrequencyChart = lazy(() => import(/* webpackChunkName: "chart-frequency" */ './FrequencyChart'));
-const AnimatedMap = lazy(() => import(/* webpackChunkName: "chart-animated-map" */ './AnimatedMap'));
+const TimeLapseGridMap = lazy(() => import(/* webpackChunkName: "chart-timelapse-map" */ './TimeLapseGridMap'));
 const VerticalTimeline = lazy(() => import(/* webpackChunkName: "chart-timeline" */ './VerticalTimeline'));
 const EnergyTransitionStreamgraph = lazy(() => import(/* webpackChunkName: "chart-streamgraph" */ './EnergyTransitionStreamgraph'));
 const FinancialWaterfallChart = lazy(() => import(/* webpackChunkName: "chart-waterfall" */ './FinancialWaterfallChart'));
@@ -19,7 +19,7 @@ const CollapseSismograph = lazy(() => import(/* webpackChunkName: "chart-sismogr
 const PVCurveSimulator = lazy(() => import(/* webpackChunkName: "chart-pvcurve" */ './PVCurveSimulator'));
 const ANSI59Cascade = lazy(() => import(/* webpackChunkName: "chart-ansi59" */ './ANSI59Cascade'));
 const FerrantiCapacitiveLineSimulator = lazy(() => import(/* webpackChunkName: "chart-ferranti" */ './FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator'));
-const GridStrengthScrFigure = lazy(() => import(/* webpackChunkName: "chart-scr" */ './GridStrengthScrFigure/GridStrengthScrFigure'));
+const GridStrengthCalculator = lazy(() => import(/* webpackChunkName: "chart-grid-strength-calc" */ './GridStrengthCalculator'));
 const HvdcControlModeResponseFigure = lazy(() => import(/* webpackChunkName: "chart-hvdc" */ './HvdcControlModeResponseFigure/HvdcControlModeResponseFigure'));
 const PowerFlowJacobianCollapseFigure = lazy(() => import(/* webpackChunkName: "chart-jacobian" */ './PowerFlowJacobianCollapseFigure/PowerFlowJacobianCollapseFigure'));
 const TransformerInrushDecayFigure = lazy(() => import(/* webpackChunkName: "chart-inrush" */ './TransformerInrushDecayFigure/TransformerInrushDecayFigure'));
@@ -42,6 +42,9 @@ const LmpCongestionDecompositionFigure = lazy(() => import(/* webpackChunkName: 
 const SIRDisinformationDelayFigure = lazy(() => import(/* webpackChunkName: "chart-sir-delay" */ './new-graphics/SIRDisinformationDelayFigure'));
 const TrilemmaStateSpaceFigure = lazy(() => import(/* webpackChunkName: "chart-trilemma-space" */ './new-graphics/TrilemmaStateSpaceFigure'));
 const VoLLSectorIntegralFigure = lazy(() => import(/* webpackChunkName: "chart-voll-sector" */ './new-graphics/VoLLSectorIntegralFigure'));
+const CecoelSimulator = lazy(() => import(/* webpackChunkName: "chart-cecoel-simulator" */ './CecoelSimulator/CecoelSimulator'));
+const ForensicArbitrator = lazy(() => import(/* webpackChunkName: "chart-forensic-arbitrator" */ './ForensicArbitrator/ForensicArbitrator'));
+const CarbonCalculator = lazy(() => import(/* webpackChunkName: "chart-carbon-calculator" */ './CarbonCalculator/CarbonCalculator'));
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export const getGraphicData = (id, lang) => {
@@ -53,10 +56,10 @@ export const getGraphicData = (id, lang) => {
       de: { title: 'Frequenzabfall (Hz)', desc: 'Interaktives Diagramm der Frequenzentwicklung während des Kollapses.' }
     },
     map: {
-      es: { title: 'Mapa Animado del Colapso', desc: 'Simulación geográfica interactiva de la cascada de desconexiones.' },
-      en: { title: 'Animated Collapse Map', desc: 'Interactive geographic simulation of the disconnection cascade.' },
-      fr: { title: 'Carte Animée de l\'Effondrement', desc: 'Simulation géographique interactive de la cascade de déconnexions.' },
-      de: { title: 'Animierte Kollaps-Karte', desc: 'Interaktive geografische Simulation der Kaskadentrennungen.' }
+      es: { title: 'Mapa Temporal GIS (Time-lapse)', desc: 'Visualización interactiva con precisión de milisegundos de la propagación del colapso del 28-A.' },
+      en: { title: 'GIS Time-lapse Map', desc: 'Interactive slow-motion timeline with millisecond precision of the 28-A collapse.' },
+      fr: { title: 'Carte Temporelle SIG (Time-lapse)', desc: 'Visualisation interactive avec précision de millisecondes de la propagation de la panne.' },
+      de: { title: 'GIS-Zeitraffer-Karte', desc: 'Interaktive Zeitreihenvisualisierung des Netzkollapses mit Millisekundenpräzision.' }
     },
     timeline: {
       es: { title: 'Cronograma del Incidente', desc: 'Línea de tiempo vertical e interactiva de los eventos clave.' },
@@ -246,8 +249,8 @@ export const getGraphicData = (id, lang) => {
     },
 
     'grid-strength-scr': {
-      es: { title: 'Fortaleza Nodal (SCR vs IBR)', desc: 'El Short Circuit Ratio cae cuando la potencia conectada mediante inversores crece sobre una red con baja potencia de cortocircuito.' },
-      en: { title: 'Nodal Strength (SCR vs IBR)', desc: 'The Short Circuit Ratio drops when inverter-based generation capacity increases on a grid with low short-circuit power.' }
+      es: { title: 'Calculadora de Fortaleza de Red', desc: 'Simulación dinámica de potencia de cortocircuito (Ssc) y Short Circuit Ratio (SCR) mediante el Lema de Sherman-Morrison.' },
+      en: { title: 'Grid Strength Calculator', desc: 'Dynamic simulation of short-circuit power (Ssc) and Short Circuit Ratio (SCR) using the Sherman-Morrison Lemma.' }
     },
     'hvdc-control': {
       es: { title: 'Control HVDC y Soporte de Frecuencia', desc: 'El modo de control determina si el enlace HVDC mantiene consigna o modifica potencia ante una desviación de frecuencia.' },
@@ -292,6 +295,18 @@ export const getGraphicData = (id, lang) => {
     'trilemma-state-space': {
       es: { title: 'Espacio de Decisiones del Trilema', desc: 'Visualización de la frontera de Pareto del trilema energético, ilustrando la restricción explícita de estabilidad dinámica.' },
       en: { title: 'Trilemma Decision Space', desc: 'Visualization of the energy trilemma Pareto frontier, illustrating the explicit constraint of dynamic stability.' }
+    },
+    'cecoel-simulator': {
+      es: { title: 'Consola de Despacho (CECOEL)', desc: 'Simulador en tiempo real del SCADA de REE el día del apagón para la toma de decisiones críticas.' },
+      en: { title: 'Dispatch SCADA Console (CECOEL)', desc: 'Real-time simulator of the REE SCADA system on the day of the blackout for critical decision making.' }
+    },
+    'forensic-arbitrator': {
+      es: { title: 'El Árbitro Forense', desc: 'Matriz visual comparativa de las discrepancias periciales e interpretaciones físicas del colapso.' },
+      en: { title: 'The Forensic Arbitrator', desc: 'Visual comparative matrix of pericial discrepancies and physical interpretations of the collapse.' }
+    },
+    'carbon-calculator': {
+      es: { title: 'Calculadora de Costes de CO₂', desc: 'Cuantificación del impacto económico y ecológico de las restricciones técnicas de la Operación Reforzada.' },
+      en: { title: 'CO₂ Cost Calculator', desc: 'Quantification of the economic and environmental impact of technical constraints from Reinforced Operation.' }
     }
   };
   return dictionary[id] ? (dictionary[id][lang] || dictionary[id]['es']) : dictionary['frequency']['es'];
@@ -311,7 +326,7 @@ const TapLagSequence = lazy(() => import(/* webpackChunkName: "chart-tap-lag-seq
 
 export const graphicsData = [
   { id: 'frequency', icon: '📉', component: FrequencyChart , tema: 'T2' },
-  { id: 'map', icon: '🗺️', component: AnimatedMap , tema: 'T3' },
+  { id: 'map', icon: '🗺️', component: TimeLapseGridMap , tema: 'T3' },
   { id: 'timeline', icon: '⏱️', component: VerticalTimeline , tema: 'T3' },
   { id: 'streamgraph', icon: '🌍', component: EnergyTransitionStreamgraph , tema: 'T1' },
   { id: 'waterfall', icon: '💶', component: FinancialWaterfallChart , tema: 'T7' },
@@ -353,13 +368,16 @@ export const graphicsData = [
   { id: 'trilemma-state-space', icon: '⚖️', component: TrilemmaStateSpaceFigure , tema: 'T10-sis' },
 
 
-  { id: 'grid-strength-scr', icon: '📈', component: GridStrengthScrFigure , tema: 'T10-red' },
+  { id: 'grid-strength-scr', icon: '📈', component: GridStrengthCalculator , tema: 'T10-red' },
   { id: 'hvdc-control', icon: '🎛️', component: HvdcControlModeResponseFigure , tema: 'T10-red' },
   { id: 'power-flow-jacobian', icon: '🌀', component: PowerFlowJacobianCollapseFigure , tema: 'T10-red' },
   { id: 'transformer-inrush', icon: '🔌', component: TransformerInrushDecayFigure , tema: 'T10-red' },
   { id: 'pq-capability', icon: '📊', component: PQCapabilitySimulator , tema: 'T10-gen' },
   { id: 'gfm-droop', icon: '📉', component: GfmDroopResponseFigure , tema: 'T10-gen' },
   { id: 'energy-trilemma', icon: '⚖️', component: EnergyTrilemmaSimulator , tema: ['T9', 'T10-mer'] },  // impacto/resiliencia
+  { id: 'cecoel-simulator', icon: '🎛️', component: CecoelSimulator , tema: 'T10-red' },
+  { id: 'forensic-arbitrator', icon: '⚖️', component: ForensicArbitrator , tema: 'T10-sis' },
+  { id: 'carbon-calculator', icon: '🌱', component: CarbonCalculator , tema: 'T10-mer' },
 ];
 
 export default function InteractiveGraphicsGallery({ propLang }) {

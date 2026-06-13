@@ -1,0 +1,499 @@
+.scadaWrapper {
+  position: relative;
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(131, 189, 194, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Efecto CRT Scanlines ── */
+.crtOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.06),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.06)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.85;
+}
+
+.scadaContainer {
+  background-color: #0a0a0a;
+  color: #a0a0a0;
+  padding: 1.5rem;
+  font-family: 'Share Tech Mono', 'JetBrains Mono', 'Fira Code', monospace;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Cabecera ── */
+.scadaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #282828;
+  padding-bottom: 0.8rem;
+}
+
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.blinkingDot {
+  width: 8px;
+  height: 8px;
+  background-color: #39FF14;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #39FF14;
+  animation: alarmPulse 1s infinite;
+}
+
+@keyframes alarmPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.systemStatus {
+  font-weight: 700;
+  color: #39FF14;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+}
+
+.timeGroup {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.timeVal {
+  color: #39FF14;
+  margin-left: 0.4rem;
+  font-size: 1.1rem;
+}
+
+/* ── Rejilla de Telemetría ── */
+.telemetryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .telemetryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .telemetryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.telemetryItem {
+  background-color: #111111;
+  border: 1px solid #222222;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.telemetryLabel {
+  font-size: 0.75rem;
+  color: #808080;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.telemetryValue {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 6px currentColor;
+}
+
+.telemetryLimits {
+  font-size: 0.65rem;
+  color: #555555;
+  text-align: center;
+}
+
+/* ── Layout de Controles e Historial ── */
+.controlLayout {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .controlLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actionsPanel, .logsPanel {
+  background-color: #111111;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelTitle {
+  margin: 0 0 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  border-left: 3px solid var(--map-teal, #83bdc2);
+  padding-left: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.panelDesc {
+  margin: 0 0 1.2rem 0;
+  font-size: 0.8rem;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.togglesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #151515;
+  border: 1px solid #252525;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .toggleRow {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}
+
+.toggleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.actionName {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+}
+
+.actionDesc {
+  font-size: 0.72rem;
+  color: #777777;
+  line-height: 1.3;
+}
+
+.actionBtn {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  text-align: center;
+}
+
+.btnOff {
+  background-color: #2b2b2b;
+  color: #a0a0a0;
+  border: 1px solid #444;
+}
+
+.btnOff:hover {
+  background-color: #3b3b3b;
+  color: #ffffff;
+}
+
+.btnOn {
+  background-color: #39FF14;
+  color: #050a14;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.45);
+}
+
+.btnSync {
+  background-color: #39FF14;
+  color: #050a14;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.45);
+  cursor: default;
+}
+
+.btnWait {
+  background-color: #FFEA00;
+  color: #050a14;
+  animation: alarmPulse 1.2s infinite;
+}
+
+/* ── Controles de Reproducción ── */
+.playbackControls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  border-top: 1px solid #222222;
+  padding-top: 1.2rem;
+  margin-top: auto;
+}
+
+.playbackBtn {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+  border: 1px solid #444;
+  background-color: #1b1b1b;
+  color: #aab7c8;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.playbackBtn:hover {
+  background-color: #282828;
+  color: #ffffff;
+  border-color: #666;
+}
+
+.activePlayback {
+  background-color: rgba(57, 255, 20, 0.08);
+  border-color: #39FF14;
+  color: #39FF14;
+  box-shadow: inset 0 0 6px rgba(57, 255, 20, 0.15);
+}
+
+.btnRestart {
+  border-color: rgba(255, 7, 58, 0.3);
+  color: #FF073A;
+  background-color: rgba(255, 7, 58, 0.05);
+}
+
+.btnRestart:hover {
+  background-color: #FF073A;
+  color: #ffffff;
+  border-color: #FF073A;
+  box-shadow: 0 0 8px rgba(255, 7, 58, 0.35);
+}
+
+/* ── Panel de Logs e Historial ── */
+.budgetDisplay {
+  background-color: #181818;
+  border: 1px dashed #333333;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.budgetDisplay span {
+  color: #777777;
+}
+
+.logsContainer {
+  flex-grow: 1;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-right: 0.5rem;
+}
+
+.logsContainer::-webkit-scrollbar {
+  width: 4px;
+}
+
+.logsContainer::-webkit-scrollbar-thumb {
+  background-color: #333333;
+  border-radius: 2px;
+}
+
+.logItem {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  border-left: 2px solid transparent;
+  padding-left: 0.5rem;
+}
+
+.logInfo {
+  color: #8892b0;
+  border-color: #3b82f6;
+}
+
+.logWarn {
+  color: #FFEA00;
+  border-color: #FFEA00;
+  text-shadow: 0 0 1px rgba(255, 234, 0, 0.2);
+}
+
+.logDanger {
+  color: #FF073A;
+  border-color: #FF073A;
+  text-shadow: 0 0 2px rgba(255, 7, 58, 0.3);
+}
+
+.logTime {
+  color: #555555;
+  margin-right: 0.4rem;
+  font-weight: 700;
+}
+
+/* ── Overlay de Resolución ── */
+.resolutionOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(5, 5, 5, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 1.5rem;
+}
+
+.resolutionModal {
+  max-width: 580px;
+  background-color: #0f0f0f;
+  border-radius: 8px;
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  border: 1px solid #333;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+}
+
+.modalSuccess {
+  border-color: #39FF14;
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.15);
+}
+
+.modalDanger {
+  border-color: #FF073A;
+  box-shadow: 0 0 25px rgba(255, 7, 58, 0.15);
+}
+
+.resolutionTitle {
+  font-size: 1.15rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.modalSuccess .resolutionTitle {
+  color: #39FF14;
+  text-shadow: 0 0 5px #39FF14;
+}
+
+.modalDanger .resolutionTitle {
+  color: #FF073A;
+  text-shadow: 0 0 5px #FF073A;
+}
+
+.resolutionBody {
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #a9b2c3;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.statsSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: #151515;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  font-family: monospace;
+}
+
+.statLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.statLine span {
+  color: #666;
+}
+
+.modalRestartBtn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: center;
+  transition: all 0.2s ease;
+  min-width: 180px;
+  text-align: center;
+}
+
+.modalSuccess .modalRestartBtn {
+  background-color: #39FF14;
+  color: #050a14;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+}
+
+.modalDanger .modalRestartBtn {
+  background-color: #FF073A;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 7, 58, 0.4);
+}
+
+.modalRestartBtn:hover {
+  filter: brightness(1.2);
+}

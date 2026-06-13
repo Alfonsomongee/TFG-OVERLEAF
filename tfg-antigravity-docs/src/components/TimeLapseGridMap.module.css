@@ -1,0 +1,422 @@
+.container {
+  --map-bg: #fff8ec;
+  --map-surface: #fffdf7;
+  --map-surface-2: #f6eddc;
+  --map-text: #24211c;
+  --map-muted: #6f675c;
+  --map-border: rgba(77, 60, 38, 0.16);
+  --map-teal: #28666e;
+  --map-active-line: #00b0ff;
+  --map-trip-line: #a0a0a0;
+  --map-shadow: rgba(0, 0, 0, 0.05);
+  --map-glow: rgba(255, 60, 60, 0.85);
+
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--map-border);
+  border-radius: 14px;
+  background: var(--map-bg);
+  color: var(--map-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .container {
+  --map-bg: #0d1e38;
+  --map-surface: #122846;
+  --map-surface-2: #183452;
+  --map-text: #e8eef7;
+  --map-muted: #aab7c8;
+  --map-border: rgba(210, 225, 245, 0.14);
+  --map-teal: #83bdc2;
+  --map-active-line: #00d9ff;
+  --map-trip-line: #4a5d73;
+  --map-shadow: rgba(0, 0, 0, 0.3);
+  --map-glow: rgba(255, 30, 30, 0.9);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--map-teal);
+  background: var(--map-surface-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--map-text);
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--map-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mapContainer {
+  background: var(--map-surface);
+  border: 1px solid var(--map-border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px var(--map-shadow);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.landES {
+  fill: var(--map-surface-2);
+  stroke: var(--map-border);
+  stroke-width: 1.5;
+  transition: fill 0.4s ease;
+}
+
+.landPT {
+  fill: var(--map-surface-2);
+  stroke: var(--map-border);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+  transition: fill 0.4s ease;
+  opacity: 0.85;
+}
+
+/* ═══ Líneas de Transporte y Efecto Ferranti ═══ */
+.lineActive {
+  stroke: var(--map-active-line);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+}
+
+.lineFerrantiActive {
+  stroke: #ff3333 !important;
+  stroke-width: 5.5px !important;
+  stroke-linecap: round;
+  animation: ferrantiPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: stroke, filter;
+  transition: all 0.3s ease;
+}
+
+@keyframes ferrantiPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px var(--map-glow));
+    stroke: #ff8080;
+  }
+  50% {
+    filter: drop-shadow(0 0 12px var(--map-glow));
+    stroke: #ff1a1a;
+  }
+}
+
+.lineTripOff {
+  stroke: var(--map-trip-line) !important;
+  stroke-width: 1.5px !important;
+  stroke-dasharray: 6 4;
+  opacity: 0.35;
+  transition: all 0.4s ease;
+}
+
+.lineBlackout {
+  stroke: #222c3c !important;
+  stroke-width: 1px !important;
+  opacity: 0.15;
+  transition: all 0.5s ease;
+}
+
+/* ═══ Nodos y Disparos ANSI 59 ═══ */
+.nodeGroup {
+  pointer-events: none;
+}
+
+.nodeCircle {
+  fill: #33ff57;
+  stroke: var(--map-surface);
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.genRing {
+  fill: none;
+  stroke: #33ff57;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 2;
+  transition: all 0.3s ease;
+}
+
+.nodeWarning {
+  fill: #ffcc00 !important;
+  stroke: #ff3300 !important;
+  animation: ansi59Warning 0.15s infinite;
+  transform-origin: center;
+  will-change: transform, fill;
+}
+
+@keyframes ansi59Warning {
+  0%, 100% {
+    fill: #ffcc00;
+    r: 14;
+  }
+  50% {
+    fill: #ff3300;
+    r: 18;
+  }
+}
+
+.nodeTripOff {
+  fill: #555555 !important;
+  stroke: #222222 !important;
+  opacity: 0.4;
+  filter: grayscale(100%);
+  transition: all 0.4s ease;
+}
+
+.nodeBlackout {
+  fill: #1a1a1a !important;
+  stroke: #111111 !important;
+  opacity: 0.2;
+  transition: all 0.6s ease;
+}
+
+.nodeLabel {
+  font-size: 10px;
+  font-weight: 650;
+  fill: var(--map-text);
+  font-family: var(--ifm-font-family-monospace, monospace);
+  pointer-events: none;
+  text-shadow: 0 1px 2px var(--map-surface), 0 -1px 2px var(--map-surface), 1px 0 2px var(--map-surface), -1px 0 2px var(--map-surface);
+}
+
+/* ═══ Overlay de Blackout ═══ */
+.blackoutOverlay {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.5s ease, visibility 1.5s ease;
+  pointer-events: none;
+}
+
+.overlayBg {
+  fill: rgba(11, 24, 39, 0.88);
+}
+
+.overlayTitle {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 24px;
+  font-weight: 900;
+  fill: #ff3333;
+  text-shadow: 0 0 15px rgba(255, 51, 51, 0.8);
+}
+
+.overlaySubtitle {
+  font-family: var(--ifm-font-family-base, sans-serif);
+  font-size: 13px;
+  fill: #aab7c8;
+}
+
+.overlayVisible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ═══ Telemetría y Controles ═══ */
+.telemetryPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.card {
+  background: var(--map-surface);
+  border: 1px solid var(--map-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 6px var(--map-shadow);
+}
+
+.telemetryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.telemetryLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--map-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.timeVal {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ff3333;
+  background: var(--map-surface-2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.progressTrack {
+  height: 6px;
+  background: var(--map-surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ffcc00, #ff3333);
+  transition: width 0.1s linear;
+}
+
+.playControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.playBtn {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--map-teal);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--map-teal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 90px;
+}
+
+.playBtn:hover, .btnActive {
+  background: var(--map-teal);
+  color: var(--map-surface);
+  box-shadow: 0 0 10px rgba(131, 189, 194, 0.4);
+}
+
+.slider {
+  flex-grow: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--map-surface-2);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--map-teal);
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--map-shadow);
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--map-teal);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 4px var(--map-shadow);
+}
+
+.eventCard {
+  border-left: 4px solid #ff3333;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eventTitle {
+  margin: 0 0 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--map-text);
+}
+
+.eventDesc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--map-muted);
+  line-height: 1.45;
+}
+
+.legendCard {
+  background: var(--map-surface);
+  border: 1px solid var(--map-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.legendTitle {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.85rem;
+  font-weight: 750;
+  color: var(--map-text);
+}
+
+.legendGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--map-muted);
+}
+
+.colorDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dotStable { background: #33ff57; }
+.dotWarning { background: #ffcc00; }
+.dotTrip { background: #555555; }
+.dotFerranti { background: #ff3333; }
