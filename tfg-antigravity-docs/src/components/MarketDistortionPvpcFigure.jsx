@@ -389,10 +389,6 @@ export default function MarketDistortionPvpcFigure() {
           <p className={styles.detailText}>{activeDetail}</p>
         </div>
       )}
-
-      <figcaption className={styles.caption}>
-        {t.figCaption}
-      </figcaption>
     </figure>
   );
 }
