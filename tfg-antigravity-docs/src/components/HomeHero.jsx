@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeHero.module.css';
 
@@ -25,25 +25,25 @@ const TRANSLATIONS = {
         label: 'Disparo raíz',
         time: '12:32:56,993 CEST',
         detail: '355 MW — Granada · Tap-Lag · sobretensión invisible',
-        href: '/analisis-incidente#fase-1',
+        href: '/analisis-incidente',
       },
       {
         label: 'Cascada IBR',
         time: '12:33:07 CEST',
         detail: '4.500 MW en 11 s · protecciones ANSI 59',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'Separación Francia',
         time: '12:33:21,535 CEST',
         detail: '48,46 Hz · 15.000 MW perdidos',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'Cero de tensión',
         time: '12:33:29,741 CEST',
         detail: '57 millones sin suministro · área ibérica aislada',
-        href: '/resumen-de-cifras#cifras-maestras',
+        href: '/resumen-de-cifras',
       },
     ],
     numbers: [
@@ -75,25 +75,25 @@ const TRANSLATIONS = {
         label: 'Root trip',
         time: '12:32:56.993 CEST',
         detail: '355 MW — Granada · Tap-Lag · invisible overvoltage',
-        href: '/analisis-incidente#fase-1',
+        href: '/analisis-incidente',
       },
       {
         label: 'IBR cascade',
         time: '12:33:07 CEST',
         detail: '4,500 MW in 11 s · ANSI 59 protections',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'French separation',
         time: '12:33:21.535 CEST',
         detail: '48.46 Hz · 15,000 MW lost',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'Voltage blackout',
         time: '12:33:29.741 CEST',
         detail: '57 million without supply · Iberian area isolated',
-        href: '/resumen-de-cifras#cifras-maestras',
+        href: '/resumen-de-cifras',
       },
     ],
     numbers: [
@@ -125,25 +125,25 @@ const TRANSLATIONS = {
         label: 'Ursprungsauslösung',
         time: '12:32:56,993 CEST',
         detail: '355 MW — Granada · Tap-Lag · unsichtbare Überspannung',
-        href: '/analisis-incidente#fase-1',
+        href: '/analisis-incidente',
       },
       {
         label: 'IBR-Kaskade',
         time: '12:33:07 CEST',
         detail: '4.500 MW in 11 s · ANSI 59-Schutz',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'Trennung Frankreich',
         time: '12:33:21,535 CEST',
         detail: '48,46 Hz · 15.000 MW verloren',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: 'Spannungsnull',
         time: '12:33:29,741 CEST',
         detail: '57 Millionen ohne Versorgung · iberisches Gebiet isoliert',
-        href: '/resumen-de-cifras#cifras-maestras',
+        href: '/resumen-de-cifras',
       },
     ],
     numbers: [
@@ -175,25 +175,25 @@ const TRANSLATIONS = {
         label: '根源跳闸',
         time: '12:32:56.993 CEST',
         detail: '355 MW — 格拉纳达 · 分接头延迟 · 隐形过电压',
-        href: '/analisis-incidente#fase-1',
+        href: '/analisis-incidente',
       },
       {
         label: 'IBR级联',
         time: '12:33:07 CEST',
         detail: '11秒内损失4500 MW · ANSI 59保护',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: '与法国解列',
         time: '12:33:21.535 CEST',
         detail: '48.46 Hz · 损失15000 MW',
-        href: '/analisis-incidente#fase-3',
+        href: '/analisis-incidente',
       },
       {
         label: '电压归零',
         time: '12:33:29.741 CEST',
         detail: '5700万人无电力供应 · 伊比利亚区域孤网运行',
-        href: '/resumen-de-cifras#cifras-maestras',
+        href: '/resumen-de-cifras',
       },
     ],
     numbers: [
@@ -210,6 +210,22 @@ export default function HomeHero() {
   const { i18n } = useDocusaurusContext();
   const currentLocale = i18n.currentLocale || 'es';
   const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
 
   return (
     <section className={styles.hero}>
@@ -233,15 +249,15 @@ export default function HomeHero() {
 
           {/* CTAs */}
           <div className={styles.ctas}>
-            <Link to="/introduccion" className={styles.ctaPrimary}>
+            <a href={getLocalizedUrl('/introduccion')} className={styles.ctaPrimary} onClick={handleLinkClick}>
               {t.readIntro}
-            </Link>
-            <Link to="/contexto" className={styles.ctaSecondary}>
+            </a>
+            <a href={getLocalizedUrl('/contexto')} className={styles.ctaSecondary} onClick={handleLinkClick}>
               {t.techAnalysis}
-            </Link>
-            <Link to="/glosario" className={styles.ctaTertiary}>
+            </a>
+            <a href={getLocalizedUrl('/glosario')} className={styles.ctaTertiary} onClick={handleLinkClick}>
               {t.glossary}
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -250,11 +266,11 @@ export default function HomeHero() {
           <div className={styles.chain} aria-label={t.ariaLabelChain}>
             {t.chain.map((step, i) => (
               <React.Fragment key={step.label}>
-                <Link to={step.href} className={styles.node} style={{ animationDelay: `${0.3 + i * 0.25}s` }}>
+                <a href={getLocalizedUrl(step.href)} className={styles.node} style={{ animationDelay: `${0.3 + i * 0.25}s` }} onClick={handleLinkClick}>
                   <span className={styles.nodeTime}>{step.time}</span>
                   <span className={styles.nodeLabel}>{step.label}</span>
                   <span className={styles.nodeDetail}>{step.detail}</span>
-                </Link>
+                </a>
                 {i < t.chain.length - 1 && (
                   <div className={styles.arrow} aria-hidden="true">
                     <div className={styles.arrowLine} />

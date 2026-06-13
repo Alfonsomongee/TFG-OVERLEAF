@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeReadingPaths.module.css';
 
@@ -139,7 +139,7 @@ const TRANSLATIONS = {
         id: '02',
         label: '专业技术路线',
         time: '45–60 分钟',
-        description: '完整的电力故障与演变过程：前置运行工况、崩溃物理机制、继电保护动作、跨国联络线以及电网黑启动重建。',
+        description: '完整的电力故障 & 演变过程：前置运行工况、崩溃物理机制、继电保护动作、跨国联络线以及电网黑启动重建。',
         links: [
           { to: '/contexto', text: '系统技术背景' },
           { to: '/analisis-incidente', text: '事故过程分析' },
@@ -167,6 +167,22 @@ export default function HomeReadingPaths() {
   const currentLocale = i18n.currentLocale || 'es';
   const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
 
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
@@ -185,9 +201,9 @@ export default function HomeReadingPaths() {
               <ul className={styles.cardLinks}>
                 {path.links.map((link) => (
                   <li key={link.to}>
-                    <Link to={link.to} className={styles.cardLink}>
+                    <a href={getLocalizedUrl(link.to)} className={styles.cardLink} onClick={handleLinkClick}>
                       {link.text} →
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

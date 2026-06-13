@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeAnnexes.module.css';
 
@@ -79,6 +79,22 @@ export default function HomeAnnexes() {
   const currentLocale = i18n.currentLocale || 'es';
   const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
 
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
@@ -89,11 +105,16 @@ export default function HomeAnnexes() {
         </div>
         <div className={styles.grid}>
           {t.annexes.map((a) => (
-            <Link key={a.num} to={a.slug} className={styles.card}>
+            <a
+              key={a.num}
+              href={getLocalizedUrl(a.slug)}
+              className={styles.card}
+              onClick={handleLinkClick}
+            >
               <span className={styles.cardNum}>{a.num}</span>
               <span className={styles.cardTitle}>{a.title}</span>
               <span className={styles.cardDesc}>{a.desc}</span>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
