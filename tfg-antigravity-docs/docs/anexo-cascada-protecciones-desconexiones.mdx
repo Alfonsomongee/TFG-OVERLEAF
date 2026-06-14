@@ -1,7 +1,7 @@
 ---
 id: anexo-cascada-protecciones-desconexiones
 title: "Anexo III · Protecciones, cascada y desconexiones"
-sidebar_label: "Anexo III · Protecciones y desconexiones"
+sidebar_label: "Anexo III · Protecciones y cascada"
 hide_title: true
 ---
 
@@ -18,144 +18,221 @@ import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
 import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
 import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
-import PO74Timeline from '@site/src/components/PO74Timeline';
-import OvervoltageTimeline from '@site/src/components/OvervoltageTimeline';
-
 <AnnexLayout
   wide
   kicker="Anexo III"
   title="Protecciones, cascada y desconexiones"
-  description="Este anexo reconstruye la secuencia de actuaciones de protección, desconexiones de generación y deslastre de carga que transformaron una condición de sobretensión localizada en el sur peninsular en un colapso total del sistema ibérico en menos de cinco minutos."
+  description="Reconstrucción cronológica de la secuencia de actuaciones de protección, desconexiones de generación y deslastre de carga que transformaron una sobretensión localizada en un colapso total del sistema ibérico."
   meta={[
-    { label: 'Eje técnico', value: 'Protecciones y Desconexiones' },
-    { label: 'Cobertura', value: 'Análisis forense de cascada' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Protecciones y cascada' },
+{ label: 'Ventana temporal', value: '12:32:57 – 12:33:29 CEST (32 segundos)' },
+{ label: 'Capítulos asociados', value: 'Cap. 3 (Incidente) · Cap. 5 (Informes)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Cómo se propagó la cascada de desconexiones entre el disparo raíz en la zona suroeste y el colapso total del sistema ibérico, y qué protecciones actuaron en cada fase?
+¿Cómo se propagó la cascada de desconexiones entre el disparo raíz en Granada y el colapso total, y qué protecciones actuaron en cada fase?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    La cascada del 28-A se desarrolló en cuatro fases comprimidas en menos de cinco minutos: (1) propagación de sobretensiones por la red de 400 kV del suroeste, amplificadas por el efecto Ferranti y el Tap-Lag de los transformadores reguladores; (2) disparo masivo de protecciones ANSI 59 en inversores IBR con pérdida de ~4,5 GW en 11 segundos; (3) actuación de los mecanismos automáticos de defensa — deslastre UFLS y desconexión de bombeo — que resultaron insuficientes ante la velocidad de la perturbación; (4) colapso de frecuencia y pérdida total del sincronismo peninsular. Las protecciones funcionaron según especificación; la especificación no contemplaba un escenario de sobretensión generalizada con baja inercia.
+La cascada se desarrolló en cuatro fases comprimidas en 32 segundos: propagación de sobretensiones amplificadas por el efecto Ferranti y el Tap-Lag; disparo masivo de protecciones ANSI 59 en inversores con pérdida de ~1.900 MW en 650 milisegundos; actuación del UFLS que resultó contraproducente al eliminar sumideros de reactiva; y colapso de frecuencia tras la separación de Francia. Las protecciones funcionaron según su especificación; la especificación no contemplaba un escenario de sobretensión generalizada con baja inercia.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo documenta la secuencia cronológica y la mecánica de disparos de protección que provocaron la cascada de desconexiones durante el evento del 28-A.
+Este anexo contiene la secuencia cronológica maestra del colapso, los escalones de deslastre y los registros oscilográficos que documentan cada fase de la cascada referida en el [Capítulo 3](/analisis-incidente).
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    El presente anexo articula cronológicamente la secuencia de disparos y actuaciones de protección para ofrecer una perspectiva sistémica del colapso.
+Fuentes: REE (pp. 8-14), Comité de Análisis (pp. 38-58), ENTSO-E Factual Report (Tablas 3-8 a 3-16), IIT-ICAI / Compass Lexecon (¶32-34, ¶156, ¶163, ¶189), Albustami et al. (arXiv 2511.17433). Resolución temporal: centenas de milisegundos (oscilogramas) a segundos (telemedida SCADA). Las discrepancias entre fuentes en los timestamps (±200 ms) se señalan cuando son relevantes.
   </AnnexMethodNote>
 
-  <AnnexMethodNote type="modelo-didactico">
-    Algunos elementos interactivos representan modelos o reconstrucciones didácticas. Deben leerse como apoyo explicativo y no como registro bruto independiente.
-  </AnnexMethodNote>
-
-  <em>El anexo se organiza en cuatro secciones argumentales que corresponden a las distintas fases del colapso: propagación de sobretensiones, cascada de desconexiones IBR, deslastre y defensa, e indicadores de estado final.</em>
+  Este anexo es el banco probatorio central del análisis del incidente. Se organiza en cuatro secciones: la secuencia cronológica del colapso (la tabla maestra), el fenómeno Tap-Lag como mecanismo de amplificación, la paradoja del UFLS, y la topología de red que condicionó la propagación. Los simuladores interactivos del efecto Ferranti, la cascada ANSI 59 y la propagación geográfica se incluyen como herramientas de exploración.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Propagación',   target: 'propagacion-sobretensiones' },
-      { label: 'Cascada IBR',   target: 'cascada-ibr' },
-      { label: 'Deslastre',     target: 'deslastre-defensa' },
-      { label: 'Estado final',  target: 'estado-final' },
-    ]}
+items={[
+  { label: 'Secuencia cronológica',  target: 'secuencia' },
+  { label: 'El Tap-Lag',             target: 'tap-lag' },
+  { label: 'La paradoja del UFLS',   target: 'ufls' },
+  { label: 'Topología de red',       target: 'topologia' },
+]}
   />
+  <AnnexSection id="secuencia" eyebrow="Sección 1" title="Secuencia cronológica: 32 segundos">
 
-  <AnnexSection id="propagacion-sobretensiones" eyebrow="Fase 1" title="Propagación de sobretensiones">
-    El mapa de calor muestra la propagación espacial de las sobretensiones entre la maniobra de mallado (12:30) y el disparo raíz (12:32:56).
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Propagación de sobretensiones"
-      summary="El mapa de calor muestra la propagación espacial de las sobretensiones entre la maniobra de mallado y el disparo raíz, concentrando valores críticos en el suroeste."
-      insight="Zonas críticas en Andalucía y Extremadura · Precondición de disparos masivos de inversores."
-    >
-      <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
-    </AnnexEvidenceLead>
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
-      <AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
-    </AnnexEvidenceGrid>
-    <p>El desacoplamiento Tap-Lag amplificó las sobretensiones en la red colectora, haciéndolas invisibles al SCADA de REE. El aluvión de alertas en el sur documenta la rapidez de la expansión.</p>
-    El simulador del efecto Ferranti reproduce la sobretensión cuadrática en el extremo abierto de líneas de EAT descargadas — el mecanismo amplificador de la Fase 1.
-    <AnnexEvidence type="interactive" id="ferranti" level={2} />
-    La secuencia Tap-Lag ilustra cómo el retraso mecánico de los OLTC (3–8 segundos por toma) ocultó la sobretensión de la red colectora al SCADA de REE.
-    <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
-    La cronología de sobretensiones permite explorar temporal y espacialmente cada registro de tensión en las subestaciones clave del suroeste.
-    <div style={{ margin: '1.5rem 0' }}>
-      <OvervoltageTimeline showCaption={false} />
-    </div>
+  <span id="grafico-sticky-collapse"></span>
+
+La tabla maestra de desconexiones es la pieza documental más densa de este anexo. Cada fila corresponde a un disparo verificado, con su timestamp, ubicación, tecnología, potencia perdida y causa de actuación. La secuencia completa puede dividirse en tres bloques: los disparos IBR por sobretensión (E1–E3, 650 ms), el deslastre automático UFLS (E4, 2 s), y los disparos por subfrecuencia de la generación remanente (E5, < 2 s).
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Cronograma pericial de la cascada de desconexiones"
+  summary="Desde el disparo raíz en Granada (12:32:57.140 CEST) hasta el colapso total (12:33:24 CEST). 1.917 MW perdidos por sobretensión en 650 ms; >10.000 MW deslastrados por UFLS en 2 s."
+  insight="La velocidad de la cascada (~60 MW/ms en la fase más intensa) excedía la capacidad de intervención humana."
+>
+  <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
+</AnnexEvidenceLead>
+
+Tres observaciones forenses sobre esta tabla. Primera: los eventos E2a–E3f se concentran en una ventana de 650 milisegundos (12:33:16.460 a 12:33:17.948 CEST), confirmando que la cascada fue un fenómeno de propagación ultrarrápida incompatible con cualquier intervención manual. Segunda: la pérdida de 1.917 MW por disparos de sobretensión IBR precede temporalmente al primer escalón de UFLS (12:33:20.180), reforzando la conclusión del Anexo II de que la tensión lideró el proceso. Tercera: las centrales nucleares — los últimos pilares síncronos — dispararon por subfrecuencia a 47,79 Hz (12:33:23.515), apenas 1,5 segundos antes del cero de tensión definitivo.
+
+La propagación geográfica de la cascada puede explorarse en el mapa animado y en la línea temporal interactiva:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="map" level={2} />
+  <AnnexEvidence type="interactive" id="timeline" level={2} />
+</AnnexEvidenceGrid>
+
+<details>
+  <summary>▶ Estado de las centrales nucleares y eventos de protección de transmisión</summary>
+  <div style={{padding: '1rem 0'}}>
+
+Los 4 reactores nucleares acoplados (Almaraz 1 y 2, Ascó 1 parcial, Vandellós 2) dispararon por subfrecuencia en los últimos instantes. Ninguno mantuvo isla. En la red de transporte, solo 2 trips se debieron a sobretensión directa (Arganda–Loeches y Valdecaballeros–Maguilla); el resto fueron protecciones de pérdida de sincronismo o subfrecuencia.
+
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
+    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
   </AnnexSection>
+  <AnnexSection id="tap-lag" eyebrow="Sección 2" title="El Tap-Lag: el punto ciego del sistema">
 
-  <AnnexSection id="cascada-ibr" eyebrow="Fase 2" title="Cascada de desconexiones IBR">
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="cascada_desconexiones" level={1} />
-      <AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
-    </AnnexEvidenceGrid>
-    <p>La propagación geográfica en 11 segundos superó la capacidad de respuesta de los mecanismos automáticos. El estudio IEEE 39 muestra cómo las desconexiones sucesivas generan oscilaciones severas.</p>
-    Los 16 eventos de desconexión en el suroeste — tabla maestra para reproducción en software de estabilidad transitoria — se comprimieron en 11 segundos.
-    <AnnexEvidence type="table" id="secuencia-desconexion-suroeste" level={1} />
-    El listado cronológico de actuaciones de protección detalla qué relé actuó, en qué planta, y en qué milisegundo.
-    <AnnexEvidence type="table" id="eventos-proteccion-maniobras" level={2} />
-    El simulador ANSI 59 reproduce cómo la desconexión de un inversor eleva la tensión en los nudos adyacentes, disparando a los vecinos en cascada.
-    <AnnexEvidence type="interactive" id="ansi59" level={2} />
-    El mapa animado permite recorrer cronológicamente los disparos de generación distribuida, observando el patrón sur→norte y oeste→este.
-    <span id="grafico-map"></span>
-    <AnnexEvidence type="interactive" id="map" level={1} />
-    La visualización unificada superpone alertas del SCADA, disparos de protección y frecuencia del sistema en un panel sismográfico.
-    <span id="grafico-sticky-collapse"></span>
-    <AnnexEvidence type="interactive" id="sticky-collapse" level={2} />
-    La cronología vertical detalla minuto a minuto la secuencia completa desde las 12:30 hasta las 12:38 CEST.
-    <span id="grafico-timeline"></span>
-    <AnnexEvidence type="interactive" id="timeline" level={2} />
+El mecanismo que conectó la sobretensión en la red de transporte con los disparos masivos de inversores fue el fenómeno del Tap-Lag — el desacoplamiento temporal entre la tensión en el primario (400 kV, visible para el SCADA) y en el secundario (220 kV / 132 kV, invisible) de los transformadores reguladores. Esta sección documenta ese mecanismo con la evidencia oscilográfica disponible.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Desacoplamiento Tap-Lag entre la red de 400 kV y la red colectora"
+  summary="Los OLTC, intencionadamente ralentizados para evitar oscilaciones mecánicas, amplificaron la sobretensión hacia las redes de 220 kV fuera de la visibilidad del SCADA."
+  insight="Lo que el SCADA veía (418 kV en 400 kV) era distinto de lo que los inversores experimentaban (244 kV en 220 kV)."
+>
+  <AnnexEvidence type="figure" id="tap_lag_decoupling" level={1} />
+</AnnexEvidenceLead>
+
+El diagrama muestra cómo la inercia mecánica de los cambiadores de tomas bajo carga (OLTC) creó un retardo estructural entre el primario y el secundario. Al irrumpir la sobretensión en la red de 400 kV, los OLTC permanecieron en la posición de tomas altas (configurada para combatir las caídas de tensión de las oscilaciones previas), amplificando el voltaje aguas abajo. Este retardo no es un defecto de diseño: es una característica intencional para evitar que los transformadores oscilen mecánicamente ante perturbaciones efímeras. Frente a un transitorio eléctrico ultrarrápido, la característica protectora se convirtió en vulnerabilidad.
+
+El oscilograma del disparo raíz de Granada documenta el momento exacto en que el Tap-Lag materializó la divergencia:
+
+<AnnexEvidence type="figure" id="aluvion_alertas_sobretension_sur" level={2} />
+
+En el panel inferior, la tensión en el secundario colector — fase A — alcanza ~145 kV (equivalente a ~244 kV en el nivel de 220 kV, o 1,10 p.u.), activando las protecciones ANSI 59 del transformador de evacuación. Esta tensión era invisible para el SCADA de REE, que registraba 418 kV en el primario de 400 kV — un valor dentro de los límites normativos del P.O. 1.1. La coexistencia de una lectura «normal» en el operador y una lectura «de disparo» en la planta es la esencia del punto ciego que el Tap-Lag introduce.
+
+La secuencia completa del colapso, distinguiendo entre acciones del operador (OA) y acciones automáticas de protección (AA), se documenta en el esquema de Albustami et al.:
+
+<AnnexEvidence type="figure" id="albustami_ieee39_secuencia" level={2} />
+
+:::tip Cómo explorar los simuladores de esta sección
+**Efecto Ferranti:** mueva el deslizador de carga de la línea hacia 0 MW (vacío) y observe cómo la tensión en el extremo receptor sube por encima de la nominal. Aumente la longitud de la línea a 300 km para reproducir las condiciones de las líneas reconectadas del mallado.
+
+**Cascada ANSI 59:** arrastre el deslizador de sobretensión por encima de 1,10 p.u. y observe cómo se activa la curva tiempo-inversión de disparo. El umbral de 100 ms a 1,10 p.u. corresponde al ajuste típico de los inversores ibéricos.
+
+**Secuencia Tap-Lag:** el interactivo muestra la evolución temporal de la tensión en primario y secundario del transformador, con el retardo mecánico del OLTC visible como la diferencia entre las dos curvas.
+:::
+
+<AnnexEvidence type="interactive" id="ferranti" level={2} />
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="ansi59" level={2} />
+  <AnnexEvidence type="interactive" id="tap-lag-sequence" level={2} />
+</AnnexEvidenceGrid>
+
   </AnnexSection>
+  <AnnexSection id="ufls" eyebrow="Sección 3" title="La paradoja del UFLS: el deslastre que agravó el colapso">
 
-  <AnnexSection id="deslastre-defensa" eyebrow="Fase 3" title="Deslastre y mecanismos de defensa">
-    Los escalones UFLS se activaron según diseño, pero presentaron una paradoja: al desconectar carga, la tensión subía adicionalmente, agravando el colapso capacitivo.
-    <AnnexEvidence type="table" id="escalones-ufls" level={1} />
-    El desglose del deslastre por nudos en España y Portugal cuantifica el volumen total de carga sacrificada en cada país.
-    <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
-    <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
-    La agregación por distribuidora y la distribución geográfica del deslastre revelan la concentración de la afectación en las zonas de mayor penetración IBR.
-    <AnnexEvidence type="table" id="load-shedding-es-pt" level={2} />
-    <AnnexEvidence type="table" id="dso-load-shedding" level={2} />
-    Los clientes electrointensivos portugueses sufrieron deslastre prioritario programado.
+Los esquemas de deslastre de carga por subfrecuencia (UFLS) están diseñados para escenarios clásicos de déficit de potencia activa: al cortar consumo, el UFLS reduce la carga sobre los generadores remanentes y permite que la frecuencia se estabilice. En el 28-A, el UFLS se enfrentó a un escenario para el que no fue diseñado: un colapso impulsado por inestabilidad de tensión. Al cortar consumo, eliminó simultáneamente los sumideros de potencia reactiva inductiva (motores industriales, cargas resistivas), agravando la sobretensión en lugar de mitigarla.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Escalones de UFLS aplicados en España y Portugal"
+  summary="Total global de carga desconectada: >10.000 MW (España: 8.505 MW, 33,8 % de la demanda; Portugal: 1.955 MW, 33,3 %). Los 2.000 MW de bombeo desconectados a 49,5 Hz eliminaron el mayor sumidero de reactiva del sistema."
+  insight="El UFLS cumplió su especificación. La especificación no contemplaba un colapso capacitivo."
+>
+  <AnnexEvidence type="table" id="escalones-ufls" level={1} />
+</AnnexEvidenceLead>
+
+El dato más relevante es la desconexión de bombeo a 49,5 Hz (2.000 MW en España + 2.040 MW en Portugal). El bombeo hidráulico en modo consumo operaba como carga inductiva masiva, absorbiendo potencia reactiva de la red. Su desconexión instantánea liberó esa reactiva, provocando un repunte de tensión documentado por REE (p. 11) que aceleró la cascada de disparos ANSI 59 en los inversores que aún permanecían acoplados.
+
+El desglose por escalón y país permite trazar la velocidad del deslastre:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="table" id="demand-shedding-es" level={2} />
+  <AnnexEvidence type="table" id="demand-shedding-pt" level={2} />
+</AnnexEvidenceGrid>
+
+La comparación entre la carga real deslastrada y la planificada muestra discrepancias moderadas (4,7 % real vs. 6 % planificado en el primer escalón de España), consistentes con un sistema donde la demanda efectiva era inferior a la nominal de diseño por el perfil de baja carga del lunes festivo.
+
+<details>
+  <summary>▶ Desglose por distribuidora (DSO), consumidores electrointensivos y bombeo</summary>
+  <div style={{padding: '1rem 0'}}>
+
+El desglose granular por distribuidora española, por frontera ibérica y por tipo de consumidor (electrointensivo, bombeo, distribución) se presenta en las siguientes tablas para trazabilidad completa.
+
+  <AnnexEvidence type="table" id="load-shedding-es-pt" level={3} />
+  <AnnexEvidence type="table" id="dso-load-shedding" level={3} />
+  <AnnexEvidenceGrid>
     <AnnexEvidence type="table" id="electro-intensive-pt" level={3} />
-    La desconexión del bombeo hidráulico liberó ~2.150 MW de carga instantánea, contribuyendo a frenar la caída de frecuencia.
-    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={2} />
-    El desglose por central de bombeo en España y Portugal detalla la cronología de desacoplamiento.
+    <AnnexEvidence type="table" id="desconexion-bombeo-hidraulica" level={3} />
+  </AnnexEvidenceGrid>
+  <AnnexEvidenceGrid>
     <AnnexEvidence type="table" id="pump-storage-es" level={3} />
     <AnnexEvidence type="table" id="pump-storage-pt" level={3} />
-    El indicador de indisponibilidad sobrevenida por nudo cuantifica qué porcentaje de la red quedó fuera de servicio en cada zona.
-    <span id="grafico-grid-unavailability"></span>
-    <AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
-    La cronología del P.O. 7.4 documenta la evolución de las bandas muertas exigidas a los generadores — el vacío normativo que impidió la respuesta autónoma de los inversores ante sobretensiones.
-    <div style={{ margin: '1.5rem 0' }}>
-      <PO74Timeline showCaption={false} />
-    </div>
-  </AnnexSection>
+  </AnnexEvidenceGrid>
+  </div>
+</details>
 
-  <AnnexSection id="estado-final" eyebrow="Fase 4" title="Estado final y topología post-colapso">
-    Las maniobras topológicas de REE y REN documentan la fragmentación controlada de la red para aislar zonas y preparar la re-energización por islas.
+  </AnnexSection>
+  <AnnexSection id="topologia" eyebrow="Sección 4" title="Topología de red: el terreno sobre el que se propagó la cascada">
+
+La cascada no se propagó en el vacío: lo hizo sobre una topología de red debilitada por la apertura de líneas (para control de tensión en baja demanda) y por los trabajos de mantenimiento programados. La zona sur — donde se originó el colapso — tenía el 27,5 % de sus líneas de 220 kV y el 8,3 % de las de 400 kV abiertas a las 09:00 CEST. La zona centro presentaba un 26,7 % de líneas de 400 kV abiertas. Esta configuración de alta impedancia condicionó la velocidad y la dirección de la propagación.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Propagación espacial de las sobretensiones durante la cascada"
+  summary="El mapa térmico documenta cómo la sobretensión se propagó desde Granada hacia el suroeste (Badajoz, Sevilla, Huelva) y el centro (Cáceres, Segovia)."
+  insight="La propagación siguió los corredores de 400 kV abiertos en vacío, donde el efecto Ferranti amplificaba la tensión."
+>
+  <AnnexEvidence type="figure" id="heatmap_propagation" level={1} />
+</AnnexEvidenceLead>
+
+La figura de propagación confirma que la dirección de la cascada fue sur→suroeste→centro, siguiendo los corredores de alta impedancia. Los nudos con mayor concentración de líneas abiertas (zona sur y centro) fueron los que experimentaron sobretensiones más severas, coherente con la relación entre impedancia de red y amplificación capacitiva por efecto Ferranti.
+
+<AnnexEvidence type="figure" id="cascada_desconexiones" level={2} />
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="table" id="lines-outage-icai" level={2} />
+  <AnnexEvidence type="table" id="km-percentage-icai" level={2} />
+</AnnexEvidenceGrid>
+
+La lectura cruzada de ambas tablas confirma la asimetría geográfica: la zona sur tenía 10 líneas de 220 kV y 10 de 400 kV abiertas, frente a solo 3 en el norte. Esta distribución no era aleatoria sino consecuencia de la gestión de tensiones en baja demanda — la misma condición operativa que configuró la vulnerabilidad documentada en el [Anexo I](/anexo-demanda-generacion-balance).
+
+:::tip Cómo explorar el simulador de fragmentación de red
+**Grid Unavailability:** simule la pérdida progresiva de líneas de 400 kV en la zona sur. Observe cómo la red se fragmenta en islas eléctricas inestables al perder los tres pasillos principales de 400 kV. La conexidad del grafo cae drásticamente con cada línea perdida.
+:::
+
+<AnnexEvidence type="interactive" id="grid-unavailability" level={2} />
+
+<details>
+  <summary>▶ Registro completo de maniobras topológicas — REE y REN</summary>
+  <div style={{padding: '1rem 0'}}>
+
+El registro completo de las maniobras topológicas ejecutadas por REE (13 elementos entre las 09:00 y las 12:16 CEST) y por REN (11 elementos entre el 26 y el 28 de abril) documenta el volumen de reconfiguración que precedió al colapso. Destaca que REN desconectó 7 reactores shunt entre las 09:00 y las 12:19 del 28-A para combatir bajas tensiones — maniobras que redujeron la capacidad de absorción de reactiva en la frontera portuguesa.
+
+  <AnnexEvidenceGrid>
     <AnnexEvidence type="table" id="re-topological-manoeuvres" level={3} />
     <AnnexEvidence type="table" id="ren-topological-manoeuvres" level={3} />
-    El porcentaje de km de líneas fuera de servicio cuantifica la magnitud del daño topológico sufrido por la red de transporte.
-    <AnnexEvidence type="table" id="lines-outage-icai" level={3} />
-    <AnnexEvidence type="table" id="km-percentage-icai" level={3} />
-    Las cinco centrales nucleares ejecutaron disparos de emergencia controlados. Su supervivencia fue crítica para el Black Start posterior: Vandellós y Ascó lideraron la generación durante la reposición.
-    <AnnexEvidence type="table" id="estado-centrales-nucleares" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="La cascada del 28-A demostró que un sistema eléctrico puede perder la estabilidad en segundos cuando confluyen baja inercia, sobretensión no controlada e inversores con protecciones calibradas para fallos puntuales. Las protecciones no fallaron: operaron según especificación. El problema residía en que la especificación (P.O. 7.4 previo a la reforma, umbrales ANSI 59 estándar) no contemplaba un escenario de penetración IBR dominante con baja potencia de cortocircuito."
-    doesNotDemonstrate="Este anexo no determina responsabilidades; documenta la mecánica del fallo. La interpretación de si las protecciones debían haber sido reformadas antes del evento corresponde al análisis regulatorio de los capítulos principales."
-    connection="La lectura se complementa con el Anexo II (inestabilidad de tensión previa), el Anexo IV (pérdida de sincronismo transfronterizo) y el Anexo VI (reposición posterior)."
+demonstrates="La cascada siguió una secuencia reproducible: sobretensión → Tap-Lag → disparos ANSI 59 → UFLS contraproducente → subfrecuencia → separación de Francia → colapso. Las protecciones actuaron conforme a su parametrización. La topología de red debilitada condicionó la dirección y la velocidad de la propagación."
+doesNotDemonstrate="Este anexo no resuelve la controversia sobre si los primeros disparos IBR fueron «inadecuados» (postura REE) o «correctos desde el punto de conexión» (postura ICAI). Documenta la evidencia oscilográfica sin pronunciarse sobre la imputación. Tampoco resuelve el debate sobre si el UFLS debería ser rediseñado con sensibilidad a la tensión (UVLS)."
+connection="Este anexo se lee con el Anexo II (que establece la prioridad temporal de la tensión sobre la frecuencia) y con el Anexo IV (que documenta la pérdida de sincronismo transfronterizo y el aislamiento de la península)."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
-    { to: "/anexo-interconexiones-flujos", label: "Anexo IV: interconexiones y flujos transfronterizos" },
-    { to: "/anexo-reposicion-blackstart", label: "Anexo VI: reposición y operación de emergencia" }
+{ to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II · La divergencia tensión-frecuencia" },
+{ to: "/anexo-interconexiones-flujos", label: "Anexo IV · Interconexiones y la pérdida de sincronismo" },
+{ to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX · Simuladores del efecto Ferranti y ANSI 59" },
+{ to: "/analisis-incidente", label: "← Capítulo 3 · Análisis del incidente" },
   ]} />
 </AnnexLayout>

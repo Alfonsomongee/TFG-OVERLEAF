@@ -6,59 +6,25 @@ title: "Impacto Social y Emergencias"
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import ForensicReveal from "@site/src/components/ForensicReveal";
-import CuestionAbierta from "@site/src/components/CuestionAbierta";
 import VulnerabilityRiskMatrix from '@site/src/components/VulnerabilityRiskMatrix';
-import CrisisTimelineDual from '@site/src/components/CrisisTimelineDual';
 
 <GlitchTitle>Impacto social y respuesta de emergencias</GlitchTitle>
 
 :::note Alcance de este capítulo
-Este capítulo analiza las primeras 18 horas posteriores al cero eléctrico
-(12:33 CEST del 28 de abril de 2025). El análisis técnico del colapso se
-desarrolla en el capítulo 3; los efectos económicos en el capítulo 7b.
+Este capítulo analiza las primeras 18 horas posteriores al cero eléctrico (12:33 CEST del 28 de abril de 2025). El análisis técnico del colapso se desarrolla en el [Capítulo 3](/analisis-incidente); los efectos económicos en el [Capítulo de Consecuencias Financieras](./07b-consecuencias-financieras.mdx).
 :::
 
-El colapso eléctrico del 28-A no fue únicamente un fallo de infraestructura
-técnica: fue la demostración empírica de que las sociedades modernas son
-sistemas de alta interdependencia donde la energía, las telecomunicaciones,
-el agua, el transporte y la sanidad forman una red de redes. Al caer el primero,
-los demás siguieron en cascada.
+El colapso eléctrico del 28-A no se detuvo en la red de potencia. Las sociedades modernas son sistemas de alta interdependencia donde la energía, las telecomunicaciones, el agua, el transporte y la sanidad forman una red de redes. Al caer el primer sustrato, los demás siguieron en cascada. Este capítulo documenta esa propagación sectorial y sus implicaciones para el diseño de la resiliencia transversal.
 
 ## 1. Respuesta de los sistemas de emergencia
 
-### España: declaración de emergencia de interés nacional
+### España
 
-La magnitud del corte de suministro forzó una respuesta al más alto nivel
-institucional. El Ministerio del Interior activó la declaración de
-emergencia de interés nacional al amparo del artículo 28 de la
-Ley 17/2015 del Sistema Nacional de Protección Civil mediante la
-Orden INT/399/2025, ampliada posteriormente (Orden INT/400/2025) para
-incluir a Castilla-La Mancha, Galicia y la Comunidad Valenciana.
+La magnitud del corte forzó la declaración de emergencia de interés nacional al amparo del artículo 28 de la Ley 17/2015 del Sistema Nacional de Protección Civil (Orden INT/399/2025, ampliada por la Orden INT/400/2025). Andalucía gestionó 6.429 incidencias críticas durante el apagón. Las líneas de información sanitaria 061 colapsaron por saturación, obligando a redirigir el tráfico crítico al 112.
 
-<ForensicTable
-  title="Tabla H1 — Incidencias gestionadas por Protección Civil"
-  source="Plan Territorial de Emergencias de Andalucía / Ministerio del Interior"
-  confidence="HIGH"
->
+### Portugal
 
-| Comunidad Autónoma | Situación | Activación |
-| :--- | :--- | :--- |
-| Andalucía, Extremadura, La Rioja, Madrid, Murcia | Emergencia autonómica + solicitud intervención estatal | 12:33–14:00 CEST |
-| Castilla-La Mancha, Galicia, Comunidad Valenciana | Incluidas en Orden INT/400/2025 | aproximadamente a las 16:00 CEST |
-| Total incidencias (Andalucía) | 6.429 incidencias críticas gestionadas durante el apagón | Hasta 29 abril |
-
-</ForensicTable>
-
-Las líneas de información sanitaria 061 colapsaron por saturación,
-obligando a redirigir todo el tráfico crítico al 112. Las autoridades
-emitieron mensajes continuos por radio analógica rogando a la ciudadanía
-que no llamara al 112 para solicitar información sobre el apagón,
-reservando el canal para urgencias vitales.
-
-### Portugal: el fracaso del sistema de alertas SMS
-
-La Autoridade Nacional de Emergência e Proteção Civil (ANEPC) activó el
-Centro de Coordenação Operacional Nacional (CCON) de inmediato.
+La ANEPC activó el Centro de Coordenação Operacional Nacional (CCON) de inmediato, convocando a 29 entidades a las 13:30 CEST y declarando la «Situación de Crisis Energética» a las 20:30.
 
 <ForensicTable
   title="Tabla H2 — Cronología operativa del CCON en Portugal"
@@ -68,292 +34,77 @@ Centro de Coordenação Operacional Nacional (CCON) de inmediato.
 
 | Hora (28 abr 2025) | Acción | Foco estratégico |
 | :--- | :--- | :--- |
-| 13:15 CEST | Establecimiento de prioridades | Combustible para hospitales, diálisis, pacientes respiratorios |
-| 13:30 CEST | Reunión multidisciplinar (29 entidades) | Energía, telecomunicaciones, aguas, sanidad, banca, Fuerzas Armadas |
-| 13:45–14:00 CEST | Mapeo de déficits | Generadores móviles + abastecimiento de gasóleo hospitalario |
-| 17:15 CEST | Alertas SMS enviadas | aproximadamente 11 millones de mensajes — llegaron tarde |
-| 20:30 CEST | Declaración "Situación de Crisis Energética" | Activación Red de Emergencia (REPA) |
+| 13:15 CEST | Establecimiento de prioridades | Combustible para hospitales, diálisis, respiratorios |
+| 13:30 CEST | Reunión multidisciplinar (29 entidades) | Energía, telecomunicaciones, aguas, sanidad, banca |
+| 13:45–14:00 CEST | Mapeo de déficits | Generadores móviles + abastecimiento gasóleo hospitalario |
+| 17:15 CEST | Alertas SMS enviadas | ≈11 millones de mensajes — llegaron tarde |
+| 20:30 CEST | Declaración «Situación de Crisis Energética» | Activación Red de Emergencia (REPA) |
 
 </ForensicTable>
 
-<ForensicReveal
-  l1="El sistema de alertas SMS de emergencia fue inútil durante el apagón."
-  l2="La ANEPC cargó más de 11 millones de SMS de emergencia en los sistemas
-      de las operadoras minutos después del corte. Pero las torres de telefonía
-      móvil funcionan con baterías de respaldo de 2–3 horas máximo. Cuando
-      los mensajes intentaron enviarse, las antenas ya estaban apagadas."
-  l3="Los SMS de alerta no llegaron a los usuarios hasta las 17:15 CEST,
-      cuando la electricidad comenzaba a restablecerse esporádicamente — más de
-      4 horas después del colapso. Las instrucciones de seguridad fueron
-      extemporáneas. El presidente de ANEPC admitió ante el Parlamento que el
-      envío dependía de la resiliencia tecnológica de las redes privadas de
-      telecomunicación, fuera de su competencia directa."
-  source="ANEPC / Comisión parlamentaria de investigación (Portugal, 2025)"
-/>
-
-<CrisisTimelineDual />
-
-<p className="figure-caption">
-  _Figura H1 — Fricción de la emergencia: cronología dual del apagón del 28-A.
-  Carril izquierdo: eventos de colapso de infraestructura física.
-  Carril derecho: respuesta institucional. La brecha temporal entre
-  el cero eléctrico (12:33 CEST) y el envío de alertas SMS en Portugal
-  (17:15 CEST) — aproximadamente 5 horas — define la ventana de máxima vulnerabilidad
-  y constituye la principal enseñanza operativa para los protocolos
-  de comunicación de crisis.
-  Fuente: elaboración propia a partir de REE, ENTSO-E, ANEPC, BOE y ANAC Portugal._
-</p>
-
-El apagón evidenció vulnerabilidades críticas en el sistema de radiocomunicación
-SIRESP (Sistema Integrado de Redes de Emergência e Segurança de Portugal),
-lo que motivó la aprobación inmediata de un estudio técnico-estratégico de
-modernización el 1 de mayo de 2025.
+El sistema de alertas SMS de la ANEPC ilustra una vulnerabilidad relevante: los más de 11 millones de mensajes cargados en los sistemas de las operadoras no pudieron entregarse porque las torres de telefonía móvil, con baterías de respaldo de 2–3 horas, ya estaban apagadas cuando los mensajes intentaron enviarse. Las alertas no llegaron hasta las 17:15 CEST — más de 4 horas después del colapso —, cuando la electricidad comenzaba a restablecerse. La cronología dual detallada de la emergencia (infraestructura física frente a respuesta institucional) se documenta en el [Anexo VII · Impacto y resiliencia](/anexo-impacto-resiliencia).
 
 ---
 
 ## 2. Impacto en hospitales y servicios sanitarios
 
-### El _triage_ energético
-
-En la mayoría de hospitales, los grupos electrógenos arrancaron dentro de los
-primeros 15 minutos, preservando las UCI, quirófanos activos y soporte vital.
-Sin embargo, ante la incertidumbre sobre la duración del corte, las gerencias
-hospitalarias ejecutaron políticas de _triage_ energético: suspensión de
-intervenciones electivas, consultas ambulatorias y servicios auxiliares para
-prolongar las reservas de combustible.
+En la mayoría de hospitales, los grupos electrógenos arrancaron dentro de los primeros 15 minutos, preservando las UCI, quirófanos activos y soporte vital. Sin embargo, ante la incertidumbre sobre la duración del corte, las gerencias hospitalarias ejecutaron políticas de *triage* energético: suspensión de intervenciones electivas, consultas ambulatorias y servicios auxiliares para prolongar las reservas de combustible.
 
 <ForensicReveal
-  l1="Varios hospitales portugueses estaban a punto de quedarse sin gasóleo
-      dos horas después del apagón."
-  l2="Los generadores diésel hospitalarios están dimensionados para cortes
-      localizados de pocas horas, no para apagones regionales que colapsan
-      simultáneamente las cadenas de suministro. Reabastecer múltiples
-      hospitales a la vez, con estaciones de servicio sin electricidad para
-      extraer combustible y calles colapsadas por el tráfico, era logísticamente
-      casi imposible."
-  l3="El comandante nacional de ANEPC, Mário Silvestre, declaró ante la
-      comisión parlamentaria que el hallazgo más alarmante fue constatar que,
-      apenas dos horas después del inicio del apagón, había hospitales con
-      reservas de combustible total o prácticamente agotadas. La logística de
-      reabastecimiento simultáneo en condiciones de colapso vial constituyó
-      un desafío de seguridad nacional."
+  l1="Varios hospitales portugueses estaban a punto de quedarse sin gasóleo dos horas después del apagón."
+  l2="Los generadores diésel hospitalarios están dimensionados para cortes localizados de pocas horas, no para apagones regionales que colapsan simultáneamente las cadenas de suministro. Reabastecer múltiples hospitales a la vez, con estaciones de servicio sin electricidad y calles colapsadas, era logísticamente casi imposible."
+  l3="El comandante nacional de ANEPC declaró ante la comisión parlamentaria que el hallazgo más alarmante fue constatar que, apenas dos horas después del inicio del apagón, había hospitales con reservas de combustible total o prácticamente agotadas."
   source="ANEPC / Comisión parlamentaria de investigación (Portugal, 2025)"
 />
 
-### Víctimas y bulos
-
-No se registraron muertes dentro de entornos clínicos protegidos.
-Circularon bulos masivos sobre fallecidos en hospitales de Toledo, Albacete,
-Valencia y Ourense —desmentidos categóricamente por las direcciones
-de los centros—. El saldo oficial fue de 8 víctimas mortales
-relacionadas indirectamente con el apagón:
-
-- Intoxicaciones por monóxido de carbono: uso de generadores domésticos
-  en espacios cerrados sin ventilación.
-- Incendios: caída de velas de iluminación de emergencia.
-- Fallos en equipos médicos domiciliarios: dispositivos sin el
-  mantenimiento riguroso del entorno hospitalario.
-
-:::danger Fallecimiento verificado — Portugal
-Una mujer de 77 años, adscrita a ventilación mecánica domiciliaria las 24 horas,
-falleció al agotar el banco de baterías del respirador. El colapso de las redes
-telefónicas impidió que el INEM (Instituto Nacional de Emergência Médica)
-recibiera la llamada de socorro a tiempo.
-:::
+No se registraron muertes dentro de entornos clínicos protegidos. Circularon bulos masivos sobre fallecidos en hospitales de Toledo, Albacete, Valencia y Ourense, desmentidos categóricamente por las direcciones de los centros. El saldo oficial fue de 8 víctimas mortales relacionadas indirectamente con el apagón: intoxicaciones por monóxido de carbono (generadores domésticos en espacios cerrados), incendios (caída de velas) y fallos en equipos médicos domiciliarios.
 
 ---
 
-## 3. Parálisis de las infraestructuras de transporte
+## 3. Infraestructuras de transporte
 
-### Red ferroviaria: 35.000 personas atrapadas
+A las 13:13 CEST, ADIF y RENFE confirmaron la interrupción de todo el tráfico ferroviario peninsular. Aproximadamente 35.000 pasajeros quedaron atrapados en trenes bloqueados en vía abierta y en túneles de metro (Madrid, Barcelona, Lisboa). Portugal requirió un despliegue extraordinario de cuerpos policiales para evacuar la red de Fertagus. Los informes ministeriales portugueses proponen la instalación de baterías de gran formato en vehículos ferroviarios para garantizar autonomía hasta la estación más cercana.
 
-A las 13:13 CEST, ADIF y RENFE confirmaron la interrupción de todo el
-tráfico ferroviario peninsular. Aproximadamente 35.000 pasajeros quedaron
-atrapados en trenes bloqueados en vía abierta y en túneles de metro
-(Madrid, Barcelona, Lisboa).
-
-<ForensicReveal
-  l1="Decenas de miles de personas quedaron atrapadas en el interior de
-      trenes y metros durante horas."
-  l2="Los trenes eléctricos no pueden moverse sin la catenaria. Los metros
-      subterráneos quedaron sin iluminación, climatización ni megafonía.
-      Las evacuaciones a pie por los balastos ferroviarios requerían coordinación
-      policial para evitar accidentes."
-  l3="Portugal requirió un despliegue extraordinario de cuerpos policiales
-      para evacuar la red de Fertagus. ADIF y RENFE movilizaron autobuses
-      de emergencia y publicaron directrices extraordinarias para la devolución
-      de billetes y rescate de equipajes. Los informes ministeriales post-28-A
-      en Portugal proponen instalar baterías de gran formato en vehículos
-      ferroviarios para darles autonomía mínima hasta la estación más cercana."
-  source="ADIF / RENFE / Ministerio de Transportes (2025) / ANEPC"
-/>
-
-### Aviación: Lisboa, Oporto y Faro paralizados
-
-Las torres de control (ENAIRE/NAV) mantuvieron operatividad gracias a sus
-sistemas redundantes. El lado tierra colapsó.
-
-<ForensicTable
-  title="Tabla H3 — Impacto aeroportuario en Portugal"
-  source="ANAC (Autoridade Nacional da Aviação Civil) — Portugal, 2025"
-  confidence="HIGH"
->
-
-| Aeropuerto | Consecuencia | Vuelos cancelados | Pasajeros afectados |
-| :--- | :--- | :---: | :---: |
-| Humberto Delgado (Lisboa) | Cierre perimetral a las 13:00 CEST | 348 | ≈66.000 |
-| Francisco Sá Carneiro (Oporto) | Operación precaria con generadores | 60 | ≈7.000 |
-| Gago Coutinho (Faro) | Operación precaria con generadores | 29 | ≈5.000 |
-
-</ForensicTable>
-
-### Colapso viario
-
-La desactivación simultánea de decenas de miles de semáforos provocó bloqueos
-monumentales. La A-6 en Madrid quedó absolutamente bloqueada. El alcalde
-confirmó por radio que era _«dificilísimo circular por cualquier eje principal»_,
-recomendando el cese de desplazamientos no vitales.
+En aviación, las torres de control mantuvieron operatividad gracias a sus sistemas redundantes, pero el lado tierra colapsó. El aeropuerto de Lisboa cerró su perímetro a las 13:00 CEST; en total se cancelaron 437 vuelos con aproximadamente 78.000 pasajeros afectados en Portugal. La desactivación simultánea de semáforos provocó bloqueos graves en los ejes urbanos principales.
 
 ---
 
 ## 4. Colapso de las telecomunicaciones
 
-### La caída gradual: 3 horas, 90 % de pérdida
+Las estaciones base de telefonía móvil tienen baterías de respaldo con autonomía de 2–3 horas. Al descargarse sin posibilidad de recarga, el tráfico móvil e internet cayó un 85–90 % a las tres horas del apagón. En Portugal, el tráfico de internet descendió al 10 % de la línea base, arrastrando los sistemas bancarios, las plataformas de pago y los cajeros automáticos.
 
-Las estaciones base móviles tienen baterías de respaldo de 2–3 horas máximo.
-A medida que se descargaron sin posibilidad de recarga:
-
-<ForensicTable
-  title="Tabla H4 — Impacto en telecomunicaciones y servicios digitales"
-  source="ANACOM (Portugal) / CNMC (España) / Registros de tráfico de Internet"
-  confidence="HIGH"
->
-
-| Sector | Impacto | Causa técnica |
-| :--- | :--- | :--- |
-| Tráfico móvil e Internet | Caída >85–90 % a las 3 horas | Agotamiento de baterías de respaldo en antenas |
-| Tráfico Internet Portugal | Caída al 10 % de la línea base histórica | Ciudades como Oporto o Vila Real: >90 % de pérdida |
-| Datáfonos y TPV | Inoperativos | Sin comunicación con servidores bancarios |
-| Cajeros automáticos | Apagados | Sin electricidad ni conectividad |
-
-</ForensicTable>
-
-<ForensicReveal
-  l1="El apagón de Internet colapsó la economía digital en cuestión de horas."
-  l2="Sin red móvil ni Internet, los datáfonos quedaron inoperativos, los cajeros
-      apagados y la banca online inaccesible. El retorno forzado al efectivo
-      desató compras de pánico en supermercados. Las empresas de distribución
-      alimentaria perdieron más de 53 millones de euros por ruptura de la cadena
-      de frío."
-  l3="ANACOM (Portugal) documentó que el 98 % de los incidentes graves de
-      telecomunicaciones tuvieron su origen en fallos de suministro eléctrico
-      de terceros. El informe de la directora Sandra Maximiano ante el Parlamento
-      afirmó que la garantía de comunicaciones dejó de ser un servicio al
-      consumidor para convertirse en el pilar primario de supervivencia del Estado."
-  source="ANACOM — Informe anual de seguridad de redes y servicios (2025)"
-/>
-
-### La resurrección de la radio analógica
-
-En la sociedad más digitalizada de la historia, la FM fue el único cordón
-informativo entre las autoridades y la ciudadanía. Radio Nacional de España
-(RNE) emitió boletines continuos desde infraestructuras con generadores diésel
-propios, previniendo el pánico social que suele acompañar a los vacíos
-informativos prolongados.
+ANACOM (Portugal) documentó que el 98 % de los incidentes graves de telecomunicaciones tuvieron su origen en fallos de suministro eléctrico de terceros. La radio analógica FM fue el único canal informativo entre las autoridades y la ciudadanía: Radio Nacional de España emitió boletines continuos desde infraestructuras con generadores diésel propios.
 
 ---
 
 ## 5. El nexo agua-energía
 
-### ETAP, EDAR y estaciones de bombeo
+Minutos después del cero eléctrico, las Estaciones de Tratamiento de Agua Potable (ETAP), las depuradoras (EDAR) y las estaciones de bombeo se paralizaron. En la Región de Murcia y Toledo se monitorizó una reducción del 70 % de los caudales disponibles. El barrio de Horta-Guinardó (Barcelona) sufrió cortes de agua potable durante más de 18 horas. La detención de EDAR habría puesto a las cuencas receptoras bajo riesgo de vertidos crudos si el evento hubiera superado las 24 horas.
 
-Minutos después del cero eléctrico, las grandes plantas ambientales perdieron
-tracción. Las Estaciones de Tratamiento de Agua Potable (ETAP), las
-depuradoras (EDAR) y las estaciones de bombeo de alta capacidad se paralizaron.
-
-<ForensicReveal
-  l1="En varias zonas, el grifo dejó de funcionar pocas horas después del apagón."
-  l2="El agua urbana moderna no funciona por gravedad pura: requiere bombas
-      eléctricas para vencer la topografía y mantener la presión. Sin electricidad,
-      la presión de red decayó en minutos. En barrios elevados, el desabastecimiento
-      fue inmediato."
-  l3="En la Región de Murcia y Toledo se monitorizó una reducción del 70 %
-      de los caudales disponibles. El barrio de Horta-Guinardó (Barcelona) sufrió
-      cortes de agua potable durante más de 18 horas. Águas de Portugal emitió
-      alertas de «moderación extrema» en el consumo. La detención de EDAR puso
-      a las cuencas receptoras bajo riesgo directo de vertidos crudos si el
-      evento hubiera superado las 24 horas."
-  source="Águas de Portugal / Ayuntamiento de Barcelona / Análisis ANEPC"
-/>
-
-### Respuesta post-28A
-
-El apagón aceleró dos iniciativas de política pública:
-
-1. PERTE de Digitalización del Ciclo Urbano del Agua (>550 M€): sectorización
-   de redes, sensórica inteligente, control predictivo de fugas.
-2. Autoconsumo energético en depuradoras: fomento de digestión anaerobia
-   de lodos para biogás. El sector del agua en España ya producía ≈787 GWh
-   anuales de bioenergía — objetivo: autosuficiencia y desconexión de la red.
+El apagón aceleró dos iniciativas de política pública: el PERTE de Digitalización del Ciclo Urbano del Agua (>550 M€), con sensorización y control predictivo; y el fomento del autoconsumo energético en depuradoras mediante digestión anaerobia de lodos para biogás.
 
 ---
 
 ## 6. Impacto asimétrico en poblaciones vulnerables
 
-### Electrodependientes: la brecha invisible
-
-El segmento más críticamente afectado fueron las personas cuya fisiología
-está atada a la corriente alterna: respiradores mecánicos continuos,
-concentradores de oxígeno, bombas de infusión, hemodiálisis domiciliaria.
+El segmento más críticamente afectado fueron las personas cuya fisiología depende de dispositivos eléctricos: respiradores mecánicos, concentradores de oxígeno, bombas de infusión, equipos de hemodiálisis domiciliaria.
 
 <ForensicReveal
-  l1="Las personas con equipos médicos domiciliarios quedaron completamente
-      abandonadas durante el apagón."
-  l2="A diferencia de los hospitales, las residencias privadas no tienen
-      grupos electrógenos. Los equipos domiciliarios funcionan con la red eléctrica
-      o baterías internas de pocas horas de autonomía. No existe un censo oficial
-      proactivo de electrodependientes que permitiera priorizar la entrega de
-      generadores portátiles."
-  l3="La Federación ALCER documentó que los pacientes de hemodiálisis domiciliaria
-      no podían contactar con sus nefrólogos porque las redes telefónicas habían
-      caído. Los tratamientos se reprogramaron a la madrugada conforme se
-      restableció la electricidad, evitando letalidades directas. Un caso
-      documentado: familia de un niño con parálisis cerebral que conectó el
-      concentrador de oxígeno a la batería de la furgoneta familiar para
-      mantenerlo con vida."
+  l1="Las personas con equipos médicos domiciliarios quedaron sin protección durante el apagón."
+  l2="A diferencia de los hospitales, las residencias privadas no tienen grupos electrógenos. Los equipos domiciliarios funcionan con la red eléctrica o baterías de pocas horas. No existe un censo oficial proactivo de electrodependientes que permita priorizar la entrega de generadores portátiles."
+  l3="La Federación ALCER documentó que los pacientes de hemodiálisis domiciliaria no podían contactar con sus nefrólogos por la caída de las redes telefónicas. Un caso documentado: una familia conectó el concentrador de oxígeno de un niño con parálisis cerebral a la batería de la furgoneta familiar."
   source="Federación ALCER / ANEPC / Documentación asistencial post-28-A"
 />
 
 <VulnerabilityRiskMatrix />
 
-<p className="figure-caption">
-  _Figura H2 — Matriz de impacto asimétrico sobre poblaciones vulnerables
-  durante el apagón del 28-A. Eje Y: severidad de la consecuencia
-  (de reversible a letal/irreversible). Eje X: incidencia poblacional
-  estimada (de individual/puntual a masiva generalizada). Los seis
-  casos documentados reflejan la naturaleza disonante del colapso:
-  consecuencias letales de baja incidencia coexistieron con impactos
-  masivos de menor severidad individual.
-  Fuente: elaboración propia a partir de IGAS, ANEPC, Federación ALCER, CNSE, Guardia Civil y fuentes parlamentarias (Portugal, 2025)._
-</p>
+_Figura H1 — Matriz de impacto asimétrico sobre poblaciones vulnerables. Eje Y: severidad (de reversible a letal). Eje X: incidencia poblacional (de individual a masiva). Las consecuencias letales de baja incidencia coexistieron con impactos masivos de menor severidad individual. Fuente: elaboración propia a partir de IGAS, ANEPC, Federación ALCER, CNSE, Guardia Civil y fuentes parlamentarias._
 
-### Personas sordas: aislamiento total
-
-La Confederación Estatal de Personas Sordas (CNSE) denunció formalmente que
-los sistemas de información en emergencias se volcaron exclusivamente hacia
-mensajes orales por radiodifusión analógica. Al caer la TDT televisiva y
-el acceso a Internet, la comunidad sorda quedó en un estado de aislamiento
-informativo total, sin directrices sobre causas, peligros ni previsiones.
-
-### Atrapamientos en ascensores
-
-La ANEPC portuguesa documentó más de 400 incidentes simultáneos de personas
-atrapadas en ascensores en todo el territorio nacional, drenando recursos de
-los cuerpos de bomberos que eran necesarios para otras contingencias mayores.
+La Confederación Estatal de Personas Sordas (CNSE) denunció que los sistemas de información en emergencias se volcaron exclusivamente hacia mensajes orales por radiodifusión. Al caer la TDT y el acceso a Internet, la comunidad sorda quedó en aislamiento informativo total. La ANEPC portuguesa documentó más de 400 incidentes simultáneos de personas atrapadas en ascensores, drenando recursos de bomberos necesarios para otras contingencias.
 
 ---
 
-## 7. Lecciones y reformas post-28-A
+## 7. Reformas activadas
 
 <ForensicTable
   title="Tabla H5 — Reformas activadas por el impacto social del 28-A"
@@ -363,27 +114,16 @@ los cuerpos de bomberos que eran necesarios para otras contingencias mayores.
 
 | Ámbito | Deficiencia expuesta | Reforma iniciada |
 | :--- | :--- | :--- |
-| Alertas de emergencia | SMS inútil con antenas caídas | Estudio SIRESP modernización (Portugal, 1 may 2025) |
+| Alertas de emergencia | SMS inútil con antenas caídas | Estudio modernización SIRESP (Portugal, 1 may 2025) |
 | Hospitales | Generadores sin autonomía para apagón regional | Revisión protocolos combustible + CAPEX generadores |
 | Ferrocarril | Trenes sin autonomía en catenaria muerta | Estudio baterías integradas en vehículos (Portugal) |
-| Agua | ETAP/EDAR paralizadas sin energía de respaldo | PERTE ciclo urbano + biogás depuradoras (>550 M€) |
-| Electrodependientes | Sin censo ni protocolo de prioridad | <CuestionAbierta metricKey="impacto_social.censo_electrodependientes">Propuesta de censo digital redundante en estudio (sin fecha verificada)</CuestionAbierta> |
-| Personas sordas | Excluidas de los protocolos de alerta | Propuesta de canales visuales redundantes (en tramitación) |
+| Agua | ETAP/EDAR paralizadas sin respaldo | PERTE ciclo urbano + biogás depuradoras (>550 M€) |
+| Electrodependientes | Sin censo ni protocolo de prioridad | Propuesta de censo digital redundante (en estudio) |
+| Personas sordas | Excluidas de protocolos de alerta | Propuesta de canales visuales redundantes (en tramitación) |
 | Telecomunicaciones | Baterías de antenas: 2–3 h de autonomía | CNMC expedientes de investigación + revisión contractual |
 
 </ForensicTable>
 
 ## Conclusión: la interdependencia como vulnerabilidad sistémica
 
-El análisis sectorial de las primeras 18 horas del apagón permite una conclusión regulatoria concreta: la resiliencia de las infraestructuras críticas no puede planificarse sectorialmente. La reforma del ciclo del agua, la modernización del SIRESP o la revisión de los protocolos hospitalarios son condiciones necesarias pero no suficientes si no se coordinan bajo un marco de resiliencia transversal que trate la interdependencia energética como variable de diseño, no como externalidad. El 28-A demostró que el coste de esa omisión puede medirse en vidas, no solo en megavatios.
-
-:::info Fuentes primarias de este capítulo
-- ANEPC — Documentos parlamentarios y actas de la comisión de investigación (Portugal, 2025)
-- ANACOM — Informe anual de seguridad de redes y servicios (2025)
-- ANAC — Informe de impacto aeroportuario (Portugal, 2025)
-- Ministerio del Interior — Órdenes INT/399/2025 y INT/400/2025 (España)
-- Plan Territorial de Emergencias de Andalucía — Registro de incidencias
-- Federación ALCER — Informe de impacto en pacientes renales
-- CNSE — Denuncia formal sobre exclusión informativa de personas sordas
-- Ortiz-Barrios et al. — Estudio sobre servicios médicos de emergencia (PMC12818971)
-:::
+El análisis de las primeras 18 horas permite una conclusión regulatoria concreta: la resiliencia de las infraestructuras críticas no puede planificarse sectorialmente. La reforma del ciclo del agua, la modernización del SIRESP o la revisión de los protocolos hospitalarios son condiciones necesarias pero no suficientes si no se coordinan bajo un marco transversal que trate la interdependencia energética como variable de diseño. La electricidad no es un servicio más en la cadena de infraestructuras: es el sustrato del que dependen todas las demás.

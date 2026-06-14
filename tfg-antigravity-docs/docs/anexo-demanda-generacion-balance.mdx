@@ -22,117 +22,196 @@ import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
   wide
   kicker="Anexo I"
   title="Demanda, generación y balance: la condición previa"
-  description="Este anexo reúne las evidencias relativas a la demanda, el mix de generación y el balance operativo del sistema eléctrico peninsular ibérico el 28 de abril de 2025, antes, durante y después del incidente."
+  description="Evidencias relativas a la demanda, el mix de generación y el balance operativo del sistema eléctrico peninsular ibérico el 28 de abril de 2025, antes, durante y después del incidente."
   meta={[
-    { label: 'Eje técnico', value: 'Demanda y Balance' },
-    { label: 'Cobertura', value: 'Sistema Eléctrico Peninsular' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Demanda y Balance' },
+{ label: 'Cobertura', value: 'Sistema Eléctrico Peninsular' },
+{ label: 'Capítulos asociados', value: 'Cap. 2 (Contexto) · Cap. 4 (Reposición)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Cómo condicionaban la demanda prevista, el mix de generación y el balance operativo del sistema peninsular el margen de seguridad dinámica disponible la mañana del 28 de abril de 2025?
+¿Cómo condicionaban la demanda prevista, el mix de generación y el balance operativo del sistema peninsular el margen de seguridad dinámica disponible la mañana del 28 de abril de 2025?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    La mañana del 28-A, la generación peninsular cubría la demanda con holgura, pero la composición del mix — 82% de fuentes basadas en inversores, solo 11 unidades síncronas acopladas — dejaba el sistema con la inercia más baja del año y una potencia de cortocircuito en el sur peninsular por debajo de los umbrales de operación segura. Las previsiones de demanda no anticipaban condiciones excepcionales; la desviación previsto-real era inferior al 5%. La vulnerabilidad no residía en la cantidad de potencia disponible sino en las propiedades dinámicas de esa potencia. Este anexo establece la condición necesaria — aunque no suficiente — del colapso posterior.
+La mañana del 28-A, la generación peninsular cubría la demanda con holgura. Pero la composición del mix — 82 % de fuentes basadas en inversores, solo 11 unidades síncronas acopladas — dejaba el sistema con la inercia más baja del año y una potencia de cortocircuito en el sur peninsular por debajo de los umbrales de operación segura. Las previsiones de demanda no anticipaban condiciones excepcionales; la desviación previsto-real era inferior al 5 %. La vulnerabilidad no residía en la cantidad de potencia disponible sino en las propiedades dinámicas de esa potencia.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo documenta las condiciones operativas previas que redujeron la inercia del sistema peninsular y la potencia de cortocircuito por debajo de los umbrales de seguridad, creando la precondición para el apagón del 28-A.
+Este anexo establece la precondición del colapso: un sistema con margen de potencia suficiente pero con margen dinámico insuficiente. Sin esta condición, la cascada del [Capítulo 3](/analisis-incidente) no se habría producido.
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    Las evidencias documentales se organizan en este anexo para facilitar una lectura integrada de la evolución de la demanda y el balance de generación durante el incidente.
+Fuentes primarias: Comité de Análisis del Gobierno (2025, pp. 20-38), ENTSO-E Factual Report (2025, Figuras 2-1 a 2-5), REE (datos ESIOS, indicadores 1293/1775/460/151/541/1395), NREL PMU Analysis (2025). Las series temporales se presentan con resolución de 5 minutos (ESIOS) u horaria (ENTSO-E). Las discrepancias entre fuentes se señalan explícitamente.
   </AnnexMethodNote>
 
-  <em>Este anexo se organiza en cuatro secciones. La primera presenta la condición operativa del 28-A: el perfil de generación, las unidades acopladas y el mix a las 12:30 CEST. La segunda contrasta las previsiones de demanda con la realidad, demostrando que la vulnerabilidad era invisible desde las señales convencionales. La tercera reúne indicadores de medio plazo como contexto estructural. La cuarta sitúa el evento dentro de la transición energética ibérica.</em>
+  Este anexo se organiza en tres secciones. La primera presenta la fotografía operativa del sistema a las 12:30 CEST — instante previo al disparo raíz — documentando qué unidades estaban acopladas, cuáles no, y por qué. La segunda examina las previsiones de demanda y las series temporales del día, demostrando que todas las señales convencionales indicaban normalidad: la vulnerabilidad era invisible para las herramientas de mercado. La tercera sitúa la mañana del 28-A dentro de la transformación estructural del mix peninsular, conectando el escenario puntual con la tendencia de una década.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Condición previa',           target: 'condicion-previa' },
-      { label: 'Previsiones de demanda',     target: 'previsiones-demanda' },
-      { label: 'Capacidad e indicadores',    target: 'capacidad-indicadores' },
-      { label: 'Transición y re-energización', target: 'transicion-reenergizacion' },
-    ]}
+items={[
+  { label: 'La foto del 28-A',           target: 'foto-28a' },
+  { label: 'La normalidad invisible',     target: 'normalidad-invisible' },
+  { label: 'El contexto estructural',     target: 'contexto-estructural' },
+]}
   />
+  <AnnexSection id="foto-28a" eyebrow="Sección 1" title="La foto del 28-A a las 12:30 CEST">
 
-  <AnnexSection id="condicion-previa" eyebrow="Sección 1" title="La condición previa: mix, unidades e inercia">
-    El perfil de generación del 28-A ilustra la condición operativa inmediatamente previa al colapso: la producción fotovoltaica alcanzaba su pico mientras la generación síncrona convencional se reducía a mínimos históricos.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="El perfil de generación del 28-A"
-      summary="En la franja de mediodía, la producción fotovoltaica alcanzaba su pico mientras la generación síncrona se reducía a mínimos históricos."
-      insight="~82% de generación IBR · Solo 11 unidades síncronas acopladas."
-    >
-      <AnnexEvidence type="figure" id="ree_generation_mix_28april" level={1} />
-    </AnnexEvidenceLead>
-    A las 12:30 CEST, solo 11 unidades convencionales permanecían acopladas — el mínimo de 2025. La siguiente figura documenta la tendencia decreciente de los meses previos.
-    <AnnexEvidence type="figure" id="conventionalunits" level={1} />
-    La expulsión sistemática por orden de mérito reducía cada día el recurso síncrono disponible para mantener inercia y potencia de cortocircuito.
-    La composición exacta del mix a las 12:30 CEST — instante previo al disparo raíz — y la potencia indisponible por tecnología acotan el margen real del que disponía el operador.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="table" id="mix-generacion-12-30" level={2} />
-      <AnnexEvidence type="table" id="unavailable-capacity" level={2} />
-    </AnnexEvidenceGrid>
-    La discrepancia de 3.028 MW entre las cifras de REE y las del Comité del Gobierno es uno de los puntos de controversia pericial: REE declaró haber desacoplado 15 ciclos combinados entre las 08:00 y las 10:00 CEST.
-    <AnnexEvidence type="table" id="indisponibilidad-generacion-convencional" level={2} />
-    Si el operador disponía realmente de capacidad síncrona adicional, la decisión de no despacharla es el primer punto de fallo de la cadena.
+A las 12:30 CEST del 28 de abril de 2025, el sistema eléctrico peninsular operaba en un régimen que puede describirse como de *abundancia con fragilidad*: la demanda (25.184 MW, el 56 % de la punta histórica) estaba cubierta con holgura, pero la composición tecnológica del mix presentaba la mayor concentración de generación no síncrona registrada hasta esa fecha. El perfil de generación es la primera evidencia de esta paradoja.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Perfil de generación del 28-A"
+  summary="En la franja de mediodía, la producción fotovoltaica alcanzaba su pico mientras la generación síncrona se reducía a mínimos históricos."
+  insight="82 % de generación IBR · Solo 11 unidades síncronas acopladas · Mínimo de 2025."
+>
+  <AnnexEvidence type="figure" id="ree_generation_mix_28april" level={1} />
+</AnnexEvidenceLead>
+
+Lo que esta gráfica documenta no es un déficit de potencia — el sistema generaba lo suficiente — sino un déficit de *propiedades*. La franja entre las 10:00 y las 12:30 CEST muestra cómo la rampa solar desplazó progresivamente a los ciclos combinados de gas por orden de mérito, eliminando las máquinas que aportaban inercia, potencia de cortocircuito y absorción dinámica de potencia reactiva. A las 12:30, la generación fotovoltaica (18.068 MW, ~53 %) y la eólica (~3.020 MW, ~12 %) sumaban el 82 % del mix. La generación síncrona convencional — nuclear (10 %), hidráulica (8 %), ciclo combinado (3 %) y carbón (1 %) — quedó reducida a 11 unidades acopladas en toda la península.
+
+La descomposición por tecnología y la potencia indisponible por mantenimiento o decisión de mercado acotan el margen real del que disponía el operador:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="table" id="mix-generacion-12-30" level={2} />
+  <AnnexEvidence type="table" id="unavailable-capacity" level={2} />
+</AnnexEvidenceGrid>
+
+La lectura cruzada de ambas tablas revela una asimetría estructural: el parque síncrono instalado (>61 GW) era robusto, pero a las 12:30 CEST solo 7 GW estaban despachados. Más de 7.400 MW de ciclo combinado figuraban como indisponibles a nivel horario. Esta brecha entre capacidad instalada y generación efectiva es la huella del orden de mérito: las renovables desplazan a las térmicas por precio, y con ellas desaparecen las propiedades dinámicas que las térmicas aportaban sin remuneración explícita.
+
+La cuestión forense es si el operador disponía de capacidad síncrona adicional que decidió no despachar. Los datos de REE y los del Comité del Gobierno difieren en 3.028 MW de indisponibilidad declarada para el ciclo combinado — una discrepancia que alimenta el debate sobre la responsabilidad operativa.
+
+<details>
+  <summary>▶ Detalle: discrepancia de indisponibilidad REE vs. Comité del Gobierno</summary>
+  <div style={{padding: '1rem 0'}}>
+
+El peritaje del IIT-ICAI documenta que entre las 08:00 y las 10:00 CEST, en plena rampa de subida solar, REE autorizó o forzó el desacoplamiento de 15 grupos de ciclo combinado por criterios de mercado intradiario. Si estas unidades hubiesen permanecido acopladas, la inercia y la potencia de cortocircuito en Andalucía y Extremadura habrían sido significativamente mayores. Este punto es uno de los ejes de la disputa interpretativa analizada en el [Capítulo 5](/analisis-informes).
+
+  <AnnexEvidence type="table" id="indisponibilidad-generacion-convencional" level={3} />
+  </div>
+</details>
+
+La tendencia de las semanas previas confirma que el 28-A no fue una anomalía sino el punto culminante de una pauta: el número de unidades síncronas acopladas venía descendiendo de forma sostenida desde enero de 2025.
+
+<AnnexEvidence type="figure" id="conventionalunits" level={2} />
+
+La línea descendente de esta gráfica es la traducción visual de la transición energética medida en masa rotativa: cada día con menor despacho convencional era un día con menor inercia y menor potencia de cortocircuito en los nudos de transporte. El mínimo absoluto de 2025 se alcanzó precisamente el 28-A.
+
   </AnnexSection>
+  <AnnexSection id="normalidad-invisible" eyebrow="Sección 2" title="La normalidad invisible">
 
-  <AnnexSection id="previsiones-demanda" eyebrow="Sección 2" title="Previsiones de demanda: ausencia de señales de alarma">
-    Las previsiones D-2, D-1 y 8:00h para España no anticipaban ninguna condición excepcional.
-    <AnnexEvidence type="table" id="spanish-demand-forecast" level={2} />
-    Desviación previsto-real inferior al 5% — la demanda no era el problema.
-    Las previsiones portuguesas confirman el mismo patrón de normalidad.
-    <AnnexEvidence type="table" id="portuguese-demand-forecast" level={2} />
-    La serie ESIOS de demanda peninsular con resolución de 5 minutos es el electrocardiograma del sistema: demanda estable hasta las 12:33 CEST, caída vertical a 0 MW, y 19 horas de recuperación.
-    <AnnexEvidence type="chart" id="chart-1" level={2} />
-    La carga combinada ES+PT confirma que el colapso fue simultáneo en ambos países — no hubo desfase apreciable entre la caída española y la portuguesa.
-    <AnnexEvidence type="chart" id="chart-2" level={2} />
-    El programa de producción P48 se anuló instantáneamente a las 12:33 CEST. La energía no suministrada estimada (150.000–180.000 MWh) multiplica varias veces el volumen diario programado (27.812 MWh).
-    <AnnexEvidence type="chart" id="chart-3" level={2} />
-    La normalidad de las previsiones es precisamente la evidencia: la vulnerabilidad del 28-A era invisible para las señales de demanda convencionales.
+Ninguna de las señales convencionales de supervisión del sistema — previsiones de demanda, programas de mercado, desvíos previsto-real — anticipaba un escenario excepcional la mañana del 28-A. Las tres previsiones disponibles (D-2, D-1 y 8:00h) se desviaban de la demanda real en menos del 5 %. Los precios del mercado diario cerraban en 5,79 €/MWh, sin tensiones de oferta. El sistema *parecía* normal porque las herramientas de monitorización no miden propiedades dinámicas — miden potencia, energía y precio.
+
+La serie ESIOS de demanda peninsular con resolución de 5 minutos es la evidencia visual más directa de esta paradoja: una curva estable hasta las 12:33 CEST y un escalón vertical a cero.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Evolución de la demanda eléctrica — 28 y 29 de abril de 2025"
+  summary="La demanda real cae de 25.184 MW a 0 MW en un escalón vertical entre las 12:30 y las 12:35 CEST. La recuperación requirió casi 19 horas."
+  insight="Los equipos de telemedida SCADA dejaron de transmitir al perder su propia alimentación eléctrica."
+>
+  <AnnexEvidence type="chart" id="chart-1" level={1} />
+</AnnexEvidenceLead>
+
+Este es el electrocardiograma plano del sistema ibérico. Tres observaciones son relevantes para el análisis forense. Primera: no hay señal de deterioro gradual en la curva de demanda previa al colapso — lo que confirma que el fallo fue dinámico y ultrarrápido, no una degradación progresiva visible desde las magnitudes de mercado. Segunda: la recuperación es escalonada y lenta (13:05 CEST: 37 MW; 23:32 CEST: 13.039 MW; 07:05 del 29-A: restitución del 99,95 %), documentando la velocidad real de las estrategias de Black Start. Tercera: las curvas de programación y previsión se anulan simultáneamente, porque los propios sistemas de telemedida SCADA perdieron su alimentación eléctrica.
+
+La carga combinada ES+PT confirma que el colapso fue simultáneo en ambos países — no hubo desfase apreciable entre la caída española y la portuguesa:
+
+<AnnexEvidence type="chart" id="chart-2" level={2} />
+
+La telemetría de REN, a diferencia de la española, sí registró la caída: la demanda portuguesa se desplomó hasta 90 MW — apenas el 2 % de la prevista — antes de comenzar una recuperación lenta a partir de las 20:00 CEST. La simultaneidad de la caída confirma el carácter de colapso sistémico transfronterizo; la inestabilidad de tensión se transmitió a la red portuguesa en menos de 100 ms.
+
+<details>
+  <summary>▶ Previsiones horarias de demanda — España y Portugal</summary>
+  <div style={{padding: '1rem 0'}}>
+
+Las tablas de previsión D-2, D-1 y 8:00h para ambos países confirman la ausencia de señales de alarma convencionales. La desviación previsto-real era inferior al 5 % a las 12:15 CEST. La demanda prevista para la franja de las 12:00 era de 25.700 MW para España y 5.890 MW para Portugal — valores coherentes con un lunes de primavera con alta irradiación solar.
+
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="table" id="spanish-demand-forecast" level={3} />
+    <AnnexEvidence type="table" id="portuguese-demand-forecast" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
+<details>
+  <summary>▶ Programación de mercado y generación distribuida no observable</summary>
+  <div style={{padding: '1rem 0'}}>
+
+El programa de producción P48 refleja la energía total programada para el 28-A en todos los segmentos de mercado (SPOT, restricciones, intradiario, regulación). El colapso anuló instantáneamente 27.812 MWh de programación — la energía no suministrada estimada (150.000–180.000 MWh) multiplicó varias veces ese volumen.
+
+  <AnnexEvidence type="chart" id="chart-3" level={3} />
+
+Una capa adicional de incertidumbre provenía de la generación distribuida no observable. Antes del disparo raíz, 700 MW de autoconsumo (<1 MW) habían dejado de inyectar sin que el SCADA de REE lo detectara — el 85 % de esa variación era invisible para el operador.
+
+  <AnnexEvidence type="table" id="variacion-demanda-desconexion-gd" level={3} />
+  </div>
+</details>
+
+La conclusión de esta sección es precisa: la vulnerabilidad del 28-A era invisible para las herramientas de supervisión convencionales porque estas herramientas monitorizan potencia y energía, no inercia ni potencia de cortocircuito. El sistema de precios de mercado no generaba señales de tensión porque los atributos dinámicos no tienen precio — una anomalía que se examina en el [Anexo V · Mercado, precios y costes](/anexo-mercado-costes).
+
   </AnnexSection>
+  <AnnexSection id="contexto-estructural" eyebrow="Sección 3" title="El contexto estructural: una década de transformación">
 
-  <AnnexSection id="capacidad-indicadores" eyebrow="Sección 3" title="Capacidad, reservas e indicadores de medio plazo">
-    El parque peninsular disponía de más de 121 GW de capacidad instalada, de los cuales ~61 GW eran síncronos convencionales. A mediodía del 28-A, solo 7 GW estaban despachados. La brecha entre capacidad instalada y generación real es la huella del orden de mérito.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="capacidad_instalada_2025" level={3} />
-      <AnnexEvidence type="chart" id="chart-5" level={3} />
-    </AnnexEvidenceGrid>
-    Con 15 TWh almacenados en la semana 18, los embalses ibéricos estaban cerca del máximo histórico. Esta reserva permitió que el Black Start hidráulico fuese viable en horas, no en días.
-    <AnnexEvidence type="chart" id="chart-7" level={3} />
-    El indicador de generación libre de CO₂ alcanzó el 91,2% a las 11:30 CEST — máximo de 2025 en día laborable. El sistema colapsó en su punto de máxima descarbonización.
-    <AnnexEvidence type="chart" id="chart-8" level={3} />
-    La desconexión de ~700 MW de autoconsumo distribuido no observable por el SCADA de REE añadió una capa de incertidumbre operativa al balance demanda-generación.
-    <AnnexEvidence type="table" id="variacion-demanda-desconexion-gd" level={3} />
+La mañana del 28-A no fue un accidente aislado: fue el punto culminante de una transformación del parque generador peninsular que, en catorce años, desplazó la composición del mix desde una dominancia térmica a una dominancia de electrónica de potencia. Esta sección sitúa el escenario puntual dentro de esa tendencia de largo plazo.
+
+La capacidad de generación instalada en la Península Ibérica ascendía a 121.873 MW en enero de 2025. De ellos, aproximadamente 61 GW eran síncronos convencionales. Pero la capacidad instalada no sirve si está desconectada por razones de mercado: a mediodía del 28-A, solo 7 GW de esos 61 GW estaban despachados.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Capacidad instalada por tecnología — Península Ibérica, 2025"
+  summary="121.873 MW instalados, de los cuales ~61 GW son síncronos. El 28-A, solo 7 GW estaban acoplados."
+  insight="La brecha entre capacidad instalada y despacho real es la huella del orden de mérito."
+>
+  <span id="fig-capacidad_instalada_2025"></span>
+  <AnnexEvidence type="chart" id="chart-5" level={1} />
+</AnnexEvidenceLead>
+
+La diferencia entre la barra de ciclo combinado (29.943 MW instalados) y su contribución real al mix del 28-A (1.635 MW, el 3 %) documenta la trampa del orden de mérito: el recurso síncrono existía pero no estaba activo. Las renovables, con coste marginal próximo a cero, lo expulsaron del despacho — y con él, las propiedades dinámicas que las máquinas rotativas aportaban como externalidad.
+
+La evolución del mix entre 2010 y 2024 y la composición tecnológica de la re-energización posterior al colapso ilustran la magnitud de esta transformación y su inversión forzada durante la restauración:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="figure" id="mix_comparativo_2010_2024" level={2} />
+  <AnnexEvidence type="figure" id="evolucion_mix_reenergizacion" level={2} />
+</AnnexEvidenceGrid>
+
+La lectura cruzada de estas dos figuras es reveladora: la primera muestra cómo las fuentes síncronas pasaron del 65 % al 41 % en una década; la segunda muestra cómo, tras el colapso, la re-energización excluyó las fuentes IBR hasta acreditar niveles mínimos de potencia de cortocircuito e inercia — invirtiendo en horas la transición de una década. La re-energización necesitó exactamente lo que el mercado había expulsado.
+
+Dos indicadores complementarios contextualizan la capacidad del sistema para sostener la restauración y el nivel de descarbonización alcanzado antes del colapso:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="chart" id="chart-7" level={2} />
+  <AnnexEvidence type="chart" id="chart-8" level={2} />
+</AnnexEvidenceGrid>
+
+Los embalses almacenaban 15,0 TWh en la semana 18 — casi en el máximo histórico de la serie, en un año excepcionalmente húmedo. Esta reserva fue un factor crítico positivo para la velocidad de recuperación: sin este *pulmón hidráulico*, el Black Start habría tardado días en lugar de 19 horas. El indicador de generación libre de CO₂, por su parte, superó el 91 % a las 11:30 CEST — el nivel más alto de 2025 en día laborable. El sistema colapsó en su punto de máxima descarbonización, una constatación que refuerza la tesis central del trabajo: la transición avanzó en el plano ambiental sin un avance simétrico en el plano dinámico.
+
+Los tres interactivos siguientes permiten explorar la transformación del mix desde tres ángulos complementarios.
+
+:::tip Cómo explorar estos interactivos
+**Streamgraph:** desplaza el cursor sobre los estratos para ver cómo cada tecnología evolucionó entre 2010 y 2025. Observa la expansión de la solar fotovoltaica (amarillo) y la contracción del carbón (gris) y el ciclo combinado.
+
+**Simulador del mix operativo:** mueve los deslizadores de penetración solar y eólica para observar cómo varía la inercia equivalente (Htot) y el SCR del sistema. Lleva la solar al 53 % y la eólica al 12 % para reproducir las condiciones del 28-A: el SCR caerá por debajo de 2.
+
+**Emisiones y renovables:** observa la correlación inversa entre penetración renovable y emisiones. El punto máximo de la curva de descarbonización (91,2 %) coincide temporalmente con el mínimo de inercia del sistema.
+:::
+
+<AnnexEvidence type="interactive" id="streamgraph" level={2} />
+<AnnexEvidence type="interactive" id="mix-generacion" level={2} />
+<AnnexEvidence type="interactive" id="emissions-renewables" level={2} />
+
   </AnnexSection>
-
-  <AnnexSection id="transicion-reenergizacion" eyebrow="Sección 4" title="Transición energética y re-energización">
-    En 14 años, la generación IBR pasó de complementaria a dominante. Tras el colapso, la re-energización excluyó las fuentes IBR hasta acreditar niveles mínimos de Scc e inercia — invirtiendo en horas la transición de una década.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="mix_comparativo_2010_2024" level={3} />
-      <AnnexEvidence type="figure" id="evolucion_mix_reenergizacion" level={3} />
-    </AnnexEvidenceGrid>
-    El streamgraph permite explorar año a año cómo la transición energética desplazó progresivamente las fuentes que aportaban inercia y control de tensión inherente.
-    <span id="grafico-streamgraph"></span>
-    <AnnexEvidence type="interactive" id="streamgraph" level={3} />
-    La herramienta de desglose del mix operativo permite comparar la composición tecnológica del 28-A con jornadas estables del mismo período.
-    <span id="grafico-mix-generacion"></span>
-    <AnnexEvidence type="interactive" id="mix-generacion" level={3} />
-    La correlación entre penetración renovable y descarbonización tiene un reverso: la reducción de emisiones coincide con la reducción de inercia rotacional del sistema.
-    <span id="grafico-emissions-renewables"></span>
-    <AnnexEvidence type="interactive" id="emissions-renewables" level={3} />
-  </AnnexSection>
-
   <AnnexSectionSummary
-    demonstrates="El balance demanda-generación del 28-A no contenía señales de alarma convencionales: la demanda estaba cubierta, los precios de mercado no anticipaban tensiones, y las previsiones eran razonablemente precisas. La vulnerabilidad no procedía de un déficit de potencia sino de un déficit de propiedades dinámicas en la potencia disponible: inercia, potencia de cortocircuito y capacidad de control de tensión."
-    doesNotDemonstrate="Este anexo no demuestra que el apagón fuese inevitable ni que el operador careciese de herramientas para gestionar la situación. Demuestra que las condiciones operativas de la mañana del 28-A constituían una precondición necesaria del colapso posterior: un sistema con margen de potencia suficiente pero con margen dinámico insuficiente."
-    connection="La lectura de este anexo se complementa con el Anexo II, que analiza cómo la composición del mix degradaba la estabilidad de tensión, y con el Anexo V, que explica por qué el diseño de mercado no generaba señales de precio para las propiedades dinámicas ausentes."
+demonstrates="El balance demanda-generación del 28-A no contenía señales de alarma convencionales: la demanda estaba cubierta, los precios no anticipaban tensiones, y las previsiones eran precisas. La vulnerabilidad procedía de un déficit de propiedades dinámicas (inercia, potencia de cortocircuito, control de tensión) en la potencia disponible — un déficit invisible para las herramientas de mercado porque esas propiedades carecen de precio."
+doesNotDemonstrate="Este anexo no demuestra que el apagón fuese inevitable ni que el operador careciese de herramientas para gestionar la situación. Establece que las condiciones operativas de la mañana del 28-A constituían una precondición necesaria del colapso posterior — pero la precondición no es la causa."
+connection="La lectura de este anexo se complementa con el Anexo II (cómo la composición del mix degradaba los márgenes Q-V y la estabilidad de tensión), con el Anexo III (cómo la cascada de protecciones se propagó sobre esta base frágil), y con el Anexo V (por qué el diseño de mercado no generaba señales de precio para las propiedades dinámicas ausentes)."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: consecuencias sobre estabilidad dinámica" },
-    { to: "/anexo-mercado-costes", label: "Anexo V: mecanismo de mercado" }
+{ to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II · Estabilidad dinámica: consecuencias del mix sobre los márgenes Q-V" },
+{ to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III · Protecciones: la cascada sobre la base frágil" },
+{ to: "/anexo-mercado-costes", label: "Anexo V · Mercado: por qué los atributos dinámicos carecen de precio" },
+{ to: "/contexto", label: "← Capítulo 2 · Contexto técnico" },
+{ to: "/reaccion-reposicion", label: "← Capítulo 4 · Reposición" },
   ]} />
 </AnnexLayout>

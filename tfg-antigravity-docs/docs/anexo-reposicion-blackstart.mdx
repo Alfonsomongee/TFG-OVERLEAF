@@ -1,7 +1,7 @@
 ---
 id: anexo-reposicion-blackstart
 title: "Anexo VI · Reposición, Black Start y operación de emergencia"
-sidebar_label: "Anexo VI · Reposición y emergencia"
+sidebar_label: "Anexo VI · Reposición y Black Start"
 hide_title: true
 ---
 
@@ -22,86 +22,134 @@ import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
   wide
   kicker="Anexo VI"
   title="Reposición, Black Start y operación de emergencia"
-  description="Este anexo documenta el proceso de restauración del suministro eléctrico peninsular ibérico tras el colapso del 28-A, detallando las maniobras de arranque autónomo, la división en islas y el progresivo acoplamiento de la demanda."
+  description="Maniobras de arranque autónomo, fragmentación en islas, perfiles de recuperación de demanda y coordinación institucional durante las 18,5 horas posteriores al cero de tensión."
   meta={[
-    { label: 'Eje técnico', value: 'Reposición y Black Start' },
-    { label: 'Cobertura', value: 'Restauración del sistema' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Restauración del suministro' },
+{ label: 'Ventana temporal', value: '12:33 CEST (28-A) → 07:05 CEST (29-A)' },
+{ label: 'Capítulos asociados', value: 'Cap. 4 (Reposición) · Dim. Europea (Francia-Portugal)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Cómo se coordinaron el arranque autónomo (Black Start) y las importaciones de referencia para restablecer el suministro en la península ibérica tras el colapso total?
+¿Cómo se coordinaron el arranque autónomo (Black Start) y las importaciones de referencia para restablecer el suministro en la península ibérica tras el colapso total?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    El proceso de reposición de la península ibérica el 28-A combinó dos estrategias paralelas y coordinadas: el arranque autónomo (Black Start) de centrales hidráulicas y térmicas locales para constituir subsistemas aislados (islas de reposición), y la toma de tensión de referencia desde la interconexión francesa para re-energizar el eje de transporte norte. A pesar de los retrasos iniciales en el acoplamiento de unidades de ciclo combinado, el uso de la referencia continental y el deslastre de control de bombeo permitieron recuperar el 90% del suministro en menos de 10 horas, demostrando la efectividad de los planes de contingencia coordinados.
+La reposición combinó dos estrategias paralelas: arranque autónomo de centrales hidráulicas para constituir islas eléctricas (*Bottom-Up*), y toma de referencia de tensión y frecuencia desde las interconexiones con Francia y Marruecos (*Top-Down*). A pesar de los fallos iniciales por *magnetizing inrush* y descarga de baterías DC, el 90 % del suministro se recuperó en menos de 16 horas. La dependencia exclusiva de la generación síncrona para el Black Start confirmó que los IBR en modo *grid-following* eran incapaces de participar en la restauración.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo reúne los registros de maniobras de arranque, la fragmentación en islas y los perfiles de recuperación de demanda del proceso de restauración del 28-A.
+Este anexo contiene los registros de maniobras de arranque, la fragmentación en islas y los perfiles de recuperación que documentan la fase de restauración del [Capítulo 4](/reaccion-reposicion).
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    Se recopilan en este dossier técnico los registros y evidencias operativas que ilustran el proceso de arranque autónomo y la paulatina reconexión de la demanda.
+Fuentes: ENTSO-E Factual Report, Comité de Análisis del Gobierno (p. 62), REE comunicados 28–29 abril, REN, POWER Magazine, ANEPC (Portugal), smartgridsinfo. Las tablas de recuperación reflejan datos oficiales de los operadores con resolución horaria. Los tiempos de las islas incluyen intentos fallidos.
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en tres secciones argumentales: estrategia de reposición y arranque autónomo, recuperación de demanda por regiones, y coordinación internacional y estados EAS.</em>
+  Este anexo se organiza en tres secciones. La primera documenta la estrategia dual de restauración y las centrales activadas. La segunda traza la rampa de recuperación de demanda en España y Portugal, incluyendo los intentos fallidos y sus causas técnicas. La tercera recoge la secuencia de cambios de estado en el EAS europeo y los fallbacks activados por otros operadores continentales.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Estrategia de reposición', target: 'estrategia-reposicion' },
-      { label: 'Recuperación de demanda',  target: 'recuperacion-demanda' },
-      { label: 'Estados EAS y coordinación', target: 'estados-eas' },
-    ]}
+items={[
+  { label: 'Estrategia dual',         target: 'estrategia-dual' },
+  { label: 'Rampa de recuperación',    target: 'rampa-recuperacion' },
+  { label: 'Coordinación continental', target: 'coordinacion-eas' },
+]}
   />
+  <AnnexSection id="estrategia-dual" eyebrow="Sección 1" title="La estrategia dual: Top-Down y Bottom-Up">
 
-  <AnnexSection id="estrategia-reposicion" eyebrow="Sección 1" title="Estrategia de reposición y arranque autónomo">
-    El esquema de estrategia de re-energización dual ilustra el acoplamiento simultáneo del eje pirenaico (norte) y las islas de reposición del sur alimentadas por hidráulicas autónomas.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Estrategia dual de re-energización"
-      summary="El proceso de reposición combinó la inyección de tensión de referencia desde la frontera francesa en el norte con la activación de islas síncronas autónomas mediante Black Start en el sur."
-      insight="Soporte transfronterizo de Francia · Coordinación de islas de reposición."
-    >
-      <AnnexEvidence type="figure" id="estrategia_reenergizacion_dual" level={1} />
-    </AnnexEvidenceLead>
-    La lista de centrales habilitadas para Black Start muestra la dependencia de la hidráulica con presa — una limitación relevante en escenarios de sequía.
-    <AnnexEvidence type="table" id="centrales-black-start" level={1} />
-    Los intentos de arranque autónomo tuvieron una elevada proporción de fracasos (puntos grises en la figura), reflejo de la complejidad de energizar una red sin masa síncrona acoplada. Cada isla debía estabilizarse en tensión y frecuencia antes de sincronizarse con las adyacentes.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="black_start_hidroelectrico" level={2} />
-      <AnnexEvidence type="figure" id="islas_reposicion_entsoe" level={2} />
-    </AnnexEvidenceGrid>
-    Los tiempos reales de restauración por isla documentan las dificultades singulares de cada zona — el sur fue consistentemente más lento que el norte.
-    <AnnexEvidence type="table" id="tiempos-restauracion-islas" level={2} />
+La restauración de un sistema de potencia tras un cero de tensión total requiere resolver un problema circular: para producir electricidad se necesita electricidad. Las centrales convencionales necesitan alimentar sus servicios auxiliares (bombas de aceite, instrumentación, sistemas de excitación) antes de poder generar; los inversores IBR necesitan una red externa estable para sincronizarse. Solo las centrales con capacidad de arranque autónomo — esencialmente hidráulicas de embalse con válvulas de gravedad y algunos ciclos combinados con baterías DC de emergencia — pueden romper este ciclo. El P.O. 1.6 de REE establece el protocolo.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Estrategia dual de re-energización peninsular"
+  summary="Vía Top-Down: referencia de tensión importada desde Francia (norte) y Marruecos (sur). Vía Bottom-Up: islas eléctricas formadas por centrales hidráulicas con arranque autónomo."
+  insight="Las dos vías operaron en paralelo. La Top-Down fue más rápida; la Bottom-Up fue más vulnerable a transitorios de inrush."
+>
+  <AnnexEvidence type="figure" id="estrategia_reenergizacion_dual" level={1} />
+</AnnexEvidenceLead>
+
+La REE fragmentó la península en siete áreas operativas independientes, cada una con su fuente de tensión y frecuencia inicial. La sincronización entre áreas solo se autorizaba tras verificar la estabilidad interna de cada isla — un proceso que requiere igualar frecuencia, tensión y ángulo de fase antes del cierre del interruptor.
+
+<AnnexEvidence type="figure" id="islas_reposicion_entsoe" level={2} />
+
+El inventario de centrales activadas documenta la dependencia absoluta de la generación síncrona para la restauración. Ninguna planta IBR participó en el Black Start; las primeras reconexiones renovables no se autorizaron hasta las 01:38 del 29-A, cuando el sistema contaba con 21 grupos térmicos sincronizados que proporcionaban potencia de cortocircuito suficiente.
+
+<AnnexEvidence type="table" id="centrales-black-start" level={2} />
+
+La gráfica de intentos de arranque hidroeléctrico documenta la tasa de fracaso — significativamente más alta de lo que los planes de contingencia preveían. Los fenómenos de *magnetizing inrush* colapsaron repetidamente las primeras islas (Cantabria, Levante, Portugal Centro). La complejidad de operar microsistemas con inercia mínima fue la principal causa de los retardos en la restauración.
+
+<AnnexEvidence type="figure" id="black_start_hidroelectrico" level={2} />
+
   </AnnexSection>
+  <AnnexSection id="rampa-recuperacion" eyebrow="Sección 2" title="La rampa de recuperación: España y Portugal">
 
-  <AnnexSection id="recuperacion-demanda" eyebrow="Sección 2" title="Recuperación de demanda por regiones">
-    La reposición de los 25 GW perdidos requirió 18,5 horas de maniobras ininterrumpidas, con conexión de carga escalonada para evitar nuevos episodios de subfrecuencia. La maniobra de compensación síncrona en Torrão (17:23 CEST) estabilizó la isla Zêzere 220 kV: el grupo hidráulico operó como compensador síncrono puro, inyectando reactiva sin exportar potencia activa.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="recuperacion_demanda_peninsular" level={1} />
-      <AnnexEvidence type="figure" id="figuraB3-light" level={2} />
-    </AnnexEvidenceGrid>
-    El desglose por nudos de distribución y la comparación España (16 h) vs Portugal (12 h) documentan la asimetría geográfica de la recuperación.
-    <AnnexEvidence type="table" id="recuperacion-demanda-espana" level={2} />
-    <AnnexEvidence type="table" id="recuperacion-portugal" level={2} />
-    El sistema de alerta europeo etiquetó a España como "Normal" a las 12:32:00 CEST y como "Blackout" a las 12:33:29 CEST — sin ningún estado intermedio. Otros TSOs (Estonia, Letonia, Finlandia) también activaron fallbacks como efecto dominó.
-    <AnnexEvidence type="chart" id="chart-23" level={2} />
+La curva de recuperación de demanda es la segunda gráfica más importante del análisis — complementa al electrocardiograma del colapso (Anexo I, chart-1) con la fase de reanimación. La pendiente de la curva refleja las limitaciones físicas de la re-energización: cada bloque de carga reconectado debe ser absorbido sin provocar nuevas oscilaciones; cada línea energizada en vacío genera transitorios capacitivos que los generadores acoplados deben contener.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Desplome y recuperación de la demanda peninsular"
+  summary="De 25.184 MW a 0 MW en 32 segundos. De 0 MW a 25.170 MW (99,95 %) en 18,5 horas. La asimetría entre la velocidad de destrucción y la velocidad de recuperación es la métrica de la fragilidad."
+  insight="La re-energización necesitó exactamente los recursos que el mercado había expulsado."
+>
+  <AnnexEvidence type="figure" id="recuperacion_demanda_peninsular" level={1} />
+</AnnexEvidenceLead>
+
+La rampa de recuperación exhibe tres pendientes diferenciadas: una fase inicial muy lenta (0–5 % en las primeras 4,5 horas, hasta las 17:00), una fase de aceleración (5–50 % entre las 17:00 y las 22:00) coincidente con la consolidación de las islas y el acoplamiento de los primeros ciclos combinados, y una fase nocturna de normalización (50–99 % entre las 22:00 y las 07:05 del 29-A) donde la demanda natural descendía por el horario nocturno, facilitando la tarea del operador.
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="table" id="recuperacion-demanda-espana" level={2} />
+  <AnnexEvidence type="table" id="recuperacion-portugal" level={2} />
+</AnnexEvidenceGrid>
+
+La comparación entre las dos tablas revela que Portugal completó la restauración más rápidamente (12 horas frente a 16 de España), a pesar de carecer de enlace externo inicial y de sufrir múltiples fallos de inrush. La maniobra de Torrão como compensador síncrono — documentada en detalle en la [Dimensión Europea](/dimension-europea/francia-portugal) — fue el factor diferencial que desbloqueó la restauración portuguesa al aportar potencia de cortocircuito a la isla de Zêzere.
+
+<AnnexEvidence type="table" id="tiempos-restauracion-islas" level={2} />
+
+La tabla de tiempos por isla documenta los intentos fallidos: la zona Tajo-Centro y Levante requirieron reintentos; Asturias-Cantabria sufrió colapsos por *sympathetic inrush*. La zona que se recuperó más rápidamente fue Aragón-Cataluña, re-energizada desde Francia en menos de 5 horas — la ventaja de disponer de un nodo infinito como referencia.
+
+<AnnexEvidence type="figure" id="figuraB3-light" level={2} />
+
+El esquema de Torrão documenta la transición de modo hidroeléctrico convencional a compensación síncrona pura: la máquina consume potencia activa marginal y dedica toda su capacidad a inyectar o absorber potencia reactiva, multiplicando la rigidez nodal de la isla. Esta maniobra es un ejemplo paradigmático de por qué la masa rotatoria sigue siendo insustituible para la restauración.
+
   </AnnexSection>
+  <AnnexSection id="coordinacion-eas" eyebrow="Sección 3" title="Coordinación institucional: del cero al Normal">
 
-  <AnnexSection id="estados-eas" eyebrow="Sección 3" title="Coordinación internacional y estados EAS">
-    La tabla de transiciones del EAS cuantifica el desfase entre la declaración oficial de estado y la situación física real: la red ya estaba en colapso cuando el EAS aún declaraba "Normal".
-    <AnnexEvidence type="table" id="eas-state-changes" level={2} />
+La secuencia de cambios de estado en el ENTSO-E Awareness System (EAS) traza la perspectiva institucional de la crisis — desde la notificación del colapso hasta la vuelta a la normalidad 48 horas después. La lectura de esta tabla revela tanto la eficacia del protocolo de coordinación post-evento como la limitación del sistema para anticipar la crisis.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Cambios de estado en el EAS europeo"
+  summary="REE y REN: Normal → Blackout (12:40 CEST). Swissgrid y Amprion: Normal → Emergency (12:49). RTE: Normal → Emergency (12:50). La vuelta al estado Normal de REE no se produjo hasta las 12:40 del 30 de abril — 48 horas después."
+  insight="El EAS transitó de Normal a Blackout sin fases intermedias. La alerta llegó después del colapso, no antes."
+>
+  <AnnexEvidence type="table" id="eas-state-changes" level={1} />
+</AnnexEvidenceLead>
+
+Tres observaciones sobre esta cronología. Primera: la transición REE Normal→Blackout y la transición Swissgrid Normal→Emergency se produjeron con 9 minutos de diferencia (12:40 vs 12:49 CEST), confirmando la rapidez de la activación del protocolo SAM una vez conocido el evento. Segunda: RTE pasó de Emergency a Alert a las 14:35 — menos de 2 horas después del colapso —, reflejando que el sistema francés absorbió el transitorio sin daño estructural. Tercera: la vuelta completa al estado Normal requirió 48 horas (REE Normal a las 12:40 del 30-A), documentando que la crisis operativa se prolongó mucho más allá de la restitución física del suministro.
+
+La activación de procedimientos de contingencia (fallbacks) por parte de otros operadores europeos documenta el alcance continental del evento:
+
+<details>
+  <summary>▶ Fallbacks activados por TSOs europeos</summary>
+  <div style={{padding: '1rem 0'}}>
+
+La desconexión del proceso IN de España se prolongó desde las 10:34 UTC hasta las 22:00 UTC. Estonia, Letonia, Lituania, Finlandia y Suiza activaron fallbacks operativos. La ausencia de fallbacks preventivos en los minutos previos confirma que el EAS no anticipó la crisis — el sistema no escaló por niveles de emergencia.
+
+  <AnnexEvidence type="chart" id="chart-23" level={3} />
+  </div>
+</details>
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="La reposición del sistema eléctrico ibérico tras el 28-A evidenció que el éxito de la restauración depende de una estrategia coordinada que combine recursos de arranque autónomo locales con la fortaleza del sistema síncrono continental vecino. La referencia de tensión aportada por Francia acortó significativamente la restauración del eje de 400 kV."
-    doesNotDemonstrate="Este anexo demuestra la necesidad de revisar los planes de reposición para acomodar la menor contribución de las centrales convencionales y el papel crítico del almacenamiento distribuido en el futuro."
-    connection="La lectura se complementa con el Anexo III (secuencia de cascada previa) y el Anexo IV (flujos transfronterizos y re-energización norte)."
+demonstrates="La restauración dependió exclusivamente de la generación síncrona (hidráulica, CCGT, nuclear) y de las interconexiones con Francia y Marruecos. Los IBR no participaron en el Black Start. La tasa de fallos de arranque fue significativamente mayor de lo previsto. Portugal se restauró más rápidamente que España gracias a la maniobra de Torrão. El EAS no anticipó la crisis."
+doesNotDemonstrate="Este anexo no evalúa la adecuación de los planes de contingencia del P.O. 1.6 ni propone modificaciones a los protocolos de Black Start. Documenta la ejecución tal como ocurrió."
+connection="La lectura se complementa con el Anexo IV (las interconexiones que proporcionaron la referencia Top-Down), con el Anexo I (la evolución del mix durante la re-energización) y con la Dimensión Europea (la restauración portuguesa y la coordinación RTE-REE)."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III: secuencia de cascada y protecciones" },
-    { to: "/anexo-interconexiones-flujos", label: "Anexo IV: interconexiones y flujos transfronterizos" }
+{ to: "/anexo-interconexiones-flujos", label: "Anexo IV · Las interconexiones como vectores de restauración" },
+{ to: "/anexo-demanda-generacion-balance", label: "Anexo I · Evolución del mix durante la re-energización" },
+{ to: "/dimension-europea/francia-portugal", label: "← Dimensión Europea · Francia, Portugal y la maniobra de Torrão" },
+{ to: "/reaccion-reposicion", label: "← Capítulo 4 · Reacción y Reposición" },
   ]} />
 </AnnexLayout>

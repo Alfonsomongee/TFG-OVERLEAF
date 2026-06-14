@@ -6,18 +6,13 @@ title: "Análisis del incidente"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
-import ANSI59Cascade from "@site/src/components/ANSI59Cascade";
-import FrequencyChart from "@site/src/components/FrequencyChart";
 import BlackoutPropagationMap from "@site/src/components/BlackoutPropagationMap";
-import ForensicReveal from "@site/src/components/ForensicReveal";
-import TapLagSequence from "@site/src/components/TapLagSequence";
-import FaultTreeCollapseFigure from '@site/src/components/FaultTreeCollapseFigure/FaultTreeCollapseFigure';
 import FerrantiCapacitiveLineSimulator from "@site/src/components/FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator";
-import AnnexEvidence from "@site/src/components/annex/AnnexEvidence";
+import FaultTreeCollapseFigure from '@site/src/components/FaultTreeCollapseFigure/FaultTreeCollapseFigure';
 
 <GlitchTitle>Análisis del Incidente</GlitchTitle>
 
-El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culminación de una degradación progresiva y mensurable de la estabilidad estática y dinámica de la red. La reconstrucción forense de las cuatro fases del colapso —desde las oscilaciones de la mañana hasta el aislamiento definitivo de la península a las 12:33:29 CEST— permite identificar con precisión los mecanismos físicos que ningún automatismo de protección convencional pudo detener. La secuencia del colapso ilustra el vértice técnico del Trilema Energético: la vulnerabilidad inherente a un sistema dominado por inversores con margen síncrono residual mínimo.
+El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culminación de una degradación progresiva de la estabilidad estática y dinámica de la red. La reconstrucción forense de las cuatro fases del colapso — desde las oscilaciones de la mañana hasta el aislamiento definitivo de la península a las 12:33:29 CEST — permite identificar los mecanismos físicos que ningún automatismo de protección convencional pudo detener.
 
 <div style={{overflowX:'auto', marginBottom:'2rem'}}>
 
@@ -41,13 +36,9 @@ El cero de tensión del 28 de abril no fue un evento instantáneo: fue la culmin
 
 ## Fase 0: la red debilitada y la maniobra de mallado {#fase-0}
 
-<span id="t1"></span>
-La mañana del 28-A, el sistema operaba sobre una topología extremadamente débil. Con la demanda en mínimos, el 35,8 % de la red de 400 kV en la zona sur y el 34,3 % en la zona centro permanecían desconectadas, configurando un escenario de alta impedancia de transferencia. Sobre esta red, la dinámica del sistema se manifestó en forma de oscilaciones electromecánicas con dos modos diferenciados:
+La mañana del 28-A, el sistema operaba sobre una topología de alta impedancia. Con la demanda en mínimos, el 35,8 % de la red de 400 kV en la zona sur y el 34,3 % en la zona centro permanecían desconectadas. Sobre esta red, la dinámica del sistema se manifestó en forma de dos oscilaciones electromecánicas diferenciadas:
 
-- 12:03 CEST — Oscilación forzada de 0,6 Hz, amplitud 70 mHz, que tardó 4 minutos y 42 segundos en amortiguarse.
-- 12:19 CEST — Modo inter-área de 0,2 Hz Este-Centro-Oeste: la península ibérica comenzó a oscilar en contrafase respecto al continente, tensando los enlaces pirenaicos.
-
-Durante ambos transitorios, el ratio de amortiguamiento se desplomó a valores cercanos al 1 %, muy por debajo del umbral mínimo del 5 % exigido por la literatura técnica (Kundur, 1994). Este comportamiento no era inédito: episodios análogos los días 16, 22 y 24 de abril habían sido tratados como incidencias aisladas en lugar de síntomas de una degradación sistémica. La sucesión de picos en estos eventos evidenciaba el estrechamiento progresivo de los márgenes de control de potencia reactiva.
+A las 12:03 CEST se registró una oscilación forzada de 0,6 Hz, con amplitud de 70 mHz, que tardó 4 minutos y 42 segundos en amortiguarse. A las 12:19 CEST apareció un modo inter-área de 0,2 Hz (Este-Centro-Oeste): la península ibérica comenzó a oscilar en contrafase respecto al continente, tensando los enlaces pirenaicos. Durante ambos transitorios, el ratio de amortiguamiento cayó a valores cercanos al 1 %, muy por debajo del umbral mínimo del 5 % exigido por la literatura técnica (Kundur, 1994). El registro oscilográfico WAMS de estas oscilaciones, los modos identificados y la evidencia de los eventos precursores de los días 16, 22 y 24 de abril se documentan en el [Anexo II · Estabilidad dinámica, frecuencia y tensión](/anexo-estabilidad-dinamica-tension).
 
 <figure id="fig-c1">
   <img
@@ -55,164 +46,69 @@ Durante ambos transitorios, el ratio de amortiguamiento se desplomó a valores c
     alt="Oscilaciones y sobretensiones en Núñez de Balboa 400 kV durante los eventos precursores."
   />
   <figcaption>
-    <strong>Figura C1.</strong> Oscilaciones y sobretensiones en Núñez de Balboa 400 kV durante los eventos precursores. Fuente: IIT-ICAI.
+    <strong>Figura C1.</strong> Oscilaciones y sobretensiones en Núñez de Balboa 400 kV durante los eventos precursores del 22, 24 y 28 de abril. La sucesión de picos evidencia el estrechamiento progresivo de los márgenes de control de reactiva. Fuente: IIT-ICAI.
   </figcaption>
 </figure>
 
-<KeyFact id="mallado-ferranti">
+Para contener estas oscilaciones, REE ejecutó una maniobra de mallado: entre las 12:03 y las 12:30 CEST reconectó 11 líneas de 400 kV que permanecían abiertas por la baja demanda. La maniobra logró su objetivo inmediato — reducir la impedancia y frenar las oscilaciones — pero introdujo, según el informe IIT-ICAI, un efecto secundario relevante: por el efecto Ferranti, las líneas reconectadas en vacío inyectaron potencia reactiva capacitiva en una red que ya carecía de margen de absorción.
 
-Para contener estas oscilaciones, REE ejecutó una maniobra de mallado: entre las 12:03 y las 12:30 CEST reconectó 11 líneas de 400 kV que permanecían abiertas por la baja demanda. La maniobra logró su objetivo inmediato —reducir la impedancia y frenar el latigazo de las oscilaciones— pero introdujo, según el informe IIT-ICAI, un efecto secundario relevante: por el Efecto Ferranti, las líneas reconectadas en vacío inyectaron abruptamente potencia reactiva capacitiva en una red que ya carecía de margen de absorción. La cuantificación de esta inyección es uno de los ejes de la disputa técnica: el informe ICAI la cifra en hasta 2,4 GVAr; el análisis independiente del NREL adopta una estimación más conservadora de 1.050 MVAr. La divergencia entre ambas estimaciones (factor aproximado de 2,3×) refleja probablemente diferencias en el perímetro de cálculo: el informe IIT-ICAI incluye en su modelo la totalidad de las líneas de 400 kV reconectadas durante el mallado, mientras que el análisis del NREL trabaja sobre el subconjunto de circuitos con cobertura PMU verificable directamente; adicionalmente, los dos modelos difieren en la longitud de línea efectiva y en el nivel de carga asumido en el modelo π para el cómputo de la susceptancia transversal capacitiva. Esta discrepancia no es resoluble sin acceso a los datos de registro primario, pero no afecta a la conclusión de fondo: en ninguno de los dos escenarios la inyección capacitiva resultante podía ser absorbida por el margen residual disponible. Ambas cifras coinciden en señalar que la inyección superó la capacidad de absorción residual del sistema, estimada en ese momento en apenas 3,3 GVAr frente a los 5,8 GVAr habituales (véase el [Anexo IX · Metodología y modelos](/anexo-metodologia-modelos-datos-vivos), dedicado a metodología, modelos y simuladores). La relación física que gobierna esta inyección se modela mediante la ecuación \(Q_c = \omega C V^2\), evidenciando cómo una línea de alta tensión poco cargada y con compensación insuficiente eleva la tensión en el extremo receptor.
-
-</KeyFact>
+La cuantificación de esta inyección es uno de los ejes centrales de la disputa técnica: el informe ICAI la cifra en hasta 2,4 GVAr; el análisis independiente del NREL adopta una estimación de 1.050 MVAr. La divergencia (factor aproximado de 2,3×) refleja probablemente diferencias en el perímetro de cálculo — el informe IIT-ICAI incluye la totalidad de las líneas reconectadas, mientras que el NREL trabaja sobre el subconjunto con cobertura PMU verificable — y en los parámetros del modelo π de la línea. Esta discrepancia no es resoluble sin acceso a los datos de registro primario, pero no afecta a la conclusión compartida por ambos análisis: en ninguno de los dos escenarios la inyección capacitiva resultante podía ser absorbida por el margen residual disponible, estimado en ese momento en apenas 3,3 GVAr frente a los 5,8 GVAr habituales. La relación física que gobierna esta inyección se modela mediante la ecuación $Q_c = \omega C V^2$, y puede explorarse en el simulador siguiente.
 
 <figure id="fig-c2">
   <FerrantiCapacitiveLineSimulator />
   <figcaption>
-    <strong>Figura C2.</strong> Simulador conceptual del efecto Ferranti y la saturación capacitiva en líneas de transporte. Elaboración propia.
+    <strong>Figura C2.</strong> Simulador del efecto Ferranti y la saturación capacitiva en líneas de transporte poco cargadas. Elaboración propia.
   </figcaption>
 </figure>
 
-<span id="t3"></span>
-Las simulaciones periciales del IIT-ICAI estiman que, tras el mallado, la distancia al punto de colapso en el nudo de Carmona 400 kV se contrajo de un margen de 2.964 MW a 1.268 MW — una reducción del 57 % que acercó el sistema al umbral de saturación capacitiva. Esta dinámica pudo ser registrada mediante sistemas WAMS, los cuales permiten observar el transitorio continental con resolución de milisegundos.
+Las simulaciones periciales del IIT-ICAI estiman que, tras el mallado, la distancia al punto de colapso en el nudo de Carmona 400 kV se contrajo de un margen de 2.964 MW a 1.268 MW — una reducción del 57 % que acercó el sistema al umbral de saturación capacitiva. Las curvas Q-V detalladas y las métricas WAMS se conservan en el [Anexo II](/anexo-estabilidad-dinamica-tension) y en el [Anexo IX · Metodología y modelos](/anexo-metodologia-modelos-datos-vivos).
 
-<figure id="fig-c3">
-  <img
-    src="/figuras/wams_oscilaciones_carmona.png"
-    alt="Captura oscilográfica WAMS de la oscilación de 0,6 Hz en Carmona."
-  />
-  <figcaption>
-    <strong>Figura C3.</strong> Captura oscilográfica WAMS de la oscilación de 0,6 Hz en Carmona (12:03 CEST). Fuente: ENTSO-E / REE.
-  </figcaption>
-</figure>
+## Fase 1: disparo raíz (12:32:57 CEST) {#fase-1}
 
-<AnnexEvidence type="interactive" id="cecoel-simulator" level={1} />
+La naturaleza de la oscilación de 0,6 Hz de las 12:03 CEST es objeto de controversia técnica directa. REE la clasifica como una oscilación forzada originada en el lazo de control de una planta fotovoltaica en Badajoz. El informe ICAI argumenta que se trató de un modo natural inter-área exacerbado por un ratio de amortiguamiento del 1 %, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados andaluces que permanecían desacoplados. La divergencia sobre este punto se preserva en el [Capítulo 5](/analisis-informes) como una de las discrepancias no resolubles sin datos primarios.
 
-## Fase 1: pérdida de amortiguamiento y disparo raíz (12:32:57 CEST) {#fase-1}
+La evolución de la frecuencia durante estos minutos no debe interpretarse como la causa primaria del apagón, sino como la manifestación terminal de una inestabilidad que ya se desarrollaba en el plano de la tensión y la potencia reactiva. El origen físico se sitúa en la saturación capacitiva y el estrechamiento del margen Q-V. La gráfica interactiva de frecuencia queda disponible en el [Anexo II](/anexo-estabilidad-dinamica-tension).
 
-La naturaleza del primer transitorio —la oscilación de 0,6 Hz de las 12:03 CEST— es objeto de controversia técnica directa. REE la clasifica como una oscilación forzada originada en el lazo de control de una planta fotovoltaica en Badajoz. El informe ICAI argumenta, en cambio, que se trató de un modo natural inter-área exacerbado por un ratio de amortiguamiento sistémico del 1 %, cuyo origen vincula a la ausencia de Estabilizadores del Sistema de Potencia (PSS) en los ciclos combinados andaluces que permanecían apagados.
-
-<figure id="fig-c4">
-  <FrequencyChart isGallery={true} />
-  <figcaption>
-    <strong>Figura C4.</strong> Evolución de la frecuencia durante la fase terminal del colapso. Datos: ENTSO-E / REE. Elaboración propia.
-  </figcaption>
-</figure>
-
-La evolución de la frecuencia no debe interpretarse como la causa primaria del apagón, sino como la manifestación terminal de una inestabilidad que ya se estaba desarrollando en el plano de la tensión y la potencia reactiva. La caída frecuencial aparece cuando la cascada de desconexiones ya ha destruido una fracción sustancial de la generación disponible. Por ello, la frecuencia ordena cronológicamente la fase final del evento, pero no agota su mecanismo causal: el origen físico se sitúa en la saturación capacitiva, el estrechamiento del margen Q-V y la pérdida progresiva de capacidad de absorción reactiva.
-
-La inestabilidad se intensificó a las 12:19 CEST con el modo de 0,2 Hz, confirmado por telemetría fasorial europea como el modo natural Este-Centro-Oeste del área síncrona: la reducida masa rotatoria ibérica oscilaba en contrafase respecto al centro de inercia europeo, materializando el efecto látigo descrito en el Capítulo 2.
-
-<span id="t5"></span>
-<KeyFact id="granada-disparo">
-
-El punto de no retorno se alcanzó a las 12:32:57 CEST. Un transformador de 400/220 kV en una subestación colectora de la provincia de Granada se desconectó por actuación de sus protecciones de sobretensión, al detectarse en el secundario de 220 kV un valor de aproximadamente *244 kV*, excediendo el umbral dieléctrico de seguridad. La magnitud del impacto no residió en los 355 MW de potencia activa perdidos —una cifra manejable para el sistema—, sino en la pérdida instantánea e irrecuperable de 165 MVAr de capacidad de absorción de potencia reactiva inductiva. En un sistema saturado de reactiva capacitiva y con márgenes Q-V reducidos, la desaparición de este sumidero provocó un escalón ascendente de tensión en los nudos circundantes: el detonante físico de la reacción en cadena (véase el [Anexo III · Protecciones y desconexiones](/anexo-cascada-protecciones-desconexiones)).
-
-</KeyFact>
+El punto de no retorno se alcanzó a las 12:32:57 CEST. Un transformador de 400/220 kV en una subestación colectora de la provincia de Granada se desconectó por actuación de sus protecciones de sobretensión, al detectarse en el secundario de 220 kV un valor de aproximadamente 244 kV, superior al umbral dieléctrico de seguridad. La magnitud del impacto no residió en los 355 MW de potencia activa perdidos — una cifra manejable para el sistema —, sino en la pérdida instantánea de 165 MVAr de capacidad de absorción de potencia reactiva inductiva. En un sistema saturado de reactiva capacitiva y con márgenes Q-V reducidos, la desaparición de este sumidero provocó un escalón ascendente de tensión en los nudos circundantes: el detonante físico de la reacción en cadena. La documentación detallada de este disparo se conserva en el [Anexo III · Protecciones y desconexiones](/anexo-cascada-protecciones-desconexiones).
 
 ## Fase 2: el fenómeno Tap-Lag y el desacoplamiento de voltajes (12:32:57–12:33:18 CEST) {#fase-2-taplag}
 
-Los 21 segundos posteriores al disparo raíz son el núcleo técnico del debate forense. 
+Los 21 segundos posteriores al disparo raíz constituyen el núcleo técnico del debate forense.
 
-<span id="t4"></span>
-Tras la desconexión de Granada, la tendencia creciente de la tensión en la red de transporte reveló una divergencia entre el comportamiento de las infraestructuras de 400 kV y las redes colectoras subyacentes: el fenómeno del Tap-Lag.
+Tras la desconexión de Granada, la tendencia creciente de la tensión en la red de transporte reveló una divergencia entre el comportamiento de las infraestructuras de 400 kV y las redes colectoras subyacentes: el fenómeno del Tap-Lag. Durante la fase previa, las fluctuaciones y caídas de tensión originadas por las oscilaciones habían llevado a los transformadores 400/220 kV y 400/132 kV a ajustar sus OLTC (cambiadores de tomas bajo carga) subiendo tomas para elevar el voltaje en los secundarios. Al irrumpir la sobretensión en la red de 400 kV, estos transformadores quedaron atrapados en su propia inercia mecánica: los mecanismos de los OLTC están intencionadamente ralentizados mediante retardos temporales para evitar oscilaciones mecánicas ante perturbaciones efímeras. Frente a un transitorio eléctrico ultrarrápido, los cambiadores no pudieron rebajar a tiempo la relación de transformación.
 
-Durante la Fase 1, las fluctuaciones y caídas de tensión originadas por las oscilaciones de frecuencia habían llevado a los transformadores 400/220 kV y 400/132 kV a ajustar sus OLTC subiendo tomas para elevar el voltaje en los secundarios. Al irrumpir la sobretensión en la red de 400 kV, estos transformadores quedaron atrapados en su propia inercia mecánica: los mecanismos de motor y engranaje de los OLTC están intencionadamente ralentizados mediante retardos temporales para evitar oscilaciones mecánicas ante perturbaciones efímeras. Frente a un transitorio eléctrico ultrarrápido, los cambiadores resultaron excesivamente lentos y no pudieron rebajar a tiempo la relación de transformación.
+El Tap-Lag convierte una sobretensión parcialmente observable en una amenaza sistémica invisible. El SCADA de REE monitorizaba el primario de 400 kV, donde la tensión era alta pero teóricamente por debajo del límite excepcional normativo de 435 kV (P.O. 1.1). Sin embargo, en las redes de 220 kV y 132 kV, aguas abajo del transformador, el voltaje escaló por encima de 1,10 p.u. — umbrales invisibles para el despacho nacional. Esta divergencia explica por qué las protecciones de las plantas pudieron actuar correctamente desde su punto de conexión y, al mismo tiempo, parecer prematuras desde la perspectiva del operador. El fenómeno no fue un detalle local: fue el puente físico entre el mallado previo y la cascada de disparos ANSI 59. La evidencia visual ampliada del desacoplamiento Tap-Lag se conserva en el [Anexo III](/anexo-cascada-protecciones-desconexiones).
 
-La evidencia visual ampliada del desacoplamiento Tap-Lag y de la propagación de sobretensiones se conserva en el Anexo III.
+Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus protecciones de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como «disparos inadecuados» argumentando que su red de 400 kV no registraba valores de desconexión; el análisis ICAI sostiene que las plantas actuaron correctamente ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva: cada desconexión de un inversor reducía la capacidad de absorción de reactiva, elevando la tensión en los nudos vecinos y forzando nuevas desconexiones. Las desconexiones en cadena verificadas — Granada −355 MW, Badajoz −730 MW, Sevilla −550 MW — sumaron −1.635 MW en menos de 30 segundos (Comité de Análisis del Gobierno, p. 38). El simulador interactivo de la cascada ANSI 59 y la curva P-V de estabilidad de tensión se conservan en el [Anexo III](/anexo-cascada-protecciones-desconexiones) y en el [Anexo IX](/anexo-metodologia-modelos-datos-vivos).
 
-<figure id="fig-c5">
-  <TapLagSequence />
-  <figcaption>
-    <strong>Figura C5.</strong> Secuencia Tap-Lag y desacoplamiento de tensiones entre red de transporte y red colectora. Elaboración propia.
-  </figcaption>
-</figure>
+## Fase 3: el camino hacia el cero de tensión (12:33:18–12:33:29 CEST) {#fase-3}
 
-El Tap-Lag convierte una sobretensión parcialmente observable en una amenaza sistémica invisible. La red de transporte podía parecer todavía dentro de límites admisibles mientras las redes colectoras aguas abajo ya superaban umbrales incompatibles con la permanencia conectada de los inversores. Esta divergencia explica por qué las protecciones de las plantas pudieron actuar correctamente desde su punto de conexión y, al mismo tiempo, parecer prematuras desde la perspectiva agregada del operador. El fenómeno no fue un detalle local: fue el puente físico entre el mallado previo y la cascada de disparos ANSI 59.
+En 11 segundos, la red peninsular colapsó en un proceso de retroalimentación positiva dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR, la red perdía su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de 443 kV en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
 
-<ForensicReveal
-  l1="La tensión en las redes colectoras de los parques solares subió sin que REE lo detectara."
-  l2="El fenómeno Tap-Lag ocurre porque los transformadores con cambiador de tomas bajo carga (OLTC) tienen inercia mecánica. Mientras el OLTC intentaba compensar la tensión en el secundario (red colectora 220 kV), el SCADA de REE solo monitorizaba el primario (400 kV), que parecía normal. La sobretensión crecía invisible."
-  l3="El secundario colector alcanzó ≈242 kV (>1,10 p.u.) mientras el primario de 400 kV permanecía dentro de límites. Esto hizo invisible la sobretensión para el sistema SCADA de REE hasta el disparo del transformador. (ENTSO-E Factual, p.28; IIT-ICAI / Compass Lexecon)"
-  source="ENTSO-E Factual Report (2025), p.28"
-/>
-
-Esta incapacidad mecánica creó un «espejismo» en la sala de control de REE. El SCADA del operador monitorizaba el primario de 400 kV, observando tensiones altas pero teóricamente por debajo del límite excepcional normativo de 435 kV (P.O. 1.1). Sin embargo, aguas abajo, en las redes de 220 kV y 132 kV, el voltaje escaló por encima de 1,2 p.u. —umbrales invisibles para el despacho nacional por la inobservabilidad de la red subyacente.
-
-<ForensicReveal
-  l1="Cuando una planta solar se desconectó, las demás también cayeron en cadena."
-  l2="Al disparar el primer transformador (Granada, -165 MVAr de absorción), la tensión subió en los nudos vecinos. Esos nudos también superaron el umbral ANSI 59 de sus inversores, que dispararon a su vez. Cada disparo reducía la capacidad de absorción reactiva, elevando más la tensión: bucle de retroalimentación positiva."
-  l3="Desconexiones en cadena verificadas: Granada −355 MW, Badajoz −730 MW, Sevilla −550 MW = −1.635 MW totales en menos de 30 segundos. (Comité de Análisis del Gobierno, p.38)"
-  source="Comité de Análisis del Gobierno (2025), p.38"
-/>
-
-Ante voltajes inasumibles para su electrónica de potencia, los inversores de las plantas solares y eólicas accionaron sus sistemas internos de protección de sobretensión (función 59 ANSI). Aquí se sitúa una de las mayores discrepancias forenses del incidente: REE tipificó estas pérdidas como «disparos inadecuados» argumentando que en su red de 400 kV no existían valores de desconexión; el análisis ICAI sostiene que las plantas actuaron correctamente ante la sobretensión real experimentada en sus puntos de conexión, aguas abajo del transformador con OLTC. El Tap-Lag configuró así las condiciones para un bucle de retroalimentación positiva de desconexiones en cascada.
-
-El simulador interactivo de la curva P-V para el análisis de la estabilidad de tensión se encuentra registrado y disponible en el [Anexo IX · Metodología y modelos](/anexo-metodologia-modelos-datos-vivos).
-
-Una vez que la tensión supera el umbral de las protecciones ANSI 59, el sistema entra en un bucle de retroalimentación positiva. El siguiente simulador reproduce esa cascada.
-
-<figure id="fig-c6">
-  <ANSI59Cascade />
-  <figcaption>
-    <strong>Figura C6.</strong> Bucle de disparos ANSI 59 ante sobretensión en inversores de plantas fotovoltaicas y eólicas. Elaboración propia.
-  </figcaption>
-</figure>
-
-## Fase 3: el camino hacia el cero de tensión (12:33:18—12:33:29 CEST) {#fase-3}
-
-En 11 segundos, la red peninsular colapsó en un proceso de retroalimentación positiva dictado por las ecuaciones de flujo de cargas. Al desconectarse masivamente las plantas IBR para autoprotegerse, la red perdía instantáneamente su capacidad de absorber potencia reactiva. Simultáneamente, la caída de potencia activa reducía el flujo en las líneas de 400 kV, incrementando su inyección capacitiva por efecto Ferranti y empujando la tensión por encima de 443 kV en los nudos más estresados. Cada desconexión elevaba la tensión, forzando nuevas desconexiones.
-
-<figure id="fig-c7">
+<figure id="fig-c3">
   <BlackoutPropagationMap />
   <figcaption>
-    <strong>Figura C7.</strong> Propagación geográfica de la cascada de desconexiones IBR durante la Fase 3. Elaboración propia basada en datos ENTSO-E / Comité de Análisis.
+    <strong>Figura C3.</strong> Propagación geográfica de la cascada de desconexiones IBR durante la Fase 3. Elaboración propia basada en datos ENTSO-E / Comité de Análisis.
   </figcaption>
 </figure>
 
-<span id="t6"></span>
-Los golpes más severos de la cascada se concentraron inicialmente en Badajoz (a las 12:33:16 CEST, *t=19 s*) y, en el segundo inmediatamente posterior, en las subestaciones de Segovia, Sevilla y Huelva. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación (más del 50 % de la capacidad instantánea ibérica previa), dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda española completamente sin suministro y llevando al sistema más allá de cualquier posibilidad de recuperación. (Para la cronología exhaustiva segundo a segundo y los volúmenes de potencia de cada desconexión, véase el [Anexo III · Protecciones y desconexiones](/anexo-cascada-protecciones-desconexiones), donde se conserva la documentación detallada de protecciones, desconexiones y propagación de la cascada).
+Los golpes más severos de la cascada se concentraron inicialmente en Badajoz (12:33:16 CEST, *t*=19 s) y, en el segundo inmediatamente posterior, en Segovia, Sevilla y Huelva. En la ventana de los cinco segundos críticos (12:33:19–12:33:24 CEST), la reacción en cadena desconectó <CuestionAbierta metricKey="potencias_cascada.perdida_generacion_total_cascada">15.000 MW</CuestionAbierta> de generación — más del 50 % de la capacidad instantánea ibérica previa —, dejando a <CuestionAbierta metricKey="potencias_cascada.demanda_sin_suministro_espana">25,2 GW</CuestionAbierta> de demanda sin suministro. La cronología segundo a segundo y los volúmenes de cada desconexión se documentan en el [Anexo III](/anexo-cascada-protecciones-desconexiones).
 
-A medida que la cascada destruía la generación remanente, la frecuencia comenzó a desplomarse con una RoCoF extrema (con picos secundarios estimados de <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>), activando los esquemas de UFLS. Al cruzar el umbral de 49,5 Hz a las 12:33:20 CEST, se desconectaron automáticamente más de 2.000 MW de bombeo hidráulico, y al caer la red por debajo de <CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta>, se deslastraron los primeros escalones de demanda industrial.
+A medida que la cascada destruía la generación remanente, la frecuencia cayó con una RoCoF de hasta <CuestionAbierta metricKey="rocof.rocof_pico">1,5 Hz/s</CuestionAbierta>, activando los esquemas de deslastre de carga por subfrecuencia (UFLS). Al cruzar el umbral de 49,5 Hz a las 12:33:20 CEST se desconectaron automáticamente más de 2.000 MW de bombeo hidráulico; por debajo de <CuestionAbierta metricKey="cronologia_cascada.frecuencia_umbral_deslastre">49,0 Hz</CuestionAbierta> se deslastraron los primeros escalones de demanda industrial.
 
-<ForensicReveal
-  l1="El sistema intentó defenderse cortando consumo, pero eso empeoró el problema de tensión."
-  l2="El UFLS (Under Frequency Load Shedding) desconecta cargas industriales cuando la frecuencia cae por debajo de los umbrales. Muchas de esas cargas son inductivas (motores, bombeo) y absorben potencia reactiva. Al eliminarlas, el sistema perdió capacidad de absorción reactiva adicional, agravando la sobretensión que era la causa raíz."
-  l3="El bombeo hidráulico (≈3.000 MW activos) se deslastra a 49,5 Hz según P.O. 1.6. La demanda industrial desde 49,0 Hz. El esquema UFLS está diseñado para proteger contra subfrecuencia, no contra sobretensión — esta es la paradoja del 28-A. (P.O. 1.6 / datos28A.json)"
-  source="P.O. 1.6 vigente abril 2025 / ENTSO-E Factual"
-/>
+La actuación del UFLS reveló lo que puede denominarse la **paradoja del UFLS**: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros — motores y cargas industriales — produjo un repunte adicional de sobretensiones, reforzando el colapso que el propio UFLS pretendía frenar. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión. El simulador didáctico de esta paradoja queda disponible en el [Anexo III](/anexo-cascada-protecciones-desconexiones).
 
-<KeyFact id="paradoja-ufls">
+En los últimos instantes, el déficit masivo de generación interna provocó una inversión de los flujos pirenaicos: las líneas AC alcanzaron un pico transitorio de importación de aproximadamente 3.800 MW de potencia activa desde Francia (ENTSO-E Factual, pp. 108-109). Simultáneamente, el enlace HVDC INELFE-1 — fijado en PMODE1 desde las 12:08 CEST — continuaba extrayendo del orden de 1 GW del sistema ibérico. Esta operación asimétrica contrajo la capacidad de soporte neto desde el continente. El desglose por circuito puede auditarse en el [Anexo IV · Interconexiones y flujos](/anexo-interconexiones-flujos).
 
-La actuación del UFLS reveló la denominada paradoja del UFLS: al cortar consumo activo para estabilizar la frecuencia, el esquema eliminó simultáneamente el consumo de potencia reactiva inductiva de esa misma demanda. En una red saturada de reactiva capacitiva, suprimir los últimos sumideros —motores y cargas industriales— produjo un nuevo repunte de sobretensiones, reforzando el colapso que el propio UFLS pretendía frenar. Las lógicas de defensa diseñadas para déficits de frecuencia resultaron contraproducentes ante un colapso impulsado primariamente por inestabilidad de tensión.
+A las 12:33:21 CEST, las protecciones de pérdida de sincronismo abrieron los enlaces AC para evitar el contagio al sistema europeo continental, aislando la península ibérica. El cero de tensión definitivo se confirmó a las 12:33:29.741 CEST con el disparo del último grupo generador.
 
-</KeyFact>
-
-El simulador didáctico de la paradoja UFLS queda disponible en el [Anexo III · Protecciones y desconexiones](/anexo-cascada-protecciones-desconexiones).
-
-<span id="t2"></span>
-<ForensicReveal
-  l1="El cable de alta tensión con Francia no ayudó cuando más se necesitaba."
-  l2="El enlace HVDC INELFE-1 había cambiado de PMODE3 (respuesta dinámica) a PMODE1 (potencia constante) a aproximadamente las 12:08 CEST. En PMODE1, el enlace mantiene la consigna de potencia fija sin responder a cambios de frecuencia ni tensión en la red ibérica."
-  l3="El HVDC mantuvo 1.000 MW de exportación ES→FR durante toda la cascada hasta las 12:33:24 CEST, siendo el último elemento en desconectarse. No invirtió el flujo. Los 3.800 MW de importación documentados corresponden a las líneas AC transpirenaicas. (ENTSO-E Factual, p.12; pp.108-109)"
-  source="ENTSO-E Factual Report (2025), p.12 y pp.108-109"
-/>
-
-En los últimos instantes, el déficit masivo de generación interna provocó una inversión violenta de los flujos pirenaicos: las líneas AC alcanzaron un pico transitorio de importación de aproximadamente 3.800 MW de potencia activa (ENTSO-E Factual, pp.108-109) desde Francia. Simultáneamente, el enlace HVDC INELFE-1 —fijado en PMODE1 desde las 12:08 CEST— continuaba extrayendo activa del orden de 1 GW del sistema ibérico (el desglose preciso por circuito y capacidad puede auditarse en el [Anexo IV · Interconexiones y flujos](/anexo-interconexiones-flujos)). Esta operación asimétrica contrajo drásticamente la capacidad de soporte neto desde el continente.
-
-La evidencia gráfica ampliada de los flujos transfronterizos se conserva en el Anexo IV.
-
-<span id="t7"></span>
-A las 12:33:21 CEST, las protecciones de pérdida de sincronismo abrieron los enlaces AC para evitar el contagio al sistema europeo continental, aislando la península ibérica. 
-
-<span id="t8"></span>
-El cero de tensión definitivo se confirmó a las 12:33:29.741 CEST con el disparo del último grupo generador — cerrando el incidente sistémico más severo documentado en la historia del sistema eléctrico europeo continental.
-
-<figure id="fig-c8">
+<figure id="fig-c4">
   <FaultTreeCollapseFigure />
   <figcaption>
-    <strong>Figura C8.</strong> Árbol causal del colapso: secuencia técnica desde el mallado hasta el cero de tensión.
+    <strong>Figura C4.</strong> Árbol causal del colapso: secuencia técnica desde el mallado hasta el cero de tensión. Elaboración propia.
   </figcaption>
 </figure>
 
-La cascada tomó 32 segundos; la reposición tomó 18,5 horas. El capítulo 4 reconstruye esa segunda fase.
+---
 
+La cascada tomó 32 segundos; la reposición tomó 18,5 horas. El [Capítulo 4](/reaccion-reposicion) reconstruye esa segunda fase.

@@ -1,7 +1,7 @@
 ---
 id: anexo-estabilidad-dinamica-tension
 title: "Anexo II · Estabilidad dinámica: tensión, frecuencia e inercia"
-sidebar_label: "Anexo II · Estabilidad, frecuencia y tensión"
+sidebar_label: "Anexo II · Estabilidad dinámica"
 hide_title: true
 ---
 
@@ -22,122 +22,205 @@ import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
   wide
   kicker="Anexo II"
   title="Estabilidad dinámica: tensión, frecuencia e inercia"
-  description="Este anexo analiza las condiciones de estabilidad dinámica, frecuencia y tensión del sistema eléctrico peninsular antes y durante el incidente del 28 de abril de 2025. Su objetivo es demostrar que el colapso fue un evento dirigido por sobretensión y pérdida de control de reactiva, no un fenómeno clásico de subfrecuencia por pérdida de generación."
+  description="Registros PMU, oscilogramas y balances de potencia reactiva que demuestran cómo la inestabilidad de tensión precedió y causó la caída de frecuencia del 28-A."
   meta={[
-    { label: 'Eje técnico', value: 'Estabilidad y Tensión' },
-    { label: 'Cobertura', value: 'Comportamiento electromecánico' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Estabilidad de tensión y frecuencia' },
+{ label: 'Cobertura', value: 'Red de transporte 400 kV / 220 kV' },
+{ label: 'Capítulos asociados', value: 'Cap. 3 (Incidente) · Cap. 5 (Informes) · Cap. 7 (Resiliencia)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Por qué la pérdida de estabilidad de tensión — y no la caída de frecuencia — fue la causa raíz del colapso del 28-A?
+¿Por qué la pérdida de estabilidad de tensión — y no la caída de frecuencia — fue la causa raíz del colapso del 28-A?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    Los registros de las PMU instaladas en la subestación de Carmona (400 kV) documentan que la tensión comenzó a divergir minutos antes de que la frecuencia abandonase su banda normal. Las sobretensiones en el sur peninsular superaron los límites de protección de los inversores IBR, provocando desconexiones masivas que, a su vez, causaron la caída de frecuencia. La inercia reducida del sistema — consecuencia del mix documentado en el Anexo I — limitaba la capacidad de la red para absorber perturbaciones de frecuencia una vez iniciada la cascada. La distinción causa-consecuencia entre tensión y frecuencia es central para las recomendaciones regulatorias del TFG.
+Los registros PMU documentan que la tensión comenzó a divergir minutos antes de que la frecuencia abandonase su banda normal. Las sobretensiones en el sur peninsular superaron los límites de protección de los inversores IBR, provocando desconexiones masivas que, a su vez, causaron la caída de frecuencia. La inercia reducida limitaba la capacidad de la red para absorber perturbaciones una vez iniciada la cascada, pero no fue la causa raíz. La distinción causa-consecuencia entre tensión y frecuencia es central para las recomendaciones regulatorias.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo documenta las oscilaciones de tensión y los registros PMU que demuestran cómo la inestabilidad de tensión precedió y causó la caída de frecuencia del 28-A.
+Este anexo documenta las oscilaciones de tensión y los registros PMU que demuestran cómo la inestabilidad de tensión precedió y causó la caída de frecuencia. Sin esta evidencia, la atribución causal del [Capítulo 3](/analisis-incidente) quedaría sin soporte oscilográfico.
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    Este apartado consolida los registros técnicos y visualizaciones dinámicas que permiten analizar las oscilaciones de frecuencia y la estabilidad del sistema eléctrico.
+Fuentes primarias: registros WAMS de las PMU en Carmona 400 kV (ENTSO-E / REE), oscilogramas IIT-ICAI / Compass Lexecon, Comité de Análisis del Gobierno (pp. 41-58, 89-96), REE (pp. 3-14), análisis del NREL (arXiv 2511.17433). Las series oscilográficas tienen resolución de milisegundos; las tablas de frecuencia, resolución de centenas de milisegundos.
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en cuatro secciones: inestabilidad de tensión y precursores, dinámica de frecuencia e inercia, balance de potencia reactiva, y herramientas interactivas de análisis. Su lectura complementa el Anexo I (condiciones de mix) y precede al Anexo III (actuación de protecciones).</em>
+  Este anexo se organiza en tres secciones. La primera establece la evidencia central: la divergencia temporal entre tensión y frecuencia durante los 32 segundos del colapso. La segunda documenta los precursores de los días 22, 24 y 28 de abril, mostrando cómo los márgenes de control de reactiva se fueron estrechando de forma medible. La tercera reconstruye el balance de potencia reactiva que determinó la saturación capacitiva, la métrica que las herramientas de supervisión convencionales no monitorizaban.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Inestabilidad de tensión', target: 'inestabilidad-tension' },
-      { label: 'Frecuencia e inercia',     target: 'frecuencia-inercia' },
-      { label: 'Balance de reactiva',       target: 'balance-reactiva' },
-      { label: 'Herramientas de análisis',  target: 'herramientas-estabilidad' },
-    ]}
+items={[
+  { label: 'La divergencia tensión-frecuencia', target: 'divergencia' },
+  { label: 'Los precursores',                   target: 'precursores' },
+  { label: 'El balance de reactiva',            target: 'balance-reactiva' },
+]}
   />
+  <AnnexSection id="divergencia" eyebrow="Sección 1" title="La divergencia tensión-frecuencia: la evidencia central">
 
-  <AnnexSection id="inestabilidad-tension" eyebrow="Sección 1" title="Inestabilidad de tensión y precursores">
-    Las curvas Q-V de estabilidad de tensión en Carmona muestran que las maniobras de mallado desplazaron el punto de operación hacia la zona de inestabilidad.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Secuencia de colapso de tensión"
-      summary="El registro de tensión y frecuencia en los segundos críticos demuestra la secuencia temporal del colapso: la tensión diverge antes que la frecuencia."
-      insight="Prioridad temporal de la perturbación de tensión · Clasificación como colapso de tensión."
-    >
-      <AnnexEvidence type="figure" id="tension_frecuencia_colapso" level={1} />
-    </AnnexEvidenceLead>
-    Las curvas Q-V de Carmona muestran que las maniobras de mallado contrajeron el margen al colapso un 57%. El 22 de abril — seis días antes — se registró un precursor de sobretensión en la misma zona: las plantas que dispararon el 28-A ya habían sufrido disparos idénticos.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="fluctuaciones_tension_previas" level={1} />
-      <AnnexEvidence type="figure" id="precursor_overvoltage_22april" level={1} />
-    </AnnexEvidenceGrid>
-    La existencia de un precursor descarta la hipótesis de evento aislado e implica una condición de vulnerabilidad sostenida.
-    Las registros de Núñez de Balboa (400 kV) documentan la sucesión de picos de sobretensión del 22, 24 y 28 de abril — el estrechamiento progresivo de los márgenes de reactiva.
-    <AnnexEvidence type="figure" id="nunez_balboa_precursores" level={2} />
-    Las tensiones en los nudos críticos de transporte refutan la narrativa de sobretensión generalizada: en la red de 400 kV se mantuvieron mayormente dentro del rango 375–435 kV; el problema estaba en el lado 220 kV y la red colectora.
-    <AnnexEvidence type="table" id="tensiones-nudos-criticos" level={2} />
-    Las maniobras de compensación de reactiva ejecutadas por REE en las horas previas documentan los intentos de contener la subida de tensión antes de que se descontrolase.
-    <AnnexEvidence type="table" id="re-voltage-manoeuvres" level={2} />
-    El registro PMU de Carmona con resolución de milisegundos captura la transición Normal → Blackout: la tensión supera 1,10 p.u. antes de que la frecuencia abandone la banda de 49,8–50,2 Hz.
-    <AnnexEvidence type="figure" id="frequency_voltage_carmona" level={1} />
-    La prioridad temporal de la tensión sobre la frecuencia es la evidencia más directa de que el colapso fue capacitivo, no inercial.
+El argumento más importante de este anexo puede formularse en una frase: la tensión divergió antes que la frecuencia. Si el colapso hubiera sido un evento clásico de subfrecuencia por pérdida de generación, la frecuencia habría caído primero y la tensión después. Los registros muestran lo contrario.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Evolución acoplada de tensión y frecuencia durante la Fase 3"
+  summary="La tensión supera 1,10 p.u. en el sur peninsular antes de que la frecuencia abandone la banda de 49,8 Hz. La caída de frecuencia es consecuencia de las desconexiones IBR provocadas por la sobretensión."
+  insight="El colapso fue primariamente capacitivo (plano Q-V), no inercial (plano P-f)."
+>
+  <AnnexEvidence type="figure" id="tension_frecuencia_colapso" level={1} />
+</AnnexEvidenceLead>
+
+La lectura de esta gráfica es la clave del análisis forense. En el panel superior, la tensión en los nudos del sur peninsular comienza a escalar por encima de 1,05 p.u. desde las 12:32:57 CEST (disparo raíz de Granada). La superación del umbral de 1,10 p.u. activa las protecciones ANSI 59 de los inversores, que se desconectan masivamente. Solo entonces — como consecuencia de esta pérdida de generación — la frecuencia en el panel inferior comienza a caer. La secuencia temporal es inequívoca: la sobretensión causa las desconexiones; las desconexiones causan el déficit de potencia activa; el déficit causa la caída de frecuencia. El UFLS se activa cuando la frecuencia cruza 49,5 Hz, pero a esas alturas la cascada de tensión ya es irreversible.
+
+El registro PMU de la subestación de Carmona (400 kV) permite observar la transición con resolución de milisegundos:
+
+<AnnexEvidence type="figure" id="frequency_voltage_carmona" level={2} />
+
+La cronología segundo a segundo de la frecuencia y la RoCoF documenta la velocidad de la degradación una vez iniciada la cascada. La RoCoF alcanzó −1,5 Hz/s en los últimos instantes — un valor que excede el umbral estándar de protección de máquinas síncronas y que confirma que, aunque la inercia no fue la causa raíz, su bajo nivel aceleró la fase terminal del colapso.
+
+<AnnexEvidence type="table" id="evolucion-frecuencia-rocof" level={2} />
+
+La tabla revela un dato forense clave: entre el disparo raíz (12:32:57, f = 50,00 Hz) y el momento en que la frecuencia cruza 49,5 Hz (12:33:20), transcurren 23 segundos. En esos 23 segundos, la frecuencia apenas se mueve (−0,50 Hz) mientras la tensión ya ha desconectado más de 1.900 MW de generación IBR. La frecuencia no anticipó el colapso; lo reflejó con retardo.
+
+<details>
+  <summary>▶ Inercia del sistema: confirmación de que no fue causa raíz</summary>
+  <div style={{padding: '1rem 0'}}>
+
+ENTSO-E certifica que la inercia del sistema (H = 2,21–2,71 s) se encontraba por encima del umbral mínimo recomendado de 2,0 s. Su conclusión es explícita: «mayor inercia no habría evitado la pérdida de sincronismo». La inercia baja aceleró la fase terminal pero no inició la cascada.
+
+  <AnnexEvidence type="table" id="inercia-sistema-htot" level={3} />
+  </div>
+</details>
+
+:::tip Cómo explorar los interactivos de frecuencia y tensión
+**Sismógrafo del colapso:** el cursor temporal permite recorrer los registros PMU de Carmona con resolución de milisegundos. Observe cómo la curva de tensión (roja) se separa de la de frecuencia (azul) a partir de las 12:32:57.
+
+**Gráfica interactiva de frecuencia:** permite ampliar la ventana 12:33:16–12:33:24 CEST para observar cómo la RoCoF se acelera tras la apertura de la interconexión con Francia (12:33:21).
+:::
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="sismograph" level={2} />
+  <AnnexEvidence type="interactive" id="frequency" level={2} />
+</AnnexEvidenceGrid>
+
   </AnnexSection>
+  <AnnexSection id="precursores" eyebrow="Sección 2" title="Los precursores: el estrechamiento de márgenes">
 
-  <AnnexSection id="frecuencia-inercia" eyebrow="Sección 2" title="Dinámica de frecuencia e inercia">
-    La tasa de cambio de frecuencia (RoCoF) final superó 1,5 Hz/s — por encima del umbral estándar de protección de máquinas síncronas.
-    <AnnexEvidence type="table" id="evolucion-frecuencia-rocof" level={2} />
-    La inercia total del sistema era baja, pero los informes de ENTSO-E y REE coinciden en que no fue la causa raíz: el problema fue de control de tensión, no de RoCoF inercial.
-    <AnnexEvidence type="table" id="inercia-sistema-htot" level={2} />
-    La inercia baja aceleró la caída una vez iniciada la cascada, pero no la provocó.
-    Se detectó una oscilación forzada de 0,63 Hz, posiblemente originada en una planta FV de Badajoz. Las medidas de mitigación activadas por REE — paradójicamente — degradaron el control de tensión.
-    <AnnexEvidence type="table" id="modos-oscilatorios" level={2} />
-    El registro WAMS de Carmona documenta la oscilación electromecánica de 0,6 Hz captada a las 12:03 CEST con resolución de milisegundos.
-    <AnnexEvidence type="figure" id="wams_oscilaciones_carmona" level={3} />
-    La gráfica interactiva de frecuencia permite observar el RoCoF instantáneo en cada nudo de la red durante los segundos del colapso.
-    <span id="grafico-frequency"></span>
-    <AnnexEvidence type="interactive" id="frequency" level={2} />
-    El sismógrafo del colapso comprime los segundos críticos en una visualización donde la divergencia de tensión precede visiblemente a la caída de frecuencia.
-    <span id="grafico-sismograph"></span>
-    <AnnexEvidence type="interactive" id="sismograph" level={1} />
-    A las 00:00 del 28-A, el sistema disponía de 39.077 MW operativos frente a 25.000 MW de demanda. Los ciclos combinados tenían 16.660 MW disponibles pero solo generaban 2.775 MW a mediodía. La brecha es la huella del orden de mérito.
-    <AnnexEvidence type="chart" id="chart-4" level={2} />
-    Tras el colapso, las únicas unidades con generación significativa fueron las nucleares (Vandellós: 1.044 MW, Ascó 2: 1.004 MW) y los ciclos combinados supervivientes. Ninguna instalación solar o eólica aparece en el ranking.
-    <AnnexEvidence type="chart" id="chart-6" level={2} />
+El 28-A no fue un evento aislado. Los registros de los días 22, 24 y 28 de abril documentan un estrechamiento progresivo de los márgenes de control de potencia reactiva, con episodios de sobretensión de magnitud creciente. El hecho de que varias de las instalaciones que dispararon el 28-A ya hubiesen sufrido disparos idénticos en el evento del 22 de abril es interpretado por el informe ICAI como evidencia de que la vulnerabilidad era estructural, no accidental.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Precursores en Núñez de Balboa (400 kV): 22, 24 y 28 de abril"
+  summary="Los picos de sobretensión en los tres eventos muestran una tendencia ascendente que evidencia el estrechamiento progresivo de los márgenes de control de reactiva."
+  insight="Las instalaciones que dispararon el 28-A ya habían disparado el 22-A."
+>
+  <AnnexEvidence type="figure" id="nunez_balboa_precursores" level={1} />
+</AnnexEvidenceLead>
+
+La superposición de los tres episodios en la misma subestación revela un patrón: la amplitud de los picos crece de un evento al siguiente, y los tiempos de recuperación se alargan. El sistema no estaba respondiendo a perturbaciones aleatorias sino operando cada vez más cerca del límite de saturación capacitiva. El evento del 22 de abril — un pico superior a 430 kV que desconectó múltiples plantas fotovoltaicas — fue un ensayo general del colapso del 28-A, con la diferencia de que el margen residual de absorción de reactiva aún era suficiente para contener la cascada.
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="figure" id="precursor_overvoltage_22april" level={2} />
+  <AnnexEvidence type="figure" id="wams_oscilaciones_carmona" level={2} />
+</AnnexEvidenceGrid>
+
+A la izquierda, el oscilograma del 22 de abril muestra los primeros disparos por sobretensión. A la derecha, el registro WAMS de la oscilación de 0,6 Hz en Carmona documenta la degradación del amortiguamiento que desencadenó las maniobras de mallado. La tabla siguiente identifica los modos oscilatorios detectados antes del colapso y su evolución temporal:
+
+<AnnexEvidence type="table" id="modos-oscilatorios" level={2} />
+
+El dato más relevante es la evolución del modo de 0,21 Hz entre las 12:00 y las 12:19 CEST: su amortiguamiento cayó del 20 % (normal) al 5 % (crítico), y su amplitud se triplicó (de 7 kV a 23 kV pk-pk en Almaraz). El modo de 0,63 Hz, potencialmente forzado por una planta fotovoltaica de Badajoz, presentó un amortiguamiento de apenas el 1 %. La controversia sobre el origen de esta oscilación — forzada vs. modo natural — es una de las discrepancias no resoluble documentadas en el [Capítulo 5](/analisis-informes).
+
+<details>
+  <summary>▶ Maniobras de control de tensión ejecutadas por REE (09:00–12:32 CEST)</summary>
+  <div style={{padding: '1rem 0'}}>
+
+Entre las 09:00 y las 12:30 CEST, REE ejecutó un volumen inusual de maniobras de control de tensión: desconexión y reconexión de 8 reactores shunt (saldo neto: −400 MVAr de capacidad de absorción) y reconexión de 19 líneas de 400 kV que inyectaron aproximadamente 2.000 MVAr de reactiva capacitiva por efecto Ferranti. El margen reactivo total se contrajo de 5,8 GVAr (media del primer semestre de 2025) a 3,3 GVAr — una reducción del 43 %.
+
+  <AnnexEvidence type="table" id="maniobras-compensacion-reactiva" level={3} />
+  <AnnexEvidence type="table" id="re-voltage-manoeuvres" level={3} />
+  </div>
+</details>
+
   </AnnexSection>
+  <AnnexSection id="balance-reactiva" eyebrow="Sección 3" title="El balance de reactiva: la métrica invisible">
 
-  <AnnexSection id="balance-reactiva" eyebrow="Sección 3" title="Balance de potencia reactiva">
-    El déficit neto de −0,6 GVAr a las 12:30 CEST en el sur peninsular documenta la saturación del soporte de reactiva. Los mapas térmicos de REE muestran la progresión geográfica de la sobretensión.
-    <AnnexEvidence type="figure" id="asimetria_balance_reactiva_sur" level={2} />
-    Las plantas de distribución prácticamente no contribuían al control de tensión del sur: la inyección de reactiva desde ese nivel era testimonial.
-    <AnnexEvidence type="table" id="inyeccion-reactiva-distribucion" level={2} />
-    REE agotó los recursos de compensación convencionales (reactancias, condensadores) antes de las 12:30 CEST — el margen de maniobra estaba saturado.
-    <AnnexEvidence type="table" id="maniobras-compensacion-reactiva" level={2} />
-    <AnnexEvidence type="figure" id="mapas_termicos_tension_ree" level={3} />
-  </AnnexSection>
+El colapso del 28-A fue, en su mecánica física, un fenómeno de saturación capacitiva. La potencia reactiva — una magnitud que el mercado eléctrico no valora, que el SCADA de REE solo monitoriza en el nivel de 400 kV, y que las previsiones de demanda no capturan — fue el eje sobre el que giró la dinámica del evento. Esta sección documenta el balance Q-V que determinó la proximidad al colapso.
 
-  <AnnexSection id="herramientas-estabilidad" eyebrow="Sección 4" title="Herramientas interactivas de análisis">
-    El simulador muestra cómo la frontera de seguridad dinámica se desplaza hacia adentro a medida que aumenta la penetración IBR, reduciendo el espacio de operación estable.
-    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
-    El MRSCR captura la interacción entre inversores IBR cercanos: a mayor concentración en el sur peninsular, menor fortaleza de la red en esos nudos.
-    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
-    Las trayectorias angulares de tensión y corriente en Carmona permiten verificar la secuencia de pérdida de sincronismo en el plano fasorial.
-    <span id="grafico-phasor"></span>
-    <AnnexEvidence type="interactive" id="phasor" level={2} />
-    El panel antes/después compara las reglas operativas previas al 28-A con el paquete de reformas aprobado tras el evento.
-    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
-    La proyección de FutuRed estima la necesidad de compensación síncrona adicional para mantener márgenes de inercia seguros hacia 2030.
-    <AnnexEvidence type="figure" id="futured_grid_evolution" level={3} />
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Balance de potencia reactiva en el sur peninsular a las 12:30 CEST"
+  summary="Déficit neto de −0,6 GVAr. Solo un ciclo combinado (117 MVAr) disponible en Andalucía frente a un superávit capacitivo regional de ~600 MVAr inducido por las maniobras."
+  insight="La zona más débil del sistema operaba con un margen de absorción insuficiente para contener cualquier perturbación."
+>
+  <AnnexEvidence type="figure" id="asimetria_balance_reactiva_sur" level={1} />
+</AnnexEvidenceLead>
+
+La asimetría geográfica es determinante: mientras las zonas norte y este disponían de margen reactivo aceptable, la zona sur — donde se originó la cascada — operaba con una capacidad de absorción de apenas 117 MVAr (un único ciclo combinado) frente a una inyección capacitiva estimada en 600 MVAr procedente de las líneas reconectadas y la generación distribuida. La simulación del IIT-ICAI estima que el mallado contrajo la distancia al punto de colapso en el nudo de Carmona de 2.964 MW a 1.268 MW — una reducción del 57 %.
+
+<AnnexEvidence type="figure" id="fluctuaciones_tension_previas" level={2} />
+
+Las curvas Q-V de Carmona documentan esta contracción: el punto de operación post-mallado se sitúa significativamente más cerca del vértice de la curva (el punto de colapso de tensión) que el estado pre-mallado. La discrepancia cuantitativa entre la estimación del ICAI (2,4 GVAr de inyección capacitiva) y la del NREL (1,05 GVAr) no altera la conclusión cualitativa: en ambos escenarios, el margen era insuficiente.
+
+Los perfiles de tensión en los nudos críticos de 400 kV durante la cascada refutan la narrativa de una sobretensión generalizada en la red de transporte: los valores en 400 kV se mantuvieron mayoritariamente dentro del rango 375–435 kV. El problema se localizó en el lado de 220 kV y en las redes colectoras, donde el Tap-Lag amplificó la tensión fuera de la visibilidad del SCADA:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="table" id="tensiones-nudos-criticos" level={2} />
+  <AnnexEvidence type="table" id="inyeccion-reactiva-distribucion" level={2} />
+</AnnexEvidenceGrid>
+
+A la izquierda, las tensiones medidas confirman que Granada 400 kV registró 423,9 kV (dentro de límites) mientras el colector de 220 kV alcanzaba 242,5 kV (1,10 p.u. — fuera de límites y fuera de observabilidad). A la derecha, la inyección reactiva anómala desde las redes de distribución (+760 MVAr capacitivos a las 12:22 CEST, liderada por Madrid con +575 MVAr y Valencia con +405 MVAr) documenta que el problema no era exclusivamente del transporte: la distribución actuaba como fuente de reactiva capacitiva en lugar de sumidero, invirtiendo su comportamiento habitual.
+
+Los mapas térmicos de tensión de REE muestran la perspectiva del operador — los valores en 400 kV que sí veía:
+
+<AnnexEvidence type="figure" id="mapas_termicos_tension_ree" level={2} />
+
+REE sostiene que los perfiles se mantuvieron dentro de los rangos del P.O. 1.1 hasta el inicio de las desconexiones. Esto es aritméticamente correcto en el nivel de 400 kV. El punto ciego era la red subyacente: la tensión que disparó las protecciones de los inversores (244 kV en 220 kV, equivalente a 1,10 p.u.) era invisible para el despacho nacional.
+
+<details>
+  <summary>▶ Potencia disponible vs. despachada: la brecha del orden de mérito</summary>
+  <div style={{padding: '1rem 0'}}>
+
+La comparativa entre la potencia disponible operativamente (39.077 MW) y la efectivamente despachada a mediodía (25.184 MW) confirma que el colapso no fue un fallo de recursos: los ciclos combinados disponían de 16.660 MW pero generaban solo 2.775 MW. La generación síncrona remanente durante la cascada (nuclear: 3.369 MW, CCGT: 2.775 MW, hidráulica: 1.012 MW) fue el único andamiaje electromagnético del sistema.
+
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="chart" id="chart-4" level={3} />
+    <AnnexEvidence type="chart" id="chart-6" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
+<details>
+  <summary>▶ Interactivos: fasores, transición de seguridad y comparador MRSCR</summary>
+  <div style={{padding: '1rem 0'}}>
+
+:::tip Cómo explorar estos interactivos
+**Diagrama fasorial (SynchrophasorPlot):** observe la rotación de los fasores de tensión durante la cascada. La divergencia angular entre Carmona y los nudos del norte documenta la pérdida progresiva de sincronismo.
+
+**Transición del modelo de seguridad (DynamicSecurityShift):** cada fila conecta una variable del modelo clásico (N−1 estático, potencia activa, frecuencia) con su equivalente dinámico (estabilidad de tensión, potencia reactiva, SCR). El 28-A demostró que las variables de la columna izquierda ya no son suficientes.
+
+**Comparador MRSCR:** permite evaluar la fortaleza de red en nudos con múltiples inversores cercanos, superando las limitaciones del SCR tradicional que evalúa un nudo aislado.
+:::
+
+  <AnnexEvidence type="interactive" id="phasor" level={3} />
+  <AnnexEvidence type="interactive" id="dynamic-security-shift" level={3} />
+  <AnnexEvidence type="interactive" id="mrscr-comparator" level={3} />
+  </div>
+</details>
+
+<AnnexEvidence type="figure" id="futured_grid_evolution" level={2} />
+
+La proyección de FutuRed sintetiza la dirección del problema: a medida que las masas rotatorias son sustituidas por IBR, la inercia y la potencia de cortocircuito del sistema se reducen de forma no lineal. El 28-A se sitúa en el punto de la curva donde esta reducción superó los umbrales de operación segura en la zona más débil.
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="La evidencia reunida en este anexo sustenta una conclusión central del TFG: el apagón del 28-A no fue un evento de subfrecuencia clásico sino un colapso de tensión en un sistema con baja inercia y baja potencia de cortocircuito. La frecuencia cayó como consecuencia de las desconexiones masivas provocadas por las protecciones de sobretensión, no como causa primaria."
-    doesNotDemonstrate="Este anexo no demuestra que la caída de frecuencia fuese irrelevante — fue letal una vez iniciada la cascada — sino que la perturbación de tensión la precedió y la causó. La distinción es relevante para las recomendaciones regulatorias: un sistema diseñado exclusivamente para responder a pérdidas de frecuencia no habría evitado el 28-A."
-    connection="La lectura se complementa con el Anexo III, que reconstruye la cascada de protecciones activada por las sobretensiones, y con el Anexo X, que formaliza las ecuaciones de estabilidad de tensión y colapso jacobiano."
+demonstrates="La tensión divergió antes que la frecuencia. Los precursores del 22 y 24 de abril documentan que los márgenes Q-V se estrechaban de forma medible. El balance de potencia reactiva en el sur peninsular era insuficiente para absorber la inyección capacitiva del mallado. La inercia baja aceleró la fase terminal pero no inició la cascada."
+doesNotDemonstrate="Este anexo no resuelve la controversia sobre el origen del modo de 0,63 Hz (forzado vs. natural), ni la discrepancia cuantitativa entre la estimación de inyección capacitiva del ICAI (2,4 GVAr) y la del NREL (1,05 GVAr). Ambas divergencias se preservan como cuestiones abiertas."
+connection="La lectura de este anexo se complementa con el Anexo I (condiciones del mix que determinaron la baja inercia y el SCR), con el Anexo III (cómo las protecciones actuaron sobre la base de inestabilidad de tensión) y con el Anexo IX (simuladores del conflicto P-Q y del radar de vulnerabilidad)."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
-    { to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III: secuencia de cascada y protecciones" },
-    { to: "/anexo-ecuaciones-matematicas", label: "Anexo X: ecuaciones y simuladores de estabilidad" }
+{ to: "/anexo-demanda-generacion-balance", label: "Anexo I · Mix y balance: la precondición del colapso" },
+{ to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III · Protecciones: la cascada sobre la base inestable" },
+{ to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX · Simuladores P-Q y radar de vulnerabilidad" },
+{ to: "/analisis-incidente", label: "← Capítulo 3 · Análisis del incidente" },
+{ to: "/analisis-informes", label: "← Capítulo 5 · Análisis de los informes" },
   ]} />
 </AnnexLayout>

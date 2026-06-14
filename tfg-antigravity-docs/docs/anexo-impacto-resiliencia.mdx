@@ -18,92 +18,121 @@ import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
 import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
 import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
-import TrilemmaTriangle from '@site/src/components/TrilemmaTriangle';
-import CNMCSanctionsChart from '@site/src/components/CNMCSanctionsChart';
-
 <AnnexLayout
   wide
   kicker="Anexo VII"
   title="Impacto socioeconómico y resiliencia"
-  description="Este anexo cuantifica los costes socioeconómicos del apagón del 28-A y evalúa la resiliencia de las infraestructuras críticas afectadas, contrastando el incidente con otros colapsos históricos a nivel global."
+  description="Cuantificación de los costes socioeconómicos del apagón del 28-A, evaluación de la resiliencia de las infraestructuras críticas y comparativa con colapsos históricos."
   meta={[
-    { label: 'Eje técnico', value: 'Impacto y Resiliencia' },
-    { label: 'Cobertura', value: 'Consecuencias socioeconómicas' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Impacto económico y resiliencia sectorial' },
+{ label: 'Perímetro', value: 'España + Portugal · 57 millones de personas' },
+{ label: 'Capítulos asociados', value: 'Cap. 7b (Finanzas) · Cap. impacto social · Cap. 9 (Conclusiones)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Cuál fue el coste socioeconómico real del apagón del 28-A y qué lecciones sobre resiliencia sectorial e institucional se derivan del colapso?
+¿Cuál fue el coste socioeconómico real del apagón del 28-A y qué lecciones sobre resiliencia sectorial se derivan del colapso?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    El apagón del 28-A causó pérdidas estimadas en más de 240 millones de euros, afectando prioritariamente al sector manufacturero y al transporte metropolitano. La comparación con otros colapsos históricos demuestra que, aunque el tiempo de reposición total fue relativamente corto (menos de 10 horas) gracias al apoyo transfronterizo, la vulnerabilidad del tejido industrial evidenció la necesidad de revisar los estándares del Valor de la Energía No Suministrada (VoLL). Los esquemas regulatorios de sanción (CNMC) y el equilibrio del trilema energético requieren una profunda revaluación tras el evento.
+Las estimaciones del coste económico del 28-A oscilan entre 400 M€ (Ministerio de Economía, estimación conservadora) y 4.500 M€ (RBC Capital Markets, estimación amplia que incluye impacto reputacional y cadenas de suministro). La banda refleja la dificultad de cuantificar la energía no suministrada indirecta y los efectos de segundo orden. La comparación con los apagones de Italia 2003, US/Canadá 2003 y Balcanes 2024 sitúa al 28-A como un evento cualitativamente nuevo: el primer colapso sistémico impulsado por sobretensión en un sistema con alta penetración IBR, no por subfrecuencia clásica.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo reúne las pérdidas sectoriales y la comparativa de resiliencia del sistema ibérico frente a eventos de interrupción a gran escala a nivel internacional.
+Este anexo reúne las pérdidas sectoriales, la cascada financiera de costes directos e indirectos, la recuperación sectorial diferenciada y la comparativa con eventos históricos. Complementa el análisis del [Capítulo 7b (Consecuencias Financieras)](./07b-consecuencias-financieras.mdx) con la dimensión socioeconómica ampliada y el del [Capítulo de Impacto Social](./impacto-social.mdx) con los datos cuantitativos de resiliencia.
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    El anexo sistematiza la información relativa al alcance social del evento y la resiliencia de las infraestructuras críticas afectadas por el apagón.
+Fuentes: CEOE, Ministerio de Economía (Carlos Cuerpo), RBC Capital Markets (Reuters, 29-abr-2025), Repsol e Iberdrola (Earnings Q2 2025), ANGED, AEGE, Slimstock, ANEPC (Portugal), IEA, FERC, UCTE (IEEE Xplore 2004). Las estimaciones de coste usan el estándar VoLL (ACER/CEER). La banda amplia (400–4.500 M€) refleja diferencias de perímetro metodológico entre estimadores.
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en cuatro secciones argumentales: cuantificación del impacto, comparación con apagones históricos, resiliencia sectorial de infraestructuras, y régimen regulatorio y sanciones.</em>
+  Este anexo se organiza en tres secciones. La primera cuantifica el coste económico del evento, contrastando las diversas estimaciones y su perímetro metodológico. La segunda documenta la recuperación sectorial diferenciada y la cascada financiera de costes. La tercera compara el 28-A con los apagones históricos más relevantes, situando su singularidad técnica.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Cuantificación',       target: 'cuantificacion' },
-      { label: 'Comparación histórica', target: 'comparacion-historica' },
-      { label: 'Resiliencia sectorial',  target: 'resiliencia' },
-      { label: 'Régimen regulatorio',   target: 'regulatorio' },
-    ]}
+items={[
+  { label: 'El coste económico',           target: 'coste-economico' },
+  { label: 'Cascada financiera y resiliencia', target: 'cascada-resiliencia' },
+  { label: 'Precedentes históricos',        target: 'precedentes' },
+]}
   />
+  <AnnexSection id="coste-economico" eyebrow="Sección 1" title="El coste económico: estimaciones y perímetro">
 
-  <AnnexSection id="cuantificacion" eyebrow="Sección 1" title="Cuantificación del impacto económico">
-    La tabla de costes económicos desglosa el impacto financiero estimado en millones de euros, revelando la alta sensibilidad del sector industrial frente a interrupciones rápidas.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Estimación de costes económicos"
-      summary="Desglose sectorial y conceptual de las pérdidas económicas directas e indirectas del apagón, estimadas en más de 240 M€ en el mercado ibérico."
-      insight="Impacto industrial y doméstico · Cuantificación del coste de no suministro."
-    >
-      <AnnexEvidence type="table" id="costes-economicos" level={1} />
-    </AnnexEvidenceLead>
-    La cascada financiera desglosa la acumulación de costes directos (interrupciones industriales, transporte) e indirectos (seguros, reputacional). La banda estimada es muy amplia: 200–4.500 M€, reflejo de la dificultad de cuantificar la ENS indirecta.
-    <span id="grafico-waterfall"></span>
-    <AnnexEvidence type="interactive" id="waterfall" level={1} />
+La cuantificación del coste de un apagón sistémico es intrínsecamente imprecisa. Las estimaciones dependen de tres variables difíciles de acotar: la energía no suministrada (ENS) directa, los efectos de segundo orden (cadenas de suministro, reputación, coste de oportunidad) y el horizonte temporal considerado (día del evento, semana, mes). Las principales estimaciones publicadas divergen en un factor de 11 (400 M€ frente a 4.500 M€), reflejando diferencias de perímetro más que de método.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Estimaciones del coste económico del 28-A"
+  summary="CEOE: 1.600 M€ (0,1 % del PIB). Ministerio: 400–800 M€. RBC Capital Markets: 2.250–4.500 M€. La banda final de estimaciones independientes converge entre 1.000 y 2.250 M€."
+  insight="Un bien que el mercado valoraba en −3 €/MWh generó, al ausentarse, externalidades negativas mil veces mayores."
+>
+  <AnnexEvidence type="table" id="costes-economicos" level={1} />
+</AnnexEvidenceLead>
+
+Tres líneas de lectura sobre esta tabla. Primera: la estimación de CEOE (1.600 M€, equivalente al 0,1 % del PIB español) se basa en la pérdida de actividad económica ponderada por las horas de interrupción. Segunda: la estimación de RBC Capital Markets (2.250–4.500 M€) es la más alta porque incluye el impacto reputacional sobre la marca-país y los costes de cadenas de suministro internacionales. Tercera: el impacto sectorial más documentado es el de Repsol (175 M€ por cierre de las refinerías de Cartagena y Puertollano), seguido de Iberdrola (>100 M€ en impacto operativo) y la industria cárnica (190 M€, ANGED). La caída del 55 % de los sistemas de pago (Min. Economía) evidencia la interdependencia con las telecomunicaciones.
+
+La cascada financiera que conecta el cero de tensión con la factura macroeconómica puede explorarse en el siguiente interactivo:
+
+<AnnexEvidence type="interactive" id="waterfall" level={2} />
+
+:::tip Cómo explorar la cascada financiera
+El diagrama de waterfall muestra la cadena causal: cero de tensión → ENS (150–180 GWh) → pérdida de conectividad (telecomunicaciones −90 %) → daño sectorial directo → lucro cesante → coste de la Operación Reforzada (>666 M€ en 10 meses). Observe cómo cada escalón del waterfall amplifica el coste del anterior.
+:::
+
   </AnnexSection>
+  <AnnexSection id="cascada-resiliencia" eyebrow="Sección 2" title="Resiliencia sectorial: velocidades de recuperación diferenciadas">
 
-  <AnnexSection id="comparacion-historica" eyebrow="Sección 2" title="Comparación con apagones históricos">
-    La comparación sitúa el 28-A frente a apagones como el Northeast 2003 (55 M de afectados, 62 GW), Italia 2003 (56 M, 27 GW) y Argentina 2019 (48 M, 22 GW). El tiempo de reposición ibérico (~10 h) fue relativamente corto gracias al soporte francés, pero la velocidad del colapso (~5 min) fue inusualmente alta.
-    <AnnexEvidence type="table" id="comparativa-blackouts-historicos" level={1} />
+La restitución de tensión no implicó recuperación económica inmediata. Los distintos sectores económicos se recuperaron a velocidades radicalmente diferentes, determinadas por la inercia termodinámica de sus procesos, la dependencia de calibración y la complejidad de sus cadenas de suministro.
+
+:::tip Cómo explorar la resiliencia sectorial
+**Resiliencia sectorial:** el interactivo permite comparar la velocidad de recuperación por sector (residencial, servicios, industria ligera, industria pesada). Observe que los hogares recuperaron su consumo en horas, pero la industria electrointensiva necesitó una semana.
+:::
+
+<AnnexEvidence type="interactive" id="sectorial-resilience" level={1} />
+
+La diferencia entre la recuperación residencial (horas) y la industrial (semana) no es un defecto de la re-energización sino una propiedad física de los procesos continuos: un horno de arco eléctrico con metal solidificado requiere recalentamiento, inspección de refractarios y pruebas de calidad antes de volver a operar. Las cadenas JIT (*Just-in-Time*) amplifican el daño: la interrupción de un eslabón detiene toda la cadena aguas abajo.
+
+El impacto asimétrico sobre las infraestructuras críticas — hospitales, telecomunicaciones, agua, transporte — se documenta en detalle en el [Capítulo de Impacto Social](/impacto-social). Los datos cuantitativos de incidencias por sector y comunidad autónoma, los detalles de la crisis de telecomunicaciones y los registros de las disrupciones en aviación se conservan en las siguientes tablas de soporte:
+
+<details>
+  <summary>▶ Datos sectoriales detallados: incidencias por CCAA, telecomunicaciones y aviación</summary>
+  <div style={{padding: '1rem 0'}}>
+
+Andalucía gestionó 6.429 incidencias críticas. El tráfico de internet en Portugal cayó un 90 % en las primeras 5 horas. En aviación, se cancelaron 437 vuelos con aproximadamente 78.000 pasajeros afectados en Portugal. La radio analógica FM fue el único canal informativo operativo durante las primeras horas.
+
+*Nota: las tablas detalladas de incidencias por comunidad autónoma (H1), disrupciones en aviación (H3) y colapso de telecomunicaciones (H4) se integrarán en la próxima actualización de este anexo a partir de los datos del capítulo de impacto social.*
+
+  </div>
+</details>
+
   </AnnexSection>
+  <AnnexSection id="precedentes" eyebrow="Sección 3" title="Precedentes históricos: el 28-A en contexto">
 
-  <AnnexSection id="resiliencia" eyebrow="Sección 3" title="Resiliencia sectorial de infraestructuras">
-    El análisis sectorial de resiliencia documenta qué infraestructuras críticas — transporte, telecomunicaciones, cadena de frío — tardaron más en recuperar operatividad tras el retorno de la tensión.
-    <span id="grafico-sectorial-resilience"></span>
-    <AnnexEvidence type="interactive" id="sectorial-resilience" level={2} />
-    El trilema energético visualiza el equilibrio entre seguridad, sostenibilidad y asequibilidad. El 28-A demostró que priorizar las dos últimas sin asegurar la primera tiene un coste superior al ahorro obtenido.
-    <div style={{ margin: '1.5rem 0' }}>
-      <TrilemmaTriangle showCaption={false} />
-    </div>
-  </AnnexSection>
+La comparación del 28-A con los apagones históricos más relevantes es necesaria tanto para acotar su magnitud como para identificar su singularidad técnica. La tabla siguiente contrasta los cuatro eventos sistémicos más significativos de los últimos 25 años.
 
-  <AnnexSection id="regulatorio" eyebrow="Sección 4" title="Régimen regulatorio y sanciones">
-    El histórico de sanciones de la CNMC revela que el régimen sancionador previo al 28-A no contenía incentivos suficientes para invertir en soporte dinámico de red.
-    <div style={{ margin: '1.5rem 0' }}>
-      <CNMCSanctionsChart showCaption={false} />
-    </div>
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Comparativa con apagones históricos europeos e internacionales"
+  summary="El 28-A afectó a 47 millones de personas con una duración de 10–16 horas. En magnitud es comparable a Italia 2003 (56 M personas, 18 h) y US/Canadá 2003 (55 M personas, 48 h). La diferencia es la causa raíz."
+  insight="El 28-A es el primer colapso sistémico impulsado por sobretensión en un sistema con alta penetración IBR."
+>
+  <AnnexEvidence type="table" id="comparativa-blackouts-historicos" level={1} />
+</AnnexEvidenceLead>
+
+La lectura de esta tabla debe focalizarse en la columna de causa raíz. Italia 2003 fue un colapso por cascada de líneas (Lukmanier-Mettlen) amplificada por OLTCs — un mecanismo que guarda paralelismo parcial con el Tap-Lag del 28-A. US/Canadá 2003 fue un fallo de *situational awareness* amplificado por software defectuoso (XA/21 de GE). Los Balcanes 2024 fueron una sobrecarga de transmisión clásica. El 28-A, en cambio, fue un evento *overvoltage-driven* en un contexto de 82 % de penetración IBR — un mecanismo causal sin precedente directo en la historia de los apagones sistémicos europeos.
+
+Esta singularidad tiene implicaciones regulatorias directas: las medidas post-evento adoptadas tras Italia 2003 (bloqueo de OLTCs en emergencia), US/Canadá 2003 (estándares obligatorios EPAct 2005) y UK 2019 (prohibición de *Vector Shift*) resolvieron los mecanismos específicos de cada evento pero no habrían prevenido el 28-A, cuya causa raíz — la ausencia de un marco de control dinámico de tensión para IBR — requiere una respuesta regulatoria nueva. Esa respuesta se documenta en el [Capítulo 7 (Resiliencia)](./07-resiliencia-futuro.mdx).
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="La cuantificación económica del 28-A demuestra que el coste de la inestabilidad dinámica es sumamente elevado para una economía moderna. Aunque el sistema de transporte ibérico demostró una resiliencia de reposición notable en comparación con referencias históricas, la vulnerabilidad del tejido de distribución y la falta de incentivos reguladores para el soporte dinámico urgen a una revisión de la normativa de calidad."
-    doesNotDemonstrate="Este anexo demuestra que el coste social de la ENS (VoLL) supera en órdenes de magnitud el coste de instalar y remunerar servicios de inercia y reactiva adicionales."
-    connection="La lectura se complementa con el Anexo V (mecanismo económico de mercado) y con el Anexo IX (metodología pericial de cálculo)."
+demonstrates="El coste económico del 28-A se sitúa entre 1.000 y 2.250 M€ según las estimaciones independientes convergentes. La recuperación sectorial fue asimétrica: horas para el sector residencial, una semana para la industria electrointensiva. El 28-A es cualitativamente distinto de los apagones históricos por su causa raíz (overvoltage-driven en alta penetración IBR)."
+doesNotDemonstrate="Las estimaciones de coste tienen un rango amplio (factor 11×) que refleja diferencias de perímetro metodológico, no errores de cálculo. Este anexo no resuelve la cuantificación definitiva, que requerirá acceso a datos actuariales y de seguros no disponibles en la fecha de redacción."
+connection="Este anexo se lee con el Capítulo 7b (análisis financiero: VoLL, OPEX Operación Reforzada, CAPEX de resiliencia), con el Capítulo de Impacto Social (interdependencias de infraestructuras críticas) y con el Capítulo 7 (precedentes internacionales y respuestas regulatorias)."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-mercado-costes", label: "Anexo V: mercado eléctrico, precios y costes" },
-    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX: metodología y contraste de fuentes" }
+{ to: "/07b-consecuencias-financieras", label: "← Capítulo 7b · VoLL, OPEX y CAPEX de resiliencia" },
+{ to: "/impacto-social", label: "← Capítulo Impacto Social · Interdependencias críticas" },
+{ to: "/resiliencia-futuro", label: "← Capítulo 7 · Precedentes y reformas regulatorias" },
+{ to: "/anexo-mercado-costes", label: "Anexo V · El fallo de mercado que no valoró la resiliencia" },
   ]} />
 </AnnexLayout>

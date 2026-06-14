@@ -18,105 +18,150 @@ import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
 import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
 import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
-import ResolutionRoadmap from '@site/src/components/ResolutionRoadmap';
-import ResearchAgendaScatter from '@site/src/components/ResearchAgendaScatter';
-
 <AnnexLayout
   wide
   kicker="Anexo IX"
   title="Metodología, modelos y contraste de fuentes"
-  description="Este anexo detalla el enfoque metodológico pericial del TFG, el contraste sistemático de conclusiones entre los diferentes informes oficiales y la justificación técnica de las herramientas de simulación empleadas."
+  description="Enfoque metodológico del TFG, contraste sistemático de las conclusiones de los cuatro informes periciales, y justificación de los modelos y herramientas de simulación empleados."
   meta={[
-    { label: 'Eje técnico', value: 'Metodología y Modelos' },
-    { label: 'Cobertura', value: 'Herramientas de análisis' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje', value: 'Metodología pericial y modelos técnicos' },
+{ label: 'Informes contrastados', value: 'Gobierno · REE · IIT-ICAI · ENTSO-E · NREL' },
+{ label: 'Capítulos asociados', value: 'Cap. 5 (Informes) · Cap. 7 (Resiliencia) · Cap. 8 (IA)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Qué herramientas periciales y fuentes documentales permiten resolver las discrepancias sobre las causas y la secuencia de la cascada del 28-A?
+¿Qué herramientas periciales, modelos técnicos y fuentes documentales permiten resolver — o delimitar — las discrepancias sobre las causas y la secuencia de la cascada del 28-A?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    El análisis forense del 28-A requiere contrastar las conclusiones del Comité del Gobierno, ENTSO-E y consultores externos (Compass Lexecon), resolviendo asimetrías de datos mediante el uso de registros PMU de alta resolución. Este anexo sistematiza la metodología de contraste, valida la representatividad de los modelos simplificados utilizados en el cuerpo del TFG y justifica el papel didáctico de los simuladores interactivos que permiten al lector explorar la sensibilidad de la red en tiempo real.
+El análisis forense del 28-A requiere contrastar las conclusiones de cinco fuentes institucionales con perímetros analíticos distintos. Este anexo sistematiza la metodología de contraste, valida los modelos simplificados utilizados en los capítulos, justifica el papel de los simuladores interactivos como herramientas didácticas, y reúne las herramientas derivadas de los capítulos que requieren mayor profundidad de exploración.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo establece las bases de validación documental y el contraste pericial cruzado que fundamentan las conclusiones técnicas del TFG.
+Este anexo establece las bases de validación documental del TFG. Sin el contraste pericial cruzado documentado aquí, las conclusiones del [Capítulo 5](/analisis-informes) y del [Capítulo 9](/conclusiones) carecerían de trazabilidad metodológica.
   </AnnexBlackoutRelevance>
 
-  <AnnexMethodNote type="modelo-didactico">
-    Este anexo agrupa modelos, simuladores y herramientas de apoyo. Algunos elementos son didácticos o incorporan datos vivos, por lo que no deben confundirse con registros históricos brutos del 28-A.
+  <AnnexMethodNote type="reconstruccion">
+Fuentes primarias: REE (15 pp., 18-jun-2025), Comité de Análisis del Gobierno (182 pp., 17-jun-2025), Compass Lexecon / INESC TEC (62 pp., 28-jul-2025), ENTSO-E Factual Report (262 pp., 3-oct-2025), ENTSO-E Final Report (440-472 pp., 20-mar-2026). Fuentes secundarias: NREL (arXiv 2511.17433), Albustami et al. (IEEE 39-bus model). La metodología LLM se documenta en el [Capítulo 8](/uso-ia).
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en tres secciones argumentales: metodología forense y contraste de fuentes, tecnologías de soporte y sensores, y modelos didácticos y simuladores.</em>
+  Este anexo se organiza en tres secciones. La primera presenta el contraste pericial sistemático — la tabla maestra que compara las conclusiones de cada entidad investigadora sobre los ocho ejes de controversia. La segunda reúne los modelos técnicos de referencia: circuitos equivalentes GFL/GFM, arquitectura híbrida, distribución de SCR y el marco normativo del P.O. 7.4. La tercera agrupa las herramientas interactivas de exploración derivadas de los capítulos principales.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Metodología y contraste', target: 'metodologia' },
-      { label: 'Tecnologías de soporte',   target: 'tecnologias' },
-      { label: 'Simuladores y modelos',   target: 'modelos-didacticos' },
-    ]}
+items={[
+  { label: 'Contraste pericial',       target: 'contraste-pericial' },
+  { label: 'Modelos técnicos',         target: 'modelos-tecnicos' },
+  { label: 'Herramientas de exploración', target: 'herramientas' },
+]}
   />
+  <AnnexSection id="contraste-pericial" eyebrow="Sección 1" title="Contraste pericial: cinco informes, una secuencia">
 
-  <AnnexSection id="metodologia" eyebrow="Sección 1" title="Metodología forense y contraste de fuentes">
-    La tabla comparativa de conclusiones de las entidades contrasta los dictámenes del operador de transporte (REE), el regulador (CNMC) y el comité europeo sobre el disparo raíz y la secuencia de cascada.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Contraste de conclusiones periciales"
-      summary="Comparativa de las conclusiones sobre causas raíces y responsabilidades del apagón emitidas por REE, la CNMC y la red europea ENTSO-E."
-      insight="Divergencias en el análisis causal · Consenso técnico multisectorial."
-    >
-      <AnnexEvidence type="table" id="comparativa-conclusiones-entidades" level={1} />
-    </AnnexEvidenceLead>
-    El informe de Compass Lexecon/INESC TEC aporta la visión del consultor externo: subraya que REE desacopló 15 ciclos combinados entre las 08:00 y las 10:00 CEST, cuestionando la suficiencia del recurso síncrono.
-    <AnnexEvidence type="table" id="compass-lexecon" level={2} />
-    El mapa de SCR documenta la debilidad física de la red en el sur peninsular. La banda muerta del P.O. 7.4 previo inhabilitaba la defensa del sistema frente a transitorios capacitivos rápidos — el vacío normativo que los inversores no pudieron compensar.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="scr_iberia" level={2} />
-      <AnnexEvidence type="figure" id="po74_banda_muerta" level={2} />
-    </AnnexEvidenceGrid>
+La metodología central del TFG es la triangulación forense: contrastar las conclusiones de los cinco informes sobre los mismos hechos, preservando las divergencias como dato forense en lugar de resolverlas artificialmente. La tabla maestra sintetiza los hallazgos de cada entidad investigadora.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Comparativa de conclusiones por entidad investigadora"
+  summary="Cinco informes, publicados entre junio 2025 y marzo 2026, con extensiones de 15 a 472 páginas. La causa raíz identificada varía: incumplimiento normativo (REE), fallo sistémico de control de tensión (Compass Lexecon), combinación multifactorial (Gobierno, ENTSO-E)."
+  insight="El responsable señalado varía según el perímetro analítico de cada entidad."
+>
+  <AnnexEvidence type="table" id="comparativa-conclusiones-entidades" level={1} />
+</AnnexEvidenceLead>
+
+La tabla revela una asimetría estructural: REE (15 páginas) enfoca el incumplimiento del P.O. 7.4 por los generadores; Compass Lexecon (62 páginas) enfoca la gestión de reactiva por el operador; ENTSO-E (262+440 páginas) adopta la perspectiva continental sin atribuir responsabilidades individuales. La extensión de cada informe no determina su calidad, pero sí acota su perímetro de análisis.
+
+La comparativa detallada de Compass Lexecon sobre los ocho ejes de controversia permite identificar los puntos de acuerdo tácito y las divergencias explícitas:
+
+<AnnexEvidence type="table" id="compass-lexecon" level={2} />
+
+La lectura de esta tabla es particularmente reveladora en las columnas 4 (estado del sistema) y 5 (cambio de interconexión HVDC): donde REE afirma «la situación era estable» y «el cambio NO agravó la situación», Compass Lexecon documenta «se produjeron fluctuaciones relevantes» y «pendiente de análisis». La divergencia no es sobre los hechos (ambas partes reconocen las oscilaciones) sino sobre su significación causal.
+
+La cobertura de las PMU europeas que permitió la verificación independiente del NREL se documenta en la siguiente figura:
+
+<AnnexEvidence type="figure" id="pmu_sensors_europe" level={2} />
+
+La densidad de cobertura PMU fue determinante: los registros del NREL, obtenidos de estaciones independientes de las redes de REE y REN, constituyeron la fuente con mayor independencia institucional para arbitrar entre las versiones divergentes. Su análisis de las oscilaciones inter-área de 0,2 Hz (arXiv 2511.17433) confirmó la propagación del modo continental documentada por ENTSO-E y aportó la estimación independiente de 1,05 GVAr de inyección capacitiva.
+
   </AnnexSection>
+  <AnnexSection id="modelos-tecnicos" eyebrow="Sección 2" title="Modelos técnicos de referencia">
 
-  <AnnexSection id="tecnologias" eyebrow="Sección 2" title="Tecnologías de soporte: inversores y sensores">
-    El inversor GFL (fuente de corriente dependiente) necesita "leer" la red para operar; el GFM (fuente de tensión autónoma) la crea. La arquitectura híbrida BESS-GFM + compensador síncrono propuesta por Hitachi Energy combina FFR con inercia rotacional y Scc.
-    <AnnexEvidenceGrid>
-      <AnnexEvidence type="figure" id="gfl_vs_gfm_circuit1" level={2} />
-      <AnnexEvidence type="figure" id="hitachi_hybrid" level={3} />
-    </AnnexEvidenceGrid>
-    La densidad de cobertura PMU fue determinante para la verificación independiente de las oscilaciones interárea registradas antes del colapso.
-    <AnnexEvidence type="figure" id="pmu_sensors_europe" level={3} />
+Los modelos simplificados empleados en los capítulos principales requieren justificación técnica. Esta sección reúne los diagramas de referencia: el circuito equivalente GFL frente a GFM, la arquitectura híbrida BESS+SynCon, la distribución del SCR en la red peninsular, y la banda muerta del P.O. 7.4 que inhabilitó la respuesta dinámica del parque generador.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Circuitos equivalentes: inversor GFL frente a GFM"
+  summary="El GFL opera como fuente de corriente dependiente del PLL externo. El GFM opera como fuente de tensión autónoma detrás de una reactancia virtual. La diferencia es la capacidad de formar red sin referencia externa."
+  insight="El GFM no necesita leer la red para operar: la crea."
+>
+  <AnnexEvidence type="figure" id="gfl_vs_gfm_circuit1" level={1} />
+</AnnexEvidenceLead>
+
+La distinción entre estos dos modelos de circuito es central para comprender por qué los IBR existentes no pudieron participar en el Black Start: al operar como fuentes de corriente dependientes de una tensión externa, necesitaban lo que el sistema había perdido. El GFM, al generar internamente su referencia de tensión ($V\angle\delta$), puede arrancar una red desde cero — capacidad que el NC RfG 2.0 exigirá a las plantas IBR de tipo C y D.
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="figure" id="hitachi_hybrid" level={2} />
+  <AnnexEvidence type="figure" id="scr_iberia" level={2} />
+</AnnexEvidenceGrid>
+
+A la izquierda, la arquitectura híbrida BESS-GFM + compensadores síncronos documenta la complementariedad: los BESS proveen velocidad y precisión; los SynCons proveen inercia y corriente de cortocircuito. A la derecha, la distribución del SCR en la red peninsular muestra las zonas con SCR < 2 (Andalucía, Extremadura) donde el 28-A se originó — confirmando la correlación espacial entre baja fortaleza de red y origen del colapso.
+
+La banda muerta del P.O. 7.4 original es la evidencia más directa de la fractura regulatoria documentada en el [Capítulo 5](/analisis-informes) y el [Capítulo 7](./07-resiliencia-futuro.mdx):
+
+<AnnexEvidence type="figure" id="po74_banda_muerta" level={2} />
+
+La zona sombreada (405–410 kV) es la franja en la que los generadores síncronos estaban eximidos de actuar. En un transitorio que elevó la tensión a 423 kV en Granada y a 443 kV en Badajoz, la banda muerta inhabilitó la defensa automática del sistema. La reforma del P.O. 7.4 (Resolución CNMC, junio 2025) eliminó esta banda, sustituyéndola por un control proporcional-integral continuo.
+
   </AnnexSection>
+  <AnnexSection id="herramientas" eyebrow="Sección 3" title="Herramientas de exploración derivadas de los capítulos">
 
-  <AnnexSection id="modelos-didacticos" eyebrow="Sección 3" title="Modelos didácticos y simuladores">
-    El comparador permite contrastar las condiciones físicas reales del 28-A con perfiles de jornadas estables, identificando los parámetros que divergieron.
-    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
-    El radar evalúa el sistema en seis ejes (inercia, Scc, reactiva, interconexión, mercado, comunicación) — los ejes con mayor déficit coinciden con los factores causales del colapso.
-    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
-    Los simuladores del plano de fase, la ecuación del swing y la curva P-V formalizan los fenómenos documentados en los Anexos II y III. Sus ecuaciones se detallan en el Anexo X.
-    <AnnexEvidence type="interactive" id="phaseplane" level={3} />
-    <AnnexEvidence type="interactive" id="swing" level={3} />
-    <AnnexEvidence type="interactive" id="pvcurve" level={3} />
-    El simulador del trilema y el panel antes/después permiten evaluar las reformas implementadas tras el evento y su efecto sobre el equilibrio seguridad-sostenibilidad-asequibilidad.
-    <AnnexEvidence type="interactive" id="energy-trilemma" level={3} />
-    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
-    La hoja de ruta de resolución y el mapa de agenda de investigación sitúan los desarrollos futuros: compensación síncrona, baterías GFM, y reforma del mercado de servicios ancilares.
-    <div style={{ margin: '1.5rem 0' }}>
-      <ResolutionRoadmap showCaption={false} />
-    </div>
-    <div style={{ margin: '1.5rem 0' }}>
-      <ResearchAgendaScatter showCaption={false} />
-    </div>
+Las siguientes herramientas interactivas fueron derivadas de los capítulos principales durante la reescritura editorial. Se conservan aquí como banco de exploración. Los simuladores de ecuaciones (efecto Ferranti, ecuación de oscilación, curva P-V, etc.) se encuentran en el [Anexo X · Laboratorio de simuladores](/anexo-ecuaciones-matematicas).
+
+:::tip Guía rápida de las herramientas de esta sección
+**Radar de vulnerabilidad:** evalúa los umbrales SCR, inercia y penetración IBR en tiempo real. Configure los parámetros a los valores del 28-A (H=2,3s, IBR=82%, SCR sur=1,8) para observar cómo todos los indicadores entran en zona roja.
+
+**Retrato de fases (PhasePlanePlot):** permite comparar la dinámica de un generador síncrono, un inversor GFL y un inversor GFM ante la misma perturbación. Observe cómo el GFM converge a un punto de equilibrio estable mientras el GFL diverge cuando el SCR cae por debajo de 2.
+
+**Simulador del Trilema:** mueva los deslizadores de descarbonización, coste y estabilidad para explorar las tensiones del sistema. El punto de anclaje «28-A» sitúa el sistema en el centro de máxima tensión simultánea.
+
+**Comparador 28-A:** contrasta las condiciones del día del apagón con las del sistema reformado un año después (Operación Reforzada, nuevo P.O. 7.4, BESS desplegados).
+
+**Panel Then vs Now:** compara el estado del sistema antes y después de las reformas en métricas clave: inercia, SCR, unidades acopladas, BESS instalados.
+:::
+
+<AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+  <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+</AnnexEvidenceGrid>
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
+  <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
+</AnnexEvidenceGrid>
+
+<details>
+  <summary>▶ Herramientas adicionales: simulador de oscilación, curva P-V, agenda investigadora</summary>
+  <div style={{padding: '1rem 0'}}>
+
+  <AnnexEvidence type="interactive" id="swing" level={3} />
+  <AnnexEvidence type="interactive" id="pvcurve" level={3} />
+  <AnnexEvidence type="interactive" id="research-agenda-scatter" level={3} />
+  <AnnexEvidence type="interactive" id="resolution-roadmap" level={3} />
+  </div>
+</details>
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="El contraste metodológico de las fuentes documentales periciales revela que el 28-A constituye un hito de aprendizaje técnico para el sector europeo. La validación de los modelos dinámicos simplificados frente a los registros PMU de subestación demuestra la consistencia del análisis técnico del TFG."
-    doesNotDemonstrate="Este anexo demuestra la utilidad del modelado interactivo y los simuladores dinámicos para guiar al lector en el análisis físico, actuando como el puente metodológico hacia las ecuaciones del Anexo X."
-    connection="La lectura se complementa con el Anexo I (mix de generación) y el Anexo X (ecuaciones físicas y matemáticas de soporte)."
+demonstrates="La triangulación pericial es metodológicamente necesaria porque cada informe proyecta el evento sobre un perímetro analítico distinto. Los modelos GFL/GFM, la distribución del SCR y la banda muerta del P.O. 7.4 son evidencias técnicas que fundamentan las conclusiones de los capítulos principales. Las herramientas interactivas permiten explorar la sensibilidad del sistema a los parámetros operativos."
+doesNotDemonstrate="Los simuladores de este anexo son modelos didácticos simplificados, no simulaciones PSS/E o PSCAD de grado profesional. Su función es ilustrar los mecanismos físicos, no producir resultados cuantitativos con precisión de ingeniería."
+connection="El contraste pericial se lee con el Capítulo 5. Los modelos técnicos sustentan los capítulos 3, 7 y 9. La metodología IA se documenta en el Capítulo 8. Los simuladores de ecuaciones se agrupan en el Anexo X."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
-    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
-    { to: "/anexo-ecuaciones-matematicas", label: "Anexo X: ecuaciones y simuladores de estabilidad" }
+{ to: "/analisis-informes", label: "← Capítulo 5 · Contraste de los informes" },
+{ to: "/resiliencia-futuro", label: "← Capítulo 7 · Modelos GFM, SCR y P.O. 7.4" },
+{ to: "/uso-ia", label: "← Capítulo 8 · Metodología IA" },
+{ to: "/anexo-ecuaciones-matematicas", label: "Anexo X · Laboratorio de simuladores y ecuaciones" },
   ]} />
 </AnnexLayout>

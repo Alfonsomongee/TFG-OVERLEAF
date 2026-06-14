@@ -1,7 +1,7 @@
 ---
 id: anexo-ecuaciones-matematicas
-title: "Anexo X · Ecuaciones, modelos matemáticos y simuladores"
-sidebar_label: "Anexo X · Ecuaciones y simuladores"
+title: "Anexo X · Laboratorio de simuladores y ecuaciones"
+sidebar_label: "Anexo X · Simuladores"
 hide_title: true
 ---
 
@@ -16,112 +16,206 @@ import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary'
 import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
 import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
 import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
+import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
 <AnnexLayout
   wide
   kicker="Anexo X"
-  title="Ecuaciones, modelos matemáticos y simuladores"
-  description="Este anexo constituye el laboratorio matemático central del TFG. Centraliza los simuladores interactivos organizados por dominio físico, económico y de dinámica de sistemas para reproducir los fenómenos del 28-A."
+  title="Laboratorio de simuladores y ecuaciones"
+  description="Simuladores interactivos organizados por dominio físico: dinámica de red, estabilidad de tensión, transitorios, mercado, comunicación y síntesis del Trilema. Cada herramienta permite variar los parámetros operativos para explorar la sensibilidad del sistema."
   meta={[
-    { label: 'Eje técnico', value: 'Matemáticas y Simulación' },
-    { label: 'Interactividad', value: 'Tiempo real' }
+{ label: 'Tipo', value: 'Laboratorio interactivo' },
+{ label: 'Herramientas', value: '29 simuladores en 4 dominios' },
+{ label: 'Nota', value: 'Modelos didácticos, no simulaciones PSS/E de grado profesional' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Qué ecuaciones, modelos y simulaciones permiten reproducir cuantitativamente los fenómenos físicos, financieros y comunicativos que confluyeron en el apagón del 28-A?
+¿Qué ecuaciones y modelos permiten reproducir cuantitativamente los fenómenos físicos, económicos y comunicativos que confluyeron en el apagón del 28-A?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    El colapso del 28-A fue un fenómeno multiescala gobernado por leyes físicas de la electrotecnia, incentivos marginalistas de mercado y dinámicas sociales de propagación de información. Este anexo reúne los simuladores interactivos que modelan estos comportamientos de forma cuantitativa, permitiendo variar las variables independientes para analizar la estabilidad de la red, los costes de desvíos, el colapso del Jacobiano de flujos de potencia o el retardo en la comunicación institucional.
+El colapso del 28-A fue un fenómeno multiescala gobernado por leyes de la electrotecnia (ecuación de oscilación, curvas Q-V, efecto Ferranti, singularidad del Jacobiano), incentivos marginalistas de mercado (precios LMP, OPF con restricciones) y dinámicas sociales de propagación de información (modelo SIR). Este anexo reúne los simuladores interactivos que modelan estos comportamientos, permitiendo variar las variables independientes para observar el sistema.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo proporciona el soporte de formulación y los modelos interactivos que validan cuantitativamente el análisis empírico desarrollado en los capítulos y anexos factuales del TFG.
+Los simuladores no son decoración: cada uno modela un mecanismo físico específico del 28-A. Su función es permitir al lector explorar *qué habría pasado si* los parámetros hubieran sido distintos — una pregunta que los informes periciales no abordan directamente.
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    Este anexo aísla y agrupa todas las herramientas interactivas del documento que no se basan en datos históricos estáticos, sino en ecuaciones matemáticas, financieras y de física eléctrica. El usuario puede alterar las variables independientes de las fórmulas para observar el comportamiento dinámico de las curvas resultantes.
+Los modelos implementados son simplificaciones didácticas. La ecuación de oscilación usa un modelo de máquina equivalente (single-machine infinite bus). Las curvas P-V emplean un modelo de dos nudos. El Jacobiano opera sobre un sistema reducido de 3-5 nudos. No sustituyen simulaciones profesionales PSS/E, PSCAD o PowerWorld. Su función es ilustrar mecanismos, no producir resultados con precisión de ingeniería.
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en cinco secciones que cubren los distintos dominios matemáticos del estudio: fortaleza de red y colapso de tensión, reactiva y transitorios electromagnéticos, control e inercia de frecuencia, mercado y economía de red, y modelos de dinámica de sistemas.</em>
+  Este anexo se organiza como un laboratorio con cuatro dominios. Cada dominio agrupa los simuladores que modelan fenómenos del mismo tipo físico. Las guías de uso indican qué parámetros mover y qué observar para reproducir las condiciones del 28-A.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Fortaleza y tensión',      target: 'red-tension' },
-      { label: 'Reactiva y transitorios',  target: 'reactiva-transitorios' },
-      { label: 'Control y frecuencia',     target: 'control-frecuencia' },
-      { label: 'Mercado y economía',       target: 'mercado-coste' },
-      { label: 'Modelos sistémicos',       target: 'sistemicos' },
-    ]}
+items={[
+  { label: 'Dinámica de red',       target: 'dinamica-red' },
+  { label: 'Mercado y economía',     target: 'mercado-economia' },
+  { label: 'Comunicación',           target: 'comunicacion' },
+  { label: 'Síntesis y prospectiva', target: 'sintesis' },
+]}
   />
+  {/* DOMINIO 1 — DINÁMICA DE RED                                       */}
+  <AnnexSection id="dinamica-red" eyebrow="Dominio 1" title="Física de la red eléctrica">
 
-  <AnnexSection id="red-tension" eyebrow="Dominio 1" title="Fortaleza de red y colapso de tensión">
-    El SCR mide la fortaleza de la red en un nudo. En el sur peninsular el 28-A, el SCR cayó por debajo de 3 en nudos con alta concentración de inversores — zona de riesgo para estabilidad de tensión.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Simulador de la curva P-V"
-      summary="Este simulador permite explorar de forma interactiva el límite de transmisión de potencia activa y reactiva antes de alcanzar el punto de colapso de tensión (bifurcación sillar-nodo)."
-      insight="Estabilidad de tensión estática · Identificación del margen de cargabilidad."
-    >
-      <AnnexEvidence type="interactive" id="pvcurve" level={1} />
-    </AnnexEvidenceLead>
-    El SCR y el MRSCR capturan la interacción mutua y el desacoplamiento angular entre inversores IBR cercanos.
-    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
-    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
-    <AnnexEvidence type="interactive" id="power-flow-jacobian" level={2} />
+Este dominio reúne 12 simuladores que modelan los fenómenos físicos centrales del colapso: la ecuación de oscilación (inercia y frecuencia), el efecto Ferranti (saturación capacitiva), la curva P-V (estabilidad de tensión), la singularidad del Jacobiano (punto de colapso), el diagrama P-Q (capacidad de los generadores), la fortaleza de red (SCR y MRSCR), el retrato de fases (GFL vs GFM), el deslastre UFLS, el control droop del GFM, el inrush de transformadores y el control HVDC.
+
+:::tip Cómo reproducir las condiciones del 28-A
+**Ecuación de oscilación:** fije H = 2,3 s (inercia del 28-A) y aplique una perturbación de 0,3 p.u. Observe la RoCoF resultante (~1,5 Hz/s). Reduzca H a 1,3 s (zona sur) para ver cómo la inestabilidad se acelera.
+
+**Efecto Ferranti:** fije la longitud de línea en 300 km y la carga en 0 MW (vacío). Observe cómo la tensión en el extremo receptor supera 1,10 p.u. — el umbral de disparo de los inversores.
+
+**Curva P-V:** reduzca la potencia de cortocircuito (Ssc) hasta que la nariz de la curva se acerque al punto de operación. El colapso se produce cuando la curva no puede sostener la carga.
+
+**Jacobiano:** reduzca la inyección de reactiva en los nudos del sur hasta que el determinante se acerque a cero. Ese es el punto de bifurcación — el instante matemático del colapso de tensión.
+:::
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="swing" level={1} />
+  <AnnexEvidence type="interactive" id="ferranti" level={1} />
+</AnnexEvidenceGrid>
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="pvcurve" level={1} />
+  <AnnexEvidence type="interactive" id="power-flow-jacobian" level={1} />
+</AnnexEvidenceGrid>
+
+<details>
+  <summary>▶ Más simuladores de dinámica de red: P-Q, SCR, MRSCR, UFLS, GFM, inrush, HVDC</summary>
+  <div style={{padding: '1rem 0'}}>
+
+:::tip Guía rápida
+**P-Q Capability:** observe cómo el diagrama del generador síncrono (semicircular amplio) difiere del inversor GFL (rectangular estrecho). La diferencia de área es la diferencia de capacidad dinámica.
+
+**SCR y MRSCR:** compare el SCR tradicional (un nudo) con el MRSCR (múltiples inversores). En nudos con alta concentración IBR, el MRSCR cae por debajo de 1,5 antes que el SCR individual.
+
+**UFLS Visualizer:** configure la RoCoF a −1,5 Hz/s y observe cómo los escalones de deslastre se solapan en menos de 2 segundos. La velocidad del transitorio excede la capacidad de coordinación de los relés.
+
+**GFM Droop:** observe cómo el inversor grid-forming ajusta su tensión y frecuencia de forma autónoma ante perturbaciones, sin depender de un PLL externo.
+
+**Inrush:** simule la energización de un transformador de 170 MVA desde una fuente débil (un generador de 100 MW). La corriente magnetizante puede alcanzar 10× la nominal.
+
+**HVDC Control:** compare el comportamiento del enlace en PMODE1 (potencia fija) y PMODE3 (emulación AC). En PMODE3, el enlace responde a la frecuencia; en PMODE1, es inerte.
+:::
+
+  <AnnexEvidenceGrid>
     <AnnexEvidence type="interactive" id="pq-capability" level={2} />
-  </AnnexSection>
-
-  <AnnexSection id="reactiva-transitorios" eyebrow="Dominio 2" title="Reactiva y transitorios electromagnéticos">
-    El efecto Ferranti amplificó las sobretensiones en las líneas de 400 kV del suroeste. Para una línea de 300 km, la sobretensión puede alcanzar el 15–20% — suficiente para disparar las protecciones ANSI 59 de los inversores.
-    <AnnexEvidence type="interactive" id="ferranti" level={2} />
-    La corriente de inrush magnetizante al energizar un transformador decae exponencialmente, introduciendo transitorios asimétricos ricos en segundos armónicos.
-    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
-    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
-  </AnnexSection>
-
-  <AnnexSection id="control-frecuencia" eyebrow="Dominio 3" title="Control e inercia de frecuencia">
-    La ecuación del swing predice la respuesta inercial: con la H del sistema ibérico el 28-A (~2,5 s), un desequilibrio de 4,5 GW produce un RoCoF superior a 1,5 Hz/s.
-    <AnnexEvidence type="interactive" id="swing" level={2} />
-    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
-    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+    <AnnexEvidence type="interactive" id="grid-strength-scr" level={2} />
+  </AnnexEvidenceGrid>
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="mrscr-comparator" level={2} />
     <AnnexEvidence type="interactive" id="ufls" level={2} />
-    <AnnexEvidence type="interactive" id="bess-boom-chart" level={2} />
-    <AnnexEvidence type="interactive" id="lole-chart" level={2} />
-    <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
-  </AnnexSection>
+  </AnnexEvidenceGrid>
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="gfm-droop" level={2} />
+    <AnnexEvidence type="interactive" id="transformer-inrush" level={2} />
+  </AnnexEvidenceGrid>
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="hvdc-control" level={2} />
+    <AnnexEvidence type="interactive" id="phaseplane" level={2} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
 
-  <AnnexSection id="mercado-coste" eyebrow="Dominio 4" title="Mercado y economía de red">
-    Los precios nodales (LMP) habrían revelado el sobrecoste de congestión en los nudos del sur peninsular — información que el mercado zonal ibérico no proporciona.
-    <AnnexEvidence type="interactive" id="lmp-congestion" level={2} />
-    <AnnexEvidence type="interactive" id="dcopf-congestion" level={2} />
-    <AnnexEvidence type="interactive" id="voll-sector" level={2} />
-    <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
-    <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={2} />
-    <AnnexEvidence type="interactive" id="trilemma-triangle" level={2} />
-    <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
-    <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
   </AnnexSection>
+  {/* DOMINIO 2 — MERCADO Y ECONOMÍA                                    */}
+  <AnnexSection id="mercado-economia" eyebrow="Dominio 2" title="Mercado eléctrico y economía">
 
-  <AnnexSection id="sistemicos" eyebrow="Dominio 5" title="Modelos de dinámica de sistemas">
-    El modelo SIR calibrado con los datos del 28-A muestra que el retardo comunicativo de REE (~4 horas hasta la primera nota oficial) permitió que las narrativas de ciberataque alcanzasen el 30% de penetración antes de la primera rectificación.
-    <AnnexEvidence type="interactive" id="sir-disinformation" level={2} />
-    <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
-    <AnnexEvidence type="interactive" id="comparador-28a" level={2} />
-    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={2} />
-    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={2} />
-    <AnnexEvidence type="interactive" id="resolution-roadmap" level={2} />
+Este dominio reúne 7 simuladores que modelan los mecanismos económicos: precios nodales (LMP), flujo óptimo de carga (DC-OPF), valor de la energía no suministrada (VoLL), precios PICASSO durante la crisis, el régimen sancionador de la CNMC, el crecimiento del mercado BESS y las métricas LOLE de adecuación de recursos.
+
+:::tip Cómo explorar el fallo de mercado
+**LMP y DC-OPF:** observe cómo los precios nodales divergen cuando una línea de transporte se congestiona. En el 28-A, el desacoplamiento entre NTC comercial y flujo físico real fue la manifestación más extrema de esta divergencia.
+
+**VoLL sectorial:** compare el VoLL residencial (5–45 €/kWh) con el industrial (50–250 €/kWh). La asimetría explica por qué la pérdida estimada del 28-A (1.000–2.250 M€) es tan superior al precio marginal del MWh.
+
+**BESS Boom:** visualice la aceleración del mercado español de baterías post-28-A (de 28 MW a 193 MW operativos, +589 % en un año).
+:::
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="lmp-congestion" level={1} />
+  <AnnexEvidence type="interactive" id="dcopf-congestion" level={1} />
+</AnnexEvidenceGrid>
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="voll-sector" level={2} />
+  <AnnexEvidence type="interactive" id="picaso-price-chart" level={2} />
+</AnnexEvidenceGrid>
+
+<details>
+  <summary>▶ Más herramientas de mercado: CNMC, BESS, LOLE</summary>
+  <div style={{padding: '1rem 0'}}>
+  <AnnexEvidence type="interactive" id="cnmc-sanctions-chart" level={3} />
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="bess-boom-chart" level={3} />
+    <AnnexEvidence type="interactive" id="lole-chart" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
+  </AnnexSection>
+  {/* DOMINIO 3 — COMUNICACIÓN                                          */}
+  <AnnexSection id="comunicacion" eyebrow="Dominio 3" title="Dinámica de la desinformación">
+
+El modelo SIR (Susceptible-Infected-Recovered), originalmente epidemiológico, se aplica a la propagación de desinformación en redes sociales. Permite modelar cómo una hipótesis falsa (sabotaje, ciberataque) se propaga a una velocidad determinada por la tasa de contacto, la viralidad algorítmica y la velocidad de corrección institucional.
+
+:::tip Cómo explorar la propagación de desinformación
+**Modelo SIR:** fije la tasa de contacto alta (β = 0,4) y la tasa de recuperación baja (γ = 0,05) para simular las primeras horas del 28-A, cuando las hipótesis alternativas se propagaban sin corrección oficial. Aumente γ a 0,2 para simular el efecto de la primera comparecencia del presidente (18:00 CEST). Observe cómo el pico de «infectados» (personas expuestas a la narrativa falsa) se reduce pero no se elimina — la corrección nunca alcanza al 100 % de los expuestos.
+:::
+
+<AnnexEvidence type="interactive" id="sir-disinformation" level={1} />
+
+  </AnnexSection>
+  {/* DOMINIO 4 — SÍNTESIS Y PROSPECTIVA                                */}
+  <AnnexSection id="sintesis" eyebrow="Dominio 4" title="Síntesis del Trilema y prospectiva">
+
+Este dominio reúne las herramientas que integran los tres planos del Trilema de la Transición Energética — el marco conceptual central del TFG — y las herramientas de comparación temporal y agenda investigadora.
+
+:::tip Cómo explorar el Trilema
+**Trilemma Triangle:** cada arista muestra una tensión operativa (tecnológica, regulatoria, económica) con su métrica clave. El punto central es el 28-A: máxima tensión simultánea en los tres ejes.
+
+**Trilemma Simulator:** mueva los deslizadores de descarbonización (% IBR), coste (€/MWh restricciones) y estabilidad (H, SCR). Observe cómo el sistema se desplaza dentro del triángulo. El escenario del 28-A coloca el punto en el vértice de máxima fragilidad.
+
+**State Space:** el espacio de estados tridimensional muestra la trayectoria del sistema ibérico entre 2015 y 2025. La curva se acerca progresivamente al borde del dominio de estabilidad antes de salir definitivamente el 28-A.
+:::
+
+<AnnexEvidence type="interactive" id="trilemma-triangle" level={1} />
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="energy-trilemma" level={2} />
+  <AnnexEvidence type="interactive" id="trilemma-state-space" level={2} />
+</AnnexEvidenceGrid>
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="interactive" id="dynamic-security-shift" level={2} />
+  <AnnexEvidence type="interactive" id="radar-vulnerabilidad" level={2} />
+</AnnexEvidenceGrid>
+
+<details>
+  <summary>▶ Herramientas de comparación temporal y agenda de investigación</summary>
+  <div style={{padding: '1rem 0'}}>
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="comparador-28a" level={3} />
+    <AnnexEvidence type="interactive" id="then-vs-now-panel" level={3} />
+  </AnnexEvidenceGrid>
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="interactive" id="research-agenda-scatter" level={3} />
+    <AnnexEvidence type="interactive" id="resolution-roadmap" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="Este laboratorio matemático consolida la validación del análisis del TFG. La confluencia de modelos de flujo de potencia, oscilaciones de rotor y economía marginalista demuestra que el colapso del 28-A responde a dinámicas físicas precisas y previsibles que requieren una modelización rigurosa para plantear soluciones regulatorias efectivas."
-    doesNotDemonstrate="El uso integrado de los simuladores interactivos permite al lector contrastar las hipótesis y experimentar con los parámetros de sensibilidad de la red."
-    connection="La lectura se complementa de forma cruzada con los anexos factuales I, II, V y VII del informe."
+demonstrates="Los fenómenos del 28-A son reproducibles cualitativamente con modelos simplificados. La ecuación de oscilación con H=2,3 s produce una RoCoF de ~1,5 Hz/s. El efecto Ferranti en líneas de 300 km en vacío eleva la tensión por encima de 1,10 p.u. La singularidad del Jacobiano se alcanza al reducir la inyección de reactiva por debajo del margen disponible. El modelo SIR replica la dinámica de propagación de las hipótesis alternativas."
+doesNotDemonstrate="Estos modelos son didácticos y simplificados. No sustituyen las simulaciones PSS/E, PSCAD o PowerWorld de grado profesional que serían necesarias para una validación cuantitativa rigurosa. Los valores numéricos producidos son orientativos, no de ingeniería."
+connection="Este laboratorio complementa todos los capítulos y anexos del TFG. Los modelos de dinámica de red sustentan los capítulos 2, 3 y 7. Los modelos de mercado sustentan los capítulos 7b y el Anexo V. El modelo SIR sustenta el Capítulo 6 y el Anexo VIII. Las herramientas de síntesis sustentan el Capítulo 9."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
-    { to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II: estabilidad de tensión y frecuencia" },
-    { to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX: metodología y contraste de fuentes" }
+{ to: "/anexo-metodologia-modelos-datos-vivos", label: "Anexo IX · Contraste pericial y modelos de referencia" },
+{ to: "/anexo-estabilidad-dinamica-tension", label: "Anexo II · Registros PMU que validan los simuladores" },
+{ to: "/anexo-cascada-protecciones-desconexiones", label: "Anexo III · Simuladores de Ferranti, ANSI 59 y UFLS en contexto" },
+{ to: "/uso-ia", label: "← Capítulo 8 · Limitaciones de los modelos IA frente a los simuladores físicos" },
   ]} />
 </AnnexLayout>

@@ -1,7 +1,7 @@
 ---
 id: anexo-mercado-costes
 title: "Anexo V · Mercado eléctrico: la vulnerabilidad invisible"
-sidebar_label: "Anexo V · Mercado, precios y costes"
+sidebar_label: "Anexo V · Mercado y costes"
 hide_title: true
 ---
 
@@ -18,97 +18,150 @@ import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
 import AnnexEvidenceLead from '@site/src/components/annex/AnnexEvidenceLead';
 import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
 
-import PicasoPriceChart from '@site/src/components/PicasoPriceChart';
-
 <AnnexLayout
   wide
   kicker="Anexo V"
   title="Mercado eléctrico: la vulnerabilidad invisible"
-  description="Este anexo documenta las señales de precio y costes de desvíos durante el 28-A, analizando cómo el diseño marginalista y los mercados de balance operaron a ciegas frente a la progresiva degradación de la estabilidad dinámica de la red."
+  description="Señales de precio, costes de desvíos y servicios de balance durante el 28-A. El mercado marginalista operó a ciegas frente a la degradación de la estabilidad dinámica."
   meta={[
-    { label: 'Eje técnico', value: 'Mercado y Costes' },
-    { label: 'Cobertura', value: 'Impacto económico y precios' },
-    { label: 'Evidencias', value: 'Figuras · Tablas · Interactivos · Series' },
+{ label: 'Eje técnico', value: 'Mercado eléctrico y servicios de balance' },
+{ label: 'Indicadores ESIOS', value: '600, 1001, 151, 541, 1395' },
+{ label: 'Capítulos asociados', value: 'Cap. 7b (Finanzas) · Cap. 7 (Resiliencia) · Dim. Europea (PICASSO)' },
   ]}
 >
   <AnnexKeyQuestion>
-    ¿Por qué las señales de precios del mercado eléctrico y de los servicios de balance no reflejaron la creciente vulnerabilidad dinámica del sistema peninsular?
+¿Por qué las señales de precios del mercado eléctrico y de los servicios de balance no reflejaron la creciente vulnerabilidad dinámica del sistema peninsular?
   </AnnexKeyQuestion>
 
   <AnnexThesisBox>
-    El 28-A, el mercado marginalista liquidó la energía en niveles de precio normales o incluso bajos debido al pico de producción renovable a coste marginal cero. Sin embargo, este abaratamiento comercial ocultaba un coste de seguridad dinámico que el mercado actual no remunera de forma explícita: la inercia y la potencia de cortocircuito. Las señales de precios del mercado diario y de los servicios de balance paneuropeos (PICASSO) resultaron ciegas a la fragilidad física del sistema, demostrando que el actual diseño de mercado carece de mecanismos para valorar la resiliencia en tiempo real.
+El 28-A, el mercado marginalista liquidó la energía a precios negativos (−3,00 €/MWh a las 12:00 CEST) por el excedente solar. Este abaratamiento ocultaba un coste de seguridad dinámica que el mercado no remunera: inercia, potencia de cortocircuito y reactiva dinámica. Las señales de precio del mercado diario, los servicios de balance paneuropeos (PICASSO) y los precios de desvíos resultaron ciegos a la fragilidad física del sistema. El diseño actual carece de mecanismos para valorar la resiliencia en tiempo real.
   </AnnexThesisBox>
 
   <AnnexBlackoutRelevance>
-    Este anexo reúne los registros de precios OMIE, los costes de desvíos y la facturación de servicios de balance que evidencian la desconexión entre la economía del mercado y la seguridad física de la red el 28-A.
+Este anexo documenta la desconexión entre la economía del mercado y la seguridad física de la red. El precio negativo del SPOT en la hora del colapso no es una consecuencia del apagón — se fijó 24 horas antes — sino la señal de un diseño que expulsaba activamente la generación síncrona cuando más se necesitaba.
   </AnnexBlackoutRelevance>
 
   <AnnexMethodNote type="reconstruccion">
-    La documentación económica se presenta estructurada temáticamente para evaluar el comportamiento de los mercados y las señales de precio derivadas de la interrupción del suministro.
+Fuentes: OMIE (mercado diario y saldos), ESIOS/REE (indicadores 600, 1001, 151, 541, 1395), ENTSO-E Factual Report (TR 12.1, 13.1, 17.1), CNMC, PwC/ConsumES, NERA, ESIG. Series horarias y de 15 minutos. Los precios del mercado diario se fijaron 24 horas antes del evento y no reflejan el colapso en sí, sino las condiciones de oferta-demanda previstas.
   </AnnexMethodNote>
 
-  <em>El anexo se organiza en tres secciones argumentales: señales de mercado el 28-A, balance y desvíos operativos, y la ausencia de precios para las propiedades dinámicas de soporte de red.</em>
+  Este anexo se organiza en tres secciones. La primera examina los precios del mercado diario y la tarifa PVPC, mostrando cómo el abaratamiento comercial ocultaba un coste de seguridad creciente. La segunda analiza los mercados de balance y desvíos, documentando las señales de estrés previas al colapso y su desaparición durante el evento. La tercera plantea la arquitectura de los servicios de resiliencia (ERS) como respuesta al fallo de mercado documentado.
 
   <AnnexEvidenceNav
-    items={[
-      { label: 'Señales de mercado', target: 'senales-mercado' },
-      { label: 'Balance y desvíos',   target: 'balance-desvios' },
-      { label: 'Vulnerabilidad',     target: 'vulnerabilidad-mercado' },
-    ]}
+items={[
+  { label: 'El precio ciego',              target: 'precio-ciego' },
+  { label: 'Los mercados de balance',       target: 'mercados-balance' },
+  { label: 'La resiliencia no remunerada',  target: 'resiliencia-no-remunerada' },
+]}
   />
+  <AnnexSection id="precio-ciego" eyebrow="Sección 1" title="El precio que no vio el colapso">
 
-  <AnnexSection id="senales-mercado" eyebrow="Sección 1" title="Señales de mercado el 28-A: precios e indicadores">
-    La tabla de precios marginales OMIE registra la evolución horaria del precio de la energía, confirmando niveles bajos debidos a la alta penetración solar fotovoltaica.
-    <AnnexEvidenceLead
-      eyebrow="Evidencia principal"
-      title="Coste del servicio ERS e inercia"
-      summary="Comparación del coste óptimo de adquisición del servicio de inercia y respuesta rápida (ERS) frente a la inacción del mercado el día del colapso."
-      insight="Brecha regulatoria y económica · Incentivos para la firmeza síncrona."
-    >
-      <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
-    </AnnexEvidenceLead>
-    El precio SPOT cayó a −3,00 €/MWh en la hora 12:00–13:00 CEST — fijado 24 horas antes del colapso. Un precio negativo indica que el mercado expulsaba activamente la generación síncrona precisamente cuando más se necesitaba su inercia.
-    <AnnexEvidence type="table" id="precios-marginales-omie" level={2} />
-    El precio negativo no fue consecuencia del apagón: fue una señal de alarma que el sistema no interpretó.
-    La evolución SPOT vs PVPC revela la brecha estructural: precio mayorista negativo frente a tarifa minorista de 130 €/MWh en la misma hora. Tras el apagón, el SPOT se recuperó a 35 €/MWh por el mayor uso de gas en la Operación Reforzada.
-    <AnnexEvidence type="chart" id="chart-9" level={2} />
-    El dato revelador no es el precio final (51,52 €/MWh) sino sus componentes: las restricciones técnicas (27,93 €/MWh) superaban al precio de mercado (24,63 €/MWh). El coste de la estabilidad ya excedía el coste de la energía en la madrugada del evento.
-    <AnnexEvidence type="chart" id="chart-10" level={2} />
-    Los precios de activación en la plataforma europea PICASSO documentan el coste de las reservas de regulación rápida movilizadas durante la emergencia paneuropea.
-    <div style={{ margin: '1.5rem 0' }}>
-      <PicasoPriceChart showCaption={false} />
-    </div>
+A las 12:00 CEST del 28 de abril, el precio del mercado diario OMIE era de −3,00 €/MWh: el sistema pagaba a los generadores por retirar su energía. Simultáneamente, la tarifa PVPC que pagaban los consumidores domésticos superaba los 130 €/MWh en la misma franja horaria. Esta brecha — precio mayorista negativo frente a tarifa minorista elevada — es la señal económica más directa del desequilibrio entre el coste de la energía y el coste de la estabilidad.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Precio SPOT mayorista frente a PVPC minorista"
+  summary="El precio SPOT cayó a −3,00 €/MWh en la hora 12–13 CEST por el excedente solar. El PVPC superaba los 130 €/MWh. La brecha entre ambas curvas documenta el coste oculto de la estabilidad."
+  insight="El precio negativo del SPOT expulsaba del despacho las máquinas síncronas que el sistema necesitaba para operar con seguridad."
+>
+  <AnnexEvidence type="chart" id="chart-9" level={1} />
+</AnnexEvidenceLead>
+
+El precio negativo no fue causado por el apagón — se fijó 24 horas antes en la casación del mercado diario. Su significado es previo y estructural: indica que el mercado mayorista estaba expulsando activamente los ciclos combinados de gas por orden de mérito, eliminando las máquinas que aportaban inercia, potencia de cortocircuito y absorción dinámica de reactiva. El colapso fue, en parte, el coste de un diseño de mercado que no internaliza estos servicios.
+
+La evolución horaria de los precios day-ahead para España y Portugal confirma que la ventana de precios negativos abarcó toda la franja de 08:00 a 16:00 CEST, coincidiendo con el pico de producción solar:
+
+<AnnexEvidence type="chart" id="chart-11" level={2} />
+
+El desglose del precio final de la electricidad revela una anomalía previa al colapso que merece atención: en la primera hora del 28-A, las restricciones técnicas (27,93 €/MWh) ya superaban al precio del mercado diario (24,63 €/MWh). El coste de mantener el sistema físicamente estable era mayor que el coste de la energía en sí misma antes de que el sol comenzara a producir.
+
+<AnnexEvidence type="chart" id="chart-10" level={2} />
+
+<details>
+  <summary>▶ Precios marginales OMIE: 28-A frente a 29-A y 30-A</summary>
+  <div style={{padding: '1rem 0'}}>
+
+La tabla de precios marginales muestra la distorsión post-apagón: el precio medio del 29-A cayó a 5,79 €/MWh (−68 % frente al 28-A) por la obligación de despachar ciclos combinados bajo la Operación Reforzada; el 30-A repuntó un 450 % por los servicios de ajuste. La oscilación de precios en 48 horas (de −3 a +31,87 €/MWh) refleja la inestabilidad del mercado ante un sistema que opera fuera de su envolvente de diseño.
+
+  <AnnexEvidence type="table" id="precios-marginales-omie" level={3} />
+  </div>
+</details>
+
   </AnnexSection>
+  <AnnexSection id="mercados-balance" eyebrow="Sección 2" title="Los mercados de balance: señales bajo estrés">
 
-  <AnnexSection id="balance-desvios" eyebrow="Sección 2" title="Balance y desvíos operativos">
-    El coste de las reservas de regulación subida y el volumen de energía de regulación activada documentan la magnitud del esfuerzo técnico y económico por equilibrar la red tras la pérdida de 4,5 GW en 11 segundos.
-    <AnnexEvidence type="chart" id="chart-11" level={2} />
-    <AnnexEvidence type="chart" id="chart-12" level={2} />
-    Los saldos de desvíos, los precios de imbalance, la capacidad FRR disponible (~889 MW en el peor caso del Q2 frente a un déficit de ~1.200 MW) y los costes de gestión de congestiones completan el cuadro económico del colapso operativo.
-    <AnnexEvidence type="chart" id="chart-18" level={2} />
-    <AnnexEvidence type="chart" id="chart-19" level={2} />
-    <AnnexEvidence type="chart" id="chart-20" level={2} />
-    <AnnexEvidence type="chart" id="chart-21" level={2} />
-    <AnnexEvidence type="chart" id="chart-22" level={2} />
-    La matriz interactiva de costes de ajuste térmico permite explorar el reparto de sobrecostes por la activación excepcional de ciclos combinados de seguridad.
-    <span id="grafico-matrix"></span>
-    <AnnexEvidence type="interactive" id="matrix" level={2} />
+Los precios de desvíos y el volumen de desequilibrio entre generación y demanda son los termómetros más sensibles del estrés operativo en tiempo real. Su evolución en las horas previas al colapso muestra señales de tensión que los modelos de seguridad estáticos no capturaron; su desaparición durante el blackout documenta el momento en que el mecanismo de mercado dejó de funcionar; y su reaparición durante la Operación Reforzada cuantifica el coste de reactivar el sistema.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Desequilibrio generación-demanda en intervalos de 15 minutos"
+  summary="Pico de déficit de 1.690 MWh alcanzado más de tres horas después del colapso. La transición a superávit (18:15 UTC) marcó la activación plena de la Operación Reforzada."
+  insight="El blackout no fue un evento instantáneo y concluido, sino el inicio de una crisis operativa de 19 horas."
+>
+  <AnnexEvidence type="chart" id="chart-18" level={1} />
+</AnnexEvidenceLead>
+
+La curva de desequilibrio documenta tres fases. Primera: la normalidad operativa previa (desequilibrio < 200 MWh, compatible con la gestión habitual de aFRR/mFRR). Segunda: el deterioro progresivo a partir de las 12:00 CEST (123,8 → 346,7 → 616,2 → 1.690,4 MWh), que muestra cómo el sistema perdió la capacidad de equilibrarse a medida que la generación desaparecía. Tercera: la transición forzada a superávit a las 18:15 UTC, cuando la Operación Reforzada impuso el despacho de grupos síncronos por encima de la demanda real para garantizar márgenes de seguridad — a costa de un sobrecoste económico que se cifra en más de 1.000 M€ anualizados.
+
+Los precios de desvíos y los costes de restricciones documentan la contrapartida financiera de este estrés:
+
+<AnnexEvidenceGrid>
+  <AnnexEvidence type="chart" id="chart-20" level={2} />
+  <AnnexEvidence type="chart" id="chart-12" level={2} />
+</AnnexEvidenceGrid>
+
+A la izquierda, los precios de desvíos se desplomaron a valores no representativos durante el blackout (el mecanismo de mercado dejó de funcionar) y repuntaron durante la Operación Reforzada. A la derecha, la superposición del porcentaje de generación libre de CO₂ (que cayó del 91 % a 0 % en los segundos del colapso) con los precios de restricciones (145–150 €/MWh) y de desvíos (50–276 €/MWh) documenta que los costes de equilibrio eran elevados pero no excepcionales — el mercado no anticipó que esos valores enmascaraban una fragilidad operativa mortal.
+
+<details>
+  <summary>▶ Capacidad de reservas FRR, costes de congestión y volumen de desequilibrio detallado</summary>
+  <div style={{padding: '1rem 0'}}>
+
+La capacidad de Reserva de Restauración de Frecuencia (FRR) disponible en Q2 2025 (mínimo: 889 MW de subida) era inferior al déficit instantáneo por la pérdida de importación desde Francia (~1.200 MW). Los costes mensuales de gestión de congestión (countertrading) revelan una tendencia descendente en Q1 (8,8 M€ → 6,9 M€ → 4,1 M€) que se anuló en abril — no por mejora sino porque el sistema colapsó y las operaciones de redespacho dejaron de tener sentido.
+
+  <AnnexEvidence type="chart" id="chart-21" level={3} />
+  <AnnexEvidenceGrid>
+    <AnnexEvidence type="chart" id="chart-22" level={3} />
+    <AnnexEvidence type="chart" id="chart-19" level={3} />
+  </AnnexEvidenceGrid>
+  </div>
+</details>
+
   </AnnexSection>
+  <AnnexSection id="resiliencia-no-remunerada" eyebrow="Sección 3" title="La resiliencia no remunerada: el fallo de mercado">
 
-  <AnnexSection id="vulnerabilidad-mercado" eyebrow="Sección 3" title="La vulnerabilidad invisible del mercado">
-    El coste total del sistema se minimiza cuando se remunera explícitamente la inercia (ERS). La diferencia entre el óptimo y la realidad del 28-A es el coste de los servicios ancilares que el mercado no valora. El apilamiento de ingresos para BESS-GFM muestra que la remuneración por inercia sintética viabilizaría la inversión privada en soporte dinámico.
-    <AnnexEvidence type="figure" id="ers_revenue_stacking" level={3} />
-    El apilamiento de ingresos (revenue stacking) para almacenamiento en baterías (BESS) muestra cómo la remuneración por inercia sintética y regulación rápida viabiliza la inversión privada.
+  <span id="grafico-matrix"></span>
+
+La evidencia de las dos secciones anteriores conduce a una conclusión estructural: el mercado marginalista puro de energía es ciego a los atributos que sostienen la estabilidad porque esos atributos no tienen precio. La inercia, la potencia de cortocircuito, la reactiva dinámica y la respuesta rápida de frecuencia eran proporcionados históricamente por los generadores síncronos como externalidad gratuita de su operación comercial. Al ser desplazados por renovables con coste marginal cero, esos servicios desaparecieron sin que el mercado generase una señal de escasez.
+
+<AnnexEvidenceLead
+  eyebrow="Evidencia principal"
+  title="Coste óptimo del sistema con y sin remuneración de ERS"
+  summary="El mínimo de coste total se alcanza con un mix que remunera explícitamente los Servicios Esenciales de Confiabilidad. Sin esa remuneración, el coste total aumenta por los daños no internalizados."
+  insight="La diferencia entre las dos curvas es el coste de los servicios que el mercado actual no valora."
+>
+  <AnnexEvidence type="figure" id="coste_optimo_ers" level={1} />
+</AnnexEvidenceLead>
+
+La curva de coste óptimo documenta la propuesta central del [Capítulo 7 (Resiliencia)](./07-resiliencia-futuro.mdx): los ERS deben convertirse en productos de mercado explícitos, con subastas de disponibilidad y señales geográficas de nivel de cortocircuito. Sin esa traducción económica, las exigencias técnicas del NC RfG 2.0 carecen de sostenibilidad: ningún inversor *grid-forming* puede mantener el *headroom* de capacidad aparente necesario para actuar como fuente de tensión si ese *headroom* no se remunera.
+
+El modelo de ingresos apilados (*revenue stacking*) para un sistema BESS-GFM muestra las fuentes de rentabilidad que justifican la inversión en activos formadores de red:
+
+<AnnexEvidence type="figure" id="ers_revenue_stacking" level={2} />
+
+La combinación de arbitraje de mercado diario, participación en aFRR/mFRR, pagos por inercia sintética y FFR puede generar una TIR competitiva — pero solo si los mercados de inercia y FFR existen regulatoriamente. En la fecha del 28-A, no existían en España. La reforma del P.O. 7.4 (Resolución CNMC, junio 2025) y el trámite de audiencia para mercados zonales de servicios de no frecuencia (mayo 2026) son los primeros pasos hacia esta arquitectura, documentados en el [Capítulo 7](./07-resiliencia-futuro.mdx).
+
   </AnnexSection>
 
   <AnnexSectionSummary
-    demonstrates="El análisis económico del 28-A revela una paradoja regulatoria: el mercado operó con total eficiencia comercial mientras conducía al sistema al colapso físico. El diseño marginalista actual no valora ni remunera las propiedades dinámicas de soporte de red (inercia, Scc), creando un incentivo sistemático para expulsar las máquinas síncronas que las proveen."
-    doesNotDemonstrate="Este anexo demuestra la necesidad de reformar el mercado eléctrico para incorporar mercados de servicios ancilares de inercia y potencia de cortocircuito, evitando que la transición energética comprometa la seguridad dinámica."
-    connection="La lectura se complementa con el Anexo I (mix de generación previo) y con el Anexo VII (cuantificación del impacto socioeconómico del apagón)."
+demonstrates="El mercado marginalista expulsó la generación síncrona por orden de mérito sin generar señales de escasez sobre los atributos de estabilidad que esa generación proveía. Los precios de desvíos y restricciones mostraban estrés pero no anticipaban un riesgo sistémico. La capacidad FRR era insuficiente para el déficit instantáneo. El diseño de mercado actual carece de mecanismos para valorar inercia, potencia de cortocircuito y reactiva dinámica."
+doesNotDemonstrate="Este anexo no demuestra que el mercado marginalista sea intrínsecamente inadecuado para la transición energética. Demuestra que necesita ser complementado con mercados de servicios de confiabilidad (ERS) que remuneren los atributos de estabilidad como productos explícitos."
+connection="Este anexo se lee con el Anexo I (el mix que el mercado configuró), con el Capítulo 7b (la traducción financiera del fallo de mercado) y con el Capítulo 7 (la propuesta de ERS como solución). Los datos de PICASSO y las reformas ERAA/LOLE se documentan en el capítulo de Dimensión Europea."
   />
 
   <AnnexCrossLinks links={[
-    { to: "/anexo-demanda-generacion-balance", label: "Anexo I: demanda, generación y balance" },
-    { to: "/anexo-impacto-resiliencia", label: "Anexo VII: impacto socioeconómico y resiliencia" }
+{ to: "/anexo-demanda-generacion-balance", label: "Anexo I · El mix que el mercado configuró" },
+{ to: "/07b-consecuencias-financieras", label: "← Capítulo 7b · Traducción financiera del fallo" },
+{ to: "/resiliencia-futuro", label: "← Capítulo 7 · ERS y mercados de resiliencia" },
+{ to: "/dimension-europea/dia-despues", label: "← Dimensión Europea · Reformas PICASSO y ERAA" },
   ]} />
 </AnnexLayout>
