@@ -31,10 +31,16 @@ export default function FerrantiCapacitiveLineSimulator() {
 
   const { effectiveCapacitive, compensationTerm, qExcess, vr, stateKey } = derived;
 
+  // Color dinámico de estado — se propaga a nodo Vr, gauge pointer y borde de conexión
+  const vrNodeColor =
+    stateKey === 'normal'     ? 'var(--fig-teal)'    :
+    stateKey === 'overvoltage'? 'var(--fig-amber)'   :
+                                'var(--fig-burgundy)';
+
   const stateLabels = {
-    normal: 'Régimen normal',
+    normal:      'Régimen normal',
     overvoltage: 'Sobretensión',
-    risk: 'Riesgo ANSI 59',
+    risk:        'Riesgo ANSI 59',
   };
 
   const pericialText = useMemo(() => {
@@ -47,10 +53,10 @@ export default function FerrantiCapacitiveLineSimulator() {
   }, [stateKey, lengthKm, loadPercent, compensationPercent]);
 
   const tooltips = {
-    gauge: `Tensión receptora: ${vr.toFixed(3)} p.u. — ${stateLabels[stateKey]}`,
-    capacitor: 'Capacitancia distribuida de la línea: genera potencia reactiva capacitiva proporcional a V² y a la longitud.',
+    gauge:       `Tensión receptora: ${vr.toFixed(3)} p.u. — ${stateLabels[stateKey]}`,
+    capacitor:   'Capacitancia distribuida de la línea: genera potencia reactiva capacitiva proporcional a V² y a la longitud.',
     compensator: 'Compensación inductiva shunt: reactores que absorben reactiva para contrarrestar el excedente capacitivo.',
-    excess: qExcess >= 0
+    excess:      qExcess >= 0
       ? 'Excedente capacitivo positivo: la inyección de reactiva supera la absorción, elevando la tensión receptora.'
       : 'Balance reactivo negativo: la absorción supera la generación capacitiva, sin riesgo de sobretensión.',
   };
@@ -68,8 +74,9 @@ export default function FerrantiCapacitiveLineSimulator() {
   }, [numCaps]);
 
   const showArrow = qExcess > 0;
-  const arrowOpacity = showArrow ? Math.min(1, 0.4 + qExcess * 0.8) : 0;
-  const arrowWidth = showArrow ? Math.min(4, 1.5 + qExcess * 2) : 1;
+  const arrowOpacity = showArrow ? Math.min(1, 0.45 + qExcess * 0.75) : 0;
+  // Mínimo 2.5 — antes llegaba a 1.5, prácticamente invisible en excedentes bajos
+  const arrowWidth = showArrow ? Math.min(5, 2.5 + qExcess * 2.5) : 1;
 
   const maxReactive = Math.max(effectiveCapacitive, compensationTerm, Math.abs(qExcess), 1.0);
 
@@ -110,65 +117,83 @@ export default function FerrantiCapacitiveLineSimulator() {
 
           <rect x="0" y="0" width="820" height="280" fill="var(--fig-bg)" rx="8" />
 
-          {/* ── Main line ── */}
-          <line x1="100" y1="150" x2="680" y2="150" stroke="var(--fig-teal)" strokeWidth="3" />
+          {/* ── Halo del conductor — da masa visual a la línea ── */}
+          <line x1="100" y1="150" x2="680" y2="150"
+            stroke="var(--fig-teal)" strokeWidth="11" opacity="0.10" strokeLinecap="round" />
+
+          {/* ── Conductor principal — strokeWidth 3 → 5 ── */}
+          <line x1="100" y1="150" x2="680" y2="150"
+            stroke="var(--fig-teal)" strokeWidth="5" strokeLinecap="round" />
+
+          {/* ── Conductores paralelos (terna de fase) — antes invisibles ── */}
           {offsets.map((o) => (
             <line key={o} x1="100" y1={150 + o} x2="680" y2={150 + o}
-              stroke="var(--fig-teal)" strokeWidth="0.8" opacity="0.3" />
+              stroke="var(--fig-teal)" strokeWidth="1.3" opacity="0.50" />
           ))}
 
-          {/* ── Vs node ── */}
-          <rect x="70" y="125" width="28" height="38" rx="4"
-            fill="var(--fig-surface)" stroke="var(--fig-text)" strokeWidth="1.5" />
-          <text x="84" y="144" textAnchor="middle" dominantBaseline="middle"
-            fontSize="12" fill="var(--fig-text)" fontWeight="600">Vs</text>
-          <text x="84" y="158" textAnchor="middle" dominantBaseline="middle"
-            fontSize="8" fill="var(--fig-muted)">1.0 p.u.</text>
+          {/* ── Puntos de conexión — anclan el conductor a los nodos ── */}
+          <circle cx="100" cy="150" r="5"
+            fill="var(--fig-bg)" stroke="var(--fig-teal)" strokeWidth="2" />
+          <circle cx="680" cy="150" r="5"
+            fill="var(--fig-bg)" stroke={vrNodeColor} strokeWidth="2" />
 
-          {/* ── Vr node ── */}
-          <rect x="660" y="125" width="28" height="38" rx="4"
-            fill="var(--fig-surface)" stroke="var(--fig-text)" strokeWidth="1.5" />
-          <text x="674" y="144" textAnchor="middle" dominantBaseline="middle"
-            fontSize="12" fill="var(--fig-text)" fontWeight="600">Vr</text>
-          <text x="674" y="158" textAnchor="middle" dominantBaseline="middle"
-            fontSize="8" fill="var(--fig-text)">{vr.toFixed(3)}</text>
+          {/* ── Nodo Vs — borde teal fijo ── */}
+          <rect x="62" y="120" width="36" height="48" rx="5"
+            fill="var(--fig-surface)" stroke="var(--fig-teal)" strokeWidth="2" />
+          <text x="80" y="140" textAnchor="middle" dominantBaseline="middle"
+            fontSize="13" fill="var(--fig-text)" fontWeight="700">Vs</text>
+          <text x="80" y="155" textAnchor="middle" dominantBaseline="middle"
+            fontSize="9" fill="var(--fig-muted)">1.0 p.u.</text>
 
-          {/* ── Distributed capacitances ── */}
+          {/* ── Nodo Vr — borde y valor en color de estado ── */}
+          <rect x="652" y="120" width="36" height="48" rx="5"
+            fill="var(--fig-surface)" stroke={vrNodeColor} strokeWidth="2.5" />
+          <text x="670" y="140" textAnchor="middle" dominantBaseline="middle"
+            fontSize="13" fill="var(--fig-text)" fontWeight="700">Vr</text>
+          <text x="670" y="155" textAnchor="middle" dominantBaseline="middle"
+            fontSize="9" fill={vrNodeColor} fontWeight="700">{vr.toFixed(3)}</text>
+
+          {/* ── Capacitancias distribuidas — placas más anchas (±12 vs ±8) ── */}
           {capXs.map((cx) => (
             <g key={cx}
               onMouseEnter={() => hover('capacitor')}
               onMouseLeave={unhover}
               className={styles.capGroup}
             >
-              <line x1={cx} y1="150" x2={cx} y2="180" stroke="var(--fig-text)" strokeWidth="1" />
-              <line x1={cx - 8} y1="180" x2={cx + 8} y2="180" stroke="var(--fig-teal)" strokeWidth="2" />
-              <line x1={cx - 8} y1="185" x2={cx + 8} y2="185" stroke="var(--fig-teal)" strokeWidth="2" />
-              <line x1={cx} y1="185" x2={cx} y2="195" stroke="var(--fig-text)" strokeWidth="1" />
-              <line x1={cx - 5} y1="195" x2={cx + 5} y2="195" stroke="var(--fig-text)" strokeWidth="1.5" />
-              <text x={cx} y="210" textAnchor="middle" fontSize="7" fill="var(--fig-teal)">C</text>
+              {/* Lead desde el conductor — empieza en y=155 para no tapar el halo */}
+              <line x1={cx} y1="155" x2={cx} y2="178" stroke="var(--fig-text)" strokeWidth="1" opacity="0.55" />
+              {/* Placas del condensador — más anchas */}
+              <line x1={cx - 12} y1="178" x2={cx + 12} y2="178" stroke="var(--fig-teal)" strokeWidth="2.5" />
+              <line x1={cx - 12} y1="184" x2={cx + 12} y2="184" stroke="var(--fig-teal)" strokeWidth="2.5" />
+              {/* Lead a tierra */}
+              <line x1={cx} y1="184" x2={cx} y2="194" stroke="var(--fig-text)" strokeWidth="1" opacity="0.55" />
+              {/* Símbolo de tierra — doble línea */}
+              <line x1={cx - 7} y1="194" x2={cx + 7} y2="194" stroke="var(--fig-text)" strokeWidth="1.5" opacity="0.60" />
+              <line x1={cx - 4} y1="198" x2={cx + 4} y2="198" stroke="var(--fig-text)" strokeWidth="1" opacity="0.40" />
+              <text x={cx} y="211" textAnchor="middle" fontSize="9" fill="var(--fig-teal)" fontWeight="600">C</text>
             </g>
           ))}
 
-          {/* ── Length label ── */}
-          <text x="390" y="120" textAnchor="middle" fontSize="9" fill="var(--fig-muted)" opacity="0.7">
+          {/* ── Etiqueta de longitud / estado ── */}
+          <text x="390" y="108" textAnchor="middle" fontSize="9" fill="var(--fig-muted)" opacity="0.7">
             {lengthKm} km eq.
           </text>
-          <text x="390" y="134" textAnchor="middle" fontSize="9.5" fill="var(--fig-text)" opacity="0.85" fontWeight="500">
+          <text x="390" y="121" textAnchor="middle" fontSize="10" fill="var(--fig-text)" opacity="0.85" fontWeight="500">
             {vr > 1.01 ? 'Vr > Vs' : 'Vr ≈ Vs'}
           </text>
 
-          {/* ── Capacitive push arrow ── */}
+          {/* ── Flecha de excedente capacitivo — mínimo arrowWidth 2.5, texto 9px ── */}
           {showArrow && (
             <g opacity={arrowOpacity}>
-              <line x1="330" y1="125" x2="530" y2="115"
-                stroke="var(--fig-amber)" strokeWidth={arrowWidth} strokeDasharray="4 2" />
-              <polygon points="530,115 536,111 534,118" fill="var(--fig-amber)" />
-              <text x="430" y="108" textAnchor="middle" fontSize="7.5"
-                fill="var(--fig-amber)" fontWeight="500">excedente capacitivo</text>
+              <line x1="330" y1="126" x2="530" y2="114"
+                stroke="var(--fig-amber)" strokeWidth={arrowWidth} strokeDasharray="5 3" />
+              <polygon points="530,114 537,109 534,118" fill="var(--fig-amber)" />
+              <text x="430" y="106" textAnchor="middle" fontSize="9"
+                fill="var(--fig-amber)" fontWeight="600">excedente capacitivo</text>
             </g>
           )}
 
-          {/* ── Inductive compensator ── */}
+          {/* ── Compensador inductivo shunt ── */}
           <g transform="translate(655, 150)"
             onMouseEnter={() => hover('compensator')}
             onMouseLeave={unhover}
@@ -176,38 +201,46 @@ export default function FerrantiCapacitiveLineSimulator() {
           >
             <line x1="0" y1="0" x2="0" y2="12" stroke="var(--fig-text)" strokeWidth="1.5" />
             <path d="M -8 12 L 8 18 L -8 24 L 8 30 L -8 36" fill="none"
-              stroke="var(--fig-amber)" strokeWidth="1.8" />
+              stroke="var(--fig-amber)" strokeWidth="2" />
             <line x1="0" y1="36" x2="0" y2="44" stroke="var(--fig-text)" strokeWidth="1" />
             <line x1="-4" y1="44" x2="4" y2="44" stroke="var(--fig-text)" strokeWidth="1.5" />
-            <text x="14" y="24" fontSize="7" fill="var(--fig-amber)">comp. inductiva</text>
+            <text x="14" y="26" fontSize="8" fill="var(--fig-amber)">comp. inductiva</text>
           </g>
 
-          {/* ── Voltage gauge ── */}
+          {/* ── Gauge de tensión ── */}
           <g transform="translate(700, 40)"
             onMouseEnter={() => hover('gauge')}
             onMouseLeave={unhover}
           >
+            {/* Columna de fondo */}
             <rect x="0" y="0" width="14" height={gaugeH} rx="3"
-              fill="var(--fig-surface)" stroke="var(--fig-text)" strokeWidth="1" />
-            <rect x="1" y={y105} width="12" height={gaugeH - y105} fill="var(--fig-teal)" opacity="0.7" />
-            <rect x="1" y={y109} width="12" height={y105 - y109} fill="var(--fig-amber)" opacity="0.7" />
-            <rect x="1" y="0" width="12" height={y109} fill="var(--fig-burgundy)" opacity="0.7" />
+              fill="var(--fig-surface)" stroke="var(--fig-text)" strokeWidth="1" opacity="0.4" />
+            {/* Zonas — opacity 0.70 → 0.82 para más definición */}
+            <rect x="1" y={y105} width="12" height={gaugeH - y105} fill="var(--fig-teal)"    opacity="0.82" />
+            <rect x="1" y={y109} width="12" height={y105 - y109}   fill="var(--fig-amber)"   opacity="0.82" />
+            <rect x="1" y="0"    width="12" height={y109}           fill="var(--fig-burgundy)" opacity="0.82" />
 
-            <line x1="-6" y1={markerY} x2="14" y2={markerY} stroke="var(--fig-text)" strokeWidth="2" />
-            <polygon points={`14,${markerY - 3} 19,${markerY} 14,${markerY + 3}`} fill="var(--fig-text)" />
-            <text x="24" y={markerY + 3} fontSize="8" fill="var(--fig-text)" fontWeight="600">
+            {/* Marcador y flecha pointer en color de estado */}
+            <line x1="-6" y1={markerY} x2="20" y2={markerY}
+              stroke={vrNodeColor} strokeWidth="2.5" />
+            <polygon points={`20,${markerY - 4} 27,${markerY} 20,${markerY + 4}`}
+              fill={vrNodeColor} />
+            <text x="31" y={markerY + 4} fontSize="9" fill={vrNodeColor} fontWeight="700">
               {vr.toFixed(3)}
             </text>
 
-            <text x="18" y="8" fontSize="7" fill="var(--fig-burgundy)" fontWeight="500">ANSI 59</text>
-            <text x="18" y={y109 + (y105 - y109) / 2 + 2} fontSize="7" fill="var(--fig-amber)" fontWeight="500">sobretensión</text>
-            <text x="18" y={gaugeH - 4} fontSize="7" fill="var(--fig-teal)" fontWeight="500">normal</text>
+            {/* Etiquetas de zona — 7 → 8px */}
+            <text x="18" y="9"   fontSize="8" fill="var(--fig-burgundy)" fontWeight="600">ANSI 59</text>
+            <text x="18" y={y109 + (y105 - y109) / 2 + 3} fontSize="8" fill="var(--fig-amber)" fontWeight="500">sobretensión</text>
+            <text x="18" y={gaugeH - 3} fontSize="8" fill="var(--fig-teal)" fontWeight="500">normal</text>
 
-            <line x1="14" y1={y105} x2="18" y2={y105} stroke="var(--fig-text)" strokeWidth="1" />
-            <text x="21" y={y105 + 2} fontSize="6" fill="var(--fig-text)">1.05</text>
-            <line x1="14" y1={y109} x2="18" y2={y109} stroke="var(--fig-text)" strokeWidth="1" />
-            <text x="21" y={y109 + 2} fontSize="6" fill="var(--fig-text)">1.09</text>
-            <text x="7" y={gaugeH + 12} textAnchor="middle" fontSize="8" fill="var(--fig-text)">p.u.</text>
+            {/* Ticks de umbral */}
+            <line x1="14" y1={y105} x2="18" y2={y105} stroke="var(--fig-text)" strokeWidth="1" opacity="0.45" />
+            <text x="21" y={y105 + 2} fontSize="7" fill="var(--fig-muted)">1.05</text>
+            <line x1="14" y1={y109} x2="18" y2={y109} stroke="var(--fig-text)" strokeWidth="1" opacity="0.45" />
+            <text x="21" y={y109 + 2} fontSize="7" fill="var(--fig-muted)">1.09</text>
+
+            <text x="7" y={gaugeH + 14} textAnchor="middle" fontSize="8" fill="var(--fig-muted)">p.u.</text>
           </g>
         </svg>
       </div>
@@ -218,14 +251,16 @@ export default function FerrantiCapacitiveLineSimulator() {
         </div>
       )}
 
-      {/* ── Reactive balance band ── */}
+      {/* ── Balance de reactiva ── */}
       <div className={styles.balanceBand}>
         <p className={styles.balanceHeading}>Balance reactivo normalizado</p>
         <div className={styles.reactiveBand}>
           {[
-            { label: 'Qc efectivo', val: effectiveCapacitive, color: 'var(--fig-teal)', key: 'capacitor' },
-            { label: 'Q absorbido', val: compensationTerm, color: 'var(--fig-amber)', key: 'compensator' },
-            { label: 'Q excedente', val: Math.abs(qExcess), color: qExcess > 0.35 ? 'var(--fig-burgundy)' : qExcess > 0 ? 'var(--fig-amber)' : 'var(--fig-teal)', key: 'excess' },
+            { label: 'Qc efectivo', val: effectiveCapacitive, color: 'var(--fig-teal)',     key: 'capacitor' },
+            { label: 'Q absorbido', val: compensationTerm,    color: 'var(--fig-amber)',    key: 'compensator' },
+            { label: 'Q excedente', val: Math.abs(qExcess),
+              color: qExcess > 0.35 ? 'var(--fig-burgundy)' : qExcess > 0 ? 'var(--fig-amber)' : 'var(--fig-teal)',
+              key: 'excess' },
           ].map(({ label, val, color, key }) => (
             <div key={key} className={styles.bandItem}
               onMouseEnter={() => hover(key)} onMouseLeave={unhover}>
@@ -235,7 +270,8 @@ export default function FerrantiCapacitiveLineSimulator() {
                   style={{ width: `${(val / maxReactive) * 100}%`, backgroundColor: color }} />
               </div>
               <span className={styles.bandValue}>
-                {key === 'excess' ? (qExcess >= 0 ? '+' : '') : ''}{key === 'excess' ? qExcess.toFixed(2) : val.toFixed(2)}
+                {key === 'excess' ? (qExcess >= 0 ? '+' : '') : ''}
+                {key === 'excess' ? qExcess.toFixed(2) : val.toFixed(2)}
               </span>
             </div>
           ))}
@@ -245,13 +281,13 @@ export default function FerrantiCapacitiveLineSimulator() {
         </p>
       </div>
 
-      {/* ── Controls ── */}
+      {/* ── Controles ── */}
       <div className={styles.controls}>
         {[
-          { id: 'ferranti-length', label: 'Longitud equivalente de línea', min: 50, max: 450, value: lengthKm, set: setLengthKm, unit: 'km' },
-          { id: 'ferranti-load', label: 'Nivel de carga activa relativa', min: 5, max: 100, value: loadPercent, set: setLoadPercent, unit: '%' },
-          { id: 'ferranti-comp', label: 'Compensación inductiva disponible', min: 0, max: 100, value: compensationPercent, set: setCompensationPercent, unit: '%' },
-          { id: 'ferranti-lines', label: 'N.º de líneas energizadas', min: 1, max: 5, value: lines, set: setLines, unit: '', step: 1 },
+          { id: 'ferranti-length', label: 'Longitud equivalente de línea',     min: 50,  max: 450, value: lengthKm,            set: setLengthKm,            unit: 'km' },
+          { id: 'ferranti-load',   label: 'Nivel de carga activa relativa',    min: 5,   max: 100, value: loadPercent,          set: setLoadPercent,         unit: '%' },
+          { id: 'ferranti-comp',   label: 'Compensación inductiva disponible', min: 0,   max: 100, value: compensationPercent,  set: setCompensationPercent, unit: '%' },
+          { id: 'ferranti-lines',  label: 'N.º de líneas energizadas',         min: 1,   max: 5,   value: lines,                set: setLines,               unit: '', step: 1 },
         ].map(({ id, label, min, max, value, set, unit, step }) => (
           <div key={id} className={styles.controlGroup}>
             <label htmlFor={id} className={styles.label}>{label}</label>
@@ -265,7 +301,7 @@ export default function FerrantiCapacitiveLineSimulator() {
         ))}
       </div>
 
-      {/* ── State badge ── */}
+      {/* ── Badge de estado ── */}
       <div className={`${styles.stateBadge} ${styles[stateKey]}`}>
         <span className={styles.stateLabel}>{stateLabels[stateKey]}</span>
         <span className={styles.stateValues}>
@@ -273,7 +309,7 @@ export default function FerrantiCapacitiveLineSimulator() {
         </span>
       </div>
 
-      {/* ── Expert text ── */}
+      {/* ── Texto pericial dinámico ── */}
       <div className={styles.pericial}>
         <p>{pericialText}</p>
       </div>

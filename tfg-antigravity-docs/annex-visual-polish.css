@@ -1,0 +1,214 @@
+/* ============================================================
+   ANNEX VISUAL POLISH — Añadir al final de src/css/custom.css
+   ============================================================
+   Mejoras de legibilidad, espaciado y estética para la
+   presentación en congreso. No rompe nada existente.
+   ============================================================ */
+
+/* ── Collapsibles nativos <details> dentro de anexos ────────── 
+   Los annexos usan <details> raw para el contenido de Capa 3.
+   Sin estilos, heredan el default del browser (feo).
+   ──────────────────────────────────────────────────────────── */
+
+article details {
+  margin: 1.5rem 0;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color var(--tr-base) var(--tr-ease);
+}
+
+article details[open] {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+article details > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text-1);
+  cursor: pointer;
+  user-select: none;
+  background: color-mix(in srgb, var(--bg-2) 50%, transparent);
+  transition: background var(--tr-base) var(--tr-ease);
+  list-style: none; /* quita el triángulo default */
+}
+
+article details > summary::-webkit-details-marker {
+  display: none;
+}
+
+article details > summary:hover {
+  background: color-mix(in srgb, var(--bg-3) 60%, transparent);
+}
+
+article details > summary::before {
+  content: '▶';
+  font-size: 0.65em;
+  transition: transform var(--tr-base) var(--tr-ease);
+  flex-shrink: 0;
+}
+
+article details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* Interior del collapsible — padding consistente */
+article details > div,
+article details > .collapsibleBody {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* ── AnnexSectionSummary — bloques demonstrates/doesNot/connection ── */
+
+.annex-summary-block {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.annex-summary-block:last-child {
+  margin-bottom: 0;
+}
+
+.annex-summary-subtitle {
+  font-family: var(--font-body) !important;
+  font-size: var(--fs-meta) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.annex-summary-block p {
+  margin: 0;
+  color: var(--text-1);
+}
+
+/* Demonstrates → verde sutil */
+.annex-summary-demonstrates {
+  background: color-mix(in srgb, var(--ifm-color-success) 8%, transparent);
+  border-left: 3px solid var(--ifm-color-success);
+}
+.annex-summary-demonstrates .annex-summary-subtitle {
+  color: var(--ifm-color-success);
+}
+
+/* Does not demonstrate → ámbar sutil */
+.annex-summary-limits {
+  background: color-mix(in srgb, var(--ifm-color-warning) 8%, transparent);
+  border-left: 3px solid var(--ifm-color-warning);
+}
+.annex-summary-limits .annex-summary-subtitle {
+  color: var(--warn-700);
+}
+
+/* Connection → azul/cyan sutil */
+.annex-summary-connection {
+  background: color-mix(in srgb, var(--ifm-color-primary) 6%, transparent);
+  border-left: 3px solid var(--ifm-color-primary);
+}
+.annex-summary-connection .annex-summary-subtitle {
+  color: var(--ifm-color-primary);
+}
+
+/* Light mode overrides */
+html[data-theme='light'] .annex-summary-demonstrates {
+  background: rgba(74, 107, 93, 0.06);
+  border-left-color: var(--secondary);
+}
+html[data-theme='light'] .annex-summary-demonstrates .annex-summary-subtitle {
+  color: var(--secondary);
+}
+html[data-theme='light'] .annex-summary-limits {
+  background: rgba(212, 163, 115, 0.08);
+  border-left-color: var(--warning);
+}
+html[data-theme='light'] .annex-summary-limits .annex-summary-subtitle {
+  color: #8a6b3d;
+}
+html[data-theme='light'] .annex-summary-connection {
+  background: rgba(29, 53, 87, 0.05);
+  border-left-color: var(--link);
+}
+html[data-theme='light'] .annex-summary-connection .annex-summary-subtitle {
+  color: var(--link);
+}
+
+/* ── :::tip blocks dentro de anexos — guías de interactivos ── */
+
+article .theme-admonition-tip {
+  border-left-width: 3px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+article .theme-admonition-tip strong {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+}
+
+/* ── Spacing entre AnnexEvidence components ─────────────────── 
+   Cuando AnnexEvidence se renderiza como hijo directo del
+   contenido de sección, necesita spacing vertical.
+   ──────────────────────────────────────────────────────────── */
+
+/* Los componentes de evidencia son divs con clase del módulo CSS.
+   Usamos el selector de hijo directo del contenido de sección
+   para añadir margin entre evidencias consecutivas. */
+article section > div > div + div {
+  /* No usar esto — demasiado genérico. Mejor desde los módulos CSS */
+}
+
+/* ── Proyector polish ───────────────────────────────────────── 
+   Bordes mínimos de 2px para visibilidad en proyectores de
+   baja resolución. Contraste garantizado en elementos clave.
+   ──────────────────────────────────────────────────────────── */
+
+/* Bordes de tablas visibles en proyector */
+@media (min-width: 1200px) {
+  .telemetry-table-container th {
+    border-bottom-width: 2px !important;
+  }
+  
+  /* Figcaptions más legibles a distancia */
+  figcaption, .forensic-figure figcaption {
+    font-size: max(0.8rem, var(--fs-meta)) !important;
+  }
+}
+
+/* ── ForensicReveal polish ──────────────────────────────────── 
+   El componente usa inline styles. Estos overrides solo
+   aplican en light mode donde el fondo rgba(255,255,255,0.02)
+   es invisible.
+   ──────────────────────────────────────────────────────────── */
+
+html[data-theme='light'] [aria-live="polite"] {
+  background: rgba(244, 241, 234, 0.85) !important;
+  border-color: rgba(25, 24, 20, 0.10) !important;
+}
+
+/* ── GlitchTitle spacing ────────────────────────────────────── 
+   Asegurar que el título animado tenga espacio debajo
+   antes del primer componente del anexo/capítulo.
+   ──────────────────────────────────────────────────────────── */
+
+article > h1:first-child,
+article > div > h1:first-child {
+  margin-bottom: 2.5rem;
+}
+
+/* ── Print / Proyector: forzar backgrounds visibles ────────── */
+@media print, (min-resolution: 120dpi) {
+  .annex-summary-block {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

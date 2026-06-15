@@ -224,6 +224,12 @@ export const GLOSSARY_TERMS = [
     definition: "Servicio de estabilización subcíclica que inyecta un bloque de potencia activa en la ventana temporal crítica anterior a la actuación de los reguladores mecánicos convencionales (FCR), típicamente en los primeros 200–250 ms tras la perturbación, cuando el RoCoF es más elevado y el riesgo de activación de protecciones anti-isla es mayor. Mientras la regulación primaria actúa en la escala de 5–30 segundos, el FFR responde en la escala de medio ciclo de red, esencial en sistemas de baja inercia donde la misma pérdida de generación produce RoCoF mucho más elevados. El 28-A evidenció que el marco de servicios ancilares español carecía de un producto FFR regulado y remunerado; el colapso en sí fue de tensión —no el escenario objetivo del FFR—, pero la ausencia de cualquier respuesta subcíclica coordinada dejó al sistema sin anclas dinámicas durante el período crítico.",
   },
   {
+    id: slugify("Fast Frequency Response (FFR)"),
+    letter: "F",
+    term: "FFR",
+    definition: "Véase Fast Frequency Response (FFR).",
+  },
+  {
     id: slugify("Frecuencia nominal"),
     letter: "F",
     term: "Frecuencia nominal",
@@ -288,6 +294,12 @@ export const GLOSSARY_TERMS = [
     letter: "L",
     term: "Low Voltage Ride Through (LVRT)",
     definition: "Capacidad requerida a los inversores IBR para mantenerse conectados e inyectar potencia reactiva de soporte durante un hueco de tensión, en lugar de desconectarse por protección. Los requisitos de LVRT en España están regulados por el P.O. 12.3 e incluyen el parámetro dinámico k (factor de proporcionalidad entre la corriente reactiva inyectada y la profundidad del hueco). El diseño del LVRT asume una red con suficiente rigidez eléctrica para que la inyección reactiva del inversor eleve efectivamente la tensión en el nudo de conexión. El 28-A evidenció la limitación en el escenario inverso: en redes con SCR < 2, la inyección masiva de reactiva capacitiva según los perfiles LVRT clásicos puede elevar aún más una tensión ya elevada, amplificando la inestabilidad en lugar de contenerla y requiriendo una revisión fundamental de la coordinación entre el perfil LVRT y la debilidad de red. *(Véase también HVRT, entrada 112.)*",
+  },
+  {
+    id: slugify("Low Voltage Ride Through (LVRT)"),
+    letter: "L",
+    term: "LVRT",
+    definition: "Véase Low Voltage Ride Through (LVRT).",
   },
   {
     id: slugify("Mallado"),
@@ -392,6 +404,12 @@ export const GLOSSARY_TERMS = [
     definition: "Derivada temporal de la frecuencia (df/dt, expresada en Hz/s) que mide la velocidad de variación de la frecuencia del sistema ante un desequilibrio entre generación y demanda. Se calcula como RoCoF = −f₀ · ΔP / (2H · S_base), lo que pone de manifiesto la dependencia inversa con la inercia H: a menor inercia, el mismo desequilibrio de potencia produce un RoCoF mayor y un sistema que se degrada más rápidamente. Es el parámetro de referencia para dimensionar la respuesta subcíclica (FFR) y para calibrar los relés anti-isla (ANSI 81R), que disparan cuando el RoCoF supera umbrales configurados en torno a 0,5 Hz/s. El 28-A, el RoCoF medio permaneció por debajo de ±1 Hz/s hasta las 12:33:20 CEST —confirmando que el colapso no fue una inestabilidad de frecuencia convencional— con picos secundarios estimados de ~1,5 Hz/s en ventanas de 100 ms, coincidentes con los disparos en cascada de las plantas IBR durante la fase final del colapso de tensión.",
   },
   {
+    id: slugify("Centros de Coordinación Regional (RCC)"),
+    letter: "R",
+    term: "RCC",
+    definition: "Véase Centros de Coordinación Regional (RCC).",
+  },
+  {
     id: slugify("SCR (Short-Circuit Ratio)"),
     letter: "S",
     term: "SCR (Short-Circuit Ratio)",
@@ -414,6 +432,12 @@ export const GLOSSARY_TERMS = [
     letter: "S",
     term: "SO GL (System Operation Guidelines)",
     definition: "Directrices de Operación del Sistema publicadas por ENTSO-E que definen el marco normativo para la operación segura de la red sincrónica europea, estableciendo los parámetros mínimos de seguridad operativa y los cinco niveles de severidad del estado del sistema: Normal, Alerta, Emergencia, Blackout y Restauración, con criterios cuantitativos de tensión y frecuencia para la transición entre estados. El 28-A es, por su escala y rapidez, el caso de activación de la secuencia Blackout → Restauración más relevante en la red sincrónica continental desde el apagón italiano de 2003, y su análisis en el marco del SO GL ha impulsado la revisión de los criterios cuantitativos de umbral entre los estados de Alerta y Emergencia.",
+  },
+  {
+    id: slugify("ERS (Essential Reliability Services / Servicios Esenciales de Confiabilidad)"),
+    letter: "S",
+    term: "Servicios Esenciales de Confiabilidad (ERS)",
+    definition: "Véase ERS (Essential Reliability Services / Servicios Esenciales de Confiabilidad).",
   },
   {
     id: slugify("TSO (Transmission System Operator)"),

@@ -4,7 +4,7 @@
   --fig-surface-2: #f6eddc;
   --fig-text: #24211c;
   --fig-muted: #6f675c;
-  --fig-border: rgba(77, 60, 38, 0.16);
+  --fig-border: rgba(60, 50, 35, 0.20);   /* era 0.16 — panel más definido */
   --fig-burgundy: #8b2635;
   --fig-pistachio: #6f7f36;
   --fig-amber: #c58b35;
@@ -94,9 +94,10 @@ html[data-theme='dark'] .figure {
   height: auto;
   display: block;
   border-radius: 8px;
+  overflow: visible;   /* evita recorte de labels del gauge en viewBox ajustado */
 }
 
-.capGroup { cursor: pointer; }
+.capGroup  { cursor: pointer; }
 .compGroup { cursor: pointer; }
 
 /* ═══ Tooltip ═══ */
@@ -137,7 +138,7 @@ html[data-theme='dark'] .figure {
   margin-bottom: 0.3rem;
 }
 
-.bandItem { min-width: 0; cursor: pointer; }
+.bandItem  { min-width: 0; cursor: pointer; }
 
 .bandLabel {
   display: block;
@@ -148,7 +149,7 @@ html[data-theme='dark'] .figure {
 }
 
 .barWrapper {
-  height: 6px;
+  height: 7px;                    /* era 6px — barra ligeramente más alta */
   background: var(--fig-surface-2);
   border: 1px solid var(--fig-border);
   border-radius: 999px;
@@ -240,9 +241,9 @@ html[data-theme='dark'] .figure {
   letter-spacing: 0.03em;
 }
 
-.normal .stateLabel { color: var(--fig-teal); background: rgba(40, 102, 110, 0.1); }
-.overvoltage .stateLabel { color: var(--fig-amber); background: rgba(197, 139, 53, 0.1); }
-.risk .stateLabel { color: var(--fig-burgundy); background: rgba(139, 38, 53, 0.1); }
+.normal     .stateLabel { color: var(--fig-teal);     background: rgba(40, 102, 110, 0.10); }
+.overvoltage .stateLabel { color: var(--fig-amber);   background: rgba(197, 139, 53, 0.10); }
+.risk        .stateLabel { color: var(--fig-burgundy); background: rgba(139, 38, 53, 0.10); }
 
 .stateValues {
   font-variant-numeric: tabular-nums;
@@ -277,7 +278,8 @@ html[data-theme='dark'] .figure {
 
 /* ═══ Responsive ═══ */
 @media (max-width: 640px) {
-  .figure { padding: 1rem; }
-  .reactiveBand, .controls { grid-template-columns: 1fr; }
-  .stateBadge { flex-direction: column; align-items: flex-start; }
+  .figure       { padding: 1rem; }
+  .reactiveBand,
+  .controls     { grid-template-columns: 1fr; }
+  .stateBadge   { flex-direction: column; align-items: flex-start; }
 }

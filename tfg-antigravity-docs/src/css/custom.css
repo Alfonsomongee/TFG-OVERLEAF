@@ -9,7 +9,7 @@
   --accent-electric: hsl(190 100% 60%);   /* cian CECOEL — datos fríos */
   --accent-amber: var(--forensic-amber-primary); /* ámbar — alarma / transición */
   --accent-magenta: hsl(322 100% 62%);   /* glitch / dato anómalo */
-  --glossary-term-light: #2c5d0f;
+  --glossary-term-light: #636E4F;
   --glossary-term-dark: #D6DEE8;
 
   /* ── Gráficos (Variables inyectadas en .jsx) ────────── */
@@ -800,139 +800,6 @@ html.zen-mode .zen-mode-icon-active {
   font-size: 0.75rem;
   color: #fca5a5;
 }
-
-/* ============================================================
-   ADMONITIONS (Docusaurus Default Overrides)
-   ============================================================ */
-
-.theme-admonition {
-  border-radius: var(--radius-md);
-  background: var(--forensic-bg-surface) !important;
-  border: 1px solid var(--forensic-border) !important;
-  border-left: 4px solid var(--forensic-amber-primary) !important;
-  color: var(--forensic-text-primary) !important;
-  font-family: var(--font-body);
-}
-
-.theme-admonition-danger { border-left-color: var(--forensic-amber-critical) !important; }
-.theme-admonition-warning { border-left-color: var(--forensic-amber-warning) !important; }
-
-@media (max-width: 768px) {
-  .math.math-display {
-    padding: 1rem 0.5rem;
-    font-size: 0.9em;
-    overflow-x: auto;
-  }
-}
-
-/* ============================================================
-   RESPONSIVE OVERRIDES
-   ============================================================ */
-
-@media (max-width: 768px) {
-  h1 { font-size: 2.2rem; }
-  h2 { font-size: 1.8rem; }
-
-  .incident-box {
-    padding: 1rem 1.25rem;
-  }
-}
-
-/* ============================================================
-   ZEN MODE (FOCUS MODE)
-   ============================================================ */
-
-html.zen-mode .theme-doc-sidebar-container {
-  display: none !important;
-}
-
-html.zen-mode main[class*='docMainContainer'] {
-  display: flex !important;
-  justify-content: center !important;
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-html.zen-mode main[class*='docMainContainer'] > .container {
-  max-width: 900px !important;
-  margin: 0 auto !important;
-  width: 100%;
-}
-
-html.zen-mode main[class*='docMainContainer'] .row {
-  justify-content: center !important;
-  margin: 0 !important;
-}
-
-/* Force ANY column inside the main container to expand completely */
-html.zen-mode main[class*='docMainContainer'] .row [class*='col'],
-html.zen-mode [class*='docItemCol'] {
-  max-width: 100% !important;
-  flex: 1 1 100% !important;
-  padding: 0 !important;
-  width: 100% !important;
-}
-
-html.zen-mode article,
-html.zen-mode .theme-doc-markdown {
-  max-width: 900px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: 100%;
-  transition: all var(--tr-slow) var(--tr-ease);
-}
-
-@media (max-width: 768px) {
-  .zen-mode-text {
-    display: none;
-  }
-}
-
-#zen-mode-toggle {
-  cursor: pointer;
-  border-radius: 8px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--ifm-navbar-link-color);
-  transition: all var(--tr-base) var(--tr-ease);
-}
-
-#zen-mode-toggle:hover {
-  background: var(--ifm-color-emphasis-100);
-  color: var(--ifm-color-primary);
-}
-
-html.zen-mode #zen-mode-toggle {
-  background: var(--ifm-color-primary-lightest);
-  color: var(--ifm-color-primary-darker);
-}
-
-html[data-theme='dark'].zen-mode #zen-mode-toggle {
-  background: rgba(56, 189, 248, 0.2);
-  color: var(--ifm-color-primary-light);
-}
-
-/* Duplicado eliminado — ver bloque KATEX MATH más arriba */
-
-/* Zen mode text and icon toggling */
-.zen-mode-text-active,
-.zen-mode-icon-active {
-  display: none;
-}
-html.zen-mode .zen-mode-text-default,
-html.zen-mode .zen-mode-icon-default {
-  display: none;
-}
-html.zen-mode .zen-mode-text-active {
-  display: inline;
-}
-html.zen-mode .zen-mode-icon-active {
-  display: block;
-}
-
-
-/* Fix Lenis Sidebar Scroll Hijack */
-.theme-doc-sidebar-container, .theme-doc-sidebar-menu, aside { overscroll-behavior: contain; }
 
 /* ============================================================
    FOOTER (Estética y tamaño reducido)
@@ -2659,10 +2526,15 @@ html[data-theme='light'] .navbar {
 
 /* Rediseño de la tarjeta flotante del glosario en modo claro (Color Sidebar Verde Musgo) */
 html[data-theme='light'] .glossary-definition-panel {
-  background-color: #636E4F !important;
-  color: #fcfcfc !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: #87966F !important;
+  border: 1px solid #87966F !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+html[data-theme='light'] .glossary-definition-panel:hover,
+html[data-theme='light'] .glossary-definition-panel.closing {
+  background-color: #87966F !important;
+  border-color: #87966F !important;
 }
 
 html[data-theme='light'] .glossary-definition-panel .glossary-panel-header {
@@ -3580,199 +3452,6 @@ html[data-theme='light'] .theme-admonition--danger .admonitionHeading {
 }
 
 
-/* ============================================================
-   FORENSIC GALLERY  BOTONES DE CATEGORA Y TABSELECTOR
-   ============================================================ */
-
-/* TabSelector  botones principales (Number tables / Master database) */
-html[data-theme='dark'] .tab-selector-btn {
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  transition: all var(--tr-base) var(--tr-ease) !important;
-}
-
-html[data-theme='dark'] .tab-selector-btn:hover {
-  border-color: var(--accent-electric) !important;
-  color: var(--accent-electric) !important;
-  box-shadow: 0 0 8px hsla(190, 100%, 60%, 0.15) !important;
-}
-
-html[data-theme='dark'] .tab-selector-btn.active {
-  border-color: var(--accent-electric) !important;
-  color: var(--accent-electric) !important;
-  background: hsla(190, 100%, 60%, 0.08) !important;
-  box-shadow: 0 0 12px hsla(190, 100%, 60%, 0.2) !important;
-}
-
-html[data-theme='light'] .tab-selector-btn {
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  transition: all var(--tr-base) var(--tr-ease) !important;
-}
-
-html[data-theme='light'] .tab-selector-btn:hover {
-  border-color: var(--primary) !important;
-  color: var(--primary) !important;
-}
-
-html[data-theme='light'] .tab-selector-btn.active {
-  border-color: var(--primary) !important;
-  color: var(--primary) !important;
-  background: rgba(139, 38, 53, 0.06) !important;
-}
-
-/* ============================================================
-   B2  PAGE TRANSITIONS
-   ============================================================ */
-
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.page-transition-enter {
-  animation: pageEnter 0.2s ease forwards;
-}
-
-/* ============================================================
-   B3  ADMONITIONS
-   ============================================================ */
-
-/* Base  todos los admonitions */
-.theme-admonition {
-  border-left: 3px solid;
-  border-radius: 0 6px 6px 0;
-  padding: 1rem 1.25rem;
-  margin: 1.5rem 0;
-}
-
-/* Ttulos en estilo forense */
-.theme-admonition .admonitionHeading {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Ocultar emoji por defecto y usar solo texto */
-.theme-admonition .admonitionHeading svg {
-  width: 14px;
-  height: 14px;
-  opacity: 0.8;
-}
-
-/* -- MODO OSCURO -- */
-html[data-theme='dark'] .theme-admonition--note {
-  border-color: hsl(190 100% 60%);
-  background: hsla(190, 100%, 60%, 0.05);
-}
-html[data-theme='dark'] .theme-admonition--note .admonitionHeading {
-  color: hsl(190 100% 60%);
-}
-
-html[data-theme='dark'] .theme-admonition--tip {
-  border-color: hsl(150 80% 50%);
-  background: hsla(150, 80%, 50%, 0.05);
-}
-html[data-theme='dark'] .theme-admonition--tip .admonitionHeading {
-  color: hsl(150 80% 50%);
-}
-
-html[data-theme='dark'] .theme-admonition--info {
-  border-color: hsl(210 100% 65%);
-  background: hsla(210, 100%, 65%, 0.05);
-}
-html[data-theme='dark'] .theme-admonition--info .admonitionHeading {
-  color: hsl(210 100% 65%);
-}
-
-html[data-theme='dark'] .theme-admonition--warning {
-  border-color: hsl(38 100% 56%);
-  background: hsla(38, 100%, 56%, 0.05);
-}
-html[data-theme='dark'] .theme-admonition--warning .admonitionHeading {
-  color: hsl(38 100% 56%);
-}
-
-html[data-theme='dark'] .theme-admonition--danger {
-  border-color: hsl(0 80% 60%);
-  background: hsla(0, 80%, 60%, 0.05);
-}
-html[data-theme='dark'] .theme-admonition--danger .admonitionHeading {
-  color: hsl(0 80% 60%);
-}
-
-/* -- MODO CLARO -- */
-html[data-theme='light'] .theme-admonition--note {
-  border-color: #8B2635;
-  background: rgba(139, 38, 53, 0.04);
-}
-html[data-theme='light'] .theme-admonition--note .admonitionHeading {
-  color: #8B2635;
-}
-
-html[data-theme='light'] .theme-admonition--tip {
-  border-color: #2d7a4f;
-  background: rgba(45, 122, 79, 0.04);
-}
-html[data-theme='light'] .theme-admonition--tip .admonitionHeading {
-  color: #2d7a4f;
-}
-
-html[data-theme='light'] .theme-admonition--info {
-  border-color: #1a4f8a;
-  background: rgba(26, 79, 138, 0.04);
-}
-html[data-theme='light'] .theme-admonition--info .admonitionHeading {
-  color: #1a4f8a;
-}
-
-html[data-theme='light'] .theme-admonition--warning {
-  border-color: #a05c00;
-  background: rgba(160, 92, 0, 0.04);
-}
-html[data-theme='light'] .theme-admonition--warning .admonitionHeading {
-  color: #a05c00;
-}
-
-html[data-theme='light'] .theme-admonition--danger {
-  border-color: #c0392b;
-  background: rgba(192, 57, 43, 0.04);
-}
-html[data-theme='light'] .theme-admonition--danger .admonitionHeading {
-  color: #c0392b;
-}
-
-/* ============================================================
-   SIDEBAR — Transición suave apertura/cierre
-   ============================================================ */
-
-.theme-doc-sidebar-container {
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s ease,
-              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.theme-doc-sidebar-container[style*="display: none"] {
-  opacity: 0;
-  transform: translateX(-8px);
-}
-
-/* Botones globales de sidebar con transición */
-.global-sidebar-btn,
-.global-sidebar-close-btn {
-  transition: opacity 0.2s ease, 
-              transform 0.2s ease !important;
-}
-
 /* Menú lateral — transición en items */
 .menu__list {
   transition: opacity 0.2s ease 0.05s !important;
@@ -3839,4 +3518,581 @@ html[data-theme='dark'] .esios-analysis-text {
   font-size: 0.70rem;
   color: var(--ifm-color-emphasis-500);
   font-style: italic;
+}
+
+
+/* ============================================================
+   ANNEX VISUAL POLISH — Añadir al final de src/css/custom.css
+   ============================================================
+   Mejoras de legibilidad, espaciado y estética para la
+   presentación en congreso. No rompe nada existente.
+   ============================================================ */
+
+/* ── Collapsibles nativos <details> dentro de anexos ────────── 
+   Los annexos usan <details> raw para el contenido de Capa 3.
+   Sin estilos, heredan el default del browser (feo).
+   ──────────────────────────────────────────────────────────── */
+
+article details {
+  margin: 1.5rem 0;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color var(--tr-base) var(--tr-ease);
+}
+
+article details[open] {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+article details > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text-1);
+  cursor: pointer;
+  user-select: none;
+  background: color-mix(in srgb, var(--bg-2) 50%, transparent);
+  transition: background var(--tr-base) var(--tr-ease);
+  list-style: none; /* quita el triángulo default */
+}
+
+article details > summary::-webkit-details-marker {
+  display: none;
+}
+
+article details > summary:hover {
+  background: color-mix(in srgb, var(--bg-3) 60%, transparent);
+}
+
+article details > summary::before {
+  content: '▶';
+  font-size: 0.65em;
+  transition: transform var(--tr-base) var(--tr-ease);
+  flex-shrink: 0;
+}
+
+article details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* Interior del collapsible — padding consistente */
+article details > div,
+article details > .collapsibleBody {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* ── AnnexSectionSummary — bloques demonstrates/doesNot/connection ── */
+
+.annex-summary-block {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.annex-summary-block:last-child {
+  margin-bottom: 0;
+}
+
+.annex-summary-subtitle {
+  font-family: var(--font-body) !important;
+  font-size: var(--fs-meta) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.annex-summary-block p {
+  margin: 0;
+  color: var(--text-1);
+}
+
+/* Demonstrates → verde sutil */
+.annex-summary-demonstrates {
+  background: color-mix(in srgb, var(--ifm-color-success) 8%, transparent);
+  border-left: 3px solid var(--ifm-color-success);
+}
+.annex-summary-demonstrates .annex-summary-subtitle {
+  color: var(--ifm-color-success);
+}
+
+/* Does not demonstrate → ámbar sutil */
+.annex-summary-limits {
+  background: color-mix(in srgb, var(--ifm-color-warning) 8%, transparent);
+  border-left: 3px solid var(--ifm-color-warning);
+}
+.annex-summary-limits .annex-summary-subtitle {
+  color: var(--warn-700);
+}
+
+/* Connection → azul/cyan sutil */
+.annex-summary-connection {
+  background: color-mix(in srgb, var(--ifm-color-primary) 6%, transparent);
+  border-left: 3px solid var(--ifm-color-primary);
+}
+.annex-summary-connection .annex-summary-subtitle {
+  color: var(--ifm-color-primary);
+}
+
+/* Light mode overrides */
+html[data-theme='light'] .annex-summary-demonstrates {
+  background: rgba(74, 107, 93, 0.06);
+  border-left-color: var(--secondary);
+}
+html[data-theme='light'] .annex-summary-demonstrates .annex-summary-subtitle {
+  color: var(--secondary);
+}
+html[data-theme='light'] .annex-summary-limits {
+  background: rgba(212, 163, 115, 0.08);
+  border-left-color: var(--warning);
+}
+html[data-theme='light'] .annex-summary-limits .annex-summary-subtitle {
+  color: #8a6b3d;
+}
+html[data-theme='light'] .annex-summary-connection {
+  background: rgba(29, 53, 87, 0.05);
+  border-left-color: var(--link);
+}
+html[data-theme='light'] .annex-summary-connection .annex-summary-subtitle {
+  color: var(--link);
+}
+
+/* ── :::tip blocks dentro de anexos — guías de interactivos ── */
+
+article .theme-admonition-tip {
+  border-left-width: 3px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+article .theme-admonition-tip strong {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+}
+
+/* ── Spacing entre AnnexEvidence components ─────────────────── 
+   Cuando AnnexEvidence se renderiza como hijo directo del
+   contenido de sección, necesita spacing vertical.
+   ──────────────────────────────────────────────────────────── */
+
+/* Los componentes de evidencia son divs con clase del módulo CSS.
+   Usamos el selector de hijo directo del contenido de sección
+   para añadir margin entre evidencias consecutivas. */
+article section > div > div + div {
+  /* No usar esto — demasiado genérico. Mejor desde los módulos CSS */
+}
+
+/* ── Proyector polish ───────────────────────────────────────── 
+   Bordes mínimos de 2px para visibilidad en proyectores de
+   baja resolución. Contraste garantizado en elementos clave.
+   ──────────────────────────────────────────────────────────── */
+
+/* Bordes de tablas visibles en proyector */
+@media (min-width: 1200px) {
+  .telemetry-table-container th {
+    border-bottom-width: 2px !important;
+  }
+  
+  /* Figcaptions más legibles a distancia */
+  figcaption, .forensic-figure figcaption {
+    font-size: max(0.8rem, var(--fs-meta)) !important;
+  }
+}
+
+/* ── ForensicReveal polish ──────────────────────────────────── 
+   El componente usa inline styles. Estos overrides solo
+   aplican en light mode donde el fondo rgba(255,255,255,0.02)
+   es invisible.
+   ──────────────────────────────────────────────────────────── */
+
+html[data-theme='light'] [aria-live="polite"] {
+  background: rgba(244, 241, 234, 0.85) !important;
+  border-color: rgba(25, 24, 20, 0.10) !important;
+}
+
+/* ── GlitchTitle spacing ────────────────────────────────────── 
+   Asegurar que el título animado tenga espacio debajo
+   antes del primer componente del anexo/capítulo.
+   ──────────────────────────────────────────────────────────── */
+
+article > h1:first-child,
+article > div > h1:first-child {
+  margin-bottom: 2.5rem;
+}
+
+/* ── Print / Proyector: forzar backgrounds visibles ────────── */
+@media print, (min-resolution: 120dpi) {
+  .annex-summary-block {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ============================================================
+   ANNEX VISUAL POLISH v2 — Mejoras de legibilidad y estética
+   ============================================================
+   Mejoras basadas en la auditoría de los module.css reales.
+   NO modifica los .module.css → solo añade reglas globales
+   que se aplican por cascada o por selectores de atributo.
+   ============================================================ */
+
+
+/* ── 1. SECTION CONTENT — borde lateral más visible ─────────
+   El border-left actual usa --annex-subtle-bg (opacity 0.04),
+   que es invisible en la mayoría de monitores y proyectores.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="sectionContent"] {
+  border-left-color: color-mix(in srgb, var(--annex-accent, #145c63) 18%, transparent) !important;
+}
+
+html[data-theme='dark'] [class*="sectionContent"] {
+  border-left-color: color-mix(in srgb, var(--annex-accent, #83bdc2) 15%, transparent) !important;
+}
+
+
+/* ── 2. SECTION SUMMARY — indicador de colapsable ───────────
+   El <summary> elimina el marker pero no añade indicador visual.
+   El usuario no sabe que las secciones son colapsables.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="sectionSummary"]::after {
+  content: '▾';
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.75em;
+  opacity: 0.4;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+details:not([open]) > [class*="sectionSummary"]::after {
+  transform: rotate(-90deg);
+}
+
+details[open] > [class*="sectionSummary"]::after {
+  opacity: 0.6;
+}
+
+
+/* ── 3. EVIDENCE CHIPS — más legibles en proyector ──────────
+   Los chips actuales (0.60rem) son ilegibles a 3 metros.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="chip1"],
+[class*="chip2"] {
+  font-size: 0.68rem !important;
+  padding: 0.3rem 0.75rem !important;
+  border-radius: 4px !important;
+}
+
+
+/* ── 4. EVIDENCE LEVEL 1 — fondo más perceptible ────────────
+   El background actual (opacity 0.02) es invisible.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="level1"] {
+  background-color: rgba(107, 16, 36, 0.04) !important;
+  padding: 1rem 1.25rem !important;
+}
+
+html[data-theme='dark'] [class*="level1"] {
+  background-color: rgba(107, 16, 36, 0.08) !important;
+}
+
+
+/* ── 5. EVIDENCE GRID — separación visual entre items ───────
+   El grid actual no tiene separación visual entre las dos
+   columnas. En contenido denso, se confunden.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="AnnexEvidenceGrid"] > *,
+[class*="grid"] > [class*="container"] {
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--annex-surface, rgba(255,252,245,0.84)) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--annex-border, rgba(62,52,38,0.14)) 60%, transparent);
+}
+
+html[data-theme='dark'] [class*="AnnexEvidenceGrid"] > *,
+html[data-theme='dark'] [class*="grid"] > [class*="container"] {
+  background: color-mix(in srgb, var(--annex-surface, rgba(7,19,38,0.62)) 30%, transparent);
+  border-color: color-mix(in srgb, var(--annex-border, rgba(156,180,210,0.18)) 50%, transparent);
+}
+
+
+/* ── 6. COLLAPSIBLES nativos <details> en contenido ─────────
+   Los <details> RAW dentro de secciones de anexo (Capa 3)
+   heredan el default del browser.
+   ──────────────────────────────────────────────────────────── */
+
+article details:not([class]) {
+  margin: 1.5rem 0;
+  border: 1px solid var(--annex-border, rgba(62,52,38,0.14));
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 200ms ease;
+}
+
+article details:not([class])[open] {
+  border-color: color-mix(in srgb, var(--annex-accent, #145c63) 30%, transparent);
+}
+
+article details:not([class]) > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--annex-text-2, #4a4338);
+  cursor: pointer;
+  user-select: none;
+  background: color-mix(in srgb, var(--annex-surface, rgba(255,252,245,0.84)) 50%, transparent);
+  transition: background 200ms ease;
+  list-style: none;
+}
+
+article details:not([class]) > summary::-webkit-details-marker {
+  display: none;
+}
+
+article details:not([class]) > summary:hover {
+  background: color-mix(in srgb, var(--annex-surface, rgba(255,252,245,0.84)) 80%, transparent);
+}
+
+/* Triángulo indicador */
+article details:not([class]) > summary::before {
+  content: '▶';
+  font-size: 0.6em;
+  opacity: 0.5;
+  transition: transform 200ms ease;
+  flex-shrink: 0;
+}
+
+article details:not([class])[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* Interior del collapsible */
+article details:not([class]) > div {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+html[data-theme='dark'] article details:not([class]) {
+  border-color: var(--annex-border, rgba(156,180,210,0.18));
+}
+
+html[data-theme='dark'] article details:not([class]) > summary {
+  color: var(--annex-text-2, #c7d2e3);
+  background: color-mix(in srgb, var(--annex-surface, rgba(7,19,38,0.62)) 40%, transparent);
+}
+
+html[data-theme='dark'] article details:not([class]) > summary:hover {
+  background: color-mix(in srgb, var(--annex-surface, rgba(7,19,38,0.62)) 70%, transparent);
+}
+
+
+/* ── 7. ANNEX SECTION SUMMARY — bloques estructurados ───────
+   Estilos para el componente AnnexSectionSummary corregido
+   que ahora acepta demonstrates/doesNotDemonstrate/connection.
+   ──────────────────────────────────────────────────────────── */
+
+.annex-summary-block {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.annex-summary-block:last-child {
+  margin-bottom: 0;
+}
+
+.annex-summary-subtitle {
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.5rem 0 !important;
+}
+
+.annex-summary-block p {
+  margin: 0;
+  color: var(--annex-text-1, #191814);
+}
+
+html[data-theme='dark'] .annex-summary-block p {
+  color: var(--annex-text-1, #f4f7fb);
+}
+
+/* Demonstrates → verde */
+.annex-summary-demonstrates {
+  background: rgba(74, 107, 93, 0.06);
+  border-left: 3px solid #4A6B5D;
+}
+.annex-summary-demonstrates .annex-summary-subtitle { color: #4A6B5D; }
+
+html[data-theme='dark'] .annex-summary-demonstrates {
+  background: rgba(16, 185, 129, 0.06);
+  border-left-color: #10b981;
+}
+html[data-theme='dark'] .annex-summary-demonstrates .annex-summary-subtitle { color: #6ee7b7; }
+
+/* Limits → ámbar */
+.annex-summary-limits {
+  background: rgba(212, 163, 115, 0.08);
+  border-left: 3px solid #D4A373;
+}
+.annex-summary-limits .annex-summary-subtitle { color: #8a6b3d; }
+
+html[data-theme='dark'] .annex-summary-limits {
+  background: rgba(251, 191, 36, 0.06);
+  border-left-color: #fbbf24;
+}
+html[data-theme='dark'] .annex-summary-limits .annex-summary-subtitle { color: #fcd34d; }
+
+/* Connection → teal */
+.annex-summary-connection {
+  background: rgba(20, 92, 99, 0.05);
+  border-left: 3px solid #145c63;
+}
+.annex-summary-connection .annex-summary-subtitle { color: #145c63; }
+
+html[data-theme='dark'] .annex-summary-connection {
+  background: rgba(131, 189, 194, 0.06);
+  border-left-color: #83bdc2;
+}
+html[data-theme='dark'] .annex-summary-connection .annex-summary-subtitle { color: #a6d8dd; }
+
+
+/* ── 8. :::tip BLOCKS — guías de interactivos ───────────────
+   Más compactos, con nombres de simulador en mono.
+   ──────────────────────────────────────────────────────────── */
+
+article .theme-admonition-tip {
+  border-left-width: 3px;
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+article .theme-admonition-tip strong {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.82em;
+  letter-spacing: 0.01em;
+  color: var(--annex-accent, #145c63);
+}
+
+html[data-theme='dark'] article .theme-admonition-tip strong {
+  color: var(--annex-accent, #83bdc2);
+}
+
+
+/* ── 9. FORENSIC REVEAL — light mode fix ────────────────────
+   El fondo rgba(255,255,255,0.02) es invisible sobre cream.
+   ──────────────────────────────────────────────────────────── */
+
+html[data-theme='light'] [aria-live="polite"] {
+  background: rgba(244, 241, 234, 0.85) !important;
+  border-color: rgba(25, 24, 20, 0.10) !important;
+}
+
+
+/* ── 10. PROJECTOR READINESS ────────────────────────────────
+   Bordes mínimos de 2px, contraste garantizado,
+   figcaptions legibles a distancia.
+   ──────────────────────────────────────────────────────────── */
+
+@media (min-width: 1200px) {
+  /* Bordes de tablas más gruesos */
+  .telemetry-table-container th,
+  .forensic-table th,
+  article th {
+    border-bottom-width: 2px !important;
+  }
+
+  /* Figcaptions legibles a 3m */
+  figcaption,
+  .forensic-figure figcaption {
+    font-size: max(0.82rem, var(--fs-meta, 0.85rem)) !important;
+  }
+
+  /* Metadata chips del header del anexo — más legibles */
+  [class*="metaChipLabel"] {
+    font-size: 0.72rem !important;
+  }
+  [class*="metaChipValue"] {
+    font-size: 0.9rem !important;
+  }
+}
+
+
+/* ── 11. CROSS-LINKS — distinguir ← capítulos de → anexos ──
+   Los links que empiezan con ← son vueltas a capítulos.
+   Visualmente idénticos ahora; sería bueno diferenciarlos.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="AnnexCrossLinks"] [class*="link"] span:first-child {
+  flex: 1;
+  line-height: 1.4;
+}
+
+
+/* ── 12. SPACING RHYTHM — verticales consistentes ───────────
+   Espacio entre componentes consecutivos dentro de sección.
+   ──────────────────────────────────────────────────────────── */
+
+[class*="sectionContent"] > p {
+  margin-bottom: 1.25rem;
+}
+
+[class*="sectionContent"] > p:last-child {
+  margin-bottom: 0.5rem;
+}
+
+[class*="sectionContent"] > [class*="container"] + p,
+[class*="sectionContent"] > [class*="grid"] + p {
+  margin-top: 1.5rem;
+}
+
+
+/* ── 13. PRINT — para exportar a PDF si es necesario ────────
+   Los backgrounds semánticos deben preservarse en impresión.
+   ──────────────────────────────────────────────────────────── */
+
+@media print {
+  .annex-summary-block,
+  [class*="level1"],
+  [class*="methodNote"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Forzar que los details estén abiertos */
+  details { open: true; }
+  details > summary { display: none; }
+}
+
+/* Excepción: la tarjeta del glosario también usa aria-live, pero no debe heredar el fondo crema global. */
+html[data-theme='light'] aside.glossary-definition-panel[aria-live='polite'] {
+  background: #87966F !important;
+  background-color: #87966F !important;
+  border: 1px solid #87966F !important;
+}
+
+html[data-theme='light'] aside.glossary-definition-panel[aria-live='polite']:hover,
+html[data-theme='light'] aside.glossary-definition-panel[aria-live='polite'].closing {
+  background: #87966F !important;
+  background-color: #87966F !important;
+  border-color: #87966F !important;
 }
