@@ -10,6 +10,7 @@ import {
   COASTLINE_PATHS,
   CITY_POINTS
 } from '../data/cartography/naturalEarthIberiaPaths';
+import { ADMIN1_FEATURES } from '../data/cartography/naturalEarthIberiaAdmin1Paths';
 
 // ============================================================
 // PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
@@ -28,81 +29,89 @@ function project(lon, lat) {
   return [x, y];
 }
 
-// ─── Las 7 islas eléctricas como polígonos aproximados ───────────────────────
-// Cada isla es un conjunto de puntos [lon, lat] que definen su contorno
+function matchesAdmin1(feature, zone) {
+  if (zone.country && feature.iso_a2 !== zone.country) return false;
+  if (zone.country === 'PT') return true;
+
+  const region = feature.region || '';
+  const name = feature.name || '';
+  const postal = feature.postal || '';
+  return zone.postals?.includes(postal) || zone.regions?.includes(region) || zone.names?.includes(name);
+}
+
+// ─── Áreas funcionales de reposición construidas con Admin 1 Natural Earth ────
 const ISLANDS = [
   {
     id: 'SUR',
-    name: 'Sur\n(Andalucía)',
-    color: '#f59e0b',
+    name: 'Sur\nAndalucía',
+    color: '#d97706',
     restoreTime: 5,
     blackStartTime: 5,
     blackStartType: 'bottom-up',
-    anchor: { lon: -4.5, lat: 37.5 },
+    anchor: { lon: -4.3, lat: 37.4 },
     restorePercent: 18,
-    points: [[-9.5,36.0],[-5.5,35.9],[-1.8,36.8],[-1.5,38.5],[-3.0,39.5],[-5.5,39.0],[-7.5,38.5],[-9.5,37.5]],
+    country: 'ES',
+    postals: ['AN', 'EX'],
   },
   {
     id: 'CEN',
-    name: 'Centro\n(Madrid)',
-    color: '#00d9ff',
+    name: 'Centro\nMadrid',
+    color: '#0e7490',
     restoreTime: 6,
     blackStartType: 'top-down',
-    anchor: { lon: -3.5, lat: 40.4 },
+    anchor: { lon: -3.6, lat: 40.2 },
     restorePercent: 22,
-    points: [[-5.5,39.0],[-3.0,39.5],[-1.5,38.5],[0.5,39.0],[1.0,41.0],[-0.5,42.0],[-2.5,42.5],[-5.0,42.0],[-6.0,41.0],[-5.5,39.0]],
-  },
-  {
-    id: 'LEV',
-    name: 'Levante\n(Valencia)',
-    color: '#10b981',
-    restoreTime: 7,
-    blackStartType: 'bottom-up',
-    anchor: { lon: 0.0, lat: 39.5 },
-    restorePercent: 12,
-    points: [[-1.5,38.5],[0.8,37.5],[3.4,39.5],[2.5,41.5],[1.0,41.0],[0.5,39.0],[-1.5,38.5]],
+    country: 'ES',
+    postals: ['MD', 'CM'],
+    regions: ['Madrid'],
   },
   {
     id: 'CAT',
-    name: 'Cataluña\n(NE)',
-    color: '#a78bfa',
+    name: 'Cataluña\nNE',
+    color: '#7c3aed',
     restoreTime: 3,
     blackStartType: 'top-down',
-    anchor: { lon: 1.8, lat: 41.8 },
-    restorePercent: 10,
-    points: [[1.0,41.0],[2.5,41.5],[3.4,42.8],[1.5,43.5],[0.0,43.0],[-0.5,42.0],[1.0,41.0]],
+    anchor: { lon: 1.4, lat: 41.6 },
+    restorePercent: 12,
+    country: 'ES',
+    postals: ['CT', 'AR'],
   },
   {
     id: 'NOR',
-    name: 'Norte\n(Euskadi)',
-    color: '#f472b6',
+    name: 'Norte\nEuskadi',
+    color: '#be185d',
     restoreTime: 4,
     blackStartType: 'top-down',
     anchor: { lon: -2.5, lat: 43.0 },
     restorePercent: 8,
-    points: [[-5.0,42.0],[-2.5,42.5],[-0.5,42.0],[0.0,43.0],[-0.5,43.8],[-2.0,43.5],[-4.5,43.8],[-6.0,43.5],[-5.5,42.5],[-5.0,42.0]],
+    country: 'ES',
+    postals: ['PV', 'NA', 'CB', 'AS', 'LO'],
   },
   {
     id: 'GAL',
     name: 'Galicia\nLeón',
-    color: '#34d399',
+    color: '#15803d',
     restoreTime: 3,
     blackStartType: 'top-down',
-    anchor: { lon: -7.5, lat: 42.5 },
+    anchor: { lon: -7.3, lat: 42.6 },
     restorePercent: 8,
-    points: [[-9.5,42.0],[-6.0,41.0],[-5.0,42.0],[-5.5,42.5],[-6.0,43.5],[-7.5,43.8],[-9.0,43.8],[-9.5,43.0],[-9.5,42.0]],
+    country: 'ES',
+    postals: ['GA', 'CL'],
   },
   {
     id: 'POR',
     name: 'Portugal',
-    color: '#60a5fa',
+    color: '#2563eb',
     restoreTime: 3,
     blackStartType: 'bottom-up',
     anchor: { lon: -8.0, lat: 39.5 },
-    restorePercent: 10,
-    points: [[-9.5,37.5],[-7.5,38.5],[-6.0,41.0],[-9.5,42.0],[-9.5,37.5]],
+    restorePercent: 12,
+    country: 'PT',
   },
-];
+].map((zone) => ({
+  ...zone,
+  features: ADMIN1_FEATURES.filter((feature) => matchesAdmin1(feature, zone)),
+}));
 
 // ─── Puntos de Black Start verificados ───────────────────────────────────────
 const BLACK_START_POINTS = [
@@ -115,13 +124,13 @@ const BLACK_START_POINTS = [
 
 // ─── Log de eventos ────────────────────────────────────────────────────────────
 const EVENT_LOG = [
-  { time: 0,  msg: '12:33 CEST — Blackout sistémico. 7 islas desenergizadas.' },
+  { time: 0,  msg: '12:33 CEST — Blackout sistémico. 6 áreas funcionales desenergizadas.' },
   { time: 2,  msg: '~12:44 CEST — TOP-DOWN: Hernani recibe tensión de Francia (31 MW iniciales).' },
   { time: 3,  msg: '~12:45 CEST — BOTTOM-UP: Black Start Castelo de Bode (PT). Tapada do Outeiro activo.' },
   { time: 4,  msg: '~13:04 CEST — Interconexión Marruecos: +900 MW. Norte y Galicia se estabilizan.' },
   { time: 5,  msg: '~16:00 CEST — Aldeadávila (España) inicia Black Start. Isla Sur activa.' },
   { time: 6,  msg: '~14:30 CEST — Madrid Central recupera tensión. Corredor centro conectado.' },
-  { time: 7,  msg: '~17:00 CEST — Levante sincroniza con el esqueleto principal.' },
+  { time: 7,  msg: '~17:00 CEST — El corredor mediterráneo queda integrado en el esqueleto principal.' },
   { time: 8,  msg: '20:22 CEST — Portugal sincroniza frecuencia con continental europeo.' },
   { time: 11, msg: '07:05 (29-A) — 99,95% suministro restituido. Reposición certificada.' },
 ];
@@ -203,6 +212,28 @@ function RestorationContent({}) {
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+          <filter id="zoneHalo" x="-18%" y="-18%" width="136%" height="136%">
+            <feGaussianBlur stdDeviation="5" result="softZoneBlur"/>
+            <feMerge>
+              <feMergeNode in="softZoneBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <style>{`
+            .restoration-zone {
+              transition: opacity 220ms ease, stroke-width 220ms ease, filter 220ms ease;
+            }
+            .restoration-zone-label {
+              transition: fill 220ms ease, opacity 220ms ease;
+              pointer-events: none;
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .restoration-zone,
+              .restoration-zone-label {
+                transition: none;
+              }
+            }
+          `}</style>
 
           <clipPath id="iberia-clip">
             {COUNTRY_PATHS.ESP?.paths?.map((d, i) => <path key={`clip-esp-${i}`} d={d} />)}
@@ -244,8 +275,17 @@ function RestorationContent({}) {
         {ISLANDS.map(island => {
           const isRestored = simTime >= island.restoreTime;
           const isHovered  = hoveredIsland === island.id;
-          const pts = island.points.map(([lon, lat]) => project(lon, lat).join(',')).join(' ');
           const anchorPx = project(island.anchor.lon, island.anchor.lat);
+          const zoneOpacity = isHovered
+            ? 0.36
+            : isRestored
+              ? 0.25
+              : 0.08;
+          const zoneStrokeOpacity = isHovered
+            ? 0.95
+            : isRestored
+              ? 0.58
+              : 0.22;
 
           return (
             <g key={island.id}
@@ -254,46 +294,98 @@ function RestorationContent({}) {
                style={{ cursor: 'default' }}
                clipPath="url(#iberia-clip)">
 
-              {/* Polígono de isla */}
-              <polygon
-                points={pts}
-                fill={isRestored
-                  ? `${island.color}28`
-                  : 'rgba(239,68,68,0.04)'}
-                stroke={isRestored
-                  ? island.color
-                  : 'rgba(239,68,68,0.2)'}
-                strokeWidth={isHovered ? 2 : 1}
-                strokeDasharray={isRestored ? 'none' : '4 3'}
-                style={{ transition: 'all 0.6s ease' }}
-              />
+              <g filter={isHovered ? 'url(#zoneHalo)' : 'none'}>
+                {island.features.map((feature) => (
+                  <path
+                    key={feature.id}
+                    className="restoration-zone"
+                    d={feature.path}
+                    fill={isRestored ? island.color : '#64748b'}
+                    fillOpacity={zoneOpacity}
+                    stroke={isRestored ? island.color : '#64748b'}
+                    strokeOpacity={isHovered ? zoneStrokeOpacity : 0.12}
+                    strokeWidth={isHovered ? 1.8 : 0.45}
+                    strokeLinejoin="round"
+                  />
+                ))}
+              </g>
 
-              {/* Pulso de activación */}
+              {/* Pulso breve al activarse un área funcional. */}
               {isRestored && (
-                <polygon
-                  points={pts}
-                  fill="none"
-                  stroke={island.color}
-                  strokeWidth="2"
-                  opacity="0"
-                >
-                  <animate attributeName="opacity"
-                           values="0.6;0" dur="1.5s"
-                           begin="0s" repeatCount="1" />
-                </polygon>
+                <g pointerEvents="none">
+                  {island.features.map((feature) => (
+                    <path
+                      key={`${feature.id}-pulse`}
+                      d={feature.path}
+                      fill="none"
+                      stroke={island.color}
+                      strokeWidth="1.6"
+                      opacity="0"
+                    >
+                      <animate attributeName="opacity"
+                               values="0.26;0" dur="1.2s"
+                               begin="0s" repeatCount="1" />
+                      <animate attributeName="stroke-width"
+                               values="1.6;3.2" dur="1.2s"
+                               begin="0s" repeatCount="1" />
+                    </path>
+                  ))}
+                </g>
+              )}
+
+              {isHovered && (
+                <g pointerEvents="none">
+                  {island.features.map((feature) => (
+                    <path
+                      key={`${feature.id}-hover`}
+                      d={feature.path}
+                      fill="none"
+                      stroke={island.color}
+                      strokeWidth="3"
+                      strokeOpacity="0.2"
+                    />
+                  ))}
+                </g>
+              )}
+
+              {isRestored && (
+                <circle
+                  cx={anchorPx[0]}
+                  cy={anchorPx[1] + 25}
+                  r={isHovered ? 4.2 : 3}
+                  fill={island.color}
+                  fillOpacity={isHovered ? 0.9 : 0.58}
+                  style={{ transition: 'r 220ms ease, fill-opacity 220ms ease' }}
+                />
+              )}
+
+              {!isRestored && (
+                <g pointerEvents="none">
+                  {island.features.map((feature) => (
+                    <path
+                      key={`${feature.id}-offline`}
+                      d={feature.path}
+                      fill="none"
+                      stroke="#ef4444"
+                      strokeWidth="0.8"
+                      strokeOpacity="0.16"
+                    />
+                  ))}
+                </g>
               )}
 
               {/* Etiqueta de la isla */}
               {island.name.split('\n').map((line, li) => (
                 <text
+                  className="restoration-zone-label"
                   key={li}
                   x={anchorPx[0]} y={anchorPx[1] + (li - 0.5) * 13}
                   textAnchor="middle"
                   fontSize={li === 0 ? 10 : 8.5}
                   fontFamily="var(--font-mono, monospace)"
-                  fill={isRestored ? island.color : '#374151'}
+                  fill={isRestored ? island.color : (isDark ? '#9ca3af' : '#374151')}
+                  opacity={isHovered ? 1 : 0.82}
                   fontWeight={li === 0 ? '700' : '400'}
-                  style={{ transition: 'fill 0.5s ease' }}
                 >
                   {line}
                 </text>
@@ -305,7 +397,7 @@ function RestorationContent({}) {
                   x={anchorPx[0]} y={anchorPx[1] + 22}
                   textAnchor="middle" fontSize={8}
                   fontFamily="var(--font-mono, monospace)"
-                  fill="rgba(255,255,255,0.5)"
+                  fill={isDark ? 'rgba(255,255,255,0.58)' : 'rgba(45,55,72,0.58)'}
                 >
                   +{island.restorePercent}%
                 </text>
@@ -370,6 +462,27 @@ function RestorationContent({}) {
               fontFamily="var(--font-mono, monospace)" letterSpacing="3">
           FRANCE
         </text>
+        <g>
+          <rect
+            x="610"
+            y="720"
+            width="352"
+            height="48"
+            rx="5"
+            fill={isDark ? 'rgba(7,24,45,0.76)' : 'rgba(246,241,232,0.78)'}
+            stroke={isDark ? 'rgba(118,151,168,0.22)' : 'rgba(104,116,98,0.24)'}
+          />
+          <text
+            x="626"
+            y="740"
+            fontSize="9.5"
+            fontFamily="var(--font-mono, monospace)"
+            fill={isDark ? 'rgba(210,224,232,0.66)' : 'rgba(45,36,29,0.62)'}
+          >
+            <tspan x="626" dy="0">Áreas funcionales aproximadas sobre Admin 1 Natural Earth;</tspan>
+            <tspan x="626" dy="14">no representan límites eléctricos exactos.</tspan>
+          </text>
+        </g>
       </svg>
       </div>
 

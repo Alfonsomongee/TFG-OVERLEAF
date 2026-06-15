@@ -362,7 +362,21 @@ function main() {
   console.log('Procesando: ne_10m_admin_1_states_provinces...');
   const provincesLayer = loadLayer('ne_10m_admin_1_states_provinces');
   const admin1Paths = [];
+  const admin1DetailedPaths = [];
   let admin1Raw = 0, admin1Sim = 0;
+  let admin1DetailedRaw = 0, admin1DetailedSim = 0;
+  const detailedAdmin1Countries = new Set(['ES', 'PT', 'FR', 'MA']);
+  const excludedAdmin1Names = new Set([
+    'Canarias',
+    'Las Palmas',
+    'Santa Cruz de Tenerife',
+    'Ceuta',
+    'Melilla',
+    'Madeira',
+    'Azores',
+    'Guyane française',
+    'French Guiana'
+  ]);
 
   for (const feat of provincesLayer) {
     const countryIso = (feat.properties.iso_a2 || feat.properties.ISO_A2 || '').toUpperCase();
@@ -392,6 +406,49 @@ function main() {
     }
   }
   stats.push({ Layer: 'Admin 1 (Provinces)', Features: admin1Paths.length, 'Vertices Before': admin1Raw, 'Vertices After': admin1Sim, Reduction: `${((1 - admin1Sim / admin1Raw) * 100).toFixed(1)}%` });
+
+  for (const feat of provincesLayer) {
+    const countryIso = (feat.properties.iso_a2 || feat.properties.ISO_A2 || '').toUpperCase();
+    if (!detailedAdmin1Countries.has(countryIso)) continue;
+
+    const name = feat.properties.name || feat.properties.NAME || '';
+    if (excludedAdmin1Names.has(name)) continue;
+    if (!isBBoxIntersecting(feat.geometry.bbox, FILTER_BBOX)) continue;
+
+    const res = processPolygonOrPolyLine(feat.geometry, 3.0, 12);
+    if (res.paths.length === 0) continue;
+
+    const sourceId = feat.properties.iso_3166_2 || feat.properties.code_hasc || feat.properties.adm1_code || '';
+    const nameEn = feat.properties.name_en || feat.properties.NAME_EN || name;
+    const adm0A3 = feat.properties.adm0_a3 || feat.properties.ADM0_A3 || '';
+    const postal = feat.properties.postal || feat.properties.POSTAL || '';
+    const type = feat.properties.type || feat.properties.TYPE || '';
+    const typeEn = feat.properties.type_en || feat.properties.TYPE_EN || type;
+    const region = feat.properties.region || feat.properties.region_cod || '';
+    const regionCode = feat.properties.region_cod || '';
+
+    res.paths.forEach((pathStr, partIndex) => {
+      admin1DetailedPaths.push({
+        id: `${sourceId || `${countryIso}-${admin1DetailedPaths.length + 1}`}${res.paths.length > 1 ? `-${partIndex + 1}` : ''}`,
+        source_id: sourceId,
+        name,
+        name_en: nameEn,
+        country: countryIso,
+        iso_a2: countryIso,
+        adm0_a3: adm0A3,
+        postal,
+        type,
+        type_en: typeEn,
+        region,
+        region_code: regionCode,
+        path: pathStr
+      });
+    });
+
+    admin1DetailedRaw += res.rawCount;
+    admin1DetailedSim += res.simCount;
+  }
+  stats.push({ Layer: 'Admin 1 detailed metadata', Features: admin1DetailedPaths.length, 'Vertices Before': admin1DetailedRaw, 'Vertices After': admin1DetailedSim, Reduction: `${((1 - admin1DetailedSim / admin1DetailedRaw) * 100).toFixed(1)}%` });
 
   // 6. CIUDADES (ne_10m_populated_places)
   console.log('Procesando: ne_10m_populated_places...');
@@ -485,6 +542,29 @@ export const CITY_POINTS = ${JSON.stringify(cityPoints, null, 2)};
   fs.writeFileSync(jsOutFile, jsContent, 'utf8');
   console.log(`Archivo de datos JS generado con éxito en: ${jsOutFile}`);
 
+  const admin1JsOutFile = path.join(outDir, 'naturalEarthIberiaAdmin1Paths.js');
+  const admin1JsContent = `/**
+ * DATASET ADMIN 1 NATURAL EARTH PARA LA PENÍNSULA IBÉRICA
+ * Generado automáticamente a partir de ne_10m_admin_1_states_provinces.
+ *
+ * Bounding Box: Lon [${MAP_VIEWBOX.lonMin}, ${MAP_VIEWBOX.lonMax}], Lat [${MAP_VIEWBOX.latMin}, ${MAP_VIEWBOX.latMax}]
+ * Proyección: Lineal / Equirrectangular (Plate Carrée)
+ * ViewBox: 0 0 1000 800
+ */
+
+export const ADMIN1_FEATURES = ${JSON.stringify(admin1DetailedPaths, null, 2)};
+
+export const ADMIN1_SOURCE = {
+  name: 'Natural Earth Admin 1 - States, Provinces',
+  scale: '10m',
+  layer: 'ne_10m_admin_1_states_provinces',
+  countries: ['ES', 'PT', 'FR', 'MA']
+};
+`;
+
+  fs.writeFileSync(admin1JsOutFile, admin1JsContent, 'utf8');
+  console.log(`Archivo Admin 1 con metadatos generado con éxito en: ${admin1JsOutFile}`);
+
   // 2. ARCHIVO PREVIEW SVG
   const svgOutFile = path.join(outDir, 'naturalEarthIberiaPreview.svg');
   // preview dibuja land vacío o podemos usar los países
@@ -558,8 +638,10 @@ export const CITY_POINTS = ${JSON.stringify(cityPoints, null, 2)};
   console.table(stats);
   
   const jsSize = fs.statSync(jsOutFile).size / 1024;
+  const admin1JsSize = fs.statSync(admin1JsOutFile).size / 1024;
   const svgSize = fs.statSync(svgOutFile).size / 1024;
   console.log(`\nArchivo de datos final (.js): ${jsSize.toFixed(2)} KB`);
+  console.log(`Archivo Admin 1 con metadatos (.js): ${admin1JsSize.toFixed(2)} KB`);
   console.log(`Archivo de preview final (.svg): ${svgSize.toFixed(2)} KB`);
   console.log('====================================================================\n');
 }
