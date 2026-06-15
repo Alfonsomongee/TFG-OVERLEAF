@@ -338,6 +338,12 @@ export const GLOSSARY_TERMS = [
     definition: "Relés de protección sistémica (función ANSI 78) diseñados para detectar la divergencia angular severa entre dos áreas eléctricas interconectadas —el llamado deslizamiento de polos (pole slip)— y abrir automáticamente las líneas de interconexión para contener el daño en equipos y evitar que la oscilación asíncrona se propague al resto del sistema. Operan siguiendo el fasor de impedancia aparente en el plano R-X: cuando la trayectoria del fasor cruza la característica mho con la velocidad y dirección propias de un deslizamiento de polos, se ordena la apertura. El 28-A, las protecciones ANSI 78 de los enlaces transpirenaicos operaron a las 12:33:21 CEST al detectar la pérdida de sincronismo entre la Península Ibérica y el sistema continental europeo. La actuación fue técnicamente correcta —previno daños estructurales en los equipos— y fue también, en el registro del incidente, la firma formal del colapso sistémico ibérico.",
   },
   {
+    id: slugify("OST"),
+    letter: "O",
+    term: "OST",
+    definition: "Véase Protecciones de pérdida de sincronismo (OST).",
+  },
+  {
     id: slugify("REE (Red Eléctrica de España)"),
     letter: "R",
     term: "REE (Red Eléctrica de España)",
