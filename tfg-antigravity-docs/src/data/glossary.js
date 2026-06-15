@@ -32,6 +32,24 @@ export const GLOSSARY_TERMS = [
     definition: "Servicio de ajuste por el cual ciertas instalaciones de generación —típicamente centrales hidráulicas de embalse o ciclos combinados equipados para el autoarranque— pueden energizar sus propios auxiliares e inyectar tensión en una red desenergizada sin necesidad de recibir alimentación eléctrica externa previa. Es la capacidad sin la cual la reposición tras un blackout total es técnicamente imposible: alguien tiene que \"encender la primera luz\". El 28-A, la restauración del sistema peninsular dependió críticamente de la disponibilidad geográfica y la capacidad de activación rápida de estas unidades; la progresión del reencendido desde los nudos de Black Start hacia las cargas más alejadas tardó entre 7 y 18,5 horas según la zona, evidenciando tanto la solidez del diseño de restauración existente como sus cuellos de botella logísticos ante un colapso de esta amplitud geográfica.",
   },
   {
+    id: slugify("Arranque autónomo (Black Start)"),
+    letter: "B",
+    term: "Black Start",
+    definition: "Véase Arranque autónomo (Black Start).",
+  },
+  {
+    id: slugify("Esquema de Alertas Sistémicas (EAS)"),
+    letter: "E",
+    term: "EAS",
+    definition: "Véase Esquema de Alertas Sistémicas (EAS).",
+  },
+  {
+    id: slugify("Esquema de Alertas Sistémicas (EAS)"),
+    letter: "E",
+    term: "Esquema de Alertas Sistémicas (EAS)",
+    definition: "Sistema de comunicación multinacional gestionado por ENTSO-E que permite a los operadores de red notificar el estado operativo de sus sistemas (Normal, Alerta, Emergencia, Restauración, Cero de Tensión) a todos los demás operadores conectados síncronamente en tiempo real. Su función es proveer observabilidad transfronteriza de la estabilidad sistémica y permitir que los operadores ajusten automáticamente sus márgenes de seguridad (incremento de reservas, desactivación de servicios de flexibilidad, rechazo de intercambios programados) en función del estado declarado del sistema más crítico en la red continental. El 28-A, REE utilizó el EAS a las 12:36 CEST para notificar a ENTSO-E la transición de la Península Ibérica hacia estado de Restauración, activando los protocolos de asistencia coordinada que se aplicarían durante las 18,5 horas siguientes de recuperación del sistema.",
+  },
+  {
     id: slugify("BESS (Battery Energy Storage System)"),
     letter: "B",
     term: "BESS (Battery Energy Storage System)",
