@@ -1,4 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useColorMode } from '@docusaurus/theme-common';
+
+const OPEN_QUESTION_COLORS = {
+  light: {
+    accent: '#8A6C2F',
+    accentSoft: '#D1B98B',
+    bg: '#F7EFE0',
+    bgStrong: '#F3E7D0',
+    border: 'rgba(138, 108, 47, 0.38)',
+    text: '#33291E',
+    muted: '#76664D',
+    reference: '#6F5630',
+    shadow: '0 16px 36px rgba(80, 57, 24, 0.16)',
+  },
+  dark: {
+    accent: '#D8B96A',
+    accentSoft: '#8F7640',
+    bg: '#16263C',
+    bgStrong: '#1A2F46',
+    border: 'rgba(216, 185, 106, 0.42)',
+    text: '#E8EDF4',
+    muted: '#B8C3D1',
+    reference: '#E6D29B',
+    shadow: '0 18px 44px rgba(0, 0, 0, 0.42)',
+  },
+};
 
 export default function CuestionAbierta({
   children,
@@ -8,6 +34,8 @@ export default function CuestionAbierta({
   const [open, setOpen]   = useState(false);
   const tooltipRef        = useRef(null);
   const triggerRef        = useRef(null);
+  const { colorMode }     = useColorMode();
+  const colors            = OPEN_QUESTION_COLORS[colorMode] || OPEN_QUESTION_COLORS.light;
 
   // Close on click outside
   useEffect(() => {
@@ -56,7 +84,7 @@ export default function CuestionAbierta({
           fontFamily:     'inherit',
           fontSize:       'inherit',
           fontWeight:     'inherit',
-          color:          '#f59e0b',
+          color:          colors.accent,
           borderBottom:   'none',
           textDecoration: 'none',
           lineHeight:     'inherit',
@@ -77,20 +105,20 @@ export default function CuestionAbierta({
             zIndex:     10000,
             width:      270,
             padding:    '10px 14px',
-            background: 'rgba(10,15,30,0.98)',
-            border:     '1px solid rgba(245,158,11,0.5)',
+            background: colors.bg,
+            border:     `1px solid ${colors.border}`,
             borderRadius: 8,
             fontSize:   12,
             fontFamily: 'monospace',
-            color:      '#fde68a',
+            color:      colors.text,
             lineHeight: 1.6,
-            boxShadow:  '0 8px 24px rgba(0,0,0,0.6)',
+            boxShadow:  colors.shadow,
             whiteSpace: 'normal',
             pointerEvents: 'auto',
           }}
         >
           <strong style={{
-            color:        '#f59e0b',
+            color:        colors.accent,
             display:      'block',
             marginBottom: 5,
             fontSize:     11,
@@ -109,9 +137,9 @@ export default function CuestionAbierta({
               display:     'block',
               marginTop:   6,
               fontSize:    10,
-              color:       '#92400e',
+              color:       colors.reference,
               fontStyle:   'italic',
-              borderTop:   '1px solid rgba(245,158,11,0.15)',
+              borderTop:   `1px solid ${colors.border}`,
               paddingTop:  5,
             }}>
               ref: {metricKey}
