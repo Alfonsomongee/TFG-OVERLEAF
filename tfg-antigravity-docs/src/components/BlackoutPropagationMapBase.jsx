@@ -1,52 +1,85 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
+import {
+  MAP_VIEWBOX,
+  LAND_PATHS,
+  COUNTRY_PATHS,
+  BORDER_PATHS,
+  COASTLINE_PATHS,
+  CITY_POINTS,
+  ADMIN1_PATHS,       // ← NUEVO: fronteras CCAA/distritos
+} from '../data/cartography/naturalEarthIberiaPaths';
 
-// ════════════════════════════════════════════════════════════════════
-// PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
-// ════════════════════════════════════════════════════════════════════
-const GEO = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROYECCIÓN LINEAL  (equirectangular → viewBox 1000×800)
+   ═══════════════════════════════════════════════════════════════════════════ */
+const GEO = { north: 46.0, south: 34.0, west: -10.5, east: 5.5 };
 const VB  = { w: 1000, h: 800 };
 
 function gp(lat, lon) {
   return {
-    x: Math.round(((lon - GEO.west)  / (GEO.east  - GEO.west))  * VB.w),
+    x: Math.round(((lon - GEO.west)  / (GEO.east - GEO.west))  * VB.w),
     y: Math.round(((GEO.north - lat) / (GEO.north - GEO.south)) * VB.h),
   };
 }
 
-function toPath(pts) {
-  return pts.map(([lat, lon], i) => {
-    const { x, y } = gp(lat, lon);
-    return `${i ? 'L' : 'M'} ${x},${y}`;
-  }).join(' ') + ' Z';
+/* ═══════════════════════════════════════════════════════════════════════════
+   RETÍCULA CARTOGRÁFICA REAL (cada 2° lon, 2° lat)
+   ═══════════════════════════════════════════════════════════════════════════ */
+const GRATICULE_LONS = [-10, -8, -6, -4, -2, 0, 2, 4];
+const GRATICULE_LATS = [36, 38, 40, 42, 44];
+
+function buildGraticulePaths() {
+  const lines = [];
+  // Meridianos (verticales)
+  for (const lon of GRATICULE_LONS) {
+    const top = gp(GEO.north, lon);
+    const bot = gp(GEO.south, lon);
+    lines.push({ d: `M${top.x},${top.y} L${bot.x},${bot.y}`, label: `${Math.abs(lon)}°${lon < 0 ? 'W' : lon > 0 ? 'E' : ''}`, lx: top.x, ly: 14, anchor: 'middle' });
+  }
+  // Paralelos (horizontales)
+  for (const lat of GRATICULE_LATS) {
+    const left  = gp(lat, GEO.west);
+    const right = gp(lat, GEO.east);
+    lines.push({ d: `M${left.x},${left.y} L${right.x},${right.y}`, label: `${lat}°N`, lx: 18, ly: left.y - 4, anchor: 'start' });
+  }
+  return lines;
 }
+const GRATICULE = buildGraticulePaths();
 
-const IBERIA_OUTLINE = [
-  [43.78,-7.86],[43.47,-8.45],[42.88,-9.28],[42.03,-8.87],[41.87,-8.87],
-  [41.38,-8.73],[40.64,-8.75],[39.36,-9.40],[38.62,-9.50],[37.01,-8.91],
-  [36.97,-7.85],[36.01,-5.61],[36.17,-5.36],[36.69,-4.41],[36.72,-3.48],
-  [37.20,-1.90],[37.64,-0.69],[38.68, 0.23],[39.58, 0.34],[40.72, 0.73],
-  [41.29, 1.83],[41.42, 2.22],[42.43, 3.16],[42.80, 1.72],[43.37,-1.79],
-  [43.49,-3.80],[43.57,-5.66],[43.78,-7.86],
-];
+/* ═══════════════════════════════════════════════════════════════════════════
+   CAPAS COUNTRY PRE-EXTRAÍDAS
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SPAIN_PATHS    = COUNTRY_PATHS.ESP?.paths || [];
+const PORTUGAL_PATHS = COUNTRY_PATHS.PRT?.paths || [];
+const ANDORRA_PATHS  = COUNTRY_PATHS.AND?.paths || [];
+const FRANCE_PATHS   = COUNTRY_PATHS.FRA?.paths || [];
+const MOROCCO_PATHS  = COUNTRY_PATHS.MAR?.paths || [];
 
-const PORTUGAL_OUTLINE = [
-  [41.87,-8.87],[41.52,-6.92],[39.67,-7.06],[37.43,-7.44],[36.97,-7.85],
-  [37.01,-8.91],[38.62,-9.50],[39.36,-9.40],[40.64,-8.75],[41.38,-8.73],
-  [41.87,-8.87],
-];
+/* ═══════════════════════════════════════════════════════════════════════════
+   ADMIN1 — Fronteras CCAA (España) + Distritos (Portugal)
+   Capa nueva: líneas sutiles que aportan contexto geográfico sin competir
+   con la capa eléctrica.
+   ═══════════════════════════════════════════════════════════════════════════ */
+// Extracción estática (se evalúa una vez al importar el módulo, no dentro de React)
+const ALL_ADMIN1_PATHS = (() => {
+  if (!ADMIN1_PATHS) return [];
+  const paths = [];
+  for (const country of ['ESP', 'PRT']) {
+    const regions = ADMIN1_PATHS[country];
+    if (!regions) continue;
+    for (const name of Object.keys(regions)) {
+      const region = regions[name];
+      if (region?.paths) paths.push(...region.paths);
+    }
+  }
+  return paths;
+})();
 
-const MALLORCA_OUTLINE = [
-  [39.96,3.22],[39.89,2.32],[39.27,2.84],[39.25,3.48],[39.78,3.47],[39.96,3.22],
-];
-
-const IBERIA_PATH   = toPath(IBERIA_OUTLINE);
-const PORTUGAL_PATH = toPath(PORTUGAL_OUTLINE);
-const BALEARES_PATH = toPath(MALLORCA_OUTLINE);
-
-// ════════════════════════════════════════════════════════════════════
-// SUBESTACIONES Y NUDOS (coordenadas reales verificadas)
-// ════════════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATOS ELÉCTRICOS — Subestaciones, arcos, eventos
+   (Sin cambios respecto al original)
+   ═══════════════════════════════════════════════════════════════════════════ */
 const STATIONS = [
   { id:'GRN', lat:37.2661, lon:-3.658,  name:'Caparacena (Granada)',  type:'origin',   activationTime:0,
     desc:`DISPARO RAÍZ — 12:32:57 CEST\nTransformador 400/220 kV dispara por sobretensión\nen colector 220 kV (242 kV = 1,10 p.u.)\nPérdida: −355 MW, −165 MVAr\n(ENTSO-E Factual, p.28)` },
@@ -72,9 +105,6 @@ const STATIONS = [
     desc:`12:33:21 CEST — Pérdida sincronismo\nHVDC INELFE: 1.000 MW PMODE1\nLineas AC: pico 3.800 MW\n(ENTSO-E Factual, pp.12,108)` },
 ];
 
-// ════════════════════════════════════════════════════════════════════
-// ARCOS DE PROPAGACIÓN
-// ════════════════════════════════════════════════════════════════════
 const ARCS = [
   { from:'GRN', to:'SEV', activationTime:2, type:'cascade',     label:'Sobretensión' },
   { from:'GRN', to:'BAD', activationTime:2, type:'cascade',     label:'Cascada'      },
@@ -86,9 +116,6 @@ const ARCS = [
   { from:'BAR', to:'FR',  activationTime:8, type:'sync',        label:'HVDC'         },
 ];
 
-// ════════════════════════════════════════════════════════════════════
-// LOG DE EVENTOS FORENSE
-// ════════════════════════════════════════════════════════════════════
 const EVENTS = [
   { t:0,  msg:'12:32:57 CEST — DISPARO RAÍZ: Caparacena (Granada). Trafo 400/220 kV. −355 MW, −165 MVAr. (ENTSO-E p.28)' },
   { t:2,  msg:'12:33:00 CEST — Cascada: plantas FV Badajoz y Sevilla cruzan umbral ANSI 59 (>435 kV).' },
@@ -99,12 +126,9 @@ const EVENTS = [
   { t:10, msg:'12:33:24 CEST — CERO ELÉCTRICO SISTÉMICO. −15 GW en 30 segundos.' },
 ];
 
-// ════════════════════════════════════════════════════════════════════
-// SISTEMA DE COLOR DUAL
-// ════════════════════════════════════════════════════════════════════
-
-// Colores de nodo por tipo y modo — el schema dark es vivaz sobre fondo navy,
-// el light usa tonos más oscuros y saturados para legibilidad sobre fondo crema
+/* ═══════════════════════════════════════════════════════════════════════════
+   PALETA DE COLORES — Nodos y tema general (sin cambios)
+   ═══════════════════════════════════════════════════════════════════════════ */
 const NODE_COLORS = {
   dark: {
     origin:   { fill:'#ef4444', stroke:'#fca5a5', label:'#fca5a5' },
@@ -124,132 +148,108 @@ const NODE_COLORS = {
 
 const THEME = {
   dark: {
-    // Contenedor
     wrapBg:         'rgba(5,10,20,0.98)',
     wrapBorder:     'rgba(0,217,255,0.15)',
-    // Panel inferior
     panelBg:        'rgba(5,10,20,0.96)',
     panelBorder:    'rgba(0,217,255,0.18)',
-    // Log
     logBg:          'rgba(0,0,0,0.25)',
     logBorder:      'rgba(0,217,255,0.07)',
-    // Texto general
     textPrimary:    '#e2e8f0',
     textSec:        '#94a3b8',
     textMuted:      '#4b5563',
     textDanger:     '#ef4444',
-    // GW counter
     gwBg:           'rgba(239,68,68,0.07)',
     gwBorder:       'rgba(239,68,68,0.22)',
     gwUnit:         '#94a3b8',
-    // Timeline
     timelineBg:     'rgba(239,68,68,0.10)',
     timelineGrad:   'linear-gradient(90deg,#f59e0b,#ef4444)',
-    // Botón
-    btnPlay:  { bg:'rgba(0,217,255,0.12)',  border:'#00d9ff', color:'#00d9ff' },
-    btnPause: { bg:'rgba(239,68,68,0.15)',  border:'#ef4444', color:'#ef4444' },
-    // Leyenda
+    btnPlay:        { bg:'rgba(0,217,255,0.12)',  border:'#00d9ff', color:'#00d9ff' },
+    btnPause:       { bg:'rgba(239,68,68,0.15)',  border:'#ef4444', color:'#ef4444' },
     legendText:     '#6b7280',
-    // Log de eventos
     logActive:      '#e2e8f0',
     logPast:        '#4b5563',
     logBullet:      '#ef4444',
-    // Mapa SVG
-    ocean:          '#081629',          // fondo oceánico azul profundo (contraste mejorado con tierra)
-    landGradA:      '#142c4a',
-    landGradB:      '#0b1827',
-    landStroke:     'rgba(56,189,248,0.25)',
-    gridLine:       'rgba(255,255,255,0.03)',
-    relief:         'rgba(255,255,255,0.04)',
+    ocean:          '#07182D',
+    landMain:       '#173149',
+    landNeighbor:   '#10263B',
+    coastline:      '#3E6176',
+    border:         '#2D4E63',
+    adminBorder:    'rgba(118, 151, 168, 0.18)',
+    city:           '#8FA8B7',
+    cityLabel:      'rgba(210, 224, 232, 0.50)',
+    gridLine:       'rgba(255,255,255,0.06)',
+    gridLabel:      'rgba(255,255,255,0.14)',
     shadow:         'rgba(0,0,0,0.22)',
     ptFill:         'rgba(255,170,0,0.08)',
     ptStroke:       'rgba(255,170,0,0.40)',
-    // Arcos
     arcColors:      { cascade:'#ef4444', oscillation:'#f59e0b', sync:'#3b82f6', stable:'rgba(0,217,255,0.18)' },
     arcInactive:    'rgba(0,217,255,0.06)',
-    // Nodo inactivo
     nodeOff:        { fill:'rgba(12,22,44,0.80)', stroke:'rgba(0,217,255,0.10)', label:'#374151' },
-    // Tooltip
     tooltip:        { bg:'rgba(5,10,20,0.96)', border:'rgba(0,217,255,0.35)', title:'#00d9ff', body:'#94a3b8' },
-    // Overlay colapso
     collapso:       'rgba(239,68,68,0.07)',
     collapsoText:   '#ef4444',
     collapsoSub:    '#fca5a5',
   },
   light: {
-    // Contenedor
     wrapBg:         '#F4F1EA',
     wrapBorder:     'rgba(139,38,53,0.20)',
-    // Panel inferior
     panelBg:        '#EDE9DF',
     panelBorder:    'rgba(139,38,53,0.16)',
-    // Log
     logBg:          'rgba(0,0,0,0.03)',
     logBorder:      'rgba(139,38,53,0.10)',
-    // Texto general
     textPrimary:    '#1A1410',
     textSec:        '#4A4035',
     textMuted:      '#7A7065',
     textDanger:     '#C41E30',
-    // GW counter
     gwBg:           'rgba(196,30,48,0.06)',
     gwBorder:       'rgba(196,30,48,0.22)',
     gwUnit:         '#7A7065',
-    // Timeline
     timelineBg:     'rgba(196,30,48,0.08)',
     timelineGrad:   'linear-gradient(90deg,#B45309,#C41E30)',
-    // Botón
-    btnPlay:  { bg:'rgba(29,53,87,0.08)',   border:'#1D3557', color:'#1D3557' },
-    btnPause: { bg:'rgba(196,30,48,0.10)',  border:'#C41E30', color:'#C41E30' },
-    // Leyenda
+    btnPlay:        { bg:'rgba(29,53,87,0.08)',   border:'#1D3557', color:'#1D3557' },
+    btnPause:       { bg:'rgba(196,30,48,0.10)',  border:'#C41E30', color:'#C41E30' },
     legendText:     '#7A7065',
-    // Log de eventos
     logActive:      '#1A1410',
     logPast:        '#7A7065',
     logBullet:      '#C41E30',
-    // Mapa SVG
-    ocean:          '#C4D8E4',          // fondo oceánico azul-gris claro (Atlántico/Mediterráneo)
-    landGradA:      '#F0ECE1',
-    landGradB:      '#D6CEBC',
-    landStroke:     'rgba(90,100,120,0.28)',
-    gridLine:       'rgba(0,0,0,0.045)',
-    relief:         'rgba(0,0,0,0.028)',
+    ocean:          '#EEF3F2',
+    landMain:       '#D9DED4',
+    landNeighbor:   '#E7E9E1',
+    coastline:      '#9EAA9C',
+    border:         '#B7C0B2',
+    adminBorder:    'rgba(104, 116, 98, 0.22)',
+    city:           '#7D8577',
+    cityLabel:      'rgba(60, 67, 58, 0.56)',
+    gridLine:       'rgba(0,0,0,0.06)',
+    gridLabel:      'rgba(0,0,0,0.16)',
     shadow:         'rgba(0,0,0,0.07)',
     ptFill:         'rgba(160,100,0,0.09)',
     ptStroke:       'rgba(130,80,0,0.38)',
-    // Arcos — saturados para legibilidad sobre fondo crema
     arcColors:      { cascade:'#DC2626', oscillation:'#D97706', sync:'#2563EB', stable:'rgba(29,53,87,0.16)' },
     arcInactive:    'rgba(90,100,120,0.12)',
-    // Nodo inactivo
     nodeOff:        { fill:'rgba(195,188,175,0.82)', stroke:'rgba(100,110,130,0.30)', label:'#A09585' },
-    // Tooltip
     tooltip:        { bg:'rgba(244,241,234,0.98)', border:'rgba(139,38,53,0.35)', title:'#8B2635', body:'#4A4035' },
-    // Overlay colapso
     collapso:       'rgba(196,30,48,0.05)',
     collapsoText:   '#C41E30',
     collapsoSub:    '#8B1423',
   },
 };
 
-// ════════════════════════════════════════════════════════════════════
-// COMPONENTE PRINCIPAL
-// (BrowserOnly eliminado — el padre BlackoutPropagationMap.jsx ya lo gestiona
-//  via React.lazy + BrowserOnly + Suspense)
-// ════════════════════════════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENTE PRINCIPAL
+   ═══════════════════════════════════════════════════════════════════════════ */
 export default function BlackoutPropagationMapBase() {
   const { colorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   const th = THEME[isDark ? 'dark' : 'light'];
   const nc = NODE_COLORS[isDark ? 'dark' : 'light'];
 
-  // IDs únicos por instancia — evita colisiones de defs SVG en páginas
-  // con múltiples instancias del componente
   const uid = useRef(`bpm-${Math.random().toString(36).slice(2, 7)}`).current;
   const ids = {
-    landGrad:   `${uid}-lg`,
-    relief:     `${uid}-rf`,
     glowRed:    `${uid}-gr`,
     clipIberia: `${uid}-ci`,
+    relief:     `${uid}-rf`,
   };
 
   const [simTime,     setSimTime]     = useState(0);
@@ -257,7 +257,6 @@ export default function BlackoutPropagationMapBase() {
   const [hoveredNode, setHoveredNode] = useState(null);
   const MAX_TIME = 12;
 
-  // setTimeout chain — más limpio que setInterval con simTime como dep
   useEffect(() => {
     if (!isPlaying) return;
     if (simTime >= MAX_TIME) { setIsPlaying(false); return; }
@@ -291,11 +290,14 @@ export default function BlackoutPropagationMapBase() {
     return 0;
   }, [simTime]);
 
-  // Color del GW counter escalonado por severidad
   const gwColor = gwLost >= 10 ? th.textDanger
     : gwLost >= 5  ? (isDark ? '#f97316' : '#C2500A')
     : gwLost >= 1  ? (isDark ? '#f59e0b' : '#B45309')
     : th.textMuted;
+
+  // Opacidad general del mapa durante colapso final
+  const mapOpacity    = simTime >= 8 ? 0.38 : 1;
+  const mapTransition = 'opacity 1.2s ease';
 
   return (
     <figure style={{ margin: '1.5rem 0', padding: 0 }}>
@@ -309,8 +311,7 @@ export default function BlackoutPropagationMapBase() {
         flexDirection:  'column',
         fontFamily:     'var(--ifm-font-family-base, system-ui, -apple-system, sans-serif)',
       }}>
-
-        {/* ── SVG MAPA ── */}
+        {/* ─── SVG MAP ────────────────────────────────────────────────── */}
         <div style={{ position: 'relative', width: '100%' }}>
           <svg
             viewBox="0 0 1000 800"
@@ -318,7 +319,6 @@ export default function BlackoutPropagationMapBase() {
             aria-label="Mapa interactivo de la cascada de desconexiones IBR durante el apagón ibérico del 28-A"
           >
             <defs>
-              {/* Filtro de resplandor rojo — nodos en colapso y texto final */}
               <filter id={ids.glowRed}
                 x="-50" y="-50" width="1100" height="900"
                 filterUnits="userSpaceOnUse">
@@ -326,22 +326,12 @@ export default function BlackoutPropagationMapBase() {
                 <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
 
-              {/* Clip de la masa continental ibérica */}
               <clipPath id={ids.clipIberia}>
-                <path d={IBERIA_PATH}/>
-                <path d={PORTUGAL_PATH}/>
-                <path d={BALEARES_PATH}/>
+                {SPAIN_PATHS.map((d, i) => <path key={`c-es-${i}`} d={d} />)}
+                {PORTUGAL_PATHS.map((d, i) => <path key={`c-pt-${i}`} d={d} />)}
+                {ANDORRA_PATHS.map((d, i) => <path key={`c-ad-${i}`} d={d} />)}
               </clipPath>
 
-              {/* Gradiente radial de tierra — dark: navy, light: crema */}
-              <radialGradient id={ids.landGrad}
-                cx="450" cy="360" r="520"
-                gradientUnits="userSpaceOnUse">
-                <stop offset="0%"   stopColor={th.landGradA}/>
-                <stop offset="100%" stopColor={th.landGradB}/>
-              </radialGradient>
-
-              {/* Filtro de sombra para relieve topográfico */}
               <filter id={ids.relief}
                 x="-50" y="-50" width="1100" height="900"
                 filterUnits="userSpaceOnUse">
@@ -350,61 +340,136 @@ export default function BlackoutPropagationMapBase() {
               </filter>
             </defs>
 
-            {/* Fondo oceánico — Atlántico + Mediterráneo */}
+            {/* Fondo océano */}
             <rect width="1000" height="800" fill={th.ocean}/>
 
-            {/* Masa de tierra */}
+            {/* ─── RETÍCULA CARTOGRÁFICA REAL ─────────────────────────── */}
+            <g opacity={simTime >= 8 ? 0.10 : 0.55}
+               style={{ transition: mapTransition }}>
+              {GRATICULE.map((g, i) => (
+                <g key={`grat-${i}`}>
+                  <path d={g.d}
+                        fill="none"
+                        stroke={th.gridLine}
+                        strokeWidth="0.6"/>
+                  <text x={g.lx} y={g.ly}
+                        textAnchor={g.anchor}
+                        fontSize="7"
+                        fontFamily="var(--font-mono, monospace)"
+                        fill={th.gridLabel}>
+                    {g.label}
+                  </text>
+                </g>
+              ))}
+            </g>
+
+            {/* ─── MASAS TERRESTRES ───────────────────────────────────── */}
             <g filter={`url(#${ids.relief})`}
-               opacity={simTime >= 8 ? 0.38 : 1}
-               style={{ transition: 'opacity 1.2s ease' }}>
-              <path d={IBERIA_PATH}
-                    fill={`url(#${ids.landGrad})`}
-                    stroke={th.landStroke}
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"/>
-              {/* Portugal — borde punteado diferenciador */}
-              <path d={PORTUGAL_PATH}
-                    fill={th.ptFill}
-                    stroke={th.ptStroke}
-                    strokeWidth="1"
-                    strokeDasharray="4 3"
-                    strokeLinejoin="round"/>
-              <path d={BALEARES_PATH}
-                    fill={`url(#${ids.landGrad})`}
-                    stroke={th.landStroke}
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"/>
-            </g>
-
-            {/* Líneas de relieve topográfico */}
-            <g clipPath={`url(#${ids.clipIberia})`}
-               opacity={simTime >= 8 ? 0.10 : 0.42}
-               style={{ transition: 'opacity 1.2s ease' }}>
-              {Array.from({ length: 18 }, (_, i) => (
-                <path key={i}
-                  d={`M ${80+i*40} ${60+i*25} C ${400+i*15} ${100+i*10}, ${600-i*20} ${500-i*15}, ${200+i*30} ${600-i*20}`}
-                  fill="none" stroke={th.relief}
-                  strokeWidth="1.8" strokeDasharray="8 6"/>
+               opacity={mapOpacity}
+               style={{ transition: mapTransition }}>
+              {/* España */}
+              {SPAIN_PATHS.map((d, i) => (
+                <path key={`es-${i}`} d={d}
+                      fill={th.landMain}
+                      stroke={th.border}
+                      strokeWidth="1.2"
+                      strokeLinejoin="round"/>
+              ))}
+              {/* Portugal (con overlay diferenciador) */}
+              {PORTUGAL_PATHS.map((d, i) => (
+                <g key={`pt-g-${i}`}>
+                  <path d={d}
+                        fill={th.landMain}
+                        stroke={th.border}
+                        strokeWidth="1.2"
+                        strokeLinejoin="round"/>
+                  <path d={d}
+                        fill={th.ptFill}
+                        stroke={th.ptStroke}
+                        strokeWidth="1"
+                        strokeDasharray="4 3"
+                        strokeLinejoin="round"/>
+                </g>
+              ))}
+              {/* Andorra */}
+              {ANDORRA_PATHS.map((d, i) => (
+                <path key={`ad-${i}`} d={d}
+                      fill={th.landMain}
+                      stroke={th.border}
+                      strokeWidth="1.0"
+                      strokeLinejoin="round"/>
+              ))}
+              {/* Francia (vecino) */}
+              {FRANCE_PATHS.map((d, i) => (
+                <path key={`fr-${i}`} d={d}
+                      fill={th.landNeighbor}
+                      stroke={th.border}
+                      strokeWidth="0.8"
+                      strokeLinejoin="round"/>
+              ))}
+              {/* Marruecos (vecino) */}
+              {MOROCCO_PATHS.map((d, i) => (
+                <path key={`ma-${i}`} d={d}
+                      fill={th.landNeighbor}
+                      stroke={th.border}
+                      strokeWidth="0.8"
+                      strokeLinejoin="round"/>
               ))}
             </g>
 
-            {/* Grid cartográfico de referencia */}
-            <g clipPath={`url(#${ids.clipIberia})`}
-               opacity={simTime >= 8 ? 0.10 : 0.55}
-               style={{ transition: 'opacity 1.2s ease' }}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <line key={`h${i}`}
-                  x1={0} y1={(800/12)*i} x2={1000} y2={(800/12)*i}
-                  stroke={th.gridLine} strokeWidth="0.8"/>
-              ))}
-              {Array.from({ length: 14 }, (_, i) => (
-                <line key={`v${i}`}
-                  x1={(1000/14)*i} y1={0} x2={(1000/14)*i} y2={800}
-                  stroke={th.gridLine} strokeWidth="0.8"/>
+            {/* ─── CCAA / DISTRITOS (ADMIN_1) — CAPA NUEVA ──────────── */}
+            {ALL_ADMIN1_PATHS.length > 0 && (
+              <g opacity={simTime >= 8 ? 0.12 : 0.5}
+                 style={{ transition: mapTransition }}>
+                {ALL_ADMIN1_PATHS.map((d, i) => (
+                  <path key={`a1-${i}`} d={d}
+                        fill="none"
+                        stroke={th.adminBorder}
+                        strokeWidth="0.7"
+                        strokeLinejoin="round"/>
+                ))}
+              </g>
+            )}
+
+            {/* ─── FRONTERAS INTERNACIONALES ──────────────────────────── */}
+            <g opacity={mapOpacity} style={{ transition: mapTransition }}>
+              {BORDER_PATHS.map((d, i) => (
+                <path key={`brd-${i}`} d={d}
+                      fill="none"
+                      stroke={th.border}
+                      strokeWidth="1.0"
+                      strokeDasharray="3 3"/>
               ))}
             </g>
 
-            {/* ── ARCOS DE PROPAGACIÓN ── */}
+            {/* ─── LÍNEA DE COSTA ────────────────────────────────────── */}
+            <g opacity={mapOpacity} style={{ transition: mapTransition }}>
+              {COASTLINE_PATHS.map((d, i) => (
+                <path key={`cst-${i}`} d={d}
+                      fill="none"
+                      stroke={th.coastline}
+                      strokeWidth="0.8"/>
+              ))}
+            </g>
+
+            {/* ─── CIUDADES DE REFERENCIA ─────────────────────────────── */}
+            <g opacity={simTime >= 8 ? 0.25 : 0.6}
+               style={{ transition: mapTransition }}>
+              {CITY_POINTS.map((c, i) => (
+                <g key={`city-${i}`} transform={`translate(${c.x}, ${c.y})`}>
+                  <circle r="2" fill={th.city} />
+                  <text x="5" y="3"
+                        fontFamily="var(--font-mono, monospace)"
+                        fontSize="7.5"
+                        fill={th.cityLabel}
+                        opacity="0.8">
+                    {c.name}
+                  </text>
+                </g>
+              ))}
+            </g>
+
+            {/* ─── ARCOS DE PROPAGACIÓN ───────────────────────────────── */}
             {ARCS.map((arc, i) => {
               const src = nodeMap[arc.from];
               const tgt = nodeMap[arc.to];
@@ -414,12 +479,11 @@ export default function BlackoutPropagationMapBase() {
 
               const color = th.arcColors[arc.type] || th.arcColors.stable;
               const mx    = (src.x + tgt.x) / 2;
-              // Curvatura proporcional a la longitud del arco (antes era -30 fijo)
               const dist  = Math.hypot(tgt.x - src.x, tgt.y - src.y);
               const my    = (src.y + tgt.y) / 2 - Math.min(95, dist * 0.23);
 
               return (
-                <g key={i}>
+                <g key={`arc-${i}`}>
                   <path
                     d={`M${src.x},${src.y} Q${mx},${my} ${tgt.x},${tgt.y}`}
                     fill="none"
@@ -440,12 +504,12 @@ export default function BlackoutPropagationMapBase() {
               );
             })}
 
-            {/* ── NODOS ── */}
+            {/* ─── NODOS ELÉCTRICOS ──────────────────────────────────── */}
             {nodes.map(node => {
               const colors    = nc[node.type] || nc.stable;
               const isHovered = hoveredNode === node.id;
-              const r = node.type === 'france'  ? 13
-                      : node.type === 'origin'  ? 14
+              const r = node.type === 'france' ? 13
+                      : node.type === 'origin' ? 14
                       : 10;
               const activeFill   = node.isActive ? colors.fill   : th.nodeOff.fill;
               const activeStroke = node.isActive ? colors.stroke : th.nodeOff.stroke;
@@ -457,7 +521,6 @@ export default function BlackoutPropagationMapBase() {
                    onMouseEnter={() => setHoveredNode(node.id)}
                    onMouseLeave={() => setHoveredNode(null)}>
 
-                  {/* Pulso de alarma — corregido: fill en el elemento, no en animate */}
                   {node.isCollapsing && (
                     <circle cx={node.x} cy={node.y} r={r}
                             fill={colors.fill} opacity="0">
@@ -470,7 +533,6 @@ export default function BlackoutPropagationMapBase() {
                     </circle>
                   )}
 
-                  {/* Círculo principal del nodo */}
                   <circle
                     cx={node.x} cy={node.y} r={r}
                     fill={activeFill}
@@ -479,14 +541,12 @@ export default function BlackoutPropagationMapBase() {
                     filter={node.isCollapsing ? `url(#${ids.glowRed})` : 'none'}
                   />
 
-                  {/* Signo de alerta en nodos en colapso */}
                   {node.isCollapsing && (
                     <text x={node.x} y={node.y + 4}
                           textAnchor="middle" fontSize="10"
                           fill="#fff" fontWeight="900">!</text>
                   )}
 
-                  {/* Etiqueta del nodo */}
                   <text
                     x={node.x} y={node.y + r + 14}
                     textAnchor="middle" fontSize="9.5"
@@ -498,7 +558,7 @@ export default function BlackoutPropagationMapBase() {
               );
             })}
 
-            {/* ── TOOLTIP DE TELEMETRÍA ── */}
+            {/* ─── TOOLTIP ────────────────────────────────────────────── */}
             {hoveredNode && (() => {
               const node = nodeMap[hoveredNode];
               if (!node) return null;
@@ -532,7 +592,7 @@ export default function BlackoutPropagationMapBase() {
               );
             })()}
 
-            {/* ── OVERLAY: COLAPSO ELÉCTRICO TOTAL ── */}
+            {/* ─── CERO ELÉCTRICO ────────────────────────────────────── */}
             {simTime >= 10 && (
               <g>
                 <rect width="1000" height="800" fill={th.collapso}/>
@@ -559,7 +619,7 @@ export default function BlackoutPropagationMapBase() {
           </svg>
         </div>
 
-        {/* ── PANEL INFERIOR ── */}
+        {/* ─── PANEL INFERIOR ────────────────────────────────────────── */}
         <div style={{
           background:          th.panelBg,
           borderTop:           `1px solid ${th.panelBorder}`,
@@ -569,10 +629,8 @@ export default function BlackoutPropagationMapBase() {
           gap:                 '24px',
           alignItems:          'start',
         }}>
-
-          {/* COLUMNA IZQUIERDA: controles y métricas */}
+          {/* Controles */}
           <div>
-            {/* Cabecera + botón */}
             <div style={{
               display:         'flex',
               alignItems:      'center',
@@ -603,7 +661,7 @@ export default function BlackoutPropagationMapBase() {
               </button>
             </div>
 
-            {/* Barra temporal 12:32:57 → 12:33:27 */}
+            {/* Barra de tiempo */}
             <div style={{ marginBottom: 12 }}>
               <div style={{
                 display:         'flex',
@@ -631,7 +689,7 @@ export default function BlackoutPropagationMapBase() {
               </div>
             </div>
 
-            {/* Contador de potencia perdida */}
+            {/* GW perdidos */}
             <div style={{
               background:   th.gwBg,
               border:       `1px solid ${th.gwBorder}`,
@@ -655,7 +713,7 @@ export default function BlackoutPropagationMapBase() {
               </div>
             </div>
 
-            {/* Leyenda — usa nc.*.fill para consistencia dual-mode */}
+            {/* Leyenda */}
             <div style={{
               display:             'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -671,11 +729,8 @@ export default function BlackoutPropagationMapBase() {
               ].map(({ color, label }) => (
                 <div key={label} style={{ display:'flex', alignItems:'center', gap:6 }}>
                   <div style={{
-                    width:        10,
-                    height:       10,
-                    borderRadius: '50%',
-                    background:   color,
-                    flexShrink:   0,
+                    width:10, height:10, borderRadius:'50%',
+                    background:color, flexShrink:0,
                   }}/>
                   <span style={{ color: th.legendText }}>{label}</span>
                 </div>
@@ -683,7 +738,7 @@ export default function BlackoutPropagationMapBase() {
             </div>
           </div>
 
-          {/* COLUMNA DERECHA: log forense de eventos */}
+          {/* Log de eventos */}
           <div style={{
             background:    th.logBg,
             border:        `1px solid ${th.logBorder}`,
@@ -722,7 +777,6 @@ export default function BlackoutPropagationMapBase() {
         </div>
       </div>
 
-      {/* Pie de figura */}
       <figcaption style={{
         fontSize:   '0.8rem',
         color:      isDark ? '#6b7280' : '#7A7065',

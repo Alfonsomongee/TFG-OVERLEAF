@@ -46,6 +46,24 @@ function PanelInner() {
     return map;
   }, [lang]);
 
+  const resolveEntry = useCallback((termRaw) => {
+    const key = termRaw.toLowerCase();
+    const entries = Object.values(termsMap);
+
+    return termsMap[key] || entries.find((entry) => {
+      const term = entry.term.toLowerCase();
+      const parentheticalAliases = [...entry.term.matchAll(/\(([^)]+)\)/g)]
+        .map((match) => match[1].toLowerCase());
+
+      return (
+        entry.term === termRaw ||
+        term === key ||
+        term.startsWith(key) ||
+        parentheticalAliases.some((alias) => alias === key)
+      );
+    });
+  }, [termsMap]);
+
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
       ? e.target.closest('.glossary-term, .glossary-definition-panel')
@@ -60,8 +78,7 @@ function PanelInner() {
     // Si es un término de glosario, iniciamos un temporizador de 500ms para abrirlo
     if (el.classList.contains('glossary-term')) {
       const termRaw = el.dataset.term || '';
-      const key = termRaw.toLowerCase();
-      const entry = termsMap[key] || Object.values(termsMap).find(t => t.term === termRaw || t.term.toLowerCase().startsWith(key));
+      const entry = resolveEntry(termRaw);
       
       if (entry) {
         // Cancelar cualquier temporizador de apertura anterior para evitar duplicaciones
@@ -72,7 +89,7 @@ function PanelInner() {
         }, 500); // 0.5 segundos de retraso
       }
     }
-  }, [termsMap]);
+  }, [resolveEntry]);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest

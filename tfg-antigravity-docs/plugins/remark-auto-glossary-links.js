@@ -1,5 +1,8 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
 function escHtml(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -241,12 +244,95 @@ const RAW_TERMS = [
   "Kurzschlussstrom",
   "System pro Einheit (p.u.)",
   "GFL vs. GFM (Rasterfolgend vs. Rasterbildend)",
-  "Kopffreiheit",
-  "LVRT (Low-Voltage-Ride-Through)"
+  "LVRT (Low-Voltage-Ride-Through)",
+  "Efecto látigo",
+  "efecto látigo",
+  "PMODE",
+  "PMODE1",
+  "PMODE3",
+  "INELFE",
+  "Criterio OB3",
+  "criterio OB3",
+  "Top-Down",
+  "Bottom-Up",
+  "PPM",
+  "Firm power",
+  "firm power",
+  "CAPEX",
+  "OPEX",
+  "Operación Reforzada",
+  "operación reforzada",
+  "ENS",
+  "Energía No Suministrada",
+  "PVPC",
+  "ICE",
+  "Infraestructura Común de Evacuación",
+  "Equivalente de Thévenin",
+  "equivalente de Thévenin",
+  "VSC",
+  "AGC",
+  "Efecto látigo (eléctrico)",
+  "PPM (Power Park Module)",
+  "ENS (Energía No Suministrada)",
+  "PVPC (Precio Voluntario para el Pequeño Consumidor)",
+  "ICE (Infraestructura Común de Evacuación)",
+  "AGC (Automatic Generation Control)",
+  "VSC (Voltage Source Converter)",
+  "Top-Down (Reposición)",
+  "Bottom-Up (Reposición)",
+  "CAPEX (Capital Expenditure)",
+  "OPEX (Operational Expenditure)"
 ];
 
 // Sort by length descending
 const TERMS = RAW_TERMS.slice().sort((a, b) => b.length - a.length);
+const GLOSSARY_TERMS = loadGlossaryTerms();
+const TERM_CANONICAL_KEYS = new Map(TERMS.map((term) => [term, canonicalKeyFor(term)]));
+
+function decodeJsString(raw) {
+  try {
+    return JSON.parse(`"${raw.replace(/"/g, '\\"')}"`);
+  } catch {
+    return raw;
+  }
+}
+
+function loadGlossaryTerms() {
+  const glossaryFile = path.resolve(__dirname, "../src/data/glossary.js");
+  const source = fs.readFileSync(glossaryFile, "utf8");
+  const terms = [];
+  const seen = new Set();
+  const re = /\bterm:\s*"([^"]+)"/g;
+  let match;
+
+  while ((match = re.exec(source))) {
+    const term = decodeJsString(match[1]).trim();
+    const key = term.toLowerCase();
+    if (term && !seen.has(key)) {
+      seen.add(key);
+      terms.push(term);
+    }
+  }
+
+  return terms;
+}
+
+function canonicalKeyFor(termRaw) {
+  const key = termRaw.toLowerCase();
+  const entry = GLOSSARY_TERMS.find((glossaryTerm) => {
+    const term = glossaryTerm.toLowerCase();
+    const parentheticalAliases = [...glossaryTerm.matchAll(/\(([^)]+)\)/g)]
+      .map((match) => match[1].toLowerCase());
+
+    return (
+      term === key ||
+      term.startsWith(key) ||
+      parentheticalAliases.some((alias) => alias === key)
+    );
+  });
+
+  return (entry || termRaw).toLowerCase();
+}
 
 function makeSpan(term, isFirst = false) {
   return '<span class="glossary-term' + (isFirst ? ' glossary-term-first' : '') + '" data-term="' + escHtml(term) + '" data-first="' + isFirst + '">' + escHtml(term) + '</span>';
@@ -274,9 +360,10 @@ function transformText(text, terms, seenTerms) {
   const before = text.slice(0, earliestIdx);
   const after  = text.slice(earliestIdx + earliest.length);
 
-  const isFirstOccurrence = !seenTerms.has(earliest);
+  const canonicalKey = TERM_CANONICAL_KEYS.get(earliest) || earliest.toLowerCase();
+  const isFirstOccurrence = !seenTerms.has(canonicalKey);
   if (isFirstOccurrence) {
-    seenTerms.add(earliest);
+    seenTerms.add(canonicalKey);
   }
 
   const nodes = [];

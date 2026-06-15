@@ -52,6 +52,45 @@ function loadGlossaryTerms() {
   return terms.sort((a, b) => b.length - a.length);
 }
 
+function loadRemarkTerms() {
+  const source = read(REMARK_PLUGIN);
+  const arrayMatch = source.match(/const RAW_TERMS = \[([\s\S]*?)\];/);
+  if (!arrayMatch) return [];
+
+  const terms = [];
+  const seen = new Set();
+  const re = /"([^"]+)"/g;
+  let match;
+
+  while ((match = re.exec(arrayMatch[1]))) {
+    const term = decodeJsString(match[1]).trim();
+    const key = term.toLowerCase();
+    if (term && !seen.has(key)) {
+      seen.add(key);
+      terms.push(term);
+    }
+  }
+
+  return terms.sort((a, b) => b.length - a.length);
+}
+
+function canonicalKeyFor(termRaw, glossaryTerms) {
+  const key = termRaw.toLowerCase();
+  const entry = glossaryTerms.find((glossaryTerm) => {
+    const term = glossaryTerm.toLowerCase();
+    const parentheticalAliases = [...glossaryTerm.matchAll(/\(([^)]+)\)/g)]
+      .map((match) => match[1].toLowerCase());
+
+    return (
+      term === key ||
+      term.startsWith(key) ||
+      parentheticalAliases.some((alias) => alias === key)
+    );
+  });
+
+  return (entry || termRaw).toLowerCase();
+}
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -97,6 +136,47 @@ function findTermOccurrences(source, terms) {
   }
 
   return occurrences;
+}
+
+function findFirstRawTerm(text, terms) {
+  let earliest = null;
+  let earliestIdx = Infinity;
+
+  for (const term of terms) {
+    const idx = text.indexOf(term);
+    if (idx !== -1 && idx < earliestIdx) {
+      const prev = idx > 0 ? text[idx - 1] : " ";
+      const next = idx + term.length < text.length ? text[idx + term.length] : " ";
+      if (/^[a-zA-Z0-9]+$/.test(term)) {
+        if (/[a-zA-Z0-9]/.test(prev) || /[a-zA-Z0-9]/.test(next)) continue;
+      }
+      earliest = term;
+      earliestIdx = idx;
+    }
+  }
+
+  return earliest ? { term: earliest, index: earliestIdx } : null;
+}
+
+function findExpectedColoredConcepts(source, rawTerms, glossaryTerms) {
+  let text = stripNonNarrativeMdx(source);
+  const concepts = new Map();
+
+  while (text.length > 0) {
+    const found = findFirstRawTerm(text, rawTerms);
+    if (!found) break;
+
+    const key = canonicalKeyFor(found.term, glossaryTerms);
+    if (!concepts.has(key)) {
+      concepts.set(key, { term: found.term, aliasesSeen: new Set([found.term]) });
+    } else {
+      concepts.get(key).aliasesSeen.add(found.term);
+    }
+
+    text = text.slice(found.index + found.term.length);
+  }
+
+  return concepts;
 }
 
 function findManualColoredOccurrences(source) {
@@ -146,8 +226,8 @@ function checkRemarkPipeline() {
   if (!config.includes("remark-auto-glossary-links")) {
     problems.push("docusaurus.config.js no registra plugins/remark-auto-glossary-links.js");
   }
-  if (!plugin.includes("seenTerms") || !plugin.includes("glossary-term-first")) {
-    problems.push("remark-auto-glossary-links.js no parece limitar el coloreado a una vez por término y capítulo");
+  if (!plugin.includes("seenTerms") || !plugin.includes("canonicalKeyFor") || !plugin.includes("glossary-term-first")) {
+    problems.push("remark-auto-glossary-links.js no parece limitar el coloreado a una vez por concepto canónico y capítulo");
   }
   if (!plugin.includes('class="glossary-term')) {
     problems.push("remark-auto-glossary-links.js no genera spans .glossary-term");
@@ -158,6 +238,7 @@ function checkRemarkPipeline() {
 
 function main() {
   const terms = loadGlossaryTerms();
+  const rawTerms = loadRemarkTerms();
   const files = walk(DOCS_DIR);
   const failures = [];
   const warnings = [];
@@ -171,7 +252,7 @@ function main() {
   for (const file of files) {
     const source = read(file);
     const rel = path.relative(ROOT, file).replace(/\\/g, "/");
-    const occurrences = findTermOccurrences(source, terms);
+    const occurrences = findExpectedColoredConcepts(source, rawTerms, terms);
     const manualColored = findManualColoredOccurrences(source);
 
     if (occurrences.size > 0) {
@@ -180,11 +261,12 @@ function main() {
       totalExpectedColored += occurrences.size;
     }
 
-    for (const [key, marks] of manualColored) {
+    for (const [manualKey, marks] of manualColored) {
+      const key = canonicalKeyFor(marks[0].term, terms);
       if (marks.length > 1) {
         failures.push(`${rel}: "${marks[0].term}" aparece coloreado manualmente ${marks.length} veces (líneas ${marks.map((m) => m.line).join(", ")}). Debe ser una sola vez por capítulo.`);
       }
-      if (![...occurrences.keys()].some((term) => term.toLowerCase() === key)) {
+      if (!occurrences.has(key)) {
         warnings.push(`${rel}: "${marks[0].term}" está marcado como glosario, pero no se detectó como término narrativo tras limpiar MDX.`);
       }
     }
@@ -193,6 +275,7 @@ function main() {
   console.log("Glosario técnico - comprobación de coloreado");
   console.log(`Verde esperado: ${EXPECTED_GREEN}`);
   console.log(`Términos cargados: ${terms.length}`);
+  console.log(`Aliases RAW_TERMS cargados: ${rawTerms.length}`);
   console.log(`MDX revisados: ${files.length}`);
   console.log(`Capítulos con términos detectados: ${chaptersWithTerms}`);
   console.log(`Términos/capítulo que deberían colorearse una vez: ${totalExpectedColored}`);
@@ -208,7 +291,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log("\nOK: el verde del glosario coincide y la lógica limita el coloreado a una vez por término y capítulo.");
+  console.log("\nOK: el verde del glosario coincide y la lógica limita el coloreado a una vez por concepto y capítulo.");
 }
 
 main();
