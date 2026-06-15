@@ -31,11 +31,15 @@ export default function CuestionAbierta({
   metricKey,
   note,
 }) {
-  const [open, setOpen]   = useState(false);
-  const tooltipRef        = useRef(null);
-  const triggerRef        = useRef(null);
-  const { colorMode }     = useColorMode();
-  const colors            = OPEN_QUESTION_COLORS[colorMode] || OPEN_QUESTION_COLORS.light;
+  const [open, setOpen]         = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const tooltipRef              = useRef(null);
+  const triggerRef              = useRef(null);
+  const timeoutRef              = useRef(null);
+  const fadeOutRef              = useRef(null);
+  const openTimeoutRef          = useRef(null);
+  const { colorMode }           = useColorMode();
+  const colors                  = OPEN_QUESTION_COLORS[colorMode] || OPEN_QUESTION_COLORS.light;
 
   // Close on click outside
   useEffect(() => {
@@ -47,7 +51,11 @@ export default function CuestionAbierta({
         triggerRef.current &&
         !triggerRef.current.contains(e.target)
       ) {
-        setOpen(false);
+        setIsClosing(true);
+        fadeOutRef.current = setTimeout(() => {
+          setOpen(false);
+          setIsClosing(false);
+        }, 200);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -62,20 +70,58 @@ export default function CuestionAbierta({
   useEffect(() => {
     if (!open) return;
     const handler = (e) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') {
+        setIsClosing(true);
+        fadeOutRef.current = setTimeout(() => {
+          setOpen(false);
+          setIsClosing(false);
+        }, 200);
+      }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [open]);
 
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
+    setIsClosing(false);
+
+    openTimeoutRef.current = setTimeout(() => {
+      setOpen(true);
+    }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
+      setIsClosing(true);
+      fadeOutRef.current = setTimeout(() => {
+        setOpen(false);
+        setIsClosing(false);
+      }, 200);
+    }, 450);
+  };
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
+      if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
+    };
+  }, []);
+
   return (
     <span style={{ position: 'relative', display: 'inline' }}>
       <button
         ref={triggerRef}
-        onClick={() => setOpen(o => !o)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         aria-expanded={open}
         aria-haspopup="true"
-        aria-label="Dato no verificado en fuente primaria — pulsa para más información"
+        aria-label="Dato no verificado en fuente primaria — pasa el cursor para más información"
         style={{
           background:     'none',
           border:         'none',
@@ -97,6 +143,11 @@ export default function CuestionAbierta({
         <span
           ref={tooltipRef}
           role="tooltip"
+          onMouseEnter={() => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            setIsClosing(false);
+          }}
+          onMouseLeave={handleMouseLeave}
           style={{
             position:   'absolute',
             bottom:     'calc(100% + 8px)',
@@ -115,6 +166,8 @@ export default function CuestionAbierta({
             boxShadow:  colors.shadow,
             whiteSpace: 'normal',
             pointerEvents: 'auto',
+            opacity:    isClosing ? 0 : 1,
+            transition: 'opacity 200ms ease-out',
           }}
         >
           <strong style={{
