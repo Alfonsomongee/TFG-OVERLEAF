@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import OriginalLayout from '@theme-original/Layout';
 import { useLocation } from '@docusaurus/router';
 import ChatWidget from '@site/src/components/ChatWidget';
 
 export default function Layout(props) {
   const location = useLocation();
-  const [transitionKey, setTransitionKey] = useState(location.pathname);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -25,9 +24,6 @@ export default function Layout(props) {
       document.body.classList.remove('hide-floating-buttons');
     }
 
-    // Trigger page transition
-    setTransitionKey(location.pathname);
-
     return () => {
       document.body.classList.remove('hide-floating-buttons');
     };
@@ -35,7 +31,7 @@ export default function Layout(props) {
 
   return (
     <>
-      <div key={transitionKey} className="page-transition-enter">
+      <div className="page-transition-enter">
         <OriginalLayout {...props} />
       </div>
       <ChatWidget />

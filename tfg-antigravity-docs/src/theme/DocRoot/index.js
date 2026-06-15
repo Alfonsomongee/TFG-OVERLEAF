@@ -1,6 +1,5 @@
 import React from 'react';
-import { useLocation } from '@docusaurus/router';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import DocRoot from '@theme-original/DocRoot';
 import styles from './styles.module.css';
 
@@ -18,21 +17,15 @@ const variants = {
 };
 
 export default function DocRootWrapper(props) {
-  const location = useLocation();
-
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location.pathname}
-        variants={variants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        className={styles.pageWrapper}
-      >
-        <div className={styles.scanlinesOverlay} />
-        <DocRoot {...props} />
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      className={styles.pageWrapper}
+    >
+      <div className={styles.scanlinesOverlay} />
+      <DocRoot {...props} />
+    </motion.div>
   );
 }

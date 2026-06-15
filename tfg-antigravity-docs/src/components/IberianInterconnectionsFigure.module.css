@@ -1,0 +1,221 @@
+.figureContainer {
+  --fig-bg: #F5F3EC;
+  --fig-border: rgba(139, 38, 53, 0.16);
+  --fig-ocean: #EDF2F4;
+  --fig-land-main: #D8DEC9;
+  --fig-land-neighbor: #EAECE6;
+  --fig-coastline: #8D99AE;
+  --fig-border-political: #B3C2B1;
+  --fig-admin-border: rgba(141, 153, 174, 0.22);
+  --fig-text-primary: #2B2D42;
+  --fig-text-muted: #5D6075;
+  --fig-card-bg: rgba(245, 243, 236, 0.95);
+  --fig-card-border: rgba(139, 38, 53, 0.25);
+  --fig-card-shadow: rgba(0, 0, 0, 0.05);
+  --fig-ac-link: #D97706; /* Amber-600 */
+  --fig-dc-link: #2563EB; /* Blue-600 */
+  --fig-title-color: #8B2635;
+  --fig-grid-line: rgba(141, 153, 174, 0.12);
+  --fig-grid-label: rgba(141, 153, 174, 0.4);
+
+  margin: 2rem 0;
+  padding: 0;
+}
+
+:global(.dark) .figureContainer {
+  --fig-bg: #0A0F1E;
+  --fig-border: rgba(0, 217, 255, 0.18);
+  --fig-ocean: #091321;
+  --fig-land-main: #1C334F;
+  --fig-land-neighbor: #14253B;
+  --fig-coastline: #3E6176;
+  --fig-border-political: #2D4E63;
+  --fig-admin-border: rgba(118, 151, 168, 0.18);
+  --fig-text-primary: #E2E8F0;
+  --fig-text-muted: #94A3B8;
+  --fig-card-bg: rgba(10, 15, 30, 0.96);
+  --fig-card-border: rgba(0, 217, 255, 0.28);
+  --fig-card-shadow: rgba(0, 0, 0, 0.25);
+  --fig-ac-link: #F59E0B; /* Amber-500 */
+  --fig-dc-link: #00D9FF; /* Cyan */
+  --fig-title-color: #00D9FF;
+  --fig-grid-line: rgba(255, 255, 255, 0.06);
+  --fig-grid-label: rgba(255, 255, 255, 0.16);
+}
+
+.card {
+  width: 100%;
+  background: var(--fig-bg);
+  border: 1px solid var(--fig-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px var(--fig-card-shadow);
+  transition: all 0.3s ease;
+}
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.svgMap {
+  width: 100%;
+  display: block;
+  background: var(--fig-ocean);
+  user-select: none;
+}
+
+/* Base style for map paths to enable smooth transitions */
+.landPathMain {
+  fill: var(--fig-land-main);
+  stroke: var(--fig-border-political);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.landPathNeighbor {
+  fill: var(--fig-land-neighbor);
+  stroke: var(--fig-border-political);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+.coastlinePath {
+  fill: none;
+  stroke: var(--fig-coastline);
+  stroke-width: 0.8;
+  transition: stroke 0.3s ease;
+}
+
+.borderPath {
+  fill: none;
+  stroke: var(--fig-border-political);
+  stroke-width: 1.0;
+  stroke-dasharray: 3 3;
+  transition: stroke 0.3s ease;
+}
+
+.adminBorderPath {
+  fill: none;
+  stroke: var(--fig-admin-border);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+.gridPath {
+  fill: none;
+  stroke: var(--fig-grid-line);
+  stroke-width: 0.6;
+  transition: stroke 0.3s ease;
+}
+
+.gridText {
+  font-family: var(--font-mono, monospace);
+  font-size: 7.5px;
+  fill: var(--fig-grid-label);
+  transition: fill 0.3s ease;
+}
+
+.linkACLine {
+  fill: none;
+  stroke: var(--fig-ac-link);
+  stroke-width: 2.2;
+  transition: stroke 0.3s ease;
+}
+
+.linkDCLine {
+  fill: none;
+  stroke: var(--fig-dc-link);
+  stroke-width: 3.0;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease;
+}
+
+.indicatorLine {
+  fill: none;
+  stroke: var(--fig-text-muted);
+  stroke-width: 0.8;
+  stroke-dasharray: 2 2;
+  opacity: 0.6;
+}
+
+.indicatorCircle {
+  fill: var(--fig-text-muted);
+  opacity: 0.8;
+}
+
+/* Callout box text styling */
+.boxTitle {
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: var(--fig-title-color);
+  transition: fill 0.3s ease;
+}
+
+.boxBodyTitle {
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 9px;
+  font-weight: 600;
+  fill: var(--fig-text-primary);
+  transition: fill 0.3s ease;
+}
+
+.boxBodyValue {
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  font-weight: 400;
+  fill: var(--fig-text-muted);
+  transition: fill 0.3s ease;
+}
+
+.capsuleText {
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-anchor: middle;
+  fill: var(--fig-title-color);
+  transition: fill 0.3s ease;
+}
+
+.territoryLabel {
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  fill: var(--fig-text-muted);
+  opacity: 0.75;
+  transition: fill 0.3s ease;
+}
+
+.territoryLabelMajor {
+  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: var(--fig-text-primary);
+  opacity: 0.55;
+  transition: fill 0.3s ease;
+}
+
+.caption {
+  font-size: 0.8rem;
+  color: var(--fig-text-muted);
+  margin-top: 0.75rem;
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 1rem;
+  transition: color 0.3s ease;
+}
+
+.captionStrong {
+  color: var(--fig-text-primary);
+  font-weight: 600;
+}

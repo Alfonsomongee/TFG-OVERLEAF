@@ -1,11 +1,20 @@
 import { useDocLang } from '@site/src/hooks/useDocLang';
+import { useColorMode } from '@docusaurus/theme-common';
 import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import {
+  MAP_VIEWBOX,
+  LAND_PATHS,
+  COUNTRY_PATHS,
+  BORDER_PATHS,
+  COASTLINE_PATHS,
+  CITY_POINTS
+} from '../data/cartography/naturalEarthIberiaPaths';
 
 // ============================================================
 // PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
 // ============================================================
-const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
+const GEO_BOUNDS = { north: 46.0, south: 34.0, west: -10.5, east: 5.5 };
 const VIEWBOX = { width: 1000, height: 800 };
 
 function geoToSvg(lat, lon) {
@@ -18,37 +27,6 @@ function project(lon, lat) {
   const { x, y } = geoToSvg(lat, lon);
   return [x, y];
 }
-
-const IBERIA_OUTLINE = [
-  [43.78, -7.86],  [43.47, -8.45],  [42.88, -9.28],  [42.03, -8.87],  [41.87, -8.87],
-  [41.38, -8.73],  [40.64, -8.75],  [39.36, -9.40],  [38.62, -9.50],  [37.01, -8.91],
-  [36.97, -7.85],  [36.01, -5.61],  [36.17, -5.36],  [36.69, -4.41],  [36.72, -3.48],
-  [37.20, -1.90],  [37.64, -0.69],  [38.68,  0.23],  [39.58,  0.34],  [40.72,  0.73],
-  [41.29,  1.83],  [41.42,  2.22],  [42.43,  3.16],  [42.80,  1.72],  [43.37, -1.79],
-  [43.49, -3.80],  [43.57, -5.66],  [43.78, -7.86]
-];
-
-const PORTUGAL_OUTLINE = [
-  [41.87, -8.87],  [41.52, -6.92],  [39.67, -7.06],  [37.43, -7.44],  [36.97, -7.85],
-  [37.01, -8.91],  [38.62, -9.50],  [39.36, -9.40],  [40.64, -8.75],  [41.38, -8.73],
-  [41.87, -8.87]
-];
-
-const MALLORCA_OUTLINE = [
-  [39.96, 3.22],   [39.89, 2.32],   [39.27, 2.84],   [39.25, 3.48],   [39.78, 3.47],
-  [39.96, 3.22]
-];
-
-function pointsToPath(points) {
-  return points.map((p, i) => {
-    const { x, y } = geoToSvg(p[0], p[1]);
-    return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-  }).join(' ') + ' Z';
-}
-
-const IBERIA_PATH = pointsToPath(IBERIA_OUTLINE);
-const PORTUGAL_PATH = pointsToPath(PORTUGAL_OUTLINE);
-const BALEARES_PATH = pointsToPath(MALLORCA_OUTLINE);
 
 // ─── Las 7 islas eléctricas como polígonos aproximados ───────────────────────
 // Cada isla es un conjunto de puntos [lon, lat] que definen su contorno
@@ -150,6 +128,29 @@ const EVENT_LOG = [
 
 function RestorationContent({}) {
   const lang = useDocLang();
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const th = isDark ? {
+    ocean:          '#07182D',
+    landMain:       '#173149',
+    landNeighbor:   '#10263B',
+    coastline:      '#3E6176',
+    border:         '#2D4E63',
+    adminBorder:    'rgba(118, 151, 168, 0.18)',
+    city:           '#8FA8B7',
+    cityLabel:      'rgba(210, 224, 232, 0.50)',
+  } : {
+    ocean:          '#EEF3F2',
+    landMain:       '#D9DED4',
+    landNeighbor:   '#E7E9E1',
+    coastline:      '#9EAA9C',
+    border:         '#B7C0B2',
+    adminBorder:    'rgba(104, 116, 98, 0.22)',
+    city:           '#7D8577',
+    cityLabel:      'rgba(60, 67, 58, 0.56)',
+  };
+
   const [simTime, setSimTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hoveredIsland, setHoveredIsland] = useState(null);
@@ -191,13 +192,9 @@ function RestorationContent({}) {
       <div style={{ position: 'relative', width: '100%' }}>
         <svg viewBox="0 0 1000 800" style={{ width: '100%', display: 'block' }}>
         <defs>
-          <radialGradient id="bgGrad2" cx="50%" cy="50%" r="70%">
-            <stop offset="0%"   stopColor="var(--chart-bg, #0a1628)" />
-            <stop offset="100%" stopColor="var(--chart-bg, #050a14)" />
-          </radialGradient>
           <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
             <path d="M 40 0 L 0 0 0 40" fill="none"
-                  stroke="rgba(0,217,255,0.04)" strokeWidth="0.5"/>
+                  stroke={isDark ? "rgba(0,217,255,0.04)" : "rgba(0,0,0,0.04)"} strokeWidth="0.5"/>
           </pattern>
           <filter id="glow2">
             <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
@@ -206,15 +203,42 @@ function RestorationContent({}) {
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+
+          <clipPath id="iberia-clip">
+            {COUNTRY_PATHS.ESP?.paths?.map((d, i) => <path key={`clip-esp-${i}`} d={d} />)}
+            {COUNTRY_PATHS.PRT?.paths?.map((d, i) => <path key={`clip-prt-${i}`} d={d} />)}
+            {COUNTRY_PATHS.AND?.paths?.map((d, i) => <path key={`clip-and-${i}`} d={d} />)}
+          </clipPath>
         </defs>
 
-        <rect width="1000" height="800" fill="url(#bgGrad2)" />
+        {/* 1. Fondo/Ocean */}
+        <rect width="1000" height="800" fill={th.ocean} />
         <rect width="1000" height="800" fill="url(#grid2)" />
 
-        {/* Contorno base siempre visible (apagado) */}
-        <path d={IBERIA_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" />
-        <path d={PORTUGAL_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" strokeDasharray="4 3" />
-        <path d={BALEARES_PATH} fill="rgba(8,15,30,0.9)" stroke="rgba(0,217,255,0.1)" strokeWidth="1" />
+        {/* 2. Land (Tierra) */}
+        <g fill={th.landMain}>
+          {LAND_PATHS.map((d, i) => <path key={`land-${i}`} d={d} />)}
+        </g>
+        {/* 3. Países vecinos */}
+        <g fill={th.landNeighbor} stroke={th.border} strokeWidth="0.5">
+          {COUNTRY_PATHS.FRA?.paths?.map((d, i) => <path key={`fra-${i}`} d={d} />)}
+          {COUNTRY_PATHS.MAR?.paths?.map((d, i) => <path key={`mar-${i}`} d={d} />)}
+          {COUNTRY_PATHS.DZA?.paths?.map((d, i) => <path key={`dza-${i}`} d={d} />)}
+        </g>
+
+        {/* 4. Fronteras / Costas */}
+        <g fill={th.landMain}>
+          {/* España, Portugal, Andorra */}
+          {COUNTRY_PATHS.ESP?.paths?.map((d, i) => <path key={`esp-${i}`} d={d} stroke={th.border} strokeWidth="1" />)}
+          {COUNTRY_PATHS.PRT?.paths?.map((d, i) => <path key={`prt-${i}`} d={d} stroke={th.border} strokeWidth="1" />)}
+          {COUNTRY_PATHS.AND?.paths?.map((d, i) => <path key={`and-${i}`} d={d} stroke={th.border} strokeWidth="1" />)}
+        </g>
+        <g fill="none" stroke={th.coastline} strokeWidth="1">
+          {COASTLINE_PATHS.map((d, i) => <path key={`coast-${i}`} d={d} />)}
+        </g>
+        <g fill="none" stroke={th.border} strokeWidth="1" strokeDasharray="4 4">
+          {BORDER_PATHS.map((d, i) => <path key={`border-${i}`} d={d} />)}
+        </g>
 
         {/* ── ISLAS ELÉCTRICAS ─────────────────────────────────────── */}
         {ISLANDS.map(island => {
@@ -227,7 +251,8 @@ function RestorationContent({}) {
             <g key={island.id}
                onMouseEnter={() => setHoveredIsland(island.id)}
                onMouseLeave={() => setHoveredIsland(null)}
-               style={{ cursor: 'default' }}>
+               style={{ cursor: 'default' }}
+               clipPath="url(#iberia-clip)">
 
               {/* Polígono de isla */}
               <polygon
@@ -317,7 +342,7 @@ function RestorationContent({}) {
         {simTime >= 2 && (
           <g opacity="0.6">
             {/* Flecha Francia → Cataluña (top-down) */}
-            <path d="M 880,100 L 850,220" stroke="#3b82f6"
+            <path d={`M ${project(2.81, 42.72).join(',')} L ${project(1.8, 41.8).join(',')}`} stroke="#3b82f6"
                   strokeWidth="2" strokeDasharray="6 3"
                   markerEnd="url(#arrowBlue)" />
           </g>
@@ -325,23 +350,23 @@ function RestorationContent({}) {
         {simTime >= 3 && (
           <g opacity="0.6">
             {/* Flecha Portugal black-start (bottom-up) */}
-            <path d="M 120,490 L 150,420" stroke="#10b981"
+            <path d={`M ${project(-8.27, 39.48).join(',')} L ${project(-4.5, 37.5).join(',')}`} stroke="#10b981"
                   strokeWidth="2" strokeDasharray="6 3" />
           </g>
         )}
 
         {/* Etiquetas de mar */}
-        <text x="40" y="400" fill="rgba(0,217,255,0.18)" fontSize="12"
+        <text x={project(-9, 41)[0]} y={project(-9, 41)[1]} fill="rgba(0,217,255,0.18)" fontSize="12"
               fontFamily="var(--font-mono, monospace)"
-              transform="rotate(-90, 40, 400)" letterSpacing="2">
+              transform={`rotate(-90, ${project(-9, 41).join(', ')})`} letterSpacing="2">
           OCÉANO ATLÁNTICO
         </text>
-        <text x="700" y="600" fill="rgba(0,217,255,0.18)" fontSize="12"
+        <text x={project(3, 38)[0]} y={project(3, 38)[1]} fill="rgba(0,217,255,0.18)" fontSize="12"
               fontFamily="var(--font-mono, monospace)" letterSpacing="2"
-              transform="rotate(-5, 700, 600)">
+              transform={`rotate(-5, ${project(3, 38).join(', ')})`}>
           MAR MEDITERRÁNEO
         </text>
-        <text x="800" y="100" fill="rgba(59,130,246,0.45)" fontSize="14"
+        <text x={project(2, 44)[0]} y={project(2, 44)[1]} fill="rgba(59,130,246,0.45)" fontSize="14"
               fontFamily="var(--font-mono, monospace)" letterSpacing="3">
           FRANCE
         </text>

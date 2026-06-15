@@ -2,14 +2,19 @@ import { useDocLang } from '@site/src/hooks/useDocLang';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useColorMode } from '@docusaurus/theme-common';
+import {
+  MAP_VIEWBOX,
+  LAND_PATHS,
+  COUNTRY_PATHS,
+  BORDER_PATHS,
+  COASTLINE_PATHS,
+  CITY_POINTS
+} from '../data/cartography/naturalEarthIberiaPaths';
 
-// ─── Proyección geográfica simplificada ──────────────────────────────────────
-// Convierte coordenadas lon/lat reales a píxeles en un viewBox 800×560
-// Bounds ibéricos: lon [-9.5, 3.4], lat [35.9, 43.9]
 // ============================================================
 // PROYECCIÓN GEOGRÁFICA Y PATHS VECTORIALES
 // ============================================================
-const GEO_BOUNDS = { north: 44.5, south: 35.5, west: -10.5, east: 3.8 };
+const GEO_BOUNDS = { north: 46.0, south: 34.0, west: -10.5, east: 5.5 };
 const VIEWBOX = { width: 1000, height: 800 };
 
 function geoToSvg(lat, lon) {
@@ -18,42 +23,9 @@ function geoToSvg(lat, lon) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
-const IBERIA_OUTLINE = [
-  [43.78, -7.86],  [43.47, -8.45],  [42.88, -9.28],  [42.03, -8.87],  [41.87, -8.87],
-  [41.38, -8.73],  [40.64, -8.75],  [39.36, -9.40],  [38.62, -9.50],  [37.01, -8.91],
-  [36.97, -7.85],  [36.01, -5.61],  [36.17, -5.36],  [36.69, -4.41],  [36.72, -3.48],
-  [37.20, -1.90],  [37.64, -0.69],  [38.68,  0.23],  [39.58,  0.34],  [40.72,  0.73],
-  [41.29,  1.83],  [41.42,  2.22],  [42.43,  3.16],  [42.80,  1.72],  [43.37, -1.79],
-  [43.49, -3.80],  [43.57, -5.66],  [43.78, -7.86]
-];
-
-const PORTUGAL_OUTLINE = [
-  [41.87, -8.87],  [41.52, -6.92],  [39.67, -7.06],  [37.43, -7.44],  [36.97, -7.85],
-  [37.01, -8.91],  [38.62, -9.50],  [39.36, -9.40],  [40.64, -8.75],  [41.38, -8.73],
-  [41.87, -8.87]
-];
-
-const MALLORCA_OUTLINE = [
-  [39.96, 3.22],   [39.89, 2.32],   [39.27, 2.84],   [39.25, 3.48],   [39.78, 3.47],
-  [39.96, 3.22]
-];
-
-function pointsToPath(points) {
-  return points.map((p, i) => {
-    const { x, y } = geoToSvg(p[0], p[1]);
-    return `${i === 0 ? 'M' : 'L'} ${x},${y}`;
-  }).join(' ') + ' Z';
-}
-
-const IBERIA_PATH = pointsToPath(IBERIA_OUTLINE);
-const PORTUGAL_PATH = pointsToPath(PORTUGAL_OUTLINE);
-const BALEARES_PATH = pointsToPath(MALLORCA_OUTLINE);
-
-// ─── Contorno simplificado de la Península Ibérica (SVG path) ─────────────────
-// Path derivado de coordenadas geográficas reales, proyectadas al viewBox 800×560
-
-
-// Portugal aproximado (parte oeste)
+const SPAIN_PATHS = COUNTRY_PATHS.ESP ? COUNTRY_PATHS.ESP.paths : [];
+const PORTUGAL_PATHS = COUNTRY_PATHS.PRT ? COUNTRY_PATHS.PRT.paths : [];
+const ANDORRA_PATHS = COUNTRY_PATHS.AND ? COUNTRY_PATHS.AND.paths : [];
 
 
 // ─── Nodos con coordenadas reales verificadas ────────────────────────────────
@@ -189,6 +161,8 @@ function TopologyContent({}) {
     landGradientStart: isDark ? '#142C4A' : '#ECE3CF',
     landGradientEnd: isDark ? '#0B1827' : '#D6C9AE',
     landStroke: isDark ? 'rgba(125, 205, 227, 0.30)' : 'rgba(25, 24, 20, 0.18)',
+    landNeighbor: isDark ? 'rgba(125, 205, 227, 0.04)' : 'rgba(25, 24, 20, 0.03)',
+    coastline: isDark ? 'rgba(125, 205, 227, 0.15)' : 'rgba(25, 24, 20, 0.12)',
 
     portugalFill: isDark ? 'rgba(230, 180, 92, 0.10)' : 'rgba(169, 96, 0, 0.10)',
     portugalStroke: isDark ? 'rgba(230, 180, 92, 0.38)' : 'rgba(169, 96, 0, 0.30)',
@@ -291,9 +265,9 @@ function TopologyContent({}) {
           </filter>
 
           <clipPath id={ids.clipIberia}>
-            <path d={IBERIA_PATH} />
-            <path d={PORTUGAL_PATH} />
-            <path d={BALEARES_PATH} />
+            {SPAIN_PATHS.map((d, i) => <path key={`clip-es-${i}`} d={d} />)}
+            {PORTUGAL_PATHS.map((d, i) => <path key={`clip-pt-${i}`} d={d} />)}
+            {ANDORRA_PATHS.map((d, i) => <path key={`clip-ad-${i}`} d={d} />)}
           </clipPath>
           {/* FIX 1+3 — gradientUnits userSpaceOnUse + coordenadas absolutas viewBox */}
           <radialGradient id={ids.landGrad}
@@ -316,10 +290,42 @@ function TopologyContent({}) {
         <rect width="1000" height="800" fill={palette.bg} />
         <rect width="1000" height="800" fill={palette.bgOverlay} />
 
+        {/* 2. Países vecinos desaturados de fondo */}
+        <g fill={palette.landNeighbor} stroke={palette.border} strokeWidth="0.6">
+          {COUNTRY_PATHS.FRA?.paths?.map((d, i) => (
+            <path key={`fr-${i}`} d={d} strokeLinejoin="round" />
+          ))}
+          {COUNTRY_PATHS.MAR?.paths?.map((d, i) => (
+            <path key={`ma-${i}`} d={d} strokeLinejoin="round" />
+          ))}
+          {COUNTRY_PATHS.DZA?.paths?.map((d, i) => (
+            <path key={`dz-${i}`} d={d} strokeLinejoin="round" />
+          ))}
+        </g>
+
+        {/* 3. Tierra principal con sombra/relieve (España, Portugal, Andorra) */}
         <g filter={`url(#${ids.relief})`}>
-          <path d={IBERIA_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
-          <path d={PORTUGAL_PATH} fill={palette.portugalFill} stroke={palette.portugalStroke} strokeWidth="1" strokeDasharray="4 3" strokeLinejoin="round" />
-          <path d={BALEARES_PATH} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
+          {SPAIN_PATHS.map((d, i) => (
+            <path key={`es-${i}`} d={d} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
+          ))}
+          {PORTUGAL_PATHS.map((d, i) => (
+            <path key={`pt-${i}`} d={d} fill={palette.portugalFill} stroke={palette.portugalStroke} strokeWidth="1.0" strokeDasharray="4 3" strokeLinejoin="round" />
+          ))}
+          {ANDORRA_PATHS.map((d, i) => (
+            <path key={`ad-${i}`} d={d} fill={`url(#${ids.landGrad})`} stroke={palette.landStroke} strokeWidth="1.2" strokeLinejoin="round" />
+          ))}
+        </g>
+
+        {/* 4. Fronteras y costas de alta fidelidad */}
+        <g fill="none" stroke={palette.coastline} strokeWidth="1">
+          {COASTLINE_PATHS.map((d, i) => (
+            <path key={`coast-${i}`} d={d} />
+          ))}
+        </g>
+        <g fill="none" stroke={palette.border} strokeWidth="1" strokeDasharray="3 3">
+          {BORDER_PATHS.map((d, i) => (
+            <path key={`border-${i}`} d={d} />
+          ))}
         </g>
 
         <g clipPath={`url(#${ids.clipIberia})`} opacity="0.5">
