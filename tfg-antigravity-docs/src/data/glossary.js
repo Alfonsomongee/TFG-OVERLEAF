@@ -338,7 +338,7 @@ export const GLOSSARY_TERMS = [
     definition: "Relés de protección sistémica (función ANSI 78) diseñados para detectar la divergencia angular severa entre dos áreas eléctricas interconectadas —el llamado deslizamiento de polos (pole slip)— y abrir automáticamente las líneas de interconexión para contener el daño en equipos y evitar que la oscilación asíncrona se propague al resto del sistema. Operan siguiendo el fasor de impedancia aparente en el plano R-X: cuando la trayectoria del fasor cruza la característica mho con la velocidad y dirección propias de un deslizamiento de polos, se ordena la apertura. El 28-A, las protecciones ANSI 78 de los enlaces transpirenaicos operaron a las 12:33:21 CEST al detectar la pérdida de sincronismo entre la Península Ibérica y el sistema continental europeo. La actuación fue técnicamente correcta —previno daños estructurales en los equipos— y fue también, en el registro del incidente, la firma formal del colapso sistémico ibérico.",
   },
   {
-    id: slugify("OST"),
+    id: slugify("Protecciones de pérdida de sincronismo (OST)"),
     letter: "O",
     term: "OST",
     definition: "Véase Protecciones de pérdida de sincronismo (OST).",
@@ -446,7 +446,7 @@ export const GLOSSARY_TERMS = [
     definition: "Algoritmo de control electrónico que estima continuamente la frecuencia y el ángulo de fase de la tensión en el punto de conexión del inversor y sincroniza la salida del equipo con esa referencia, permitiendo al inversor GFL inyectar corriente en fase con la tensión de red. Es el mecanismo de sincronización fundamental de todos los inversores GFL y determina su comportamiento ante perturbaciones de tensión: en redes con SCR < 2, el PLL experimenta inestabilidad propia con amortiguamiento negativo (ζ_PLL < 0), lo que puede hacer que el inversor pierda la sincronización y dispare. El 28-A, la pérdida de referencia casi simultánea de miles de PLLs ante la oscilación de tensión fue el mecanismo de transmisión entre la perturbación inicial y la cascada de desconexiones: cada PLL que falló convirtió su inversor de un potencial recurso estabilizador en una unidad desconectada, agravando la perturbación que el PLL siguiente tendría que gestionar.",
   },
   {
-    id: slugify("PLL"),
+    id: slugify("Phase-Locked Loop (PLL)"),
     letter: "P",
     term: "PLL",
     definition: "Véase Phase-Locked Loop (PLL).",
