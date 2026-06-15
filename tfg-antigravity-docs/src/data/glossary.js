@@ -56,6 +56,12 @@ export const GLOSSARY_TERMS = [
     definition: "Mecanismo electromecánico instalado en los grandes transformadores de potencia que modifica la relación de transformación —y, por tanto, la tensión en el secundario— sin interrumpir la continuidad del servicio, mediante el desplazamiento escalonado de una derivación en el devanado. Regula variaciones lentas de tensión en un rango típico de ±10% con pasos discretos de 1–2%. Su limitación estructural reside en la inercia mecánica del accionamiento: el tiempo de respuesta por escalón, condicionado por el motor y los engranajes, es del orden de varios segundos, lo que lo hace ciego a los transitorios de décimas de segundo que caracterizan los colapsos rápidos de tensión. Esta ceguera fue precisamente el mecanismo del Tap-Lag que amplificó el 28-A: los OLTCs habían subido tomas progresivamente para compensar las depresiones de tensión previas; cuando llegó la sobretensión derivada del mallado y las líneas en vacío, su inercia mecánica impidió bajarlas a tiempo, magnificando la tensión hacia las redes colectoras de 220 kV con consecuencias que el SCADA de 400 kV de REE no podía observar.",
   },
   {
+    id: slugify("Cambiadores de Tomas en Carga (OLTC)"),
+    letter: "O",
+    term: "OLTC",
+    definition: "Véase Cambiadores de Tomas en Carga (OLTC).",
+  },
+  {
     id: slugify("CCGT (Combined Cycle Gas Turbine)"),
     letter: "C",
     term: "CCGT (Combined Cycle Gas Turbine)",
