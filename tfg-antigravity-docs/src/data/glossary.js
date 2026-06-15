@@ -440,6 +440,12 @@ export const GLOSSARY_TERMS = [
     definition: "Algoritmo de control electrónico que estima continuamente la frecuencia y el ángulo de fase de la tensión en el punto de conexión del inversor y sincroniza la salida del equipo con esa referencia, permitiendo al inversor GFL inyectar corriente en fase con la tensión de red. Es el mecanismo de sincronización fundamental de todos los inversores GFL y determina su comportamiento ante perturbaciones de tensión: en redes con SCR < 2, el PLL experimenta inestabilidad propia con amortiguamiento negativo (ζ_PLL < 0), lo que puede hacer que el inversor pierda la sincronización y dispare. El 28-A, la pérdida de referencia casi simultánea de miles de PLLs ante la oscilación de tensión fue el mecanismo de transmisión entre la perturbación inicial y la cascada de desconexiones: cada PLL que falló convirtió su inversor de un potencial recurso estabilizador en una unidad desconectada, agravando la perturbación que el PLL siguiente tendría que gestionar.",
   },
   {
+    id: slugify("PLL"),
+    letter: "P",
+    term: "PLL",
+    definition: "Véase Phase-Locked Loop (PLL).",
+  },
+  {
     id: slugify("SCADA (Supervisory Control and Data Acquisition)"),
     letter: "S",
     term: "SCADA (Supervisory Control and Data Acquisition)",
