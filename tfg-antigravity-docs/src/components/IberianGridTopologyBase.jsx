@@ -150,7 +150,7 @@ function TopologyContent({}) {
   const isDark = colorMode === 'dark';
 
   const palette = {
-    bg: isDark ? '#071326' : '#F6F0E3',
+    bg: isDark ? '#0D1E38' : '#F3EFE7',
     bgOverlay: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(255, 252, 245, 0.54)',
     panelBg: isDark ? 'rgba(16, 29, 53, 0.92)' : 'rgba(255, 252, 245, 0.88)',
     logBg: isDark ? 'rgba(7, 19, 38, 0.58)' : 'rgba(25, 24, 20, 0.035)',
@@ -158,11 +158,11 @@ function TopologyContent({}) {
     border: isDark ? 'rgba(226, 232, 240, 0.14)' : 'rgba(25, 24, 20, 0.14)',
     borderStrong: isDark ? 'rgba(125, 205, 227, 0.34)' : 'rgba(31, 111, 120, 0.30)',
 
-    landGradientStart: isDark ? '#142C4A' : '#ECE3CF',
-    landGradientEnd: isDark ? '#0B1827' : '#D6C9AE',
-    landStroke: isDark ? 'rgba(125, 205, 227, 0.30)' : 'rgba(25, 24, 20, 0.18)',
-    landNeighbor: isDark ? 'rgba(125, 205, 227, 0.04)' : 'rgba(25, 24, 20, 0.03)',
-    coastline: isDark ? 'rgba(125, 205, 227, 0.15)' : 'rgba(25, 24, 20, 0.12)',
+    landGradientStart: isDark ? '#162A46' : '#ECE6DB',
+    landGradientEnd: isDark ? '#162A46' : '#ECE6DB',
+    landStroke: isDark ? '#29415F' : '#D6CEC0',
+    landNeighbor: isDark ? '#162A46' : '#ECE6DB',
+    coastline: isDark ? '#29415F' : '#D6CEC0',
 
     portugalFill: isDark ? 'rgba(230, 180, 92, 0.10)' : 'rgba(169, 96, 0, 0.10)',
     portugalStroke: isDark ? 'rgba(230, 180, 92, 0.38)' : 'rgba(169, 96, 0, 0.30)',

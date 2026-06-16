@@ -169,12 +169,12 @@ const THEME = {
     logActive:      '#e2e8f0',
     logPast:        '#4b5563',
     logBullet:      '#ef4444',
-    ocean:          '#07182D',
-    landMain:       '#173149',
+    ocean:          '#051021',
+    landMain:       '#1C3252',
     landNeighbor:   '#10263B',
-    coastline:      '#3E6176',
-    border:         '#2D4E63',
-    adminBorder:    'rgba(118, 151, 168, 0.18)',
+    coastline:      '#29415F',
+    border:         '#29415F',
+    adminBorder:    '#213754',
     city:           '#8FA8B7',
     cityLabel:      'rgba(210, 224, 232, 0.50)',
     gridLine:       'rgba(255,255,255,0.06)',
@@ -212,12 +212,12 @@ const THEME = {
     logActive:      '#1A1410',
     logPast:        '#7A7065',
     logBullet:      '#C41E30',
-    ocean:          '#EEF3F2',
-    landMain:       '#D9DED4',
+    ocean:          '#F3EFE7',
+    landMain:       '#ECE6DB',
     landNeighbor:   '#E7E9E1',
-    coastline:      '#9EAA9C',
-    border:         '#B7C0B2',
-    adminBorder:    'rgba(104, 116, 98, 0.22)',
+    coastline:      '#D6CEC0',
+    border:         '#D6CEC0',
+    adminBorder:    '#E2DBCF',
     city:           '#7D8577',
     cityLabel:      'rgba(60, 67, 58, 0.56)',
     gridLine:       'rgba(0,0,0,0.06)',
@@ -777,17 +777,7 @@ export default function BlackoutPropagationMapBase() {
         </div>
       </div>
 
-      <figcaption style={{
-        fontSize:   '0.8rem',
-        color:      isDark ? '#6b7280' : '#7A7065',
-        marginTop:  '0.75rem',
-        textAlign:  'center',
-        lineHeight: 1.5,
-      }}>
-        <strong>Simulador interactivo.</strong>{' '}
-        Cascada de desconexiones IBR durante el apagón ibérico del 28-A (12:32:57–12:33:27 CEST).
-        Pulsa ▶ para reproducir la secuencia. Coloca el cursor sobre los nodos para ver la telemetría ENTSO-E.
-      </figcaption>
+
     </figure>
   );
 }

@@ -81,7 +81,7 @@ export default function IberianInterconnectionsInteractiveFigure() {
         <div className={styles.mapPane}>
           <svg
             viewBox="20 20 940 760"
-            preserveAspectRatio="xMidYMid slice"
+            preserveAspectRatio="xMidYMid meet"
             className={styles.map}
             role="img"
             aria-labelledby="iberian-interconnections-title iberian-interconnections-desc"

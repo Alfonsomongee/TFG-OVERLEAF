@@ -314,9 +314,7 @@ export default function FerrantiCapacitiveLineSimulator() {
         <p>{pericialText}</p>
       </div>
 
-      <div className={styles.reading}>
-        <strong>Lectura técnica.</strong> El efecto Ferranti no implica que una línea «genere energía activa», sino que su capacitancia distribuida puede inyectar potencia reactiva capacitiva cuando opera poco cargada. En una red débil, ese excedente eleva la tensión y reduce el margen frente a disparos por sobretensión.
-      </div>
+
     </figure>
   );
 }

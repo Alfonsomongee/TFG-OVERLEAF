@@ -141,21 +141,21 @@ function RestorationContent({}) {
   const isDark = colorMode === 'dark';
 
   const th = isDark ? {
-    ocean:          '#07182D',
-    landMain:       '#173149',
-    landNeighbor:   '#10263B',
-    coastline:      '#3E6176',
-    border:         '#2D4E63',
-    adminBorder:    'rgba(118, 151, 168, 0.18)',
+    ocean:          '#051021',
+    landMain:       '#1C3252',
+    landNeighbor:   '#162A46',
+    coastline:      '#29415F',
+    border:         '#29415F',
+    adminBorder:    '#213754',
     city:           '#8FA8B7',
     cityLabel:      'rgba(210, 224, 232, 0.50)',
   } : {
-    ocean:          '#EEF3F2',
-    landMain:       '#D9DED4',
-    landNeighbor:   '#E7E9E1',
-    coastline:      '#9EAA9C',
-    border:         '#B7C0B2',
-    adminBorder:    'rgba(104, 116, 98, 0.22)',
+    ocean:          '#F3EFE7',
+    landMain:       '#ECE6DB',
+    landNeighbor:   '#ECE6DB',
+    coastline:      '#D6CEC0',
+    border:         '#D6CEC0',
+    adminBorder:    '#E2DBCF',
     city:           '#7D8577',
     cityLabel:      'rgba(60, 67, 58, 0.56)',
   };
