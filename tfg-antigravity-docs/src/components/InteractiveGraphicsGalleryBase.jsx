@@ -34,7 +34,7 @@ const DynamicSecurityShift = lazy(() => import(/* webpackChunkName: "chart-secur
 const ThenVsNowPanel = lazy(() => import(/* webpackChunkName: "chart-then-vs-now" */ './ThenVsNowPanel'));
 const PicasoPriceChart = lazy(() => import(/* webpackChunkName: "chart-picaso-price" */ './PicasoPriceChart'));
 const TrilemmaTriangle = lazy(() => import(/* webpackChunkName: "chart-trilemma-triangle" */ './TrilemmaTriangle'));
-const CNMCSanctionsChart = lazy(() => import(/* webpackChunkName: "chart-cnmc-sanctions" */ './CNMCSanctionsChart'));
+
 const ResolutionRoadmap = lazy(() => import(/* webpackChunkName: "chart-resolution-roadmap" */ './ResolutionRoadmap'));
 const ResearchAgendaScatter = lazy(() => import(/* webpackChunkName: "chart-research-agenda" */ './ResearchAgendaScatter'));
 const DcopfCongestionManagementFigure = lazy(() => import(/* webpackChunkName: "chart-dcopf" */ './new-graphics/DcopfCongestionManagementFigure'));
@@ -358,7 +358,7 @@ export const graphicsData = [
   { id: 'then-vs-now-panel', icon: '⚖️', component: ThenVsNowPanel , tema: ['T2', 'T9', 'T10-gen'] },
   { id: 'picaso-price-chart', icon: '💸', component: PicasoPriceChart , tema: ['T5', 'T10-mer'] },
   { id: 'trilemma-triangle', icon: '🔺', component: TrilemmaTriangle , tema: ['T7', 'T10-mer'] },
-  { id: 'cnmc-sanctions-chart', icon: '⚖️', component: CNMCSanctionsChart , tema: ['T7', 'T10-mer'] },
+
   { id: 'resolution-roadmap', icon: '🗺️', component: ResolutionRoadmap , tema: ['T9', 'T10-red'] },
   { id: 'research-agenda-scatter', icon: '🔬', component: ResearchAgendaScatter , tema: ['T9', 'T10-red'] },
 { id: 'dcopf-congestion', icon: '⚡', component: DcopfCongestionManagementFigure , tema: 'T10-mer' },

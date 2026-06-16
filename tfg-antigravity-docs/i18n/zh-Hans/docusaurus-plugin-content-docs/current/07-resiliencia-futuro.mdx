@@ -1,340 +1,147 @@
 ---
 sidebar_position: 7
 hide_title: true
-title: "韧性与未来"
+title: "Resiliencia y Futuro: Respuesta Técnica y Regulatoria"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-import PhasePlanePlot from "@site/src/components/PhasePlanePlot";
-import RadarVulnerabilidad from "@site/src/components/RadarVulnerabilidad";
-import PQCapabilitySimulator from '@site/src/components/PQCapabilitySimulator/PQCapabilitySimulator';
+import CostOfInactionChart from "@site/src/components/CostOfInactionChart";
 
-<GlitchTitle>韧性与未来</GlitchTitle>
+<GlitchTitle>Resiliencia y Futuro</GlitchTitle>
 
-4月28日事件的结构性教训不在于崩溃本身，而在于它所揭示的脆弱性类型。取证分析表明，电压归零既非有功备用故障，也非单一操作失误：它是逆变器主导系统的物理特性与为同步电网设计的技术监管框架之间根本性不兼容的最终体现。促成4·28事件的场景——高比例IBR渗透、耦合同步发电稀缺、净需求低迷——并非气候异常，而是随着脱碳进程推进将日益频繁出现的条件的预演。
+La lección estructural del 28 de abril no reside en el colapso en sí, sino en la clase de vulnerabilidad que reveló. El análisis forense demostró que el cero de tensión no fue un fallo de reserva de potencia activa ni un error puntual de operación: fue la manifestación de una incompatibilidad entre la física de un sistema dominado por inversores y un marco técnico-regulatorio diseñado para redes síncronas. El escenario que propició el 28-A — alta penetración de IBR, escasez de generación síncrona acoplada y demanda neta deprimida — no fue una anomalía, sino el anticipo de condiciones que se reproducirán con frecuencia creciente conforme avance la descarbonización.
 
-## 系统脆弱性的物理本质
+Este capítulo presenta la respuesta técnica y regulatoria al diagnóstico de vulnerabilidad. Las consecuencias económicas y la cuantificación financiera se desarrollan en el [Capítulo 7b](./07b-consecuencias-financieras.mdx); la evolución del sistema un año después, en la [Actualización 2026](./08_5-actualizacion-2026.mdx).
 
-### 惯量、RoCoF与摇摆方程
+## La física de la fragilidad sistémica
 
-惯量常数 $H$ 决定了频率对有功功率不平衡的响应速度。其降低——直接源于用与电网频率解耦的跟网型逆变器替代旋转质量——缩短了调节系统可用的时间窗口。其动态由摇摆方程控制：
+### Inercia, RoCoF y la ecuación de oscilación
+
+La constante de inercia *H* determina la velocidad de respuesta de la frecuencia ante desequilibrios de potencia activa. Su reducción — consecuencia directa de la sustitución de masas rotatorias por inversores *grid-following* — acorta la ventana temporal disponible para los sistemas de regulación. La dinámica está gobernada por la ecuación de oscilación:
 
 $$
 \frac{2H}{f_0} \, \frac{df}{dt} = P_m - P_e - D \cdot \Delta f
 $$
 
-其中 $H$ 是系统等效惯量常数（秒），$f_0$ 是额定频率（50 Hz），$df/dt$ 是RoCoF，$P_m$ 是耦合同步转子提供的总机械功率，$P_e$ 是发电电功率，$D$ 是频率相关负载的阻尼系数。
+donde *H* es la constante de inercia equivalente (en segundos), *f₀* la frecuencia nominal (50 Hz), *df/dt* la RoCoF, *Pm* la potencia mecánica total, *Pe* la potencia eléctrica y *D* el coeficiente de amortiguamiento.
 
-系统在崩溃时刻认证的 $H = 2.3$ 秒<KeyFact id="inercia-28a" mode="callback">H = 2.3 秒（平均）/ 1.3 秒（南部区域）—— 第2章</KeyFact>——高于ENTSO-E推荐的2.0秒阈值：4·28事件并非因同步质量不足导致的频率崩溃。然而，相关的动态并非频率，而是电压：南部区域的 $H$ 值（1.3秒）以及关键节点SCR降至2以下，构成了[第3章](./03-analisis-incidente.mdx)所重构的容性不稳定条件。在IBR渗透率超过80%的场景下，这两个指标——惯量和电网强度——会同时恶化，而后者决定了面对超快速电压暂态时的脆弱性。
+El sistema certificó *H* = 2,3 s en el momento del colapso — por encima del umbral ENTSO-E de 2,0 s. El 28-A no fue un colapso de frecuencia por déficit de masa síncrona. La dinámica relevante fue de tensión: los valores zonales de *H* en el sur (1,3 s) y la degradación del SCR por debajo de 2 en los nudos críticos configuraron las condiciones de inestabilidad capacitiva. En escenarios de penetración IBR superior al 80 %, inercia y fortaleza de red se degradan simultáneamente, y es la segunda la que determina la vulnerabilidad ante transitorios de tensión ultrarrápidos.
 
-### 短路容量退化：电网强度的度量
+### Degradación del cortocircuito: la métrica de fortaleza de red
 
-与4·28事件因果机制最直接相关的维度是电网节点处短路容量（$S_{sc}$）的退化。传统同步发电机在暂态最初几个周期内可注入其额定值5至7倍的短路电流。逆变器则将注入限制在1.1–1.2 p.u.，以防止半导体器件熔断。
-
-这种损失的常用参数化指标是短路比（SCR）：
+La dimensión más vinculada al mecanismo causal del 28-A es la degradación de la Potencia de Cortocircuito (*Ssc*) en los nudos. Un generador síncrono puede inyectar corrientes de cortocircuito de entre 5 y 7 veces su valor nominal durante los primeros ciclos. Los inversores limitan la inyección a 1,1–1,2 p.u. La parametrización habitual es el Short Circuit Ratio:
 
 $$
 \mathrm{SCR} = \frac{S_{sc,\mathrm{PCC}}}{P_{\mathrm{IBR}}}
 $$
 
-<ForensicTable 
-  title="表 I1 — 短路比（SCR）阈值"
-  source="ENTSO-E标准 / 技术文献"
+<ForensicTable
+  title="Tabla I1 — Umbrales de Short Circuit Ratio (SCR)"
+  source="Estándar ENTSO-E / literatura técnica"
 >
 
-| 类别 | SCR阈值 | 运行含义 |
+| Categoría | Umbral SCR | Implicación operativa |
 | --- | --- | --- |
-| 强电网 | SCR > 3 | 跟网型逆变器小信号稳定运行。距离保护保持选择性。 |
-| 弱电网 | 2 ≤ SCR ≤ 3 | 快速扰动下PLL稳定裕度下降。邻近控制环路间存在不良交互风险。 |
-| 极弱电网 | SCR < 2 | PLL在较小电压变化下易失步。距离保护失去方向性。<br/>*（注：在高密度逆变器区域，此结构性弱点通过MRSCR指标评估，详见欧洲维度部分）* |
+| Red fuerte | SCR > 3 | Inversores GFL con estabilidad de pequeña señal. Protecciones selectivas. |
+| Red débil | 2 ≤ SCR ≤ 3 | Degradación del PLL ante perturbaciones rápidas. Riesgo de interacción entre lazos de control. |
+| Red muy débil | SCR < 2 | PLL propensos a pérdida de sincronismo. Protecciones de distancia pierden direccionalidad. |
 
 </ForensicTable>
 
-针对SCR的实际脆弱性阈值可通过以下雷达图进行评估：
+Durante las horas previas al colapso, amplias zonas de la Península operaban con SCR < 2: la producción solar había desplazado por orden de mérito a los ciclos combinados, cuya desconexión eliminó las fuentes de *Ssc* que dan rigidez a los nudos de transporte. El radar de vulnerabilidad interactivo se conserva en el [Anexo IX · Metodología y modelos](/anexo-metodologia-modelos-datos-vivos).
 
-<details className="collapsible">
-<summary>
-  <span>▶ 查看交互式脆弱性雷达图</span>
-</summary>
+![Mapas de tensión en la red peninsular de 400 kV en la franja crítica previa al colapso](/figuras/scr_iberia.png)
 
-<div className="collapsibleBody">
-<RadarVulnerabilidad lang="zh" />
-</div>
+_Figura I1 — Distribución espacial del SCR en la red peninsular previa al colapso. Las zonas con SCR < 2 en Andalucía y Extremadura fueron las más vulnerables al transitorio capacitivo. Fuente: IIT-ICAI._
 
-</details>
+## Precedentes internacionales
 
-在崩溃前的数小时内，伊比利亚半岛的广大区域作为极弱电网运行（SCR < 2）：大规模太阳能发电已按经济调度顺序取代了联合循环机组，而后者的断开恰恰消除了为输电网络节点提供刚度的 $S_{sc}$ 来源。在这些条件下，$X/R$ 较高但 $\mathrm{SCR} \ll 2$，全局阻抗使得电压对有功功率变化也变得敏感：太阳能注入的斜坡获得了在传统同步电网中无害的电压扰动能力。
+La revisión de los cinco apagones de gran escala que precedieron al 28-A revela un patrón recurrente: los mecanismos físicos del colapso ibérico estaban documentados y parcialmente resueltos en otras jurisdicciones.
 
-![崩溃前关键时段伊比利亚半岛400 kV电网电压图](/figuras/scr_iberia.png)
-
-_图 I1 — 崩溃前关键时段伊比利亚半岛400 kV电网电压图。安达卢西亚和埃斯特雷马杜拉广大区域SCR低于2的空间分布说明了使这些区域对容性暂态特别脆弱的节点脆弱性。来源：IIT-ICAI。_
-
-### 逆变器的几何悖论：P-Q冲突
-
-功率三角形几何结构存在固有的结构性矛盾。逆变器的最大视在容量受限于：
-
-$$
-S_{\max} = \sqrt{P^2 + Q^2}
-$$
-
-当光伏电站经历云层快速消散时，其MPPT算法会指令数千MW/h的有功功率 $P$ 注入斜坡。为了不超过 $S_{\max}$，控制器必须同时减少其无功功率 $Q$ 的裕度。悖论在于：这恰恰是 $P$ 的急剧增加在SCR < 2的电网中引发严重过电压的时刻，要求逆变器大量吸收无功以抑制过电压。逆变器面临两个同时物理上不兼容的义务：根据市场信号最大化 $P$，以及根据电压稳定需求最大化 $Q$。
-
-<PQCapabilitySimulator />
-
-<figcaption>
-图 I2 — 光伏逆变器中P–Q冲突的概念模拟器。视在容量曲线显示了有功功率增加如何减少可用于电压控制的无功裕度。根据 S² = P² + Q² 关系自行绘制。
-</figcaption>
-
-这一矛盾解释了为什么4·28事件不是能量崩溃而是控制崩溃：系统拥有足够的资源，但缺乏必要且连贯地调动这些资源的控制架构。
-
-### 鸭形曲线与分布式自消费效应
-
-4·28事件的运行场景位于鸭形曲线的深谷：结构性低总需求——类似于二十年前的最低水平——而辐照度接近夏季峰值，因为春季热退化较小。
-
-![4·28事件前数日每天12:00–13:00时段耦合的传统同步机组数量变化](/figuras/conventionalunits.png)
-
-_图 I3 — 4·28事件前数日每天12:00–13:00时段耦合的传统同步机组数量。下降趋势反映了热电机组按经济调度顺序被系统性淘汰，而这正是为输电网络节点提供真正旋转惯量和短路容量的来源。来源：ENTSO-E。_
-
-在12:30 CEST，REE已用尽手动管理工具：预防性断开数十条超高压线路以增加串联阻抗，以及将电抗器运行至其容量的85%——但仍未能抑制电压上升。
-
-另一个被识别为相关的因素是分布式光伏自消费：分布式发电减少了可见需求，但无法以所需时间分辨率进行遥测。在之前的振荡现象期间，电压波动触发了家用和轻工业设施的防孤岛继电器，这些设施集体断开，使它们所覆盖的需求突然显现：其效果相当于一个未预料到的正负载阶跃，而此时系统已没有无功裕度来吸收它。
-
-## 国际先例：五次大停电的监管教训
-
-对在时间上先于4·28事件的五次大规模停电的回顾揭示了一个反复出现的模式：伊比利亚崩溃的物理机制——无层级闭锁的OLTC、无动态控制的逆变器、缺乏最低强制惯量——在2025年4月之前已在其他司法管辖区得到记录并部分解决。
-
-<ForensicTable 
-  title="表 I2 — 国际先例与监管响应"
-  source="自行编制（来源：UCTE, NERC/FERC, ENTSO-E, AEMO, NGESO）"
+<ForensicTable
+  title="Tabla I2 — Precedentes internacionales y respuesta regulatoria"
+  source="Elaboración propia (fuentes: UCTE, NERC/FERC, ENTSO-E, AEMO, NGESO)"
 >
 
-| 事件 | 主导根本原因 | 采取的监管措施 | 实施时间 | 已验证的有效性 |
-| :--- | :--- | :--- | :--- | :--- |
-| 意大利 2003 | 热级联 + OLTC放大的Q-V崩溃 | UCTE运行手册：紧急情况下强制闭锁OLTC | 21个月 | 高：避免了2021年解列事件重演 |
-| 美/加 2003 | 态势感知丧失（告警故障）+ N-1违规 | EPAct 2005：NERC作为具有强制性和可处罚标准的ERO | 4年 | 完全：自2007年以来无类似大陆级停电 |
-| 欧洲 2006 | 跨境不协调：手动断开无N-1重新分析 | EAS + 创建ENTSO-E + 具有约束力的网络规范 | 3–11年 | 高：EAS允许在2021年1月解列事件中协调遏制 |
-| 南澳大利亚 2016 | 风电逆变器LVRT不足 + 低惯量 | 强制系统强度 + FFR + 更新逆变器固件 | 1–2年 | 高：常规运行 >70% 可再生能源无事故 |
-| 英国 2019 | 向量偏移 + RoCoF过大：防孤岛继电器导致DER级联 | ALoMCP：禁止向量偏移 + RoCoF 1 Hz/s | 3年 | 高：此后无分布式发电级联 |
+| Evento | Causa raíz dominante | Medida regulatoria adoptada | Efectividad |
+| :--- | :--- | :--- | :--- |
+| Italia 2003 | Cascada Q-V amplificada por OLTCs | UCTE: bloqueo OLTC obligatorio en emergencia | Alta |
+| US/Canadá 2003 | Pérdida de situational awareness | EPAct 2005: estándares obligatorios y penalizables | Total |
+| Europa 2006 | Descoordinación transfronteriza | EAS + Network Codes vinculantes | Alta |
+| S. Australia 2016 | LVRT deficiente + baja inercia | System Strength obligatorio + FFR | Alta |
+| UK 2019 | RoCoF excesivo + cascada de DER | Prohibición de Vector Shift + RoCoF a 1 Hz/s | Alta |
 
 </ForensicTable>
 
-横向教训是双重的。第一：事故后的监管措施一旦实施，显示出普遍较高的有效性。第二：实施需要1到11年，在此期间系统仍然暴露于已记录的脆弱性。伊比利亚4·28事件符合这一模式：它重现了已知的因果机制——特别是OLTC的破坏性作用（意大利2003）和缺乏动态控制的逆变器的脆弱性（南澳大利亚2016，英国2019）——而这些机制在伊比利亚半岛监管框架中的整合尚待完成。
+La lección transversal es doble: las medidas regulatorias post-incidente demuestran efectividad uniformemente alta una vez implementadas; pero la implementación tarda entre 1 y 11 años, durante los cuales el sistema permanece expuesto.
 
-下文考察的技术解决方案是这些教训的工业转化。
+## Tecnologías habilitadoras
 
-## 零排放使能技术
+La superación de la vulnerabilidad exige una transición en la arquitectura de control: del parque que *sigue* la tensión hacia una infraestructura capaz de *formarla* de forma autónoma.
 
-克服脆弱性需要控制架构的转变：从跟随电压和频率的发电机组转向能够自主形成它们的设施。三个互补的技术系列构成了响应。
+### BESS con control grid-forming
 
-### 构网型控制BESS：速度与精度
+Un inversor *grid-forming* (GFM) opera como un equivalente de Thévenin: sintetiza de forma autónoma una referencia interna de tensión ($V\angle\delta$) detrás de una impedancia virtual. Al imponer este vector de forma instantánea, inyecta o absorbe corriente ante cualquier variación de la red sin depender de mediciones externas de fase. Cuando está respaldado por baterías, la combinación provee inercia sintética (ajuste proporcional a *df/dt* en decenas de milisegundos) y respuesta rápida de frecuencia (FFR ≤ 0,25 s).
 
-与跟网型逆变器不同，构网型逆变器（GFM）作为戴维南等效电路运行：它在虚拟耦合阻抗之后自主合成一个内部电压参考，包括幅值和角度（$V\angle\delta$）。通过瞬时施加该向量，GFM逆变器在电网发生任何变化时固有地注入或吸收有功和无功电流，无需依赖外部相位测量或计算延迟。
+La Hornsdale Power Reserve (150 MW / 193,5 MWh, Neoen/Tesla), tras su actualización a GFM en 2022, certificó 2.000 MWs de inercia equivalente — el 15 % de la inercia mínima requerida en South Australia. Sin embargo, los semiconductores IGBT rara vez sostienen corrientes superiores a 1,2–1,5 p.u., lo que limita la contribución a la potencia de cortocircuito.
 
-<details className="collapsible">
-<summary>
-  <span>▶ 查看交互式相平面图（GFM vs GFL vs 同步发电机）</span>
-</summary>
+### Compensadores síncronos
 
-<div className="collapsibleBody">
-<PhasePlanePlot lang={frontMatter.locale || 'zh'} />
+La limitación de corriente de los inversores justifica el despliegue complementario de SynCons: máquinas rotativas de gran masa acopladas síncronamente pero operadas en vacío. Aportan corrientes de cortocircuito del 300–400 % de su nominal durante los primeros ciclos, y una inercia rotacional genuina disponible en el primer milisegundo del transitorio. La estrategia Brownfield propone reconvertir alternadores de centrales fósiles en proceso de desmantelamiento.
 
-_图 I4 — 相平面图：扰动下GFM逆变器与GFL逆变器和同步发电机的动态收敛。非线性阻尼振荡器模型（RK4）量化了GFM响应在重同步速度和功率振荡阻尼方面的优越性，这是将构网型作为NC RfG 2.0强制性要求的关键论点。来源：自行绘制。_
-</div>
+### Arquitectura híbrida
 
-</details>
+Ninguna familia tecnológica es suficiente aislada. Los BESS-GFM proveen velocidad y precisión pero están limitados en corriente de cortocircuito; los SynCons proveen inercia y cortocircuito pero carecen de agilidad subcíclica. La complementariedad entre las tres familias es condición de resiliencia, no preferencia de diseño.
 
-当GFM逆变器由电池组（BESS-GFM）支持时，该组合提供两项额外服务：
+## La respuesta normativa
 
-- 合成惯量：算法持续测量 $df/dt$ 并在数十毫秒范围内按比例调整输出功率，模拟旋转质量的行为。
-- FFR：当超过RoCoF阈值或频率偏差时，BESS在亚周期内（≤ 0.25秒）注入预定义的有功功率块，在同步机组调速器处理扰动之前阻止下降斜率。
+### Revisión del P.O. 7.4 y sistema VOLTAIRE
 
-ERCOT（德克萨斯州）的运行经验量化了这项服务的价值。结构性临界惯量阈值约为100,000 MW·s：低于此水平，C类事故（约2,750 MW）下的RoCoF会在机械调速器动作之前使频率崩溃。系统以三个警报区域运行：绿色（> 120,000 MW·s）、黄色（110,000–119,999 MW·s）和红色（< 100,000 MW·s，强制调度超出经济顺序的同步机组）。
+El P.O. 7.4 vigente el 28-A presentaba dos deficiencias críticas: el 82 % del parque operaba con factor de potencia fijo, y la banda muerta 405–410 kV eximía a los generadores síncronos de actuar, configurando una respuesta incompatible con la velocidad del transitorio.
 
-ERCOT的响应备用服务 – 快速频率响应（RRS-FFR）市场要求：自主检测频率降至59.85 Hz以下，在最多0.25秒内注入100%的合同功率，并维持至少15分钟。验证结果表明，在此方案下集成450 MW使得临界惯量阈值从100,000 MW·s降至88,000 MW·s——下降了12%，反映了电力电子亚秒级动作与同步电机动能的等效功能。
+La Resolución CNMC de 12 de junio de 2025 (BOE-A-2025-13076) sustituyó las consignas estáticas por prestación dinámica retribuida. El sistema VOLTAIRE articula un lazo proporcional-integral en dos capas: Regulación Terciaria (optimización global) y Secundaria (consignas telemáticas con resolución de 4 s). La retribución incluye 2 €/MVArh para prestación con producción neta positiva y una fórmula indexada al Precio Medio Diario para horas nocturnas.
 
-全球范围内此领域的奠基性成功案例是南澳大利亚的Hornsdale电力储备（由Neoen和Tesla运营）。在2022年将其固件升级为构网型后，这个150 MW / 193.5 MWh的BESS系统成功认证了2,000 MWs等效惯量的运行提供。澳大利亚运营商AEMO批准了这一贡献，它本身就能覆盖该州约15%的最低惯量要求，从经验上证明了仅靠电力电子维持大规模电网的可行性。
-
-然而，IGBT半导体很少能承受超过其额定值1.2–1.5倍的电流。这一限制意味着BESS-GFM对节点可用短路容量的贡献在数量上是有限的。关于此限制的最先进论文是*Cross-Forming Control*（Dörfler等人，苏黎世联邦理工学院，2024），该论文提出了混合控制架构以避免故障期间的电流饱和。
-
-### 同步调相机：短路容量与真正旋转惯量
-
-逆变器的电流限制证明了同步调相机（SynCons）的补充部署是合理的：具有大质量的旋转电机，同步耦合但空载运行，根据励磁水平自由交换无功功率。
-
-其贡献是双重的：在暂态最初几个周期内提供其额定值300–400%的短路电流，从而提高连接节点的SCR；以及在暂态的第一个毫秒内物理上可用的真正旋转惯量，无需算法中介或控制延迟。
-
-棕地战略提出了一种最小化新土木工程投资的部署途径：将正在退役的燃煤、联合循环或核电站的大型交流发电机转换为同步调相机，一旦涡轮发电机组件解耦。这种转换将搁浅资产转化为系统稳定性资源，保留了已安装的400 kV输电节点的价值。
-
-### 混合架构：互补性作为韧性条件
-
-这三个技术系列中的任何一个，如果孤立部署，都是不够的：
-
-- BESS-GFM提供响应速度、控制精度和黑启动能力，但受限于短路电流。
-- SynCons提供真正旋转惯量和高短路容量，但缺乏电力电子的亚周期敏捷性，也不管理有功能量。
-- 合成惯量和FFR最大化电池组能量裕度的利用，但依赖于SynCons提供的最小节点刚度，以便其算法有效。
-
-<details className="collapsible">
-<summary>
-  <span>▶ 混合架构与技术经济优化（图30–31）</span>
-</summary>
-<div className="collapsibleBody">
-
-![脱碳电网系统韧性的混合架构](/figuras/hitachi_hybrid.png)
-
-_图 I5 — 脱碳电网系统韧性的混合架构（BESS-GFM + 同步调相机）。该图说明了逆变器亚周期响应速度与同步电机真正旋转惯量之间的互补性，其组合覆盖了完整的稳定服务频谱。来源：Hitachi Energy / FUTURED。_
-
-系统总成本的最小化并不与LCOE的最小化一致，而是要求将同步电机隐含提供的基本可靠性服务（ERS）内部化到市场设计中。
-
-![IBR主导系统中韧性的技术经济优化](/figuras/coste_optimo_ers.png)
-
-_图 I6 — IBR主导系统中韧性的技术经济优化。曲线显示系统总成本的最小化并不与LCOE的最小化一致，而是需要内部化同步电机隐含提供的基本可靠性服务（ERS）的成本。来源：Julia Matevosyan (ESIG) / FUTURED。_
-
-</div>
-</details>
-
-### 人工智能与图神经网络（GNN）用于稳定性
-
-欧洲TSO的学术前沿与运行现实之间的差距在伊比利亚大停电中暴露无遗。虽然REE或RTE（法国）等调度中心仍在使用经典模态分析工具来监控相量测量单元（PMU），而研究前沿已通过深度学习解决了崩溃预测问题。
-
-图神经网络（GNN）架构本质上是拓扑的：它们将电网理解为相互连接的阻抗图，而非独立变量。最近的数学模型（如Nauck等人，2023）将GNN应用于相量数据，以在电压开始下降之前预测节点的稳定域（SNBS）。类似地，基于Transformer的架构（如StaaT模型，2024）已被证明在使用PMU时间序列进行短期电压稳定预测方面远远优于LSTM网络。基于这些架构的人工智能系统的实施本应在变压器热崩溃前几分钟检测到格拉纳达节点Q-V裕度的收紧。
-
-### 用于分散式黑启动的多智能体群
-
-2025年伊比利亚黑启动在经典集中式自上而下模式下运行，几乎需要16小时才能完全恢复半岛供电。供电恢复的未来，特别是在构网型部署的情况下，指向分布式模型。通过多智能体系统（MAS），配备GFM的多个微电网可以通过共识算法自主预同步，形成“活岛”，然后相互连接。这种已在Holy Cross Energy（科罗拉多州，NREL，2024）等试点中得到验证的技术，有潜力将恢复时间从数天缩短至数小时。
-
-## 规范响应：从过时的P.O. 7.4到强制性构网型
-
-### 既有框架的缺陷
-
-停电时有效的P.O. 7.4大约在二十五年内未进行实质性修订。它存在两个关键缺陷：
-
-1. 参与不对称：82%的发电机组以固定功率因数运行，无法动态注入或吸收无功。
-2. 死区：如果电压保持在405 kV和410 kV之间，同步发电机被豁免动作，形成了与所记录的容性暂态速度结构性不兼容的阶梯式响应。
-
-![原始P.O. 7.4特性曲线：405 kV至410 kV之间的死区](/figuras/po74_banda_muerta.png)
-
-_图 I7 — 原始P.O. 7.4特性曲线：405 kV至410 kV之间的死区。阴影区域说明了发电机组无需提供动态响应的范围，结构性阻碍了系统防御快速容性暂态，其时间尺度——低于100毫秒——与标准中规定的阶梯式响应不兼容。来源：REE。_
-
-### P.O. 7.4修订、VOLTAIRE系统与新的报酬方案
-
-2025年6月12日CNMC决议（BOE-A-2025-13076）在新的非频率服务框架下重新制定了P.O. 7.4。根本性创新是用有偿动态服务取代静态设定点模型：精确跟踪CECOEL通过CECRE遥测发送的实时设定点。
-
-通信渠道通过VOLTAIRE系统构建：一个两层层级比例积分控制回路。三级调节通过最优无功潮流全局优化电压分布。二级调节以4秒采样分辨率发送实时遥测设定点，在电站层面闭合控制回路，消除了低幅值暂态下对操作员手动响应的依赖。这种架构改变了可再生能源电站的角色：从电网电压的被动消费者到国家调节系统的主动执行器。
-
-相关报酬包括：在净产出为正的小时内，实时服务为2 €/MVArh；在净产出为零的小时内——夜间时段，空载线路的费兰梯效应导致过电压——报酬与日均价格挂钩：
-
-$$
-r_Q = 0{,}05 \times 1{,}15 \times \mathrm{PMD} + 5 \quad [€/\mathrm{MVArh}]
-$$
-
-*（公式：BOE-A-2025-13076，CNMC 2025年6月12日决议）*
-
-BESS系统额外获得2.7 €/MW/天的可用性付款，条件是维持超过90%的有效样本合规率。
-
-<ForensicTable 
-  title="表 I3 — P.O. 7.4监管对比"
+<ForensicTable
+  title="Tabla I3 — Comparativa regulatoria del P.O. 7.4"
   source="CNMC / REE"
 >
 
-| 运行属性 | 原始P.O. 7.4（2025年前） | 更新后框架（2025年后） |
+| Atributo | P.O. 7.4 original (pre-2025) | Marco actualizado (post-2025) |
 | --- | --- | --- |
-| 控制性质 | 静态且不对称。阶梯式运行。 | 动态、连续且与偏差成比例。 |
-| IBR参与 | 被动跟网型，固定功率因数。 | 强制性构网型。主动控制 $V$ 和 $Q$。 |
-| 死区 | 405–410 kV无强制响应。 | 消除或减少至 $U_n$ 的 ±0.5%。 |
-| 无功响应 | 应OS请求后缓慢的设定点阶梯。 | 闭环自动响应（下垂控制）。 |
-| Q报酬 | 基于声明的技术可用性。 | ERS服务区域市场。 |
-| 可观测性 | SCADA遥测400 kV，数秒分辨率。 | PMU和分布式IBR的4秒遥测。 |
-| 处罚制度 | 无针对无功不合规的具体处罚。 | 对低于90%最低合规率的处罚。 |
+| Naturaleza del control | Estática, por escalones | Dinámica, continua, proporcional |
+| Participación IBR | Factor de potencia fijo | Control activo de V y Q |
+| Banda muerta | 405–410 kV sin respuesta | Eliminada o reducida a ±0,5 % |
+| Remuneración de Q | Disponibilidad técnica declarada | Mercados zonales de servicios ERS |
+| Observabilidad | SCADA 400 kV, resolución de segundos | PMU + telemedida 4 s para IBR |
 
 </ForensicTable>
 
-原始框架与新法规之间的动作速度差异可在[附录九 · 方法与模型](./anexo-metodologia-modelos-datos-vivos.mdx)中验证，其中保留了自动下垂响应模拟器。
+El Real Decreto 997/2025 complementó la reforma con la redefinición jurídica de los BESS como activos de servicio de estabilidad, la obligatoriedad de telemedida < 4 s para el parque IBR significativo, y la obligatoriedad del módulo PSS/POD en inversores GFM de nueva instalación con potencia > 10 MW.
 
-第997/2025号皇家法令通过四项紧急措施补充了改革：将BESS重新定义为系统稳定性服务资产的法律定义；清理过时连接许可登记；强制所有重要IBR机组采用分辨率 < 4秒的遥测；以及强制所有新安装功率 > 10 MW的GFM逆变器配备PSS/POD模块。
+### El marco europeo: NC RfG 2.0
 
-在此过程中出现了一个揭示性的紧张关系：2025年10月，REE要求将合规要求从75%提高到90%的时间。CNMC拒绝了这一要求，理由是现有同步机组在所需调整斜坡下无法达到该水平。这一数据具有反向意义：GFM逆变器可以毫无困难地满足这一要求。运行框架适应IBR-GFM能力的进展速度超过了该标准所取代的作为辅助服务提供者的同步资产。
+El NC RfG vigente fue diseñado bajo el paradigma GFL: estandarizaba perfiles de hueco y umbrales de frecuencia, pero no contemplaba la posibilidad de que no quedara ninguna máquina rotatoria a la que seguir. El Informe de Fase II de ENTSO-E (noviembre 2025) estableció obligaciones GFM obligatorias por categoría de potencia, con clasificación tecnológicamente agnóstica. Los detalles de cada tier se documentan en el [Capítulo 5](/analisis-informes) (tabla E4) y en el [Anexo IX](/anexo-metodologia-modelos-datos-vivos).
 
-### 欧洲框架：NC RfG 2.0与ENTSO-E第一阶段和第二阶段报告
+A la fecha de redacción, la adopción formal del NC RfG 2.0 por la Comisión Europea se encuentra despriorizada y sin calendario oficial.
 
-过去十年有效的NC RfG是在跟网型范式下设计的：它标准化了低电压穿越曲线和频率阈值，但没有考虑可能没有重型旋转机器可跟随的可能性。这一概念缺陷在伊比利亚崩溃的8秒内得到了证明。
+## Tecnologías habilitadoras: la dicotomía CAPEX/exposición
 
-ENTSO-E技术工作组（TG GFC）将其工作结晶为两份文件：
+La decisión de invertir en resiliencia no es solo técnica: es financiera. El sistema puede provisionar los atributos que las máquinas síncronas aportaban de forma implícita mediante inversión en infraestructura nueva (CAPEX), o puede pagar indefinidamente el coste de mantener ciclos combinados despachados como reserva de inercia (OPEX Operación Reforzada). La figura siguiente cuantifica esa dicotomía proyectada hasta 2030, en tres escenarios de velocidad de despliegue.
 
-- 第一阶段报告（2024年5月）：新规范所需GFM的基本技术定义——在最初几毫秒内“恒定有效电抗后的电压源”。该相量模型实际上禁止了用于一次控制的PLL算法的直接依赖。
-- 第二阶段报告（2025年11月）：在伊比利亚崩溃证据的压力下发布，并得到CENELEC、WindEurope、SolarPower Europe和EASE的广泛认可。它明确规定了基于逆变器的新电站应如何稳定系统。
+<CostOfInactionChart />
 
-NC RfG 2.0的义务采用技术中立的方法应用，将模块分为四种类型：
+_Figura I2 — El coste de la inacción: CAPEX de resiliencia frente a exposición VoLL acumulada (2025–2030). El punto de indiferencia indica el año a partir del cual la inacción resulta más cara que la inversión. Proyecciones basadas en datos REE, PwC/NERA y metodología ACER/CEER para el cálculo del VoLL esperado. Los valores post-2026 son estimaciones._
 
-<details className="collapsible">
-<summary>
-  <span>→ NC RfG 2.0合规层级：功率、要求与时间表（表I）</span>
-</summary>
-<div className="collapsibleBody">
+## Mercados de Servicios Esenciales de Confiabilidad (ERS)
 
-<ForensicTable 
-  title="表 I4 — NC RfG 2.0拟议合规级别"
-  source="ENTSO-E / 欧盟委员会"
->
+El modelo marginalista puro de energía es estructuralmente incapaz de remunerar los atributos que sostienen la estabilidad. Los ERS articulan tres mecanismos: mercados regionales de inercia sintética y FFR; señales geográficas de nivel de cortocircuito; y remuneración *ex ante* para SynCons.
 
-| 类型 | 功率 / 连接 | GFM要求 | 时间表 |
-| --- | --- | --- | --- |
-| A型 | < 1 MW | 自愿。由DSO决定。 | 不适用 |
-| B型 | 1–50 MW | 强制性。合成惯量和基本动态支持。 | ENTSO-E IGD发布后最多3年。 |
-| C型 | > 50 MW | 强制性且全面。作为电压源完全运行；故障电流曲线；POD功能。 | 欧盟委员会采纳后3年。 |
-| D型 | ≥ 110 kV 或 > 75 MW | 同C型加认证测试。 | 欧盟委员会采纳后3年。 |
-| ESM（BESS） | 按类别 | 同等效PPM。总容量 > 1 MW的V2G系统归类为B型ESM。 | 按类别。 |
+Los modelos de referencia operativos son el programa DS3 de EirGrid (14 productos especializados incluyendo SIR, FFR y SSRP) y el esquema RRS-FFR de ERCOT (450 MW de BESS bajo FFR que redujeron el umbral de inercia crítica un 12 %).
 
-</ForensicTable>
+### Evolución del marco español en 2026
 
-</div>
-</details>
+El 8 de mayo de 2026, la CNMC abrió trámite de audiencia pública para la modificación de los P.O. 7.4 y P.O. 14.4 (Expediente DCOOR/DE/006/26), orientado a mercados zonales de servicios de no frecuencia con participación activa de IBR y BESS.
 
-构网型部署对系统惯量的影响可在[附录九 · 方法与模型](./anexo-metodologia-modelos-datos-vivos.mdx)中评估，其中保留了构网型影响模拟。
+---
 
-截至撰写时，欧盟委员会对NC RfG 2.0的正式采纳已被降级且无官方时间表，造成了监管不确定性窗口，各国运营商正在通过规范之外的预防措施进行管理。
-
-## 基本可靠性服务（ERS）市场
-
-### 裕度问题：为什么能源市场不奖励稳定性
-
-为了使GFM逆变器能够在严重RoCoF或扰动下作为电压源运行，它必须强制保持其稳态下未使用的视在容量（$S_{\max}$）储备。该储备——裕度——要求要么故意限制在日前市场中注入的有功功率，要么大幅增加其IGBT功率级的尺寸，从而急剧增加CAPEX。没有直接的经济补偿，这两种选择在商业上都不可行。
-
-直到4·28事件为止，监管架构的结构性失败在于其惩罚性方法：惩罚技术偏差而不奖励稳健性属性。ERS纠正了这种不对称性。
-
-### 三种报酬机制
-
-1. 合成惯量和FFR区域市场。设计将朝着拍卖方向发展，为能够在 < 5毫秒裕度内提供惯量支持的资产支付可用性费用。该机制的逻辑是收入叠加：BESS系统同时从日前市场的能源套利、二次和三次调节拍卖（aFRR/mFRR）以及合成惯量和FFR容量付款中获得收入。这种多重收入流补偿了尺寸过大的高CAPEX以及无功裕度造成的收入损失。
-
-2. 短路容量水平的地理信号。与频率（全局指标）不同，SCR和过电压是根本性的局部现象。4·28事件的脆弱节点与装机功率密度最高的节点并不重合。ERS市场将采用精细的空间价格信号：在TSO数学识别为SCR < 2的边界节点上，提供折扣连接费或无功容量拍卖。BESS-GFM在正确节点的位置成为项目经济可行性的决定性因素。
-
-3. SynCons的事前报酬。对于SynCons等基础设施——它们提供纯物理惯量和大量短路电流，但无法在小时市场上出售能源——监管考虑了受监管资产回报率模型（无能源价格风险暴露）或长期合同以保障资本投资。
-
-![后4·28框架下BESS-GFM系统的收入叠加图](/figuras/ers_revenue_stacking.png)
-
-_图 I8 — 后4·28监管框架下BESS-GFM系统的收入叠加来源。该图分解了日前能源市场、频率平衡市场（aFRR/mFRR）、合成惯量和FFR拍卖以及ERS无功可用性付款的收入流，说明了多重收入如何补偿所需的技术尺寸过大。来源：基于ENTSO-E结构自行绘制。_
-
-### 参考模型：EirGrid的DS3和ERCOT的RRS-FFR
-
-EirGrid（爱尔兰）和ERCOT（德克萨斯州）是欧洲设计所趋同的经过验证的运行参考：两家运营商都提前面临了非同步渗透率超过75%的挑战。
-
-EirGrid的DS3计划将稳定性提供分解为14个专业产品。与4·28事件背景最相关的三个：
-
-<ForensicTable 
-  title="表 I5 — EirGrid DS3服务：主要参数"
-  source="EirGrid / ENTSO-E"
->
-
-| 服务 | 技术定义 | 阈值 / 窗口 |
-| --- | --- | --- |
-| 同步惯量响应（SIR） | 在频率下降时准瞬时提供有功功率和同步转矩。通过SIRF指数 = $E_k / P_{\min}$ 进行报酬，该指数惩罚仅为了提供边际惯量而注入不期望功率的电站调度。 | SIRF ≥ 15秒 |
-| 快速频率响应（FFR） | 频率急剧下降后快速注入有功功率。可验证的能量是前10秒内注入的额外功率的积分。要求提供的能量大于恢复过程中的损失（T+10s → T+20s）。 | 响应在0.15秒至2秒之间 |
-| 稳态无功功率（SSRP） | 逆变器在其整个有功功率范围内连续运行时可以注入或吸收的可调度无功功率总范围（$Q_{\mathrm{range}}$）。包括对能够在空载下提供无功（无瓦特无功）的IBR有利的报酬标度。 | 稳态；通过PLEXOS模型进行年度评估 |
-
-</ForensicTable>
-
-DS3与RRS-FFR的比较表明，欧洲背景下的ERS市场架构应为双层：一层是短路容量地理信号——类似于EirGrid的SSRP——另一层是亚周期频率响应——类似于ERCOT的RRS-FFR。
-
-### 2026年西班牙框架的演变
-
-2026年5月8日，CNMC启动了关于修改运行程序P.O. 7.4和P.O. 14.4（案卷号DCOOR/DE/006/26）的公开听证程序，旨在创建IBR和BESS积极参与的非频率服务区域市场。
-
-4·28事件的结构性教训在欧洲监管设计中铭刻了一个比任何对运行程序的增量调整都更具深远影响的后果：同步系统固有提供的物理属性——惯量、短路容量、自主电压控制——已不再是免费的外部性，而是成为其提供必须被明确定义、验证和报酬的服务。纯粹的边际能源定价模型在结构上无法报酬这些属性。没有这种韧性的经济转化，NC RfG 2.0的任何技术要求在中长期内都无法持续。
+Los atributos físicos que los sistemas síncronos aportaban de forma inherente han dejado de ser externalidades gratuitas para convertirse en servicios cuya provisión debe ser definida, verificada y remunerada explícitamente. La cuantificación financiera de este argumento se desarrolla en el [Capítulo 7b](./07b-consecuencias-financieras.mdx).
