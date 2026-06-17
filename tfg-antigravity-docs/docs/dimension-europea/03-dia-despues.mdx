@@ -14,25 +14,25 @@ El 28 de abril de 2025 no cerró sus efectos con la reposición del suministro e
 
 ## Reforma de la metodología de reservas (diciembre 2025)
 
-Aprobada bajo el Artículo 37(1)(j) del Reglamento (UE) 2019/943, la Primera Enmienda a la Metodología para el Dimensionamiento Regional de Capacidad de Reserva revisó el modo en que Europa calcula sus necesidades de reservas secundarias y terciarias. La enmienda reconfiguró los niveles de confianza para el dimensionamiento de reservas, obligó a utilizar datos de desequilibrios con granularidad de 15 minutos en lugar de promedios horarios, y formalizó la instrumentación en tiempo real de los Acuerdos de Compartición de Reservas.
+Aprobada bajo el Artículo 37(1)(j) del Reglamento (UE) 2019/943, la Primera Enmienda a la Metodología para el Dimensionamiento Regional de Capacidad de Reserva revisó el modo en que Europa calcula sus necesidades de reservas secundarias y terciarias. La enmienda reconfiguró los niveles de confianza para el dimensionamiento, obligó a utilizar datos de desequilibrios con granularidad de 15 minutos en lugar de promedios horarios, y formalizó la instrumentación en tiempo real de los Acuerdos de Compartición de Reservas.
 
-El razonamiento subyacente es relevante: la enmienda reconoce que las colas de distribución de desequilibrios en sistemas de alta penetración renovable son significativamente más gruesas que las que los modelos calibrados con parques térmicos podían capturar. El 28-A demostró que los escenarios de *tail risk* ya no son estadísticamente excepcionales. Los detalles por Región Operativa (percentiles actualizados para Europa Central, Sudeste Europeo y Nórdica) se documentan en el [Anexo V · Mercado, precios y costes](/anexo-mercado-costes).
+El razonamiento subyacente es relevante: la enmienda reconoce que las colas de distribución de desequilibrios en sistemas de alta penetración renovable son significativamente más gruesas que las que los modelos calibrados con parques térmicos podían capturar. El 28-A demostró que los escenarios de *tail risk* ya no son estadísticamente excepcionales.
 
 ## Reforma del ERAA: del LOLE probabilístico al multifactorial
 
 La Evaluación Europea de Adecuación de Recursos (ERAA) es el pilar sobre el que los estados miembros justifican los Mecanismos de Capacidad. Tras el 28-A, la Decisión 06/2026 de ACER cuestionó metodologías fundamentales.
 
-ACER dictaminó que el coeficiente de aversión al riesgo CARA utilizado por ENTSO-E (0,0075) carecía de evidencia empírica post-apagón: los riesgos de inestabilidades operativas generan una aversión significativamente mayor que la simple volatilidad de precios. Sobre el indicador LOLE (*Loss of Load Expectation*), la nueva directriz obliga a entregar un valor determinista único — en lugar de rangos estadísticos — que integre escenarios de inestabilidad multifactorial: las simulaciones Monte Carlo del ERAA deben calcular la probabilidad conjunta de indisponibilidad de renovables cruzada con fallos topológicos, perfiles de sobretensión e insuficiencia de reservas rodantes. Las gráficas de LOLE por zona de oferta se conservan en el [Anexo V](/anexo-mercado-costes).
+ACER dictaminó que el coeficiente de aversión al riesgo CARA utilizado por ENTSO-E (0,0075) carecía de evidencia empírica post-apagón. Sobre el indicador LOLE (*Loss of Load Expectation*), la nueva directriz obliga a entregar un valor determinista único — en lugar de rangos estadísticos — que integre escenarios de inestabilidad multifactorial: las simulaciones Monte Carlo deben calcular la probabilidad conjunta de indisponibilidad de renovables cruzada con fallos topológicos, perfiles de sobretensión e insuficiencia de reservas rodantes.
 
 ## PICASSO: de la eficiencia económica a la resiliencia
 
-La plataforma PICASSO fue concebida como herramienta de optimización de mercado para el emparejamiento transfronterizo de ofertas de aFRR. Durante la crisis, a las 15:50 CEST, Amprion alertó a RTE sobre peticiones computacionales de hasta 2.500 MW asociadas a precios fuertemente negativos, evidenciando que en medio de un aislamiento y deslastre masivo, el algoritmo puramente económico colapsa conceptualmente.
+La plataforma PICASSO fue concebida como herramienta de optimización de mercado para el emparejamiento transfronterizo de ofertas de aFRR. A las 15:50 CEST del 28-A, Amprion alertó a RTE sobre peticiones computacionales de hasta 2.500 MW asociadas a precios fuertemente negativos — en medio de un aislamiento y deslastre masivo, el algoritmo puramente económico colapsó conceptualmente.
 
-La reforma dictó su formalización como herramienta de resiliencia de obligado cumplimiento. Las enmiendas otorgan a los despachos de control la potestad de ejecutar *overrides* manuales sobre los algoritmos de la plataforma durante un estado de alerta del EAS, bloqueando capacidad para inyectar flujos de estabilización direccional en lugar de someterla al precio marginal. Los detalles de los precios CBMP y el efecto de la demanda elástica se documentan en el [Anexo V](/anexo-mercado-costes).
+La reforma dictó su formalización como herramienta de resiliencia de obligado cumplimiento. Las enmiendas otorgan a los despachos de control la potestad de ejecutar *overrides* manuales durante un estado de alerta del EAS, bloqueando capacidad para inyectar flujos de estabilización direccional en lugar de someterla al precio marginal.
 
 ## La métrica MRSCR: superación del SCR tradicional
 
-Una de las aportaciones técnicas más relevantes del análisis post-28-A fue señalar los límites del ratio de cortocircuito (SCR) tradicional como métrica de evaluación para redes de alta penetración renovable. El colapso simultáneo de los inversores en España y de la subred Dax–Arriosses en Francia demostró que el SCR, al evaluar un único nudo aislado, ignora las interacciones destructivas entre múltiples convertidores de potencia electrónica cercanos.
+Una de las aportaciones técnicas más relevantes del análisis post-28-A fue señalar los límites del ratio de cortocircuito (SCR) tradicional. El colapso simultáneo de los inversores en España y de la subred Dax–Arriosses en Francia demostró que el SCR, al evaluar un único nudo aislado, ignora las interacciones destructivas entre múltiples convertidores cercanos.
 
 Los códigos de red europeos adoptaron la métrica MRSCR (*Multiple Renewable Energy Stations Short-Circuit Ratio*):
 
@@ -42,12 +42,12 @@ $$
 
 donde $S_{ac,i}$ es la capacidad de cortocircuito en CA en el nudo $i$, $P_i$ la potencia nominal del inversor bajo análisis, $P_j$ la potencia de los inversores adyacentes, y $\mathrm{MIIF}_{ji}$ el Factor de Interacción de Inversores Múltiples que cuantifica el acoplamiento eléctrico entre nudos.
 
-Los nuevos códigos establecen el valor crítico CMRSCR: el MRSCR calculado en el lado de baja tensión del transformador elevador de cualquier nueva planta IBR no debe ser inferior a 1,5. Un MRSCR inferior indica una debilidad insoportable ante huecos de tensión. Los operadores de transporte están facultados para bloquear la conexión de cualquier parque que no cumpla este ratio, obligando a los promotores a instalar compensadores síncronos en el punto de conexión para elevar $S_{ac}$ hasta el umbral.
+Los nuevos códigos establecen el valor crítico CMRSCR: el MRSCR calculado en el lado de baja tensión del transformador elevador de cualquier nueva planta IBR no debe ser inferior a 1,5. Los operadores de transporte están facultados para bloquear la conexión de cualquier parque que no cumpla este ratio, obligando a instalar compensadores síncronos en el punto de conexión para elevar $S_{ac}$ hasta el umbral.
 
 <figure id="fig-l1-mrscr">
   <MRSCRComparator />
   <figcaption>
-    <strong>Figura L1 — Fortaleza de red: SCR tradicional frente a MRSCR real.</strong> Comparación en los nodos de interconexión franco-ibérica. El umbral MRSCR ≤ 2,0 indica red débil con riesgo de inestabilidad dinámica.
+    <strong>Figura L1 — Fortaleza de red: SCR tradicional frente a MRSCR.</strong> Comparación en los nodos de interconexión franco-ibérica. El umbral MRSCR ≤ 2,0 indica red débil con riesgo de inestabilidad dinámica. Fuente: elaboración propia a partir de datos de simulación (metodología ENTSO-E).
   </figcaption>
 </figure>
 
@@ -55,24 +55,20 @@ Los nuevos códigos establecen el valor crítico CMRSCR: el MRSCR calculado en e
 
 ### Alemania: hacia las evaluaciones N-k dinámicas
 
-El apagón forzó interpelaciones de urgencia en el Bundestag sobre la vulnerabilidad de los corredores HVDC que conectan los parques eólicos del Mar del Norte con los centros industriales bávaros. El Ministerio de Economía y Protección del Clima ordenó a los cuatro operadores de transporte (Amprion, TenneT, 50Hertz, TransnetBW) una revisión de sus Planes Nacionales de Resiliencia, exigiendo transitar desde el Criterio N−1 estático hacia evaluaciones de riesgo N-k dinámicas que asuman la probabilidad conjunta de colapsos sincrónicos y fallos combinados.
+El apagón forzó interpelaciones de urgencia en el Bundestag sobre la vulnerabilidad de los corredores HVDC que conectan los parques eólicos del Mar del Norte con los centros industriales bávaros. El Ministerio de Economía ordenó a los cuatro operadores de transporte (Amprion, TenneT, 50Hertz, TransnetBW) una revisión de sus Planes Nacionales de Resiliencia, exigiendo transitar del Criterio N−1 estático hacia evaluaciones de riesgo N-k dinámicas que asuman la probabilidad conjunta de colapsos sincrónicos y fallos combinados.
 
 ### Italia: las interconexiones como infraestructura de supervivencia
 
-El análisis del 28-A se focalizó en la ratio de interconexión como factor determinante: la capacidad de intercambio ibérica del 3–5 % con Francia confinó la perturbación e impidió diluirla en el bloque continental — un mecanismo análogo al que selló el destino del sistema italiano en el apagón de 2003. El Parlamento italiano aprobó leyes de vía rápida para proyectos de interconexión submarina HVDC históricamente paralizados: el enlace Italia–Túnez (2 GW) y el cable Italia–Montenegro (1 GW) fueron reclasificados como «infraestructura crítica de supervivencia nacional». La justificación de la inversión ya no reposa en la eficiencia del mercado sino en su función como canales de soporte de cortocircuito transfronterizo.
+La capacidad de intercambio ibérica del 3–5 % con Francia confinó la perturbación e impidió diluirla en el bloque continental — un mecanismo análogo al que selló el destino del sistema italiano en 2003. El Parlamento italiano aprobó vías rápidas para proyectos de interconexión submarina históricamente paralizados: el enlace Italia–Túnez (2 GW) y el cable Italia–Montenegro (1 GW) fueron reclasificados como infraestructura crítica de supervivencia nacional. La justificación ya no reposa en la eficiencia del mercado sino en su función como canales de soporte de cortocircuito transfronterizo.
 
 ### Países Bajos y Dinamarca: redes malladas en el Mar del Norte
 
-TenneT y Energinet redirigieron sus presupuestos de desarrollo offshore desde líneas radiales simples hacia redes malladas HVDC multiterminal en el Mar del Norte, diseñadas con sobrecapacidad intrínseca para compensar oscilaciones instantáneas sin depender de los estrangulamientos continentales.
+TenneT y Energinet redirigieron sus presupuestos de desarrollo offshore desde líneas radiales simples hacia redes malladas HVDC multiterminal, diseñadas con sobrecapacidad intrínseca para compensar oscilaciones instantáneas sin depender de los estrangulamientos continentales.
 
 ### La disputa competencial ACER–ENTSO-E
 
-A nivel macro-institucional, el 28-A reavivó la disputa entre ACER y ENTSO-E vinculada al Paquete de Energía Limpia. ENTSO-E había criticado las directrices de la Comisión que pretendían otorgar poderes vinculantes a los Centros Operativos Regionales (ROCs) sobre el dimensionamiento de reservas de los estados miembros, argumentando que la responsabilidad civil y penal sobre la seguridad del suministro corresponde a los operadores de transporte nacionales.
-
-El apagón ibérico respaldó parcialmente esta postura: en el instante del colapso de frecuencia, las respuestas deben ser comandadas localmente bajo directrices técnicas. Las asignaciones geopolíticas de reservas deben pertenecer al fuero técnico de las entidades que operan físicamente los interruptores, no a algoritmos de mercado optimizados desde Bruselas.
+A nivel institucional, el 28-A reavivó la disputa entre ACER y ENTSO-E sobre poderes vinculantes de los Centros Operativos Regionales (ROCs). El apagón ibérico respaldó parcialmente la postura de ENTSO-E: en el instante del colapso de frecuencia, las respuestas deben ser comandadas localmente bajo directrices técnicas. Las asignaciones de reservas deben pertenecer al fuero técnico de las entidades que operan físicamente los interruptores, no a algoritmos de mercado.
 
 ## La lección continental
 
-El paradigma que las reformas post-28-A consolidan asume que la energía (MWh) será una *commodity* abundante, cediendo su posición de escasez a los Servicios Esenciales de Confiabilidad: tensión estabilizada dinámicamente, inercia y potencia de cortocircuito.
-
-El apagón ibérico dejó una lección difícil de eludir: el progreso hacia la descarbonización continental no puede desacoplarse de las leyes fundamentales del electromagnetismo ni de la necesidad de interconectar y blindar las infraestructuras de transporte transfronterizas. El 28 de abril de 2025 no fue solo el primer apagón sistémico europeo en dos décadas — fue la demostración empírica de que esa inversión en resiliencia no admite aplazamiento.
+El paradigma que las reformas post-28-A consolidan asume que la energía (MWh) será una *commodity* abundante, cediendo su posición de escasez a los Servicios Esenciales de Confiabilidad: tensión estabilizada dinámicamente, inercia y potencia de cortocircuito. El progreso hacia la descarbonización continental no puede desacoplarse de las leyes del electromagnetismo ni de la necesidad de interconectar y blindar las infraestructuras de transporte transfronterizas. El 28 de abril de 2025 fue la demostración empírica de que esa inversión en resiliencia no admite aplazamiento.

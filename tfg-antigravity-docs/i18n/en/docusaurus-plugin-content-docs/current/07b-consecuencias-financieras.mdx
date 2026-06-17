@@ -1,194 +1,173 @@
 ---
 sidebar_position: 7.5
 hide_title: true
-title: "Financial Consequences and Resilience Costs"
+title: "Consecuencias Financieras y Costes de Resiliencia"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
-import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
-import MacroEconomicDamageFlowFigure from "@site/src/components/MacroEconomicDamageFlowFigure";
-import MarketDistortionPvpcFigure from '@site/src/components/MarketDistortionPvpcFigure';
-import HuenejaRegulatoryRiskFigure from '@site/src/components/HuenejaRegulatoryRiskFigure';
+import CausalFlowFigure from "@site/src/components/CausalFlowFigure";
+import MarketDistortionSplitFigure from '@site/src/components/MarketDistortionSplitFigure';
+import EconomicTimelineFigure from "@site/src/components/EconomicTimelineFigure";
+import ElectricityCostWaterfallFigure from "@site/src/components/ElectricityCostWaterfallFigure";
+import ReserveMarginDegradationFigure from "@site/src/components/ReserveMarginDegradationFigure";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
 
-<GlitchTitle>Financial Consequences and Resilience Costs</GlitchTitle>
+<GlitchTitle>Consecuencias Financieras y Costes de Resiliencia</GlitchTitle>
 
-Zero voltage has a price. What the chapter on resilience and the future describes in terms of grid physics — low inertia, capacitive saturation, absence of essential reliability services — has a direct translation in the profit and loss statement: lost production, damage to capital goods, market distortion, litigation in imbalance settlement, and a massive forced adaptation CAPEX. **Here, the economic vertex of the Energy Trilemma crystallizes:** the prior absence of ancillary service markets disincentivized the installation of grid-forming technologies, forcing the system to pay *ex post*, in the form of damages, for what it was unwilling to finance *ex ante* in the form of resilience. This chapter quantifies that translation across four fronts: the immediate macroeconomic impact, the sectoral damage to the electro-intensive industry, the open regulatory and judicial scenario, and the CAPEX required so that the Reinforced Operation is no longer essential.
+Lo que los capítulos anteriores describen en términos de física de red — baja inercia, saturación capacitiva, ausencia de servicios de confiabilidad — tiene traducción directa en cuenta de resultados: pérdida de producción, distorsión de mercados, litigiosidad y un ingente CAPEX de adaptación forzosa. La ausencia previa de mercados de servicios complementarios desincentivó la instalación de tecnologías formadoras de red, obligando al sistema a pagar *ex post*, en forma de daños, lo que no financió *ex ante* en forma de resiliencia.
 
-The premise structuring the analysis is the same one underlying the Essential Reliability Services (ERS) markets discussed in the chapter on resilience and the future: investing in resilience before a collapse is orders of magnitude cheaper than financing its consequences afterward.
+Este capítulo cuantifica esa traducción en cuatro frentes: el impacto macroeconómico inmediato, la distorsión del mercado eléctrico, el régimen sancionador y judicial, y el CAPEX necesario para prescindir de la Operación Reforzada. La cronología completa del impacto económico se presenta a continuación.
+
+<EconomicTimelineFigure />
+
+_Figura G1 — Cronología económica del 28-A. Secuencia temporal del impacto económico desde el cero de tensión hasta el aniversario. Fuentes: REE, CEOE, PwC/NERA, CNMC._
 
 ---
 
-## 1. The direct cost of the blackout
+## 1. El coste directo del apagón
 
-### Energy Not Supplied and macroeconomic loss
+### Energía No Suministrada y pérdida macroeconómica
 
-The regulatory standard for quantifying the damage of an electrical interruption is the **Value of Lost Load (VoLL)**, endorsed by ACER and CEER. VoLL expresses how much a consumer would be willing to pay to avoid the outage — or what compensation they would demand for suffering it — and varies significantly depending on the affected sector and the duration of the interruption.
+El estándar regulatorio para cuantificar el daño de una interrupción eléctrica es el Valor de la Energía No Suministrada (VoLL, *Value of Lost Load*), avalado por ACER y CEER. El VoLL expresa cuánto estaría dispuesto a pagar un consumidor por evitar el corte, y varía según el sector afectado y la duración de la interrupción.
 
 <ForensicTable
-  title="Table G1 — VoLL by sector in the Iberian economy"
-  source="Own elaboration (CEER / ACER methodology; calibrated with blackout studies for high-income economies)"
+  title="Tabla G1 — VoLL por sector en la economía ibérica"
+  source="Elaboración propia (metodología CEER / ACER; calibración con estudios de blackout para economías de renta alta)"
 >
 
-| Sector | VoLL Range (€/kWh) | Sensitivity to Duration | Second-order Effects |
+| Sector | Rango VoLL (€/MWh) | Sensibilidad a la duración | Efectos de segundo orden |
 | :--- | :---: | :--- | :--- |
-| Residential | 5–45 | Low-medium; grows with duration | Deterioration of perishables, loss of teleworking, loss of thermal comfort |
-| Services and retail | 15–90 | Medium-high; maximum during daytime hours | Store closures, inoperative POS terminals, logistical collapse of servers |
-| Manufacturing industry | 50–250 | Very high; critical chain processes | Non-sequenced stops, loss of raw materials, JIT chain disruption, equipment damage from voltage transients |
+| Residencial | 5.000–45.000 | Baja-media; crece con la duración | Deterioro de perecederos, caída del teletrabajo |
+| Servicios y comercio | 15.000–90.000 | Media-alta; máxima en horas diurnas | Cierre de establecimientos, colapso logístico |
+| Industria manufacturera | 50.000–250.000 | Muy alta; procesos en cadena | Paradas no secuenciadas, pérdida de materias primas, rotura de cadenas JIT |
 
 </ForensicTable>
 
-Integrating the real demand curve from 12:33 CEST on April 28 until the restoration of 99.95% at 07:05 on April 29, the **aggregate Energy Not Supplied (ENS)** for the Iberian system is estimated between <CuestionAbierta metricKey="reposicion.ens_espana_total">150 and 180 GWh</CuestionAbierta>. The lower limit assumes partial recovery of nighttime industrial load; the upper limit assumes net destruction due to cold shutdown of processes.
+Integrando la curva de demanda real desde las 12:33 CEST del 28 de abril hasta la restitución del 99,95 % a las 07:05 del 29 de abril, la Energía No Suministrada (ENS) agregada para el sistema ibérico se estima entre <CuestionAbierta metricKey="reposicion.ens_espana_total">150 y 180 GWh</CuestionAbierta>. El límite inferior asume recuperación parcial de carga industrial nocturna; el superior, destrucción neta por parada fría de procesos.
 
-<MacroEconomicDamageFlowFigure />
+<CausalFlowFigure />
 
-_Figure G1 — From zero voltage to the macroeconomic bill. Causal chain transforming the electrical collapse into energy not supplied, loss of connectivity, and aggregate economic damage. CEOE and ATA estimates are shown as distinct impact perimeters, not additive magnitudes. Own elaboration based on Funcas, CEOE, ATA, Cloudflare Radar, Ookla, and ACER/CEER references on VoLL._
+_Figura G2 — Del cero de tensión a la factura macroeconómica. Cadena causal que transforma el colapso eléctrico en energía no suministrada, pérdida de conectividad y daño económico agregado. Elaboración propia a partir de Funcas, CEOE, ATA, Cloudflare Radar, Ookla y referencias ACER/CEER._
 
-Applying a weighted average VoLL over the entire affected productive fabric — with the incident occurring on a working Monday and all three sectors active simultaneously — CEOE and ATA estimated in their preliminary audits a direct and indirect value destruction of between **1,000 and 1,500 million euros**. This figure is consistent with the model: a good that the day-ahead market valued at barely €18.50/MWh on the morning of April 28 generated, in its absence, multi-million euro negative externalities.
+Las estimaciones patronales publicadas en los días posteriores al evento sitúan la destrucción de valor en 1.600 M€ (CEOE, tejido corporativo nacional, equivalente al 0,1 % del PIB) y 1.300 M€ (ATA, autónomos y comercio). Ambas cifras representan perímetros económicos distintos y no son magnitudes acumulables. Estimaciones independientes — como la de Tempos Energía — amplían la horquilla hasta 4.800 M€, lo que equivaldría al 0,2–0,3 % del PIB anual (BBVA Research).
 
-The impact was amplified by the parallel collapse of telecommunications. Internet traffic in mainland Portugal fell by 90% in the five hours following the zero voltage, dragging down banking systems, payment platforms, and transnational cloud operations. The lost profit of the digital economy, although difficult to quantify exactly, contributes to the upper range of the VoLL estimate.
+El impacto se amplificó por el colapso simultáneo de las telecomunicaciones. El tráfico de internet en Portugal continental cayó un 90 % y en España un 80 % en las cinco horas posteriores, arrastrando sistemas bancarios, plataformas de pago y operativas cloud transnacionales.
 
-### Price distortion in OMIE and impact on the PVPC
+### Distorsión de precios en OMIE y repercusión en el PVPC
 
-On the morning of April 28, the day-ahead market closed at €5.79/MWh, with periods of zero or negative prices due to renewable oversupply. The restoration abruptly reversed this equilibrium: the Black Start required displacing renewable and hydro generation and dispatching natural gas combined cycles as the marginal resource. The wholesale price multiplied by five almost immediately compared to pre-blackout levels.
+La mañana del 28-A el mercado diario cerraba en 18,50 €/MWh, con tramos de precio nulo o negativo por sobreoferta renovable. Al día siguiente, el OMIE cayó a 5,79 €/MWh — señal contradictoria: la red estaba al límite pero el mercado reflejaba abundancia. La reposición invirtió ese equilibrio: el Black Start exigió desplazar generación renovable y despachar ciclos combinados como recurso marginal.
 
-The extra cost was passed on to consumers indexed to the **Voluntary Price for the Small Consumer (PVPC)**. The technical constraints necessary to sustain the system after the blackout caused a <CuestionAbierta metricKey="pvpc.incremento_restricciones_pct">125% increase</CuestionAbierta> in the constraints component of the regulated bill, equivalent to more than 3 euros per month per household. The systemic cost of grid fragility was, as usual, transferred to consumers most exposed to the regulated tariff.
+El sobrecoste se trasladó a los consumidores indexados al PVPC. En 2025, el coste total de los servicios de ajuste del sistema eléctrico español ascendió a 3.812 M€, un incremento del 43 % respecto a 2024 (REE, Informe del Sistema Eléctrico 2025). El componente de restricciones técnicas, principal vector del encarecimiento, creció un 63 %. Para los consumidores PVPC, el componente de restricciones se incrementó un 125 % respecto al año anterior, equivalente a un sobrecoste de ~33 €/año por hogar medio (PwC / Energía y Sociedad, 2026).
 
-<MarketDistortionPvpcFigure />
+<MarketDistortionSplitFigure />
 
-_Figure G2 — OMIE/PVPC distortion: the day-ahead market price fell to €5.79/MWh on the day after the blackout, while the cost of technical constraints grew by 125% for PVPC consumers. Own elaboration based on OMIE, ESIOS/REE, PwC/ConsumES, and NERA._
+_Figura G3 — Distorsión OMIE/PVPC: precio del mercado diario frente al coste de restricciones técnicas. Elaboración propia a partir de OMIE, ESIOS/REE, PwC, NERA._
 
----
+<ElectricityCostWaterfallFigure />
 
-## 2. Electro-intensive sector: direct damages and lost profits
-
-The automatic load shedding — a defense mechanism designed to protect the transmission grid, not the industrial process — abruptly disconnected large industrial consumers without a shutdown ramp. The Association of High Energy Consumption Companies (AEGE), which includes Acerinox, ArcelorMittal, Asturiana de Zinc, Ercros, and Grupo Gallardo Balboa, documented audited losses exceeding **25 million euros**, structured along two vectors:
-
-
-
-**Direct operational damages (>€13M).** The interruption without a shutdown ramp caused solidification of molten metals in electric arc furnaces, destroying refractory linings. Reactivation required full days of industrial cleaning, removal of solidified slag, and replacement of equipment damaged by the voltage transients generated at the moment of load shedding.
-
-**Lost profits and contractual penalties (≈€12M).** The thermodynamic inertia of continuous processes — preheating, recalibration, quality verification — compromised scheduled deliveries for several days after the blackout. Penalties in international supply contracts, calculated on the price differential and delivery delay, complement the direct damage.
-
-From an industrial policy perspective, the episode demonstrated that the operational risk premium associated with unstable supply exceeds in financial value any hourly discount in the megawatt-hour price. Security of supply is not a comfort attribute: it is a condition of viability for continuous process industry.
+_Figura G4 — Descomposición del coste final de la electricidad en 2025. El componente de restricciones técnicas ya pesa tanto como los peajes de transporte y distribución. Fuente: REE, ESIOS, PwC._
 
 ---
 
-## 3. Sanctioning regime and litigation
+## 2. Sector electrointensivo: daños directos y lucro cesante
 
-### CNMC proceedings
+El deslastre automático de carga desconectó de forma abrupta y sin rampa de parada a los grandes consumidores industriales. La Asociación de Empresas con Gran Consumo de Energía (AEGE), que agrupa a Acerinox, ArcelorMittal, Asturiana de Zinc, Ercros y Grupo Gallardo Balboa, documentó pérdidas auditadas superiores a 25 millones de euros, estructuradas en dos vectores.
 
-The Energy Instruction Directorate of the CNMC initiated up to **66 sanctioning proceedings** against market operators, based on the analysis of operational telemetry from the two years prior to the event. Those affected include Iberdrola, Endesa, Naturgy, Repsol, and Red Eléctrica de España itself. The main charges refer to non-compliance with dynamic voltage control instructions and the deficient injection or absorption of reactive power required by the then-current P.O. 7.4.
-
-<HuenejaRegulatoryRiskFigure />
-
-<p className="figure-caption">
-  _Figure G3 — Huéneja (Granada) evacuation node and CNMC sanctioning framework. Left: abstract topology of the renewable hub (≈668 MW, 400 kV) with connected photovoltaic, wind, and solar thermal plants. Right: sanctioning scale of Law 24/2013 on the Electricity Sector (serious infringement → up to €6M; very serious → up to €60M) and the 66 proceedings initiated against multiple operators. The proceedings are open administrative procedures, not final judgments. Own elaboration based on CNMC, BOE-A-2025, and Law 24/2013._
-</p>
-
-Of particular technical relevance was the proceeding classified as **"serious"** against Mercuria Sostenible, manager of the Common Evacuation Infrastructure (ICE) at the Huéneja (Granada) substation. The topological analysis of the collapse identified this substation as the origin node of the first cascade of massive disconnections of photovoltaic, wind, and solar thermal plants, due to the absence of adequate overvoltage mitigation.
-
-The punitive framework of Law 24/2013 on the Electricity Sector sets the following ceilings:
-
-- **Serious** infringements (Art. 64.15, 64.16, and 64.17 LSE): up to **6 million euros** per proceeding.
-- **Very serious** infringements (Art. 64.37 and Art. 61.a LSE): up to **60 million euros** per infringement.
-
-The aggregate exposure of those under investigation, with 66 open proceedings, constitutes a regulatory contingency of an order of magnitude greater than any incident in the last decade in the Spanish electricity sector.
-
-### Commercial litigation: Iberdrola vs. REE
-
-Parallel to the administrative route, Iberdrola filed a civil lawsuit against Red Eléctrica and its parent company Redeia for unfair competition, framing the conflict in ordinary jurisdiction rather than administrative litigation. The basis of the action was the statements by Redeia's top management who, in defending the operator's "5,000 impeccable maneuvers," attributed responsibilities to the behavior of renewable generation — explicitly naming the management of the Núñez de Balboa photovoltaic plant, owned by Iberdrola. The lawsuit argues that these statements were inaccurate, unfairly transferred public responsibility to the private operator, and depreciated the company's stock market value.
-
-The outcome of this litigation will set a precedent for the distribution of responsibilities in future systemic incidents, with implications that transcend the immediate parties.
+Los daños operativos directos (>13 M€) incluyeron solidificación de metales líquidos en hornos de arco eléctrico, destrucción de revestimientos refractarios, y daños en equipos por los transitorios de tensión del deslastre. El lucro cesante y las penalizaciones contractuales (≈12 M€) se derivaron de la inercia termodinámica de los procesos continuos — precalentamiento, recalibración, verificación de calidad — que comprometió las entregas pautadas durante varios días.
 
 ---
 
-## 4. The cost of reforms: toxic OPEX and necessary CAPEX
+## 3. Régimen sancionador y litigiosidad
 
-### The Reinforced Operation: a €1 billion per year patch
+### Expedientes CNMC
 
-Immediately after the blackout, REE established the **Reinforced Operation**: an operational restriction that raises the minimum dispatch of synchronous generation from the usual approximately 7 combined cycles to between 25 and 30 permanently active units, to guarantee the firmness, inertia, and short-circuit power that the system needs and that the IBR fleet in grid-following mode cannot autonomously provide.
-
-The cost of this measure is current expenditure without a counterpart in the grid:
-
-- **>€666M** accumulated in the ten months from the blackout to March 2026 (verified by REE, April 2026). *(Note: Redeia's estimate for the full twelve months following the incident is €711M; external audits by PwC project an extra cost exceeding €1,000M compared to the 2024 financial year.)*
-- Worsens the energy trade balance deficit due to increased burning of imported natural gas.
-- Increases CO₂ emission rights in a grid that had reduced its carbon intensity by 75% since 2007.
-- Causes growing renewable curtailment, disincentivizing new investment precisely in the technologies the system requires.
-
-The Reinforced Operation is the most direct financial evidence of the incompatibility between the market design prior to April 28 and the technical reality of a grid with 82% IBR penetration. Each month of its duration reproduces the argument for ERS markets developed in Chapter 7: without explicit remuneration for stability services, the operator resorts to out-of-merit-order dispatch.
-
-### Revised P.O. 7.4: retrofitting the existing fleet (€400–1,000M)
-
-The CNMC Resolution of June 12, 2025 (BOE-A-2025-13076) requires that power electronics-based installations abandon the passive active power injection mode and assume dynamic voltage control obligations. The technical adaptation of plants that do not have grid-forming capability requires the installation of Plant Power Controllers (PPCs), STATCOMs, or oversizing of inverter bays. The regulatory framework, remuneration methodology, and timelines are developed in [Chapter 7 — §Revision of P.O. 7.4 and the VOLTAIRE system](./07-resiliencia-futuro.mdx).
-
-The aggregate cost estimate, assuming half of the installed fleet requires hardware modifications with a unit cost of €5,000–15,000/MW:
-
-$$
-0.5 \times 130\,\text{GW} \times \overline{10{,}000}\,\text{€/MW} \approx 650\,\text{M€}
-$$
-
-The reasonable range — between **€400 and €1,000M** — reflects uncertainty in the percentage of the fleet that will require additional hardware versus firmware updates.
-
-### Synchronous condensers and BESS: the structural CAPEX (≈€3,010M)
-
-The retrofitting of P.O. 7.4 is a necessary but not sufficient condition to dispense with the Reinforced Operation. As demonstrated by the analysis in the chapter on resilience and the future, the causal mechanism of April 28 was not only the absence of dynamic reactive control: it was also the collapse of short-circuit power at nodes in the southern zone. This nodal stiffness can only be provided by an asset with real rotating mass or a grid-forming inverter backed by storage.
-
-The deployment of hybrid BESS + Synchronous Condenser (SynCon) systems in the most vulnerable corridors — Extremadura and Andalusia — requires a minimum operational capacity of between 3,000 and 4,000 MW. With the parametric cost verified in the Engie-Rolwind agreement (Andalusia, 2026) for a 278 MW / 1.1 GWh system:
-
-$$
-3{,}500\,\text{MW} \times 0.86\,\text{M€/MW} \approx 3{,}010\,\text{M€}
-$$
-
-The financial argument for undertaking this investment is direct. With the Reinforced Operation costing over €1,000M per year in sterile OPEX, the simple payback period for the €3,010M CAPEX is less than three years. The Net Present Value of the project is positive even with conservative discount rates, and the investment also eliminates the CO₂ emissions penalty and renewable curtailment.
-
-<Collapsible label="View financial cascade of impact and resilience">
-
-<div style={{marginTop:'1rem'}}>
-<FinancialWaterfallChart />
-
-_Figure G4 — Accumulated OPEX of the Reinforced Operation versus the structural CAPEX band (grid-forming BESS, 1,000–2,000 MW). The intersection of the audited curve with the lower band occurs before 18 months. Parametric reference: Engie-Rolwind project (€0.86M/MW). Own elaboration based on REE/Redeia, PwC, NERA, and CNMC._
-</div>
-</Collapsible>
-
----
-
-## 5. Balance: the cost of vulnerability versus the cost of resilience
-
-The consolidated financial picture of April 28 has four verifiable items:
+La Dirección de Instrucción de Energía de la CNMC incoó, entre abril de 2025 y mayo de 2026, al menos 58 expedientes sancionadores contra operadores del mercado (Capital Madrid, 28 abr 2026; la cifra sigue creciendo). Los cargos principales refieren a incumplimientos en consignas de control dinámico de tensión y deficiente inyección o absorción de reactiva según el P.O. 7.4.
 
 <ForensicTable
-  title="Table G2 — Economic balance of April 28: cost of vulnerability"
-  source="Own elaboration based on CEOE / ATA / AEGE / CNMC / Redeia / PwC"
+  title="Tabla G2 — Expedientes CNMC por empresa (estado a mayo 2026)"
+  source="CNMC / Infobae / Capital Madrid (abril-mayo 2026). Expedientes abiertos, no sentencias firmes."
 >
 
-| Item | Estimate | Source |
+| Empresa | Expedientes | Calificación máxima | Techo legal (infr. muy grave) |
+| :--- | :---: | :--- | :--- |
+| Iberdrola (generación + nuclear) | 27 | Muy grave (2) + grave (25) | Hasta 60 M€ / expediente |
+| Endesa | ~15 | Grave | Hasta 6 M€ / expediente |
+| REE / Redeia | ≥1 | Muy grave | Hasta 60 M€ |
+| Naturgy (filiales) | 3 | Grave | Hasta 6 M€ / expediente |
+| Repsol Generación | 1 | Grave | Hasta 6 M€ |
+| Otros (TotalEnergies, Engie, BBE, ContourGlobal…) | ~11 | Grave | Hasta 6 M€ / expediente |
+| **Total acumulado** | **≥58** | | |
+
+</ForensicTable>
+
+De especial relevancia técnica fue la investigación centrada en la subestación de Huéneja (Granada) — nudo de evacuación de ~668 MW renovables a 400 kV que constituyó el área de influencia topológica de la primera cascada de desconexiones masivas. El marco punitivo de la Ley 24/2013 fija los techos en 6 M€ por infracción grave y hasta 60 M€ por infracción muy grave.
+
+### Litigiosidad mercantil
+
+Al vencer el plazo de prescripción en abril de 2026, varias compañías formalizaron demandas. Repsol notificó una demanda por 125 M€ en concepto de lucro cesante y daños a complejos petroquímicos. Iryo y Moeve también notificaron su intención de demandar. Iberdrola cifró el impacto en sus cuentas en 180 M€ hasta septiembre de 2025, y anunció el traslado de un sobrecoste de 210 M€ a clientes en 2026.
+
+Paralelamente, Iberdrola interpuso una demanda civil contra Red Eléctrica y Redeia por competencia desleal. El 21 de abril de 2026, el Juzgado de lo Mercantil nº 15 de Madrid rechazó la declinatoria de jurisdicción, confirmando la competencia civil. El auto delimita que el procedimiento no juzgará las causas técnicas del apagón — competencia exclusiva de la CNMC — sino las conductas corporativas. El resultado establecerá precedente sobre distribución de responsabilidades en futuros incidentes sistémicos.
+
+---
+
+## 4. El coste de las reformas: OPEX recurrente y CAPEX necesario
+
+### La Operación Reforzada
+
+Tras el apagón, REE instauró la Operación Reforzada: una restricción operativa que eleva el despacho mínimo de generación síncrona a entre 25 y 30 ciclos combinados activos de forma permanente, para garantizar inercia y potencia de cortocircuito. El coste acumulado fue de 516 M€ en los primeros ocho meses (may–dic 2025, REE) y de 666 M€ en los primeros diez meses (may 2025–mar 2026, REE). El sobrecoste anualizado respecto a 2024, según PwC y NERA, se sitúa entre 1.100 y 1.300 M€/año.
+
+La producción con ciclos combinados aumentó un 39 % respecto al mismo periodo de 2024, equivalente al consumo de 4 millones de hogares. En 2025 se registraron 805 horas con precios cero o negativos en el mercado, y el *curtailment* de renovables alcanzó picos del 11 % en verano — la Operación Reforzada agrava el déficit de la balanza comercial energética, dispara derechos de emisión de CO₂ y desincentiva inversión renovable nueva.
+
+<ReserveMarginDegradationFigure />
+
+_Figura G2b — Correlación histórica entre penetración de generación asíncrona (IBR) y costes de restricciones técnicas / servicios de ajuste (2020–2025). El salto de 2025 refleja el sobrecoste de la Operación Reforzada. Fuente: REE Informes del Sistema Eléctrico 2020–2025, ESIOS, PwC._
+
+### Retrofitting del P.O. 7.4 (400–1.000 M€)
+
+La Resolución CNMC de 12 de junio de 2025 (BOE-A-2025-13076) exige que las instalaciones basadas en electrónica de potencia asuman obligaciones de control dinámico de tensión. La adecuación del parque existente — instalación de PPC, STATCOMs o sobredimensionamiento de bahías de inversores — se estima en torno a 650 M€ (horquilla: 400–1.000 M€). El marco regulatorio y la metodología de retribución se desarrollan en el [Capítulo 7](./07-resiliencia-futuro.mdx).
+
+### Compensadores síncronos y BESS: el CAPEX estructural (≈3.010 M€)
+
+El retrofitting del P.O. 7.4 es condición necesaria pero no suficiente para prescindir de la Operación Reforzada. El despliegue de sistemas híbridos BESS + condensadores síncronos en los corredores de mayor vulnerabilidad exige un mínimo de 3.000–4.000 MW. Con el coste paramétrico del acuerdo Engie-Rolwind (Andalucía, 2026) para un sistema de 278 MW / 1,1 GWh:
+
+$$
+3{.}500\,\text{MW} \times 0{,}86\,\text{M€/MW} \approx 3{.}010\,\text{M€}
+$$
+
+Con la OR costando más de 1.100 M€/año en sobrecoste, el período de retorno simple del CAPEX de 3.010 M€ es inferior a tres años.
+
+---
+
+## 5. Balance: el coste de la vulnerabilidad frente al coste de la resiliencia
+
+<ForensicTable
+  title="Tabla G3 — Balance económico del 28-A: coste de la vulnerabilidad"
+  source="CEOE / ATA / AEGE / CNMC / REE / PwC / NERA. Cifras actualizadas a mayo 2026."
+>
+
+| Partida | Estimación | Fuente |
 | :--- | :--- | :--- |
-| Macroeconomic loss VoLL (ENS 150–180 GWh) | €1,000–1,500M | CEOE / ATA, 2025 |
-| Direct damage to electro-intensive sector (AEGE) | >€25M | AEGE, 2025 |
-| OPEX Reinforced Operation (10 verified months) | >€666M | REE / Redeia, April 2026 |
-| OPEX annual projection (auditor estimate) | >€1,000M/year | PwC / Redeia |
-| CNMC sanctioning contingency (66 proceedings) | Up to €60M/proceeding | Law 24/2013 |
-| **Cost of Reinforced Operation over 3 years** | **≈€3,000M** | Own projection |
+| Pérdida macroeconómica VoLL (ENS ~150–180 GWh) | 1.600 M€ (CEOE); 1.300 M€ (ATA) | CEOE / ATA, 2025 |
+| Daño directo sector electrointensivo | >25 M€ | AEGE, 2025 |
+| OPEX Operación Reforzada (10 meses verificados) | 666 M€ | REE, abril 2026 |
+| Sobrecoste anual atribuible a OR (vs 2024) | ~1.100–1.300 M€/año | PwC / NERA, 2026 |
+| Coste total servicios de ajuste 2025 | 3.812 M€ (+43 % vs 2024) | REE, 2026 |
+| Contingencia sancionadora CNMC (≥58 expedientes) | Hasta 60 M€/expediente (muy grave) | Ley 24/2013 |
 
 </ForensicTable>
 
 <ForensicTable
-  title="Table G3 — Economic balance of April 28: cost of resilience"
-  source="Own elaboration"
+  title="Tabla G4 — Balance económico del 28-A: coste de la resiliencia"
+  source="Elaboración propia"
 >
 
-| CAPEX Item | Estimate | Source |
+| Partida CAPEX | Estimación | Fuente |
 | :--- | :--- | :--- |
-| P.O. 7.4 Retrofitting (hardware + firmware) | €400–1,000M | CNMC / sector estimate |
-| BESS-GFM + SynCons (3,500 MW) | ≈€3,010M | Engie-Rolwind project as reference; €0.86M/MW |
-| **Total Resilience CAPEX** | **≈€3,500–4,000M** | — |
-| **Simple Payback Period** | **<3 years** | (vs. OPEX RO >€1,000M/year) |
+| Retrofitting P.O. 7.4 (hardware + firmware) | 400–1.000 M€ | CNMC / estimación sectorial |
+| BESS-GFM + SynCons (3.500 MW) | ≈3.010 M€ | Proyecto Engie-Rolwind; 0,86 M€/MW |
+| Total CAPEX de resiliencia | ≈3.500–4.000 M€ | — |
+| Período de retorno simple | &lt;3 años | (vs. sobrecoste OR >1.100 M€/año) |
 
 </ForensicTable>
 
-The reading of the balance sheet is unequivocal. The cost of not investing in resilience — measured solely in the OPEX of the Reinforced Operation, without including VoLL damage or litigation — exceeds in three years the total CAPEX necessary to structurally eliminate that dependence. April 28 demonstrated that the stability attributes that synchronous machines implicitly provided have a price: what was once a free externality now has a bill. That bill is paid in one of two ways: through CAPEX investment that provides them efficiently, or through the recurring OPEX of keeping the system afloat with natural gas. The second option, which is the current one, is the most expensive.
-
-:::note Note on Reinforced Operation figures
-The **>€666M** figure is the accumulated cost verified by REE up to March 31, 2026 (10 months). Redeia's estimate for the full twelve months following the incident is **€711M**. External consultant audits put the extra cost compared to the 2024 financial year at **>€1,000M**. The three figures refer to different time periods and are mutually compatible.
-:::
+El coste de no invertir en resiliencia — medido únicamente en sobrecoste de la Operación Reforzada, sin incluir el daño VoLL ni la litigiosidad — supera en tres años el CAPEX total necesario para eliminar estructuralmente esa dependencia. Los atributos de estabilidad que las máquinas síncronas aportaban de forma implícita tienen un precio: lo que antes era una externalidad gratuita ahora tiene factura. Esa factura se paga mediante inversión en CAPEX que los provee eficientemente, o mediante OPEX recurrente de mantener el sistema con gas natural. La segunda opción es la más cara.

@@ -21,7 +21,7 @@ The propagation mechanism towards France was dominated by a sudden and massive e
 
 Faced with this escalation, RTE's secondary voltage control forced the large synchronous alternators in the region to operate in deep underexcitation. The most critical case was Unit 1 of the Golfech nuclear power plant, a 1,290 MW nominal capacity block. To contain the voltage profile, its automatic voltage regulators (AVRs) drastically reduced the rotor excitation current, causing the machine to absorb *426 MVAr* at 12:33 CEST.
 
-This extreme condition severely compromises machine stability. As the magnetic flux in the air gap decreases, the synchronizing torque that keeps the rotor coupled to the grid frequency weakens. Simultaneously, the asymmetric nature of the opening transients at the border generated considerable negative sequence currents in the 400 kV network. Symmetrical component theory establishes that these currents produce a rotating magnetic field opposite to the rotor's rotation, inducing double-frequency (100 Hz) eddy currents in the solid rotor body and retaining rings, leading to severe adiabatic heating within seconds.
+This extreme condition compromises machine stability. As the magnetic flux in the air gap decreases, the synchronizing torque that keeps the rotor coupled to the grid frequency weakens. Simultaneously, the asymmetric nature of the opening transients at the border generated considerable negative sequence currents in the 400 kV network. Symmetrical component theory establishes that these currents produce a rotating magnetic field opposite to the rotor's rotation, inducing double-frequency (100 Hz) eddy currents in the solid rotor body and retaining rings, leading to adiabatic heating within seconds.
 
 At 12:33:35.759 CEST — barely fifteen seconds after the Iberian collapse — the combination of underexcitation instability and phase imbalance heating activated the generator's internal protection relays (loss-of-excitation relay ANSI 40 and imbalance/negative sequence current relay ANSI 46), forcing the trip and total disconnection of Golfech 1. The simultaneous loss of the HVDC link and this nuclear mainstay forced RTE to reconfigure its power flows from more northern regions to avoid its own cascading collapse. The reactor was successfully resynchronized to the grid on April 29.
 
@@ -29,11 +29,11 @@ At 12:33:35.759 CEST — barely fifteen seconds after the Iberian collapse — t
 
 The impact was not limited to conventional generation. The most revealing record of the transient's violence in France was the trip of the 63 kV Dax–Arriosses overhead line at 12:33:20.551 CEST, ordered by the loss-of-synchronism protections (ANSI 78 relay), configured to act on the first beat of the oscillation.
 
-The operation of a loss-of-synchronism protection at a 63 kV level is extraordinarily anomalous: power swings are typically detected on 400 kV corridors. Its appearance at 63 kV indicates that the PLLs of a massive aggregation of inverters in Aquitaine lost their angular reference relative to the main grid due to the asymmetric transient and overvoltage. The relay interpreted the cyclic current reversal of the uncontrolled inverters as a classic loss of synchronism of rotating machines, isolating the subnetwork.
+The operation of a loss-of-synchronism protection at a 63 kV level is anomalous: power swings are typically detected on 400 kV corridors. Its appearance at 63 kV indicates that the PLLs of a massive aggregation of inverters in Aquitaine lost their angular reference relative to the main grid due to the asymmetric transient and overvoltage. The relay interpreted the cyclic current reversal of the uncontrolled inverters as a classic loss of synchronism of rotating machines, isolating the subnetwork.
 
 <ForensicTable 
   title="Table J1 — Critical Events in France"
-  source="Own elaboration"
+  source="ENTSO-E Factual Report / RTE FAQ, May 2025"
 >
 
 | Critical Element in France | Time (CEST) | Technical Cause | Systemic Impact |
@@ -100,17 +100,13 @@ _Figure J2 — Torrão as a synchronous compensator during the Portuguese restor
 
 ### The Decisive Maneuver: Torrão as a Pure Synchronous Compensator
 
-It was evident that the island lacked the necessary rigidity (short-circuit power) to absorb load steps. After restarting HPP 1-Centro at 16:13 CEST, REN executed a maneuver of maximum technical sophistication at 17:23 CEST: it started Unit 2 of HPP Torrão, not to inject active power, but in pure synchronous compensator mode.
+After restarting HPP 1-Centro at 16:13 CEST, REN executed a maneuver of maximum technical sophistication at 17:23 CEST that unlocked the restoration: it started Unit 2 of HPP Torrão in pure synchronous compensator mode. The operation involves emptying the turbine chamber by injecting compressed air (depressing the tailwater), allowing the runner to spin freely in the air coupled to the grid. The machine consumes marginal active power but, through its excitation control, injects or absorbs massive amounts of reactive power instantaneously. The enormous rotating mass of the rotor provided pure kinetic inertia and multiplied the short-circuit power of the Zêzere island.
 
-Operating a hydroelectric plant as a synchronous compensator involves emptying the turbine chamber by injecting compressed air (depressing the tailwater), allowing the runner to spin freely in the air coupled to the grid. The generator consumes a marginal amount of active power to overcome mechanical friction, but through the control of its excitation system, it injects or absorbs massive amounts of reactive power instantaneously. More critically: the enormous rotating mass of the Torrão rotor provided pure kinetic inertia and multiplied the short-circuit power of the Zêzere island.
+The voltage stabilized, allowing the progressive restoration of load on the 60 kV and 150 kV networks. At 16:38 CEST, the second restoration zone was established from CCGT 1-Norte.
 
-This maneuver acted as an electrodynamic damper. The voltage on the island stabilized, allowing from 16:26 CEST the progressive restoration of load on the 60 kV and 150 kV networks and the extension of voltage to the HPP 2 and HPP 3 Centro plants. At 16:38 CEST, the second safe restoration zone was established from CCGT 1-Norte.
+### Synchronization at 0 MW
 
-### Synchronization at 0 MW and Total Normalization
-
-Towards 20:00 CEST, the two Portuguese islands had been internally meshed, but they continued to operate asynchronously relative to Spain and the rest of Europe. The most delicate step was the coupling with the REE grid, already synchronized with the French infinite bus.
-
-At 20:25 CEST, the interconnection was closed under a non-negotiable technical requirement: an exchange program of 0 MW. The underlying physics is governed by the power transfer equation between two synchronous areas:
+Towards 20:00 CEST, the two Portuguese islands had been internally meshed but operated asynchronously relative to Spain. At 20:25 CEST, the interconnection was closed under a non-negotiable technical requirement: an exchange program of 0 MW:
 
 $$
 P_{12} = \frac{V_1 V_2}{X_{12}} \sin(\delta_1 - \delta_2)
@@ -118,4 +114,4 @@ $$
 
 To close the interconnection circuit breaker without generating a destructive synchronizing power transient, the phase angle difference ($\delta$) between the Portuguese and Spanish nodes had to be exactly zero and the voltage magnitudes equal. By setting a 0 MW setpoint in the Automatic Generation Control (AGC) systems, the operators ensured that neither grid attempted to export inertia towards the other at the moment of coupling. An error would have forced a violent power flow, tripping directional protections and plunging Portugal into a second blackout.
 
-With the success of the maneuver, Portugal regained the continental synchronous reference. The robustness provided by the interconnection allowed accelerating the restoration of the remaining demand, reaching total normalization at 00:22 on April 29 — seventeen hours after the voltage zero.
+With the success of the maneuver, Portugal regained the continental synchronous reference. Total normalization was reached at 00:22 on April 29 — seventeen hours after the voltage zero.

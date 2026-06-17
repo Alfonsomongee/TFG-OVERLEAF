@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════════
+   ReserveMarginDegradationFigure.module.css
+   Paleta coherente con figuras de consecuencias financieras.
+═══════════════════════════════════════════════════════════ */
+.figure {
+  --fig-bg:       #fff8ec;
+  --fig-surface:  #fffdf7;
+  --fig-surface-2:#f6eddc;
+  --fig-text:     #24211c;
+  --fig-muted:    #6f675c;
+  --fig-border:   rgba(60,50,35,0.18);
+  --fig-teal:     #28666e;
+  --fig-amber:    #c58b35;
+  --fig-burgundy: #8b2635;
+  /* SVG tokens */
+  --bar-color:    #28666e;
+  --bar-or:       #8b2635;
+  --line-color:   #c58b35;
+  --axis-color:   rgba(60,50,35,0.30);
+  --grid-color:   rgba(60,50,35,0.07);
+  --annot-bg:     rgba(139,38,53,0.08);
+
+  max-width: 860px;
+  margin: 1.5rem auto;
+  padding: 1.2rem 1.6rem 1rem;
+  border: 1px solid var(--fig-border);
+  border-radius: 12px;
+  background: var(--fig-bg);
+  color: var(--fig-text);
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+html[data-theme='dark'] .figure {
+  --fig-bg:       #0d1e38;
+  --fig-surface:  #122846;
+  --fig-surface-2:#183452;
+  --fig-text:     #e8eef7;
+  --fig-muted:    #aab7c8;
+  --fig-border:   rgba(210,225,245,0.13);
+  --fig-teal:     #83bdc2;
+  --fig-amber:    #f0b866;
+  --fig-burgundy: #d77a8a;
+  --bar-color:    #83bdc2;
+  --bar-or:       #d77a8a;
+  --line-color:   #f0b866;
+  --axis-color:   rgba(210,225,245,0.25);
+  --grid-color:   rgba(210,225,245,0.07);
+  --annot-bg:     rgba(215,122,138,0.10);
+}
+
+/* Header */
+.kicker { display:block; margin:0 0 .18rem; font-size:.70rem; font-weight:650; text-transform:uppercase; letter-spacing:.07em; color:var(--fig-muted); }
+.title  { margin:0 0 .22rem; font-size:1.06rem; font-weight:740; line-height:1.22; }
+.subtitle { margin:0 0 .65rem; font-size:.82rem; line-height:1.40; opacity:.78; max-width:720px; }
+
+/* Legend */
+.legend { display:flex; flex-wrap:wrap; gap:.35rem .9rem; margin-bottom:.5rem; font-size:.72rem; color:var(--fig-muted); }
+.legendItem { display:flex; align-items:center; gap:.28rem; }
+.swatchBar  { width:12px; height:12px; border-radius:2px; flex-shrink:0; background:var(--bar-color); }
+.swatchBarOr{ width:12px; height:12px; border-radius:2px; flex-shrink:0; background:var(--bar-or); }
+.swatchLine { width:18px; height:2px; border-radius:1px; flex-shrink:0; background:var(--line-color); }
+
+/* Chart */
+.chartWrap { margin-bottom:.5rem; overflow:hidden; }
+.svg { width:100%; height:auto; display:block; overflow:visible; }
+
+/* Annotations (rendered in SVG via foreignObject not needed — done in SVG text) */
+
+/* Detail panel */
+.detail {
+  padding:.5rem .7rem;
+  background:var(--fig-surface);
+  border:1px solid var(--fig-border);
+  border-left:3px solid var(--fig-teal);
+  border-radius:6px;
+  margin-bottom:.45rem;
+  font-size:.78rem;
+  line-height:1.42;
+}
+.detail p { margin:0; }
+
+.methodNote {
+  margin-top:.4rem;
+  padding:.35rem .6rem;
+  border-radius:6px;
+  font-size:.70rem;
+  line-height:1.38;
+  background: rgba(197,139,53,0.08);
+  border:1px solid rgba(197,139,53,0.18);
+  color:var(--fig-muted);
+}
+html[data-theme='dark'] .methodNote {
+  background:rgba(240,184,102,0.07);
+  border-color:rgba(240,184,102,0.14);
+}
+
+@media (max-width:640px) { .figure { padding:.9rem 1rem; } }

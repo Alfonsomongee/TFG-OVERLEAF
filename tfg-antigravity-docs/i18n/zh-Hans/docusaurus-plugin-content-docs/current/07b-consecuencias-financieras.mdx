@@ -1,194 +1,173 @@
 ---
 sidebar_position: 7.5
 hide_title: true
-title: "财务后果与韧性成本"
+title: "Consecuencias Financieras y Costes de Resiliencia"
 ---
 import GlitchTitle from "@site/src/components/GlitchTitle";
-import FinancialWaterfallChart from "@site/src/components/FinancialWaterfallChart";
-import MacroEconomicDamageFlowFigure from "@site/src/components/MacroEconomicDamageFlowFigure";
-import MarketDistortionPvpcFigure from '@site/src/components/MarketDistortionPvpcFigure';
-import HuenejaRegulatoryRiskFigure from '@site/src/components/HuenejaRegulatoryRiskFigure';
+import CausalFlowFigure from "@site/src/components/CausalFlowFigure";
+import MarketDistortionSplitFigure from '@site/src/components/MarketDistortionSplitFigure';
+import EconomicTimelineFigure from "@site/src/components/EconomicTimelineFigure";
+import ElectricityCostWaterfallFigure from "@site/src/components/ElectricityCostWaterfallFigure";
+import ReserveMarginDegradationFigure from "@site/src/components/ReserveMarginDegradationFigure";
 import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 import CuestionAbierta from "@site/src/components/CuestionAbierta";
 
-<GlitchTitle>财务后果与韧性成本</GlitchTitle>
+<GlitchTitle>Consecuencias Financieras y Costes de Resiliencia</GlitchTitle>
 
-电压归零是有代价的。韧性及未来章节从电网物理角度描述的内容——低惯量、电容饱和、缺乏基本可靠性服务——直接转化为损益表上的项目：发电损失、设备损坏、市场扭曲、偏差结算诉讼以及巨额的强制性适应资本支出。**能源三难困境的经济顶点在此结晶：** 辅助服务市场的缺失事先抑制了电网形成技术的安装，迫使系统事后以损害的形式支付其事前不愿以韧性形式资助的费用。本章从四个方面量化这种转化：直接的宏观经济影响、对高耗电行业的部门损害、已开启的监管和司法局面，以及使强化运行不再不可或缺所需的资本支出。
+Lo que los capítulos anteriores describen en términos de física de red — baja inercia, saturación capacitiva, ausencia de servicios de confiabilidad — tiene traducción directa en cuenta de resultados: pérdida de producción, distorsión de mercados, litigiosidad y un ingente CAPEX de adaptación forzosa. La ausencia previa de mercados de servicios complementarios desincentivó la instalación de tecnologías formadoras de red, obligando al sistema a pagar *ex post*, en forma de daños, lo que no financió *ex ante* en forma de resiliencia.
 
-构成分析框架的前提与韧性及未来章节中讨论的基本可靠性服务市场的前提相同：在崩溃前投资于韧性，其成本比事后为其后果买单要低几个数量级。
+Este capítulo cuantifica esa traducción en cuatro frentes: el impacto macroeconómico inmediato, la distorsión del mercado eléctrico, el régimen sancionador y judicial, y el CAPEX necesario para prescindir de la Operación Reforzada. La cronología completa del impacto económico se presenta a continuación.
+
+<EconomicTimelineFigure />
+
+_Figura G1 — Cronología económica del 28-A. Secuencia temporal del impacto económico desde el cero de tensión hasta el aniversario. Fuentes: REE, CEOE, PwC/NERA, CNMC._
 
 ---
 
-## 1. 停电的直接成本
+## 1. El coste directo del apagón
 
-### 未供电能量与宏观经济损失
+### Energía No Suministrada y pérdida macroeconómica
 
-量化电力中断损害的监管标准是**未供电能量价值**，由欧盟能源监管合作署和欧洲能源监管委员会认可。未供电能量价值表示消费者为避免停电愿意支付多少——或遭受停电后要求多少补偿——并根据受影响的部门和停电持续时间而显著变化。
+El estándar regulatorio para cuantificar el daño de una interrupción eléctrica es el Valor de la Energía No Suministrada (VoLL, *Value of Lost Load*), avalado por ACER y CEER. El VoLL expresa cuánto estaría dispuesto a pagar un consumidor por evitar el corte, y varía según el sector afectado y la duración de la interrupción.
 
 <ForensicTable
-  title="表G1 — 伊比利亚经济中各行业的未供电能量价值"
-  source="自行编制（基于欧洲能源监管委员会/欧盟能源监管合作署方法；根据高收入经济体停电研究校准）"
+  title="Tabla G1 — VoLL por sector en la economía ibérica"
+  source="Elaboración propia (metodología CEER / ACER; calibración con estudios de blackout para economías de renta alta)"
 >
 
-| 行业 | 未供电能量价值范围（欧元/千瓦时） | 对持续时间的敏感性 | 二阶效应 |
+| Sector | Rango VoLL (€/MWh) | Sensibilidad a la duración | Efectos de segundo orden |
 | :--- | :---: | :--- | :--- |
-| 居民 | 5–45 | 低-中；随持续时间增长 | 易腐品变质、远程办公中断、热舒适度损失 |
-| 服务业和零售业 | 15–90 | 中-高；白天时段最高 | 商店关闭、刷卡机失效、服务器物流崩溃 |
-| 制造业 | 50–250 | 非常高；关键链式流程 | 非顺序停机、原材料损失、准时制供应链断裂、电压暂态导致设备损坏 |
+| Residencial | 5.000–45.000 | Baja-media; crece con la duración | Deterioro de perecederos, caída del teletrabajo |
+| Servicios y comercio | 15.000–90.000 | Media-alta; máxima en horas diurnas | Cierre de establecimientos, colapso logístico |
+| Industria manufacturera | 50.000–250.000 | Muy alta; procesos en cadena | Paradas no secuenciadas, pérdida de materias primas, rotura de cadenas JIT |
 
 </ForensicTable>
 
-综合从4月28日欧洲中部夏令时间12:33到4月29日07:05恢复99.95%供电期间的实际需求曲线，伊比利亚系统的**总未供电能量**估计在<CuestionAbierta metricKey="reposicion.ens_espana_total">150至180吉瓦时</CuestionAbierta>之间。下限假设夜间工业负荷部分恢复；上限假设因工艺冷停造成的净损失。
+Integrando la curva de demanda real desde las 12:33 CEST del 28 de abril hasta la restitución del 99,95 % a las 07:05 del 29 de abril, la Energía No Suministrada (ENS) agregada para el sistema ibérico se estima entre <CuestionAbierta metricKey="reposicion.ens_espana_total">150 y 180 GWh</CuestionAbierta>. El límite inferior asume recuperación parcial de carga industrial nocturna; el superior, destrucción neta por parada fría de procesos.
 
-<MacroEconomicDamageFlowFigure />
+<CausalFlowFigure />
 
-_图G1 — 从电压归零到宏观经济账单。将电力崩溃转化为未供电能量、连接损失和总经济损害的因果链。西班牙企业组织联合会和个体经营者协会的估计显示为不同的影响范围，而非可加总量。自行编制，数据来源包括Funcas、西班牙企业组织联合会、个体经营者协会、Cloudflare Radar、Ookla以及欧盟能源监管合作署/欧洲能源监管委员会关于未供电能量价值的参考文献。_
+_Figura G2 — Del cero de tensión a la factura macroeconómica. Cadena causal que transforma el colapso eléctrico en energía no suministrada, pérdida de conectividad y daño económico agregado. Elaboración propia a partir de Funcas, CEOE, ATA, Cloudflare Radar, Ookla y referencias ACER/CEER._
 
-对受影响的生产结构整体应用加权平均未供电能量价值——事件发生在工作日周一，三个行业同时活跃——西班牙企业组织联合会和个体经营者协会在其初步审计中估计直接和间接价值损失在**10亿至15亿欧元**之间。这个数字与模型一致：4月28日上午，日前市场仅将其定价为18.50欧元/兆瓦时的商品，在缺席时产生了数十亿的负外部性。
+Las estimaciones patronales publicadas en los días posteriores al evento sitúan la destrucción de valor en 1.600 M€ (CEOE, tejido corporativo nacional, equivalente al 0,1 % del PIB) y 1.300 M€ (ATA, autónomos y comercio). Ambas cifras representan perímetros económicos distintos y no son magnitudes acumulables. Estimaciones independientes — como la de Tempos Energía — amplían la horquilla hasta 4.800 M€, lo que equivaldría al 0,2–0,3 % del PIB anual (BBVA Research).
 
-影响因电信系统的同时崩溃而放大。葡萄牙大陆的互联网流量在电压归零后的五小时内下降了90%，拖累了银行系统、支付平台和跨国云运营。数字经济的利润损失，虽然难以精确量化，但贡献了未供电能量价值估计的上限。
+El impacto se amplificó por el colapso simultáneo de las telecomunicaciones. El tráfico de internet en Portugal continental cayó un 90 % y en España un 80 % en las cinco horas posteriores, arrastrando sistemas bancarios, plataformas de pago y operativas cloud transnacionales.
 
-### 伊比利亚电力市场-日前市场中的价格扭曲及其对自愿性小消费者价格的影响
+### Distorsión de precios en OMIE y repercusión en el PVPC
 
-4月28日上午，日前市场收盘价为5.79欧元/兆瓦时，由于可再生能源供应过剩，部分时段价格为零或负。恢复供电急剧逆转了这种平衡：黑启动要求取代可再生能源和水力发电，并将天然气联合循环机组作为边际资源调度。批发价格相对于停电前水平几乎立即上涨了五倍。
+La mañana del 28-A el mercado diario cerraba en 18,50 €/MWh, con tramos de precio nulo o negativo por sobreoferta renovable. Al día siguiente, el OMIE cayó a 5,79 €/MWh — señal contradictoria: la red estaba al límite pero el mercado reflejaba abundancia. La reposición invirtió ese equilibrio: el Black Start exigió desplazar generación renovable y despachar ciclos combinados como recurso marginal.
 
-超额成本转嫁给了与**自愿性小消费者价格**挂钩的消费者。为维持停电后系统运行所必需的技术限制导致受监管账单中限制部分<CuestionAbierta metricKey="pvpc.incremento_restricciones_pct">增加了125%</CuestionAbierta>，相当于每个家庭每月超过3欧元。电网脆弱性的系统性成本，一如既往地转嫁给了最易受监管电价影响的消费者。
+El sobrecoste se trasladó a los consumidores indexados al PVPC. En 2025, el coste total de los servicios de ajuste del sistema eléctrico español ascendió a 3.812 M€, un incremento del 43 % respecto a 2024 (REE, Informe del Sistema Eléctrico 2025). El componente de restricciones técnicas, principal vector del encarecimiento, creció un 63 %. Para los consumidores PVPC, el componente de restricciones se incrementó un 125 % respecto al año anterior, equivalente a un sobrecoste de ~33 €/año por hogar medio (PwC / Energía y Sociedad, 2026).
 
-<MarketDistortionPvpcFigure />
+<MarketDistortionSplitFigure />
 
-_图G2 — 伊比利亚电力市场-日前市场/自愿性小消费者价格扭曲：停电后次日，日前市场价格跌至5.79欧元/兆瓦时，而自愿性小消费者消费者的技术限制成本增长了125%。自行编制，数据来源包括伊比利亚电力市场、ESIOS/西班牙电网公司、普华永道/ConsumES和NERA。_
+_Figura G3 — Distorsión OMIE/PVPC: precio del mercado diario frente al coste de restricciones técnicas. Elaboración propia a partir de OMIE, ESIOS/REE, PwC, NERA._
 
----
+<ElectricityCostWaterfallFigure />
 
-## 2. 高耗电行业：直接损失与利润损失
-
-自动甩负荷——一种旨在保护输电网而非工业过程的防御机制——突然且无停机斜坡地断开了大型工业用户。高耗电企业协会，其成员包括Acerinox、ArcelorMittal、Asturiana de Zinc、Ercros和Grupo Gallardo Balboa，记录了经审计的损失超过**2500万欧元**，分为两个部分：
-
-
-
-**直接运营损失（>1300万欧元）。** 无停机斜坡的中断导致电弧炉中液态金属凝固，破坏了耐火衬里。重新启动需要整整一天的工业清洁、清除凝固炉渣以及更换因甩负荷瞬间产生的电压暂态而损坏的设备。
-
-**利润损失与合同罚款（约1200万欧元）。** 连续过程的热力学惯性——预热、重新校准、质量验证——在停电后数天内危及了预定的交付。基于价格差异和交付延迟计算的国际供应合同罚款，补充了直接损失。
-
-从产业政策的角度来看，这一事件表明，与不稳定供应相关的运营风险溢价在财务价值上超过了任何兆瓦时电价的时段折扣。供应安全不是一个舒适性属性：它是连续过程工业可行性的一个条件。
+_Figura G4 — Descomposición del coste final de la electricidad en 2025. El componente de restricciones técnicas ya pesa tanto como los peajes de transporte y distribución. Fuente: REE, ESIOS, PwC._
 
 ---
 
-## 3. 制裁制度与诉讼
+## 2. Sector electrointensivo: daños directos y lucro cesante
 
-### 国家市场与竞争委员会的档案
+El deslastre automático de carga desconectó de forma abrupta y sin rampa de parada a los grandes consumidores industriales. La Asociación de Empresas con Gran Consumo de Energía (AEGE), que agrupa a Acerinox, ArcelorMittal, Asturiana de Zinc, Ercros y Grupo Gallardo Balboa, documentó pérdidas auditadas superiores a 25 millones de euros, estructuradas en dos vectores.
 
-国家市场与竞争委员会能源调查局对市场运营商提起了多达**66项制裁程序**，依据是对事件前两年运营遥测数据的分析。受影响方包括Iberdrola、Endesa、Naturgy、Repsol以及西班牙电网公司本身。主要指控涉及未能遵守当时生效的P.O. 7.4所要求的动态电压控制指令，以及无功功率注入或吸收不足。
-
-<HuenejaRegulatoryRiskFigure />
-
-<p className="figure-caption">
-  _图G3 — 韦内哈（格拉纳达）的疏散节点与国家市场与竞争委员会的制裁框架。左图：可再生能源枢纽的抽象拓扑（约668兆瓦，400千伏），包括连接的光伏、风电和光热电站。右图：第24/2013号电力行业法的制裁阶梯（严重违规→最高600万欧元；非常严重违规→最高6000万欧元）以及针对多个运营商提起的66项程序。这些程序是已启动的行政程序，而非最终判决。自行编制，数据来源包括国家市场与竞争委员会、BOE-A-2025和第24/2013号法律。_
-</p>
-
-技术上的特别重要性是针对Mercuria Sostenible的**「严重」**违规程序，该公司是韦内哈（格拉纳达）变电站公共疏散基础设施的管理者。崩溃的拓扑分析将该变电站定位为光伏、风电和光热电站首次大规模级联断开的起源节点，原因是缺乏适当的过电压缓解措施。
-
-第24/2013号电力行业法的惩罚框架设定了以下上限：
-
-- **严重**违规（法律第64.15、64.16和64.17条）：每项程序最高**600万欧元**。
-- **非常严重**违规（法律第64.37和61.a条）：每项违规最高**6000万欧元**。
-
-被调查方的总风险敞口，涉及66项已启动的程序，构成了一个比西班牙电力行业过去十年任何事件都高出一个数量级的监管或有事项。
-
-### 商业诉讼：Iberdrola诉西班牙电网公司
-
-与行政途径并行，Iberdrola对西班牙电网公司及其母公司Redeia提起了民事诉讼，指控其不正当竞争，将争议置于普通司法管辖而非行政司法管辖。诉讼的依据是Redeia高层管理人员的声明，他们在为运营商的「5000次完美操作」辩护时，将责任归咎于可再生能源发电的行为——明确提到了Iberdrola拥有的Núñez de Balboa光伏电站的管理。诉讼称这些声明不准确，不公平地将公共责任转移给了私营运营商，并导致公司市值下跌。
-
-此诉讼的结果将为未来系统性事件中的责任分配建立先例，其影响将超越直接当事方。
+Los daños operativos directos (>13 M€) incluyeron solidificación de metales líquidos en hornos de arco eléctrico, destrucción de revestimientos refractarios, y daños en equipos por los transitorios de tensión del deslastre. El lucro cesante y las penalizaciones contractuales (≈12 M€) se derivaron de la inercia termodinámica de los procesos continuos — precalentamiento, recalibración, verificación de calidad — que comprometió las entregas pautadas durante varios días.
 
 ---
 
-## 4. 改革成本：有毒运营支出与必要资本支出
+## 3. Régimen sancionador y litigiosidad
 
-### 强化运行：每年10亿欧元的权宜之计
+### Expedientes CNMC
 
-停电后，西班牙电网公司立即实施了**强化运行**：一项运营限制，将同步发电的最小调度量从通常的约7台联合循环机组永久性地提高到25至30台活跃机组，以确保系统所需的稳定性、惯量和短路容量，而这些是采用电网跟随模式的基于逆变器的资源无法自主提供的。
-
-这项措施的成本是经常性支出，电网没有对等回报：
-
-- 从停电到2026年3月的十个月内累计**>6.66亿欧元**（由西班牙电网公司于2026年4月核实）。*（注：Redeia对事件后完整十二个月的估计为7.11亿欧元；普华永道的外部审计预计相对于2024财年的超额成本超过10亿欧元。）*
-- 因进口天然气燃烧增加而加剧能源贸易逆差。
-- 在一个自2007年以来已将碳强度降低75%的电网中，推高了二氧化碳排放配额。
-- 导致可再生能源的弃电不断增加，恰恰抑制了系统所需技术的新投资。
-
-强化运行是4月28日之前市场设计与拥有82%基于逆变器资源渗透率的电网技术现实之间不相容的最直接财务证据。其每月的持续存在都印证了第7章中发展的基本可靠性服务市场的论点：没有对稳定服务的明确报酬，运营商就会诉诸于超出经济调度顺序的过度调度。
-
-### 修订后的P.O. 7.4：现有电站改造（4亿至10亿欧元）
-
-2025年6月12日的国家市场与竞争委员会决议要求基于电力电子的设施放弃有功功率的被动注入模式，并承担动态电压控制义务。不具备电网形成能力的电站的技术改造需要安装电站级控制器、STATCOM或扩大逆变器间隔。监管框架、报酬方法和时间表在第7章——§P.O. 7.4修订与VOLTAIRE系统中详细说明。
-
-假设一半的已安装电站需要硬件改造，单位成本为5,000–15,000欧元/兆瓦，总成本估算为：
-
-$$
-0{,}5 \times 130\,\text{吉瓦} \times \overline{10{.}000}\,\text{欧元/兆瓦} \approx 6.5\,\text{亿欧元}
-$$
-
-合理的范围——在**4亿至10亿欧元**之间——反映了需要额外硬件而非固件更新的电站比例的 uncertainty。
-
-### 同步调相机与电池储能系统：结构性资本支出（约30.1亿欧元）
-
-P.O. 7.4的改造是必要但非充分条件，无法摆脱强化运行。正如韧性及未来章节的分析所示，4月28日的因果机制不仅仅是缺乏动态无功控制：还有南部地区节点短路容量的崩溃。这种节点刚度只能由具有真实旋转质量的资产或由储能支持的电网形成逆变器提供。
-
-在最脆弱的走廊——埃斯特雷马杜拉和安达卢西亚——部署电池储能系统+同步调相机混合系统需要至少3,000至4,000兆瓦的运营最低限度。根据Engie-Rolwind协议（安达卢西亚，2026年）中验证的278兆瓦/1.1吉瓦时系统的参数成本：
-
-$$
-3{.}500\,\text{兆瓦} \times 0{,}86\,\text{百万欧元/兆瓦} \approx 30.1\,\text{亿欧元}
-$$
-
-进行这项投资的财务论据是直接的。强化运行每年在无效运营支出上花费超过10亿欧元，30.1亿欧元资本支出的简单回收期不到三年。即使采用保守的贴现率，该项目的净现值也为正，并且该投资还消除了二氧化碳排放惩罚和可再生能源弃电。
-
-<Collapsible label="查看影响与韧性的财务瀑布图">
-
-<div style={{marginTop:'1rem'}}>
-<FinancialWaterfallChart />
-
-_图G4 — 强化运行的累计运营支出与结构性资本支出（电网形成电池储能系统，1,000–2,000兆瓦）的区间对比。经审计曲线与低区间的交叉发生在18个月之前。参数参考：Engie-Rolwind项目（0.86百万欧元/兆瓦）。自行编制，数据来源包括西班牙电网公司/Redeia、普华永道、NERA和国家市场与竞争委员会。_
-</div>
-</Collapsible>
-
----
-
-## 5. 平衡：脆弱性成本与韧性成本
-
-4月28日的综合财务账目有四个可验证的项目：
+La Dirección de Instrucción de Energía de la CNMC incoó, entre abril de 2025 y mayo de 2026, al menos 58 expedientes sancionadores contra operadores del mercado (Capital Madrid, 28 abr 2026; la cifra sigue creciendo). Los cargos principales refieren a incumplimientos en consignas de control dinámico de tensión y deficiente inyección o absorción de reactiva según el P.O. 7.4.
 
 <ForensicTable
-  title="表G2 — 4月28日的经济平衡：脆弱性成本"
-  source="自行编制，基于西班牙企业组织联合会/个体经营者协会/高耗电企业协会/国家市场与竞争委员会/Redeia/普华永道"
+  title="Tabla G2 — Expedientes CNMC por empresa (estado a mayo 2026)"
+  source="CNMC / Infobae / Capital Madrid (abril-mayo 2026). Expedientes abiertos, no sentencias firmes."
 >
 
-| 项目 | 估计 | 来源 |
+| Empresa | Expedientes | Calificación máxima | Techo legal (infr. muy grave) |
+| :--- | :---: | :--- | :--- |
+| Iberdrola (generación + nuclear) | 27 | Muy grave (2) + grave (25) | Hasta 60 M€ / expediente |
+| Endesa | ~15 | Grave | Hasta 6 M€ / expediente |
+| REE / Redeia | ≥1 | Muy grave | Hasta 60 M€ |
+| Naturgy (filiales) | 3 | Grave | Hasta 6 M€ / expediente |
+| Repsol Generación | 1 | Grave | Hasta 6 M€ |
+| Otros (TotalEnergies, Engie, BBE, ContourGlobal…) | ~11 | Grave | Hasta 6 M€ / expediente |
+| **Total acumulado** | **≥58** | | |
+
+</ForensicTable>
+
+De especial relevancia técnica fue la investigación centrada en la subestación de Huéneja (Granada) — nudo de evacuación de ~668 MW renovables a 400 kV que constituyó el área de influencia topológica de la primera cascada de desconexiones masivas. El marco punitivo de la Ley 24/2013 fija los techos en 6 M€ por infracción grave y hasta 60 M€ por infracción muy grave.
+
+### Litigiosidad mercantil
+
+Al vencer el plazo de prescripción en abril de 2026, varias compañías formalizaron demandas. Repsol notificó una demanda por 125 M€ en concepto de lucro cesante y daños a complejos petroquímicos. Iryo y Moeve también notificaron su intención de demandar. Iberdrola cifró el impacto en sus cuentas en 180 M€ hasta septiembre de 2025, y anunció el traslado de un sobrecoste de 210 M€ a clientes en 2026.
+
+Paralelamente, Iberdrola interpuso una demanda civil contra Red Eléctrica y Redeia por competencia desleal. El 21 de abril de 2026, el Juzgado de lo Mercantil nº 15 de Madrid rechazó la declinatoria de jurisdicción, confirmando la competencia civil. El auto delimita que el procedimiento no juzgará las causas técnicas del apagón — competencia exclusiva de la CNMC — sino las conductas corporativas. El resultado establecerá precedente sobre distribución de responsabilidades en futuros incidentes sistémicos.
+
+---
+
+## 4. El coste de las reformas: OPEX recurrente y CAPEX necesario
+
+### La Operación Reforzada
+
+Tras el apagón, REE instauró la Operación Reforzada: una restricción operativa que eleva el despacho mínimo de generación síncrona a entre 25 y 30 ciclos combinados activos de forma permanente, para garantizar inercia y potencia de cortocircuito. El coste acumulado fue de 516 M€ en los primeros ocho meses (may–dic 2025, REE) y de 666 M€ en los primeros diez meses (may 2025–mar 2026, REE). El sobrecoste anualizado respecto a 2024, según PwC y NERA, se sitúa entre 1.100 y 1.300 M€/año.
+
+La producción con ciclos combinados aumentó un 39 % respecto al mismo periodo de 2024, equivalente al consumo de 4 millones de hogares. En 2025 se registraron 805 horas con precios cero o negativos en el mercado, y el *curtailment* de renovables alcanzó picos del 11 % en verano — la Operación Reforzada agrava el déficit de la balanza comercial energética, dispara derechos de emisión de CO₂ y desincentiva inversión renovable nueva.
+
+<ReserveMarginDegradationFigure />
+
+_Figura G2b — Correlación histórica entre penetración de generación asíncrona (IBR) y costes de restricciones técnicas / servicios de ajuste (2020–2025). El salto de 2025 refleja el sobrecoste de la Operación Reforzada. Fuente: REE Informes del Sistema Eléctrico 2020–2025, ESIOS, PwC._
+
+### Retrofitting del P.O. 7.4 (400–1.000 M€)
+
+La Resolución CNMC de 12 de junio de 2025 (BOE-A-2025-13076) exige que las instalaciones basadas en electrónica de potencia asuman obligaciones de control dinámico de tensión. La adecuación del parque existente — instalación de PPC, STATCOMs o sobredimensionamiento de bahías de inversores — se estima en torno a 650 M€ (horquilla: 400–1.000 M€). El marco regulatorio y la metodología de retribución se desarrollan en el [Capítulo 7](./07-resiliencia-futuro.mdx).
+
+### Compensadores síncronos y BESS: el CAPEX estructural (≈3.010 M€)
+
+El retrofitting del P.O. 7.4 es condición necesaria pero no suficiente para prescindir de la Operación Reforzada. El despliegue de sistemas híbridos BESS + condensadores síncronos en los corredores de mayor vulnerabilidad exige un mínimo de 3.000–4.000 MW. Con el coste paramétrico del acuerdo Engie-Rolwind (Andalucía, 2026) para un sistema de 278 MW / 1,1 GWh:
+
+$$
+3{.}500\,\text{MW} \times 0{,}86\,\text{M€/MW} \approx 3{.}010\,\text{M€}
+$$
+
+Con la OR costando más de 1.100 M€/año en sobrecoste, el período de retorno simple del CAPEX de 3.010 M€ es inferior a tres años.
+
+---
+
+## 5. Balance: el coste de la vulnerabilidad frente al coste de la resiliencia
+
+<ForensicTable
+  title="Tabla G3 — Balance económico del 28-A: coste de la vulnerabilidad"
+  source="CEOE / ATA / AEGE / CNMC / REE / PwC / NERA. Cifras actualizadas a mayo 2026."
+>
+
+| Partida | Estimación | Fuente |
 | :--- | :--- | :--- |
-| 未供电能量价值宏观经济损失（未供电能量150–180吉瓦时） | 10亿–15亿欧元 | 西班牙企业组织联合会/个体经营者协会，2025年 |
-| 高耗电行业直接损失（高耗电企业协会） | >2500万欧元 | 高耗电企业协会，2025年 |
-| 强化运行运营支出（10个月已验证） | >6.66亿欧元 | 西班牙电网公司/Redeia，2026年4月 |
-| 年度运营支出预测（审计估计） | >10亿欧元/年 | 普华永道/Redeia |
-| 国家市场与竞争委员会制裁或有事项（66项程序） | 每项程序最高6000万欧元 | 第24/2013号法律 |
-| **3年强化运行成本** | **约30亿欧元** | 自行预测 |
+| Pérdida macroeconómica VoLL (ENS ~150–180 GWh) | 1.600 M€ (CEOE); 1.300 M€ (ATA) | CEOE / ATA, 2025 |
+| Daño directo sector electrointensivo | >25 M€ | AEGE, 2025 |
+| OPEX Operación Reforzada (10 meses verificados) | 666 M€ | REE, abril 2026 |
+| Sobrecoste anual atribuible a OR (vs 2024) | ~1.100–1.300 M€/año | PwC / NERA, 2026 |
+| Coste total servicios de ajuste 2025 | 3.812 M€ (+43 % vs 2024) | REE, 2026 |
+| Contingencia sancionadora CNMC (≥58 expedientes) | Hasta 60 M€/expediente (muy grave) | Ley 24/2013 |
 
 </ForensicTable>
 
 <ForensicTable
-  title="表G3 — 4月28日的经济平衡：韧性成本"
-  source="自行编制"
+  title="Tabla G4 — Balance económico del 28-A: coste de la resiliencia"
+  source="Elaboración propia"
 >
 
-| 资本支出项目 | 估计 | 来源 |
+| Partida CAPEX | Estimación | Fuente |
 | :--- | :--- | :--- |
-| P.O. 7.4改造（硬件+固件） | 4亿–10亿欧元 | 国家市场与竞争委员会/行业估计 |
-| 电网形成电池储能系统+同步调相机（3,500兆瓦） | 约30.1亿欧元 | 以Engie-Rolwind项目为参考；0.86百万欧元/兆瓦 |
-| **韧性总资本支出** | **约35亿–40亿欧元** | — |
-| **简单回收期** | **<3年** | （对比强化运行运营支出 >10亿欧元/年） |
+| Retrofitting P.O. 7.4 (hardware + firmware) | 400–1.000 M€ | CNMC / estimación sectorial |
+| BESS-GFM + SynCons (3.500 MW) | ≈3.010 M€ | Proyecto Engie-Rolwind; 0,86 M€/MW |
+| Total CAPEX de resiliencia | ≈3.500–4.000 M€ | — |
+| Período de retorno simple | &lt;3 años | (vs. sobrecoste OR >1.100 M€/año) |
 
 </ForensicTable>
 
-对账目的解读是明确的。不投资于韧性的成本——仅以强化运行的运营支出衡量，不包括未供电能量价值损失或诉讼——在三年内超过了结构性消除这种依赖所需的总资本支出。4月28日证明，同步电机隐含提供的稳定属性是有代价的：曾经是免费的外部性，现在有了账单。这笔账单以两种方式之一支付：通过高效提供这些属性的资本支出投资，或通过维持系统以天然气运行的经常性运营支出。第二种选择，即当前的选择，是最昂贵的。
-
-:::note 关于强化运行数据的说明
-**>6.66亿欧元**是西班牙电网公司截至2026年3月31日（10个月）验证的累计成本。Redeia对事件后完整十二个月的估计为**7.11亿欧元**。外部咨询公司的审计将相对于2024财年的超额成本定为**>10亿欧元**。这三个数字涉及不同的时间段，彼此兼容。
-:::
+El coste de no invertir en resiliencia — medido únicamente en sobrecoste de la Operación Reforzada, sin incluir el daño VoLL ni la litigiosidad — supera en tres años el CAPEX total necesario para eliminar estructuralmente esa dependencia. Los atributos de estabilidad que las máquinas síncronas aportaban de forma implícita tienen un precio: lo que antes era una externalidad gratuita ahora tiene factura. Esa factura se paga mediante inversión en CAPEX que los provee eficientemente, o mediante OPEX recurrente de mantener el sistema con gas natural. La segunda opción es la más cara.
