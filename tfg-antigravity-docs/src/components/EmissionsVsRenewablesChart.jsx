@@ -25,6 +25,7 @@
  */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { useColorMode } from '@docusaurus/theme-common';
 import {
   ComposedChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ReferenceLine,
@@ -54,19 +55,19 @@ const AVG_EMISSIONS   = 258;  // g CO₂/kWh — CNMC, 28 abr 2026
 const AVG_PENETRATION = 55.5; // % — ISE-2025 REE
 
 // ─── Tooltip personalizado ────────────────────────────────────────────────────
-function EmissionsTooltip({ active, payload, label }) {
+function EmissionsTooltip({ active, payload, label, colors }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: 'rgba(10,15,30,0.97)',
-      border: '1px solid rgba(255,255,255,0.1)',
+      background: colors.tooltipBg,
+      border: `1px solid ${colors.tooltipBorder}`,
       borderRadius: 6,
       padding: '8px 12px',
       fontFamily: 'monospace',
       fontSize: 12,
-      color: '#e2e8f0',
+      color: colors.tooltipText,
     }}>
-      <p style={{ margin: '0 0 6px', color: '#94a3b8', fontWeight: 'bold' }}>{label}</p>
+      <p style={{ margin: '0 0 6px', color: colors.textMuted, fontWeight: 'bold' }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ margin: '0 0 2px', color: p.color }}>
           {p.name}: <strong>{p.value?.toFixed(1)} {p.unit}</strong>
@@ -78,6 +79,67 @@ function EmissionsTooltip({ active, payload, label }) {
 
 // ─── Componente interno ───────────────────────────────────────────────────────
 function EmissionsVsRenewablesChartInner() {
+  const { colorMode } = useColorMode();
+  const isDark = colorMode === 'dark';
+
+  const colors = isDark ? {
+    textPrimary: '#F4F7FB',
+    textSecondary: '#C7D2E3',
+    textMuted: '#91A4BC',
+
+    axis: '#C7D2E3',
+    grid: 'rgba(244, 247, 251, 0.10)',
+    axisLine: 'rgba(244, 247, 251, 0.24)',
+
+    emissions: '#D98798',
+    emissionsSoft: 'rgba(217, 135, 152, 0.34)',
+    emissionsLabel: 'rgba(217, 135, 152, 0.82)',
+
+    renewable: '#7DCDE3',
+    renewableSoft: 'rgba(125, 205, 227, 0.34)',
+    renewableLabel: 'rgba(125, 205, 227, 0.82)',
+
+    dotFill: '#101D35',
+    dotStroke: '#F4F7FB',
+
+    warningBorder: 'rgba(230, 180, 92, 0.34)',
+    noteBg: 'rgba(16, 29, 53, 0.56)',
+    noteText: '#C7D2E3',
+    noteMuted: '#91A4BC',
+
+    tooltipBg: '#101D35',
+    tooltipBorder: 'rgba(226, 232, 240, 0.16)',
+    tooltipText: '#F4F7FB',
+  } : {
+    textPrimary: '#191814',
+    textSecondary: '#3C3830',
+    textMuted: '#6B6255',
+
+    axis: '#7A7062',
+    grid: 'rgba(25, 24, 20, 0.10)',
+    axisLine: 'rgba(25, 24, 20, 0.22)',
+
+    emissions: '#A13D36',
+    emissionsSoft: 'rgba(161, 61, 54, 0.34)',
+    emissionsLabel: 'rgba(161, 61, 54, 0.82)',
+
+    renewable: '#1F6F78',
+    renewableSoft: 'rgba(31, 111, 120, 0.34)',
+    renewableLabel: 'rgba(31, 111, 120, 0.82)',
+
+    dotFill: '#FFFCF5',
+    dotStroke: '#F6F0E3',
+
+    warningBorder: 'rgba(169, 96, 0, 0.30)',
+    noteBg: 'rgba(255, 252, 245, 0.58)',
+    noteText: '#3C3830',
+    noteMuted: '#6B6255',
+
+    tooltipBg: '#FFFCF5',
+    tooltipBorder: 'rgba(25, 24, 20, 0.16)',
+    tooltipText: '#191814',
+  };
+
   const [chartData,     setChartData]     = useState(null);
   const [loading,       setLoading]       = useState(true);
   const [usingFallback, setUsingFallback] = useState(false);
@@ -152,7 +214,7 @@ function EmissionsVsRenewablesChartInner() {
     return (
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: colors.textMuted,
         fontFamily: 'monospace', fontSize: 13,
       }}
         aria-busy="true" aria-live="polite"
@@ -164,7 +226,7 @@ function EmissionsVsRenewablesChartInner() {
 
   if (!chartData) {
     return (
-      <div style={{ textAlign: 'center', padding: '1.5rem', color: '#ef4444' }}>
+      <div style={{ textAlign: 'center', padding: '1.5rem', color: colors.emissions }}>
         No se pudieron cargar los datos.
         <button onClick={fetchData} style={{ marginLeft: '1rem', padding: '0.4rem 0.8rem', cursor: 'pointer' }}>
           Reintentar
@@ -185,26 +247,26 @@ function EmissionsVsRenewablesChartInner() {
       >
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={chartData} margin={{ top: 16, right: 60, left: 16, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} vertical={false} />
 
             <XAxis
               dataKey="date"
-              stroke="#475569"
-              tick={{ fill: 'var(--text-1, #64748b)', fontSize: 11 }}
-              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: 'var(--text-1, #64748b)', fontSize: 11 }}
+              stroke={colors.axisLine}
+              tick={{ fill: colors.axis, fontSize: 11 }}
+              label={{ value: 'Fecha', position: 'insideBottom', offset: -20, fill: colors.axis, fontSize: 11 }}
             />
 
             {/* Eje izquierdo — Emisiones */}
             <YAxis
               yAxisId="em"
               orientation="left"
-              stroke="#ef4444"
-              tick={{ fill: '#ef4444', fontSize: 11 }}
+              stroke={colors.emissions}
+              tick={{ fill: colors.emissions, fontSize: 11 }}
               tickFormatter={v => `${v}`}
               label={{
                 value: 'Emisiones (g CO₂/kWh)',
                 angle: -90, position: 'insideLeft',
-                fill: '#ef4444', fontSize: 10, offset: 8,
+                fill: colors.emissions, fontSize: 10, offset: 8,
               }}
               domain={[0, 350]}
             />
@@ -213,34 +275,34 @@ function EmissionsVsRenewablesChartInner() {
             <YAxis
               yAxisId="pen"
               orientation="right"
-              stroke="#06b6d4"
-              tick={{ fill: '#06b6d4', fontSize: 11 }}
+              stroke={colors.renewable}
+              tick={{ fill: colors.renewable, fontSize: 11 }}
               tickFormatter={v => `${v}%`}
               label={{
                 value: 'Penetración renovable (%)',
                 angle: 90, position: 'insideRight',
-                fill: '#06b6d4', fontSize: 10, offset: 8,
+                fill: colors.renewable, fontSize: 10, offset: 8,
               }}
               domain={[0, 100]}
             />
 
-            <Tooltip content={<EmissionsTooltip />} />
+            <Tooltip content={<EmissionsTooltip colors={colors} />} />
             <Legend
               verticalAlign="top"
               align="right"
-              wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
+              wrapperStyle={{ fontSize: 12, paddingBottom: 8, color: colors.textSecondary }}
             />
 
             {/* Promedios anuales */}
             <ReferenceLine
               yAxisId="em" y={AVG_EMISSIONS}
-              stroke="rgba(239,68,68,0.35)" strokeDasharray="4 4"
-              label={{ value: `Promedio 2025: ${AVG_EMISSIONS} g/kWh`, position: 'insideTopLeft', fill: 'rgba(239,68,68,0.7)', fontSize: 10 }}
+              stroke={colors.emissionsSoft} strokeDasharray="4 4"
+              label={{ value: `Promedio 2025: ${AVG_EMISSIONS} g/kWh`, position: 'insideTopLeft', fill: colors.emissionsLabel, fontSize: 10 }}
             />
             <ReferenceLine
               yAxisId="pen" y={AVG_PENETRATION}
-              stroke="rgba(6,182,212,0.35)" strokeDasharray="4 4"
-              label={{ value: `Promedio 2025: ${AVG_PENETRATION}%`, position: 'insideBottomRight', fill: 'rgba(6,182,212,0.7)', fontSize: 10 }}
+              stroke={colors.renewableSoft} strokeDasharray="4 4"
+              label={{ value: `Promedio 2025: ${AVG_PENETRATION}%`, position: 'insideBottomRight', fill: colors.renewableLabel, fontSize: 10 }}
             />
 
             {/* Marcador del 28-A */}
@@ -250,10 +312,10 @@ function EmissionsVsRenewablesChartInner() {
                 x={collapseDay.date}
                 y={collapseDay.emissions}
                 r={7}
-                fill="#ef4444"
-                stroke="#fff"
+                fill={colors.emissions}
+                stroke={colors.dotStroke}
                 strokeWidth={2}
-                label={{ value: '⚡ 12:33 CEST', position: 'top', fill: '#ef4444', fontSize: 10 }}
+                label={{ value: '⚡ 12:33 CEST', position: 'top', fill: colors.emissions, fontSize: 10 }}
               />
             )}
 
@@ -261,11 +323,11 @@ function EmissionsVsRenewablesChartInner() {
               yAxisId="em"
               type="monotone"
               dataKey="emissions"
-              stroke="#ef4444"
+              stroke={colors.emissions}
               strokeWidth={2.5}
               name="Emisiones CO₂"
               unit=" g/kWh"
-              dot={{ r: 4, fill: '#0a0f1c', stroke: '#ef4444', strokeWidth: 2 }}
+              dot={{ r: 4, fill: colors.dotFill, stroke: colors.emissions, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />
@@ -273,12 +335,12 @@ function EmissionsVsRenewablesChartInner() {
               yAxisId="pen"
               type="monotone"
               dataKey="penetration"
-              stroke="#06b6d4"
+              stroke={colors.renewable}
               strokeWidth={2.5}
               strokeDasharray="5 3"
               name="Penetración renovable"
               unit="%"
-              dot={{ r: 4, fill: '#0a0f1c', stroke: '#06b6d4', strokeWidth: 2 }}
+              dot={{ r: 4, fill: colors.dotFill, stroke: colors.renewable, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
               connectNulls
             />
@@ -290,11 +352,11 @@ function EmissionsVsRenewablesChartInner() {
       <div style={{
         marginTop: '1rem',
         fontSize: '0.8rem',
-        color: 'rgba(160,155,140,0.75)',
-        borderLeft: '3px solid rgba(255,170,0,0.35)',
+        color: colors.noteText,
+        borderLeft: `3px solid ${colors.warningBorder}`,
         padding: '0.5rem 1rem',
         lineHeight: 1.65,
-        background: 'rgba(255,255,255,0.02)',
+        background: colors.noteBg,
         borderRadius: '0 6px 6px 0',
       }}>
         <p style={{ margin: '0 0 0.4rem' }}>
@@ -306,7 +368,7 @@ function EmissionsVsRenewablesChartInner() {
           requirió la reconexión urgente de ciclos combinados de gas para
           garantizar la inercia y la estabilidad de tensión.
         </p>
-        <p style={{ margin: 0, fontSize: '0.72rem', color: 'rgba(160,155,140,0.5)' }}>
+        <p style={{ margin: 0, fontSize: '0.72rem', color: colors.noteMuted }}>
           {usingFallback
             ? '⚠ Datos de fallback — API REData no disponible. Datos de penetración: Comité de Análisis. Emisiones: estimación coherente con CNMC 2025.'
             : 'Emisiones diarias: REData (REE). Penetración renovable: JSON estático (datos28A.json). Promedios anuales: CNMC (28 abr 2026), ISE-2025 REE.'}
@@ -321,7 +383,7 @@ export default function EmissionsVsRenewablesChart() {
     <BrowserOnly fallback={
       <div style={{
         height: 400, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', color: 'var(--text-1, #64748b)',
+        justifyContent: 'center', color: '#6B6255',
         fontFamily: 'monospace', fontSize: 13,
       }}>
         Inicializando gráfico de emisiones…

@@ -1,0 +1,442 @@
+.figure {
+  --mdf-bg: rgba(255, 252, 245, 0.94);
+  --mdf-surface: rgba(255, 252, 245, 0.84);
+  --mdf-surface-soft: rgba(25, 24, 20, 0.035);
+  --mdf-border: rgba(25, 24, 20, 0.12);
+  --mdf-border-strong: rgba(25, 24, 20, 0.22);
+  --mdf-text-1: #191814;
+  --mdf-text-2: #4a4338;
+  --mdf-text-3: #7a7062;
+  --mdf-physical: #a13d36;
+  --mdf-physical-soft: rgba(161, 61, 54, 0.1);
+  --mdf-economic: #a96000;
+  --mdf-economic-soft: rgba(169, 96, 0, 0.12);
+  --mdf-economic-alt: #8b5e34;
+  --mdf-economic-alt-soft: rgba(139, 94, 52, 0.12);
+  --mdf-digital: #1f6f78;
+  --mdf-digital-soft: rgba(31, 111, 120, 0.11);
+  --mdf-voll: #2f6b4f;
+  --mdf-voll-soft: rgba(47, 107, 79, 0.11);
+  --mdf-grid: rgba(25, 24, 20, 0.08);
+  --mdf-shadow: 0 14px 34px rgba(25, 24, 20, 0.08);
+
+  margin: 2.25rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--mdf-border);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top left, var(--mdf-digital-soft), transparent 34rem),
+    radial-gradient(circle at bottom right, var(--mdf-economic-soft), transparent 32rem),
+    var(--mdf-bg);
+  box-shadow: var(--mdf-shadow);
+}
+
+html[data-theme='dark'] .figure {
+  --mdf-bg: rgba(16, 29, 53, 0.9);
+  --mdf-surface: rgba(7, 19, 38, 0.62);
+  --mdf-surface-soft: rgba(226, 232, 240, 0.045);
+  --mdf-border: rgba(226, 232, 240, 0.13);
+  --mdf-border-strong: rgba(226, 232, 240, 0.24);
+  --mdf-text-1: #f4f7fb;
+  --mdf-text-2: #c7d2e3;
+  --mdf-text-3: #91a4bc;
+  --mdf-physical: #d98798;
+  --mdf-physical-soft: rgba(217, 135, 152, 0.13);
+  --mdf-economic: #e6b45c;
+  --mdf-economic-soft: rgba(230, 180, 92, 0.13);
+  --mdf-economic-alt: #d7a16d;
+  --mdf-economic-alt-soft: rgba(215, 161, 109, 0.13);
+  --mdf-digital: #7dcde3;
+  --mdf-digital-soft: rgba(125, 205, 227, 0.12);
+  --mdf-voll: #a6c67b;
+  --mdf-voll-soft: rgba(166, 198, 123, 0.13);
+  --mdf-grid: rgba(244, 247, 251, 0.09);
+  --mdf-shadow: 0 16px 42px rgba(0, 0, 0, 0.36);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.1rem;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  color: var(--mdf-digital);
+  font-family: "Space Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.header h3 {
+  margin: 0;
+  color: var(--mdf-text-1);
+  font-size: clamp(1.25rem, 2.2vw, 1.95rem);
+  line-height: 1.1;
+}
+
+.lead {
+  margin: 0;
+  color: var(--mdf-text-2);
+  font-size: 0.92rem;
+  line-height: 1.58;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.metricCard {
+  min-width: 0;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid var(--mdf-border);
+  border-radius: 14px;
+  background: var(--mdf-surface);
+}
+
+.metricCard strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--mdf-text-1);
+  font-size: 1.06rem;
+  line-height: 1.15;
+}
+
+.metricCard span {
+  display: block;
+  color: var(--mdf-text-2);
+  font-size: 0.77rem;
+  font-weight: 750;
+}
+
+.metricCard small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--mdf-text-3);
+  font-size: 0.69rem;
+  line-height: 1.35;
+}
+
+.metric_physical {
+  background:
+    linear-gradient(180deg, var(--mdf-physical-soft), transparent 78%),
+    var(--mdf-surface);
+}
+
+.metric_economic {
+  background:
+    linear-gradient(180deg, var(--mdf-economic-soft), transparent 78%),
+    var(--mdf-surface);
+}
+
+.metric_economicAlt {
+  background:
+    linear-gradient(180deg, var(--mdf-economic-alt-soft), transparent 78%),
+    var(--mdf-surface);
+}
+
+.metric_voll {
+  background:
+    linear-gradient(180deg, var(--mdf-voll-soft), transparent 78%),
+    var(--mdf-surface);
+}
+
+.flowPanel,
+.analysisPanel,
+.readingBox {
+  border: 1px solid var(--mdf-border);
+  border-radius: 18px;
+  background: var(--mdf-surface);
+}
+
+.flowPanel {
+  padding: 1rem;
+}
+
+.panelHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.75fr);
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 0.4rem;
+}
+
+.panelHeader h4,
+.panelHeaderCompact h4,
+.readingBox h4 {
+  margin: 0;
+  color: var(--mdf-text-1);
+  font-size: 0.94rem;
+}
+
+.panelHeader p {
+  margin: 0;
+  color: var(--mdf-text-3);
+  font-size: 0.77rem;
+  line-height: 1.5;
+}
+
+.svgWrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.2rem;
+}
+
+.flowSvg {
+  display: block;
+  min-width: 880px;
+  width: 100%;
+  height: auto;
+}
+
+.mainFlow {
+  fill: none;
+  stroke: url(#mdfMainGradient);
+  stroke-width: 12;
+  stroke-linecap: round;
+  opacity: 0.78;
+}
+
+.digitalFlow {
+  fill: none;
+  stroke: url(#mdfDigitalGradient);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 12 10;
+  opacity: 0.75;
+}
+
+.arrowHead {
+  fill: var(--mdf-economic);
+}
+
+.node rect,
+.digitalNode rect {
+  fill: var(--mdf-surface);
+  stroke: var(--mdf-border-strong);
+  stroke-width: 1.2;
+}
+
+.digitalNode rect {
+  fill: var(--mdf-digital-soft);
+  stroke: var(--mdf-digital);
+  stroke-opacity: 0.55;
+}
+
+.nodeKicker {
+  fill: var(--mdf-text-3);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.nodeTitle {
+  fill: var(--mdf-text-1);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.nodeSub {
+  fill: var(--mdf-text-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.branchLabel {
+  fill: var(--mdf-text-3);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.lowerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.analysisPanel {
+  min-width: 0;
+  padding: 1rem;
+}
+
+.panelHeaderCompact {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.panelHeaderCompact span {
+  padding: 0.28rem 0.5rem;
+  border: 1px solid var(--mdf-border);
+  border-radius: 999px;
+  color: var(--mdf-text-3);
+  background: var(--mdf-surface-soft);
+  font-family: "Space Mono", monospace;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rowStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.78rem;
+}
+
+.economicRow,
+.digitalRow {
+  padding: 0.72rem;
+  border: 1px solid var(--mdf-border);
+  border-radius: 12px;
+  background: var(--mdf-surface-soft);
+}
+
+.economicTopline,
+.digitalTopline {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-bottom: 0.48rem;
+}
+
+.economicTopline strong,
+.digitalTopline strong {
+  display: block;
+  color: var(--mdf-text-1);
+  font-size: 0.86rem;
+}
+
+.economicTopline span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--mdf-text-3);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+.economicTopline b,
+.digitalTopline b {
+  color: var(--mdf-text-1);
+  font-family: "Space Mono", monospace;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.barTrack {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--mdf-grid);
+}
+
+.economicFill,
+.digitalFill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.economicFill {
+  background: linear-gradient(90deg, var(--mdf-economic-alt), var(--mdf-economic));
+}
+
+.digitalFill {
+  background: linear-gradient(90deg, var(--mdf-digital), var(--mdf-physical));
+}
+
+.economicRow p,
+.digitalRow p,
+.methodNote {
+  margin: 0.5rem 0 0;
+  color: var(--mdf-text-3);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.methodNote {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--mdf-border);
+}
+
+.readingBox {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 4px solid var(--mdf-digital);
+}
+
+.readingBox h4 {
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.readingBox p {
+  margin: 0;
+  color: var(--mdf-text-2);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.caption {
+  max-width: 980px;
+  margin: 1rem auto 0;
+  color: var(--mdf-text-3);
+  font-size: 0.76rem;
+  line-height: 1.62;
+  text-align: center;
+}
+
+@media (max-width: 1120px) {
+  .header,
+  .panelHeader {
+    grid-template-columns: 1fr;
+  }
+
+  .metricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lowerGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .figure {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .metricGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flowPanel,
+  .analysisPanel,
+  .readingBox {
+    border-radius: 14px;
+  }
+
+  .panelHeaderCompact {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .flowSvg {
+    min-width: 780px;
+  }
+}

@@ -122,19 +122,19 @@ const FREQUENCY_POINTS = [
 ];
 
 const BASE_EVENTS = [
-  { t:  0.0,  f: 50.02, color: '#EF9F27' },
-  { t: 19.34, f: 49.45, color: '#E24B4A' },
-  { t: 20.56, f: 48.95, color: '#E24B4A' },
-  { t: 23.53, f: 48.46, color: '#378ADD' },
-  { t: 25.88, f: 47.79, color: '#9F3EFF' },
+  { t:  0.0,  f: 50.02, color: 'var(--freq-amber)' },
+  { t: 19.34, f: 49.45, color: 'var(--freq-red)' },
+  { t: 20.56, f: 48.95, color: 'var(--freq-red)' },
+  { t: 23.53, f: 48.46, color: 'var(--freq-blue)' },
+  { t: 25.88, f: 47.79, color: 'var(--freq-purple)' },
 ];
 
 const BASE_THRESHOLDS = [
-  { value: 49.5, color: '#EF9F27' },
-  { value: 49.0, color: '#EF9F27' },
-  { value: 48.5, color: '#E24B4A' },
-  { value: 48.0, color: '#E24B4A' },
-  { value: 47.5, color: '#E24B4A' },
+  { value: 49.5, color: 'var(--freq-amber)' },
+  { value: 49.0, color: 'var(--freq-amber)' },
+  { value: 48.5, color: 'var(--freq-red)' },
+  { value: 48.0, color: 'var(--freq-red)' },
+  { value: 47.5, color: 'var(--freq-red)' },
 ];
 
 function interpolate(t) {
@@ -157,10 +157,9 @@ function tToCEST(t) {
 
 function getProgressColor(p) {
   const pClamped = Math.max(0, Math.min(1, p));
-  const r = Math.round(255 + (226 - 255) * pClamped);
-  const g = Math.round(255 + (75  - 255) * pClamped);
-  const b = Math.round(255 + (74  - 255) * pClamped);
-  return `rgb(${r}, ${g}, ${b})`;
+  if (pClamped < 0.45) return 'var(--freq-blue)';
+  if (pClamped < 0.72) return 'var(--freq-amber)';
+  return 'var(--freq-red)';
 }
 
 export default function Bloque4Frecuencia() {
@@ -228,7 +227,7 @@ export default function Bloque4Frecuencia() {
   const dt       = 0.8;
   const rocof    = (interpolate(currentT + dt) - interpolate(currentT - dt)) / (2 * dt);
   const rocofAbs = Math.abs(rocof);
-  const rocofColor = rocofAbs > 0.25 ? '#E24B4A' : rocofAbs > 0.05 ? '#EF9F27' : '#1D9E75';
+  const rocofColor = rocofAbs > 0.25 ? 'var(--freq-red)' : rocofAbs > 0.05 ? 'var(--freq-amber)' : 'var(--freq-green)';
 
   const nearestEvent = EVENTS.find(e => Math.abs(e.t - currentT) <= 0.8);
   const isCollapsed  = currentF <= 47.5 && currentT >= 25.88;
@@ -242,15 +241,15 @@ export default function Bloque4Frecuencia() {
 
       <div className={styles.frequencyLegend}>
         <div className={styles.legendChip}>
-          <span className={styles.legendChipLine} style={{ background: '#ffffff' }} />
+          <span className={styles.legendChipLine} style={{ background: 'var(--freq-line-start)' }} />
           <span>{s.legendFreq}</span>
         </div>
         <div className={styles.legendChip}>
-          <span className={styles.legendChipLine} style={{ background: '#EF9F27' }} />
+          <span className={styles.legendChipLine} style={{ background: 'var(--freq-amber)' }} />
           <span>{s.legendUfls}</span>
         </div>
         <div className={styles.legendChip}>
-          <span className={styles.legendChipDot} style={{ background: '#378ADD' }} />
+          <span className={styles.legendChipDot} style={{ background: 'var(--freq-blue)' }} />
           <span>{s.legendEvents}</span>
         </div>
       </div>
@@ -258,24 +257,24 @@ export default function Bloque4Frecuencia() {
       <div className={styles.frequencyCanvasWrapper}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--freq-grid)" vertical={false} />
             <XAxis
               dataKey="t" type="number" domain={[T_MIN, T_MAX]}
-              tick={{ fill: '#808080', fontSize: 10, fontFamily: 'monospace' }}
-              stroke="#404040"
+              tick={{ fill: 'var(--freq-axis)', fontSize: 10, fontFamily: 'monospace' }}
+              stroke="var(--freq-axis)"
               label={{ value: s.axisX, position: 'insideBottom',
-                       offset: -10, fill: '#b0b0b0', fontSize: 11 }}
+                       offset: -10, fill: 'var(--freq-axis-label)', fontSize: 11 }}
             />
             <YAxis
               domain={[46.5, 50.5]}
-              tick={{ fill: '#808080', fontSize: 10, fontFamily: 'monospace' }}
-              stroke="#404040"
+              tick={{ fill: 'var(--freq-axis)', fontSize: 10, fontFamily: 'monospace' }}
+              stroke="var(--freq-axis)"
               tickFormatter={v => `${v.toFixed(1)} Hz`}
               label={{ value: s.axisY, angle: -90, position: 'insideLeft',
-                       fill: '#b0b0b0', fontSize: 11 }}
+                       fill: 'var(--freq-axis-label)', fontSize: 11 }}
             />
 
-            <ReferenceArea y1={46.5} y2={47.5} fill="rgba(226,75,74,0.08)" />
+            <ReferenceArea y1={46.5} y2={47.5} fill="var(--freq-critical-zone)" />
 
             {THRESHOLDS.map((th, i) => (
               <ReferenceLine key={i} y={th.value}
@@ -283,14 +282,14 @@ export default function Bloque4Frecuencia() {
             ))}
 
             <Line data={fullPoints} type="monotone" dataKey="f"
-              stroke="rgba(128,128,128,0.25)" strokeWidth={1}
+              stroke="var(--freq-line-ghost)" strokeWidth={1}
               dot={false} isAnimationActive={false} />
 
             <Line data={activePoints} type="monotone" dataKey="f"
               stroke={lineColor} strokeWidth={3}
               dot={false} isAnimationActive={false} />
 
-            <ReferenceLine x={currentT} stroke="rgba(176,176,176,0.4)" strokeDasharray="4 4" />
+            <ReferenceLine x={currentT} stroke="var(--freq-cursor)" strokeDasharray="4 4" />
           </ComposedChart>
         </ResponsiveContainer>
 
@@ -302,8 +301,12 @@ export default function Bloque4Frecuencia() {
         )}
       </div>
 
-      <div style={{ marginBottom: 16, fontSize: 11, color: 'var(--ifm-color-emphasis-600, #808080)',
-                    fontFamily: 'monospace' }}>
+      <div style={{
+        marginBottom: 16,
+        fontSize: 11,
+        color: 'var(--freq-text-tertiary)',
+        fontFamily: 'monospace',
+      }}>
         <div>t = {currentT.toFixed(1)} s · {cesTime} CEST</div>
         <div>
           f = {currentF.toFixed(2)} Hz ·
@@ -315,7 +318,7 @@ export default function Bloque4Frecuencia() {
       <div className={styles.frequencyControls}>
         <div className={styles.frequencySliderWrapper}>
           <label style={{ fontSize: 10, textTransform: 'uppercase',
-                          letterSpacing: '0.12em', color: 'var(--ifm-color-emphasis-500)' }}>
+                          letterSpacing: '0.12em', color: 'var(--freq-text-tertiary)' }}>
             {s.dragLabel}
           </label>
           <input
@@ -328,8 +331,8 @@ export default function Bloque4Frecuencia() {
             aria-valuetext={`t=${currentT.toFixed(1)}s, f=${currentF.toFixed(2)}Hz`}
             style={{
               background: `linear-gradient(to right,
-                #378ADD ${progress * 100}%,
-                var(--ifm-color-emphasis-200, #404040) ${progress * 100}%)`,
+  var(--freq-slider-thumb) ${progress * 100}%,
+  var(--freq-slider-track) ${progress * 100}%)`,
             }}
           />
         </div>

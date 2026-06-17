@@ -6,7 +6,7 @@ import React, { useMemo } from 'react';
 import styles from './Bloque6Cronologia.module.css';
 import { useDocLang } from '@site/src/hooks/useDocLang';
 
-function ShieldIcon({ color = '#E24B4A' }) {
+function ShieldIcon({ color = 'var(--chrono-red)' }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke={color} strokeWidth="2" strokeLinecap="round"
@@ -18,7 +18,7 @@ function ShieldIcon({ color = '#E24B4A' }) {
   );
 }
 
-function WarningIcon({ color = '#EF9F27' }) {
+function WarningIcon({ color = 'var(--chrono-amber)' }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke={color} strokeWidth="2" strokeLinecap="round"
@@ -30,7 +30,7 @@ function WarningIcon({ color = '#EF9F27' }) {
   );
 }
 
-function CheckIcon({ color = '#1D9E75' }) {
+function CheckIcon({ color = 'var(--chrono-green)' }) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke={color} strokeWidth="2" strokeLinecap="round"
@@ -41,9 +41,9 @@ function CheckIcon({ color = '#1D9E75' }) {
   );
 }
 
-function StatusIcon({ color }) {
-  if (color === '#E24B4A') return <ShieldIcon color={color} />;
-  if (color === '#EF9F27') return <WarningIcon color={color} />;
+function StatusIcon({ status, color }) {
+  if (status === 'danger') return <ShieldIcon color={color} />;
+  if (status === 'warning') return <WarningIcon color={color} />;
   return <CheckIcon color={color} />;
 }
 
@@ -144,36 +144,28 @@ const STRINGS = {
 };
 
 const BASE_TIMELINE = [
-  { time: '12:33 CEST', color: '#E24B4A', demand: 0, source: 'Comité de Análisis, p.38 / ENTSO-E Final Report' },
-  { time: '12:35 CEST', color: '#EF9F27', demand: 0, source: 'REN Portugal / ANEPC' },
-  { time: '12:43 CEST', color: '#EF9F27', demand: 1, source: 'REE Operación / ENTSO-E Factual, p.12' },
-  { time: '12:45 CEST', color: '#1D9E75', demand: 0.5, source: 'REN Portugal / ANEPC (comisión parlamentaria)' },
-  { time: '13:35 CEST', color: '#EF9F27', demand: 4, source: 'REE Operación' },
-  { time: '18:36 CEST', color: '#1D9E75', demand: 30, source: 'REE Operación / ENTSO-E Factual, p.13' },
-  { time: '23:00 CEST', color: '#1D9E75', demand: 51, source: 'REE Operación' },
-  { time: '00:22 CEST', color: '#1D9E75', demand: 65, source: 'ENTSO-E Factual, pp.12-13 / REN' },
-  { time: '04:00 CEST', color: '#1D9E75', demand: 80, source: 'ENTSO-E Factual, pp.12-13 / REE' },
-  { time: '07:00 CEST', color: '#1D9E75', demand: 99.95, source: 'ENTSO-E Factual, pp.12-13' },
+  { time: '12:33 CEST', color: 'var(--chrono-red)', glow: 'var(--chrono-red-glow)', status: 'danger', demand: 0, source: 'Comité de Análisis, p.38 / ENTSO-E Final Report' },
+  { time: '12:35 CEST', color: 'var(--chrono-amber)', glow: 'var(--chrono-amber-glow)', status: 'warning', demand: 0, source: 'REN Portugal / ANEPC' },
+  { time: '12:43 CEST', color: 'var(--chrono-amber)', glow: 'var(--chrono-amber-glow)', status: 'warning', demand: 1, source: 'REE Operación / ENTSO-E Factual, p.12' },
+  { time: '12:45 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 0.5, source: 'REN Portugal / ANEPC (comisión parlamentaria)' },
+  { time: '13:35 CEST', color: 'var(--chrono-amber)', glow: 'var(--chrono-amber-glow)', status: 'warning', demand: 4, source: 'REE Operación' },
+  { time: '18:36 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 30, source: 'REE Operación / ENTSO-E Factual, p.13' },
+  { time: '23:00 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 51, source: 'REE Operación' },
+  { time: '00:22 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 65, source: 'ENTSO-E Factual, pp.12-13 / REN' },
+  { time: '04:00 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 80, source: 'ENTSO-E Factual, pp.12-13 / REE' },
+  { time: '07:00 CEST', color: 'var(--chrono-green)', glow: 'var(--chrono-green-glow)', status: 'success', demand: 99.95, source: 'ENTSO-E Factual, pp.12-13' },
 ];
 
 const BASE_BLACKSTART = [
-  { flagEmoji: '🇵🇹', name: 'Castelo do Bode', operator: 'EDP', color: '#1D9E75' },
-  { flagEmoji: '🇪🇸', name: 'Aldeadávila', operator: 'Iberdrola', color: '#E24B4A' },
+  { flagEmoji: '🇵🇹', name: 'Castelo do Bode', operator: 'EDP', color: 'var(--chrono-green)' },
+  { flagEmoji: '🇪🇸', name: 'Aldeadávila', operator: 'Iberdrola', color: 'var(--chrono-red)' },
 ];
 
 function getDemandGradient(demand) {
-  if (demand === 0)   return 'linear-gradient(to right, #E24B4A, #F27170)';
-  if (demand >= 99)   return 'linear-gradient(to right, #1D9E75, #32D8A7)';
-  if (demand <= 50) {
-    const r = demand / 50;
-    return `linear-gradient(to right,
-      rgb(${Math.round(226 + (239-226)*r)}, ${Math.round(75+(159-75)*r)}, ${Math.round(74+(39-74)*r)}),
-      rgb(${Math.round(242 + (251-242)*r)}, ${Math.round(113+(192-113)*r)}, ${Math.round(112+(85-112)*r)}))`;
-  }
-  const r = (demand - 50) / 50;
-  return `linear-gradient(to right,
-    rgb(${Math.round(239+(29-239)*r)}, ${Math.round(159+(158-159)*r)}, ${Math.round(39+(117-39)*r)}),
-    rgb(${Math.round(251+(50-251)*r)}, ${Math.round(192+(216-192)*r)}, ${Math.round(85+(170-85)*r)}))`;
+  if (demand === 0) return 'linear-gradient(to right, var(--chrono-red), var(--chrono-red))';
+  if (demand >= 99) return 'linear-gradient(to right, var(--chrono-green), var(--chrono-green))';
+  if (demand <= 50) return 'linear-gradient(to right, var(--chrono-red), var(--chrono-amber))';
+  return 'linear-gradient(to right, var(--chrono-amber), var(--chrono-green))';
 }
 
 function TimelineCard({ event, index, s }) {
@@ -186,7 +178,7 @@ function TimelineCard({ event, index, s }) {
       <div className={styles.timelineCard} style={{ borderLeftColor: event.color }}>
         <div className={styles.timelineTimeCol}>
           <div className={styles.timelineTimeLabel}>
-            <StatusIcon color={event.color} />
+            <StatusIcon status={event.status} color={event.color} />
             <span className={styles.timelineTimeText}>{event.time}</span>
           </div>
           <div className={styles.timelineDateText}>{event.date}</div>
@@ -195,7 +187,12 @@ function TimelineCard({ event, index, s }) {
         <div className={styles.timelineContentCol}>
           <h3 className={styles.timelineContentTitle}>{event.title}</h3>
           <p className={styles.timelineContentDesc}>{event.description}</p>
-          <p style={{ fontSize: 9, color: '#374151', fontFamily: 'monospace', margin: '4px 0 0' }}>
+          <p style={{
+  fontSize: 9,
+  color: 'var(--chrono-text-tertiary)',
+  fontFamily: 'monospace',
+  margin: '4px 0 0',
+}}>
             📋 {event.source}
           </p>
         </div>
@@ -216,7 +213,7 @@ function TimelineCard({ event, index, s }) {
 
       <div
         className={styles.timelineCircle}
-        style={{ backgroundColor: event.color, boxShadow: `0 0 12px ${event.color}80` }}
+        style={{ backgroundColor: event.color, boxShadow: `0 0 12px ${event.glow}` }}
       />
     </div>
   );
@@ -282,7 +279,7 @@ export default function Bloque6Cronologia() {
           <p className={styles.subtitle}>{s.subtitle}</p>
         </div>
         <div className={styles.statusBadge}>
-          <CheckIcon color="#1D9E75" />
+          <CheckIcon color="var(--chrono-green)" />
           <span className={styles.statusBadgeText}>{s.statusBadge}</span>
         </div>
       </div>
@@ -299,7 +296,7 @@ export default function Bloque6Cronologia() {
 
       <div className={styles.section}>
         <div className={styles.header} style={{ marginBottom: 32 }}>
-          <h2 className={styles.sectionTitle} style={{ color: 'var(--ifm-heading-color)' }}>
+          <h2 className={styles.sectionTitle} style={{ color: 'var(--chrono-text-primary)' }}>
             {s.section2Title}
           </h2>
           <p className={styles.subtitle} style={{ marginTop: 8 }}>
