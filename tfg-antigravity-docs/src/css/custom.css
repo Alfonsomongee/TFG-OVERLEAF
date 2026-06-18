@@ -5360,3 +5360,230 @@ html[data-theme='light'] .chapter-nav-title {
     white-space: normal;
   }
 }
+
+/* ============================================================
+   LINK HOVER — slide-in underline (hover.dev inspired)
+   ============================================================ */
+
+.theme-doc-markdown a:not([class]),
+article a:not([class]) {
+  position: relative;
+  text-decoration: none !important;
+  color: var(--ifm-link-color);
+  transition: color 0.2s ease;
+}
+
+.theme-doc-markdown a:not([class])::after,
+article a:not([class])::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-doc-markdown a:not([class]):hover::after,
+article a:not([class]):hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ============================================================
+   INLINE CODE — visual chip with subtle border
+   ============================================================ */
+
+.theme-doc-markdown code:not(pre code),
+article code:not(pre code) {
+  font-family: var(--font-mono) !important;
+  font-size: 0.855em;
+  padding: 0.15em 0.42em;
+  border-radius: 4px;
+  background: rgba(255, 170, 0, 0.06);
+  border: 1px solid rgba(255, 170, 0, 0.14);
+  color: var(--forensic-amber-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+html[data-theme='light'] .theme-doc-markdown code:not(pre code),
+html[data-theme='light'] article code:not(pre code) {
+  background: rgba(139, 38, 53, 0.05);
+  border-color: rgba(139, 38, 53, 0.14);
+  color: #6B1024;
+}
+
+/* ============================================================
+   FIGURE / FIGCAPTION — editorial treatment
+   ============================================================ */
+
+article figure,
+.theme-doc-markdown figure {
+  margin: 2.5rem 0;
+}
+
+article figcaption,
+.theme-doc-markdown figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+  color: var(--text-3);
+  margin-top: 0.6rem;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--table-border-row, rgba(25, 24, 20, 0.075));
+}
+
+article figcaption strong,
+.theme-doc-markdown figcaption strong {
+  color: var(--forensic-amber-primary);
+  font-weight: 700;
+}
+
+/* ============================================================
+   TOC — active item glow indicator
+   ============================================================ */
+
+.table-of-contents__link--active {
+  position: relative;
+}
+
+.table-of-contents__link--active::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 70%;
+  background: var(--forensic-amber-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255, 170, 0, 0.35);
+}
+
+html[data-theme='light'] .table-of-contents__link--active::before {
+  background: var(--primary, #8B2635);
+  box-shadow: 0 0 8px rgba(139, 38, 53, 0.25);
+}
+
+/* ============================================================
+   TEXT SELECTION — theme-aware highlight
+   ============================================================ */
+
+::selection {
+  background: rgba(255, 170, 0, 0.22);
+  color: inherit;
+}
+
+html[data-theme='light'] ::selection {
+  background: rgba(139, 38, 53, 0.16);
+  color: inherit;
+}
+
+/* ============================================================
+   FOCUS-VISIBLE — accessibility ring
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--forensic-amber-primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+html[data-theme='light'] :focus-visible {
+  outline-color: var(--primary, #8B2635);
+}
+
+/* ============================================================
+   HEADING ANCHORS — # appears on hover
+   ============================================================ */
+
+.theme-doc-markdown h2 .hash-link,
+.theme-doc-markdown h3 .hash-link,
+.theme-doc-markdown h4 .hash-link {
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateX(-4px);
+  color: var(--forensic-amber-primary) !important;
+}
+
+.theme-doc-markdown h2:hover .hash-link,
+.theme-doc-markdown h3:hover .hash-link,
+.theme-doc-markdown h4:hover .hash-link {
+  opacity: 0.7;
+  transform: translateX(0);
+}
+
+.theme-doc-markdown h2:hover .hash-link:hover,
+.theme-doc-markdown h3:hover .hash-link:hover,
+.theme-doc-markdown h4:hover .hash-link:hover {
+  opacity: 1;
+}
+
+html[data-theme='light'] .theme-doc-markdown h2 .hash-link,
+html[data-theme='light'] .theme-doc-markdown h3 .hash-link,
+html[data-theme='light'] .theme-doc-markdown h4 .hash-link {
+  color: var(--primary, #8B2635) !important;
+}
+
+/* ============================================================
+   SCROLL-TO ANCHOR HIGHLIGHT — flash on navigate
+   ============================================================ */
+
+:target {
+  animation: anchorFlash 1.5s ease;
+}
+
+@keyframes anchorFlash {
+  0% { box-shadow: inset 3px 0 0 var(--forensic-amber-primary), 0 0 18px rgba(255, 170, 0, 0.2); }
+  100% { box-shadow: inset 3px 0 0 transparent, 0 0 0 transparent; }
+}
+
+html[data-theme='light'] :target {
+  animation: anchorFlashLight 1.5s ease;
+}
+
+@keyframes anchorFlashLight {
+  0% { box-shadow: inset 3px 0 0 var(--primary, #8B2635), 0 0 18px rgba(139, 38, 53, 0.15); }
+  100% { box-shadow: inset 3px 0 0 transparent, 0 0 0 transparent; }
+}
+
+/* ============================================================
+   HIDE DEFAULT DOCUSAURUS PAGINATION (replaced by chapter-nav)
+   ============================================================ */
+
+.pagination-nav:not(.chapter-nav) {
+  display: none;
+}
+
+/* ============================================================
+   PREFERS-REDUCED-MOTION — respect user preference
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-doc-markdown a:not([class])::after,
+  article a:not([class])::after {
+    transition: none;
+  }
+
+  :target {
+    animation: none;
+  }
+
+  .section-progress {
+    transition: none;
+  }
+
+  .chapter-nav-card,
+  .chapter-nav-arrow {
+    transition: none;
+  }
+
+  .chapter-nav-card:hover {
+    transform: none;
+  }
+}
