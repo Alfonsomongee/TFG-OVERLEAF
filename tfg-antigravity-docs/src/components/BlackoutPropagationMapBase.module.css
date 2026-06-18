@@ -1,0 +1,253 @@
+/**
+ * BlackoutPropagationMapBase.module.css
+ *
+ * Gestiona el layout y la estructura del panel inferior y del wrapper.
+ * Los colores del SVG y del panel van como inline styles via el objeto `th`
+ * (THEME de BlackoutPropagationMapData.js, driven por useColorMode()).
+ * Este módulo maneja solo estructura, espaciado y comportamiento responsive.
+ *
+ * Corrección respecto al original:
+ *   - Panel inferior sin breakpoint. Ahora colapsa a columna única ≤640px.
+ *   - .playButton usa CSS custom properties --btn-bg/--btn-border/--btn-color
+ *     inyectadas desde JSX según estado (play/pause/reiniciar).
+ *   - prefers-reduced-motion: transiciones desactivadas.
+ */
+
+/* ── Wrapper raíz ────────────────────────────────────────────────────────── */
+
+.figure {
+  margin: 1.5rem 0;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid;      /* borderColor via inline style desde th.wrapBorder */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--ifm-font-family-base, system-ui, -apple-system, sans-serif);
+}
+
+/* ── Mapa SVG ────────────────────────────────────────────────────────────── */
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.map {
+  width: 100%;
+  display: block;
+}
+
+/* ── Panel inferior ──────────────────────────────────────────────────────── */
+
+.controlPanel {
+  border-top: 1px solid;  /* borderTopColor via inline style desde th.panelBorder */
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Colapso a columna única en mobile */
+@media (max-width: 640px) {
+  .controlPanel {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* ── Columna izquierda ───────────────────────────────────────────────────── */
+
+.simControls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.simHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.simTitle {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  /* color via inline style desde th.textDanger */
+}
+
+/* ── Botón Play/Pause ────────────────────────────────────────────────────── */
+
+.playButton {
+  background:  var(--btn-bg,     transparent);
+  border:      1px solid var(--btn-border, #00d9ff);
+  color:       var(--btn-color,  #00d9ff);
+  padding:     0.28rem 0.9rem;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size:   0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor:      pointer;
+  white-space: nowrap;
+  transition:  filter 120ms ease;
+  flex-shrink: 0;
+}
+
+.playButton:hover  { filter: brightness(1.12); }
+
+.playButton:focus-visible {
+  outline:        2px solid var(--btn-border, #00d9ff);
+  outline-offset: 2px;
+}
+
+/* ── Barra de progreso ───────────────────────────────────────────────────── */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.timelineLabels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.67rem;
+  /* colors via inline style desde th.textMuted */
+}
+
+.timelineTrack {
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  /* background via inline style desde th.timelineBg */
+}
+
+.timelineFill {
+  height: 100%;
+  border-radius: 2px;
+  /* background (gradient) via inline style desde th.timelineGrad */
+  transition: width 2.5s ease;
+}
+
+/* ── Contador GW perdidos (feature único BPM) ────────────────────────────── */
+
+.gwWidget {
+  border: 1px solid;       /* borderColor via inline style */
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  text-align: center;
+}
+
+.gwValue {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  /* color via inline style — cambia según nivel de pérdida */
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.gwUnit {
+  font-size: 0.68rem;
+  font-weight: 400;
+  /* color via inline style desde th.gwUnit */
+}
+
+/* ── Leyenda ─────────────────────────────────────────────────────────────── */
+
+.legendGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Log de eventos ──────────────────────────────────────────────────────── */
+
+.eventLog {
+  border: 1px solid;        /* borderColor via inline style */
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  min-height: 130px;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 640px) {
+  .eventLog {
+    max-height: 200px;
+  }
+}
+
+.eventLogEmpty {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  margin: auto;
+  text-align: center;
+}
+
+.eventEntry {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.69rem;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  padding-left: 0.5rem;
+  /* color y borderLeftColor via inline style desde th.logActive/logPast/logBullet */
+  transition: color 300ms ease, border-left-color 300ms ease;
+}
+
+/* ── Figcaption ──────────────────────────────────────────────────────────── */
+
+.caption {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  border-top: 1px solid;    /* borderTopColor via inline style */
+  /* color via inline style desde th.textSec */
+}
+
+.captionSource {
+  font-style: italic;
+  /* color via inline style desde th.textMuted */
+}
+
+/* ── prefers-reduced-motion ──────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .timelineFill,
+  .gwValue,
+  .eventEntry,
+  .playButton {
+    transition: none;
+  }
+}

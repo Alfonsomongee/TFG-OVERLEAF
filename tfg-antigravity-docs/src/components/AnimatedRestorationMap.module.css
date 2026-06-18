@@ -1,0 +1,399 @@
+/**
+ * AnimatedRestorationMap.module.css
+ *
+ * Sistema de tokens alineado con el TFG del apagón ibérico 28-A:
+ *   Burdeos #6B1024   — acento de estado activo y controles
+ *   Sin cian neón     — eliminado (#00d9ff era ajeno al sistema del TFG)
+ *   Dark mode via @media prefers-color-scheme
+ *   Responsive: panel inferior colapsa a columna en < 640px
+ *   prefers-reduced-motion: transiciones desactivadas
+ */
+
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+
+.figure {
+  /* Superficie */
+  --rm-surface:         #F7F8FA;
+  --rm-surface-panel:   #FFFFFF;
+  --rm-border:          #DDE1E7;
+  --rm-border-strong:   #B0B8C4;
+
+  /* Acento principal del TFG */
+  --rm-accent:          #6B1024;
+  --rm-accent-muted:    rgba(107, 16, 36, 0.12);
+
+  /* Texto */
+  --rm-text-primary:    #1A1F2B;
+  --rm-text-secondary:  #4A5568;
+  --rm-text-muted:      #718096;
+  --rm-text-mono:       #2C3E50;
+
+  /* Mapa — labels */
+  --rm-sea-label:       rgba(80, 100, 130, 0.35);
+  --rm-neighbor-label:  rgba(60, 80, 120, 0.55);
+
+  /* Disclaimer SVG */
+  --rm-disclaimer-bg:   rgba(246, 241, 232, 0.82);
+  --rm-disclaimer-stroke: rgba(104, 116, 98, 0.24);
+  --rm-disclaimer-text: rgba(45, 36, 29, 0.65);
+}
+
+html[data-theme='dark'] .figure {
+    --rm-surface:         #111318;
+    --rm-surface-panel:   #181C24;
+    --rm-border:          #2A2F3A;
+    --rm-border-strong:   #3A4050;
+
+    --rm-text-primary:    #E8ECF0;
+    --rm-text-secondary:  #A0AABB;
+    --rm-text-muted:      #6B7A8D;
+    --rm-text-mono:       #CBD5E0;
+
+    --rm-sea-label:       rgba(0, 190, 220, 0.18);
+    --rm-neighbor-label:  rgba(59, 130, 246, 0.45);
+
+    --rm-disclaimer-bg:   rgba(7, 24, 45, 0.78);
+    --rm-disclaimer-stroke: rgba(118, 151, 168, 0.22);
+    --rm-disclaimer-text: rgba(210, 224, 232, 0.66);
+  }
+
+/* ── Contenedor raíz ─────────────────────────────────────────────────────── */
+
+.figure {
+  margin: 2rem 0;
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ── Mapa ────────────────────────────────────────────────────────────────── */
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 800;
+  overflow: hidden;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── Labels del mapa ─────────────────────────────────────────────────────── */
+
+.mapLabels {
+  pointer-events: none;
+  user-select: none;
+}
+
+.seaLabel {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  fill: var(--rm-sea-label);
+}
+
+.neighborLabel {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  fill: var(--rm-neighbor-label);
+  font-weight: 500;
+}
+
+/* ── Disclaimer cartográfico ─────────────────────────────────────────────── */
+
+.disclaimerRect {
+  fill: var(--rm-disclaimer-bg);
+  stroke: var(--rm-disclaimer-stroke);
+}
+
+.disclaimerText {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  fill: var(--rm-disclaimer-text);
+}
+
+/* ── Islas eléctricas ────────────────────────────────────────────────────── */
+
+.islandGroup {
+  cursor: default;
+  outline: none;
+}
+
+/* Foco de teclado visible — dibuja un contorno sobre el grupo */
+.islandGroup:focus-visible {
+  outline: 2px solid var(--rm-accent);
+  outline-offset: 2px;
+}
+
+.restorationZone {
+  transition: opacity 220ms ease, stroke-width 220ms ease;
+}
+
+.zoneLabel {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  pointer-events: none;
+  user-select: none;
+  transition: fill 220ms ease, opacity 220ms ease;
+}
+
+.zonePct {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  fill: var(--rm-text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+.anchorDot {
+  transition: r 220ms ease, fill-opacity 220ms ease;
+}
+
+/* ── Panel inferior de controles ─────────────────────────────────────────── */
+
+.controlPanel {
+  background: var(--rm-surface-panel);
+  border-top: 1px solid var(--rm-border);
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .controlPanel {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ── Gauge de demanda ────────────────────────────────────────────────────── */
+
+.gaugePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gaugeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gaugeTitle {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rm-accent);
+}
+
+/* Play / Pause button */
+.playButton {
+  padding: 0.3rem 0.9rem;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  background: var(--rm-accent-muted);
+  border: 1px solid var(--rm-accent);
+  color: var(--rm-accent);
+}
+
+.playButton[data-playing='true'] {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.playButton:hover {
+  filter: brightness(1.1);
+}
+
+.playButton:focus-visible {
+  outline: 2px solid var(--rm-accent);
+  outline-offset: 2px;
+}
+
+/* Hora real del evento */
+.horaReal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 4px;
+}
+
+.horaRealLabel {
+  font-size: 0.65rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--rm-text-muted);
+}
+
+.horaRealValue {
+  font-size: 0.78rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--rm-accent);
+}
+
+/* Contador de demanda */
+.demandCounter {
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+}
+
+.demandPct {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  line-height: 1;
+  transition: color 500ms ease;
+}
+
+.demandLabel {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--rm-text-muted);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  margin-top: 0.25rem;
+}
+
+.demandBarTrack {
+  height: 4px;
+  background: var(--rm-border);
+  border-radius: 2px;
+  margin-top: 0.6rem;
+  overflow: hidden;
+}
+
+.demandBarFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 800ms ease, background 500ms ease;
+}
+
+/* Leyenda */
+.legend {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--rm-text-muted);
+}
+
+.legendLine {
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Log de eventos ──────────────────────────────────────────────────────── */
+
+.eventLog {
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  min-height: 120px;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* scroll suave */
+  scroll-behavior: smooth;
+}
+
+.eventLogEmpty {
+  font-size: 0.75rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--rm-text-muted);
+  margin: auto;
+  text-align: center;
+}
+
+.eventEntry {
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--rm-text-secondary);
+  border-left: 2px solid transparent;
+  padding-left: 0.5rem;
+  transition: color 300ms ease;
+}
+
+.eventEntry[data-latest='true'] {
+  color: var(--rm-text-primary);
+  border-left-color: #10b981;
+}
+
+/* ── Figcaption ──────────────────────────────────────────────────────────── */
+
+.caption {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.78rem;
+  color: var(--rm-text-secondary);
+  line-height: 1.55;
+  border-top: 1px solid var(--rm-border);
+  background: var(--rm-surface);
+}
+
+.captionSource {
+  color: var(--rm-text-muted);
+  font-style: italic;
+}
+
+/* ── Fallback de carga ───────────────────────────────────────────────────── */
+
+.fallback {
+  height: 480px;
+  background: var(--rm-surface);
+  border: 1px solid var(--rm-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--rm-text-muted);
+}
+
+/* ── Accesibilidad — prefers-reduced-motion ──────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .restorationZone,
+  .zoneLabel,
+  .anchorDot,
+  .demandPct,
+  .demandBarFill,
+  .eventEntry,
+  .playButton {
+    transition: none;
+  }
+
+  .demandBarFill {
+    transition: width 0ms;
+  }
+}

@@ -213,7 +213,7 @@ function TopologyContent({}) {
       if (simTime >= MAX_TIME) setIsPlaying(false);
       return;
     }
-    const id = setInterval(() => setSimTime(t => t + 1), 900);
+    const id = setInterval(() => setSimTime(t => t + 1), 2500);
     return () => clearInterval(id);
   }, [isPlaying, simTime]);
 
@@ -349,6 +349,11 @@ function TopologyContent({}) {
           const src = nodeMap[link.source];
           const tgt = nodeMap[link.target];
           if (!src || !tgt) return null;
+
+          // Retrasar el dibujado de los enlaces de Francia (RTE) y Aragón-Cataluña hasta t=5
+          if ((link.target === 'FR' || (link.source === 'ZAR' && link.target === 'BAR')) && simTime < 5) {
+            return null;
+          }
 
           const isActive = simTime >= link.activationTime;
           const isCollapsing = link.isCritical && isActive && simTime < 12;
@@ -573,7 +578,7 @@ function TopologyContent({}) {
                   ? `linear-gradient(90deg, ${palette.warning}, ${palette.danger})`
                   : `linear-gradient(90deg, ${palette.accent}, ${palette.success})`,
                 borderRadius: 2,
-                transition: 'width 0.9s ease, background 0.3s ease',
+                transition: 'width 2.5s linear, background 0.3s ease',
               }} />
             </div>
           </div>

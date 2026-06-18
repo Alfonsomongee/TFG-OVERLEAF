@@ -81,7 +81,7 @@ export default function IberianInterconnectionsInteractiveFigure() {
         <div className={styles.mapPane}>
           <svg
             viewBox="20 20 940 760"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="xMidYMid slice"
             className={styles.map}
             role="img"
             aria-labelledby="iberian-interconnections-title iberian-interconnections-desc"
@@ -195,6 +195,7 @@ export default function IberianInterconnectionsInteractiveFigure() {
 
             <g
               className={cx(styles.ratioBadge, activeClasses.ratio && styles.activeRatio)}
+              transform="translate(120 28)"
               onMouseEnter={() => select('ratio')}
               onClick={() => select('ratio')}
               aria-hidden="true"
@@ -252,11 +253,6 @@ export default function IberianInterconnectionsInteractiveFigure() {
           </div>
         </aside>
       </div>
-
-      <figcaption className={styles.caption}>
-        <strong>Figura B2.</strong> Interconexiones funcionales del sistema iberico y condicion de isla energetica.
-        La baja capacidad de transferencia exterior limita el soporte dinamico importable desde los sistemas vecinos.
-      </figcaption>
     </figure>
   );
 }

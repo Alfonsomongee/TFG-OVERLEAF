@@ -1,0 +1,243 @@
+/**
+ * IberianGridTopology.module.css
+ *
+ * Gestiona el layout y la estructura del panel inferior.
+ * Los colores del SVG van inline via el objeto `palette` (driven por useColorMode()).
+ * Los colores del panel van aquí via `data-dark` attribute.
+ *
+ * Corrección respecto al original:
+ *   - Panel inferior tenia `gridTemplateColumns: '1fr 1.5fr'` hardcodeado sin breakpoint.
+ *   - Ahora colapsa a columna única en viewports ≤640px.
+ *   - .playButton usa CSS custom property --btn-accent inyectada desde JSX.
+ *   - prefers-reduced-motion: transiciones desactivadas.
+ */
+
+/* ── Wrapper raíz ────────────────────────────────────────────────────────── */
+
+.figure {
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  /* Tokens de panel (no SVG) — override en [data-dark='true'] */
+  --panel-border-top:   rgba(25, 24, 20, 0.14);
+}
+
+.figure[data-dark='true'] {
+  --panel-border-top:   rgba(226, 232, 240, 0.14);
+}
+
+/* ── Mapa SVG ────────────────────────────────────────────────────────────── */
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 4; /* 1000 / 800 */
+  overflow: hidden;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── Panel inferior ──────────────────────────────────────────────────────── */
+
+.controlPanel {
+  border-top: 1px solid var(--panel-border-top);
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  align-items: start;
+}
+
+/* Colapso a columna única en mobile */
+@media (max-width: 640px) {
+  .controlPanel {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+/* ── Columna izquierda: controles y leyenda ──────────────────────────────── */
+
+.simControls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.simHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.simTitle {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* color inyectado inline desde palette.accent */
+}
+
+/* ── Botón Play/Pause ────────────────────────────────────────────────────── */
+
+.playButton {
+  /* --btn-accent inyectado desde JSX según estado (accent / danger / success) */
+  color: var(--btn-accent, #1F6F78);
+  background: color-mix(in srgb, var(--btn-accent, #1F6F78) 15%, transparent);
+  border: 1px solid var(--btn-accent, #1F6F78);
+  padding: 0.28rem 0.9rem;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 120ms ease;
+  flex-shrink: 0;
+}
+
+.playButton:hover {
+  filter: brightness(1.1);
+}
+
+.playButton:focus-visible {
+  outline: 2px solid var(--btn-accent, #1F6F78);
+  outline-offset: 2px;
+}
+
+/* Fallback para navegadores sin color-mix */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .playButton {
+    background: transparent;
+  }
+}
+
+/* ── Barra de progreso temporal ──────────────────────────────────────────── */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.timelineLabels {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+}
+
+.timelineCurrent {
+  font-weight: 600;
+  transition: color 300ms ease;
+}
+
+.timelineTrack {
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.timelineFill {
+  height: 100%;
+  border-radius: 2px;
+  /* background inyectado inline: cambia de accent→success a warning→danger en crisis */
+  transition: width 2.5s linear, background 0.3s ease;
+}
+
+/* ── Leyenda ─────────────────────────────────────────────────────────────── */
+
+.legendGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 0.75rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Log de eventos ──────────────────────────────────────────────────────── */
+
+.eventLog {
+  border: 1px solid;          /* borderColor inyectado inline */
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  min-height: 130px;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 640px) {
+  .eventLog {
+    max-height: 200px;
+  }
+}
+
+.eventLogEmpty {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  margin: auto;
+  text-align: center;
+}
+
+.eventEntry {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  border-left: 2px solid transparent;
+  padding-left: 0.5rem;
+  transition: color 300ms ease, border-left-color 300ms ease;
+  /* color y borderLeftColor inyectados inline desde palette */
+}
+
+/* ── Fallback de carga ───────────────────────────────────────────────────── */
+
+.fallback {
+  height: 480px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  background: #071326;
+  color: #7DCDE3;
+}
+
+/* ── prefers-reduced-motion ──────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .timelineFill,
+  .timelineCurrent,
+  .eventEntry,
+  .playButton {
+    transition: none;
+  }
+}
