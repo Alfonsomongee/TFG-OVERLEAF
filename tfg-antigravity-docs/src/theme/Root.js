@@ -1,8 +1,9 @@
 // src/theme/Root.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { translate } from '@docusaurus/Translate';
 import { useLocation } from '@docusaurus/router';
+import { gsap } from 'gsap';
 import GlossaryDefinitionPanel from '@site/src/components/GlossaryDefinitionPanel';
 import FloatingActionBtn from '@site/src/components/ui/FloatingActionBtn';
 
@@ -40,6 +41,8 @@ export default function Root({ children }) {
   const [tocPortalHtml, setTocPortalHtml] = useState('');
   const location = useLocation();
 
+  const sidebarAnimTlRef = useRef(null);
+
   const rawPath = location.pathname.toLowerCase();
   const path = rawPath.endsWith('/') && rawPath !== '/'
     ? rawPath.slice(0, -1)
@@ -47,7 +50,7 @@ export default function Root({ children }) {
 
   const isHomepage = path === '/' || path === '/en' || path === '/de' || path === '/zh-hans';
   const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor'];
-  const shouldHideButtons = hideButtonsPaths.some(k => path.includes(k));
+  const shouldHideButtons = isHomepage || hideButtonsPaths.some(k => path.includes(k));
 
   // Inicialización modo zen
   useEffect(() => {
@@ -71,7 +74,6 @@ export default function Root({ children }) {
     const observer = new MutationObserver(() => {
       const hasZen = document.documentElement.classList.contains('zen-mode');
       const hasToc = document.documentElement.classList.contains('toc-visible');
-
       if (hasZen !== !sidebarOpen || hasToc !== tocVisible) {
         applyHtmlClasses();
       }
@@ -95,6 +97,27 @@ export default function Root({ children }) {
     document.documentElement.classList.remove('toc-visible');
     document.documentElement.classList.remove('toc-portal-visible');
   }, [location.pathname]);
+
+  // GSAP stagger en items del sidebar cuando se abre
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const sidebar = document.querySelector('.theme-doc-sidebar-container');
+    if (!sidebar) return;
+
+    sidebarAnimTlRef.current?.kill();
+    const items = sidebar.querySelectorAll('.menu__link, .menu__list-item-collapsible');
+    if (!items.length) return;
+
+    sidebarAnimTlRef.current = gsap.from(items, {
+      x: -10,
+      opacity: 0,
+      duration: 0.55,
+      ease: 'power3.out',
+      stagger: { each: 0.04, from: 'start' },
+      delay: 0.2,
+      clearProps: 'x,opacity',
+    });
+  }, [sidebarOpen]);
 
   const toggleSidebar = () => {
     const next = !sidebarOpen;
@@ -146,12 +169,10 @@ export default function Root({ children }) {
 
   useEffect(() => {
     const handleScroll = (e) => {
-      // Capturar el contenedor que realmente está haciendo scroll
       let scrollTarget = e.target;
       if (scrollTarget === document || scrollTarget === window) {
         scrollTarget = document.scrollingElement || document.documentElement;
       }
-
       if (!scrollTarget || !scrollTarget.clientHeight) return;
 
       const currentScrollY = scrollTarget.scrollTop || window.scrollY || 0;
@@ -162,7 +183,6 @@ export default function Root({ children }) {
         setScrollProgress(Math.min(progress, 100));
       }
 
-      // Ocultamiento manual del Navbar (ya que el contenedor interno impide a Docusaurus detectarlo)
       const navbar = document.querySelector('.navbar');
       if (navbar) {
         if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
@@ -173,7 +193,6 @@ export default function Root({ children }) {
       }
       lastScrollY.current = currentScrollY;
     };
-    // Usar capture: true para detectar el scroll de contenedores anidados en lugar del window
     window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
     return () => window.removeEventListener('scroll', handleScroll, { capture: true });
   }, []);
@@ -208,36 +227,27 @@ export default function Root({ children }) {
 
       {!shouldHideButtons && (
         <>
-          {/* Abrir sidebar — visible solo cuando está cerrado */}
-          {!sidebarOpen && !isHomepage && (
+          {!sidebarOpen && (
             <FloatingActionBtn
               variant="sidebar-open"
               onClick={toggleSidebar}
-              ariaLabel={translate({
-                id: 'theme.sidebar.open',
-                message: 'Abrir barra lateral',
-              })}
+              ariaLabel={translate({ id: 'theme.sidebar.open', message: 'Abrir barra lateral' })}
             >
               <IconMenu />
             </FloatingActionBtn>
           )}
 
-          {/* Cerrar sidebar — visible solo cuando está abierto */}
-          {sidebarOpen && !isHomepage && (
+          {sidebarOpen && (
             <FloatingActionBtn
               variant="sidebar-close"
               onClick={toggleSidebar}
-              ariaLabel={translate({
-                id: 'theme.sidebar.close',
-                message: 'Cerrar barra lateral',
-              })}
+              ariaLabel={translate({ id: 'theme.sidebar.close', message: 'Cerrar barra lateral' })}
             >
               <IconChevronLeft />
             </FloatingActionBtn>
           )}
 
-          {/* TOC — visible en todas las páginas excepto anexos e homepage */}
-          {!path.includes('/anexo') && !isHomepage && (
+          {!path.includes('/anexo') && (
             <FloatingActionBtn
               variant="toc"
               active={tocVisible}
@@ -251,17 +261,13 @@ export default function Root({ children }) {
               <IconToc />
             </FloatingActionBtn>
           )}
-
         </>
       )}
 
       {tocVisible && !sidebarOpen && tocPortalHtml && typeof document !== 'undefined' && createPortal(
         <nav
           className="floating-toc-portal"
-          aria-label={translate({
-            id: 'theme.docs.toc.navAriaLabel',
-            message: 'Table of contents',
-          })}
+          aria-label={translate({ id: 'theme.docs.toc.navAriaLabel', message: 'Table of contents' })}
           onClick={handleTocPortalClick}
           dangerouslySetInnerHTML={{ __html: tocPortalHtml }}
         />,
