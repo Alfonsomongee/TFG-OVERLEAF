@@ -5,13 +5,13 @@
     height: 100%;
     padding-top: var(--ifm-navbar-height);
     width: var(--doc-sidebar-width);
-    /* ── Transición suave apertura/cierre ── */
     transform: translateX(0);
     opacity: 1;
+    /* Apertura: curva spring (power4.out aproximado) */
     transition:
-      width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
       opacity 0.22s ease,
-      transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
     will-change: width, transform, opacity;
   }
@@ -25,12 +25,16 @@
     visibility: hidden;
   }
 
-  /* Estado colapsado — aplicado por index.js vía sidebarCollapsed */
+  /* Cierre: curva acelerada + ligeramente más rápido */
   .sidebarCollapsed {
     width: 0 !important;
     opacity: 0;
-    transform: translateX(-16px);
+    transform: translateX(-20px);
     pointer-events: none;
+    transition:
+      width 0.24s cubic-bezier(0.4, 0, 1, 1),
+      opacity 0.16s ease,
+      transform 0.24s cubic-bezier(0.4, 0, 1, 1);
   }
 
   .sidebarLogo {
