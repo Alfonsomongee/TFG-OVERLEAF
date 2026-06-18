@@ -111,10 +111,10 @@ export default function Root({ children }) {
     sidebarAnimTlRef.current = gsap.from(items, {
       x: -10,
       opacity: 0,
-      duration: 0.40,
+      duration: 0.55,
       ease: 'power3.out',
-      stagger: { each: 0.018, from: 'start' },
-      delay: 0.15,
+      stagger: { each: 0.04, from: 'start' },
+      delay: 0.2,
       clearProps: 'x,opacity',
     });
   }, [sidebarOpen]);
