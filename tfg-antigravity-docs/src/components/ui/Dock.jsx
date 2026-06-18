@@ -1,5 +1,5 @@
+import React, { Children, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { Children, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
 import './Dock.css';
 
 function DockItem({ children, className = '', onClick, mouseX, spring, distance, magnification, baseItemSize, label }) {
@@ -46,7 +46,7 @@ function DockLabel({ children, className = '', ...rest }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = isHovered.on('change', latest => {
+    const unsubscribe = isHovered.onChange(latest => {
       setIsVisible(latest === 1);
     });
     return () => unsubscribe();

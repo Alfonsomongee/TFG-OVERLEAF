@@ -5,12 +5,10 @@ import { translate } from '@docusaurus/Translate';
 import { useLocation } from '@docusaurus/router';
 import { gsap } from 'gsap';
 import GlossaryDefinitionPanel from '@site/src/components/GlossaryDefinitionPanel';
-import Dock from '@site/src/components/ui/Dock';
+import FloatingActionBtn from '@site/src/components/ui/FloatingActionBtn';
 
-/* ── Iconos inline ─────────────────────────────────────────────────── */
-
-const IconSidebarOpen = () => (
-  <svg width="18" height="18" viewBox="0 0 20 20" fill="none"
+const IconMenu = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="3" y1="5"  x2="17" y2="5"  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -18,8 +16,8 @@ const IconSidebarOpen = () => (
   </svg>
 );
 
-const IconSidebarClose = () => (
-  <svg width="10" height="18" viewBox="0 0 12 20" fill="none"
+const IconChevronLeft = () => (
+  <svg width="12" height="20" viewBox="0 0 12 20" fill="none"
     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M10 2L2 10L10 18" stroke="currentColor" strokeWidth="1.8"
       strokeLinecap="round" strokeLinejoin="round"/>
@@ -27,7 +25,7 @@ const IconSidebarClose = () => (
 );
 
 const IconToc = () => (
-  <svg width="16" height="16" viewBox="0 0 18 18" fill="none"
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <line x1="1" y1="4"  x2="17" y2="4"  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
     <line x1="4" y1="9"  x2="17" y2="9"  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -36,8 +34,6 @@ const IconToc = () => (
     <circle cx="1.5" cy="14" r="1.5" fill="currentColor"/>
   </svg>
 );
-
-/* ── Root ──────────────────────────────────────────────────────────── */
 
 export default function Root({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -54,7 +50,7 @@ export default function Root({ children }) {
 
   const isHomepage = path === '/' || path === '/en' || path === '/de' || path === '/zh-hans';
   const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor'];
-  const shouldHideButtons = hideButtonsPaths.some(k => path.includes(k));
+  const shouldHideButtons = isHomepage || hideButtonsPaths.some(k => path.includes(k));
 
   // Inicialización modo zen
   useEffect(() => {
@@ -210,31 +206,8 @@ export default function Root({ children }) {
     }
   };
 
-  /* ── Items del Dock ─────────────────────────────────────────────── */
-
-  const dockItems = !isHomepage && !shouldHideButtons
-    ? [
-        {
-          icon: sidebarOpen ? <IconSidebarClose /> : <IconSidebarOpen />,
-          label: sidebarOpen
-            ? translate({ id: 'theme.sidebar.close', message: 'Cerrar barra lateral' })
-            : translate({ id: 'theme.sidebar.open', message: 'Abrir barra lateral' }),
-          onClick: toggleSidebar,
-        },
-        ...(!path.includes('/anexo') ? [{
-          icon: <IconToc />,
-          label: tocVisible
-            ? translate({ id: 'theme.toc.hide', message: 'Ocultar índice' })
-            : translate({ id: 'theme.toc.show', message: 'Mostrar índice' }),
-          onClick: toggleToc,
-          className: tocVisible ? 'dock-item--active' : '',
-        }] : []),
-      ]
-    : null;
-
   return (
     <>
-      {/* Barra de progreso de scroll */}
       <div
         style={{
           position: 'fixed',
@@ -249,28 +222,52 @@ export default function Root({ children }) {
         }}
         aria-hidden="true"
       />
-
       {children}
       <GlossaryDefinitionPanel />
 
-      {dockItems && dockItems.length > 0 && (
-        <Dock
-          items={dockItems}
-          panelHeight={56}
-          baseItemSize={44}
-          magnification={62}
-          dockHeight={220}
-          distance={180}
-        />
+      {!shouldHideButtons && (
+        <>
+          {!sidebarOpen && (
+            <FloatingActionBtn
+              variant="sidebar-open"
+              onClick={toggleSidebar}
+              ariaLabel={translate({ id: 'theme.sidebar.open', message: 'Abrir barra lateral' })}
+            >
+              <IconMenu />
+            </FloatingActionBtn>
+          )}
+
+          {sidebarOpen && (
+            <FloatingActionBtn
+              variant="sidebar-close"
+              onClick={toggleSidebar}
+              ariaLabel={translate({ id: 'theme.sidebar.close', message: 'Cerrar barra lateral' })}
+            >
+              <IconChevronLeft />
+            </FloatingActionBtn>
+          )}
+
+          {!path.includes('/anexo') && (
+            <FloatingActionBtn
+              variant="toc"
+              active={tocVisible}
+              onClick={toggleToc}
+              ariaLabel={
+                tocVisible
+                  ? translate({ id: 'theme.toc.hide', message: 'Ocultar índice' })
+                  : translate({ id: 'theme.toc.show', message: 'Mostrar índice' })
+              }
+            >
+              <IconToc />
+            </FloatingActionBtn>
+          )}
+        </>
       )}
 
       {tocVisible && !sidebarOpen && tocPortalHtml && typeof document !== 'undefined' && createPortal(
         <nav
           className="floating-toc-portal"
-          aria-label={translate({
-            id: 'theme.docs.toc.navAriaLabel',
-            message: 'Table of contents',
-          })}
+          aria-label={translate({ id: 'theme.docs.toc.navAriaLabel', message: 'Table of contents' })}
           onClick={handleTocPortalClick}
           dangerouslySetInnerHTML={{ __html: tocPortalHtml }}
         />,
