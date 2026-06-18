@@ -1,0 +1,61 @@
+.surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Base definitions for light mode */
+:root {
+  --ts-noise-opacity: 0.05;
+  --ts-grid-opacity: 0.12;
+  --ts-scan-opacity: 0.08;
+  --ts-line-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode overrides */
+html[data-theme='dark'] {
+  --ts-noise-opacity: 0.04;
+  --ts-grid-opacity: 0.05;
+  --ts-scan-opacity: 0.04;
+  --ts-line-color: rgba(255, 255, 255, 0.8);
+}
+
+/* 1. Ruido estático (SVG en línea para máximo rendimiento) */
+.noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--ts-noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+
+/* 2. Grid técnico sutil */
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--ts-grid-opacity);
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--ts-line-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ts-line-color) 1px, transparent 1px);
+}
+
+/* 3. Líneas de escaneo / oscilográficas estáticas */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--ts-scan-opacity);
+  background-size: 100% 4px;
+  background-image: linear-gradient(to bottom, var(--ts-line-color) 1px, transparent 1px, transparent 4px);
+}

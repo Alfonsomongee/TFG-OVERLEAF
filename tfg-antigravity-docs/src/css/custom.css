@@ -672,15 +672,54 @@ html[data-theme='dark'] .incident-box h4 {
    ZEN MODE (FOCUS MODE)
    ============================================================ */
 
-html.zen-mode .theme-doc-sidebar-container {
-  display: none !important;
+/*
+ * Sidebar: base de transición.
+ * Siempre tiene transition activa para que tanto la apertura
+ * como el cierre sean suaves. Usamos will-change para hints al GPU.
+ */
+.theme-doc-sidebar-container {
+  transition:
+    width        var(--tr-slow) var(--tr-spring),
+    min-width    var(--tr-slow) var(--tr-spring),
+    opacity      var(--tr-slow) var(--tr-ease),
+    visibility   0s             linear var(--tr-slow);
+  will-change: width, opacity;
+  /* NO overflow aquí: el sidebar necesita su propio scroll cuando está abierto */
 }
+
+/* Sidebar oculto (zen-mode): desliza fuera hacia la izquierda */
+html.zen-mode .theme-doc-sidebar-container {
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  overflow: hidden !important; /* solo cuando width=0 para recortar el contenido */
+  /* Al ocultar: visibility hidden aparece al final (después de la transición de opacity) */
+  transition:
+    width        var(--tr-slow) var(--tr-spring),
+    min-width    var(--tr-slow) var(--tr-spring),
+    opacity      var(--tr-slow) var(--tr-ease),
+    visibility   0s             linear var(--tr-slow);
+}
+
+/* Sidebar visible: visibility se aplica inmediatamente al abrir */
+html:not(.zen-mode) .theme-doc-sidebar-container {
+  visibility: visible !important;
+  transition:
+    width        var(--tr-slow) var(--tr-spring),
+    min-width    var(--tr-slow) var(--tr-spring),
+    opacity      var(--tr-slow) var(--tr-ease),
+    visibility   0s             linear 0s;
+}
+
 
 html.zen-mode main[class*='docMainContainer'] {
   display: flex !important;
   justify-content: center !important;
   width: 100% !important;
   max-width: 100% !important;
+  transition: width var(--tr-slow) var(--tr-spring),
+              max-width var(--tr-slow) var(--tr-spring);
 }
 
 html.zen-mode main[class*='docMainContainer'] > .container {
@@ -709,7 +748,8 @@ html.zen-mode .theme-doc-markdown {
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100%;
-  transition: all var(--tr-slow) var(--tr-ease);
+  transition: max-width var(--tr-slow) var(--tr-spring),
+              margin   var(--tr-slow) var(--tr-spring);
 }
 
 @media (max-width: 768px) {
@@ -4522,4 +4562,437 @@ html[data-theme='light'] aside.glossary-definition-panel[aria-live='polite'].clo
   background: #87966F !important;
   background-color: #87966F !important;
   border-color: #87966F !important;
+}
+
+/* ── 14. VIEW TRANSITION — Transición académica entre capítulos ─────────────
+   Requiere View Transition API (Chrome 111+, Edge 111+, Safari 18.2+).
+   Respeta prefers-reduced-motion: si el usuario prefiere menos movimiento,
+   los pseudoelementos no reciben animación (el navegador hace un crossfade
+   instantáneo por defecto).
+   ──────────────────────────────────────────────────────────── */
+
+/* Keyframe: página saliente — sube 4 px, se desvanece con leve blur */
+@keyframes chapter-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+    filter: blur(1px);
+  }
+}
+
+/* Keyframe: página entrante — baja desde +10 px con blur inicial */
+@keyframes chapter-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Vista anterior: sale hacia arriba */
+  ::view-transition-old(root) {
+    animation: chapter-out 240ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  /* Vista nueva: entra desde abajo */
+  ::view-transition-new(root) {
+    animation: chapter-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* Sin animación si el usuario lo prefiere — el navegador hace crossfade suave */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   REACT BITS INSPIRED SIDEBAR POLISH
+   CSS-only: forensic focus corners, signal lines, subtle shine.
+   Safe to revert by removing this block.
+   ============================================================ */
+
+.theme-doc-sidebar-container {
+  --rb-sidebar-focus: rgba(255, 190, 96, 0.72);
+  --rb-sidebar-focus-soft: rgba(255, 190, 96, 0.14);
+  --rb-sidebar-signal: rgba(255, 190, 96, 0.075);
+  isolation: isolate;
+}
+
+html[data-theme='light'] .theme-doc-sidebar-container {
+  --rb-sidebar-focus: rgba(44, 38, 32, 0.62);
+  --rb-sidebar-focus-soft: rgba(255, 255, 255, 0.18);
+  --rb-sidebar-signal: rgba(255, 255, 255, 0.11);
+}
+
+.theme-doc-sidebar-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    linear-gradient(115deg, transparent 0 31%, var(--rb-sidebar-signal) 31.3% 31.7%, transparent 32% 100%),
+    linear-gradient(115deg, transparent 0 63%, var(--rb-sidebar-signal) 63.2% 63.55%, transparent 63.8% 100%);
+  background-size: 180% 100%, 230% 100%;
+  animation: rb-sidebar-signal-drift 18s linear infinite;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 88%, transparent 100%);
+}
+
+.theme-doc-sidebar-container .menu__link {
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.theme-doc-sidebar-container .menu__link--active {
+  position: relative;
+}
+
+.theme-doc-sidebar-container .menu__link--active::after {
+  content: "";
+  position: absolute;
+  inset: 3px 5px;
+  pointer-events: none;
+  opacity: 0.92;
+  background:
+    linear-gradient(var(--rb-sidebar-focus), var(--rb-sidebar-focus)) left top / 12px 1px no-repeat,
+    linear-gradient(var(--rb-sidebar-focus), var(--rb-sidebar-focus)) left top / 1px 12px no-repeat,
+    linear-gradient(var(--rb-sidebar-focus), var(--rb-sidebar-focus)) right bottom / 12px 1px no-repeat,
+    linear-gradient(var(--rb-sidebar-focus), var(--rb-sidebar-focus)) right bottom / 1px 12px no-repeat;
+  filter: drop-shadow(0 0 5px var(--rb-sidebar-focus-soft));
+}
+
+.theme-doc-sidebar-container .menu__list .menu__list .menu__link--active {
+  background:
+    linear-gradient(90deg, var(--rb-sidebar-focus-soft), transparent 72%) !important;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible > .menu__link {
+  background-image: linear-gradient(
+    110deg,
+    currentColor 0%,
+    currentColor 42%,
+    rgba(255, 255, 255, 0.95) 50%,
+    currentColor 58%,
+    currentColor 100%
+  );
+  background-size: 230% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible:hover > .menu__link,
+.theme-doc-sidebar-container .menu__list-item--active > .menu__list-item-collapsible > .menu__link,
+.theme-doc-sidebar-container .menu__list-item-collapsible:has(.menu__link--active) > .menu__link {
+  animation: rb-sidebar-title-shine 1.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible[class*="sidebar-icon-"] > .menu__link::before {
+  transform-origin: center;
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible:hover > .menu__link::before,
+.theme-doc-sidebar-container .menu__list-item-collapsible:has(.menu__link--active) > .menu__link::before {
+  animation: rb-sidebar-icon-pulse 1.1s ease-out both;
+}
+
+.theme-doc-sidebar-container .menu__caret {
+  filter: drop-shadow(0 0 0 transparent);
+}
+
+.theme-doc-sidebar-container .menu__list-item-collapsible:hover .menu__caret,
+.theme-doc-sidebar-container .menu__list-item-collapsible:has(.menu__link--active) .menu__caret {
+  filter: drop-shadow(0 0 5px var(--rb-sidebar-focus-soft));
+}
+
+@keyframes rb-sidebar-signal-drift {
+  from { background-position: 115% 0, -70% 0; }
+  to   { background-position: -90% 0, 130% 0; }
+}
+
+@keyframes rb-sidebar-title-shine {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+@keyframes rb-sidebar-icon-pulse {
+  0%   { transform: scale(1); opacity: 0.78; }
+  45%  { transform: scale(1.16); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.92; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-doc-sidebar-container::before,
+  .theme-doc-sidebar-container .menu__list-item-collapsible:hover > .menu__link,
+  .theme-doc-sidebar-container .menu__list-item--active > .menu__list-item-collapsible > .menu__link,
+  .theme-doc-sidebar-container .menu__list-item-collapsible:has(.menu__link--active) > .menu__link,
+  .theme-doc-sidebar-container .menu__list-item-collapsible:hover > .menu__link::before,
+  .theme-doc-sidebar-container .menu__list-item-collapsible:has(.menu__link--active) > .menu__link::before {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   REACT BITS INSPIRED NAVBAR + FOOTER POLISH
+   CSS-only: pill nav, scanner underline, dossier footer cards.
+   Safe to revert by removing this block.
+   ============================================================ */
+
+.navbar {
+  --rb-nav-border: transparent;
+  --rb-nav-ink: rgba(232, 240, 255, 0.92);
+  --rb-nav-muted: rgba(232, 240, 255, 0.68);
+  --rb-nav-accent: rgba(125, 205, 227, 0.82);
+  --rb-nav-accent-soft: transparent;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-theme='light'] .navbar {
+  --rb-nav-border: transparent;
+  --rb-nav-ink: #2c2620;
+  --rb-nav-muted: rgba(44, 38, 32, 0.72);
+  --rb-nav-accent: #636e4f;
+  --rb-nav-accent-soft: transparent;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.navbar::after {
+  display: none !important;
+  content: none !important;
+}
+
+.navbar__items .navbar__link,
+.navbar__items .navbar__item {
+  color: var(--rb-nav-muted) !important;
+}
+
+.navbar__items .navbar__link {
+  position: relative;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem !important;
+  overflow: hidden;
+  transition:
+    color 180ms ease,
+    transform 180ms ease !important;
+}
+
+.navbar__items .navbar__link::before {
+  display: none !important;
+  content: none !important;
+}
+
+.navbar__items .navbar__link::after {
+  content: "";
+  position: absolute;
+  left: 0.78rem;
+  right: 0.78rem;
+  bottom: 0.18rem;
+  height: 1px;
+  background: var(--rb-nav-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0.9;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.navbar__items .navbar__link:hover,
+.navbar__items .navbar__item--active .navbar__link {
+  color: var(--rb-nav-ink) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transform: translateY(-1px);
+}
+
+.navbar__items .navbar__link:hover::before,
+.navbar__items .navbar__item--active .navbar__link::before {
+  animation: none !important;
+}
+
+.navbar__items .navbar__link:hover::after,
+.navbar__items .navbar__item--active .navbar__link::after {
+  transform: scaleX(1);
+}
+
+.navbar__items .navbar__link[href*='tfg_antigravity'] {
+  color: var(--rb-nav-ink) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.navbar .DocSearch-Button {
+  border-radius: 999px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.footer {
+  --rb-footer-bg: #071326;
+  --rb-footer-panel: rgba(255, 255, 255, 0.035);
+  --rb-footer-border: rgba(125, 205, 227, 0.14);
+  --rb-footer-ink: rgba(232, 240, 255, 0.9);
+  --rb-footer-muted: rgba(232, 240, 255, 0.62);
+  --rb-footer-accent: rgba(125, 205, 227, 0.72);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(125, 205, 227, 0.09), transparent 32rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--rb-footer-bg) 88%, #111827), var(--rb-footer-bg)) !important;
+  border-top: 1px solid var(--rb-footer-border) !important;
+}
+
+html[data-theme='light'] .footer {
+  --rb-footer-bg: #636e4f;
+  --rb-footer-panel: rgba(255, 255, 255, 0.10);
+  --rb-footer-border: rgba(255, 255, 255, 0.18);
+  --rb-footer-ink: #fcfcfc;
+  --rb-footer-muted: rgba(252, 252, 252, 0.72);
+  --rb-footer-accent: rgba(255, 255, 255, 0.78);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.12), transparent 30rem),
+    linear-gradient(180deg, #6f7a59, var(--rb-footer-bg)) !important;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    linear-gradient(115deg, transparent 0 38%, var(--rb-footer-border) 38.2% 38.45%, transparent 38.7% 100%),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgba(255, 255, 255, 0.025) 11px 12px);
+}
+
+.footer .container {
+  position: relative;
+  z-index: 1;
+}
+
+.footer__links {
+  gap: 1rem;
+}
+
+.footer__col {
+  position: relative;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--rb-footer-border);
+  border-radius: 8px;
+  background: var(--rb-footer-panel);
+  overflow: hidden;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.footer__col::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--rb-footer-accent), var(--rb-footer-accent)) left top / 14px 1px no-repeat,
+    linear-gradient(var(--rb-footer-accent), var(--rb-footer-accent)) left top / 1px 14px no-repeat,
+    linear-gradient(var(--rb-footer-accent), var(--rb-footer-accent)) right bottom / 14px 1px no-repeat,
+    linear-gradient(var(--rb-footer-accent), var(--rb-footer-accent)) right bottom / 1px 14px no-repeat;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.footer__col:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--rb-footer-accent) 42%, transparent);
+  background: color-mix(in srgb, var(--rb-footer-panel) 86%, var(--rb-footer-accent));
+}
+
+.footer__col:hover::after {
+  opacity: 0.72;
+}
+
+.footer__title {
+  color: var(--rb-footer-ink) !important;
+  letter-spacing: 0.08em;
+}
+
+.footer__link-item {
+  position: relative;
+  color: var(--rb-footer-muted) !important;
+  padding-bottom: 1px;
+}
+
+.footer__link-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--rb-footer-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.footer__link-item:hover {
+  color: var(--rb-footer-ink) !important;
+  transform: translateX(4px);
+}
+
+.footer__link-item:hover::after {
+  transform: scaleX(1);
+}
+
+.footer__copyright {
+  color: var(--rb-footer-muted) !important;
+  border-top: 1px solid var(--rb-footer-border);
+  padding-top: 1rem;
+}
+
+@keyframes rb-nav-shine {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar__items .navbar__link,
+  .navbar__items .navbar__link::after,
+  .footer__col,
+  .footer__col::after,
+  .footer__link-item,
+  .footer__link-item::after {
+    transition: none !important;
+  }
+
+  .navbar__items .navbar__link:hover::before,
+  .navbar__items .navbar__item--active .navbar__link::before {
+    animation: none !important;
+  }
 }

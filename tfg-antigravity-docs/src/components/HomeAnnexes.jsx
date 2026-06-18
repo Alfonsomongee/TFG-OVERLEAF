@@ -2,6 +2,7 @@ import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeAnnexes.module.css';
+import ScrollFloat from './ScrollFloat';
 
 const TRANSLATIONS = {
   es: {
@@ -100,7 +101,7 @@ export default function HomeAnnexes() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <p className={styles.eyebrow}>{t.eyebrow}</p>
-          <h2 className={styles.heading}>{t.heading}</h2>
+          <ScrollFloat tag="h2" className={styles.heading}>{t.heading}</ScrollFloat>
           <p className={styles.sub}>{t.sub}</p>
         </div>
         <div className={styles.grid}>

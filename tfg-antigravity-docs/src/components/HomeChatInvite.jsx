@@ -1,6 +1,8 @@
 import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeChatInvite.module.css';
+import ScrollFloat from './ScrollFloat';
+import DecryptedText from './ReactBits/DecryptedText';
 
 const TRANSLATIONS = {
   es: {
@@ -71,14 +73,9 @@ export default function HomeChatInvite() {
       <div className={styles.inner}>
         <div className={styles.left}>
           <p className={styles.eyebrow}>{t.eyebrow}</p>
-          <h2 className={styles.heading}>
-            {t.heading.split('\n').map((line, idx) => (
-              <React.Fragment key={idx}>
-                {line}
-                {idx < t.heading.split('\n').length - 1 && <br />}
-              </React.Fragment>
-            ))}
-          </h2>
+          <ScrollFloat tag="h2" className={styles.heading}>
+            {t.heading.replace(/\n/g, ' ')}
+          </ScrollFloat>
           <p className={styles.desc}>{t.desc}</p>
           <p className={styles.note}>{t.note}</p>
         </div>
@@ -88,12 +85,12 @@ export default function HomeChatInvite() {
               <span className={styles.dot} style={{ background: '#ff5f57' }} />
               <span className={styles.dot} style={{ background: '#febc2e' }} />
               <span className={styles.dot} style={{ background: '#28c840' }} />
-              <span className={styles.terminalTitle}>{t.terminalTitle}</span>
+              <DecryptedText text={t.terminalTitle} className={styles.terminalTitle} speed={24} maxIterations={10} />
             </div>
             <div className={styles.terminalBody}>
               <div className={styles.msg}>
                 <span className={styles.msgLabel}>asistente</span>
-                <span className={styles.msgText}>{t.welcome}</span>
+                <DecryptedText text={t.welcome} className={styles.msgText} speed={16} maxIterations={18} />
               </div>
               <div className={styles.suggestions}>
                 {t.suggestions.map((s) => (

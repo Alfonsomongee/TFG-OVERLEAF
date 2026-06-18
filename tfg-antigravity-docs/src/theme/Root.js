@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { translate } from '@docusaurus/Translate';
 import { useLocation } from '@docusaurus/router';
 import GlossaryDefinitionPanel from '@site/src/components/GlossaryDefinitionPanel';
+import FloatingActionBtn from '@site/src/components/ui/FloatingActionBtn';
 
 const IconMenu = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -209,59 +210,48 @@ export default function Root({ children }) {
         <>
           {/* Abrir sidebar — visible solo cuando está cerrado */}
           {!sidebarOpen && !isHomepage && (
-            <button
-              className="global-sidebar-btn"
+            <FloatingActionBtn
+              variant="sidebar-open"
               onClick={toggleSidebar}
-              aria-label={translate({
-                id: 'theme.sidebar.open',
-                message: 'Abrir barra lateral',
-              })}
-              title={translate({
+              ariaLabel={translate({
                 id: 'theme.sidebar.open',
                 message: 'Abrir barra lateral',
               })}
             >
               <IconMenu />
-            </button>
+            </FloatingActionBtn>
           )}
 
           {/* Cerrar sidebar — visible solo cuando está abierto */}
           {sidebarOpen && !isHomepage && (
-            <button
-              className="global-sidebar-close-btn"
+            <FloatingActionBtn
+              variant="sidebar-close"
               onClick={toggleSidebar}
-              aria-label={translate({
-                id: 'theme.sidebar.close',
-                message: 'Cerrar barra lateral',
-              })}
-              title={translate({
+              ariaLabel={translate({
                 id: 'theme.sidebar.close',
                 message: 'Cerrar barra lateral',
               })}
             >
               <IconChevronLeft />
-            </button>
+            </FloatingActionBtn>
           )}
 
           {/* TOC — visible en todas las páginas excepto anexos e homepage */}
           {!path.includes('/anexo') && !isHomepage && (
-            <button
-              className={`global-toc-btn${tocVisible ? ' active' : ''}`}
+            <FloatingActionBtn
+              variant="toc"
+              active={tocVisible}
               onClick={toggleToc}
-              aria-label={
-                tocVisible
-                  ? translate({ id: 'theme.toc.hide', message: 'Ocultar índice' })
-                  : translate({ id: 'theme.toc.show', message: 'Mostrar índice' })
-              }
-              title={
+              ariaLabel={
                 tocVisible
                   ? translate({ id: 'theme.toc.hide', message: 'Ocultar índice' })
                   : translate({ id: 'theme.toc.show', message: 'Mostrar índice' })
               }
             >
               <IconToc />
-            </button>
+            </FloatingActionBtn>
           )}
+
         </>
       )}
 

@@ -1,0 +1,92 @@
+/*
+ * ScrollFloat.module.css
+ *
+ * Dos rutas de animación según soporte de navegador:
+ *
+ * 1. Scroll-Driven (Chrome/Edge 115+):
+ *    .container tiene view-timeline-name. Cada .char usa ese timeline.
+ *    animation-range-start/end se inyectan inline desde React para el stagger.
+ *
+ * 2. Fallback (Firefox/Safari):
+ *    IntersectionObserver añade .visible → CSS juega la animación temporal.
+ *    Mismo keyframe, stagger vía animation-delay inline.
+ */
+
+/* ── Keyframe: desde abajo escalado → posición natural ────── */
+@keyframes scroll-float-in {
+  from {
+    opacity: 0;
+    transform: translateY(120%) scaleY(2.3) scaleX(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+}
+
+/* ── Contenedor ──────────────────────────────────────────── */
+.container {
+  /* overflow:hidden recorta los chars en su posición inicial (translateY 120%) */
+  overflow: hidden;
+  /* Named view-timeline para Scroll-Driven Animations */
+  view-timeline-name: --scroll-float;
+  view-timeline-axis: block;
+}
+
+/* ── Texto interior inline ───────────────────────────────── */
+.inner {
+  display: inline;
+}
+
+/* ── Palabra: inline-block para respetar word-wrap ──────── */
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* ── Espacio entre palabras ──────────────────────────────── */
+.space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+/* ── Carácter: estado base (invisible, escalado) ─────────── */
+.char {
+  display: inline-block;
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+
+  /* Parámetros de animación */
+  animation-name: scroll-float-in;
+  animation-fill-mode: both;
+}
+
+/* ── RUTA 1: Scroll-Driven Animations ───────────────────── */
+.scrollDriven .char {
+  animation-timeline: --scroll-float;
+  /* Easing lineal → el scrub hace que la velocidad dependa del scroll */
+  animation-timing-function: linear;
+  /* animation-range-start y animation-range-end se inyectan inline */
+}
+
+/* ── RUTA 2: Fallback temporal (IntersectionObserver) ────── */
+/* Chars invisibles hasta que .visible se añada */
+.container:not(.scrollDriven) .char {
+  opacity: 0;
+  animation-duration: 900ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-play-state: paused;
+}
+
+.container:not(.scrollDriven).visible .char {
+  animation-play-state: running;
+}
+
+/* ── prefers-reduced-motion ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .char {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeReadingPaths.module.css';
+import SpotlightCard from './ReactBits/SpotlightCard';
 
 const TRANSLATIONS = {
   es: {
@@ -189,7 +190,7 @@ export default function HomeReadingPaths() {
         <p className={styles.eyebrow}>{t.eyebrow}</p>
         <div className={styles.grid}>
           {t.paths.map((path) => (
-            <div key={path.id} className={styles.card}>
+            <SpotlightCard key={path.id} className={styles.card} spotlightColor="rgba(107, 16, 36, 0.13)">
               <div className={styles.cardHeader}>
                 <span className={styles.cardId}>{path.id}</span>
                 <div>
@@ -207,7 +208,7 @@ export default function HomeReadingPaths() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>

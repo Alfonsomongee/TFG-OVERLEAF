@@ -1,0 +1,21 @@
+.base {
+  opacity: 0;
+  transform: translateY(8px);
+  /* Cubic-bezier académico: suave aceleración, lenta decelaración */
+  transition: opacity 450ms cubic-bezier(0.2, 0, 0, 1),
+              transform 450ms cubic-bezier(0.2, 0, 0, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

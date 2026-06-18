@@ -1,6 +1,7 @@
 import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeArgument.module.css';
+import ScrollFloat from './ScrollFloat';
 
 const TRANSLATIONS = {
   es: {
@@ -43,9 +44,9 @@ export default function HomeArgument() {
       <div className={styles.inner}>
         <div className={styles.left}>
           <p className={styles.eyebrow}>{t.eyebrow}</p>
-          <h2 className={styles.heading}>
+          <ScrollFloat tag="h2" className={styles.heading}>
             {t.heading}
-          </h2>
+          </ScrollFloat>
         </div>
         <div className={styles.right}>
           <p>{t.p1}</p>

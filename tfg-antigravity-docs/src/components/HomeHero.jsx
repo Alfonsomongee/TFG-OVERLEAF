@@ -2,6 +2,11 @@ import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeHero.module.css';
+import ParticlesBackground from './ReactBits/ParticlesBackground';
+import BlurText from './ReactBits/BlurText';
+import ShinyText from './ReactBits/ShinyText';
+import SubtleReveal from './ui/SubtleReveal';
+import MetricCountUp from './ui/MetricCountUp';
 
 const TRANSLATIONS = {
   es: {
@@ -227,8 +232,34 @@ export default function HomeHero() {
     }
   };
 
+  const parseMetric = (str, locale) => {
+    const match = str.match(/^([^\d]*)((?:\d+[.,\s]?)+)([^\d]*)$/);
+    if (!match) return { value: str, isNumeric: false };
+    
+    let cleanNumStr = match[2].replace(/\s/g, '');
+    if (locale === 'en' || locale === 'zh-Hans') {
+      cleanNumStr = cleanNumStr.replace(/,/g, '');
+    } else {
+      cleanNumStr = cleanNumStr.replace(/\./g, '').replace(/,/g, '.');
+    }
+    
+    const endValue = parseFloat(cleanNumStr);
+    if (isNaN(endValue)) return { value: str, isNumeric: false };
+    
+    const decimals = cleanNumStr.includes('.') ? cleanNumStr.split('.')[1].length : 0;
+    return { isNumeric: true, prefix: match[1], endValue, suffix: match[3], decimals };
+  };
+
+  const getLocaleForIntl = (loc) => {
+    if (loc === 'es') return 'es-ES';
+    if (loc === 'de') return 'de-DE';
+    if (loc === 'zh-Hans') return 'zh-CN';
+    return 'en-US';
+  };
+
   return (
     <section className={styles.hero}>
+      <ParticlesBackground />
       <div className={styles.inner}>
         <div className={styles.leftCol}>
           {/* Eyebrow */}
@@ -239,18 +270,20 @@ export default function HomeHero() {
           {/* Título */}
           <h1 className={styles.title}>
             {t.titlePrefix}<br />
-            <span className={styles.titleAccent}>{t.titleAccent}</span><br />
+            <ShinyText className={styles.titleAccent} shinyColor="rgba(255, 255, 255, 0.95)" baseColor="var(--home-hero-accent)" speed={5}>
+              {t.titleAccent}
+            </ShinyText><br />
             {t.titleSuffix}
           </h1>
 
           <p className={styles.subtitle}>
-            {t.subtitle}
+            <BlurText text={t.subtitle} delay={30} />
           </p>
 
           {/* CTAs */}
           <div className={styles.ctas}>
             <a href={getLocalizedUrl('/introduccion')} className={styles.ctaPrimary} onClick={handleLinkClick}>
-              {t.readIntro}
+              <ShinyText shinyColor="#fff" baseColor="rgba(255, 255, 255, 0.85)">{t.readIntro}</ShinyText>
             </a>
             <a href={getLocalizedUrl('/contexto')} className={styles.ctaSecondary} onClick={handleLinkClick}>
               {t.techAnalysis}
@@ -266,16 +299,17 @@ export default function HomeHero() {
           <div className={styles.chain} aria-label={t.ariaLabelChain}>
             {t.chain.map((step, i) => (
               <React.Fragment key={step.label}>
-                <a href={getLocalizedUrl(step.href)} className={styles.node} style={{ animationDelay: `${0.3 + i * 0.25}s` }} onClick={handleLinkClick}>
+                <SubtleReveal delay={300 + i * 200} as="a" href={getLocalizedUrl(step.href)} className={styles.node} style={{ '--step-index': i + 1 }} onClick={handleLinkClick}>
+                  <span className={styles.nodeIndex}>{String(i + 1).padStart(2, '0')}</span>
                   <span className={styles.nodeTime}>{step.time}</span>
                   <span className={styles.nodeLabel}>{step.label}</span>
                   <span className={styles.nodeDetail}>{step.detail}</span>
-                </a>
+                </SubtleReveal>
                 {i < t.chain.length - 1 && (
-                  <div className={styles.arrow} aria-hidden="true">
+                  <SubtleReveal delay={400 + i * 200} className={styles.arrow} aria-hidden="true">
                     <div className={styles.arrowLine} />
                     <div className={styles.arrowHead}>▼</div>
-                  </div>
+                  </SubtleReveal>
                 )}
               </React.Fragment>
             ))}
@@ -285,12 +319,26 @@ export default function HomeHero() {
 
       {/* Franja de cifras */}
       <div className={styles.strip}>
-        {t.numbers.map((n) => (
-          <div key={n.label} className={styles.stripItem}>
-            <span className={styles.stripValue}>{n.value}</span>
-            <span className={styles.stripLabel}>{n.label}</span>
-          </div>
-        ))}
+        {t.numbers.map((n) => {
+          const parsed = parseMetric(n.value, currentLocale);
+          return (
+            <div key={n.label} className={styles.stripItem}>
+              {parsed.isNumeric ? (
+                <MetricCountUp
+                  endValue={parsed.endValue}
+                  decimals={parsed.decimals}
+                  prefix={parsed.prefix}
+                  suffix={parsed.suffix}
+                  locale={getLocaleForIntl(currentLocale)}
+                  className={styles.stripValue}
+                />
+              ) : (
+                <span className={styles.stripValue}>{n.value}</span>
+              )}
+              <span className={styles.stripLabel}>{n.label}</span>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

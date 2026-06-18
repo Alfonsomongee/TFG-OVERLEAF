@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './BiblioCard.module.css';
 import { BIBLIOGRAPHY } from '../data/bibliography';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import SpotlightCard from './ReactBits/SpotlightCard';
 
 export default function BiblioCard() {
   return (
@@ -15,9 +16,10 @@ export default function BiblioCard() {
 
       <div className={styles.referencesList}>
         {BIBLIOGRAPHY.map((ref) => (
-          <div
+          <SpotlightCard
             key={ref.id}
             className={styles.referenceCard}
+            spotlightColor="rgba(255, 255, 255, 0.08)"
           >
             <div className={styles.refId}>[{ref.id}]</div>
             <div className={styles.title}>
@@ -30,7 +32,7 @@ export default function BiblioCard() {
                 </div>
               )}
             </div>
-          </div>
+          </SpotlightCard>
         ))}
       </div>
 
