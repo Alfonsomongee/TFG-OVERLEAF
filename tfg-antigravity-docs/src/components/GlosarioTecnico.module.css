@@ -5,30 +5,52 @@
   font-family: var(--font-body, 'Inter', sans-serif);
 }
 
-/* Search Section */
+/* ── Search ── */
 .searchSection {
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .searchInput {
   width: 100%;
-  padding: 12px 40px 12px 16px;
+  padding: 12px 44px 12px 16px;
   font-size: 16px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  background: transparent;
 }
 
 .searchInput:focus {
   outline: none;
   border-color: #636E4F;
-  box-shadow: 0 0 0 3px rgba(99, 110, 79, 0.2);
+  box-shadow: 0 0 0 3px rgba(99, 110, 79, 0.18);
 }
 
 .searchInput::placeholder {
   color: #999;
+}
+
+/* kbd shortcut hint */
+.kbdHint {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: monospace;
+  color: #999;
+  background: #f5f5f5;
+  pointer-events: none;
+  line-height: 1;
 }
 
 .clearButton {
@@ -38,39 +60,53 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
   color: #999;
   cursor: pointer;
   padding: 4px 8px;
   transition: color 0.2s ease;
+  line-height: 1;
 }
 
 .clearButton:hover {
   color: #dc2626;
 }
 
-/* Letter Filter */
+/* ── Letter filter — sticky ── */
 .letterFilter {
   display: flex;
-  gap: 8px;
-  margin-bottom: 2rem;
+  gap: 6px;
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height, 60px) + 8px);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 8px 0;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .letterButton {
-  padding: 8px 14px;
+  padding: 6px 12px;
   border: 1px solid #d0d0d0;
   border-radius: 6px;
   background-color: #f9f9f9;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
+  color: #555;
 }
 
 .letterButton:hover {
   border-color: #636E4F;
   color: #636E4F;
+  background-color: rgba(99, 110, 79, 0.06);
 }
 
 .letterButton.active {
@@ -79,25 +115,28 @@
   border-color: #636E4F;
 }
 
-/* Results Info */
+/* ── Results info ── */
 .resultsInfo {
-  padding: 12px 16px;
+  padding: 10px 16px;
   background-color: rgba(99, 110, 79, 0.08);
   border-left: 4px solid #636E4F;
   border-radius: 4px;
   margin-bottom: 2rem;
   font-size: 14px;
   color: #3b422e;
+  display: flex;
+  align-items: center;
+  gap: 0.3ch;
+  flex-wrap: wrap;
 }
 
-/* Terms Container */
+/* ── Terms container ── */
 .termsContainer {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
-/* Letter Group */
 .letterGroup {
   display: flex;
   flex-direction: column;
@@ -105,21 +144,21 @@
 }
 
 .letterHeader {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #636E4F;
   margin: 0;
-  padding: 12px 0;
+  padding: 10px 0;
   border-bottom: 2px solid #e0e0e0;
 }
 
 .termsList {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-/* Term Item */
+/* ── Term item ── */
 .termItem {
   padding: 16px;
   background-color: #fafafa;
@@ -130,16 +169,26 @@
 }
 
 .termItem:hover {
-  background-color: rgba(99, 110, 79, 0.08);
+  background-color: rgba(99, 110, 79, 0.07);
   border-left-color: #636E4F;
-  box-shadow: 0 2px 8px rgba(99, 110, 79, 0.15);
+  box-shadow: 0 2px 8px rgba(99, 110, 79, 0.12);
+}
+
+/* ── Term header row ── */
+.termHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 4px;
 }
 
 .termTitle {
-  margin: 0 0 8px 0;
-  font-size: 18px;
+  margin: 0;
+  font-size: 17px;
   font-weight: 600;
-  color: var(--bg-2);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .termTitle a {
@@ -153,14 +202,90 @@
   text-decoration: underline;
 }
 
+/* ── Actions (copy button) ── */
+.termActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.termItem:hover .termActions,
+.termItem:focus-within .termActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d0d0d0;
+  border-radius: 5px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+  padding: 0;
+}
+
+.actionBtn:hover {
+  border-color: #636E4F;
+  color: #636E4F;
+  background: rgba(99, 110, 79, 0.06);
+}
+
+.actionBtnCopied {
+  border-color: #16a34a;
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.06);
+}
+
+/* ── Definition ── */
 .termDefinition {
   margin: 0;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: #4b5563;
 }
 
-/* No Results */
+/* Gradient overlay when collapsed */
+.fadeGradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.4rem;
+  background: linear-gradient(to bottom, transparent, #fafafa);
+  pointer-events: none;
+}
+
+/* ── Read more / less button ── */
+.readMoreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #636E4F;
+  transition: color 0.18s ease;
+}
+
+.readMoreBtn:hover {
+  color: #3d4530;
+}
+
+/* ── No results ── */
 .noResults {
   text-align: center;
   padding: 3rem 2rem;
@@ -193,7 +318,7 @@
   border-color: rgba(100, 180, 255, 0.55);
 }
 
-/* Glossary Footer */
+/* ── Footer ── */
 .glossaryFooter {
   margin-top: 3rem;
   padding-top: 2rem;
@@ -207,8 +332,16 @@
   margin: 0;
 }
 
+/* ── Target highlight ── */
+.termItemActive {
+  background-color: rgba(99, 110, 79, 0.22);
+  box-shadow: 0 0 15px rgba(99, 110, 79, 0.28), inset 0 0 10px rgba(99, 110, 79, 0.08);
+  border-left-color: rgba(99, 110, 79, 0.8);
+  transition: all 0.5s ease;
+}
+
 /* ============================================================
-   DARK MODE OVERRIDES (Main Branch)
+   DARK MODE
    ============================================================ */
 
 :global(html[data-theme='dark']) .glosarioContainer {
@@ -223,7 +356,17 @@
 
 :global(html[data-theme='dark']) .searchInput:focus {
   border-color: var(--accent-electric, #38bdf8);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+:global(html[data-theme='dark']) .kbdHint {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #666;
+}
+
+:global(html[data-theme='dark']) .letterFilter {
+  background: rgba(10, 17, 40, 0.88);
 }
 
 :global(html[data-theme='dark']) .letterButton {
@@ -235,6 +378,7 @@
 :global(html[data-theme='dark']) .letterButton:hover {
   border-color: var(--accent-electric, #38bdf8);
   color: var(--accent-electric, #38bdf8);
+  background-color: rgba(56, 189, 248, 0.06);
 }
 
 :global(html[data-theme='dark']) .letterButton.active {
@@ -244,7 +388,7 @@
 }
 
 :global(html[data-theme='dark']) .resultsInfo {
-  background-color: rgba(56, 189, 248, 0.1);
+  background-color: rgba(56, 189, 248, 0.08);
   color: #e2e8f0;
   border-left-color: var(--accent-electric, #38bdf8);
 }
@@ -260,12 +404,8 @@
 }
 
 :global(html[data-theme='dark']) .termItem:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.04);
   border-left-color: var(--accent-electric, #38bdf8);
-}
-
-:global(html[data-theme='dark']) .termTitle {
-  color: #ffffff;
 }
 
 :global(html[data-theme='dark']) .termTitle a {
@@ -276,8 +416,31 @@
   color: #cbd5e1;
 }
 
+:global(html[data-theme='dark']) .fadeGradient {
+  background: linear-gradient(to bottom, transparent, var(--bg-1, #0f1830));
+}
+
+:global(html[data-theme='dark']) .readMoreBtn {
+  color: var(--accent-electric, #38bdf8);
+}
+
+:global(html[data-theme='dark']) .readMoreBtn:hover {
+  color: #7dd3fc;
+}
+
+:global(html[data-theme='dark']) .actionBtn {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #64748b;
+}
+
+:global(html[data-theme='dark']) .actionBtn:hover {
+  border-color: var(--accent-electric, #38bdf8);
+  color: var(--accent-electric, #38bdf8);
+  background: rgba(56, 189, 248, 0.08);
+}
+
 :global(html[data-theme='dark']) .noResults {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -290,47 +453,40 @@
   color: #94a3b8;
 }
 
-/* Mobile Responsive */
+:global(html[data-theme='dark']) .termItemActive {
+  background-color: rgba(56, 189, 248, 0.18);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.12);
+  border-left-color: rgba(56, 189, 248, 0.8);
+}
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
   .glosarioContainer {
     padding: 0 0.5rem;
   }
 
   .letterFilter {
-    gap: 6px;
+    gap: 5px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
   }
 
   .letterButton {
-    padding: 6px 10px;
+    padding: 5px 9px;
     font-size: 12px;
   }
 
   .letterHeader {
-    font-size: 20px;
+    font-size: 19px;
   }
 
   .termTitle {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .termDefinition {
     font-size: 14px;
-  }
-}
-
-/* Target Highlight Persistent State */
-.termItemActive {
-  background-color: rgba(99, 110, 79, 0.25);
-  box-shadow: 0 0 15px rgba(99, 110, 79, 0.3), inset 0 0 10px rgba(99, 110, 79, 0.1);
-  border-left-color: rgba(99, 110, 79, 0.8);
-  transition: all 0.5s ease;
-}
-
-html[data-theme='dark'] .termItemActive,
-@media (prefers-color-scheme: dark) {
-  .termItemActive {
-    background-color: rgba(56, 189, 248, 0.25);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3), inset 0 0 10px rgba(56, 189, 248, 0.2);
-    border-left-color: rgba(56, 189, 248, 0.8);
   }
 }
