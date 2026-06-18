@@ -5,6 +5,8 @@ import ChatWidget from '@site/src/components/ChatWidget';
 
 export default function Layout(props) {
   const location = useLocation();
+  const path = location.pathname.toLowerCase();
+  const isHomepage = path === '/' || /^\/(en|de|pt|fr|it|zh-hans)\/?$/.test(path);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -35,7 +37,7 @@ export default function Layout(props) {
       <div className="page-transition-enter">
         <OriginalLayout {...props} />
       </div>
-      <ChatWidget />
+      {!isHomepage && <ChatWidget />}
     </>
   );
 }
