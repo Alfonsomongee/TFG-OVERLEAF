@@ -6,92 +6,103 @@ title: "Actualización 2026: Un Año Después"
 ---
 
 import GlitchTitle from "@site/src/components/GlitchTitle";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import Comparador28A from "@site/src/components/Comparador28A";
-import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
-import BESSBoomChart from "@site/src/components/BESSBoomChart";
 import OvervoltageTimeline from "@site/src/components/OvervoltageTimeline";
-import PO74Timeline from "@site/src/components/PO74Timeline";
-import ThenVsNowPanel from "@site/src/components/ThenVsNowPanel";
+import { ForensicTable } from "@site/src/components/ForensicUI/Primitives";
 
 <GlitchTitle>Actualización 2026: Un Año Después</GlitchTitle>
 
-*Estado actualizado a mayo de 2026. Los procedimientos regulatorios, expedientes administrativos y reformas técnicas mencionados pueden haber evolucionado con posterioridad.*
+*Estado actualizado a junio de 2026. Los procedimientos regulatorios, expedientes administrativos y reformas técnicas mencionados pueden haber evolucionado con posterioridad.*
 
-El apagón del 28 de abril de 2025 supuso un punto de inflexión sistémico. A fecha de mayo de 2026, los informes finales de la ENTSO-E (20 de marzo de 2026) y las investigaciones forenses independientes han sacado a la luz revelaciones técnicas y regulatorias que alteran la narrativa inicial del incidente. Este capítulo se centra en el *delta*: qué sabemos ahora que no sabíamos entonces, y cómo ha respondido el sistema. La cuantificación financiera completa se encuentra en el [Capítulo 7b](./07b-consecuencias-financieras.mdx); la respuesta técnica y regulatoria, en el [Capítulo 7](./07-resiliencia-futuro.mdx).
-
-## Sistema Ahora vs 28-A
-
-El siguiente panel compara las métricas de vulnerabilidad sistémica actuales con las condiciones registradas el 28 de abril de 2025 a las 12:30 CEST.
-
-<figure id="fig-n1-thenvsnow">
-  <ThenVsNowPanel />
-  <figcaption>
-    <strong>Figura N1 — Sistema Ahora vs 28-A.</strong> Cada fila enfrenta el valor de una métrica de seguridad en el instante previo al colapso con su equivalente en mayo de 2026.
-  </figcaption>
-</figure>
-
-:::warning Advertencia metodológica
-Los datos del «Sistema actual» proceden de fuentes operativas (API ESIOS, mayo 2026) y pueden variar según la hora de consulta. Los datos del «28-A» son valores históricos fijos correspondientes al escenario previo al colapso (ENTSO-E Factual Report, Comité de Análisis del Gobierno). La comparación es orientativa.
-:::
-
-<Collapsible label="Ver comparador interactivo (Sistema Actual vs 28-A)">
-<div style={{marginTop:'1rem'}}>
-<Comparador28A />
-</div>
-</Collapsible>
+El 20 de marzo de 2026, ENTSO-E publicó el informe final de su panel de expertos: un documento de 440 páginas elaborado por 49 miembros — representantes de operadores de transporte, centros de coordinación regional, ACER y reguladores nacionales — presidido por Klaus Kaschnitz (APG, Austria) y Richard Balog (MAVIR, Hungría). Este capítulo integra los hallazgos de ese informe con los datos operativos y regulatorios del primer año postcatástrofe. La cuantificación financiera se encuentra en el [Capítulo 7b](./07b-consecuencias-financieras.mdx); la respuesta técnica y regulatoria, en el [Capítulo 7](./07-resiliencia-futuro.mdx).
 
 ## 1. El paradigma del *Overvoltage-Driven Blackout*
 
-Los primeros análisis sugerían un colapso clásico por falta de inercia o desvío de frecuencia. Sin embargo, el estudio independiente del IIT de la Universidad Pontificia Comillas — validado por pares en *ScienceDirect* (Rouco, Lobato, Echavarren, 2026) — ha introducido un concepto técnico inédito: el *overvoltage-driven blackout* (apagón inducido por sobretensión).
+Los primeros análisis sugerían un colapso clásico por falta de inercia o desvío de frecuencia. El informe final ENTSO-E descartó esta hipótesis de forma explícita:
 
-:::warning Revelación técnica
-La secuencia fatal no fue una caída de tensión generalizada. Al activarse las lógicas de protección, la red sufrió una cascada de disparos por sobretensión masiva. La desconexión de carga y la inyección capacitiva de las líneas a 400 kV (sin reactancias suficientes) elevó las tensiones por encima del límite de las protecciones de generación. El disparo del transformador 400/220 kV en Granada a las 12:32:57, que perdió 355 MW, fue el detonante de la cascada.
-:::
+> "Even with significantly higher inertia values, the loss of system synchronism would not have been avoided, considering the sequence of events."
 
-<figure id="fig-n2-overvoltage">
+El estudio independiente del IIT de la Universidad Pontificia Comillas — validado por pares en *ScienceDirect* (Rouco, Lobato, Echavarren, 2026) — formalizó el concepto de *overvoltage-driven blackout*. El informe ENTSO-E identificó al menos 15 factores interactuantes, agrupados en cuatro categorías: control de tensión y reactiva, estabilidad oscilatoria, comportamiento de desconexión de inversores, y defensa y restauración. Damián Cortinas, presidente del consejo de ENTSO-E, aclaró en la rueda de prensa: "El problema no es la energía renovable, sino el control de tensión, independientemente del tipo de generación."
+
+La secuencia reconstruida revela que entre las 12:32:00 y las 12:32:48, la producción de las plantas renovables de gran potencia (>5 MW) cayó aproximadamente 500 MW. A las 12:33:16, las desconexiones en la zona de Badajoz habían eliminado 727 MW de generación fotovoltaica y termosolar. En los dos segundos siguientes, otros 928 MW se desconectaron en cinco provincias. En total, más de 2.500 MW se perdieron con tensiones superiores a 435 kV.
+
+<figure id="fig-n1-overvoltage">
   <OvervoltageTimeline />
   <figcaption>
-    <strong>Figura N2 — Cronología del <em>Overvoltage-Driven Blackout</em>.</strong> Secuencia de eventos que condujeron al colapso por sobretensión del 28-A. Colores: azul (oscilación), ámbar (sobretensión), rojo (disparo en cascada), gris oscuro (colapso total).
+    <strong>Figura N1 — Cronología del <em>Overvoltage-Driven Blackout</em>.</strong> Secuencia desde las oscilaciones precursoras hasta el colapso total. Fuente: elaboración propia a partir de ENTSO-E Factual Report (oct 2025) e informe final (mar 2026).
   </figcaption>
 </figure>
 
-Las plantas con inversores Grid-Following en modo de factor de potencia fijo reaccionaron a las oscilaciones de activa inyectando rampas de reactiva. Ante una red con SCR < 2, el PLL de estos inversores provocó inestabilidades que el sistema no pudo amortiguar.
+Los datos de fabricantes de inversores aportados al panel mostraron que muchos equipos dispararon por sobretensión durante ciertos periodos del 28-A. El panel también identificó un papel relevante del tiempo de reconexión de los sistemas FV no observables en la pérdida acumulada de generación. No obstante, el panel reconoció que no pudo realizar una investigación en profundidad de los inversores y contempla intensificar el intercambio con fabricantes y distribuidores.
 
-## 2. Opacidad operativa y el rol del HVDC
+## 2. Opacidad operativa y hallazgos del informe final
 
-Uno de los puntos más polémicos de la investigación fue la actuación de REE. En julio de 2025, el consorcio independiente (AELEC, INESC TEC, Compass Lexecon) denunció falta de transparencia respecto a los datos de estimadores de estado y PMU.
+El informe ENTSO-E distribuyó responsabilidad entre REE, las instalaciones de generación (convencionales y renovables) y el entorno regulatorio. Entre los hallazgos clave:
 
-El papel crítico del cambio de modo del HVDC INELFE-1 a PMODE1 y sus consecuencias sobre la capacidad de soporte dinámico se analizan en los Capítulos [2](./02-contexto.mdx) y [3](./03-analisis-incidente.mdx).
+- Los equipos de control de tensión en la red española se conectaban y desconectaban **manualmente**, ralentizando los tiempos de respuesta.
+- REE carecía de monitorización en tiempo real del desfase entre la reactiva demandada y la suministrada por los generadores.
+- Muchos inversores operaban con **esquemas de factor de potencia fijo**, limitando su capacidad de respuesta ante variaciones de tensión.
+- Un número significativo de instalaciones tenía **protecciones de sobretensión ajustadas por debajo de los límites regulatorios**, provocando desconexiones innecesarias.
 
-## 3. Calendario de implementación del P.O. 7.4
-
-<figure id="fig-n3-po74">
-  <PO74Timeline />
-  <figcaption>
-    <strong>Figura N3 — Calendario del P.O. 7.4.</strong> Hitos desde la propuesta inicial de REE (2021) hasta la finalización prevista de exenciones transitorias (dic 2026). Verde: completado. Ámbar: pendiente. Gris: estimado.
-  </figcaption>
-</figure>
-
-## 4. La respuesta regulatoria: el mandato Grid-Forming
-
-La ENTSO-E publicó en noviembre de 2025 el Phase II Report, sentando las bases del NC RfG 2.0. Las especificaciones técnicas y el mandato GFM obligatorio se detallan en el [Capítulo 7](./07-resiliencia-futuro.mdx). Lo relevante para 2026 es el estado de implementación: a pesar del colapso ibérico, la adopción oficial por la Comisión Europea ha sido despriorizada hasta finales de 2026. Sin embargo, España ha acelerado por su cuenta a través del P.O. 7.4 revisado y los trámites de mercados zonales de no frecuencia (Expediente DCOOR/DE/006/26, mayo 2026).
-
-### El boom del almacenamiento ibérico
-
-El coste sistémico de mantener la Operación Reforzada — detallado en el [Capítulo 7b](./07b-consecuencias-financieras.mdx) — aceleró la inversión en almacenamiento. La capacidad BESS instalada pasó de 28 MW a aproximadamente 221 MW en un solo año (Fundación Renovables / El Independiente). Iberdrola cuenta ya con 212 MW operativos en 12 instalaciones, con 173 MW adicionales en ejecución a través del PERTE ERHA. A nivel nacional, España acumula más de 37 GW en solicitudes de proyectos BESS (EY Infrastructure Compass 2025), y el PNIEC fija un objetivo de 22 GW de almacenamiento para 2030.
-
-<figure id="fig-n4-bess">
-  <BESSBoomChart />
-  <figcaption>
-    <strong>Figura N4 — El boom del almacenamiento ibérico.</strong> Evolución de la capacidad BESS acumulada en España desde Q1 2024 hasta mayo de 2026. Las anotaciones marcan los hitos normativos y de mercado que aceleraron el despliegue.
-  </figcaption>
-</figure>
+El papel del cambio de modo del HVDC INELFE-1 a PMODE1 y sus consecuencias sobre la capacidad de soporte dinámico se analizan en los Capítulos [2](./02-contexto.mdx) y [3](./03-analisis-incidente.mdx).
 
 ### Audios de la sala de control
 
-Las audiencias de la Comisión de Investigación del Senado hicieron públicos audios de la sala de control de REE. Los operadores atribuían las oscilaciones de las 12:00 a la gestión de los operadores de una planta fotovoltaica. Sin embargo, la CNMC aclaró que la oscilación de 0,6 Hz fue originada por un defecto en el lazo de control de una planta fotovoltaica de gran potencia en Badajoz — un fallo técnico, no una «mala gestión» humana. Esto revela que el riesgo era inminente minutos antes del colapso final, aunque el diagnóstico en sala fuera erróneo.
+Las audiencias de la Comisión de Investigación del Senado hicieron públicos audios de la sala de control de REE en los que los operadores atribuían las oscilaciones de las 12:00 a la "gestión de los operadores de una planta fotovoltaica". La CNMC aclaró que la oscilación de 0,6 Hz fue originada por un defecto en el lazo de control de una planta fotovoltaica de gran potencia en Badajoz — un fallo técnico del hardware, no una mala gestión humana. La sala de control diagnosticó incorrectamente la causa minutos antes del colapso final.
+
+## 3. Las 22 recomendaciones ENTSO-E
+
+El informe final articuló 22 recomendaciones, de las cuales 13 están directamente vinculadas a las causas raíz. Se organizan en cuatro áreas:
+
+<ForensicTable
+  title="Tabla N1 — Recomendaciones ENTSO-E por área (informe final, 20 mar 2026)"
+  source="ENTSO-E Expert Panel Final Report (440 pp.)"
+>
+
+| Área | Nº recom. | Foco principal |
+| :--- | :---: | :--- |
+| Control de tensión y reactiva | 8 | Recursos de reactiva suficientes; observabilidad en tiempo real; abandono de esquemas de factor de potencia fijo; armonización del rango de operación a 380–420 kV |
+| Estabilidad oscilatoria | 4 | Datos PMU de alta calidad para detección y localización; validación continua del amortiguamiento interárea |
+| Comportamiento de desconexión | 5 | Revisión de ajustes de protección; exigencia de *ride-through* de sobretensión; atención especial a pequeña generación |
+| Defensa y restauración | 5 | Esquemas de deslastre adaptativos; coordinación entre operadores; marcos estandarizados de recogida de datos post-incidente |
+
+</ForensicTable>
+
+Según el panel, la mayoría de las recomendaciones pueden implementarse con tecnología ya disponible.
+
+## 4. Implementación del P.O. 7.4
+
+<ForensicTable
+  title="Tabla N2 — Hitos del P.O. 7.4 (propuesta a implementación)"
+  source="CNMC / REE / BOE / SolarPower Europe"
+>
+
+| Fecha | Hito | Estado |
+| :--- | :--- | :---: |
+| Jul 2021 | Propuesta inicial de revisión por REE a la CNMC | ✓ |
+| 28 abr 2025 | Apagón ibérico (evidencia de inoperancia del control estático) | ✓ |
+| 12 jun 2025 | Resolución CNMC: nuevo servicio de control de tensión | ✓ |
+| 26 jun 2025 | Publicación en BOE (BOE-A-2025-13076) | ✓ |
+| 15 dic 2025 | Asignación de ofertas para recursos adicionales | ✓ |
+| 16 mar 2026 | Modificación de tolerancia Anexo II (P≤0) | ✓ |
+| 17 mar 2026 | Inicio de prestación de control por consignas en tiempo real | ✓ |
+| 31 dic 2026 | Finalización de exenciones transitorias | — (estimado) |
+
+</ForensicTable>
+
+La implementación completa del P.O. 7.4 se alcanzó el 17 de marzo de 2026 (SolarPower Europe, declaración conjunta, 20 mar 2026). El 8 de mayo de 2026, la CNMC abrió trámite de audiencia pública para mercados zonales de servicios de no frecuencia (Expediente DCOOR/DE/006/26).
+
+## 5. El almacenamiento: dato real frente a expectativa
+
+Según Red Eléctrica, España tenía 28 MW de capacidad BESS instalada en abril de 2025. Un año después, la cifra había alcanzado 193 MW — un crecimiento del 589 % (pv magazine / ESS News, abril 2026). Iberdrola concentra 212 MW en 12 instalaciones, con 173 MW adicionales en ejecución a través del PERTE ERHA. En junio de 2026, Iberdrola inauguró Campo Arañuelo (58 MW / 120 MWh), el mayor BESS del país.
+
+En el segmento residencial, la capacidad de almacenamiento de autoconsumo pasó de 155 MWh a 339 MWh (+119 %, APPA Renovables). El *pipeline* de proyectos BESS creció un 464 % interanual.
+
+La cifra de 193 MW, aunque notable en términos relativos, sigue siendo marginal frente a los 3.000–4.000 MW que los análisis de resiliencia identifican como necesarios para prescindir de la Operación Reforzada (véase [Capítulo 7b](./07b-consecuencias-financieras.mdx)). El PNIEC fija un objetivo de 22 GW de almacenamiento para 2030.
+
+## 6. Interconexión: el cuello de botella persistente
+
+Un año después, la capacidad de intercambio transfronterizo español sigue representando aproximadamente el 4 % de la potencia instalada — muy por debajo de las recomendaciones de la UE. En 2025 comenzó la construcción del enlace submarino del Golfo de Vizcaya con Francia (400 km), que elevará la capacidad de 2.800 MW a 5.000 MW. MITECO firmó además un memorando de entendimiento con Irlanda para explorar una nueva interconexión submarina.
 
 ## Conclusión
 
-El apagón de 2025 ya no se estudia en 2026 como un accidente fortuito derivado de la sequía hidráulica o el exceso solar. Es el primer exponente documentado de un colapso precipitado por la inadecuación estructural del marco regulatorio-técnico vigente a la física de los sistemas de alta penetración renovable. La península ibérica se convirtió en el laboratorio vivo que ha obligado a Europa a reescribir las reglas de la estabilidad eléctrica de la próxima década.
+El apagón de 2025 ya no se estudia en 2026 como un accidente derivado de la sequía hidráulica o el exceso solar. El informe final ENTSO-E lo documenta como un fallo estructural del control de tensión en un sistema con capacidades de estabilización desiguales y reglas técnicas desactualizadas. La península ibérica se convirtió en el caso de estudio que ha obligado a Europa a reescribir las reglas de la estabilidad eléctrica — con 22 recomendaciones cuya implementación determinará si el continente aprende de este precedente o lo reproduce.

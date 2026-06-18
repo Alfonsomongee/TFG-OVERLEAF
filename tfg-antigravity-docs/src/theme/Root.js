@@ -1,5 +1,6 @@
 // src/theme/Root.js
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { translate } from '@docusaurus/Translate';
 import { useLocation } from '@docusaurus/router';
 import GlossaryDefinitionPanel from '@site/src/components/GlossaryDefinitionPanel';
@@ -35,6 +36,7 @@ const IconToc = () => (
 export default function Root({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tocVisible, setTocVisible] = useState(false);
+  const [tocPortalHtml, setTocPortalHtml] = useState('');
   const location = useLocation();
 
   const rawPath = location.pathname.toLowerCase();
@@ -43,52 +45,22 @@ export default function Root({ children }) {
     : rawPath;
 
   const isHomepage = path === '/' || path === '/en' || path === '/de' || path === '/zh-hans';
-
-  const hideButtonsPaths = [
-    '/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor',
-  ];
+  const hideButtonsPaths = ['/datos-tiempo-real', '/glosario', '/referencias', '/sobre-el-autor'];
   const shouldHideButtons = hideButtonsPaths.some(k => path.includes(k));
 
+  // Inicialización modo zen
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
-    setSidebarOpen(saved === 'false');
+    const isZen = saved === 'false';
+    setSidebarOpen(!isZen);
+    document.documentElement.classList.toggle('zen-mode', isZen);
   }, []);
 
+  // Asegurar las clases en el DOM directamente sin MutationObserver
   useEffect(() => {
-    // Sincronización inicial de clases en el elemento raíz
     document.documentElement.classList.toggle('zen-mode', !sidebarOpen);
     document.documentElement.classList.toggle('toc-visible', tocVisible);
-
-    // Observador para reaccionar ante cambios de atributos (ej. reseteos de clases por React Helmet / Docusaurus)
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          const hasZen = document.documentElement.classList.contains('zen-mode');
-          const shouldHaveZen = !sidebarOpen;
-          if (shouldHaveZen && !hasZen) {
-            document.documentElement.classList.add('zen-mode');
-          } else if (!shouldHaveZen && hasZen) {
-            document.documentElement.classList.remove('zen-mode');
-          }
-
-          const hasToc = document.documentElement.classList.contains('toc-visible');
-          const shouldHaveToc = tocVisible;
-          if (shouldHaveToc && !hasToc) {
-            document.documentElement.classList.add('toc-visible');
-          } else if (!shouldHaveToc && hasToc) {
-            document.documentElement.classList.remove('toc-visible');
-          }
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, [location.pathname, sidebarOpen, tocVisible]);
+  }, [sidebarOpen, tocVisible]);
 
   const toggleSidebar = () => {
     const next = !sidebarOpen;
@@ -96,20 +68,90 @@ export default function Root({ children }) {
     localStorage.setItem('zen-mode', String(!next));
   };
 
-  const toggleToc = () => setTocVisible(v => !v);
+  const toggleToc = () => {
+    const next = !tocVisible;
+    setTocVisible(next);
+    document.documentElement.classList.toggle('toc-visible', next);
+  };
 
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // Sincronizar estado: cerrar el TOC cuando el usuario pincha en un enlace del índice
+  useEffect(() => {
+    const handleTocLinkClick = (e) => {
+      const link = e.target.closest('.table-of-contents a');
+      if (link) {
+        setTocVisible(false);
+        document.documentElement.classList.remove('toc-visible');
+      }
+    };
+    document.addEventListener('click', handleTocLinkClick);
+    return () => document.removeEventListener('click', handleTocLinkClick);
+  }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setScrollProgress(Math.min(progress, 100));
+    const shouldUsePortal = tocVisible && !sidebarOpen && !isHomepage && !path.includes('/anexo');
+    document.documentElement.classList.toggle('toc-portal-visible', shouldUsePortal);
+
+    if (!shouldUsePortal) {
+      setTocPortalHtml('');
+      return () => document.documentElement.classList.remove('toc-portal-visible');
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const toc = document.querySelector('.theme-doc-toc-desktop');
+      setTocPortalHtml(toc?.innerHTML || '');
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.documentElement.classList.remove('toc-portal-visible');
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+  }, [tocVisible, sidebarOpen, isHomepage, path]);
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const lastScrollY = React.useRef(0);
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      // Capturar el contenedor que realmente está haciendo scroll
+      let scrollTarget = e.target;
+      if (scrollTarget === document || scrollTarget === window) {
+        scrollTarget = document.scrollingElement || document.documentElement;
+      }
+
+      if (!scrollTarget || !scrollTarget.clientHeight) return;
+
+      const currentScrollY = scrollTarget.scrollTop || window.scrollY || 0;
+      const docHeight = scrollTarget.scrollHeight - scrollTarget.clientHeight;
+
+      if (docHeight > 0) {
+        const progress = (currentScrollY / docHeight) * 100;
+        setScrollProgress(Math.min(progress, 100));
+      }
+
+      // Ocultamiento manual del Navbar (ya que el contenedor interno impide a Docusaurus detectarlo)
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        if (currentScrollY > lastScrollY.current && currentScrollY > 60) {
+          navbar.classList.add('navbar--hidden');
+        } else {
+          navbar.classList.remove('navbar--hidden');
+        }
+      }
+      lastScrollY.current = currentScrollY;
+    };
+    // Usar capture: true para detectar el scroll de contenedores anidados en lugar del window
+    window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+    return () => window.removeEventListener('scroll', handleScroll, { capture: true });
   }, []);
+
+  const handleTocPortalClick = (e) => {
+    const link = e.target.closest('.table-of-contents a');
+    if (link) {
+      setTocVisible(false);
+      document.documentElement.classList.remove('toc-visible');
+      document.documentElement.classList.remove('toc-portal-visible');
+    }
+  };
 
   return (
     <>
@@ -188,6 +230,19 @@ export default function Root({ children }) {
             </button>
           )}
         </>
+      )}
+
+      {tocVisible && !sidebarOpen && tocPortalHtml && typeof document !== 'undefined' && createPortal(
+        <nav
+          className="floating-toc-portal"
+          aria-label={translate({
+            id: 'theme.docs.toc.navAriaLabel',
+            message: 'Table of contents',
+          })}
+          onClick={handleTocPortalClick}
+          dangerouslySetInnerHTML={{ __html: tocPortalHtml }}
+        />,
+        document.body,
       )}
     </>
   );

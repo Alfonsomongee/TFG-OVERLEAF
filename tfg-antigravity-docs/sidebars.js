@@ -10,7 +10,6 @@ module.exports = {
       type: 'category',
       label: 'I · El incidente',
       className: 'sidebar-icon-zap', // rayo rojo
-      collapsed: false,
       items: ['introduccion', 'contexto', 'analisis-incidente', 'reaccion-reposicion'],
     },
     {
@@ -43,7 +42,7 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Datos ESIOS en tiempo real',
+      label: 'Datos ESIOS',
       className: 'sidebar-icon-activity',
       // Solo las 6 visualizaciones que consumen datos vivos de ESIOS (/api/esios-multi).
       // Las 5 visualizaciones forenses se acceden desde los Anexos conceptuales I–IX.
@@ -61,7 +60,7 @@ module.exports = {
     {
       type: 'category',
       label: 'Referencia',
-      className: 'sidebar-icon-book',
+      className: 'sidebar-icon-book sidebar-bottom-start',
       items: [
         'resumen-de-cifras',
         // cronologia eliminada del sidebar — la ruta física /cronologia sigue activa.

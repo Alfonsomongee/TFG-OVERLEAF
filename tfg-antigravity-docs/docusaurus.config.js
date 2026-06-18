@@ -100,6 +100,11 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/social-card.jpg',
+      docs: {
+        sidebar: {
+          autoCollapseCategories: true,
+        },
+      },
       navbar: {
         hideOnScroll: true,
         title: '',
