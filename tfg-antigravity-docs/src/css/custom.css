@@ -870,46 +870,6 @@ html.zen-mode .zen-mode-icon-active {
 .footer__copyright {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: #fca5a5;
-}
-
-/* ============================================================
-   FOOTER (Estética y tamaño reducido)
-   ============================================================ */
-
-.footer {
-  font-size: 0.85rem;
-  padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  background-color: var(--bg-1);
-}
-
-.footer__title {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  margin-bottom: 1.2rem;
-  font-weight: 600;
-}
-
-.footer__link-item {
-  color: var(--text-3);
-  transition: color 0.2s ease, transform 0.2s ease;
-  display: inline-block;
-  line-height: 1.8;
-}
-
-.footer__link-item:hover {
-  color: var(--ifm-color-primary);
-  text-decoration: none;
-  transform: translateX(4px);
-}
-
-.footer__copyright {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
   color: var(--text-3);
   letter-spacing: 0.05em;
   margin-top: 2rem;
@@ -5553,6 +5513,38 @@ html[data-theme='light'] :target {
 }
 
 /* ============================================================
+   DOC CONTENT — subtle page-enter fade
+   ============================================================ */
+
+.theme-doc-markdown,
+article[role='main'],
+.markdown {
+  animation: docFadeIn 0.35s ease;
+}
+
+@keyframes docFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   HR SEPARATOR — editorial divider
+   ============================================================ */
+
+.theme-doc-markdown hr,
+article hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.30), transparent);
+  margin: 3rem 0;
+}
+
+html[data-theme='light'] .theme-doc-markdown hr,
+html[data-theme='light'] article hr {
+  background: linear-gradient(90deg, transparent, rgba(139, 38, 53, 0.22), transparent);
+}
+
+/* ============================================================
    HIDE DEFAULT DOCUSAURUS PAGINATION (replaced by chapter-nav)
    ============================================================ */
 
@@ -5585,5 +5577,11 @@ html[data-theme='light'] :target {
 
   .chapter-nav-card:hover {
     transform: none;
+  }
+
+  .theme-doc-markdown,
+  article[role='main'],
+  .markdown {
+    animation: none;
   }
 }

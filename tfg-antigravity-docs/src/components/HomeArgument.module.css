@@ -43,6 +43,12 @@ html[data-theme='dark'] .eyebrow {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  border-left: 2px solid rgba(107, 16, 36, 0.18);
+  padding-left: 1.5rem;
+}
+
+html[data-theme='dark'] .right {
+  border-left-color: rgba(255, 170, 0, 0.18);
 }
 
 .right p {
@@ -50,15 +56,42 @@ html[data-theme='dark'] .eyebrow {
   line-height: 1.75;
   color: var(--ifm-color-secondary-darkest, #64707d);
   margin: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: argReveal 0.6s ease forwards;
 }
+
+.right p:nth-child(2) { animation-delay: 0.12s; }
+.right p:nth-child(3) { animation-delay: 0.24s; }
 
 html[data-theme='dark'] .right p {
   color: #a9b6c7;
+}
+
+@keyframes argReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .right p {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 768px) {
   .inner {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+  .right {
+    border-left: none;
+    padding-left: 0;
+    border-top: 2px solid rgba(107, 16, 36, 0.18);
+    padding-top: 1.25rem;
+  }
+  html[data-theme='dark'] .right {
+    border-top-color: rgba(255, 170, 0, 0.18);
   }
 }

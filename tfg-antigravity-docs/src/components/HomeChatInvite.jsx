@@ -90,7 +90,10 @@ export default function HomeChatInvite() {
             <div className={styles.terminalBody}>
               <div className={styles.msg}>
                 <span className={styles.msgLabel}>asistente</span>
-                <DecryptedText text={t.welcome} className={styles.msgText} speed={16} maxIterations={18} />
+                <span className={styles.msgText}>
+                  <DecryptedText text={t.welcome} speed={16} maxIterations={18} />
+                  <span className={styles.cursor} aria-hidden="true" />
+                </span>
               </div>
               <div className={styles.suggestions}>
                 {t.suggestions.map((s) => (
@@ -98,7 +101,6 @@ export default function HomeChatInvite() {
                     key={s}
                     className={styles.suggestion}
                     tabIndex={-1}
-                    disabled
                     aria-hidden="true"
                   >
                     {s}
