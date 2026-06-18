@@ -24,32 +24,42 @@ export default function AnnexLayout({
   meta = [],
   wide = false,
 }) {
-  const [isSidebarHidden, setIsSidebarHidden] = React.useState(true); // default true for mobile
+ const [isSidebarHidden, setIsSidebarHidden] = React.useState(false);
+React.useEffect(() => {
+  if (typeof window === 'undefined') return;
 
-  React.useEffect(() => {
-    const checkSidebar = () => {
-      if (typeof document === 'undefined') return;
-      const btn = document.querySelector('[class*="expandButton"]');
-      const sidebar = document.querySelector('.theme-doc-sidebar-container');
-      
-      if (btn || !sidebar || sidebar.offsetWidth < 100) {
-        setIsSidebarHidden(true);
-      } else {
-        setIsSidebarHidden(false);
-      }
-    };
+  let timerToVisible;
 
-    checkSidebar();
-    
-    // Escuchar cambios de tamaño y clics para actualizar el estado instantáneamente
-    window.addEventListener('resize', checkSidebar);
-    document.addEventListener('click', () => setTimeout(checkSidebar, 50)); 
-    
-    return () => {
-      window.removeEventListener('resize', checkSidebar);
-      document.removeEventListener('click', checkSidebar);
-    };
-  }, []);
+  const getRatio = () => {
+    if (window.innerWidth <= 996) return 1;
+    const main = document.querySelector('main[class*="docMainContainer"]');
+    return main ? main.getBoundingClientRect().width / window.innerWidth : 1;
+  };
+
+  const check = () => {
+    const ratio = getRatio();
+    if (ratio > 0.96) {
+      clearTimeout(timerToVisible);
+      setIsSidebarHidden(true);
+    } else {
+      clearTimeout(timerToVisible);
+      timerToVisible = setTimeout(() => setIsSidebarHidden(false), 200);
+    }
+  };
+
+  check();
+
+  const main = document.querySelector('main[class*="docMainContainer"]');
+  const ro = new ResizeObserver(check);
+  if (main) ro.observe(main);
+  window.addEventListener('resize', check);
+
+  return () => {
+    clearTimeout(timerToVisible);
+    ro.disconnect();
+    window.removeEventListener('resize', check);
+  };
+}, []);
 
   const layoutClass = [
     styles.layout, 

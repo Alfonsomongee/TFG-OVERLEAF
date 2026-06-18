@@ -17,7 +17,8 @@ export default function Layout(props) {
       '/sobre-el-autor'
     ];
 
-    const shouldHideButtons = hideButtonsPaths.some(k => path.includes(k));
+    const isHomepage = path === '/' || /^\/(en|de|pt|fr|it|zh-hans)\/?$/.test(path);
+    const shouldHideButtons = isHomepage || hideButtonsPaths.some(k => path.includes(k));
     if (shouldHideButtons) {
       document.body.classList.add('hide-floating-buttons');
     } else {

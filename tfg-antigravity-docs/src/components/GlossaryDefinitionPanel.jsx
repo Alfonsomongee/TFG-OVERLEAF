@@ -27,15 +27,15 @@ import { GLOSSARY_TERMS as GLOSSARY_ZH } from '@site/src/data/glossary_zh-Hans';
 // ── Componente interno (solo cliente) ────────────────────────────────────────
 function PanelInner() {
   const [active, setActive] = useState(null); // { term, definition } | null
-  const [isClosing, setIsClosing] = useState(false);
+  const [phase, setPhase] = useState('visible'); // 'opening' | 'visible' | 'closing'
   const timeoutRef = useRef(null);
   const fadeOutRef = useRef(null);
   const openTimeoutRef = useRef(null);
   const { i18n: { currentLocale: lang } } = useDocusaurusContext();
 
   const termsMap = useMemo(() => {
-    const glossaryTerms = lang === 'en' ? GLOSSARY_EN 
-    : lang === 'de' ? GLOSSARY_DE 
+    const glossaryTerms = lang === 'en' ? GLOSSARY_EN
+    : lang === 'de' ? GLOSSARY_DE
     : lang === 'zh-Hans' ? GLOSSARY_ZH
     : GLOSSARY_ES;
     const map = {};
@@ -64,76 +64,81 @@ function PanelInner() {
     });
   }, [termsMap]);
 
+  // Cancelación centralizada de todos los timers pendientes
+  const cancelAll = useCallback(() => {
+    if (timeoutRef.current) { clearTimeout(timeoutRef.current); timeoutRef.current = null; }
+    if (fadeOutRef.current) { clearTimeout(fadeOutRef.current); fadeOutRef.current = null; }
+    if (openTimeoutRef.current) { clearTimeout(openTimeoutRef.current); openTimeoutRef.current = null; }
+  }, []);
+
   const handleEnter = useCallback((e) => {
     const el = e.target.closest
       ? e.target.closest('.glossary-term, .glossary-definition-panel')
       : null;
     if (!el) return;
-    
-    // Si entramos en la palabra O en la propia tarjeta, cancelamos el cierre (Hover Bridge)
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
-    setIsClosing(false);
 
-    // Si es un término de glosario, iniciamos un temporizador de 500ms para abrirlo
+    // Hover bridge: cancelar cualquier cierre o apertura pendiente
+    cancelAll();
+    setPhase('visible');
+
     if (el.classList.contains('glossary-term')) {
       const termRaw = el.dataset.term || '';
       const entry = resolveEntry(termRaw);
-      
+
       if (entry) {
-        // Cancelar cualquier temporizador de apertura anterior para evitar duplicaciones
-        if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
-        
         openTimeoutRef.current = setTimeout(() => {
+          setPhase('opening');
           setActive(entry);
-        }, 500); // 0.5 segundos de retraso
+          // Transición opening → visible tras la animación de entrada (200ms)
+          openTimeoutRef.current = setTimeout(() => setPhase('visible'), 200);
+        }, 220); // delay de apertura: 220ms
       }
     }
-  }, [resolveEntry]);
+  }, [cancelAll, resolveEntry]);
 
   const handleLeave = useCallback((e) => {
     const el = e.target.closest
       ? e.target.closest('.glossary-term, .glossary-definition-panel')
       : null;
-    
-    // Si salimos de la palabra o de la tarjeta, cancelamos cualquier apertura pendiente
-    if (openTimeoutRef.current) {
-      clearTimeout(openTimeoutRef.current);
-      openTimeoutRef.current = null;
-    }
 
-    // Si salimos de la palabra o de la tarjeta, iniciamos el temporizador de cierre
+    // Cancelar apertura pendiente si el usuario se fue antes del delay
+    if (openTimeoutRef.current) { clearTimeout(openTimeoutRef.current); openTimeoutRef.current = null; }
+
     if (el) {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
-        setIsClosing(true);
+        setPhase('closing');
         fadeOutRef.current = setTimeout(() => {
           setActive(null);
-          setIsClosing(false);
-        }, 2000); // 2 segundos de fade-out
-      }, 450); // 450ms de gracia antes de iniciar fade
+          setPhase('visible');
+        }, 300); // duración del fade-out: 300ms
+      }, 500); // gracia antes de iniciar cierre: 500ms (tiempo para cruzar al panel)
     }
   }, []);
 
   useEffect(() => {
-    // Delegación de eventos: un único listener en document para todos los spans
-    document.addEventListener('mouseenter', handleEnter, true);
-    document.addEventListener('mouseleave', handleLeave, true);
+    document.addEventListener('pointerenter', handleEnter, true);
+    document.addEventListener('pointerleave', handleLeave, true);
     return () => {
-      document.removeEventListener('mouseenter', handleEnter, true);
-      document.removeEventListener('mouseleave', handleLeave, true);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (fadeOutRef.current) clearTimeout(fadeOutRef.current);
-      if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current);
+      document.removeEventListener('pointerenter', handleEnter, true);
+      document.removeEventListener('pointerleave', handleLeave, true);
+      cancelAll();
     };
-  }, [handleEnter, handleLeave]);
+  }, [handleEnter, handleLeave, cancelAll]);
 
   if (!active) return null;
 
-  // Split by sentence ends: period, exclamation, or question mark, followed by space and capital letter or Chinese character.
+  // Primera frase como definición breve (para el header)
+  const getFirstSentence = (text) => {
+    if (!text) return '';
+    const m = text.match(/^.+?[.!?。]/);
+    return m ? m[0].trim() : text.split(' ').slice(0, 12).join(' ');
+  };
+
+  // Resumen expandido (1-2 frases según longitud)
   const getSummary = (text, l) => {
     if (!text) return '';
-    const sentences = text.split(/(?<=[.!?。])\s*(?=[A-ZÁÉÍÓÚÜÑ\u4e00-\u9fa5])/);
+    const sentences = text.split(/(?<=[.!?。])\s*(?=[A-ZÁÉÍÓÚÜÑ一-龥])/);
     if (sentences.length > 0) {
       let sum = sentences[0].trim();
       let idx = 1;
@@ -149,39 +154,49 @@ function PanelInner() {
 
   const getLinkLabel = (l) => {
     switch (l) {
-      case 'en': return 'View full definition ↗';
-      case 'de': return 'Vollständige Definition anzeigen ↗';
-      case 'zh-Hans': return '查看完整定义 ↗';
-      default: return 'Ver definición completa ↗';
+      case 'en': return 'Full definition ↗';
+      case 'de': return 'Vollständig ↗';
+      case 'zh-Hans': return '完整定义 ↗';
+      default: return 'Definición completa ↗';
     }
   };
 
+  const getCategoryLabel = (l) => {
+    switch (l) {
+      case 'en': return 'Technical Glossary';
+      case 'de': return 'Technisches Glossar';
+      case 'zh-Hans': return '技术词汇表';
+      default: return 'Glosario Técnico';
+    }
+  };
+
+  const brief = getFirstSentence(active.definition);
   const summary = getSummary(active.definition, lang);
+  const showBrief = brief && brief !== summary && brief.length < 90;
   const linkLabel = getLinkLabel(lang);
   const glossaryLink = `${lang === 'es' ? '' : '/' + lang}/glosario#${active.id}`;
 
   return (
     <aside
-      className={`glossary-definition-panel ${isClosing ? 'closing' : ''}`}
+      className={`glossary-definition-panel ${phase}`}
       aria-live="polite"
       aria-label={`Definición: ${active.term}`}
-      style={{
-        scrollBehavior: 'smooth',
-      }}
     >
       <div className="glossary-panel-header">
-        <span className="glossary-panel-label">{lang === 'es' ? 'Glosario Técnico' : lang === 'de' ? 'Technisches Glossar' : 'Technical Glossary'}</span>
+        <span className="glossary-panel-label">{getCategoryLabel(lang)}</span>
         <strong className="glossary-panel-term">{active.term}</strong>
+        {showBrief && (
+          <span className="glossary-panel-brief">{brief}</span>
+        )}
       </div>
-      <div className="glossary-panel-body" style={{
-        scrollbarWidth: 'none',
-      }}>
-        <p style={{ margin: 0, marginBottom: '0.65rem' }}>{summary}</p>
-        <div style={{ textAlign: 'right' }}>
-          <Link to={glossaryLink} className="glossary-panel-link">
-            {linkLabel}
-          </Link>
-        </div>
+      <hr className="glossary-panel-divider" />
+      <div className="glossary-panel-body" style={{ scrollbarWidth: 'none' }}>
+        <p style={{ margin: 0 }}>{summary}</p>
+      </div>
+      <div className="glossary-panel-footer">
+        <Link to={glossaryLink} className="glossary-panel-link">
+          {linkLabel}
+        </Link>
       </div>
     </aside>
   );
