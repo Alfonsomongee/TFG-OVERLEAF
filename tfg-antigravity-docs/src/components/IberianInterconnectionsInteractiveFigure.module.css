@@ -1,426 +1,492 @@
+/**
+ * IberianInterconnectionsInteractiveFigure.module.css
+ *
+ * Sistema de diseño:
+ *   —  Paleta: burdeos (#6B1024) como acento de estado activo
+ *              azul ENTSOE (#1A5276) para AC
+ *              naranja HVDC (#C0392B) para HVDC
+ *              verde Mediterráneo (#1E8449) para Marruecos
+ *              gris grafito (#2C3E50) para ratio
+ *   —  Tipografía: hereda del sistema Docusaurus (IBM Plex Sans / Inter)
+ *                  monospace para las métricas (datos técnicos)
+ *   —  Layout: CSS Grid — mapa 60% / panel 40%, colapsa a columna en <900px
+ *   —  Tokens de color: CSS custom properties, dark mode via @media prefers-color-scheme
+ *
+ * Variables de color de capa (inyectadas por el componente via style prop):
+ *   --ic-ratio:   #2C3E50
+ *   --ic-ac:      #1A5276
+ *   --ic-hvdc:    #C0392B
+ *   --ic-morocco: #1E8449
+ */
+
+/* ── Tokens de tema ──────────────────────────────────────────────────────── */
+
 .figure {
-  --fig-bg: #f6f1e8;
-  --fig-surface: #fbf8f2;
-  --fig-ocean: #F3EFE7;
-  --fig-land-main: #ECE6DB;
-  --fig-land-neighbor: #ECE6DB;
-  --fig-border: #D6CEC0;
-  --fig-line: #E2DBCF;
-  --fig-text: #2d2a25;
-  --fig-muted: #6f6a61;
-  --fig-card: rgba(251, 248, 242, 0.96);
-  --fig-ac: #8f3f45;
-  --fig-hvdc: #24756f;
-  --fig-morocco: #4d657b;
-  --fig-ratio: #a78239;
-  --fig-focus: #2d241d;
-  margin: 2rem 0;
+  --ic-ratio:          #2C3E50;
+  --ic-ac:             #1A5276;
+  --ic-hvdc:           #C0392B;
+  --ic-morocco:        #1E8449;
+  --ic-active-glow:    #6B1024;
+
+  /* Superficie */
+  --ic-surface:        #F7F8FA;
+  --ic-surface-panel:  #FFFFFF;
+  --ic-border:         #DDE1E7;
+  --ic-border-strong:  #B0B8C4;
+
+  /* Mapa */
+  --ic-ocean:          #D6E4F0;
+  --ic-land-main:      #EDE9E3;
+  --ic-land-neighbor:  #E2DDD7;
+  --ic-land-stroke:    #C8C2BA;
+  --ic-admin-stroke:   #D0CBC4;
+  --ic-grid-stroke:    rgba(160, 170, 185, 0.25);
+
+  /* Texto */
+  --ic-text-primary:   #1A1F2B;
+  --ic-text-secondary: #4A5568;
+  --ic-text-muted:     #718096;
+  --ic-text-label:     #2C3E50;
+  --ic-text-neighbor:  #6B7280;
+
+  /* Callouts */
+  --ic-callout-stroke: #8A95A3;
+  --ic-callout-fill:   #374151;
 }
 
-:global([data-theme='dark']) .figure {
-  --fig-bg: #091322;
-  --fig-surface: #101d2d;
-  --fig-ocean: #0D1E38;
-  --fig-land-main: #162A46;
-  --fig-land-neighbor: #162A46;
-  --fig-border: #29415F;
-  --fig-line: #213754;
-  --fig-text: #e7edf3;
-  --fig-muted: #a4b0bc;
-  --fig-card: rgba(16, 29, 45, 0.96);
-  --fig-ac: #b56a70;
-  --fig-hvdc: #54a49e;
-  --fig-morocco: #7d93a8;
-  --fig-ratio: #c0a15a;
-  --fig-focus: #f2f6f8;
+@media (prefers-color-scheme: dark) {
+  .figure {
+    --ic-surface:        #111318;
+    --ic-surface-panel:  #181C24;
+    --ic-border:         #2A2F3A;
+    --ic-border-strong:  #3A4050;
+
+    --ic-ocean:          #0D1B2A;
+    --ic-land-main:      #222832;
+    --ic-land-neighbor:  #1C2028;
+    --ic-land-stroke:    #3A4050;
+    --ic-admin-stroke:   #2E3440;
+    --ic-grid-stroke:    rgba(80, 90, 110, 0.3);
+
+    --ic-text-primary:   #E8ECF0;
+    --ic-text-secondary: #A0AABB;
+    --ic-text-muted:     #6B7A8D;
+    --ic-text-label:     #CBD5E0;
+    --ic-text-neighbor:  #8A95A5;
+
+    --ic-callout-stroke: #4A5568;
+    --ic-callout-fill:   #A0AABB;
+  }
 }
+
+/* ── Contenedor raíz ─────────────────────────────────────────────────────── */
+
+.figure {
+  margin: 2rem 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background: var(--ic-surface);
+  border: 1px solid var(--ic-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ── Shell — grid principal ──────────────────────────────────────────────── */
 
 .shell {
   display: grid;
-  grid-template-columns: minmax(0, 1.9fr) minmax(235px, 0.95fr);
-  gap: 0.7rem;
-  padding: 0.7rem;
-  background: var(--fig-bg);
-  border: 1px solid color-mix(in srgb, var(--fig-border) 80%, transparent);
-  border-radius: 8px;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  min-height: 480px;
 }
 
-.mapPane,
-.infoPanel {
-  background: var(--fig-surface);
-  border: 1px solid color-mix(in srgb, var(--fig-border) 72%, transparent);
-  border-radius: 8px;
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
 }
+
+/* ── Panel del mapa ──────────────────────────────────────────────────────── */
 
 .mapPane {
-  overflow: hidden;
+  position: relative;
+  background: var(--ic-ocean);
+  border-right: 1px solid var(--ic-border);
+  padding: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .mapPane {
+    border-right: none;
+    border-bottom: 1px solid var(--ic-border);
+    min-height: 320px;
+  }
 }
 
 .map {
-  display: block;
   width: 100%;
   height: 100%;
-  min-height: 650px;
+  display: block;
 }
+
+/* ── Elementos cartográficos ─────────────────────────────────────────────── */
 
 .ocean {
-  fill: var(--fig-ocean);
+  fill: var(--ic-ocean);
 }
+
+.gridGroup {}
 
 .grid {
+  stroke: var(--ic-grid-stroke);
+  stroke-width: 0.5;
   fill: none;
-  stroke: color-mix(in srgb, var(--fig-line) 24%, transparent);
-  stroke-width: 0.7;
-}
-
-.mainLand {
-  fill: var(--fig-land-main);
-  stroke: var(--fig-border);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
 }
 
 .neighborLand {
-  fill: var(--fig-land-neighbor);
-  stroke: var(--fig-border);
-  stroke-width: 0.9;
-  stroke-linejoin: round;
+  fill: var(--ic-land-neighbor);
+  stroke: var(--ic-land-stroke);
+  stroke-width: 0.6;
+}
+
+.mainLand {
+  fill: var(--ic-land-main);
+  stroke: var(--ic-land-stroke);
+  stroke-width: 0.8;
 }
 
 .adminLine {
   fill: none;
-  stroke: var(--fig-line);
-  stroke-width: 0.65;
+  stroke: var(--ic-admin-stroke);
+  stroke-width: 0.4;
+  stroke-dasharray: 2 3;
 }
 
 .borderLine {
   fill: none;
-  stroke: var(--fig-border);
-  stroke-width: 0.95;
-  stroke-dasharray: 3 3;
+  stroke: var(--ic-land-stroke);
+  stroke-width: 1;
 }
 
 .coastLine {
   fill: none;
-  stroke: var(--fig-border);
+  stroke: var(--ic-land-stroke);
   stroke-width: 0.8;
 }
 
-.labels text,
-.callouts text,
-.ratioBadge text {
-  font-family: var(--ifm-font-family-base, system-ui, sans-serif);
-  fill: var(--fig-muted);
+/* ── Labels cartográficas ────────────────────────────────────────────────── */
+
+.regionLabel {
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  fill: var(--ic-text-label);
+  opacity: 0.45;
+  pointer-events: none;
+  user-select: none;
 }
 
-.majorLabel {
-  fill: var(--fig-text) !important;
-  font-size: 15px !important;
-  opacity: 0.62;
-  text-transform: uppercase;
+.mainLabels text {
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--ic-text-label);
+  opacity: 0.65;
+  pointer-events: none;
+  user-select: none;
+}
+
+.neighborLabels text {
+  font-size: 10px;
+  font-weight: 400;
+  fill: var(--ic-text-neighbor);
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Líneas de interconexión ─────────────────────────────────────────────── */
+
+.interconnections {
+  /* grupo contenedor */
 }
 
 .link {
   fill: none;
+  stroke-width: 2.5;
   stroke-linecap: round;
-  stroke-width: 7;
-  opacity: 0.68;
-  cursor: pointer;
-  transition: opacity 190ms ease, stroke-width 190ms ease, filter 190ms ease;
+  stroke-linejoin: round;
+  transition: stroke-width 150ms ease, opacity 150ms ease;
+  opacity: 0.55;
 }
 
-.acLink {
-  stroke: var(--fig-ac);
-  color: var(--fig-ac);
-}
-
-.hvdcLink {
-  stroke: var(--fig-hvdc);
-  color: var(--fig-hvdc);
-}
-
-.moroccoLink {
-  stroke: var(--fig-morocco);
-  color: var(--fig-morocco);
-  stroke-dasharray: 10 6;
-}
+.acLink      { stroke: var(--ic-ac);      stroke-dasharray: none; }
+.hvdcLink    { stroke: var(--ic-hvdc);    stroke-dasharray: 6 3;  }
+.moroccoLink { stroke: var(--ic-morocco); stroke-dasharray: none; }
 
 .activeLink {
-  stroke-width: 16;
+  stroke-width: 4;
   opacity: 1;
-  filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 48%, transparent));
-  animation: selectedPulse 360ms ease-out 1;
+  filter: drop-shadow(0 0 4px currentColor);
 }
 
+/* Terminales */
 .terminals circle {
-  opacity: 0;
-  stroke: var(--fig-surface);
-  stroke-width: 1.4;
-  transition: opacity 190ms ease, r 190ms ease, filter 190ms ease;
+  opacity: 0.5;
+  transition: opacity 150ms ease, r 150ms ease;
 }
 
 .activeTerminals circle {
   opacity: 1;
-  r: 6.5;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, currentColor 42%, transparent));
-  animation: terminalPulse 360ms ease-out 1;
 }
 
-.acTerminal {
-  fill: var(--fig-ac);
-  color: var(--fig-ac);
-}
+.acTerminal      { fill: var(--ic-ac);      stroke: var(--ic-surface); stroke-width: 1; }
+.hvdcTerminal    { fill: var(--ic-hvdc);    stroke: var(--ic-surface); stroke-width: 1; }
+.moroccoTerminal { fill: var(--ic-morocco); stroke: var(--ic-surface); stroke-width: 1; }
 
-.hvdcTerminal {
-  fill: var(--fig-hvdc);
-  color: var(--fig-hvdc);
-}
-
-.moroccoTerminal {
-  fill: var(--fig-morocco);
-  color: var(--fig-morocco);
-}
-
-.callouts path {
-  fill: none;
-  stroke: color-mix(in srgb, var(--fig-muted) 62%, transparent);
-  stroke-width: 1;
-  stroke-dasharray: 4 4;
-}
-
-.callouts text {
-  font-size: 12px;
-  fill: var(--fig-text);
-}
-
-.ratioBadge {
-  cursor: pointer;
-}
+/* ── Badge de ratio de interconexión ─────────────────────────────────────── */
 
 .ratioBadge rect {
-  fill: var(--fig-card);
-  stroke: color-mix(in srgb, var(--fig-border) 86%, transparent);
-  stroke-width: 0.85;
+  fill: var(--ic-surface-panel);
+  stroke: var(--ic-border);
+  stroke-width: 1;
+  opacity: 0.92;
+  transition: stroke 150ms ease, stroke-width 150ms ease;
 }
 
 .ratioBadge text {
   font-size: 10px;
-  opacity: 0.86;
+  fill: var(--ic-text-secondary);
+  pointer-events: none;
+  user-select: none;
 }
 
-.badgeTitle {
-  fill: var(--fig-ratio) !important;
-  font-size: 10.5px !important;
+.ratioBadge .badgeTitle {
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--ic-text-primary);
   text-transform: uppercase;
-}
-
-.ratioTrack {
-  stroke: color-mix(in srgb, var(--fig-line) 34%, transparent);
-  stroke-width: 5;
-  stroke-linecap: round;
-}
-
-.ratioValue,
-.ratioTarget {
-  stroke-width: 5;
-  stroke-linecap: round;
-}
-
-.ratioValue {
-  stroke: var(--fig-ratio);
-}
-
-.ratioTarget {
-  stroke: color-mix(in srgb, var(--fig-ratio) 80%, var(--fig-text));
+  letter-spacing: 0.04em;
 }
 
 .activeRatio rect {
-  stroke: var(--fig-ratio);
-  stroke-width: 1.35;
+  stroke: var(--ic-active-glow);
+  stroke-width: 2;
+  opacity: 1;
 }
 
+.ratioTrackRect {
+  fill: var(--ic-border-strong);
+  opacity: 0.6;
+}
+
+.ratioValueRect {
+  fill: var(--ic-ratio);
+  opacity: 0.85;
+}
+
+.ratioTargetMark {
+  stroke: #E74C3C;
+  stroke-width: 2;
+  opacity: 0.85;
+}
+
+/* Foco de teclado en el badge */
+.ratioBadge:focus-visible rect {
+  stroke: var(--ic-active-glow);
+  stroke-width: 2.5;
+}
+
+/* ── Callouts ────────────────────────────────────────────────────────────── */
+
+.callouts text {
+  font-size: 10px;
+  fill: var(--ic-callout-fill);
+  pointer-events: none;
+  user-select: none;
+}
+
+.calloutLeader {
+  stroke: var(--ic-callout-stroke);
+  stroke-width: 1;
+  fill: none;
+}
+
+.calloutArrow {
+  fill: var(--ic-callout-stroke);
+}
+
+/* ── Panel lateral de información ────────────────────────────────────────── */
+
 .infoPanel {
-  padding: 0.78rem;
-  color: var(--fig-text);
-  align-self: stretch;
+  background: var(--ic-surface-panel);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  justify-content: space-between;
+  padding: 1.5rem;
+  gap: 1.25rem;
 }
 
 .panelContent {
-  display: grid;
-  gap: 0.55rem;
-  animation: panelEnter 190ms ease-out;
+  flex: 1;
+  /* La animación se inyecta via style prop desde JSX para soporte reduced-motion */
 }
 
 .kicker {
-  margin: 0;
-  color: var(--fig-muted);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--ic-text-muted);
+  margin: 0 0 0.4rem;
 }
 
-.infoPanel h3 {
-  margin: 0;
-  color: var(--fig-text);
+.layerTitle {
   font-size: 1rem;
-  line-height: 1.2;
+  font-weight: 700;
+  color: var(--ic-text-primary);
+  margin: 0 0 1rem;
+  line-height: 1.3;
 }
+
+/* ── Métricas dl ─────────────────────────────────────────────────────────── */
 
 .metrics {
-  margin: 0;
   display: grid;
-  gap: 0.3rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+  padding: 0.875rem;
+  background: var(--ic-surface);
+  border: 1px solid var(--ic-border);
+  border-radius: 5px;
 }
 
 .metrics div {
-  padding: 0.42rem 0;
-  border-top: 1px solid color-mix(in srgb, var(--fig-border) 58%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .metrics dt {
-  color: var(--fig-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--ic-text-muted);
 }
 
 .metrics dd {
-  margin: 0.15rem 0 0;
-  color: var(--fig-text);
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  color: var(--ic-text-primary);
+  margin: 0;
 }
+
+/* ── Texto de lectura ────────────────────────────────────────────────────── */
 
 .reading {
+  font-size: 0.8rem;
+  color: var(--ic-text-secondary);
+  line-height: 1.65;
   margin: 0;
-  color: var(--fig-muted);
-  font-size: 0.82rem;
-  line-height: 1.45;
 }
 
+/* ── Controles de selección ──────────────────────────────────────────────── */
+
 .controls {
-  margin-top: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.38rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-top: 1px solid var(--ic-border);
+  padding-top: 1rem;
 }
 
 .controlButton {
-  min-height: 30px;
-  padding: 0.28rem 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--fig-border) 80%, transparent);
-  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
   background: transparent;
-  color: var(--fig-muted);
-  font: 700 0.7rem/1.1 var(--ifm-font-family-base, system-ui, sans-serif);
+  border: 1px solid var(--ic-border);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ic-text-secondary);
   cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.controlButton:hover {
+  background: var(--ic-surface);
+  border-color: var(--ic-border-strong);
+  color: var(--ic-text-primary);
 }
 
 .controlButton[data-active='true'] {
-  border-color: var(--fig-focus);
-  color: var(--fig-text);
-  background: color-mix(in srgb, var(--fig-surface) 78%, var(--fig-border));
+  background: var(--ic-surface);
+  border-color: var(--ic-accent, var(--ic-ratio));
+  color: var(--ic-text-primary);
+  font-weight: 600;
 }
 
 .controlButton:focus-visible {
-  outline: 2px solid var(--fig-focus);
+  outline: 2px solid var(--ic-active-glow);
   outline-offset: 2px;
 }
 
-.caption {
-  margin: 0.75rem auto 0;
-  max-width: 880px;
-  color: var(--ifm-color-emphasis-700);
-  font-size: 0.82rem;
-  line-height: 1.5;
-  text-align: center;
+/* Punto de color del botón — usa el acento de capa inyectado por JSX */
+.controlDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ic-accent, var(--ic-ratio));
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 120ms ease;
 }
 
-.caption strong {
-  color: var(--ifm-font-color-base);
+.controlButton[data-active='true'] .controlDot {
+  opacity: 1;
 }
+
+/* ── Foco de teclado en los grupos SVG interactivos ──────────────────────── */
+
+.interconnections g:focus-visible path.link {
+  stroke-width: 5;
+  opacity: 1;
+}
+
+/* ── Figcaption ──────────────────────────────────────────────────────────── */
+
+.caption {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.78rem;
+  color: var(--ic-text-secondary);
+  line-height: 1.55;
+  border-top: 1px solid var(--ic-border);
+  background: var(--ic-surface);
+}
+
+.captionSource {
+  color: var(--ic-text-muted);
+  font-style: italic;
+}
+
+/* ── Accesibilidad — reduced motion ──────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .link,
-  .activeLink,
-  .activeTerminals circle,
-  .panelContent {
-    animation: none;
+  .terminals circle,
+  .ratioBadge rect,
+  .ratioBadge text,
+  .controlButton,
+  .controlDot {
     transition: none;
-  }
-}
-
-@media (max-width: 860px) {
-  .shell {
-    grid-template-columns: 1fr;
-  }
-
-  .map {
-    min-height: 360px;
-  }
-
-  .infoPanel {
-    padding: 0.85rem;
-  }
-}
-
-@keyframes selectedPulse {
-  0% {
-    stroke-width: 9;
-    opacity: 0.72;
-  }
-  55% {
-    stroke-width: 18;
-    opacity: 1;
-  }
-  100% {
-    stroke-width: 16;
-    opacity: 1;
-  }
-}
-
-@keyframes terminalPulse {
-  0% {
-    r: 3;
-    opacity: 0.2;
-  }
-  60% {
-    r: 8;
-    opacity: 1;
-  }
-  100% {
-    r: 6.5;
-    opacity: 1;
-  }
-}
-
-@keyframes panelEnter {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 520px) {
-  .shell {
-    padding: 0.65rem;
-  }
-
-  .controls {
-    grid-template-columns: 1fr;
   }
 }

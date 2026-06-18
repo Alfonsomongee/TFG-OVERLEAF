@@ -1,0 +1,48 @@
+====================================================================
+CONTEXTO GENERAL DEL PROYECTO (TFG - APAGÓN IBÉRICO 28-A)
+====================================================================
+
+1. DESCRIPCIÓN DEL PROYECTO
+Se trata de una aplicación web documental (basada en Docusaurus) que analiza el gran "Apagón Ibérico del 28 de abril de 2025 (28-A)". El proyecto no solo es un Trabajo de Fin de Grado (TFG) en formato texto, sino que incorpora simuladores físicos interactivos, gráficas dinámicas basadas en datos reales y un asistente de Inteligencia Artificial integrado.
+
+--------------------------------------------------------------------
+2. ARCHIVOS MDX ACTIVOS Y SU CONTENIDO
+(Carpeta: /docs)
+- 01-introduccion.mdx: Plantea la vulnerabilidad sistémica del sistema ibérico (baja inercia, aislamiento) y la premisa del colapso del 28-A.
+- 02-contexto.mdx: Describe la situación estructural de España como isla energética, las interconexiones con Francia y el problema de los enlaces HVDC en PMODE1.
+- 03-analisis-incidente.mdx: El corazón del colapso. Describe cómo las desconexiones causaron el "efecto Ferranti", elevando la tensión (overvoltage) masivamente.
+- 04-reaccion-reposicion.mdx: Análisis de cómo se restauró el servicio desde las islas energéticas (Black Start) y las demoras.
+- 05-analisis-informes.mdx: Síntesis y contraste de las conclusiones oficiales de REE, CNMC, Gobierno, ENTSO-E e IIT-ICAI, mapeando sus discrepancias.
+- 06-impacto-comunicativo.mdx: Cómo se gestionó la crisis en la prensa y la opinión pública.
+- 07-resiliencia-futuro.mdx / 07b-consecuencias-financieras.mdx: El impacto económico del apagón y las inversiones necesarias para recuperar la resiliencia (coste de inacción, P.O. 7.4).
+- 08-uso-ia.mdx: Un capítulo metatextual detallando cómo se usó la IA generativa para procesar los informes oficiales y los "modos de fallo" heurísticos que sufren los LLMs al analizar eventos físicos atípicos.
+- 08.5-actualizacion-2026.mdx: Un epílogo temporal que evalúa el estado del sistema un año después (2026), el boom de las baterías (BESS) y las reformas del mercado.
+- 09-conclusiones.mdx: Resumen ejecutivo del TFG, el Trilema Energético y las responsabilidades compartidas.
+- Varios archivos `anexo-*.mdx` que contienen matemáticas, ecuaciones de oscilación y tablas extendidas.
+
+--------------------------------------------------------------------
+3. COMPONENTES GRÁFICOS Y SIMULADORES DESTACADOS
+(Carpeta: /src/components)
+- Comparador28A.jsx: Componente crucial que se conecta en tiempo real a la API de ESIOS. Muestra un indicador semafórico comparando el nivel de inercia y penetración renovable actual con el del día del apagón.
+- TrilemmaTriangle.jsx: Un triángulo interactivo que modela la tensión entre Descarbonización, Asequibilidad y Estabilidad.
+- ConsensusMatrix.jsx: Matriz visual que resume los puntos de acuerdo y disputa técnica entre los 5 informes periciales oficiales.
+- BESSBoomChart.jsx: Muestra la evolución en rampa del despliegue masivo de almacenamiento en baterías (BESS) tras el apagón.
+- OvervoltageTimeline.jsx / PO74Timeline.jsx: Ejes cronológicos para entender la cascada de sobretensión y los plazos de reforma regulatoria (P.O. 7.4).
+- Simuladores Físicos (FerrantiCapacitiveLineSimulator, BlackoutPropagationMap, AnimatedRestorationMap): React components pesados que modelan fenómenos electromagnéticos en el navegador para que el lector entienda las leyes de Kirchhoff aplicadas al 28-A.
+
+--------------------------------------------------------------------
+4. EL ASISTENTE DE IA (CHATBOT)
+- Archivos: ChatWidget.jsx y ChatFullscreen.jsx.
+- Funcionamiento: Es un botón flotante ("ASK AI" / "Pregunta al TFG") que abre un chat interactivo. Se alimenta del contexto del sitio para responder dudas al lector.
+- Características Clave: 
+  - Manejo multi-idioma (Español, Inglés, Alemán, Chino).
+  - Función "SIMPLIFICAR" para explicar respuestas técnicas con lenguaje llano.
+  - Generación de "FollowUps" (preguntas sugeridas) para mantener el engagement.
+  - Interactúa visualmente invocando o destacando figuras del propio documento (visualArtifacts).
+
+--------------------------------------------------------------------
+5. APIs DISPONIBLES E INTEGRACIONES
+- ESIOS API (REE): Utilizada intensivamente (por ejemplo, en `Comparador28A` vía un proxy en `/api/esios/snapshot`) para descargar el mix de generación y calcular la inercia sincrónica del sistema peninsular en el momento exacto en que el usuario lee el documento.
+- ENTSO-E Transparency API: Empleada para rastrear flujos de energía transfronterizos y desbalances europeos citados en los anexos y gráficas de interconexión.
+- Google Cloud API / Gemini API: Infraestructura principal sobre la que puede basarse el análisis semántico de Docusaurus o los embeddings del TFG, así como traducciones automatizadas.
+- DeepSeek API: Motor subyacente para el Chatbot. Ofrece respuestas de alta densidad técnica (ideal para ingeniería eléctrica), procesando el corpus entero del TFG en el endpoint backend (`/api/chat`) para responder fielmente sin "alucinar" datos físicos incorrectos.

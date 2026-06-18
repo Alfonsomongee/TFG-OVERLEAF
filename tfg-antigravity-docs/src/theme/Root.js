@@ -51,16 +51,49 @@ export default function Root({ children }) {
   // Inicialización modo zen
   useEffect(() => {
     const saved = localStorage.getItem('zen-mode');
-    const isZen = saved === 'false';
+    const isZen = saved !== 'false';
     setSidebarOpen(!isZen);
     document.documentElement.classList.toggle('zen-mode', isZen);
   }, []);
 
-  // Asegurar las clases en el DOM directamente sin MutationObserver
+  // Asegurar las clases en el DOM aunque Docusaurus regenere <html> al navegar
   useEffect(() => {
-    document.documentElement.classList.toggle('zen-mode', !sidebarOpen);
-    document.documentElement.classList.toggle('toc-visible', tocVisible);
-  }, [sidebarOpen, tocVisible]);
+    const applyHtmlClasses = () => {
+      document.documentElement.classList.toggle('zen-mode', !sidebarOpen);
+      document.documentElement.classList.toggle('toc-visible', tocVisible);
+    };
+
+    applyHtmlClasses();
+    const frame = window.requestAnimationFrame(applyHtmlClasses);
+    const timeout = window.setTimeout(applyHtmlClasses, 50);
+
+    const observer = new MutationObserver(() => {
+      const hasZen = document.documentElement.classList.contains('zen-mode');
+      const hasToc = document.documentElement.classList.contains('toc-visible');
+
+      if (hasZen !== !sidebarOpen || hasToc !== tocVisible) {
+        applyHtmlClasses();
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+      observer.disconnect();
+    };
+  }, [sidebarOpen, tocVisible, location.pathname]);
+
+  // Cerrar el TOC al navegar a una nueva página
+  useEffect(() => {
+    setTocVisible(false);
+    document.documentElement.classList.remove('toc-visible');
+    document.documentElement.classList.remove('toc-portal-visible');
+  }, [location.pathname]);
 
   const toggleSidebar = () => {
     const next = !sidebarOpen;
