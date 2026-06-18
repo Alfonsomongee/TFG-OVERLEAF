@@ -214,26 +214,34 @@
 
 .link {
   fill: none;
-  stroke-width: 2.5;
+  stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: stroke-width 150ms ease, opacity 150ms ease;
-  opacity: 0.55;
+  opacity: 0.7;
 }
 
 .acLink      { stroke: var(--ic-ac);      stroke-dasharray: none; }
 .hvdcLink    { stroke: var(--ic-hvdc);    stroke-dasharray: 6 3;  }
 .moroccoLink { stroke: var(--ic-morocco); stroke-dasharray: none; }
 
+@keyframes flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
 .activeLink {
-  stroke-width: 4;
-  opacity: 1;
-  filter: drop-shadow(0 0 4px currentColor);
+  stroke-width: 6.5 !important;
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 6px currentColor);
+  stroke-dasharray: 8 5;
+  animation: flow 1.2s linear infinite;
 }
 
 /* Terminales */
 .terminals circle {
-  opacity: 0.5;
+  opacity: 0.6;
   transition: opacity 150ms ease, r 150ms ease;
 }
 
@@ -241,61 +249,68 @@
   opacity: 1;
 }
 
-.acTerminal      { fill: var(--ic-ac);      stroke: var(--ic-surface); stroke-width: 1; }
-.hvdcTerminal    { fill: var(--ic-hvdc);    stroke: var(--ic-surface); stroke-width: 1; }
-.moroccoTerminal { fill: var(--ic-morocco); stroke: var(--ic-surface); stroke-width: 1; }
+.acTerminal      { fill: var(--ic-ac);      stroke: var(--ic-surface); stroke-width: 1.2; }
+.hvdcTerminal    { fill: var(--ic-hvdc);    stroke: var(--ic-surface); stroke-width: 1.2; }
+.moroccoTerminal { fill: var(--ic-morocco); stroke: var(--ic-surface); stroke-width: 1.2; }
 
-/* ── Badge de ratio de interconexión ─────────────────────────────────────── */
+/* ── Widget visual del ratio de interconexión ────────────────────────────── */
 
-.ratioBadge rect {
-  fill: var(--ic-surface-panel);
-  stroke: var(--ic-border);
-  stroke-width: 1;
-  opacity: 0.92;
-  transition: stroke 150ms ease, stroke-width 150ms ease;
+.ratioVisualWidget {
+  margin: 0.5rem 0 1.25rem;
+  padding: 0.875rem;
+  background: var(--ic-surface);
+  border: 1px solid var(--ic-border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
 }
 
-.ratioBadge text {
-  font-size: 10px;
-  fill: var(--ic-text-secondary);
-  pointer-events: none;
-  user-select: none;
+.ratioProgressBarContainer {
+  position: relative;
+  height: 8px;
+  background: var(--ic-border-strong);
+  border-radius: 4px;
+  margin-top: 1.25rem; /* Espacio para la etiqueta flotante de arriba */
 }
 
-.ratioBadge .badgeTitle {
-  font-size: 10px;
-  font-weight: 600;
-  fill: var(--ic-text-primary);
+.ratioProgressBarFill {
+  height: 100%;
+  background: var(--ic-ratio);
+  border-radius: 4px;
+}
+
+.ratioProgressBarTarget {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: #E74C3C;
+  display: flex;
+  justify-content: center;
+}
+
+.ratioProgressBarTargetLabel {
+  position: absolute;
+  top: -18px;
+  white-space: nowrap;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #E74C3C;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-.activeRatio rect {
-  stroke: var(--ic-active-glow);
-  stroke-width: 2;
-  opacity: 1;
+.ratioVisualLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ic-text-secondary);
 }
 
-.ratioTrackRect {
-  fill: var(--ic-border-strong);
-  opacity: 0.6;
-}
-
-.ratioValueRect {
-  fill: var(--ic-ratio);
-  opacity: 0.85;
-}
-
-.ratioTargetMark {
-  stroke: #E74C3C;
-  stroke-width: 2;
-  opacity: 0.85;
-}
-
-/* Foco de teclado en el badge */
-.ratioBadge:focus-visible rect {
-  stroke: var(--ic-active-glow);
-  stroke-width: 2.5;
+.ratioBrechaLabel {
+  color: #E74C3C;
 }
 
 /* ── Callouts ────────────────────────────────────────────────────────────── */

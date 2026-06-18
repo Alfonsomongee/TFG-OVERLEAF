@@ -42,7 +42,7 @@ const LAYERS = {
     metricBLabel: 'Objetivo UE (Reglamento 2018/1999)',
     metricB: '15 %',
     reading:
-      'La baja ratio de interconexión reduce la capacidad de amortiguar perturbaciones internas mediante apoyo externo, reforzando la condición de isla energética. En el 28-A, esta limitación impidió importar soporte dinámico suficiente desde el sistema continental.',
+      'La península ibérica opera con una ratio de interconexión de apenas el 3-5 % de su potencia instalada, muy lejos del mínimo del 15 % exigido por la UE. Esta desconexión la convierte en una isla energética y limita críticamente el soporte dinámico de emergencia ante perturbaciones como la del 28-A.',
     color: 'var(--ic-ratio)',
   },
   'pyrenees-ac': {
@@ -52,7 +52,7 @@ const LAYERS = {
     metricBLabel: 'Capacidad técnica de transferencia',
     metricB: '~2.700 MW',
     reading:
-      'La frontera AC pirenaica es el principal acoplamiento síncrono con el sistema continental. Transmite inercia síncrona, pero su capacidad efectiva es reducida frente al tamaño eléctrico de la Península. Durante el evento, los flujos oscilaron violentamente antes de la separación.',
+      'El corredor síncrono AC pirenaico es la vía principal de acoplamiento físico y soporte inercial con Europa. Sin embargo, su reducida capacidad frente al tamaño del sistema ibérico provocó oscilaciones dinámicas insostenibles y la pérdida de sincronismo el 28-A.',
     color: 'var(--ic-ac)',
   },
   'inelfe-hvdc': {
@@ -62,7 +62,7 @@ const LAYERS = {
     metricBLabel: 'Capacidad de diseño',
     metricB: '2.000 MW',
     reading:
-      'El enlace HVDC aporta controlabilidad de flujo y soporte electrónico de tensión, pero no transmite inercia síncrona entre el sistema ibérico y el continental. Su respaldo tras el evento fue crítico para la reintegración de intercambios programados.',
+      'El enlace HVDC INELFE-1 aporta controlabilidad activa de flujos, pero no transmite inercia síncrona natural. Durante el colapso, al estar fijado en consigna de potencia constante (PMODE1), no respondió al transitorio y continuó exportando 1.000 MW hacia Francia.',
     color: 'var(--ic-hvdc)',
   },
   'morocco': {
@@ -72,7 +72,7 @@ const LAYERS = {
     metricBLabel: 'Capacidad técnica de transferencia',
     metricB: '~900 MW',
     reading:
-      'La interconexión con Marruecos proporciona una vía de apoyo sur, útil en reposición negra, pero limitada frente a la escala del sistema ibérico. Durante la reposición del 28-A fue uno de los primeros nodos fronterizos en recuperar intercambio estable.',
+      'La interconexión síncrona con Marruecos ofrece una vía de apoyo sur. Durante el incidente, sus relés de subfrecuencia desconectaron el enlace para proteger su red. No obstante, su inyección de tensión posterior fue clave para la reposición (Black Start) en Andalucía.',
     color: 'var(--ic-morocco)',
   },
 };
@@ -165,43 +165,6 @@ function InterconnectLine({ id, d, activeLayerId, layerKey, styleClass, terminal
 }
 
 // ---------------------------------------------------------------------------
-// Sub-componente: badge de ratio con hit-area accesible
-// ---------------------------------------------------------------------------
-
-function RatioBadge({ isActive, onActivate }) {
-  const handleKey = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      onActivate('ratio');
-    }
-  };
-
-  return (
-    <g
-      className={clsx(styles.ratioBadge, isActive && styles.activeRatio)}
-      role="button"
-      tabIndex={0}
-      aria-label={BUTTON_LABELS['ratio']}
-      aria-pressed={isActive}
-      onKeyDown={handleKey}
-      onClick={() => onActivate('ratio')}
-      onMouseEnter={() => onActivate('ratio')}
-      style={{ cursor: 'pointer', outline: 'none' }}
-    >
-      <rect x="48" y="42" width="218" height="90" rx="5" />
-      <text x="62" y="67"  className={styles.badgeTitle}>Ratio de interconexión</text>
-      <text x="62" y="91">Iberia: ~3–5 %</text>
-      <text x="62" y="113">Objetivo UE: 15 %</text>
-      {/* Barra de progreso visual */}
-      <rect x="62" y="120" width="185" height="4" rx="2" className={styles.ratioTrackRect} aria-hidden="true" />
-      <rect x="62" y="120" width="46"  height="4" rx="2" className={styles.ratioValueRect} aria-hidden="true" />
-      {/* Marcador de target */}
-      <line x1="247" y1="117" x2="247" y2="127" className={styles.ratioTargetMark} aria-hidden="true" />
-    </g>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Componente principal
 // ---------------------------------------------------------------------------
 
@@ -243,7 +206,7 @@ export default function IberianInterconnectionsInteractiveFigure() {
           {/* ── Mapa SVG ───────────────────────────────────────────────── */}
           <div className={styles.mapPane}>
             <svg
-              viewBox="35 35 860 745"
+              viewBox="85 120 740 600"
               preserveAspectRatio="xMidYMid meet"
               className={styles.map}
               role="img"
@@ -339,8 +302,8 @@ export default function IberianInterconnectionsInteractiveFigure() {
 
                 {/* Labels de países vecinos */}
                 <g className={clsx(styles.labels, styles.neighborLabels)}>
-                  <text x="760" y="92"  textAnchor="start">Francia · RTE</text>
-                  <text x="310" y="772" textAnchor="middle">Marruecos · ONEE</text>
+                  <text x="700" y="160"  textAnchor="start">Francia · RTE</text>
+                  <text x="310" y="710" textAnchor="middle">Marruecos · ONEE</text>
                 </g>
               </g>
 
@@ -380,9 +343,6 @@ export default function IberianInterconnectionsInteractiveFigure() {
                   d="M 290,648 Q 285,662 290,675"
                 />
               </g>
-
-              {/* ── Badge ratio de interconexión ───────────────────────── */}
-              <RatioBadge isActive={activeLayer === 'ratio'} onActivate={handleSelect} />
 
               {/* ── Callouts con líderes de flecha ─────────────────────── */}
               <g className={styles.callouts} aria-hidden="true">
@@ -436,6 +396,21 @@ export default function IberianInterconnectionsInteractiveFigure() {
                   <dd>{current.metricB}</dd>
                 </div>
               </dl>
+
+              {activeLayer === 'ratio' && (
+                <div className={styles.ratioVisualWidget}>
+                  <div className={styles.ratioProgressBarContainer}>
+                    <div className={styles.ratioProgressBarFill} style={{ width: '23.3%' }} />
+                    <div className={styles.ratioProgressBarTarget} style={{ left: '100%' }}>
+                      <span className={styles.ratioProgressBarTargetLabel}>Objetivo UE: 15%</span>
+                    </div>
+                  </div>
+                  <div className={styles.ratioVisualLabels}>
+                    <span>Iberia real: ~3.5%</span>
+                    <span className={styles.ratioBrechaLabel}>Brecha: -11.5%</span>
+                  </div>
+                </div>
+              )}
 
               <p className={styles.reading}>{current.reading}</p>
             </div>
