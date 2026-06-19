@@ -10,22 +10,22 @@
 
 .annexThemeWrapper {
   /* Light mode defaults */
-  --ate-bg:           #fdfbf7;
-  --ate-border:       #e2dfd8;
-  --ate-text:         #191814;
-  --ate-text-muted:   #625c52;
-  --ate-accent:       #145c63;
+  --ate-bg:           var(--annex-surface-strong, #fffdf9);
+  --ate-border:       var(--annex-border, #e2dfd8);
+  --ate-text:         var(--annex-text-1, #191814);
+  --ate-text-muted:   var(--annex-text-3, #625c52);
+  --ate-accent:       var(--annex-accent, #145c63);
 
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
+  margin-top: 1.35rem;
+  margin-bottom: 2.1rem;
 }
 
 html[data-theme='dark'] .annexThemeWrapper {
-  --ate-bg:           #0b0f19;
-  --ate-border:       rgba(148, 163, 184, 0.15);
-  --ate-text:         #f8fafc;
-  --ate-text-muted:   #94a3b8;
-  --ate-accent:       #2dd4bf;
+  --ate-bg:           var(--annex-surface-strong, #0b1727);
+  --ate-border:       var(--annex-border, rgba(148, 163, 184, 0.15));
+  --ate-text:         var(--annex-text-1, #f8fafc);
+  --ate-text-muted:   var(--annex-text-3, #94a3b8);
+  --ate-accent:       var(--annex-accent, #83bdc2);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -35,9 +35,9 @@ html[data-theme='dark'] .annexThemeWrapper {
 .trazabilityNote {
   font-size: 0.85rem;
   color: var(--ate-text-muted);
-  border-left: 3px solid var(--ate-accent);
+  border-left: 2px solid color-mix(in srgb, var(--ate-accent) 55%, var(--ate-border));
   padding-left: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.6rem;
   line-height: 1.55;
 }
 
@@ -46,25 +46,25 @@ html[data-theme='dark'] .annexThemeWrapper {
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .summary {
-  font-size: 0.875rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  color: var(--ate-accent);
-  margin-bottom: 1.25rem;
+  color: var(--ate-text-muted);
+  margin-bottom: 1rem;
   border-bottom: 1px solid var(--ate-border);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }
 
 .emptyState {
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: var(--ate-bg);
   border: 1px dashed var(--ate-border);
-  border-radius: 8px;
+  border-radius: 6px;
   text-align: center;
   color: var(--ate-text-muted);
   font-style: italic;
@@ -81,7 +81,7 @@ html[data-theme='dark'] .annexThemeWrapper {
      Sin wide / en tablet: 2 columnas (≥ 540 px).
      Móvil: 1 columna (ver media query). */
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: stretch;
 }
 

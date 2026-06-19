@@ -7,6 +7,7 @@ let chunks = null;
 let miniSearch = null;
 let searchInitPromise = null;
 
+// ── Forensic tables (unchanged) ─────────────────────────────────────────────
 const FORENSIC_TABLES = {};
 try {
   const cats = JSON.parse(fs.readFileSync(
@@ -16,6 +17,19 @@ try {
     (cat.tables || []).forEach(t => { FORENSIC_TABLES[t.id] = t; });
   });
 } catch(e) {}
+
+// ── Asset Registry (T1) ──────────────────────────────────────────────────────
+// Loaded once at cold-start. Replaces the 400-line scoreArtifactForQuestion.
+let ASSET_REGISTRY = [];
+try {
+  const regRaw = fs.readFileSync(
+    path.join(__dirname, '..', 'static', 'asset_registry.json'), 'utf8'
+  );
+  ASSET_REGISTRY = JSON.parse(regRaw).assets || [];
+  console.log(`[api/chat] Asset registry loaded: ${ASSET_REGISTRY.length} assets`);
+} catch(e) {
+  console.warn('[api/chat] asset_registry.json not found — visual asset selection degraded:', e.message);
+}
 
 const rateLimiter = new Map();
 const RATE_LIMIT_WINDOW = 60_000;
@@ -118,6 +132,7 @@ async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTo
         ],
         temperature,
         max_tokens: maxTokens,
+        response_format: { type: 'json_object' }, // T2: structured output
       }),
     },
     30000
@@ -158,6 +173,7 @@ async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, m
         temperature,
         max_tokens: maxTokens,
         stream: false,
+        response_format: { type: 'json_object' }, // T2: structured output
       }),
     },
     45000
@@ -763,11 +779,249 @@ function computeConfidence(selectedPairs, usedExpandedSearch) {
   return { confidence: 'baja', confidence_reason: 'Evidencia parcial, escasa o con fuerte dependencia de expansión semántica.' };
 }
 
+// ── T1: Asset Registry helpers ──────────────────────────────────────────────
+
+/**
+ * Selects up to `maxItems` assets from ASSET_REGISTRY that are most relevant
+ * to the current intent + question. Uses overlap of normalized trigger_questions
+ * against the query. Falls back to intent-type matching.
+ *
+ * This replaces the 400-line scoreArtifactForQuestion entirely.
+ */
+function selectRegistryAssets(intent, question, maxItems = 25) {
+  const q = normalizeText(question);
+  const qTokens = new Set(q.split(/\s+/).filter(t => t.length > 3));
+
+  const scored = ASSET_REGISTRY.map(asset => {
+    let score = 0;
+
+    // Token overlap with trigger_questions
+    for (const tq of (asset.trigger_questions || [])) {
+      const tqNorm = normalizeText(tq);
+      if (q.includes(tqNorm)) {
+        score += 3; // exact substring match
+      } else {
+        const tqTokens = tqNorm.split(/\s+/).filter(t => t.length > 3);
+        const overlap = tqTokens.filter(t => qTokens.has(t)).length;
+        score += overlap * 0.5;
+      }
+    }
+
+    // Intent-type affinity
+    if (intent === 'visual') {
+      if (asset.type === 'interactive') score += 2;
+      if (asset.type === 'image')       score += 1;
+    }
+    if (intent === 'quantitative' || intent === 'comparison') {
+      if (asset.type === 'table')       score += 2;
+    }
+    if (intent === 'timeline') {
+      if (asset.type === 'interactive') score += 1.5;
+      if (asset.type === 'table')       score += 1;
+    }
+    if (intent === 'causal') {
+      if (asset.type === 'interactive') score += 1;
+    }
+
+    return { asset, score };
+  });
+
+  return scored
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxItems)
+    .map(({ asset }) => asset);
+}
+
+/**
+ * Resolves a recommended_asset_id (returned by the LLM) to a full artifact
+ * object suitable for the frontend VisualArtifactCard.
+ * Falls back to chunk-embedded artifacts from selectedPairs if not found.
+ */
+function resolveAssetId(assetId, selectedPairs) {
+  // 1. Look up in registry
+  if (assetId) {
+    const found = ASSET_REGISTRY.find(a => a.id === assetId);
+    if (found) {
+      const extra = {};
+      if (found.type === 'table') {
+        extra.columns = FORENSIC_TABLES[found.id]?.columns || [];
+        extra.data    = FORENSIC_TABLES[found.id]?.data    || [];
+      }
+      return { ...found, ...extra, relevance: 1.0 };
+    }
+  }
+  // 2. Fallback: first artifact embedded in selected chunks
+  for (const { chunk } of selectedPairs) {
+    if (chunk?.artifact) {
+      const art = chunk.artifact;
+      const extra = {};
+      if (art.type === 'table') {
+        extra.columns = FORENSIC_TABLES[art.id]?.columns || [];
+        extra.data    = FORENSIC_TABLES[art.id]?.data    || [];
+      }
+      return { ...art, ...extra, relevance: 0.7 };
+    }
+  }
+  return null;
+}
+
+// LEGACY: kept for reference only — replaced by resolveAssetId + LLM selection
 function getAllArtifactChunks(chunksData) {
   return Object.values(chunksData || {}).filter(c => c && c.artifact);
 }
 
-function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore = 1, source = 'global') {
+// ─────────────────────────────────────────────────────────────────────────────
+// scoreArtifactForQuestion has been REMOVED (was L770–L1073).
+// Asset selection is now delegated to the LLM via recommended_asset_id.
+// See: selectRegistryAssets() + resolveAssetId() above.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildVisualArtifacts(recommendedAssetId, selectedPairs) {
+  // T2: artifact is chosen by the LLM, resolved deterministically
+  const resolved = resolveAssetId(recommendedAssetId, selectedPairs);
+  return resolved ? [resolved] : [];
+}
+
+// ── T2: Parse structured LLM response ────────────────────────────────────────
+
+/**
+ * Parses the JSON output from the LLM (response_format: json_object).
+ * Validates citations against the actual retrieved chunk URLs.
+ * Resolves recommended_asset_id to a full artifact object.
+ *
+ * Always returns a safe object — never throws.
+ */
+function parseStructuredResponse(rawText, selectedPairs) {
+  // Build set of valid URLs from retrieved chunks
+  const validUrls = new Set(
+    selectedPairs
+      .map(({ chunk }) => buildChunkUrl(chunk))
+      .filter(Boolean)
+  );
+
+  let parsed;
+  try {
+    // Strip markdown code fences if LLM wraps JSON in ```json ... ```
+    const cleaned = rawText
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```\s*$/, '')
+      .trim();
+    parsed = JSON.parse(cleaned);
+  } catch {
+    // Fallback: treat entire text as the answer (backward compat)
+    console.warn('[api/chat] LLM did not return valid JSON — falling back to plain text');
+    return {
+      answer:               rawText,
+      citations:            [],
+      recommended_asset_id: null,
+      glossary_terms_used:  [],
+      follow_ups:           [],
+      _parse_error:         true,
+    };
+  }
+
+  // Validate and sanitize citations
+  const rawCitations = Array.isArray(parsed.citations) ? parsed.citations : [];
+  const citations = rawCitations
+    .filter(c => c && typeof c.source_url === 'string')
+    .filter(c => {
+      // Accept only URLs that exist in our retrieved context
+      const url = c.source_url.split('#')[0]; // path without anchor
+      const fullUrl = c.source_url;
+      return (
+        validUrls.has(fullUrl) ||
+        [...validUrls].some(u => u.startsWith(url))
+      );
+    })
+    .slice(0, 4) // max 4 citations
+    .map(c => ({
+      claim:      String(c.claim || '').slice(0, 200),
+      source_url: String(c.source_url).slice(0, 300),
+    }));
+
+  return {
+    answer:               typeof parsed.answer === 'string' ? parsed.answer : rawText,
+    citations,
+    recommended_asset_id: typeof parsed.recommended_asset_id === 'string'
+                            ? parsed.recommended_asset_id
+                            : null,
+    glossary_terms_used:  Array.isArray(parsed.glossary_terms_used)
+                            ? parsed.glossary_terms_used.slice(0, 10)
+                            : [],
+    follow_ups:           Array.isArray(parsed.follow_ups)
+                            ? parsed.follow_ups.filter(f => typeof f === 'string').slice(0, 3)
+                            : [],
+    _parse_error:         false,
+  };
+}
+
+// Placeholder — replaced by LLM-generated follow_ups
+function _legacyBuildFollowUps_REMOVED() {}
+
+/**
+ * Builds the compact asset catalogue injected into the system prompt.
+ * Limits to `maxItems` most-relevant assets to stay within token budget.
+ */
+function buildAssetCatalogueString(intent, question, maxItems = 25) {
+  const relevant = selectRegistryAssets(intent, question, maxItems);
+  if (relevant.length === 0) return '';
+  const lines = relevant.map(a =>
+    `- "${a.id}" (${a.type}): ${a.title}${a.description ? ' — ' + a.description.slice(0, 80) : ''}`
+  );
+  return [
+    'ASSETS VISUALES DISPONIBLES (usa el campo "recommended_asset_id" con el ID exacto):',
+    ...lines,
+  ].join('\n');
+}
+
+// Stub kept to avoid breaking any remaining references during transition
+function scoreArtifactForQuestion() { return 0; }
+
+function buildVisualArtifacts_STUB() {
+  // intentionally empty — use buildVisualArtifacts(recommended_asset_id, selectedPairs)
+}
+
+// Real buildFollowUps: only used as fallback when LLM returns empty follow_ups
+function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
+  const q = normalizeText(question);
+
+  const fallbacks = [
+    '¿Cuál fue la causa física principal del apagón del 28-A?',
+    '¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?',
+    '¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?',
+    '¿Qué reformas se han implementado tras el apagón?',
+    '¿Cómo funcionó el Black Start en la reposición del sistema?',
+  ];
+
+  const isRepetitive = (text) => {
+    const nText = normalizeText(text);
+    if (nText === q) return true;
+    const qWords = new Set(q.split(/\s+/).filter(w => w.length > 3));
+    const nWords = nText.split(/\s+/).filter(w => w.length > 3);
+    if (nWords.length === 0) return false;
+    const common = nWords.filter(w => qWords.has(w)).length;
+    return (common / nWords.length) > 0.6;
+  };
+
+  const suggestions = [];
+  for (const fb of fallbacks) {
+    if (!isRepetitive(fb)) suggestions.push(fb);
+    if (suggestions.length >= maxItems) break;
+  }
+  return suggestions;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stub so nothing breaks if old code paths reference it:
+function buildVisualArtifacts_OLD(selectedPairs, chunksData, intent, question, maxItems = 4) {
+  // Deprecated — use buildVisualArtifacts(recommended_asset_id, selectedPairs)
+  return buildVisualArtifacts(null, selectedPairs);
+}
+
+function _scoreArtifactForQuestion_STUB() { return 0; }
+
+function placeholder_legacy_start() {
   const q = normalizeText(question);
   const id = normalizeText(artifact?.id || '');
   const title = normalizeText(artifact?.title || '');
@@ -1137,126 +1391,10 @@ function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxIt
     });
 }
 
-function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
-  const q = normalizeText(question);
-  const suggestions = [];
-  
-  // Anti-repetition check against user's question
-  const isRepetitive = (text) => {
-    const nText = normalizeText(text);
-    if (nText === q) return true;
-    const qWords = new Set(q.split(/\s+/).filter(w => w.length > 3));
-    const nWords = nText.split(/\s+/).filter(w => w.length > 3);
-    if (nWords.length === 0) return false;
-    const common = nWords.filter(w => qWords.has(w)).length;
-    return (common / nWords.length) > 0.6;
-  };
-
-  const add = (text) => { 
-    if (text && !suggestions.includes(text) && !isRepetitive(text)) {
-      suggestions.push(text);
-    } 
-  };
-
-  if (q.includes('como empezo') || q.includes('como inicio') || q.includes('por que se fue la luz') || q.includes('explicame de forma sencilla') || q.includes('no se nada')) {
-    add('¿Cuál fue la causa física principal frente a los factores agravantes?');
-    add('¿Cómo se conectan Tap-Lag, potencia reactiva y pérdida de generación?');
-    add('¿Por qué no fue simplemente un problema de baja inercia?');
-  } else if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
-    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
-    add('¿Qué parte del coste corresponde a OPEX recurrente y cuál a CAPEX preventivo?');
-    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
-  } else if (q.includes('francia') || q.includes('rte') || q.includes('interconexion')) {
-    add('¿Qué papel jugó la interconexión con Francia en el punto de no retorno?');
-    add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
-    add('¿Cómo se combinó el soporte de Francia con el Black Start hidroeléctrico?');
-  } else if (q.includes('black start') || q.includes('reposicion') || q.includes('arranque')) {
-    add('¿Por qué el Black Start hidroeléctrico fue crucial en la recuperación?');
-    add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
-    add('¿Cuánto tardó en restaurarse el servicio a la península completa?');
-  } else if (q.includes('eas') || q.includes('alerta europea') || q.includes('entso-e') || q.includes('ceguera')) {
-    add('¿Por qué falló la coordinación entre el EAS de ENTSO-E y REE?');
-    add('¿Qué información le faltó a REE para anticipar el apagón?');
-    add('¿Cómo impactó la ceguera del sistema en la propagación del evento?');
-  } else if (q.includes('reforma') || q.includes('ers') || q.includes('mercado') || q.includes('solucion')) {
-    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
-    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
-    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
-  } else if (q.includes('figura') || q.includes('simulador') || q.includes('grafica') || q.includes('mapa') || q.includes('tabla')) {
-    add('¿Qué simulador muestra mejor la secuencia completa del colapso?');
-    add('¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?');
-    add('¿Dónde se ve mejor la caída de frecuencia durante los 27 segundos críticos?');
-  } else if (q.includes('gfm') || q.includes('grid forming') || q.includes('bess')) {
-    add('¿En qué se diferencia un inversor grid-forming de uno grid-following?');
-    add('¿Por qué los BESS-GFM podrían sustituir parte de la inercia síncrona?');
-    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
-  } else if (q.includes('tap-lag') || q.includes('oltc')) {
-    add('¿Qué relación tiene el Tap-Lag con la inyección de reactiva capacitiva?');
-    add('¿Qué recomiendan los informes periciales para mitigar el Tap-Lag?');
-  } else if (q.includes('ufls') || q.includes('deslastre')) {
-    add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
-    add('¿Se podría haber diseñado un relé de sobretensión (OVS) que evitase el colapso?');
-  } else if (q.includes('mallado') || q.includes('scr') || q.includes('cortocircuito')) {
-    add('¿Por qué REE decidió mallar la red a pesar de la baja potencia de cortocircuito?');
-    add('¿Cómo afectó el mallado a la saturación de reactiva capacitiva?');
-    add('¿Qué dice el informe ICAI sobre la decisión de mallado de REE?');
-  } else if (q.includes('responsable') || q.includes('culpa') || q.includes('cnmc') || q.includes('iberdrola') || q.includes('informe')) {
-    add('¿Qué dice la normativa sobre la responsabilidad en un overvoltage-driven blackout?');
-    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
-    add('¿Qué papel jugó el mercado en la desconexión de los ciclos combinados?');
-  } else if (intent === 'comparison' || q.includes('compara') || q.includes('diferencia') || q.includes('relacion')) {
-    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
-    add('¿Qué diferencia fundamental hay entre el 28-A y el apagón de South Australia?');
-    add('¿Cómo se compara el impacto económico del 28-A con otros apagones europeos?');
-  } else {
-    const textContext = [
-      ...selectedPairs.map(p => `${p.chunk.title || ''} ${p.chunk.heading || ''} ${p.chunk.text || ''}`)
-    ].join(' ').toLowerCase();
-
-    if (textContext.includes('tap-lag') && !q.includes('tap-lag') && !q.includes('oltc')) {
-      add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
-    }
-    if (textContext.includes('ufls') && !q.includes('ufls') && !q.includes('deslastre')) {
-      add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
-    }
-    if (textContext.includes('inercia') && !q.includes('inercia') && !q.includes('rocof')) {
-      add('¿La baja inercia fue causa raíz o solo un factor agravante?');
-    }
-    if ((textContext.includes('gobierno') || textContext.includes('ree') || textContext.includes('icai')) && !q.includes('gobierno') && !q.includes('ree')) {
-      add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
-    }
-    if ((textContext.includes('interconexión') || textContext.includes('francia')) && !q.includes('francia')) {
-      add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
-    }
-    if ((textContext.includes('reactiva') || textContext.includes('mvar') || textContext.includes('q-v')) && !q.includes('reactiva')) {
-      add('¿Qué es el margen Q-V y por qué se agotó el 28-A?');
-    }
-    if ((textContext.includes('black start') || textContext.includes('reposición')) && !q.includes('black start')) {
-      add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
-    }
-    if ((textContext.includes('coste') || textContext.includes('opex') || textContext.includes('bess')) && !q.includes('coste')) {
-      add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
-    }
-  }
-
-  // Fallback solo si hay menos de 2 sugerencias contextuales
-  if (suggestions.length < 2) {
-    // Elegir fallbacks que no repitan la pregunta actual
-    const fallbacks = [
-      '¿Cuál fue la causa física principal del apagón del 28-A?',
-      '¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?',
-      '¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?',
-      '¿Qué reformas se han implementado tras el apagón?',
-      '¿Cómo funcionó el Black Start en la reposición del sistema?',
-    ];
-    for (const fb of fallbacks) {
-      if (!isRepetitive(fb)) add(fb);
-      if (suggestions.length >= 2) break;
-    }
-  }
-
-  return suggestions.slice(0, maxItems);
-}
+// buildFollowUps is now a fallback-only function.
+// Primary follow_ups come from the LLM structured response.
+// This is called only when parsed.follow_ups is empty.
+// (Body moved above, inside the restructured section)
 
 const API_ERRORS = {
   es: {
@@ -1497,58 +1635,71 @@ module.exports = async function handler(req, res) {
     const sources = buildSources(selectedPairs, 5);
     const relatedChapters = buildRelatedChapters(selectedPairs, 5);
     const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
-    const followUps = buildFollowUps(question, selectedPairs, intent, 3);
-    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 2);
+    // followUps and visualArtifacts are now resolved AFTER LLM response (T2)
+    // Pre-compute the asset catalogue string for the system prompt injection
+    const assetCatalogueStr = buildAssetCatalogueString(intent, question, 25);
 
     const context = selectedPairs
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
       .join('\n\n---\n\n');
       
+    // figureCandidates retained for backward compat with getIntentInstruction
     const figureCandidates = getFigureCandidates(question, context, 6);
     const figureCandidatesStr = figureCandidates.map(f => `- ID: "${f.id}" | Nombre: "${f.name}"`).join('\n');
 
     const intentInstruction = getIntentInstruction(intent);
     const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
 
+    // ── T2: Prompt estructurado (response_format: json_object) ────────────────
     const prompt = `INSTRUCCIÓN DE RESPUESTA:
 ${intentInstruction}
 
 IDIOMA: Responde en ${langName}. Sin LaTeX. Sin listas salvo que el usuario las pida explícitamente.
 
-EXTENSIÓN: Adapta la longitud a la complejidad de la pregunta.
-- Pregunta factual simple (dato, cifra, definición): 3-5 frases, directo.
-- Pregunta técnica o causal (mecanismo, por qué): desarrolla el argumento completo sin truncar. Prioriza completar la cadena causal sobre acortar.
-- Pregunta comparativa (REE vs ICAI vs ENTSO-E): desarrolla cada posición con evidencia. No resumas las tres en un párrafo.
+FORMATO DE RESPUESTA OBLIGATORIO:
+Responde EXCLUSIVAMENTE con un objeto JSON válido con estas claves exactas:
+{
+  "answer": "<tu respuesta en markdown, en ${langName}>",
+  "citations": [
+    { "claim": "<frase o concepto que citas>", "source_url": "<URL exacta del CONTEXTO>" }
+  ],
+  "recommended_asset_id": "<ID exacto de un asset de la lista ASSETS o null>",
+  "glossary_terms_used": ["<término técnico 1>", "<término técnico 2>"],
+  "follow_ups": ["<pregunta de seguimiento 1>", "<pregunta de seguimiento 2>"]
+}
 
-PROHIBIDO:
+EXTENSIÓN del campo "answer": Adapta la longitud a la complejidad de la pregunta.
+- Pregunta factual simple (dato, cifra, definición): 3-5 frases, directo.
+- Pregunta técnica o causal (mecanismo, por qué): desarrolla el argumento completo sin truncar.
+- Pregunta comparativa (REE vs ICAI vs ENTSO-E): desarrolla cada posición con evidencia.
+
+PROHIBIDO en "answer":
 - Empezar con "Según el contexto", "Basado en", "Es importante destacar", "En resumen".
 - Repetir literalmente frases del CONTEXTO.
-- Inventar URLs o citas no presentes en el CONTEXTO.
 - Usar notación matemática ($H$, \\frac, etc.).
 - Truncar una explicación causal por límite de longitud.
 
-${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL EN EL PANEL DERECHO:
-"${visualArtifacts[0].title}" — ${(visualArtifacts[0].description || '').substring(0, 150)}
-→ Haz referencia a este recurso DENTRO de tu explicación (no al final).
-   Indica QUÉ elemento concreto debe buscar el usuario (curva, columna, valor, timestamp) y QUÉ confirma de tu argumento.
-   Ejemplo: "En el panel derecho puedes ver cómo la tensión supera 1,10 p.u. 24 segundos antes de que la frecuencia caiga — esa asimetría temporal es la firma del colapso capacitivo."
-` : ''}ENLACES EN EL TEXTO:
-1. Cada fragmento del CONTEXTO termina con [URL interna a citar: /ruta#anchor].
-   Usa ESA URL exacta, incluyendo el #anchor íntegro. NUNCA la modifiques ni la inventes.
-2. Integra 2-3 enlaces en el flujo natural de tu respuesta. Ejemplos de formato:
-   - "El fenómeno [Tap-Lag](/analisis-incidente#fase-2-taplag) creó un punto ciego..."
-   - "...como documenta el [glosario técnico](/glosario#ufls)."
-   - "La evidencia oscilográfica del [Anexo II](/anexo-estabilidad-dinamica-tension) confirma..."
-3. OBLIGATORIO enlazar al glosario cuando menciones por primera vez un término técnico
-   (IBR, GFM, UFLS, Tap-Lag, SCR, RoCoF, OLTC, HVDC, EAS) SI el contexto contiene
-   una URL del glosario para ese término.
-4. OBLIGATORIO enlazar al capítulo o anexo que amplíe tu argumento principal,
-   SI el contexto proporciona la URL.
-5. PROHIBIDO inventar URLs. Si el contexto no incluye una [URL interna a citar]
-   para lo que quieres enlazar, no pongas enlace.
+REGLAS PARA "citations":
+- source_url DEBE ser una URL exacta del CONTEXTO ([URL interna a citar: /ruta#anchor]).
+- Copia el anchor íntegro. NUNCA lo inventes ni lo modifiques.
+- Si no hay URL en el contexto para un claim, omite esa citación.
+- Máximo 4 citaciones.
 
-CIERRE:
-Termina con UNA frase que formule la pregunta técnica de continuación más natural, o con la implicación más importante del argumento. Sin fórmulas como "¿quieres saber más?".
+REGLAS PARA "recommended_asset_id":
+- Elige UN SOLO asset de la lista ASSETS VISUALES DISPONIBLES si es relevante.
+- Si ninguno es relevante, usa null.
+- Usa el ID exacto tal como aparece en la lista.
+
+REGLAS PARA "follow_ups":
+- Genera 2-3 preguntas de seguimiento naturales que el usuario podría querer hacer.
+- Deben ser preguntas distintas a la pregunta actual.
+
+ENLACES DENTRO DE "answer":
+1. Usa las URLs exactas del CONTEXTO (campo [URL interna a citar: /ruta#anchor]).
+2. Integra 2-3 en el flujo natural: "El fenómeno [Tap-Lag](/analisis-incidente#fase-2-taplag) creó..."
+3. PROHIBIDO inventar URLs. Si no está en el CONTEXTO, no la pongas.
+
+${assetCatalogueStr}
 
 CONTEXTO RECUPERADO DEL TFG:
 ${context}
@@ -1556,7 +1707,7 @@ ${context}
 PREGUNTA:
 ${question}
 
-RESPUESTA:`;
+RESPUESTA (JSON):`;
 
     const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
 
@@ -1594,7 +1745,7 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
         prompt,
         systemPrompt,
         temperature: 0.18,
-        maxTokens: 1200,
+        maxTokens: 1400, // slightly higher to fit JSON envelope
       });
     } catch (llmError) {
       console.error('[api/chat] LLM provider error:', llmError?.message);
@@ -1602,33 +1753,58 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
       return res.status(llmError?.status || 502).json({
         answer: t.llmUnavailable,
         error: llmError?.message || 'LLM provider error',
-        sources: typeof sources !== 'undefined' ? sources : [],
-        confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
-        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : '',
-        relatedChapters: typeof relatedChapters !== 'undefined' ? relatedChapters : [],
+        sources,
+        confidence,
+        confidence_reason,
+        relatedChapters,
         suggestedFigures: [],
-        visualArtifacts: typeof visualArtifacts !== 'undefined' ? visualArtifacts : [],
-        followUps: typeof followUps !== 'undefined' ? followUps : [],
-        intent: typeof intent !== 'undefined' ? intent : 'general',
+        visualArtifacts: [],
+        followUps: buildFollowUps(question, selectedPairs, intent, 3),
+        citations: [],
+        glossaryTerms: [],
+        intent,
       });
     }
 
     const provider = llmResult?.provider || 'unknown';
-    const model = llmResult?.model || 'unknown';
-    const finalAnswer = llmResult?.text || 'No answer provided by LLM.';
+    const model    = llmResult?.model    || 'unknown';
+    const rawText  = llmResult?.text     || '{}';
+
+    // ── T2: Parse structured response ────────────────────────────────────────
+    const structured = parseStructuredResponse(rawText, selectedPairs);
+
+    if (structured._parse_error) {
+      console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
+    }
+
+    // Resolve the LLM-chosen asset → full artifact object for the frontend
+    const visualArtifacts = buildVisualArtifacts(
+      structured.recommended_asset_id,
+      selectedPairs
+    );
+
+    // follow_ups: LLM-generated preferred, fallback if empty
+    const followUps = structured.follow_ups && structured.follow_ups.length > 0
+      ? structured.follow_ups
+      : buildFollowUps(question, selectedPairs, intent, 3);
 
     return res.status(200).json({
-      answer: finalAnswer, 
-      provider, 
-      model, 
-      sources, 
-      confidence, 
-      confidence_reason, 
-      relatedChapters, 
-      suggestedFigures: [], 
-      visualArtifacts, 
-      followUps: typeof followUps !== 'undefined' ? followUps : [], 
-      intent
+      answer:            structured.answer,
+      provider,
+      model,
+      sources,
+      confidence,
+      confidence_reason,
+      relatedChapters,
+      suggestedFigures:  [],
+      visualArtifacts,
+      followUps,
+      // ── new structured fields (T2) ──────────────────────
+      citations:         structured.citations,
+      glossaryTerms:     structured.glossary_terms_used,
+      recommended_asset_id: structured.recommended_asset_id,
+      _parse_error:      structured._parse_error || false,
+      intent,
     });
 
   } catch (error) {

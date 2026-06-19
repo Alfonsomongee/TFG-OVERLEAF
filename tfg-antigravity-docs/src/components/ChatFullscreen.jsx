@@ -538,7 +538,53 @@ function VisualArtifactCard({ artifact }) {
   return null;
 }
 
-// ── Componente principal ───────────────────────────────────────
+// ── T4: CitationFootnotes ──────────────────────────────────────────
+/**
+ * Renders validated citations as numbered footnotes at the bottom of a
+ * bot message. URLs are guaranteed real by the backend parseStructuredResponse.
+ */
+function CitationFootnotes({ citations }) {
+  if (!citations || citations.length === 0) return null;
+  return (
+    <div
+      className="cfs-citations"
+      style={{
+        marginTop: 8,
+        paddingTop: 8,
+        borderTop: '1px solid var(--cfs-border-soft)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+      }}
+    >
+      {citations.map((c, i) => (
+        <a
+          key={i}
+          href={c.source_url}
+          className="cfs-citation-link"
+          style={{
+            fontSize: 11,
+            color: 'var(--cfs-text-3)',
+            textDecoration: 'none',
+            lineHeight: 1.5,
+            display: 'flex',
+            gap: 6,
+            alignItems: 'flex-start',
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--cfs-accent)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--cfs-text-3)'; }}
+          title={c.source_url}
+        >
+          <span style={{ flexShrink: 0, opacity: 0.6 }}>[{i + 1}]</span>
+          <span>{c.claim || c.source_url}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+// ── Componente principal ────────────────────────────────────────────────
 export default function ChatFullscreen({
   isOpen,
   onClose,
@@ -898,7 +944,7 @@ export default function ChatFullscreen({
 
     if (activeTab === null) {
       return (
-        <div style={{
+        <div className="chat-fullscreen-empty" style={{
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           height: '100%', gap: 16,
@@ -1026,7 +1072,7 @@ export default function ChatFullscreen({
               backgroundColor: 'hsla(190,100%,60%,0.04)',
               flexShrink: 0,
             }}>
-              <div style={{
+              <div className="chat-fullscreen-evidence-kicker" style={{
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: '0.1em',
@@ -1100,15 +1146,15 @@ export default function ChatFullscreen({
       return (
         <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
           {/* Contexto editorial */}
-          <div style={{
-            marginBottom: 20,
+            <div className="chat-fullscreen-evidence-card" style={{
+              marginBottom: 20,
             padding: '14px 16px',
             borderLeft: '3px solid var(--accent-electric, hsl(190 100% 60%))',
             backgroundColor: 'hsla(190,100%,60%,0.05)',
             borderRadius: '0 8px 8px 0',
           }}>
-            <div style={{
-              fontSize: 10,
+              <div className="chat-fullscreen-evidence-kicker" style={{
+                fontSize: 10,
               fontWeight: 700,
               letterSpacing: '0.1em',
               color: 'var(--accent-electric, hsl(190 100% 60%))',
@@ -1251,7 +1297,7 @@ export default function ChatFullscreen({
       if (!table) return null;
       return (
         <div style={{ padding: '24px', overflowY: 'auto', height: '100%' }}>
-          <div style={{
+          <div className="chat-fullscreen-evidence-card chat-fullscreen-evidence-card--table" style={{
             marginBottom: 16,
             padding: '14px 16px',
             borderLeft: '3px solid var(--cfs-amber)',
@@ -1322,14 +1368,14 @@ export default function ChatFullscreen({
 
   // ── Tabs combinados ───────────────────────────────────────────
   return (
-    <div style={{
+    <div className={`chat-fullscreen-shell${presentationMode ? ' is-presentation' : ''}`} style={{
       position: 'fixed', inset: 0, zIndex: 99999,
       backgroundColor: 'var(--cfs-accent-text)',
       display: 'flex', flexDirection: 'column',
       animation: 'fadeInUp 0.2s ease',
     }}>
       {/* ── HEADER ── */}
-      <div style={{
+      <div className="chat-fullscreen-header" style={{
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
         padding: '10px 20px',
@@ -1337,20 +1383,20 @@ export default function ChatFullscreen({
         backgroundColor: 'var(--cfs-bg)',
         flexShrink: 0, minHeight: 48,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+        <div className="chat-fullscreen-brand" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <svg className="chat-fullscreen-mark" width="18" height="18" viewBox="0 0 28 28" fill="none">
             <polygon points="15,4 9,15 14,15 11,26 21,13 15,13"
               fill="var(--accent-electric, hsl(190 100% 60%))"
               strokeWidth="0.6" strokeLinejoin="round"/>
           </svg>
-          <span style={{
+          <span className="chat-fullscreen-title" style={{
             fontWeight: 700, fontSize: 14, letterSpacing: '0.06em',
             color: 'var(--cfs-text-1)',
             textTransform: 'uppercase',
           }}>
             {t.header}
           </span>
-          <span style={{
+          <span className="chat-fullscreen-shortcuts" style={{
             fontSize: 9,
             color: 'var(--cfs-text-3)',
             letterSpacing: '0.06em',
@@ -1359,25 +1405,25 @@ export default function ChatFullscreen({
             alignItems: 'center',
             marginLeft: 12,
           }}>
-            <span style={{
+            <span className="chat-fullscreen-key" style={{
               border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>ESC</span>
-            <span style={{
+            <span className="chat-fullscreen-key" style={{
               border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>⌘M</span>
-            <span style={{
+            <span className="chat-fullscreen-key" style={{
               border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
               fontSize: 9,
             }}>⌘P</span>
-            <span style={{
+            <span className="chat-fullscreen-key" style={{
               border: '1px solid var(--cfs-border)',
               borderRadius: 4,
               padding: '1px 5px',
@@ -1385,8 +1431,9 @@ export default function ChatFullscreen({
             }}>⌘→</span>
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="chat-fullscreen-actions" style={{ display: 'flex', alignItems: 'center' }}>
           <button
+            className={`chat-fullscreen-top-button${presentationMode ? ' is-active' : ''}`}
             onClick={() => setPresentationMode(p => !p)}
             title={presentationMode
               ? (lang === 'en' ? 'Show chat' : lang === 'de' ? 'Chat anzeigen' : lang === 'zh-Hans' ? '显示聊天' : 'Mostrar chat')
@@ -1424,6 +1471,7 @@ export default function ChatFullscreen({
             }
           </button>
           <button
+            className="chat-fullscreen-top-button chat-fullscreen-top-button--close"
             onClick={onClose}
             style={{
               background: 'none',
@@ -1452,7 +1500,7 @@ export default function ChatFullscreen({
       </div>
 
       {/* ── MAIN GRID ── */}
-      <div style={{
+      <div className="chat-fullscreen-grid" style={{
         flex: 1, display: 'grid',
         gridTemplateColumns: presentationMode 
           ? '0px 1fr' 
@@ -1462,7 +1510,7 @@ export default function ChatFullscreen({
       }}>
 
         {/* ── LEFT: CHAT ── */}
-        <div style={{
+        <div className="chat-fullscreen-chat" style={{
           display: 'flex', flexDirection: 'column',
           borderRight: '1px solid var(--cfs-border-soft)',
           overflow: presentationMode ? 'hidden' : 'hidden',
@@ -1472,18 +1520,18 @@ export default function ChatFullscreen({
           backgroundColor: 'var(--cfs-bg)',
         }}>
           {/* Messages */}
-          <div style={{
+          <div className="chat-fullscreen-messages" style={{
             flex: 1, overflowY: 'auto',
             padding: '16px',
             display: 'flex', flexDirection: 'column', gap: 12,
           }}>
             {messages.map((m, i) => (
-              <div key={i} style={{
+              <div key={i} className={`chat-message-row chat-message-row--${m.role}`} style={{
                 alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
                 display: 'flex', flexDirection: 'column', gap: 4,
                 maxWidth: '92%',
               }}>
-                <div style={{
+                <div className={`chat-message-bubble chat-message-bubble--${m.role}`} style={{
                   backgroundColor: m.role === 'user'
                     ? 'var(--cfs-user-msg-bg)'
                     : 'var(--cfs-bot-msg-bg)',
@@ -1495,11 +1543,16 @@ export default function ChatFullscreen({
                   whiteSpace: 'pre-wrap', wordBreak: 'break-word',
                 }}>
                   {renderText(m.text)}
+                  {/* T4: Citation footnotes — only for assistant messages with validated citations */}
+                  {m.role === 'assistant' && (
+                    <CitationFootnotes citations={m.citations} />
+                  )}
                 </div>
                 {m.role === 'assistant' && (
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <div className="chat-message-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     {i > 0 && (
                       <button
+                        className="chat-message-action"
                         onClick={() => {
                           const prev = messages[i - 1];
                           if (prev?.role === 'user') onSimplify(prev.text);
@@ -1536,6 +1589,7 @@ export default function ChatFullscreen({
 
                       return (
                         <button
+                          className="chat-message-action"
                           onClick={() => {
                             setActiveAnchors(anchors);
                             setActiveFigures(figures);
@@ -1572,7 +1626,8 @@ export default function ChatFullscreen({
               </div>
             ))}
             {loading && (
-              <div style={{ color: 'var(--cfs-text-3)', fontSize: 12, fontStyle: 'italic' }}>
+              <div className="chat-fullscreen-loading" style={{ color: 'var(--cfs-text-3)', fontSize: 12, fontStyle: 'italic' }}>
+                <span className="chat-fullscreen-loader-dot" aria-hidden="true" />
                 {loadingStage === 'searching'
                   ? ui.searching
                   : loadingStage === 'synthesizing'
@@ -1585,7 +1640,7 @@ export default function ChatFullscreen({
 
           {/* Indicador de escucha activa */}
           {isListening && (
-            <div style={{
+            <div className="chat-fullscreen-listening" style={{
               padding: '6px 14px',
               display: 'flex',
               alignItems: 'center',
@@ -1597,7 +1652,7 @@ export default function ChatFullscreen({
               borderTop: '1px solid var(--cfs-border-soft)',
               animation: 'fadeInUp 0.2s ease',
             }}>
-              <div style={{
+              <div className="chat-fullscreen-listening-dot" style={{
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
@@ -1612,14 +1667,64 @@ export default function ChatFullscreen({
             </div>
           )}
 
-          {/* Sugerencias de preguntas */}
-          {activeAnchors.length > 0 && !loading && (() => {
+          {/* T2: Sugerencias — prioridad a follow_ups del LLM, fallback a SUGGESTED_QUESTIONS */}
+          {!loading && (() => {
+            const last = [...messages].reverse().find(m => m.role === 'assistant');
+
+            // LLM-generated follow_ups (structured output T2)
+            const llmFollowUps = last?.followUps || [];
+            if (llmFollowUps.length > 0) {
+              return (
+                <div className="chat-fullscreen-suggestions" style={{
+                  padding: '8px 14px',
+                  borderTop: '1px solid var(--cfs-border-soft)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                }}>
+                  {llmFollowUps.map((q, i) => (
+                    <button
+                      className="chat-fullscreen-suggestion"
+                      key={i}
+                      onClick={() => onSend(q)}
+                      style={{
+                        background: 'none',
+                        border: '1px solid var(--cfs-border-soft)',
+                        borderRadius: 8,
+                        color: 'var(--cfs-text-2)',
+                        cursor: 'pointer',
+                        padding: '5px 10px',
+                        fontSize: 11,
+                        textAlign: 'left',
+                        transition: 'all 0.15s ease',
+                        lineHeight: 1.4,
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = 'var(--cfs-accent)';
+                        e.currentTarget.style.color = 'var(--cfs-accent)';
+                        e.currentTarget.style.background = 'rgba(139,38,53,0.04)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = 'var(--cfs-border-soft)';
+                        e.currentTarget.style.color = 'var(--cfs-text-2)';
+                        e.currentTarget.style.background = 'none';
+                      }}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              );
+            }
+
+            // Fallback: SUGGESTED_QUESTIONS by interactive anchor (legacy)
+            if (activeAnchors.length === 0) return null;
             const anchor = activeAnchors[0];
-            const suggestions = SUGGESTED_QUESTIONS[anchor]?.[lang] 
+            const suggestions = SUGGESTED_QUESTIONS[anchor]?.[lang]
               || SUGGESTED_QUESTIONS[anchor]?.es;
             if (!suggestions) return null;
             return (
-              <div style={{
+              <div className="chat-fullscreen-suggestions" style={{
                 padding: '8px 14px',
                 borderTop: '1px solid var(--cfs-border-soft)',
                 display: 'flex',
@@ -1628,10 +1733,9 @@ export default function ChatFullscreen({
               }}>
                 {suggestions.map((q, i) => (
                   <button
+                    className="chat-fullscreen-suggestion"
                     key={i}
-                    onClick={() => {
-                      onSend(q);
-                    }}
+                    onClick={() => onSend(q)}
                     style={{
                       background: 'none',
                       border: '1px solid var(--cfs-border-soft)',
@@ -1663,12 +1767,12 @@ export default function ChatFullscreen({
           })()}
 
           {/* Input */}
-          <div style={{
-            padding: '12px 14px',
+          <div className="chat-fullscreen-composer" style={{
             borderTop: '1px solid var(--cfs-border)',
             display: 'flex', gap: 8, flexShrink: 0,
           }}>
             <input
+              className="chat-fullscreen-input"
               ref={inputRef}
               type="text"
               value={question}
@@ -1689,6 +1793,7 @@ export default function ChatFullscreen({
               }}
             />
             <button
+              className={`chat-fullscreen-icon-button${isListening ? ' is-active' : ''}`}
               onClick={isListening ? stopListening : startListening}
               title={
                 isListening
@@ -1733,6 +1838,7 @@ export default function ChatFullscreen({
               </svg>
             </button>
             <button
+              className="chat-fullscreen-send"
               onClick={handleSend}
               disabled={loading || !question.trim()}
               style={{
@@ -1755,6 +1861,7 @@ export default function ChatFullscreen({
         {/* ── DIVISOR ARRASTRABLE ── */}
         {!presentationMode && (
           <div
+            className="chat-fullscreen-resizer"
             onMouseDown={handleDragStart}
             style={{
               width: 8,
@@ -1790,14 +1897,14 @@ export default function ChatFullscreen({
         )}
 
         {/* ── RIGHT: CONTENT PANEL ── */}
-        <div style={{
+        <div className="chat-fullscreen-panel" style={{
           display: 'flex', flexDirection: 'column',
           overflow: 'hidden',
           backgroundColor: 'var(--cfs-surface-bg)',
         }}>
           {/* Tabs */}
           {allTabs.length > 0 && (
-            <div style={{
+            <div className="chat-fullscreen-tabs" style={{
               display: 'flex', gap: 6, padding: '8px 16px',
               borderBottom: '1px solid var(--cfs-border-soft)',
               flexShrink: 0, overflowX: 'auto',
@@ -1806,6 +1913,8 @@ export default function ChatFullscreen({
             }}>
               {allTabs.map(tab => (
                 <button
+                  className={`chat-fullscreen-tab${activeTab === tab.id ? ' is-active' : ''}`}
+                  data-tab-type={tab.type}
                   key={tab.id}
                   onClick={() => {
                     if (tab.id === activeTab) return;
@@ -1849,7 +1958,7 @@ export default function ChatFullscreen({
           )}
 
           {/* Contenido activo */}
-          <div style={{
+          <div className="chat-fullscreen-panel-content" style={{
             flex: 1, overflow: 'hidden', position: 'relative',
             transition: 'opacity 0.18s ease, transform 0.18s ease',
             opacity: panelVisible ? 1 : 0,
