@@ -124,60 +124,32 @@ html[data-theme='dark'] .layout {
 .metaContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
+  gap: 0 1.5rem;
+  margin-top: 1.1rem;
   margin-bottom: 0;
+  row-gap: 0.5rem;
 }
 
 .metaChip {
   display: inline-flex;
-  flex-direction: column;
-  padding: 0.4rem 0.8rem;
-  background-color: var(--annex-surface);
-  border: 1px solid var(--annex-border);
-  border-radius: 6px;
-  font-size: 0.85rem;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.82rem;
   cursor: default;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  animation: chipIn 0.35s cubic-bezier(0.2, 0, 0, 1) both;
-}
-
-.metaChip:nth-child(1) { animation-delay: 0.05s; }
-.metaChip:nth-child(2) { animation-delay: 0.10s; }
-.metaChip:nth-child(3) { animation-delay: 0.15s; }
-.metaChip:nth-child(4) { animation-delay: 0.20s; }
-
-@keyframes chipIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .metaChip { animation: none; transition: none; }
-}
-
-.metaChip:hover {
-  transform: translateY(-2px);
-  border-color: var(--annex-accent);
-  box-shadow: 0 4px 12px rgba(20, 92, 99, 0.10);
-}
-
-html[data-theme='dark'] .metaChip:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .metaChipLabel {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--annex-text-3);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  white-space: nowrap;
 }
 
 .metaChipValue {
-  color: var(--annex-text-1);
-  font-weight: 500;
+  color: var(--annex-text-2);
+  font-weight: 400;
 }
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -220,11 +192,30 @@ html[data-theme='dark'] .metaChip:hover {
   cursor: pointer;
   user-select: none;
   list-style: none;
-  padding: 1rem;
-  margin: -1rem -1rem 0 -1rem;
-  border-radius: 6px;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.75rem 0.75rem 0.75rem 1.75rem;
+  margin: -0.75rem -0.75rem 0 -0.75rem;
+  border-radius: 4px;
+  transition: background-color 150ms ease;
   color: var(--annex-text-1);
+  position: relative;
+}
+
+/* chevron indicator */
+.sectionSummary::before {
+  content: '›';
+  position: absolute;
+  left: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform 200ms ease;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--annex-text-3);
+  font-weight: 400;
+}
+
+.sectionDetails[open] > .sectionSummary::before {
+  transform: translateY(-50%) rotate(90deg);
 }
 
 .sectionSummary:hover {
@@ -287,84 +278,33 @@ html[data-theme='dark'] .metaChip:hover {
   border: 1px solid;
 }
 
-/* Data type variants */
+/* Data type variants — unified appearance, type read from label not color */
 
-.methodNote.historico {
-  background-color: rgba(20, 92, 99, 0.08);
-  border-color: var(--annex-border);
-  color: var(--annex-text-1);
-}
-
-html[data-theme='dark'] .methodNote.historico {
-  background-color: rgba(131, 189, 194, 0.08);
-  border-color: rgba(131, 189, 194, 0.25);
-}
-
-.methodNote.vivo {
-  background-color: rgba(212, 163, 115, 0.08);
-  border-color: rgba(212, 163, 115, 0.25);
-  color: var(--annex-text-1);
-}
-
-html[data-theme='dark'] .methodNote.vivo {
-  background-color: rgba(230, 180, 92, 0.08);
-  border-color: rgba(230, 180, 92, 0.25);
-}
-
-.methodNote.estimacion {
-  background-color: rgba(212, 163, 115, 0.06);
+.methodNote.historico,
+.methodNote.vivo,
+.methodNote.estimacion,
+.methodNote.reconstruccion,
+.methodNote.modeloDidactico,
+.methodNote.ilustracionConceptual,
+.methodNote.cuestionAbierta {
+  background-color: transparent;
   border-color: var(--annex-border);
   color: var(--annex-text-2);
-}
-
-html[data-theme='dark'] .methodNote.estimacion {
-  background-color: rgba(230, 180, 92, 0.06);
-  border-color: rgba(230, 180, 92, 0.15);
-}
-
-.methodNote.reconstruccion {
-  background-color: rgba(139, 38, 53, 0.06);
-  border-color: var(--annex-border);
-  color: var(--annex-text-1);
-}
-
-html[data-theme='dark'] .methodNote.reconstruccion {
-  background-color: rgba(217, 135, 152, 0.06);
-  border-color: rgba(217, 135, 152, 0.15);
-}
-
-.methodNote.modeloDidactico {
-  background-color: rgba(20, 92, 99, 0.05);
-  border-color: var(--annex-border);
-  color: var(--annex-text-2);
-}
-
-html[data-theme='dark'] .methodNote.modeloDidactico {
-  background-color: rgba(131, 189, 194, 0.05);
-  border-color: rgba(131, 189, 194, 0.15);
-}
-
-.methodNote.ilustracionConceptual {
-  background-color: rgba(78, 107, 79, 0.06);
-  border-color: var(--annex-border);
-  color: var(--annex-text-2);
-}
-
-html[data-theme='dark'] .methodNote.ilustracionConceptual {
-  background-color: rgba(78, 107, 79, 0.06);
-  border-color: rgba(78, 107, 79, 0.15);
 }
 
 .methodNote.cuestionAbierta {
-  background-color: rgba(212, 163, 115, 0.05);
-  border-color: var(--annex-border);
-  color: var(--annex-text-2);
   font-style: italic;
 }
 
+html[data-theme='dark'] .methodNote.historico,
+html[data-theme='dark'] .methodNote.vivo,
+html[data-theme='dark'] .methodNote.estimacion,
+html[data-theme='dark'] .methodNote.reconstruccion,
+html[data-theme='dark'] .methodNote.modeloDidactico,
+html[data-theme='dark'] .methodNote.ilustracionConceptual,
 html[data-theme='dark'] .methodNote.cuestionAbierta {
-  background-color: rgba(230, 180, 92, 0.05);
-  border-color: rgba(230, 180, 92, 0.12);
+  border-color: rgba(156, 180, 210, 0.18);
+  color: var(--annex-text-2);
 }
 
 /* ─────────────────────────────────────────────────────────────── */
