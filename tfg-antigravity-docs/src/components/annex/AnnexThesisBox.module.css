@@ -1,16 +1,59 @@
 .container {
   border-top: 3px solid #145c63;
   background-color: #fffdf7;
-  padding: 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem 4rem;
   margin: 1.5rem 0;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  animation: thesisReveal 0.5s cubic-bezier(0.2, 0, 0, 1) 0.1s both;
+}
+
+@keyframes thesisReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container { animation: none; }
+}
+
+.container::before {
+  content: '\201C';
+  position: absolute;
+  top: -0.1rem;
+  left: 0.75rem;
+  font-size: 5rem;
+  line-height: 1;
+  color: #145c63;
+  opacity: 0.12;
+  font-family: 'Playfair Display', Georgia, serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20, 92, 99, 0.03) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 html[data-theme='dark'] .container {
   background-color: #13263f;
   border-top-color: #83bdc2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+html[data-theme='dark'] .container::before {
+  color: #83bdc2;
+  opacity: 0.10;
+}
+
+html[data-theme='dark'] .container::after {
+  background: linear-gradient(135deg, rgba(131, 189, 194, 0.04) 0%, transparent 60%);
 }
 
 .title {
@@ -20,6 +63,8 @@ html[data-theme='dark'] .container {
   letter-spacing: 0.08em;
   color: #145c63;
   margin: 0 0 0.75rem 0;
+  position: relative;
+  z-index: 1;
 }
 
 html[data-theme='dark'] .title {
@@ -32,8 +77,20 @@ html[data-theme='dark'] .title {
   color: #191814;
   margin: 0;
   font-style: italic;
+  position: relative;
+  z-index: 1;
 }
 
 html[data-theme='dark'] .content {
   color: #f0f4f8;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+  }
+  .container::before {
+    left: 0.5rem;
+    font-size: 3.5rem;
+  }
 }

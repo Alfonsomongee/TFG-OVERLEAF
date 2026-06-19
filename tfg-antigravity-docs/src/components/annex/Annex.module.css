@@ -137,6 +137,33 @@ html[data-theme='dark'] .layout {
   border: 1px solid var(--annex-border);
   border-radius: 6px;
   font-size: 0.85rem;
+  cursor: default;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  animation: chipIn 0.35s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.metaChip:nth-child(1) { animation-delay: 0.05s; }
+.metaChip:nth-child(2) { animation-delay: 0.10s; }
+.metaChip:nth-child(3) { animation-delay: 0.15s; }
+.metaChip:nth-child(4) { animation-delay: 0.20s; }
+
+@keyframes chipIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metaChip { animation: none; transition: none; }
+}
+
+.metaChip:hover {
+  transform: translateY(-2px);
+  border-color: var(--annex-accent);
+  box-shadow: 0 4px 12px rgba(20, 92, 99, 0.10);
+}
+
+html[data-theme='dark'] .metaChip:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .metaChipLabel {

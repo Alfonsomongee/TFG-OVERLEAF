@@ -217,8 +217,9 @@ export default function Root({ children }) {
           width: `${scrollProgress}%`,
           zIndex: 99999,
           transition: 'width 0.1s linear',
-          background: 'var(--scroll-progress-color, var(--accent-electric))',
+          background: `linear-gradient(90deg, var(--scroll-progress-color, var(--accent-electric)), color-mix(in srgb, var(--scroll-progress-color, var(--accent-electric)) 70%, white))`,
           pointerEvents: 'none',
+          boxShadow: scrollProgress > 0 ? '0 0 6px var(--scroll-progress-color, var(--accent-electric))' : 'none',
         }}
         aria-hidden="true"
       />

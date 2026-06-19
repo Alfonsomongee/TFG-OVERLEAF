@@ -190,6 +190,22 @@ html[data-theme='dark'] .msgText {
   border-color: rgba(255,255,255,0.08);
 }
 
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.1em;
+  background: var(--ifm-color-primary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .suggestions {
   display: flex;
   flex-direction: column;
@@ -205,11 +221,23 @@ html[data-theme='dark'] .msgText {
   font-size: 0.75rem;
   color: var(--ifm-color-secondary-darkest, #64707d);
   text-align: left;
-  cursor: not-allowed;
-  pointer-events: none;
+  cursor: default;
+  pointer-events: auto;
   font-family: inherit;
   transform: translateX(0);
   animation: suggestionIn 0.45s ease both;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.suggestion:hover {
+  background: rgba(107, 16, 36, 0.05);
+  border-color: rgba(107, 16, 36, 0.30);
+  transform: translateX(3px);
+}
+
+html[data-theme='dark'] .suggestion:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.20);
 }
 
 .suggestion:nth-child(2) {
@@ -237,6 +265,16 @@ html[data-theme='dark'] .suggestion {
 @media (prefers-reduced-motion: reduce) {
   .suggestion {
     animation: none;
+    transition: none;
+  }
+
+  .suggestion:hover {
+    transform: none;
+  }
+
+  .cursor {
+    animation: none;
+    opacity: 1;
   }
 }
 

@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import OriginalLayout from '@theme-original/Layout';
 import { useLocation } from '@docusaurus/router';
 import ChatWidget from '@site/src/components/ChatWidget';
+import BrowserOnly from '@docusaurus/BrowserOnly';
+import SectionProgress from '@site/src/components/SectionProgress';
+import BackToTop from '@site/src/components/BackToTop';
 
 export default function Layout(props) {
   const location = useLocation();
@@ -38,6 +41,8 @@ export default function Layout(props) {
         <OriginalLayout {...props} />
       </div>
       {!isHomepage && <ChatWidget />}
+      {!isHomepage && <BrowserOnly>{() => <SectionProgress />}</BrowserOnly>}
+      {!isHomepage && <BrowserOnly>{() => <BackToTop />}</BrowserOnly>}
     </>
   );
 }

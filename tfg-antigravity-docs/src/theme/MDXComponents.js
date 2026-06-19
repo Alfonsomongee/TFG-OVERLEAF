@@ -9,6 +9,7 @@ import ForensicNarrative from '@site/src/components/GaleriaForense/ForensicNarra
 import { ForensicTable } from '@site/src/components/ForensicUI/Primitives';
 import Collapsible from '@site/src/components/Collapsible';
 import KeyFact from '@site/src/components/KeyFact';
+import KeyStat from '@site/src/components/KeyStat';
 import NavigationGuide from '@site/src/components/NavigationGuide';
 import SplitText from '@site/src/components/SplitText';
 
@@ -51,6 +52,7 @@ export default {
   ForensicTable,
   Collapsible,
   KeyFact,
+  KeyStat,
   NavigationGuide,
   // Override h1: animación SplitText letra a letra en títulos de capítulo
   h1: AnimatedH1,

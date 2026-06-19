@@ -870,46 +870,6 @@ html.zen-mode .zen-mode-icon-active {
 .footer__copyright {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: #fca5a5;
-}
-
-/* ============================================================
-   FOOTER (Estética y tamaño reducido)
-   ============================================================ */
-
-.footer {
-  font-size: 0.85rem;
-  padding: 3rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  background-color: var(--bg-1);
-}
-
-.footer__title {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  margin-bottom: 1.2rem;
-  font-weight: 600;
-}
-
-.footer__link-item {
-  color: var(--text-3);
-  transition: color 0.2s ease, transform 0.2s ease;
-  display: inline-block;
-  line-height: 1.8;
-}
-
-.footer__link-item:hover {
-  color: var(--ifm-color-primary);
-  text-decoration: none;
-  transform: translateX(4px);
-}
-
-.footer__copyright {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
   color: var(--text-3);
   letter-spacing: 0.05em;
   margin-top: 2rem;
@@ -5035,5 +4995,626 @@ html[data-theme='light'] .footer {
   .navbar__items .navbar__link:hover::before,
   .navbar__items .navbar__item--active .navbar__link::before {
     animation: none !important;
+  }
+}
+
+/* ============================================================
+   BLOCKQUOTES — decorative editorial with forensic aesthetic
+   ============================================================ */
+
+.theme-doc-markdown blockquote,
+article blockquote {
+  position: relative;
+  background: rgba(255, 170, 0, 0.03);
+  border: none;
+  border-left: 3px solid var(--forensic-amber-primary);
+  border-radius: 0 8px 8px 0;
+  padding: 1.1rem 1.5rem 1.1rem 2rem;
+  margin: 1.75rem 0;
+  font-style: italic;
+  color: var(--text-1);
+  overflow: visible;
+}
+
+.theme-doc-markdown blockquote::before,
+article blockquote::before {
+  content: '\201C';
+  position: absolute;
+  top: -0.4rem;
+  left: 0.6rem;
+  font-size: 3.5rem;
+  font-style: normal;
+  color: var(--forensic-amber-primary);
+  opacity: 0.16;
+  line-height: 1;
+  font-family: Georgia, serif;
+  pointer-events: none;
+}
+
+.theme-doc-markdown blockquote p,
+article blockquote p {
+  margin: 0 !important;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-1);
+}
+
+html[data-theme='light'] .theme-doc-markdown blockquote,
+html[data-theme='light'] article blockquote {
+  background: rgba(217, 119, 0, 0.04);
+  border-left-color: var(--forensic-amber-primary);
+}
+
+html[data-theme='light'] .theme-doc-markdown blockquote::before,
+html[data-theme='light'] article blockquote::before {
+  color: var(--forensic-amber-primary);
+}
+
+/* ============================================================
+   ADMONITIONS — glassmorphism enhancement
+   ============================================================ */
+
+.theme-admonition {
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.14) !important;
+}
+
+/* ============================================================
+   KEY-STAT — inline metric highlight chip
+   Usage: <KeyStat>15 GW</KeyStat> or <KeyStat variant="danger">32 s</KeyStat>
+   ============================================================ */
+
+.key-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1em;
+  color: var(--accent-electric);
+  background: rgba(56, 189, 248, 0.09);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 4px;
+  padding: 0.05em 0.38em;
+  white-space: nowrap;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+  vertical-align: baseline;
+}
+
+.key-stat:hover {
+  background: rgba(56, 189, 248, 0.16);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.key-stat--danger {
+  color: var(--danger-300, #fca5a5);
+  background: rgba(239, 68, 68, 0.09);
+  border-color: rgba(239, 68, 68, 0.22);
+}
+
+.key-stat--danger:hover {
+  background: rgba(239, 68, 68, 0.16);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.key-stat--amber {
+  color: var(--warn-500, #f59e0b);
+  background: rgba(245, 158, 11, 0.09);
+  border-color: rgba(245, 158, 11, 0.22);
+}
+
+.key-stat--amber:hover {
+  background: rgba(245, 158, 11, 0.16);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+html[data-theme='light'] .key-stat {
+  color: #1D3557;
+  background: rgba(29, 53, 87, 0.07);
+  border-color: rgba(29, 53, 87, 0.2);
+}
+
+html[data-theme='light'] .key-stat--danger {
+  color: #8B2635;
+  background: rgba(139, 38, 53, 0.07);
+  border-color: rgba(139, 38, 53, 0.2);
+}
+
+html[data-theme='light'] .key-stat--amber {
+  color: #a0540a;
+  background: rgba(160, 84, 10, 0.07);
+  border-color: rgba(160, 84, 10, 0.2);
+}
+
+/* ============================================================
+   SECTION PROGRESS CHIP — floating § indicator
+   ============================================================ */
+
+.section-progress {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.38rem 0.9rem;
+  background: rgba(10, 17, 40, 0.88);
+  border: 1px solid rgba(255, 170, 0, 0.22);
+  border-radius: 20px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(255, 210, 150, 0.88);
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  max-width: 72vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.4s ease;
+}
+
+.section-progress-fraction {
+  color: var(--forensic-amber-primary);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+html[data-theme='light'] .section-progress {
+  background: rgba(245, 242, 235, 0.92);
+  border-color: rgba(217, 119, 0, 0.28);
+  color: #4A4338;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme='light'] .section-progress-fraction {
+  color: #d97700;
+}
+
+/* Hide section progress on pages where it doesn't add value */
+body.hide-floating-buttons .section-progress {
+  display: none;
+}
+
+/* ============================================================
+   CHAPTER NAVIGATION CARDS — swizzled DocPaginator
+   ============================================================ */
+
+.chapter-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 170, 0, 0.1);
+}
+
+.chapter-nav-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  background: rgba(255, 170, 0, 0.03);
+  border: 1px solid rgba(255, 170, 0, 0.12);
+  border-radius: 10px;
+  text-decoration: none !important;
+  transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+  min-width: 0;
+}
+
+.chapter-nav-card:hover {
+  background: rgba(255, 170, 0, 0.07);
+  border-color: rgba(255, 170, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  text-decoration: none !important;
+}
+
+.chapter-nav-card--next {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.chapter-nav-card--next .chapter-nav-body {
+  align-items: flex-end;
+}
+
+.chapter-nav-arrow {
+  font-size: 1.4rem;
+  color: var(--forensic-amber-primary);
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+  line-height: 1;
+}
+
+.chapter-nav-card--prev:hover .chapter-nav-arrow {
+  transform: translateX(-3px);
+}
+
+.chapter-nav-card--next:hover .chapter-nav-arrow {
+  transform: translateX(3px);
+}
+
+.chapter-nav-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.chapter-nav-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--forensic-amber-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.chapter-nav-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 26ch;
+}
+
+.chapter-nav-spacer {
+  /* keeps grid symmetric when only one side has a link */
+}
+
+/* Light mode */
+html[data-theme='light'] .chapter-nav {
+  border-top-color: rgba(217, 119, 0, 0.15);
+}
+
+html[data-theme='light'] .chapter-nav-card {
+  background: rgba(217, 119, 0, 0.03);
+  border-color: rgba(217, 119, 0, 0.15);
+}
+
+html[data-theme='light'] .chapter-nav-card:hover {
+  background: rgba(217, 119, 0, 0.07);
+  border-color: rgba(217, 119, 0, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme='light'] .chapter-nav-label {
+  color: #d97700;
+}
+
+html[data-theme='light'] .chapter-nav-arrow {
+  color: #d97700;
+}
+
+html[data-theme='light'] .chapter-nav-title {
+  color: var(--text-0);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .chapter-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-nav-card--next {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .chapter-nav-card--next .chapter-nav-body {
+    align-items: flex-start;
+  }
+
+  .chapter-nav-title {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+
+/* ============================================================
+   LINK HOVER — slide-in underline (hover.dev inspired)
+   ============================================================ */
+
+.theme-doc-markdown a:not([class]),
+article a:not([class]) {
+  position: relative;
+  text-decoration: none !important;
+  color: var(--ifm-link-color);
+  transition: color 0.2s ease;
+}
+
+.theme-doc-markdown a:not([class])::after,
+article a:not([class])::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-doc-markdown a:not([class]):hover::after,
+article a:not([class]):hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ============================================================
+   INLINE CODE — visual chip with subtle border
+   ============================================================ */
+
+.theme-doc-markdown code:not(pre code),
+article code:not(pre code) {
+  font-family: var(--font-mono) !important;
+  font-size: 0.855em;
+  padding: 0.15em 0.42em;
+  border-radius: 4px;
+  background: rgba(255, 170, 0, 0.06);
+  border: 1px solid rgba(255, 170, 0, 0.14);
+  color: var(--forensic-amber-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+html[data-theme='light'] .theme-doc-markdown code:not(pre code),
+html[data-theme='light'] article code:not(pre code) {
+  background: rgba(139, 38, 53, 0.05);
+  border-color: rgba(139, 38, 53, 0.14);
+  color: #6B1024;
+}
+
+/* ============================================================
+   CODE BLOCKS — refined pre styling
+   ============================================================ */
+
+.theme-doc-markdown pre,
+article pre {
+  border: 1px solid rgba(255, 170, 0, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prism-code {
+  font-size: 0.855rem !important;
+  line-height: 1.65 !important;
+}
+
+.theme-code-block-highlighted-line {
+  background: rgba(255, 170, 0, 0.08) !important;
+  border-left: 3px solid var(--forensic-amber-primary) !important;
+  margin-left: -3px;
+}
+
+html[data-theme='light'] .theme-doc-markdown pre,
+html[data-theme='light'] article pre {
+  border-color: rgba(139, 38, 53, 0.10);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme='light'] .theme-code-block-highlighted-line {
+  background: rgba(139, 38, 53, 0.06) !important;
+  border-left-color: #8B2635 !important;
+}
+
+/* ============================================================
+   FIGURE / FIGCAPTION — editorial treatment
+   ============================================================ */
+
+article figure,
+.theme-doc-markdown figure {
+  margin: 2.5rem 0;
+}
+
+article figcaption,
+.theme-doc-markdown figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+  color: var(--text-3);
+  margin-top: 0.6rem;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--table-border-row, rgba(25, 24, 20, 0.075));
+}
+
+article figcaption strong,
+.theme-doc-markdown figcaption strong {
+  color: var(--forensic-amber-primary);
+  font-weight: 700;
+}
+
+/* ============================================================
+   TOC — active item glow indicator
+   ============================================================ */
+
+.table-of-contents__link--active {
+  position: relative;
+}
+
+.table-of-contents__link--active::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 70%;
+  background: var(--forensic-amber-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255, 170, 0, 0.35);
+}
+
+html[data-theme='light'] .table-of-contents__link--active::before {
+  background: var(--primary, #8B2635);
+  box-shadow: 0 0 8px rgba(139, 38, 53, 0.25);
+}
+
+/* ============================================================
+   TEXT SELECTION — theme-aware highlight
+   ============================================================ */
+
+::selection {
+  background: rgba(255, 170, 0, 0.22);
+  color: inherit;
+}
+
+html[data-theme='light'] ::selection {
+  background: rgba(139, 38, 53, 0.16);
+  color: inherit;
+}
+
+/* ============================================================
+   FOCUS-VISIBLE — accessibility ring
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--forensic-amber-primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+html[data-theme='light'] :focus-visible {
+  outline-color: var(--primary, #8B2635);
+}
+
+/* ============================================================
+   HEADING ANCHORS — # appears on hover
+   ============================================================ */
+
+.theme-doc-markdown h2 .hash-link,
+.theme-doc-markdown h3 .hash-link,
+.theme-doc-markdown h4 .hash-link {
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateX(-4px);
+  color: var(--forensic-amber-primary) !important;
+}
+
+.theme-doc-markdown h2:hover .hash-link,
+.theme-doc-markdown h3:hover .hash-link,
+.theme-doc-markdown h4:hover .hash-link {
+  opacity: 0.7;
+  transform: translateX(0);
+}
+
+.theme-doc-markdown h2:hover .hash-link:hover,
+.theme-doc-markdown h3:hover .hash-link:hover,
+.theme-doc-markdown h4:hover .hash-link:hover {
+  opacity: 1;
+}
+
+html[data-theme='light'] .theme-doc-markdown h2 .hash-link,
+html[data-theme='light'] .theme-doc-markdown h3 .hash-link,
+html[data-theme='light'] .theme-doc-markdown h4 .hash-link {
+  color: var(--primary, #8B2635) !important;
+}
+
+/* ============================================================
+   SCROLL-TO ANCHOR HIGHLIGHT — flash on navigate
+   ============================================================ */
+
+:target {
+  animation: anchorFlash 1.5s ease;
+}
+
+@keyframes anchorFlash {
+  0% { box-shadow: inset 3px 0 0 var(--forensic-amber-primary), 0 0 18px rgba(255, 170, 0, 0.2); }
+  100% { box-shadow: inset 3px 0 0 transparent, 0 0 0 transparent; }
+}
+
+html[data-theme='light'] :target {
+  animation: anchorFlashLight 1.5s ease;
+}
+
+@keyframes anchorFlashLight {
+  0% { box-shadow: inset 3px 0 0 var(--primary, #8B2635), 0 0 18px rgba(139, 38, 53, 0.15); }
+  100% { box-shadow: inset 3px 0 0 transparent, 0 0 0 transparent; }
+}
+
+/* ============================================================
+   DOC CONTENT — subtle page-enter fade
+   ============================================================ */
+
+.theme-doc-markdown,
+article[role='main'],
+.markdown {
+  animation: docFadeIn 0.35s ease;
+}
+
+@keyframes docFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   HR SEPARATOR — editorial divider
+   ============================================================ */
+
+.theme-doc-markdown hr,
+article hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.30), transparent);
+  margin: 3rem 0;
+}
+
+html[data-theme='light'] .theme-doc-markdown hr,
+html[data-theme='light'] article hr {
+  background: linear-gradient(90deg, transparent, rgba(139, 38, 53, 0.22), transparent);
+}
+
+/* ============================================================
+   HIDE DEFAULT DOCUSAURUS PAGINATION (replaced by chapter-nav)
+   ============================================================ */
+
+.pagination-nav:not(.chapter-nav) {
+  display: none;
+}
+
+/* ============================================================
+   PREFERS-REDUCED-MOTION — respect user preference
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-doc-markdown a:not([class])::after,
+  article a:not([class])::after {
+    transition: none;
+  }
+
+  :target {
+    animation: none;
+  }
+
+  .section-progress {
+    transition: none;
+  }
+
+  .chapter-nav-card,
+  .chapter-nav-arrow {
+    transition: none;
+  }
+
+  .chapter-nav-card:hover {
+    transform: none;
+  }
+
+  .theme-doc-markdown,
+  article[role='main'],
+  .markdown {
+    animation: none;
   }
 }

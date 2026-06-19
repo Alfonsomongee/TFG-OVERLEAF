@@ -17,9 +17,17 @@ export default function DecryptedText({
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    // Si no ha animado y está en view, iniciamos la animación
+    const prefersReduced = typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     if (inView && !hasAnimated.current && typeof text === 'string') {
       hasAnimated.current = true;
+
+      if (prefersReduced) {
+        setDisplayText(text);
+        return;
+      }
+
       let iteration = 0;
       let interval = null;
 
