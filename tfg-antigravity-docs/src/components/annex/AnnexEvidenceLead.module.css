@@ -10,11 +10,37 @@
   background: var(--ifm-background-surface-color, #fffdf7);
   border: 1px solid rgba(107, 16, 36, 0.10);
   border-radius: 8px;
+  position: relative;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  animation: leadIn 0.5s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes leadIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead { animation: none; }
+}
+
+.lead:hover {
+  border-color: rgba(107, 16, 36, 0.22);
+  box-shadow:
+    0 8px 24px rgba(107, 16, 36, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 html[data-theme='dark'] .lead {
   background: #13263f;
   border-color: rgba(180, 198, 220, 0.12);
+}
+
+html[data-theme='dark'] .lead:hover {
+  border-color: rgba(131, 189, 194, 0.28);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 /* ── Columna izquierda ── */

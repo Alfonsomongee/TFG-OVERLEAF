@@ -24,7 +24,7 @@
  *   />
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDocLang } from '@site/src/hooks/useDocLang';
 import styles from './AnnexEvidenceNav.module.css';
 
@@ -70,6 +70,32 @@ function scrollToSection(targetId) {
 
 export default function AnnexEvidenceNav({ items = [] }) {
   const lang = useDocLang();
+  const [activeId, setActiveId] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !items.length) return;
+    const ids = items.map(i => i.target);
+    const observers = [];
+    const ratios = {};
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          ratios[id] = entry.intersectionRatio;
+          const best = ids.reduce((a, b) => ((ratios[b] || 0) > (ratios[a] || 0) ? b : a), ids[0]);
+          if (ratios[best] > 0) setActiveId(best);
+        },
+        { threshold: [0, 0.1, 0.25, 0.5], rootMargin: '-10% 0px -55% 0px' }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach(o => o.disconnect());
+  }, [items]);
+
   if (!items.length) return null;
 
   const getNavLabel = (l) => {
@@ -109,12 +135,14 @@ export default function AnnexEvidenceNav({ items = [] }) {
             <button
               key={target}
               type="button"
-              className={styles.navBtn}
+              className={`${styles.navBtn} ${activeId === target ? styles.navBtnActive : ''}`}
               aria-label={getAriaLabel(lang, label)}
+              aria-current={activeId === target ? 'true' : undefined}
               onClick={() => scrollToSection(target)}
             >
               <span className={styles.navBtnIcon} aria-hidden="true">{icon}</span>
               <span className={styles.navBtnLabel}>{label}</span>
+              {activeId === target && <span className={styles.navBtnDot} aria-hidden="true" />}
             </button>
           );
         })}

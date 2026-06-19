@@ -100,6 +100,33 @@ html[data-theme='dark'] .navWrapper {
   /* label text — no extra styles needed */
 }
 
+.navBtnActive {
+  background-color: var(--nav-btn-active);
+  border-color: var(--nav-btn-active);
+  color: var(--nav-btn-active-text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--nav-btn-active) 18%, transparent);
+}
+
+.navBtnDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+  margin-left: 2px;
+  animation: dotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navBtnDot { animation: none; }
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
