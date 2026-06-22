@@ -992,8 +992,14 @@ function enforceAnswerContracts(structured, question, validUrls = null) {
   if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
     structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
   }
+  if (assetId === 'escalones-ufls') {
+    structured.answer = structured.answer.replace(
+      /Los escalones cuarto, quinto y sexto no [^.]+\./i,
+      'El desglose documentado se consulta en la tabla del panel derecho.'
+    );
+  }
 
-  if (q.includes('interconexion') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
+  if (q.includes('interconex') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
     const introUrl = '/introduccion#contexto-estructural';
     const summaryUrl = '/resumen-de-cifras#5-las-interconexiones-el-factor-geografico-que-confino-la-crisis';
     const introLink = validUrls?.has(introUrl)
