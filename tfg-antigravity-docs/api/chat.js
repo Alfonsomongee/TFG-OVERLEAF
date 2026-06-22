@@ -840,6 +840,66 @@ function buildVisualArtifacts(recommendedAssetId, selectedPairs) {
   return resolved ? [resolved] : [];
 }
 
+function normalizeInternalUrl(url) {
+  const clean = String(url || '').trim();
+  if (!clean.startsWith('/') || /[\s<>]/.test(clean)) return '';
+  return clean.slice(0, 300);
+}
+
+function sanitizeCitationClaim(value) {
+  let claim = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!claim) return '';
+  if (claim.length <= 120) return claim;
+
+  const sentenceMatch = claim.match(/^.{30,120}[.!?](?:\s|$)/);
+  if (sentenceMatch) return sentenceMatch[0].trim();
+
+  const slice = claim.slice(0, 121);
+  const boundary = Math.max(
+    slice.lastIndexOf(';'),
+    slice.lastIndexOf(','),
+    slice.lastIndexOf(' - '),
+    slice.lastIndexOf(' ')
+  );
+  const end = boundary > 55 ? boundary : 117;
+  return `${claim.slice(0, end).trim().replace(/[,:;\-]+$/, '')}.`;
+}
+
+function sanitizeAnswerLinks(answer, validUrls, citations) {
+  if (typeof answer !== 'string') return '';
+  const citationUrls = new Set(citations.map(c => c.source_url));
+
+  return answer.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, rawUrl) => {
+    const url = normalizeInternalUrl(rawUrl);
+    if (!url || !validUrls.has(url)) return text;
+
+    if (!citationUrls.has(url)) {
+      if (citations.length >= 4) return text;
+      citations.push({
+        claim: sanitizeCitationClaim(`Referencia enlazada: ${text}`),
+        source_url: url,
+      });
+      citationUrls.add(url);
+    }
+
+    return `[${text}](${url})`;
+  });
+}
+
+function getAnswerScope(answer) {
+  const text = normalizeText(answer || '');
+  const isOutOfScope = /fuera del alcance|outside the scope|datos actuales|tiempo real|fuente externa/.test(text);
+  const hasMissingExactData = /no especifica|no proporciona|no detalla|no incluye|no esta cubierto|no cubre|no disponible|no realiza ese calculo|aparece como n\/d/.test(text);
+  return { isOutOfScope, hasMissingExactData };
+}
+
+function isElectricityPriceLiveQuestion(question) {
+  const q = normalizeText(question || '');
+  const asksPrice = /precio|tarifa|pvpc|omie|esios/.test(q) && /luz|electricidad|electrica|mercado/.test(q);
+  const asksLive = /manana|hoy|ahora|actual|tiempo real|proximo|siguiente/.test(q);
+  return asksPrice && asksLive;
+}
+
 // ── T2: Parse structured LLM response ────────────────────────────────────────
 
 /**
@@ -849,11 +909,13 @@ function buildVisualArtifacts(recommendedAssetId, selectedPairs) {
  *
  * Always returns a safe object — never throws.
  */
-function parseStructuredResponse(rawText, selectedPairs) {
-  // Build set of valid URLs from retrieved chunks
+function parseStructuredResponse(rawText, selectedPairs, sources = null) {
+  // Build set of valid URLs from the exact source list returned to the client.
   const validUrls = new Set(
-    selectedPairs
-      .map(({ chunk }) => buildChunkUrl(chunk))
+    (Array.isArray(sources) && sources.length > 0
+      ? sources.map(source => source.url)
+      : selectedPairs.map(({ chunk }) => buildChunkUrl(chunk)))
+      .map(normalizeInternalUrl)
       .filter(Boolean)
   );
 
@@ -880,25 +942,32 @@ function parseStructuredResponse(rawText, selectedPairs) {
 
   // Validate and sanitize citations
   const rawCitations = Array.isArray(parsed.citations) ? parsed.citations : [];
-  const citations = rawCitations
-    .filter(c => c && typeof c.source_url === 'string')
-    .filter(c => {
-      // Accept only URLs that exist in our retrieved context
-      const url = c.source_url.split('#')[0]; // path without anchor
-      const fullUrl = c.source_url;
-      return (
-        validUrls.has(fullUrl) ||
-        [...validUrls].some(u => u.startsWith(url))
-      );
-    })
-    .slice(0, 4) // max 4 citations
-    .map(c => ({
-      claim:      String(c.claim || '').slice(0, 200),
-      source_url: String(c.source_url).slice(0, 300),
-    }));
+  const citations = [];
+  const seenCitations = new Set();
+
+  for (const c of rawCitations) {
+    if (!c || typeof c.source_url !== 'string') continue;
+    const source_url = normalizeInternalUrl(c.source_url);
+    if (!source_url || !validUrls.has(source_url)) continue;
+
+    const claim = sanitizeCitationClaim(c.claim);
+    if (!claim) continue;
+
+    const key = `${source_url}::${claim}`;
+    if (seenCitations.has(key)) continue;
+    seenCitations.add(key);
+    citations.push({ claim, source_url });
+    if (citations.length >= 4) break;
+  }
+
+  const answer = sanitizeAnswerLinks(
+    typeof parsed.answer === 'string' ? parsed.answer : rawText,
+    validUrls,
+    citations
+  );
 
   return {
-    answer:               typeof parsed.answer === 'string' ? parsed.answer : rawText,
+    answer,
     citations,
     recommended_asset_id: typeof parsed.recommended_asset_id === 'string'
                             ? parsed.recommended_asset_id
@@ -913,17 +982,18 @@ function parseStructuredResponse(rawText, selectedPairs) {
   };
 }
 
-function enforceAnswerContracts(structured, question) {
+function enforceAnswerContracts(structured, question, validUrls = null) {
   if (!structured || typeof structured.answer !== 'string') return structured;
 
   const q = normalizeText(question || '');
   const assetId = structured.recommended_asset_id || '';
+  const canUseTapLagGlossary = !validUrls || validUrls.has('/glosario#tap-lag');
 
   if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
     structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
   }
 
-  if (q.includes('tap lag') || q.includes('tap-lag') || /tap[- ]lag/i.test(structured.answer)) {
+  if ((q.includes('tap lag') || q.includes('tap-lag')) && canUseTapLagGlossary) {
     if (/\[glosario\]\(\/glosario#tap-lag\)/i.test(structured.answer)) {
       structured.answer = structured.answer.replace(/\[glosario\]\(\/glosario#tap-lag\)/gi, '[Tap-Lag](/glosario#tap-lag)');
     } else if (!/\[Tap-Lag\]\(\/glosario#tap-lag\)/.test(structured.answer)) {
@@ -1088,6 +1158,23 @@ module.exports = async function handler(req, res) {
 
   const intent = classifyIntent(question, mode);
 
+  if (isElectricityPriceLiveQuestion(question)) {
+    return res.status(200).json({
+      answer: 'Esta pregunta está fuera del alcance del TFG. Para precios horarios actuales o de mañana consulta OMIE, ESIOS o REE, porque el chatbot solo responde sobre el análisis documental del apagón del 28-A.',
+      sources: [],
+      confidence: 'fuera_de_ambito',
+      confidence_reason: 'Pregunta de datos eléctricos actuales/en tiempo real, fuera del corpus del TFG.',
+      relatedChapters: [],
+      suggestedFigures: [],
+      visualArtifacts: [],
+      followUps: [],
+      citations: [],
+      glossaryTerms: [],
+      recommended_asset_id: null,
+      intent,
+    });
+  }
+
   try {
     let searcher;
     try {
@@ -1217,9 +1304,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const sources = buildSources(selectedPairs, 5);
+    const sources = buildSources(selectedPairs, 9);
     const relatedChapters = buildRelatedChapters(selectedPairs, 5);
-    const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
+    let { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
     // followUps and visualArtifacts are now resolved AFTER LLM response (T2)
     // Pre-compute the asset catalogue string for the system prompt injection
     const assetCatalogueStr = buildAssetCatalogueString(intent, question, 25);
@@ -1360,18 +1447,22 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
     const rawText  = llmResult?.text     || '{}';
 
     // ── T2: Parse structured response ────────────────────────────────────────
-    const structured = enforceAnswerContracts(
-      parseStructuredResponse(rawText, selectedPairs),
-      question
+    const validResponseUrls = new Set(
+      sources.map(source => normalizeInternalUrl(source.url)).filter(Boolean)
     );
+    const structured = enforceAnswerContracts(
+      parseStructuredResponse(rawText, selectedPairs, sources),
+      question,
+      validResponseUrls
+    );
+    structured.answer = sanitizeAnswerLinks(structured.answer, validResponseUrls, structured.citations);
 
     if (structured._parse_error) {
       console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
     }
 
     // Detect out-of-scope responses → suppress artifacts and override confidence
-    const isOutOfScope = /fuera del alcance|outside the scope|no cubre|no está cubierto/i
-      .test(structured.answer || '');
+    const { isOutOfScope, hasMissingExactData } = getAnswerScope(structured.answer);
 
     // Resolve the LLM-chosen asset → full artifact object for the frontend
     const visualArtifacts = isOutOfScope
@@ -1381,6 +1472,9 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
     if (isOutOfScope) {
       confidence = 'fuera_de_ambito';
       confidence_reason = 'Pregunta fuera del alcance del TFG.';
+    } else if (hasMissingExactData && confidence === 'alta') {
+      confidence = 'media';
+      confidence_reason = 'El TFG aporta contexto, pero la propia respuesta indica que el dato exacto no está cubierto o no está disponible.';
     }
 
     // follow_ups: LLM-generated preferred, fallback if empty
