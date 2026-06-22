@@ -701,51 +701,8 @@ function buildSources(selectedPairs, maxItems = 5) {
   return sources;
 }
 
-let figureCatalog = [];
-function loadFigureCatalog() {
-  if (figureCatalog.length > 0) return;
-  try {
-    const p1 = path.join(__dirname, '..', '..', 'galeriaforensedefinitiva.json');
-    const p2 = path.join(__dirname, '..', 'galeriaforensedefinitiva.json');
-    const p = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
-    if (p) {
-       const data = JSON.parse(fs.readFileSync(p, 'utf8'));
-       data.categories.forEach(cat => {
-         ['tables', 'graphics', 'interactives', 'figures', 'data_figures'].forEach(key => {
-           if (cat[key]) {
-             cat[key].forEach(item => {
-               figureCatalog.push({ id: item.id, name: item.name, textMatch: normalizeText(item.name + ' ' + item.id) });
-             });
-           }
-         });
-       });
-    }
-  } catch(e) {
-    console.error("[api/chat] Error loading figure catalog", e);
-  }
-}
-
-function getFigureCandidates(question, contextText, maxItems = 6) {
-  loadFigureCatalog();
-  if (figureCatalog.length === 0) return [];
-  const q = normalizeText(question);
-  const ctx = normalizeText(contextText);
-  const scored = figureCatalog.map(f => {
-     let score = 0;
-     const words = f.textMatch.split(/\s+/).filter(w => w.length > 3);
-     words.forEach(w => {
-        if (q.includes(w)) score += 3;
-        if (ctx.includes(w)) score += 1;
-     });
-     if (q.includes(normalizeText(f.id))) score += 10;
-     return { ...f, score };
-  });
-  return scored.filter(f => f.score > 0).sort((a,b) => b.score - a.score).slice(0, maxItems);
-}
-
-function buildSuggestedFigures(selectedPairs, maxItems = 3) {
-  return []; // Ya no extraemos con regex, delegamos en el LLM.
-}
+// loadFigureCatalog, getFigureCandidates, buildSuggestedFigures — REMOVED (T1/T2)
+// Asset selection is now handled by ASSET_REGISTRY + LLM recommended_asset_id.
 
 function buildRelatedChapters(selectedPairs, maxItems = 5) {
   const chapters = new Set();
@@ -956,9 +913,6 @@ function parseStructuredResponse(rawText, selectedPairs) {
   };
 }
 
-// Placeholder — replaced by LLM-generated follow_ups
-function _legacyBuildFollowUps_REMOVED() {}
-
 /**
  * Builds the compact asset catalogue injected into the system prompt.
  * Limits to `maxItems` most-relevant assets to stay within token budget.
@@ -973,13 +927,6 @@ function buildAssetCatalogueString(intent, question, maxItems = 25) {
     'ASSETS VISUALES DISPONIBLES (usa el campo "recommended_asset_id" con el ID exacto):',
     ...lines,
   ].join('\n');
-}
-
-// Stub kept to avoid breaking any remaining references during transition
-function scoreArtifactForQuestion() { return 0; }
-
-function buildVisualArtifacts_STUB() {
-  // intentionally empty — use buildVisualArtifacts(recommended_asset_id, selectedPairs)
 }
 
 // Real buildFollowUps: only used as fallback when LLM returns empty follow_ups
@@ -1012,12 +959,6 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
   return suggestions;
 }
 
-// ── Legacy artifacts functions removed (re-ranking logic has been migrated) ──
-
-// buildFollowUps is now a fallback-only function.
-// Primary follow_ups come from the LLM structured response.
-// This is called only when parsed.follow_ups is empty.
-// (Body moved above, inside the restructured section)
 
 const API_ERRORS = {
   es: {
@@ -1266,10 +1207,6 @@ module.exports = async function handler(req, res) {
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
       .join('\n\n---\n\n');
       
-    // figureCandidates retained for backward compat with getIntentInstruction
-    const figureCandidates = getFigureCandidates(question, context, 6);
-    const figureCandidatesStr = figureCandidates.map(f => `- ID: "${f.id}" | Nombre: "${f.name}"`).join('\n');
-
     const intentInstruction = getIntentInstruction(intent);
     const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
 
@@ -1317,11 +1254,6 @@ REGLAS PARA "follow_ups":
 - Genera 2-3 preguntas de seguimiento naturales que el usuario podría querer hacer.
 - Deben ser preguntas distintas a la pregunta actual.
 
-ENLACES DENTRO DE "answer":
-1. Usa las URLs exactas del CONTEXTO (campo [URL interna a citar: /ruta#anchor]).
-2. Integra 2-3 en el flujo natural: "El fenómeno [Tap-Lag](/analisis-incidente#fase-2-taplag) creó..."
-3. PROHIBIDO inventar URLs. Si no está en el CONTEXTO, no la pongas.
-
 ${assetCatalogueStr}
 
 CONTEXTO RECUPERADO DEL TFG:
@@ -1333,6 +1265,7 @@ ${question}
 RESPUESTA (JSON):`;
 
     const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
+Responde SIEMPRE en formato JSON válido con las claves: answer, citations, recommended_asset_id, glossary_terms_used, follow_ups.
 
 FECHA DEL EVENTO: El apagón ocurrió el 28 de abril de 2025. Si ves "2021" en algún contexto, es un error tipográfico — el evento fue en 2025.
 

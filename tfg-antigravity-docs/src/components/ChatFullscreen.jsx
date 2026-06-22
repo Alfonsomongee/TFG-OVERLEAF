@@ -1612,57 +1612,8 @@ export default function ChatFullscreen({
             </div>
           )}
 
-          {/* T2: Sugerencias — prioridad a follow_ups del LLM, fallback a SUGGESTED_QUESTIONS */}
-          {!loading && (() => {
-            const last = [...messages].reverse().find(m => m.role === 'assistant');
-
-            // LLM-generated follow_ups (structured output T2)
-            const llmFollowUps = last?.followUps || [];
-            if (llmFollowUps.length > 0) {
-              return (
-                <div style={{
-                  padding: '8px 14px',
-                  borderTop: '1px solid var(--cfs-border-soft)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 4,
-                }}>
-                  {llmFollowUps.map((q, i) => (
-                    <button
-                      key={i}
-                      onClick={() => onSend(q)}
-                      style={{
-                        background: 'none',
-                        border: '1px solid var(--cfs-border-soft)',
-                        borderRadius: 8,
-                        color: 'var(--cfs-text-2)',
-                        cursor: 'pointer',
-                        padding: '5px 10px',
-                        fontSize: 11,
-                        textAlign: 'left',
-                        transition: 'all 0.15s ease',
-                        lineHeight: 1.4,
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.borderColor = 'var(--cfs-accent)';
-                        e.currentTarget.style.color = 'var(--cfs-accent)';
-                        e.currentTarget.style.background = 'rgba(139,38,53,0.04)';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.borderColor = 'var(--cfs-border-soft)';
-                        e.currentTarget.style.color = 'var(--cfs-text-2)';
-                        e.currentTarget.style.background = 'none';
-                      }}
-                    >
-                      {q}
-                    </button>
-                  ))}
-                </div>
-              );
-            }
-
-            // Fallback: SUGGESTED_QUESTIONS by interactive anchor (legacy)
-            if (activeAnchors.length === 0) return null;
+          {/* Sugerencias de preguntas */}
+          {activeAnchors.length > 0 && !loading && (() => {
             const anchor = activeAnchors[0];
             const suggestions = SUGGESTED_QUESTIONS[anchor]?.[lang] 
               || SUGGESTED_QUESTIONS[anchor]?.es;

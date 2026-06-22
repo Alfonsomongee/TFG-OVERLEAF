@@ -128,10 +128,6 @@ export default function ChatWidget() {
     visualArtifacts: data.visualArtifacts || [],
     followUps: data.followUps || [],
     intent: data.intent || 'general',
-    // ── T2: structured fields ─────────────────────────────────
-    citations: data.citations || [],
-    glossaryTerms: data.glossaryTerms || [],
-    recommended_asset_id: data.recommended_asset_id || null,
   });
 
   const handleSend = async (overrideQuestion) => {
