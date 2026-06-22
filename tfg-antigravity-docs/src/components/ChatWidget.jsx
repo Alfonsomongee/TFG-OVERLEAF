@@ -521,6 +521,44 @@ export default function ChatWidget() {
         </div>
       )}
 
+      {/* Badge invitación pantalla completa */}
+      {open && messages.length >= 3 && !fullscreen && (
+        <div
+          onClick={() => setFullscreen(true)}
+          style={{
+            position: 'fixed',
+            bottom: 170,
+            right: 24,
+            backgroundColor: 'var(--chat-widget-accent)',
+            color: 'var(--chat-widget-accent-text)',
+            borderRadius: 20,
+            padding: '6px 14px',
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            cursor: 'pointer',
+            zIndex: 10000,
+            boxShadow: 'var(--chat-widget-badge-shadow)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            userSelect: 'none',
+            animation: 'fadeInUp 0.3s ease',
+            border: '1px solid var(--chat-widget-accent-border)',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = 'var(--chat-widget-shadow)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'var(--chat-widget-badge-shadow)';
+          }}
+        >
+          EXPAND
+        </div>
+      )}
 
       {/* Modo pantalla completa */}
       <ChatFullscreen

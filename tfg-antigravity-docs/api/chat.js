@@ -7,7 +7,6 @@ let chunks = null;
 let miniSearch = null;
 let searchInitPromise = null;
 
-// ── Forensic tables (unchanged) ─────────────────────────────────────────────
 const FORENSIC_TABLES = {};
 try {
   const cats = JSON.parse(fs.readFileSync(
@@ -17,19 +16,6 @@ try {
     (cat.tables || []).forEach(t => { FORENSIC_TABLES[t.id] = t; });
   });
 } catch(e) {}
-
-// ── Asset Registry (T1) ──────────────────────────────────────────────────────
-// Loaded once at cold-start. Replaces the 400-line scoreArtifactForQuestion.
-let ASSET_REGISTRY = [];
-try {
-  const regRaw = fs.readFileSync(
-    path.join(__dirname, '..', 'static', 'asset_registry.json'), 'utf8'
-  );
-  ASSET_REGISTRY = JSON.parse(regRaw).assets || [];
-  console.log(`[api/chat] Asset registry loaded: ${ASSET_REGISTRY.length} assets`);
-} catch(e) {
-  console.warn('[api/chat] asset_registry.json not found — visual asset selection degraded:', e.message);
-}
 
 const rateLimiter = new Map();
 const RATE_LIMIT_WINDOW = 60_000;
@@ -132,7 +118,6 @@ async function callGroq({ apiKey, prompt, systemPrompt, temperature = 0.2, maxTo
         ],
         temperature,
         max_tokens: maxTokens,
-        response_format: { type: 'json_object' }, // T2: structured output
       }),
     },
     30000
@@ -173,7 +158,6 @@ async function callDeepSeek({ apiKey, prompt, systemPrompt, temperature = 0.2, m
         temperature,
         max_tokens: maxTokens,
         stream: false,
-        response_format: { type: 'json_object' }, // T2: structured output
       }),
     },
     45000
@@ -701,8 +685,51 @@ function buildSources(selectedPairs, maxItems = 5) {
   return sources;
 }
 
-// loadFigureCatalog, getFigureCandidates, buildSuggestedFigures — REMOVED (T1/T2)
-// Asset selection is now handled by ASSET_REGISTRY + LLM recommended_asset_id.
+let figureCatalog = [];
+function loadFigureCatalog() {
+  if (figureCatalog.length > 0) return;
+  try {
+    const p1 = path.join(__dirname, '..', '..', 'galeriaforensedefinitiva.json');
+    const p2 = path.join(__dirname, '..', 'galeriaforensedefinitiva.json');
+    const p = fs.existsSync(p1) ? p1 : (fs.existsSync(p2) ? p2 : null);
+    if (p) {
+       const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+       data.categories.forEach(cat => {
+         ['tables', 'graphics', 'interactives', 'figures', 'data_figures'].forEach(key => {
+           if (cat[key]) {
+             cat[key].forEach(item => {
+               figureCatalog.push({ id: item.id, name: item.name, textMatch: normalizeText(item.name + ' ' + item.id) });
+             });
+           }
+         });
+       });
+    }
+  } catch(e) {
+    console.error("[api/chat] Error loading figure catalog", e);
+  }
+}
+
+function getFigureCandidates(question, contextText, maxItems = 6) {
+  loadFigureCatalog();
+  if (figureCatalog.length === 0) return [];
+  const q = normalizeText(question);
+  const ctx = normalizeText(contextText);
+  const scored = figureCatalog.map(f => {
+     let score = 0;
+     const words = f.textMatch.split(/\s+/).filter(w => w.length > 3);
+     words.forEach(w => {
+        if (q.includes(w)) score += 3;
+        if (ctx.includes(w)) score += 1;
+     });
+     if (q.includes(normalizeText(f.id))) score += 10;
+     return { ...f, score };
+  });
+  return scored.filter(f => f.score > 0).sort((a,b) => b.score - a.score).slice(0, maxItems);
+}
+
+function buildSuggestedFigures(selectedPairs, maxItems = 3) {
+  return []; // Ya no extraemos con regex, delegamos en el LLM.
+}
 
 function buildRelatedChapters(selectedPairs, maxItems = 5) {
   const chapters = new Set();
@@ -736,435 +763,385 @@ function computeConfidence(selectedPairs, usedExpandedSearch) {
   return { confidence: 'baja', confidence_reason: 'Evidencia parcial, escasa o con fuerte dependencia de expansión semántica.' };
 }
 
-// ── T1: Asset Registry helpers ──────────────────────────────────────────────
-
-/**
- * Selects up to `maxItems` assets from ASSET_REGISTRY that are most relevant
- * to the current intent + question. Uses overlap of normalized trigger_questions
- * against the query. Falls back to intent-type matching.
- *
- * This replaces the 400-line scoreArtifactForQuestion entirely.
- */
-function selectRegistryAssets(intent, question, maxItems = 25) {
-  const q = normalizeText(question);
-  const qTokens = new Set(q.split(/\s+/).filter(t => t.length > 3));
-
-  const scored = ASSET_REGISTRY.map(asset => {
-    let score = 0;
-
-    // Token overlap with trigger_questions
-    for (const tq of (asset.trigger_questions || [])) {
-      const tqNorm = normalizeText(tq);
-      if (q.includes(tqNorm)) {
-        score += 3; // exact substring match
-      } else {
-        const tqTokens = tqNorm.split(/\s+/).filter(t => t.length > 3);
-        const overlap = tqTokens.filter(t => qTokens.has(t)).length;
-        score += overlap * 0.5;
-      }
-    }
-
-    // Intent-type affinity
-    if (intent === 'visual') {
-      if (asset.type === 'interactive') score += 2;
-      if (asset.type === 'image')       score += 1;
-    }
-    if (intent === 'quantitative' || intent === 'comparison') {
-      if (asset.type === 'table')       score += 2;
-    }
-    if (intent === 'timeline') {
-      if (asset.type === 'interactive') score += 1.5;
-      if (asset.type === 'table')       score += 1;
-    }
-    if (intent === 'causal') {
-      if (asset.type === 'interactive') score += 1;
-    }
-
-    return { asset, score };
-  });
-
-  return scored
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxItems)
-    .map(({ asset }) => asset);
-}
-
-/**
- * Resolves a recommended_asset_id (returned by the LLM) to a full artifact
- * object suitable for the frontend VisualArtifactCard.
- * Falls back to chunk-embedded artifacts from selectedPairs if not found.
- */
-function resolveAssetId(assetId, selectedPairs) {
-  // 1. Look up in registry
-  if (assetId) {
-    const found = ASSET_REGISTRY.find(a => a.id === assetId);
-    if (found) {
-      const extra = {};
-      if (found.type === 'table') {
-        extra.columns = FORENSIC_TABLES[found.id]?.columns || [];
-        extra.data    = FORENSIC_TABLES[found.id]?.data    || [];
-      }
-      return { ...found, ...extra, relevance: 1.0 };
-    }
-  }
-  // 2. Fallback: first artifact embedded in selected chunks
-  for (const { chunk } of selectedPairs) {
-    if (chunk?.artifact) {
-      const art = chunk.artifact;
-      const extra = {};
-      if (art.type === 'table') {
-        extra.columns = FORENSIC_TABLES[art.id]?.columns || [];
-        extra.data    = FORENSIC_TABLES[art.id]?.data    || [];
-      }
-      return { ...art, ...extra, relevance: 0.7 };
-    }
-  }
-  return null;
-}
-
-// LEGACY: kept for reference only — replaced by resolveAssetId + LLM selection
 function getAllArtifactChunks(chunksData) {
   return Object.values(chunksData || {}).filter(c => c && c.artifact);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// scoreArtifactForQuestion has been REMOVED (was L770–L1073).
-// Asset selection is now delegated to the LLM via recommended_asset_id.
-// See: selectRegistryAssets() + resolveAssetId() above.
-// ─────────────────────────────────────────────────────────────────────────────
+function scoreArtifactForQuestion(artifact, chunk, intent, question, baseScore = 1, source = 'global') {
+  const q = normalizeText(question);
+  const id = normalizeText(artifact?.id || '');
+  const title = normalizeText(artifact?.title || '');
+  const desc = normalizeText(artifact?.description || '');
+  const origin = normalizeText(artifact?.origin || '');
+  const text = normalizeText(chunk?.text || '');
+  const haystack = `${id} ${title} ${desc} ${origin} ${text}`;
 
-function buildVisualArtifacts(recommendedAssetId, selectedPairs) {
-  // T2: artifact is chosen by the LLM, resolved deterministically
-  const resolved = resolveAssetId(recommendedAssetId, selectedPairs);
-  return resolved ? [resolved] : [];
-}
+  let score = baseScore;
 
-function isExactAssetId(assetId, selectedPairs = []) {
-  if (!assetId || typeof assetId !== 'string') return false;
-  if (ASSET_REGISTRY.some(asset => asset.id === assetId)) return true;
-  return selectedPairs.some(({ chunk }) => chunk?.artifact?.id === assetId);
-}
+  if (source === 'selected') score *= 1.4;
 
-function normalizeRecommendedAssetId(assetId, selectedPairs = []) {
-  if (typeof assetId !== 'string') return null;
-  const clean = assetId.trim();
-  if (!clean || clean.toLowerCase() === 'null') return null;
-  return isExactAssetId(clean, selectedPairs) ? clean : null;
-}
+  // ── Boosts por intent × tipo/source ───────────────────────────
+  // annex_d = gráficas con datos reales ENTSO-E/ESIOS (máxima credibilidad)
+  // annex_c = simuladores interactivos
+  // annex_b = tablas forenses
 
-function normalizeInternalUrl(url) {
-  const clean = String(url || '').trim();
-  if (!clean.startsWith('/') || /[\s<>]/.test(clean)) return '';
-  return clean.slice(0, 300);
-}
-
-function sanitizeCitationClaim(value) {
-  let claim = String(value || '').replace(/\s+/g, ' ').trim();
-  if (!claim) return '';
-  if (claim.length <= 120) return claim;
-
-  const sentenceMatch = claim.match(/^.{30,120}[.!?](?:\s|$)/);
-  if (sentenceMatch) return sentenceMatch[0].trim();
-
-  const slice = claim.slice(0, 121);
-  const boundary = Math.max(
-    slice.lastIndexOf(';'),
-    slice.lastIndexOf(','),
-    slice.lastIndexOf(' - '),
-    slice.lastIndexOf(' ')
-  );
-  const end = boundary > 55 ? boundary : 117;
-  let compact = claim
-    .slice(0, end)
-    .trim()
-    .replace(/\s+(de|del|la|el|en|con|por|para|y|o|a|que)$/i, '')
-    .replace(/[,:;\-]+$/, '');
-  if (compact.length > 117) compact = compact.slice(0, 117).replace(/\s+\S*$/, '').trim();
-  return `${compact}.`;
-}
-
-function sanitizeAnswerLinks(answer, validUrls, citations) {
-  if (typeof answer !== 'string') return '';
-  const citationUrls = new Set(citations.map(c => c.source_url));
-
-  return answer.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, rawUrl) => {
-    const url = normalizeInternalUrl(rawUrl);
-    if (!url || !validUrls.has(url)) return text;
-
-    if (!citationUrls.has(url)) {
-      if (citations.length >= 4) return text;
-      citations.push({
-        claim: sanitizeCitationClaim(`Referencia enlazada: ${text}`),
-        source_url: url,
-      });
-      citationUrls.add(url);
-    }
-
-    return `[${text}](${url})`;
-  });
-}
-
-function ensureInlineCitationLink(answer, citations) {
-  if (typeof answer !== 'string' || /\[[^\]]+\]\([^)]+\)/.test(answer)) return answer;
-  const firstCitation = citations.find(c => c?.source_url);
-  if (!firstCitation) return answer;
-  return `${answer.trim()} Referencia: [fuente citada](${firstCitation.source_url}).`;
-}
-
-function getAnswerScope(answer) {
-  const text = normalizeText(answer || '');
-  const isOutOfScope = /fuera del alcance|outside the scope|datos actuales|fuente externa/.test(text);
-  const hasMissingExactData = /no especifica|no proporciona|no detalla|no se detalla|no se detallan|no incluye|no esta cubierto|no cubre|no disponible|no realiza ese calculo|aparece como n\/d|requiere datos mas detallados|necesitariamos|no permite calcular/.test(text);
-  return { isOutOfScope, hasMissingExactData };
-}
-
-function isElectricityPriceLiveQuestion(question) {
-  const q = normalizeText(question || '');
-  const asksPrice = /precio|tarifa|pvpc|omie|esios/.test(q) && /luz|electricidad|electrica|mercado/.test(q);
-  const asksLive = /manana|hoy|ahora|actual|tiempo real|proximo|siguiente/.test(q);
-  return q.includes('precio de la luz') || (asksPrice && asksLive);
-}
-
-function addSourceIfMissing(sources, source) {
-  if (!source?.url || sources.some(existing => existing.url === source.url)) return;
-  sources.push({
-    title: source.title,
-    heading: source.heading,
-    slug: source.slug || source.url.split('#')[0],
-    anchor: source.anchor || source.url.split('#')[1] || '',
-    url: source.url,
-    chunkType: source.chunkType || 'support',
-    relevance: source.relevance || 0.5,
-    excerpt: source.excerpt || '',
-  });
-}
-
-function enrichSourcesForAnswerContracts(sources, question) {
-  const q = normalizeText(question || '');
-
-  if (q.includes('ens') && q.includes('gwh')) {
-    addSourceIfMissing(sources, {
-      title: 'Anexo VII · Impacto socioeconómico y resiliencia',
-      heading: 'Comparativa de blackouts históricos',
-      url: '/anexo-impacto-resiliencia#tabla-comparativa-blackouts-historicos',
-      chunkType: 'table',
-      excerpt: 'La ENS estimada para el apagón ibérico figura como n/d.',
-    });
-    addSourceIfMissing(sources, {
-      title: 'Anexo VII · Impacto socioeconómico y resiliencia',
-      heading: 'Costes económicos estimados del apagón 28-A',
-      url: '/anexo-impacto-resiliencia#tabla-costes-economicos',
-      chunkType: 'table',
-      excerpt: 'Tabla de costes económicos; no aporta cálculo cerrado de ENS en GWh.',
-    });
+  if (intent === 'quantitative') {
+    if (artifact.type === 'table')            score *= 2.0;
+    if (artifact.source === 'annex_d')        score *= 1.8;
+    if (artifact.source === 'annex_entsoe')   score *= 2.2;
+    if (artifact.type === 'interactive')      score *= 1.3;
   }
-
-  if (q.includes('interconex') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
-    addSourceIfMissing(sources, {
-      title: 'Introducción',
-      heading: 'Contexto estructural',
-      url: '/introduccion#contexto-estructural',
-      chunkType: 'causal',
-      excerpt: 'Capacidad de interconexión transfronteriza del 7,9 % frente al objetivo UE del 15 %.',
-    });
-    addSourceIfMissing(sources, {
-      title: 'Resumen de Cifras',
-      heading: 'Las interconexiones: factor geográfico que confinó la crisis',
-      url: '/resumen-de-cifras#5-las-interconexiones-el-factor-geografico-que-confino-la-crisis',
-      chunkType: 'quantitative',
-      excerpt: 'Ratio operativa capacidad de importación/demanda total de aproximadamente 3-5 %.',
-    });
+  if (intent === 'comparison') {
+    if (artifact.type === 'table')            score *= 2.0;
+    if (artifact.source === 'annex_d')        score *= 1.6;
+    if (artifact.type === 'interactive')      score *= 1.2;
   }
-}
+  if (intent === 'visual') {
+    if (artifact.source === 'annex_d')        score *= 2.8;
+    if (artifact.source === 'annex_entsoe')   score *= 2.8;
+    if (artifact.source === 'annex_figures')  score *= 2.2;
+    if (artifact.source === 'annex_x')        score *= 3.5;
+    if (artifact.type === 'interactive')      score *= 3.0;
+    if (artifact.type === 'table')            score *= 0.8;
 
-// ── T2: Parse structured LLM response ────────────────────────────────────────
-
-/**
- * Parses the JSON output from the LLM (response_format: json_object).
- * Validates citations against the actual retrieved chunk URLs.
- * Resolves recommended_asset_id to a full artifact object.
- *
- * Always returns a safe object — never throws.
- */
-function parseStructuredResponse(rawText, selectedPairs, sources = null) {
-  // Build set of valid URLs from the exact source list returned to the client.
-  const validUrls = new Set(
-    (Array.isArray(sources) && sources.length > 0
-      ? sources.map(source => source.url)
-      : selectedPairs.map(({ chunk }) => buildChunkUrl(chunk)))
-      .map(normalizeInternalUrl)
-      .filter(Boolean)
-  );
-
-  let parsed;
-  try {
-    // Strip markdown code fences if LLM wraps JSON in ```json ... ```
-    const cleaned = rawText
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```\s*$/, '')
-      .trim();
-    parsed = JSON.parse(cleaned);
-  } catch {
-    // Fallback: treat entire text as the answer (backward compat)
-    console.warn('[api/chat] LLM did not return valid JSON — falling back to plain text');
-    return {
-      answer:               rawText,
-      citations:            [],
-      recommended_asset_id: null,
-      glossary_terms_used:  [],
-      follow_ups:           [],
-      _parse_error:         true,
+    // Override explícito: si la query menciona el nombre del simulador,
+    // el simulador gana siempre sobre imágenes
+    const SIMULATOR_KEYWORDS = {
+      'ferranti':      ['ferranti', 'efecto ferranti', 'linea descargada', 'linea vacia'],
+      'pvcurve':       ['curva p-v', 'pv curve', 'colapso de tension', 'punto de nariz', 'cargabilidad', 'colapso jacobiano', 'nariz'],
+      'swing':         ['ecuacion del swing', 'swing equation', 'rocof', 'inercia', 'constante h'],
+      'map':           ['mapa', 'propagacion', 'cascada geografica', 'animado', 'animated'],
+      'sismograph':    ['sismografo', 'sismograph', '27 segundos', 'segundos criticos'],
+      'timeline':      ['cronologia', 'timeline', 'linea de tiempo', 'cronograma'],
+      'ansi59':        ['ansi 59', 'ansi59', 'proteccion sobretension', 'cascada ibr'],
+      'phaseplane':    ['plano de fase', 'phase plane', 'trayectoria angular'],
+      'frequency':     ['caida de frecuencia', 'nadir frecuencial', 'grafica de frecuencia'],
+      'radar-vulnerabilidad': ['radar', 'vulnerabilidad', 'ejes'],
+      'comparador-28a': ['comparador', 'comparacion escenarios'],
+      'grid-strength-scr': ['scr', 'fortaleza de red', 'short circuit ratio', 'potencia de cortocircuito'],
+      'mrscr-comparator':  ['mrscr', 'multi-maquina'],
+      'dynamic-security-shift': ['frontera de seguridad', 'desplazamiento', 'seguridad dinamica'],
+      'waterfall':     ['cascada financiera', 'waterfall', 'costes del apagon', 'coste total'],
+      'matrix':        ['matriz de costes', 'opex capex', 'inaccion'],
     };
+    if (artifact.type === 'interactive') {
+      const simKws = SIMULATOR_KEYWORDS[artifact.id];
+      if (simKws && simKws.some(kw => q.includes(kw))) {
+        score *= 6.0;
+      }
+    }
+  }
+  if (intent === 'timeline') {
+    if (artifact.source === 'annex_d')        score *= 2.2;  // gráficas temporales reales
+    if (artifact.source === 'annex_entsoe')   score *= 2.5;
+    if (artifact.type === 'interactive')      score *= 2.0;
+    if (artifact.type === 'table')            score *= 1.6;
+  }
+  if (intent === 'causal') {
+    if (artifact.source === 'annex_d')        score *= 2.0;  // diagramas causales reales
+    if (artifact.type === 'interactive')      score *= 1.6;
+    if (artifact.type === 'table')            score *= 1.3;
+  }
+  if (intent === 'glossary') {
+    if (artifact.type === 'interactive')      score *= 2.0;  // simular > ver tabla
+    if (artifact.source === 'annex_d')        score *= 1.5;
+    if (artifact.type === 'table')            score *= 1.1;
+  }
+  if (intent === 'general') {
+    if (artifact.source === 'annex_d')        score *= 1.6;  // siempre preferir datos reales
+    if (artifact.source === 'annex_entsoe')   score *= 1.6;
+    if (artifact.type === 'interactive')      score *= 1.3;
   }
 
-  // Validate and sanitize citations
-  const rawCitations = Array.isArray(parsed.citations) ? parsed.citations : [];
-  const citations = [];
-  const seenCitations = new Set();
+  // Compensación por volumen: annex_c tiene solo 18 chunks vs 42 de annex_b
+  if (artifact.source === 'annex_c')          score *= 1.35;
 
-  for (const c of rawCitations) {
-    if (!c || typeof c.source_url !== 'string') continue;
-    const source_url = normalizeInternalUrl(c.source_url);
-    if (!source_url || !validUrls.has(source_url)) continue;
+  // Boost adicional para annex_d con datos medidos directamente del 28-A
+  // (identificados por IDs que contienen datos de WAMS, PMU o ENTSO-E)
+  const ENTSOE_ESIOS_IDS = [
+    'frequency_voltage_carmona', 'wams_oscilaciones_carmona',
+    'entsoe_flow_deviation', 'heatmap_propagation', 'cascada_desconexiones',
+    'tension_frecuencia_colapso', 'interconexion_francia_colapso',
+    'asimetria_balance_reactiva_sur', 'fluctuaciones_tension_previas',
+    'perdida_sincronismo_frontera', 'evolucion_carga_repuesta_francia',
+    'recuperacion_demanda_peninsular', 'mapas_termicos_tension_ree',
+    'aluvion_alertas_sobretension_sur', 'tap_lag_decoupling',
+    'nunez_balboa_precursores', 'precursor_overvoltage_22april',
+    'hvdc_control_transition', 'intercambio_marruecos_topdown',
+    'evolucion_mix_reenergizacion', 'scr_iberia',
+    'chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5',
+    'chart-6', 'chart-8', 'chart-9', 'chart-11', 'chart-12',
+    'chart-13', 'chart-14', 'chart-18', 'chart-19', 'chart-20',
+    'chart-21', 'chart-23',
+  ];
+  if (ENTSOE_ESIOS_IDS.includes(artifact.id)) score *= 1.5;
 
-    const claim = sanitizeCitationClaim(c.claim);
-    if (!claim) continue;
-
-    const key = `${source_url}::${claim}`;
-    if (seenCitations.has(key)) continue;
-    seenCitations.add(key);
-    citations.push({ claim, source_url });
-    if (citations.length >= 4) break;
-  }
-
-  const answer = sanitizeAnswerLinks(
-    typeof parsed.answer === 'string' ? parsed.answer : rawText,
-    validUrls,
-    citations
-  );
-
-  return {
-    answer,
-    citations,
-    recommended_asset_id: normalizeRecommendedAssetId(parsed.recommended_asset_id, selectedPairs),
-    glossary_terms_used:  Array.isArray(parsed.glossary_terms_used)
-                            ? parsed.glossary_terms_used.slice(0, 10)
-                            : [],
-    follow_ups:           Array.isArray(parsed.follow_ups)
-                            ? parsed.follow_ups.filter(f => typeof f === 'string').slice(0, 3)
-                            : [],
-    _parse_error:         false,
+  const SEMANTIC_BOOSTS = {
+    'chart-1':  ['demanda peninsular', 'caida de demanda', 'recuperacion demanda'],
+    'chart-2':  ['demanda total iberica', 'carga total es pt',
+                 'demanda ibérica', 'carga ibérica'],
+    'chart-8':  ['renovable', 'co2', 'ibr', 'penetracion', 'porcentaje'],
+    'chart-9':  ['precio', 'spot', 'omie', 'negativo', 'mercado'],
+    'chart-11': ['precio', 'europa', 'mercado', 'day-ahead', 'mibel'],
+    'chart-13': ['intercambio', 'frontera', 'p48', 'exportacion', 'saldo'],
+    'chart-14': ['flujo', 'fisico', 'frontera', 'francia', 'marruecos'],
+    'chart-18': ['desequilibrio', 'balance', 'generacion', 'demanda'],
+    'chart-19': ['imbalance', 'desvio', 'mw', 'deficit'],
+    'chart-20': ['precio', 'desvio', 'maximo', '9999', 'infarto'],
+    'chart-21': ['reserva', 'frr', 'afrr', 'mfrr', 'frecuencia'],
+    'chart-23': ['fallback entso-e', 'protocolo emergencia europeo',
+                 'proceso in entso-e', 'desconexion continental'],
   };
-}
 
-function enforceAnswerContracts(structured, question, validUrls = null) {
-  if (!structured || typeof structured.answer !== 'string') return structured;
-
-  const q = normalizeText(question || '');
-  const assetId = structured.recommended_asset_id || '';
-  const canUseTapLagGlossary = !validUrls || validUrls.has('/glosario#tap-lag');
-
-  if (q.includes('ibr') && q.includes('generacion') && (q.includes('porcentaje') || q.includes('instantanea'))) {
-    structured.recommended_asset_id = 'mix-generacion-12-30';
-  }
-
-  if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
-    structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
-  }
-  if (assetId === 'escalones-ufls') {
-    structured.answer = structured.answer.replace(
-      /Los escalones cuarto, quinto y sexto no [^.]+\./i,
-      'El desglose documentado se consulta en la tabla del panel derecho.'
-    ).replace(
-      /,?\s*y escalones posteriores no especificados en la tabla/gi,
-      ', con el resto del desglose documentado en la tabla del panel derecho'
-    );
-  }
-
-  if (q.includes('interconex') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
-    const introUrl = '/introduccion#contexto-estructural';
-    const summaryUrl = '/resumen-de-cifras#5-las-interconexiones-el-factor-geografico-que-confino-la-crisis';
-    const introLink = validUrls?.has(introUrl)
-      ? `[contexto estructural](${introUrl})`
-      : 'contexto estructural';
-    const summaryLink = validUrls?.has(summaryUrl)
-      ? `[resumen de cifras](${summaryUrl})`
-      : 'resumen de cifras';
-
-    structured.answer = `El TFG usa dos métricas complementarias para expresar el aislamiento ibérico. En el ${introLink}, la capacidad de interconexión transfronteriza se cifra en el 7,9 % sobre la demanda punta, frente al objetivo europeo del 15 % para 2030. En el ${summaryLink}, al medir capacidad de importación frente a demanda total instantánea, la ratio operativa aparece como aproximadamente 3-5 %. Ambas lecturas apuntan a la misma conclusión: la península tenía muy poco apoyo externo disponible para importar estabilidad dinámica durante el 28-A. Si "actual" significa el dato actualizado hoy, debe verificarse en REE, ESIOS o ENTSO-E.`;
-
-    structured.citations = [
-      ...(validUrls?.has(introUrl)
-        ? [{ claim: 'La interconexión se cifra en 7,9 % sobre demanda punta.', source_url: introUrl }]
-        : []),
-      ...(validUrls?.has(summaryUrl)
-        ? [{ claim: 'La ratio capacidad de importación/demanda total era de 3-5 %.', source_url: summaryUrl }]
-        : []),
-    ];
-  }
-
-  if (q.includes('ens') && q.includes('gwh')) {
-    const blackoutTableUrl = '/anexo-impacto-resiliencia#tabla-comparativa-blackouts-historicos';
-    const costsTableUrl = '/anexo-impacto-resiliencia#tabla-costes-economicos';
-    const blackoutLink = validUrls?.has(blackoutTableUrl)
-      ? `[tabla comparativa de blackouts](${blackoutTableUrl})`
-      : 'tabla comparativa de blackouts';
-    const costsLink = validUrls?.has(costsTableUrl)
-      ? `[tabla de costes económicos](${costsTableUrl})`
-      : 'tabla de costes económicos';
-
-    structured.answer = `El TFG no proporciona un valor numérico de ENS en GWh para el 28-A: en la ${blackoutLink} aparece como "n/d". Por tanto, no debe derivarse una cifra multiplicando demanda sin suministro por duración media, porque eso no integra la curva real de reposición ni distingue territorios, cargas críticas o recuperación parcial. La ${costsLink} sí recoge bandas económicas del impacto, pero no un cálculo cerrado de Energía No Suministrada en GWh.`;
-
-    structured.citations = [
-      ...(validUrls?.has(blackoutTableUrl)
-        ? [{ claim: 'La ENS estimada del 28-A aparece como n/d.', source_url: blackoutTableUrl }]
-        : []),
-      ...(validUrls?.has(costsTableUrl)
-        ? [{ claim: 'La tabla de costes recoge impacto económico, no ENS en GWh.', source_url: costsTableUrl }]
-        : []),
-    ];
-  }
-
-  if ((q.includes('tap lag') || q.includes('tap-lag')) && canUseTapLagGlossary) {
-    if (/\[glosario\]\(\/glosario#tap-lag\)/i.test(structured.answer)) {
-      structured.answer = structured.answer.replace(/\[glosario\]\(\/glosario#tap-lag\)/gi, '[Tap-Lag](/glosario#tap-lag)');
-    } else if (!/\[Tap-Lag\]\(\/glosario#tap-lag\)/.test(structured.answer)) {
-      structured.answer = `${structured.answer.trim()} Ver también [Tap-Lag](/glosario#tap-lag).`;
+  if (SEMANTIC_BOOSTS[artifact.id]) {
+    if (SEMANTIC_BOOSTS[artifact.id].some(kw => q.includes(kw))) {
+      score *= 3.0;
     }
   }
 
-  return structured;
+  const boostIds = (ids, factor) => {
+    if (ids.some(target => id.includes(normalizeText(target)))) score *= factor;
+  };
+
+  if (q.includes('discrepan') || q.includes('ree') || q.includes('icai') || q.includes('entso-e') || q.includes('gobierno')) {
+    boostIds(['comparativa-conclusiones-entidades', 'compass-lexecon', 'indisponibilidad-generacion-convencional'], 3.0);
+  }
+
+  if (q.includes('reactiva') || q.includes('mvar') || q.includes('q-v') || q.includes('sobretension')) {
+    boostIds(['maniobras-compensacion-reactiva', 'inyeccion-reactiva-distribucion', 'asimetria_balance_reactiva_sur', 'fluctuaciones_tension_previas', 'tensiones-nudos-criticos'], 3.0);
+  }
+
+  if (q.includes('frecuencia') || q.includes('rocof') || q.includes('hz') || q.includes('nadir') || q.includes('27 segundos')) {
+    boostIds(['evolucion-frecuencia-rocof', 'frequency_voltage_carmona', 'tension_frecuencia_colapso'], 3.0);
+  }
+
+  // Simulador interactivo de frecuencia: boost extra cuando se pide
+  // explícitamente una gráfica de frecuencia
+  if ((q.includes('grafica') || q.includes('muestrame') || q.includes('ensename') ||
+       q.includes('simulador') || q.includes('ver')) &&
+      (q.includes('frecuencia') || q.includes('caida') || q.includes('hz'))) {
+    if (artifact.id === 'frequency' && artifact.type === 'interactive') score *= 4.0;
+  }
+
+  if (q.includes('grafica') || q.includes('figura') || q.includes('ensename') || q.includes('muestrame')) {
+    if (artifact.source === 'annex_d') score *= 2.0;
+    if (artifact.type === 'interactive') score *= 1.2;
+  }
+
+  if (q.includes('ufls') || q.includes('deslastre') || q.includes('subfrecuencia')) {
+    boostIds(['escalones-ufls', 'tension_frecuencia_colapso', 'evolucion-frecuencia-rocof'], 3.0);
+  }
+
+  if (q.includes('cascada') || q.includes('propagacion') || q.includes('efecto domino')) {
+    boostIds(['map', 'heatmap_propagation', 'cascada_desconexiones'], 4.0);
+  }
+
+  if (q.includes('francia') || q.includes('rte') || q.includes('reposicion') || q.includes('interconexion')) {
+    boostIds(['interconexion_francia_colapso', 'perdida_sincronismo_frontera', 'evolucion_carga_repuesta_francia', 'intercambios-internacionales-minuto', 'recuperacion-demanda-espana', 'recuperacion-portugal'], 3.0);
+  }
+
+  if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
+    boostIds(['costes-economicos', 'coste_optimo_ers', 'ers_revenue_stacking'], 3.0);
+  }
+
+  if (q.includes('solar') || q.includes('mix') || q.includes('generacion') || q.includes('renovable')) {
+    boostIds(['mix-generacion-12-30', 'ree_generation_mix_28april', 'mix_comparativo_2010_2024'], 3.0);
+  }
+
+  if (q.includes('demanda') || q.includes('perdio') || q.includes('perdida') ||
+      q.includes('carga desconectada') || q.includes('mw desconect') ||
+      q.includes('cuanta carga') || q.includes('desconecto')) {
+    boostIds(['load-shedding-es-pt', 'demand-shedding-es',
+              'demand-shedding-pt', 'dso-load-shedding'], 3.0);
+    // Penalizar charts ENTSO-E de precios para esta pregunta
+    if (['chart-9','chart-11','chart-2','chart-19'].includes(artifact.id)) score *= 0.15;
+  }
+
+  // Secuencia temporal de eventos → simuladores timeline y sismógrafo
+  const SEQUENCE_KEYWORDS = [
+    'secuencia', 'sequence', 'cronologia', 'chronology',
+    '27 segundos', '27 seconds', 'critical seconds', 'segundos criticos',
+    'paso a paso', 'step by step', 'timeline', 'linea de tiempo',
+    'que paso', 'what happened', 'orden de eventos'
+  ];
+  if (SEQUENCE_KEYWORDS.some(k => q.includes(k))) {
+    if (artifact.id === 'timeline') score *= 4.0;
+    if (artifact.id === 'sismograph') score *= 3.5;
+    if (artifact.id === 'sticky-collapse') score *= 3.0;
+    if (artifact.id === 'map') score *= 2.0;
+    // Penalizar charts ENTSO-E de intercambios para esta pregunta
+    if (['chart-23','chart-14','chart-13'].includes(artifact.id)) score *= 0.2;
+  }
+
+  // Reformas, resiliencia, futuro → simuladores específicos
+  const RESILIENCE_KEYWORDS = [
+    'reforma', 'regulacion', 'propone', 'evitar', 'prevenir',
+    'resiliencia', 'futuro', 'solucion', 'recomendacion',
+    'gfm', 'bess', 'inversor formador', 'grid-forming',
+    'ers', 'mercado capacidad', 'nc rfg'
+  ];
+  if (RESILIENCE_KEYWORDS.some(k => q.includes(k))) {
+    if (artifact.id === 'matrix') score *= 4.0;
+    if (artifact.id === 'radar-vulnerabilidad') score *= 3.5;
+    if (artifact.id === 'comparador-28a') score *= 3.0;
+    if (artifact.id === 'waterfall') score *= 2.5;
+    if (['coste_optimo_ers', 'ers_revenue_stacking',
+         'gfl_vs_gfm_circuit1', 'po74_banda_muerta'].includes(artifact.id)) {
+      score *= 2.5;
+    }
+    // Penalizar artifacts de recuperación para preguntas de reforma
+    if (['recuperacion_demanda_peninsular', 'estrategia_reenergizacion_dual',
+         'black_start_hidroelectrico'].includes(artifact.id)) score *= 0.2;
+  }
+
+  // Preguntas sobre MW perdidos en cascada IBR no necesitan charts de precios
+  const CASCADE_MW_KEYWORDS = [
+    'mw perdidos', 'mw se perdieron', 'cascada ibr',
+    'desconexiones ibr', 'generacion perdida', 'potencia perdida',
+    'cuantos mw', 'perdida de generacion'
+  ];
+  if (CASCADE_MW_KEYWORDS.some(k => q.includes(k))) {
+    if (['chart-8','chart-9','chart-10','chart-11',
+         'chart-20','chart-22'].includes(artifact.id)) score *= 0.1;
+    boostIds(['secuencia-desconexion-suroeste',
+              'cascada_desconexiones', 'heatmap_propagation'], 3.5);
+    if (artifact.id === 'map') score *= 3.0;
+    if (artifact.id === 'ansi59') score *= 2.5;
+  }
+
+  // Penalizar artifacts de tensión/precursores para preguntas económicas
+  const ECONOMIC_KEYWORDS = ['coste', 'precio', 'economico', 'financiero',
+    'opex', 'capex', 'mercado', 'euro', 'impacto economico'];
+  const TENSION_ARTIFACT_IDS = ['precursor_overvoltage_22april',
+    'hvdc_control_transition', 'entsoe_flow_deviation',
+    'nunez_balboa_precursores', 'wams_oscilaciones_carmona'];
+  if (ECONOMIC_KEYWORDS.some(k => q.includes(k)) &&
+      TENSION_ARTIFACT_IDS.includes(artifact.id)) {
+    score *= 0.2;
+  }
+
+  // Penalizar artifacts de recuperación/reposición para preguntas de precio
+  const PRICE_KEYWORDS = ['precio', 'spot', 'omie', 'tarifa', 'kwh', 'mwh'];
+  const RECOVERY_ARTIFACT_IDS = ['estrategia_reenergizacion_dual',
+    'black_start_hidroelectrico', 'islas_reposicion_entsoe',
+    'evolucion_carga_repuesta_francia'];
+  if (PRICE_KEYWORDS.some(k => q.includes(k)) &&
+      RECOVERY_ARTIFACT_IDS.includes(artifact.id)) {
+    score *= 0.25;
+  }
+
+  // Los tres artifacts más omnipresentes necesitan penalización base
+  // salvo cuando la pregunta los pide explícitamente
+  const OMNIPRESENT_ARTIFACTS = {
+    'precursor_overvoltage_22april': ['precursor', 'abril', '22 de abril', 'nunez balboa', 'oscilacion previa', 'evento previo'],
+    'entsoe_flow_deviation': ['ntc', 'desvio', 'programa intercambio', 'flujo comercial', 'intercambio programado'],
+    'hvdc_control_transition': ['hvdc', 'santa llogaia', 'pmode', 'inelfe', 'enlace hvdc'],
+    'chart-23': ['fallback', 'protocolo entso', 'proceso in',
+                 'separacion continental', 'interconexion europea'],
+    'chart-2': ['demanda total iberica', 'mwh semana',
+                'carga iberica total', 'perdida total suministro'],
+  };
+  if (OMNIPRESENT_ARTIFACTS[artifact.id]) {
+    const isExplicit = OMNIPRESENT_ARTIFACTS[artifact.id].some(k => q.includes(k));
+    if (!isExplicit) score *= 0.3;
+  }
+
+  // Tablas de desconexión de carga — boost fuerte para que
+  // lleguen al panel y el LLM tenga los datos exactos de PT
+  const LOAD_SHEDDING_KEYWORDS = [
+    'carga desconectada', 'carga se desconecto', 'cuanta carga',
+    'demanda desconectada', 'mw desconect', 'suministro perdido',
+    'demand shedding', 'load shedding', 'desconexion de carga',
+    'cuanto se perdio', 'cuanta demanda'
+  ];
+  if (LOAD_SHEDDING_KEYWORDS.some(k => q.includes(k))) {
+    if (['load-shedding-es-pt', 'demand-shedding-es',
+         'demand-shedding-pt', 'dso-load-shedding',
+         'pump-storage-es', 'pump-storage-pt'].includes(artifact.id)) {
+      score *= 5.0;
+    }
+    if (['chart-2','chart-9','chart-11','chart-20'].includes(artifact.id)) {
+      score *= 0.05;
+    }
+  }
+
+  const qTerms = q.split(/\s+/).filter(t => t.length > 4);
+  const matches = qTerms.filter(t => haystack.includes(t)).length;
+  score *= 1 + Math.min(matches * 0.08, 0.5);
+
+  return score;
 }
 
-/**
- * Builds the compact asset catalogue injected into the system prompt.
- * Limits to `maxItems` most-relevant assets to stay within token budget.
- */
-function buildAssetCatalogueString(intent, question, maxItems = 25) {
-  const relevant = selectRegistryAssets(intent, question, maxItems);
-  if (relevant.length === 0) return '';
-  const lines = relevant.map(a =>
-    `- "${a.id}" (${a.type}): ${a.title}${a.description ? ' — ' + a.description.slice(0, 80) : ''}`
+function buildVisualArtifacts(selectedPairs, chunksData, intent, question, maxItems = 4) {
+  const candidates = [];
+
+  for (const pair of selectedPairs) {
+    if (pair.chunk?.artifact) {
+      candidates.push({
+        artifact: pair.chunk.artifact,
+        chunk: pair.chunk,
+        baseScore: 1,
+        source: 'selected'
+      });
+    }
+  }
+
+  // Solo añadir globales que NO estén ya en selectedPairs
+  const selectedArtifactIds = new Set(
+    selectedPairs
+      .filter(p => p.chunk?.artifact)
+      .map(p => p.chunk.artifact.id)
   );
-  return [
-    'ASSETS VISUALES DISPONIBLES (usa el campo "recommended_asset_id" con el ID exacto):',
-    ...lines,
-  ].join('\n');
+
+  for (const chunk of getAllArtifactChunks(chunksData)) {
+    if (selectedArtifactIds.has(chunk.artifact.id)) continue;
+    candidates.push({
+      artifact: chunk.artifact,
+      chunk,
+      baseScore: 1,
+      source: 'global'
+    });
+  }
+
+  const scored = candidates.map(c => ({
+    ...c,
+    score: scoreArtifactForQuestion(c.artifact, c.chunk, intent, question, c.baseScore, c.source)
+  }));
+
+  const bestByKey = new Map();
+
+  for (const item of scored) {
+    const key = `${item.artifact.type}:${item.artifact.id}`;
+    const prev = bestByKey.get(key);
+    if (!prev || item.score > prev.score) bestByKey.set(key, item);
+  }
+
+  const sorted = [...bestByKey.values()].sort((a, b) => b.score - a.score);
+  const maxScore = sorted[0]?.score || 1;
+
+  return sorted
+    .filter(item => item.source === 'selected' || item.score >= maxScore * 0.50)
+    .slice(0, maxItems)
+    .map(item => {
+      const art = item.artifact;
+      const extraProps = {};
+      if (art.type === 'table') {
+        extraProps.columns = FORENSIC_TABLES[art.id]?.columns || [];
+        extraProps.data = FORENSIC_TABLES[art.id]?.data || [];
+      }
+      return {
+        ...art,
+        ...extraProps,
+        relevance: parseFloat((item.score / maxScore).toFixed(2))
+      };
+    });
 }
 
-// Real buildFollowUps: only used as fallback when LLM returns empty follow_ups
 function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
   const q = normalizeText(question);
-
-  const fallbacks = [
-    '¿Cuál fue la causa física principal del apagón del 28-A?',
-    '¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?',
-    '¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?',
-    '¿Qué reformas se han implementado tras el apagón?',
-    '¿Cómo funcionó el Black Start en la reposición del sistema?',
-  ];
-
+  const suggestions = [];
+  
+  // Anti-repetition check against user's question
   const isRepetitive = (text) => {
     const nText = normalizeText(text);
     if (nText === q) return true;
@@ -1175,14 +1152,111 @@ function buildFollowUps(question, selectedPairs, intent, maxItems = 3) {
     return (common / nWords.length) > 0.6;
   };
 
-  const suggestions = [];
-  for (const fb of fallbacks) {
-    if (!isRepetitive(fb)) suggestions.push(fb);
-    if (suggestions.length >= maxItems) break;
-  }
-  return suggestions;
-}
+  const add = (text) => { 
+    if (text && !suggestions.includes(text) && !isRepetitive(text)) {
+      suggestions.push(text);
+    } 
+  };
 
+  if (q.includes('como empezo') || q.includes('como inicio') || q.includes('por que se fue la luz') || q.includes('explicame de forma sencilla') || q.includes('no se nada')) {
+    add('¿Cuál fue la causa física principal frente a los factores agravantes?');
+    add('¿Cómo se conectan Tap-Lag, potencia reactiva y pérdida de generación?');
+    add('¿Por qué no fue simplemente un problema de baja inercia?');
+  } else if (q.includes('coste') || q.includes('opex') || q.includes('capex') || q.includes('operacion reforzada')) {
+    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
+    add('¿Qué parte del coste corresponde a OPEX recurrente y cuál a CAPEX preventivo?');
+    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+  } else if (q.includes('francia') || q.includes('rte') || q.includes('interconexion')) {
+    add('¿Qué papel jugó la interconexión con Francia en el punto de no retorno?');
+    add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
+    add('¿Cómo se combinó el soporte de Francia con el Black Start hidroeléctrico?');
+  } else if (q.includes('black start') || q.includes('reposicion') || q.includes('arranque')) {
+    add('¿Por qué el Black Start hidroeléctrico fue crucial en la recuperación?');
+    add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
+    add('¿Cuánto tardó en restaurarse el servicio a la península completa?');
+  } else if (q.includes('eas') || q.includes('alerta europea') || q.includes('entso-e') || q.includes('ceguera')) {
+    add('¿Por qué falló la coordinación entre el EAS de ENTSO-E y REE?');
+    add('¿Qué información le faltó a REE para anticipar el apagón?');
+    add('¿Cómo impactó la ceguera del sistema en la propagación del evento?');
+  } else if (q.includes('reforma') || q.includes('ers') || q.includes('mercado') || q.includes('solucion')) {
+    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
+    add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+    add('¿Por qué la Operación Reforzada es más cara que invertir en resiliencia?');
+  } else if (q.includes('figura') || q.includes('simulador') || q.includes('grafica') || q.includes('mapa') || q.includes('tabla')) {
+    add('¿Qué simulador muestra mejor la secuencia completa del colapso?');
+    add('¿Qué figura ayuda a distinguir frecuencia, tensión y potencia reactiva?');
+    add('¿Dónde se ve mejor la caída de frecuencia durante los 27 segundos críticos?');
+  } else if (q.includes('gfm') || q.includes('grid forming') || q.includes('bess')) {
+    add('¿En qué se diferencia un inversor grid-forming de uno grid-following?');
+    add('¿Por qué los BESS-GFM podrían sustituir parte de la inercia síncrona?');
+    add('¿Qué servicios de estabilidad debería remunerar el mercado ERS?');
+  } else if (q.includes('tap-lag') || q.includes('oltc')) {
+    add('¿Qué relación tiene el Tap-Lag con la inyección de reactiva capacitiva?');
+    add('¿Qué recomiendan los informes periciales para mitigar el Tap-Lag?');
+  } else if (q.includes('ufls') || q.includes('deslastre')) {
+    add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
+    add('¿Se podría haber diseñado un relé de sobretensión (OVS) que evitase el colapso?');
+  } else if (q.includes('mallado') || q.includes('scr') || q.includes('cortocircuito')) {
+    add('¿Por qué REE decidió mallar la red a pesar de la baja potencia de cortocircuito?');
+    add('¿Cómo afectó el mallado a la saturación de reactiva capacitiva?');
+    add('¿Qué dice el informe ICAI sobre la decisión de mallado de REE?');
+  } else if (q.includes('responsable') || q.includes('culpa') || q.includes('cnmc') || q.includes('iberdrola') || q.includes('informe')) {
+    add('¿Qué dice la normativa sobre la responsabilidad en un overvoltage-driven blackout?');
+    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    add('¿Qué papel jugó el mercado en la desconexión de los ciclos combinados?');
+  } else if (intent === 'comparison' || q.includes('compara') || q.includes('diferencia') || q.includes('relacion')) {
+    add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    add('¿Qué diferencia fundamental hay entre el 28-A y el apagón de South Australia?');
+    add('¿Cómo se compara el impacto económico del 28-A con otros apagones europeos?');
+  } else {
+    const textContext = [
+      ...selectedPairs.map(p => `${p.chunk.title || ''} ${p.chunk.heading || ''} ${p.chunk.text || ''}`)
+    ].join(' ').toLowerCase();
+
+    if (textContext.includes('tap-lag') && !q.includes('tap-lag') && !q.includes('oltc')) {
+      add('¿Cómo amplificó el Tap-Lag la sobretensión en la red de 220 kV?');
+    }
+    if (textContext.includes('ufls') && !q.includes('ufls') && !q.includes('deslastre')) {
+      add('¿Por qué el UFLS agravó el colapso de tensión en vez de frenarlo?');
+    }
+    if (textContext.includes('inercia') && !q.includes('inercia') && !q.includes('rocof')) {
+      add('¿La baja inercia fue causa raíz o solo un factor agravante?');
+    }
+    if ((textContext.includes('gobierno') || textContext.includes('ree') || textContext.includes('icai')) && !q.includes('gobierno') && !q.includes('ree')) {
+      add('¿En qué discrepan exactamente REE, ICAI y ENTSO-E sobre la causa del apagón?');
+    }
+    if ((textContext.includes('interconexión') || textContext.includes('francia')) && !q.includes('francia')) {
+      add('¿Por qué la condición de isla energética agravó el apagón ibérico?');
+    }
+    if ((textContext.includes('reactiva') || textContext.includes('mvar') || textContext.includes('q-v')) && !q.includes('reactiva')) {
+      add('¿Qué es el margen Q-V y por qué se agotó el 28-A?');
+    }
+    if ((textContext.includes('black start') || textContext.includes('reposición')) && !q.includes('black start')) {
+      add('¿Qué limitaciones tenían los inversores grid-following durante la reposición?');
+    }
+    if ((textContext.includes('coste') || textContext.includes('opex') || textContext.includes('bess')) && !q.includes('coste')) {
+      add('¿Qué tecnologías reducirían estructuralmente el riesgo de otro apagón?');
+    }
+  }
+
+  // Fallback solo si hay menos de 2 sugerencias contextuales
+  if (suggestions.length < 2) {
+    // Elegir fallbacks que no repitan la pregunta actual
+    const fallbacks = [
+      '¿Cuál fue la causa física principal del apagón del 28-A?',
+      '¿Qué diferencia hay entre la explicación de REE y la del informe ICAI?',
+      '¿Por qué el exceso de reactiva capacitiva fue tan letal el 28-A?',
+      '¿Qué reformas se han implementado tras el apagón?',
+      '¿Cómo funcionó el Black Start en la reposición del sistema?',
+    ];
+    for (const fb of fallbacks) {
+      if (!isRepetitive(fb)) add(fb);
+      if (suggestions.length >= 2) break;
+    }
+  }
+
+  return suggestions.slice(0, maxItems);
+}
 
 const API_ERRORS = {
   es: {
@@ -1290,23 +1364,6 @@ module.exports = async function handler(req, res) {
   }
 
   const intent = classifyIntent(question, mode);
-
-  if (isElectricityPriceLiveQuestion(question)) {
-    return res.status(200).json({
-      answer: 'Esta pregunta está fuera del alcance del TFG. Para precios horarios actuales o de mañana consulta OMIE, ESIOS o REE, porque el chatbot solo responde sobre el análisis documental del apagón del 28-A.',
-      sources: [],
-      confidence: 'fuera_de_ambito',
-      confidence_reason: 'Pregunta de datos eléctricos actuales/en tiempo real, fuera del corpus del TFG.',
-      relatedChapters: [],
-      suggestedFigures: [],
-      visualArtifacts: [],
-      followUps: [],
-      citations: [],
-      glossaryTerms: [],
-      recommended_asset_id: null,
-      intent,
-    });
-  }
 
   try {
     let searcher;
@@ -1437,78 +1494,61 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const sources = buildSources(selectedPairs, 9);
-    enrichSourcesForAnswerContracts(sources, question);
+    const sources = buildSources(selectedPairs, 5);
     const relatedChapters = buildRelatedChapters(selectedPairs, 5);
-    let { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
-    // followUps and visualArtifacts are now resolved AFTER LLM response (T2)
-    // Pre-compute the asset catalogue string for the system prompt injection
-    const assetCatalogueStr = buildAssetCatalogueString(intent, question, 25);
+    const { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
+    const followUps = buildFollowUps(question, selectedPairs, intent, 3);
+    const visualArtifacts = buildVisualArtifacts(selectedPairs, chunks, intent, question, 2);
 
     const context = selectedPairs
       .map(({ chunk }) => `${chunk.text}\n[URL interna a citar: ${buildChunkUrl(chunk)}]`)
       .join('\n\n---\n\n');
       
+    const figureCandidates = getFigureCandidates(question, context, 6);
+    const figureCandidatesStr = figureCandidates.map(f => `- ID: "${f.id}" | Nombre: "${f.name}"`).join('\n');
+
     const intentInstruction = getIntentInstruction(intent);
     const langName = locale === 'en' ? 'inglés' : locale === 'de' ? 'alemán' : locale === 'zh-Hans' ? 'chino simplificado' : 'español';
 
-    // ── T2: Prompt estructurado (response_format: json_object) ────────────────
     const prompt = `INSTRUCCIÓN DE RESPUESTA:
 ${intentInstruction}
 
 IDIOMA: Responde en ${langName}. Sin LaTeX. Sin listas salvo que el usuario las pida explícitamente.
 
-FORMATO DE RESPUESTA OBLIGATORIO:
-Responde EXCLUSIVAMENTE con un objeto JSON válido con estas claves exactas:
-{
-  "answer": "<tu respuesta en markdown, en ${langName}>",
-  "citations": [
-    { "claim": "<frase o concepto que citas>", "source_url": "<URL exacta del CONTEXTO>" }
-  ],
-  "recommended_asset_id": "<ID exacto de un asset de la lista ASSETS o null>",
-  "glossary_terms_used": ["<término técnico 1>", "<término técnico 2>"],
-  "follow_ups": ["<pregunta de seguimiento 1>", "<pregunta de seguimiento 2>"]
-}
-
-EXTENSIÓN del campo "answer": Adapta la longitud a la complejidad de la pregunta.
+EXTENSIÓN: Adapta la longitud a la complejidad de la pregunta.
 - Pregunta factual simple (dato, cifra, definición): 3-5 frases, directo.
-- Pregunta técnica o causal (mecanismo, por qué): desarrolla el argumento completo sin truncar.
-- Pregunta comparativa (REE vs ICAI vs ENTSO-E): desarrolla cada posición con evidencia.
+- Pregunta técnica o causal (mecanismo, por qué): desarrolla el argumento completo sin truncar. Prioriza completar la cadena causal sobre acortar.
+- Pregunta comparativa (REE vs ICAI vs ENTSO-E): desarrolla cada posición con evidencia. No resumas las tres en un párrafo.
 
-PROHIBIDO en "answer":
+PROHIBIDO:
 - Empezar con "Según el contexto", "Basado en", "Es importante destacar", "En resumen".
 - Repetir literalmente frases del CONTEXTO.
+- Inventar URLs o citas no presentes en el CONTEXTO.
 - Usar notación matemática ($H$, \\frac, etc.).
 - Truncar una explicación causal por límite de longitud.
 
-CIFRAS: Cita números EXACTAMENTE como aparecen en el CONTEXTO. No calcules, no redondees, no derives cifras propias. Si la fuente dice "1.955 MW", escribe "1.955 MW".
+${visualArtifacts && visualArtifacts.length > 0 ? `RECURSO VISUAL EN EL PANEL DERECHO:
+"${visualArtifacts[0].title}" — ${(visualArtifacts[0].description || '').substring(0, 150)}
+→ Haz referencia a este recurso DENTRO de tu explicación (no al final).
+   Indica QUÉ elemento concreto debe buscar el usuario (curva, columna, valor, timestamp) y QUÉ confirma de tu argumento.
+   Ejemplo: "En el panel derecho puedes ver cómo la tensión supera 1,10 p.u. 24 segundos antes de que la frecuencia caiga — esa asimetría temporal es la firma del colapso capacitivo."
+` : ''}ENLACES EN EL TEXTO:
+1. Cada fragmento del CONTEXTO termina con [URL interna a citar: /ruta#anchor].
+   Usa ESA URL exacta, incluyendo el #anchor íntegro. NUNCA la modifiques ni la inventes.
+2. Integra 2-3 enlaces en el flujo natural de tu respuesta. Ejemplos de formato:
+   - "El fenómeno [Tap-Lag](/analisis-incidente#fase-2-taplag) creó un punto ciego..."
+   - "...como documenta el [glosario técnico](/glosario#ufls)."
+   - "La evidencia oscilográfica del [Anexo II](/anexo-estabilidad-dinamica-tension) confirma..."
+3. OBLIGATORIO enlazar al glosario cuando menciones por primera vez un término técnico
+   (IBR, GFM, UFLS, Tap-Lag, SCR, RoCoF, OLTC, HVDC, EAS) SI el contexto contiene
+   una URL del glosario para ese término.
+4. OBLIGATORIO enlazar al capítulo o anexo que amplíe tu argumento principal,
+   SI el contexto proporciona la URL.
+5. PROHIBIDO inventar URLs. Si el contexto no incluye una [URL interna a citar]
+   para lo que quieres enlazar, no pongas enlace.
 
-REGLAS PARA "citations":
-- source_url DEBE ser una URL exacta del CONTEXTO ([URL interna a citar: /ruta#anchor]).
-- Copia el anchor íntegro. NUNCA lo inventes ni lo modifiques.
-- Si no hay URL en el contexto para un claim, omite esa citación.
-- Máximo 4 citaciones.
-- Cada "claim" debe ser una frase completa y autocontenida de máximo 120 caracteres. Si es más larga, resúmela; nunca la trunces a mitad de frase.
-
-ENLACES DENTRO DE "answer":
-- Integra 2-3 enlaces markdown en el texto usando las URLs del CONTEXTO.
-  Ejemplo: "El mecanismo [Tap-Lag](/analisis-incidente#fase-2-taplag) amplificó la sobretensión."
-- Usa SOLO URLs que aparezcan en el CONTEXTO como [URL interna a citar: ...]. PROHIBIDO inventar.
-- También incluye esas mismas URLs en "citations" — los enlaces inline y las citaciones se complementan.
-- Para términos técnicos del glosario, enlaza a /glosario#termino cuando proceda.
-
-REGLAS PARA "recommended_asset_id":
-- Elige UN SOLO asset de la lista ASSETS VISUALES DISPONIBLES si es relevante.
-- Si ninguno es relevante, usa null.
-- Usa el ID exacto tal como aparece en la lista.
-- Si recomiendas un asset que contiene datos tabulares o una gráfica relevante, menciónalo en "answer": "Los datos detallados están en la tabla/figura del panel derecho."
-- NUNCA digas "el TFG no detalla" o "no se incluye" si estás recomendando un asset que contiene esa información.
-
-REGLAS PARA "follow_ups":
-- Genera 2-3 preguntas de seguimiento naturales que el usuario podría querer hacer.
-- Deben ser preguntas distintas a la pregunta actual.
-
-${assetCatalogueStr}
+CIERRE:
+Termina con UNA frase que formule la pregunta técnica de continuación más natural, o con la implicación más importante del argumento. Sin fórmulas como "¿quieres saber más?".
 
 CONTEXTO RECUPERADO DEL TFG:
 ${context}
@@ -1516,10 +1556,9 @@ ${context}
 PREGUNTA:
 ${question}
 
-RESPUESTA (JSON):`;
+RESPUESTA:`;
 
     const systemPrompt = `Eres el asistente pericial del TFG "Análisis Forense del Apagón Ibérico del 28-A".
-Responde SIEMPRE en formato JSON válido con las claves: answer, citations, recommended_asset_id, glossary_terms_used, follow_ups.
 
 FECHA DEL EVENTO: El apagón ocurrió el 28 de abril de 2025. Si ves "2021" en algún contexto, es un error tipográfico — el evento fue en 2025.
 
@@ -1555,7 +1594,7 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
         prompt,
         systemPrompt,
         temperature: 0.18,
-        maxTokens: 1400, // slightly higher to fit JSON envelope
+        maxTokens: 1200,
       });
     } catch (llmError) {
       console.error('[api/chat] LLM provider error:', llmError?.message);
@@ -1563,83 +1602,33 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
       return res.status(llmError?.status || 502).json({
         answer: t.llmUnavailable,
         error: llmError?.message || 'LLM provider error',
-        sources,
-        confidence,
-        confidence_reason,
-        relatedChapters,
+        sources: typeof sources !== 'undefined' ? sources : [],
+        confidence: typeof confidence !== 'undefined' ? confidence : 'sin_evidencia',
+        confidence_reason: typeof confidence_reason !== 'undefined' ? confidence_reason : '',
+        relatedChapters: typeof relatedChapters !== 'undefined' ? relatedChapters : [],
         suggestedFigures: [],
-        visualArtifacts: [],
-        followUps: buildFollowUps(question, selectedPairs, intent, 3),
-        citations: [],
-        glossaryTerms: [],
-        intent,
+        visualArtifacts: typeof visualArtifacts !== 'undefined' ? visualArtifacts : [],
+        followUps: typeof followUps !== 'undefined' ? followUps : [],
+        intent: typeof intent !== 'undefined' ? intent : 'general',
       });
     }
 
     const provider = llmResult?.provider || 'unknown';
-    const model    = llmResult?.model    || 'unknown';
-    const rawText  = llmResult?.text     || '{}';
-
-    // ── T2: Parse structured response ────────────────────────────────────────
-    const validResponseUrls = new Set(
-      sources.map(source => normalizeInternalUrl(source.url)).filter(Boolean)
-    );
-    const structured = enforceAnswerContracts(
-      parseStructuredResponse(rawText, selectedPairs, sources),
-      question,
-      validResponseUrls
-    );
-    structured.answer = sanitizeAnswerLinks(structured.answer, validResponseUrls, structured.citations);
-    structured.answer = ensureInlineCitationLink(structured.answer, structured.citations);
-
-    if (structured._parse_error) {
-      console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
-    }
-
-    // Detect out-of-scope responses → suppress artifacts and override confidence
-    const { isOutOfScope, hasMissingExactData } = getAnswerScope(structured.answer);
-
-    // Resolve the LLM-chosen asset → full artifact object for the frontend
-    const visualArtifacts = isOutOfScope
-      ? []
-      : buildVisualArtifacts(structured.recommended_asset_id, selectedPairs);
-
-    if (!isOutOfScope && !structured.recommended_asset_id && visualArtifacts.length > 0) {
-      structured.recommended_asset_id = visualArtifacts[0].id || null;
-    } else if (!visualArtifacts.length) {
-      structured.recommended_asset_id = null;
-    }
-
-    if (isOutOfScope) {
-      confidence = 'fuera_de_ambito';
-      confidence_reason = 'Pregunta fuera del alcance del TFG.';
-    } else if (hasMissingExactData && confidence === 'alta') {
-      confidence = 'media';
-      confidence_reason = 'El TFG aporta contexto, pero la propia respuesta indica que el dato exacto no está cubierto o no está disponible.';
-    }
-
-    // follow_ups: LLM-generated preferred, fallback if empty
-    const followUps = structured.follow_ups && structured.follow_ups.length > 0
-      ? structured.follow_ups
-      : buildFollowUps(question, selectedPairs, intent, 3);
+    const model = llmResult?.model || 'unknown';
+    const finalAnswer = llmResult?.text || 'No answer provided by LLM.';
 
     return res.status(200).json({
-      answer:            structured.answer,
-      provider,
-      model,
-      sources,
-      confidence,
-      confidence_reason,
-      relatedChapters,
-      suggestedFigures:  [],
-      visualArtifacts,
-      followUps,
-      // ── new structured fields (T2) ──────────────────────
-      citations:         structured.citations,
-      glossaryTerms:     structured.glossary_terms_used,
-      recommended_asset_id: structured.recommended_asset_id,
-      _parse_error:      structured._parse_error || false,
-      intent,
+      answer: finalAnswer, 
+      provider, 
+      model, 
+      sources, 
+      confidence, 
+      confidence_reason, 
+      relatedChapters, 
+      suggestedFigures: [], 
+      visualArtifacts, 
+      followUps: typeof followUps !== 'undefined' ? followUps : [], 
+      intent
     });
 
   } catch (error) {
