@@ -174,7 +174,7 @@ function createChunk(metadata) {
     subheading: metadata.subheading || '',
     text: contextualText,
     slug: metadata.slug || '',
-    anchor: metadata.anchor || '',
+    anchor: metadata.anchor || generateSlugify(metadata.heading || metadata.title || metadata.subheading || ''),
     chunkType,
     keywords,
     keywordsText,

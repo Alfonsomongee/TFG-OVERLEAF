@@ -1239,16 +1239,28 @@ PROHIBIDO en "answer":
 - Usar notación matemática ($H$, \\frac, etc.).
 - Truncar una explicación causal por límite de longitud.
 
+CIFRAS: Cita números EXACTAMENTE como aparecen en el CONTEXTO. No calcules, no redondees, no derives cifras propias. Si la fuente dice "1.955 MW", escribe "1.955 MW".
+
 REGLAS PARA "citations":
 - source_url DEBE ser una URL exacta del CONTEXTO ([URL interna a citar: /ruta#anchor]).
 - Copia el anchor íntegro. NUNCA lo inventes ni lo modifiques.
 - Si no hay URL en el contexto para un claim, omite esa citación.
 - Máximo 4 citaciones.
+- Cada "claim" debe ser una frase completa y autocontenida de máximo 120 caracteres. Si es más larga, resúmela; nunca la trunces a mitad de frase.
+
+ENLACES DENTRO DE "answer":
+- Integra 2-3 enlaces markdown en el texto usando las URLs del CONTEXTO.
+  Ejemplo: "El mecanismo [Tap-Lag](/analisis-incidente#fase-2-taplag) amplificó la sobretensión."
+- Usa SOLO URLs que aparezcan en el CONTEXTO como [URL interna a citar: ...]. PROHIBIDO inventar.
+- También incluye esas mismas URLs en "citations" — los enlaces inline y las citaciones se complementan.
+- Para términos técnicos del glosario, enlaza a /glosario#termino cuando proceda.
 
 REGLAS PARA "recommended_asset_id":
 - Elige UN SOLO asset de la lista ASSETS VISUALES DISPONIBLES si es relevante.
 - Si ninguno es relevante, usa null.
 - Usa el ID exacto tal como aparece en la lista.
+- Si recomiendas un asset que contiene datos tabulares o una gráfica relevante, menciónalo en "answer": "Los datos detallados están en la tabla/figura del panel derecho."
+- NUNCA digas "el TFG no detalla" o "no se incluye" si estás recomendando un asset que contiene esa información.
 
 REGLAS PARA "follow_ups":
 - Genera 2-3 preguntas de seguimiento naturales que el usuario podría querer hacer.
@@ -1333,11 +1345,19 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
       console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
     }
 
+    // Detect out-of-scope responses → suppress artifacts and override confidence
+    const isOutOfScope = /fuera del alcance|outside the scope|no cubre|no está cubierto/i
+      .test(structured.answer || '');
+
     // Resolve the LLM-chosen asset → full artifact object for the frontend
-    const visualArtifacts = buildVisualArtifacts(
-      structured.recommended_asset_id,
-      selectedPairs
-    );
+    const visualArtifacts = isOutOfScope
+      ? []
+      : buildVisualArtifacts(structured.recommended_asset_id, selectedPairs);
+
+    if (isOutOfScope) {
+      confidence = 'fuera_de_ambito';
+      confidence_reason = 'Pregunta fuera del alcance del TFG.';
+    }
 
     // follow_ups: LLM-generated preferred, fallback if empty
     const followUps = structured.follow_ups && structured.follow_ups.length > 0
