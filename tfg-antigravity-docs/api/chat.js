@@ -889,7 +889,7 @@ function sanitizeAnswerLinks(answer, validUrls, citations) {
 function getAnswerScope(answer) {
   const text = normalizeText(answer || '');
   const isOutOfScope = /fuera del alcance|outside the scope|datos actuales|tiempo real|fuente externa/.test(text);
-  const hasMissingExactData = /no especifica|no proporciona|no detalla|no incluye|no esta cubierto|no cubre|no disponible|no realiza ese calculo|aparece como n\/d/.test(text);
+  const hasMissingExactData = /no especifica|no proporciona|no detalla|no se detalla|no se detallan|no incluye|no esta cubierto|no cubre|no disponible|no realiza ese calculo|aparece como n\/d|requiere datos mas detallados|necesitariamos|no permite calcular/.test(text);
   return { isOutOfScope, hasMissingExactData };
 }
 
@@ -897,7 +897,7 @@ function isElectricityPriceLiveQuestion(question) {
   const q = normalizeText(question || '');
   const asksPrice = /precio|tarifa|pvpc|omie|esios/.test(q) && /luz|electricidad|electrica|mercado/.test(q);
   const asksLive = /manana|hoy|ahora|actual|tiempo real|proximo|siguiente/.test(q);
-  return asksPrice && asksLive;
+  return q.includes('precio de la luz') || (asksPrice && asksLive);
 }
 
 // ── T2: Parse structured LLM response ────────────────────────────────────────
@@ -991,6 +991,28 @@ function enforceAnswerContracts(structured, question, validUrls = null) {
 
   if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
     structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
+  }
+
+  if (q.includes('ens') && q.includes('gwh')) {
+    const blackoutTableUrl = '/anexo-impacto-resiliencia#tabla-comparativa-blackouts-historicos';
+    const costsTableUrl = '/anexo-impacto-resiliencia#tabla-costes-economicos';
+    const blackoutLink = validUrls?.has(blackoutTableUrl)
+      ? `[tabla comparativa de blackouts](${blackoutTableUrl})`
+      : 'tabla comparativa de blackouts';
+    const costsLink = validUrls?.has(costsTableUrl)
+      ? `[tabla de costes económicos](${costsTableUrl})`
+      : 'tabla de costes económicos';
+
+    structured.answer = `El TFG no proporciona un valor numérico de ENS en GWh para el 28-A: en la ${blackoutLink} aparece como "n/d". Por tanto, no debe derivarse una cifra multiplicando demanda sin suministro por duración media, porque eso no integra la curva real de reposición ni distingue territorios, cargas críticas o recuperación parcial. La ${costsLink} sí recoge bandas económicas del impacto, pero no un cálculo cerrado de Energía No Suministrada en GWh.`;
+
+    structured.citations = [
+      ...(validUrls?.has(blackoutTableUrl)
+        ? [{ claim: 'La ENS estimada del 28-A aparece como n/d.', source_url: blackoutTableUrl }]
+        : []),
+      ...(validUrls?.has(costsTableUrl)
+        ? [{ claim: 'La tabla de costes recoge impacto económico, no ENS en GWh.', source_url: costsTableUrl }]
+        : []),
+    ];
   }
 
   if ((q.includes('tap lag') || q.includes('tap-lag')) && canUseTapLagGlossary) {
