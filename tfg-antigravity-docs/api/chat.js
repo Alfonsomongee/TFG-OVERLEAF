@@ -993,6 +993,28 @@ function enforceAnswerContracts(structured, question, validUrls = null) {
     structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
   }
 
+  if (q.includes('interconexion') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
+    const introUrl = '/introduccion#contexto-estructural';
+    const summaryUrl = '/resumen-de-cifras#5-las-interconexiones-el-factor-geografico-que-confino-la-crisis';
+    const introLink = validUrls?.has(introUrl)
+      ? `[contexto estructural](${introUrl})`
+      : 'contexto estructural';
+    const summaryLink = validUrls?.has(summaryUrl)
+      ? `[resumen de cifras](${summaryUrl})`
+      : 'resumen de cifras';
+
+    structured.answer = `El TFG usa dos métricas complementarias para expresar el aislamiento ibérico. En el ${introLink}, la capacidad de interconexión transfronteriza se cifra en el 7,9 % sobre la demanda punta, frente al objetivo europeo del 15 % para 2030. En el ${summaryLink}, al medir capacidad de importación frente a demanda total instantánea, la ratio operativa aparece como aproximadamente 3-5 %. Ambas lecturas apuntan a la misma conclusión: la península tenía muy poco apoyo externo disponible para importar estabilidad dinámica durante el 28-A. Si "actual" significa el dato actualizado hoy, debe verificarse en REE, ESIOS o ENTSO-E.`;
+
+    structured.citations = [
+      ...(validUrls?.has(introUrl)
+        ? [{ claim: 'La interconexión se cifra en 7,9 % sobre demanda punta.', source_url: introUrl }]
+        : []),
+      ...(validUrls?.has(summaryUrl)
+        ? [{ claim: 'La ratio capacidad de importación/demanda total era de 3-5 %.', source_url: summaryUrl }]
+        : []),
+    ];
+  }
+
   if (q.includes('ens') && q.includes('gwh')) {
     const blackoutTableUrl = '/anexo-impacto-resiliencia#tabla-comparativa-blackouts-historicos';
     const costsTableUrl = '/anexo-impacto-resiliencia#tabla-costes-economicos';
