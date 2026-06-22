@@ -840,6 +840,19 @@ function buildVisualArtifacts(recommendedAssetId, selectedPairs) {
   return resolved ? [resolved] : [];
 }
 
+function isExactAssetId(assetId, selectedPairs = []) {
+  if (!assetId || typeof assetId !== 'string') return false;
+  if (ASSET_REGISTRY.some(asset => asset.id === assetId)) return true;
+  return selectedPairs.some(({ chunk }) => chunk?.artifact?.id === assetId);
+}
+
+function normalizeRecommendedAssetId(assetId, selectedPairs = []) {
+  if (typeof assetId !== 'string') return null;
+  const clean = assetId.trim();
+  if (!clean || clean.toLowerCase() === 'null') return null;
+  return isExactAssetId(clean, selectedPairs) ? clean : null;
+}
+
 function normalizeInternalUrl(url) {
   const clean = String(url || '').trim();
   if (!clean.startsWith('/') || /[\s<>]/.test(clean)) return '';
@@ -884,6 +897,13 @@ function sanitizeAnswerLinks(answer, validUrls, citations) {
 
     return `[${text}](${url})`;
   });
+}
+
+function ensureInlineCitationLink(answer, citations) {
+  if (typeof answer !== 'string' || /\[[^\]]+\]\([^)]+\)/.test(answer)) return answer;
+  const firstCitation = citations.find(c => c?.source_url);
+  if (!firstCitation) return answer;
+  return `${answer.trim()} Referencia: [fuente citada](${firstCitation.source_url}).`;
 }
 
 function getAnswerScope(answer) {
@@ -969,9 +989,7 @@ function parseStructuredResponse(rawText, selectedPairs, sources = null) {
   return {
     answer,
     citations,
-    recommended_asset_id: typeof parsed.recommended_asset_id === 'string'
-                            ? parsed.recommended_asset_id
-                            : null,
+    recommended_asset_id: normalizeRecommendedAssetId(parsed.recommended_asset_id, selectedPairs),
     glossary_terms_used:  Array.isArray(parsed.glossary_terms_used)
                             ? parsed.glossary_terms_used.slice(0, 10)
                             : [],
@@ -1509,6 +1527,7 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
       validResponseUrls
     );
     structured.answer = sanitizeAnswerLinks(structured.answer, validResponseUrls, structured.citations);
+    structured.answer = ensureInlineCitationLink(structured.answer, structured.citations);
 
     if (structured._parse_error) {
       console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
@@ -1521,6 +1540,12 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
     const visualArtifacts = isOutOfScope
       ? []
       : buildVisualArtifacts(structured.recommended_asset_id, selectedPairs);
+
+    if (!isOutOfScope && !structured.recommended_asset_id && visualArtifacts.length > 0) {
+      structured.recommended_asset_id = visualArtifacts[0].id || null;
+    } else if (!visualArtifacts.length) {
+      structured.recommended_asset_id = null;
+    }
 
     if (isOutOfScope) {
       confidence = 'fuera_de_ambito';
