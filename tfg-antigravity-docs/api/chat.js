@@ -913,6 +913,27 @@ function parseStructuredResponse(rawText, selectedPairs) {
   };
 }
 
+function enforceAnswerContracts(structured, question) {
+  if (!structured || typeof structured.answer !== 'string') return structured;
+
+  const q = normalizeText(question || '');
+  const assetId = structured.recommended_asset_id || '';
+
+  if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
+    structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
+  }
+
+  if (q.includes('tap lag') || q.includes('tap-lag') || /tap[- ]lag/i.test(structured.answer)) {
+    if (/\[glosario\]\(\/glosario#tap-lag\)/i.test(structured.answer)) {
+      structured.answer = structured.answer.replace(/\[glosario\]\(\/glosario#tap-lag\)/gi, '[Tap-Lag](/glosario#tap-lag)');
+    } else if (!/\[Tap-Lag\]\(\/glosario#tap-lag\)/.test(structured.answer)) {
+      structured.answer = `${structured.answer.trim()} Ver también [Tap-Lag](/glosario#tap-lag).`;
+    }
+  }
+
+  return structured;
+}
+
 /**
  * Builds the compact asset catalogue injected into the system prompt.
  * Limits to `maxItems` most-relevant assets to stay within token budget.
@@ -1339,7 +1360,10 @@ CIFRAS MAESTRAS VERIFICADAS (úsalas si el contexto no especifica):
     const rawText  = llmResult?.text     || '{}';
 
     // ── T2: Parse structured response ────────────────────────────────────────
-    const structured = parseStructuredResponse(rawText, selectedPairs);
+    const structured = enforceAnswerContracts(
+      parseStructuredResponse(rawText, selectedPairs),
+      question
+    );
 
     if (structured._parse_error) {
       console.warn('[api/chat] Structured parse failed — degraded mode (plain text answer)');
