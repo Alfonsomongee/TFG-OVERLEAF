@@ -996,6 +996,9 @@ function enforceAnswerContracts(structured, question, validUrls = null) {
     structured.answer = structured.answer.replace(
       /Los escalones cuarto, quinto y sexto no [^.]+\./i,
       'El desglose documentado se consulta en la tabla del panel derecho.'
+    ).replace(
+      /,?\s*y escalones posteriores no especificados en la tabla/gi,
+      ', con el resto del desglose documentado en la tabla del panel derecho'
     );
   }
 
