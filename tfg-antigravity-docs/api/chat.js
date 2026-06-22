@@ -875,7 +875,13 @@ function sanitizeCitationClaim(value) {
     slice.lastIndexOf(' ')
   );
   const end = boundary > 55 ? boundary : 117;
-  return `${claim.slice(0, end).trim().replace(/[,:;\-]+$/, '')}.`;
+  let compact = claim
+    .slice(0, end)
+    .trim()
+    .replace(/\s+(de|del|la|el|en|con|por|para|y|o|a|que)$/i, '')
+    .replace(/[,:;\-]+$/, '');
+  if (compact.length > 117) compact = compact.slice(0, 117).replace(/\s+\S*$/, '').trim();
+  return `${compact}.`;
 }
 
 function sanitizeAnswerLinks(answer, validUrls, citations) {
@@ -908,7 +914,7 @@ function ensureInlineCitationLink(answer, citations) {
 
 function getAnswerScope(answer) {
   const text = normalizeText(answer || '');
-  const isOutOfScope = /fuera del alcance|outside the scope|datos actuales|tiempo real|fuente externa/.test(text);
+  const isOutOfScope = /fuera del alcance|outside the scope|datos actuales|fuente externa/.test(text);
   const hasMissingExactData = /no especifica|no proporciona|no detalla|no se detalla|no se detallan|no incluye|no esta cubierto|no cubre|no disponible|no realiza ese calculo|aparece como n\/d|requiere datos mas detallados|necesitariamos|no permite calcular/.test(text);
   return { isOutOfScope, hasMissingExactData };
 }
@@ -918,6 +924,58 @@ function isElectricityPriceLiveQuestion(question) {
   const asksPrice = /precio|tarifa|pvpc|omie|esios/.test(q) && /luz|electricidad|electrica|mercado/.test(q);
   const asksLive = /manana|hoy|ahora|actual|tiempo real|proximo|siguiente/.test(q);
   return q.includes('precio de la luz') || (asksPrice && asksLive);
+}
+
+function addSourceIfMissing(sources, source) {
+  if (!source?.url || sources.some(existing => existing.url === source.url)) return;
+  sources.push({
+    title: source.title,
+    heading: source.heading,
+    slug: source.slug || source.url.split('#')[0],
+    anchor: source.anchor || source.url.split('#')[1] || '',
+    url: source.url,
+    chunkType: source.chunkType || 'support',
+    relevance: source.relevance || 0.5,
+    excerpt: source.excerpt || '',
+  });
+}
+
+function enrichSourcesForAnswerContracts(sources, question) {
+  const q = normalizeText(question || '');
+
+  if (q.includes('ens') && q.includes('gwh')) {
+    addSourceIfMissing(sources, {
+      title: 'Anexo VII · Impacto socioeconómico y resiliencia',
+      heading: 'Comparativa de blackouts históricos',
+      url: '/anexo-impacto-resiliencia#tabla-comparativa-blackouts-historicos',
+      chunkType: 'table',
+      excerpt: 'La ENS estimada para el apagón ibérico figura como n/d.',
+    });
+    addSourceIfMissing(sources, {
+      title: 'Anexo VII · Impacto socioeconómico y resiliencia',
+      heading: 'Costes económicos estimados del apagón 28-A',
+      url: '/anexo-impacto-resiliencia#tabla-costes-economicos',
+      chunkType: 'table',
+      excerpt: 'Tabla de costes económicos; no aporta cálculo cerrado de ENS en GWh.',
+    });
+  }
+
+  if (q.includes('interconex') && (q.includes('ratio') || q.includes('objetivo europeo'))) {
+    addSourceIfMissing(sources, {
+      title: 'Introducción',
+      heading: 'Contexto estructural',
+      url: '/introduccion#contexto-estructural',
+      chunkType: 'causal',
+      excerpt: 'Capacidad de interconexión transfronteriza del 7,9 % frente al objetivo UE del 15 %.',
+    });
+    addSourceIfMissing(sources, {
+      title: 'Resumen de Cifras',
+      heading: 'Las interconexiones: factor geográfico que confinó la crisis',
+      url: '/resumen-de-cifras#5-las-interconexiones-el-factor-geografico-que-confino-la-crisis',
+      chunkType: 'quantitative',
+      excerpt: 'Ratio operativa capacidad de importación/demanda total de aproximadamente 3-5 %.',
+    });
+  }
 }
 
 // ── T2: Parse structured LLM response ────────────────────────────────────────
@@ -1006,6 +1064,10 @@ function enforceAnswerContracts(structured, question, validUrls = null) {
   const q = normalizeText(question || '');
   const assetId = structured.recommended_asset_id || '';
   const canUseTapLagGlossary = !validUrls || validUrls.has('/glosario#tap-lag');
+
+  if (q.includes('ibr') && q.includes('generacion') && (q.includes('porcentaje') || q.includes('instantanea'))) {
+    structured.recommended_asset_id = 'mix-generacion-12-30';
+  }
 
   if (assetId === 'escalones-ufls' && !/tabla del panel derecho/i.test(structured.answer)) {
     structured.answer = `${structured.answer.trim()} Los datos están en la tabla del panel derecho.`;
@@ -1376,6 +1438,7 @@ module.exports = async function handler(req, res) {
     }
 
     const sources = buildSources(selectedPairs, 9);
+    enrichSourcesForAnswerContracts(sources, question);
     const relatedChapters = buildRelatedChapters(selectedPairs, 5);
     let { confidence, confidence_reason } = computeConfidence(selectedPairs, usedExpandedSearch);
     // followUps and visualArtifacts are now resolved AFTER LLM response (T2)
