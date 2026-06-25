@@ -36,7 +36,7 @@ const TRANSLATIONS = {
         id: 'iit',
         name: 'IIT-ICAI / Sector',
         positions: [
-          { text: 'Fallo operativo de REE al desacoplar ciclos combinados', align: 'disagree' },
+          { text: 'Decisiones operativas del TSO sobre despacho de generación síncrona', align: 'disagree' },
           { text: 'Causa directa del colapso', align: 'disagree' },
           { text: 'Responsabilidad operativa del TSO', align: 'disagree' },
         ],
@@ -88,7 +88,7 @@ const TRANSLATIONS = {
         id: 'iit',
         name: 'IIT-ICAI / Industry',
         positions: [
-          { text: 'REE operational failure in disconnecting combined cycles', align: 'disagree' },
+          { text: 'TSO dispatch decisions on synchronous generation commitment', align: 'disagree' },
           { text: 'Direct cause of the collapse', align: 'disagree' },
           { text: 'TSO operational liability', align: 'disagree' },
         ],
@@ -140,7 +140,7 @@ const TRANSLATIONS = {
         id: 'iit',
         name: 'IIT-ICAI / Sektor',
         positions: [
-          { text: 'Betriebsfehler von REE beim Abkoppeln von GuD-Kraftwerken', align: 'disagree' },
+          { text: 'Einsatzentscheidungen des ÜNB zur Synchrongeneratorverfügbarkeit', align: 'disagree' },
           { text: 'Unmittelbare Ursache des Zusammenbruchs', align: 'disagree' },
           { text: 'Betriebliche Haftung des ÜNB', align: 'disagree' },
         ],
@@ -192,7 +192,7 @@ const TRANSLATIONS = {
         id: 'iit',
         name: 'IIT-ICAI / 行业方',
         positions: [
-          { text: 'REE切除燃气联合循环机组的运行失误', align: 'disagree' },
+          { text: '输电系统运营商关于同步发电机组调度的运行决策', align: 'disagree' },
           { text: '停电的直接原因', align: 'disagree' },
           { text: '输电系统运营商的运行责任', align: 'disagree' },
         ],

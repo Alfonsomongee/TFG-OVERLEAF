@@ -21,8 +21,8 @@ import styles from './HomeIncidentTimeline.module.css';
 const TRANSLATIONS = {
   es: {
     eyebrow: 'Cronología del colapso',
-    heading: '32 segundos',
-    sub: 'Del disparo raíz al cero de tensión en la península ibérica',
+    heading: 'Menos de un minuto',
+    sub: 'Del disparo raíz en Granada al cero de tensión en la península ibérica',
     phases: [
       {
         id: 'pre',
@@ -61,7 +61,7 @@ const TRANSLATIONS = {
         time: '12:33:29',
         label: 'Cero de tensión',
         color: 'blackout',
-        desc: '57 millones de personas sin suministro. Tensión a cero en la península ibérica. Comienza el proceso de reposición por Black Start.',
+        desc: 'Más de 50 millones de personas sin suministro en España y Portugal. Tensión a cero en la península ibérica. Comienza el proceso de reposición por Black Start.',
         href: '/resumen-de-cifras',
       },
     ],
@@ -69,8 +69,8 @@ const TRANSLATIONS = {
   },
   en: {
     eyebrow: 'Timeline of the collapse',
-    heading: '32 seconds',
-    sub: 'From the root trip to voltage zero across the Iberian Peninsula',
+    heading: 'Under one minute',
+    sub: 'From the root trip in Granada to voltage zero across the Iberian Peninsula',
     phases: [
       {
         id: 'pre',
@@ -109,7 +109,7 @@ const TRANSLATIONS = {
         time: '12:33:29',
         label: 'Voltage zero',
         color: 'blackout',
-        desc: '57 million people without supply. Voltage at zero across the Iberian Peninsula. Black Start restoration process begins.',
+        desc: 'More than 50 million people without supply in Spain and Portugal. Voltage at zero across the Iberian Peninsula. Black Start restoration process begins.',
         href: '/resumen-de-cifras',
       },
     ],
@@ -117,8 +117,8 @@ const TRANSLATIONS = {
   },
   de: {
     eyebrow: 'Chronologie des Zusammenbruchs',
-    heading: '32 Sekunden',
-    sub: 'Von der Ursprungsauslösung bis zum Spannungsnull auf der iberischen Halbinsel',
+    heading: 'Weniger als eine Minute',
+    sub: 'Von der Ursprungsauslösung in Granada bis zum Spannungsnull auf der iberischen Halbinsel',
     phases: [
       {
         id: 'pre',
@@ -157,7 +157,7 @@ const TRANSLATIONS = {
         time: '12:33:29',
         label: 'Spannungsnull',
         color: 'blackout',
-        desc: '57 Millionen Menschen ohne Versorgung. Spannung auf der iberischen Halbinsel bei null. Black-Start-Wiederversorgung beginnt.',
+        desc: 'Mehr als 50 Millionen Menschen ohne Versorgung in Spanien und Portugal. Spannung auf der iberischen Halbinsel bei null. Black-Start-Wiederversorgung beginnt.',
         href: '/resumen-de-cifras',
       },
     ],
@@ -165,8 +165,8 @@ const TRANSLATIONS = {
   },
   'zh-Hans': {
     eyebrow: '停电事故时间轴',
-    heading: '32秒',
-    sub: '从根源跳闸到伊比利亚半岛电压归零的完整过程',
+    heading: '不足一分钟',
+    sub: '从格拉纳达根源跳闸到伊比利亚半岛电压归零的完整过程',
     phases: [
       {
         id: 'pre',
@@ -205,7 +205,7 @@ const TRANSLATIONS = {
         time: '12:33:29',
         label: '电压归零',
         color: 'blackout',
-        desc: '5700万人失去电力供应。伊比利亚半岛电压归零。黑启动恢复进程启动。',
+        desc: '西班牙和葡萄牙逾5000万人失去电力供应。伊比利亚半岛电压归零。黑启动恢复进程启动。',
         href: '/resumen-de-cifras',
       },
     ],

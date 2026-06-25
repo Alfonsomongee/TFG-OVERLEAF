@@ -31,7 +31,7 @@ const TRANSLATIONS = {
       {
         type: 'yes',
         label: 'Sí fue',
-        text: 'Colapso Q-V capacitivo con baja fortaleza síncrona y escasa inercia',
+        text: 'Inestabilidad de tensión multifactorial: baja fortaleza síncrona, pérdida de control reactivo y desconexiones en cascada',
       },
       {
         type: 'lesson',
@@ -55,7 +55,7 @@ const TRANSLATIONS = {
       {
         type: 'yes',
         label: 'Was',
-        text: 'Capacitive Q-V collapse with low synchronous strength and scarce inertia',
+        text: 'Multifactorial voltage instability: low synchronous strength, loss of reactive control, and cascading disconnections',
       },
       {
         type: 'lesson',
@@ -79,7 +79,7 @@ const TRANSLATIONS = {
       {
         type: 'yes',
         label: 'War',
-        text: 'Kapazitiver Q-V-Kollaps mit geringer Synchronstärke und geringer Trägheit',
+        text: 'Multifaktorielle Spannungsinstabilität: geringe Synchronstärke, Verlust der Blindleistungsregelung und Kaskaden-Abschaltungen',
       },
       {
         type: 'lesson',
@@ -103,7 +103,7 @@ const TRANSLATIONS = {
       {
         type: 'yes',
         label: '而是',
-        text: '低同步电网强度与低惯量背景下的容性Q-V崩溃',
+        text: '多因素电压失稳：低同步强度、无功控制失效与级联断路',
       },
       {
         type: 'lesson',
