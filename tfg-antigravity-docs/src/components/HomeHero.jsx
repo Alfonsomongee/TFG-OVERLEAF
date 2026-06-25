@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './HomeHero.module.css';
 import ParticlesBackground from './ReactBits/ParticlesBackground';
 import BlurText from './ReactBits/BlurText';
+import SplitText from './ReactBits/SplitText';
 import ShinyText from './ReactBits/ShinyText';
 import SubtleReveal from './ui/SubtleReveal';
 import MetricCountUp from './ui/MetricCountUp';
@@ -268,12 +269,37 @@ export default function HomeHero() {
           </p>
 
           {/* Título */}
-          <h1 className={styles.title}>
-            {t.titlePrefix}<br />
-            <ShinyText className={styles.titleAccent} shinyColor="rgba(255, 255, 255, 0.95)" baseColor="var(--home-hero-accent)" speed={5}>
-              {t.titleAccent}
-            </ShinyText><br />
-            {t.titleSuffix}
+          <h1 className={styles.title} aria-label={`${t.titlePrefix} ${t.titleAccent} ${t.titleSuffix}`}>
+            <SplitText
+              text={t.titlePrefix}
+              tag="span"
+              splitBy="words"
+              delay={40}
+              duration={600}
+              className={styles.titleLine}
+            />
+            {' '}
+            <SplitText
+              text={t.titleAccent}
+              tag="span"
+              splitBy="words"
+              delay={40}
+              duration={700}
+              className={`${styles.titleAccent} ${styles.titleLine}`}
+            />
+            {t.titleSuffix && (
+              <>
+                {' '}
+                <SplitText
+                  text={t.titleSuffix}
+                  tag="span"
+                  splitBy="words"
+                  delay={40}
+                  duration={600}
+                  className={styles.titleLine}
+                />
+              </>
+            )}
           </h1>
 
           <p className={styles.subtitle}>

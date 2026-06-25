@@ -1,0 +1,219 @@
+/* HomeNarrativeMatrix.module.css
+   Mapa de controversias — tabla ligera 4×3 con mucho aire.
+   Sin bordes pesados. Chips de alineación en 3 estados.
+*/
+
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Cabecera ── */
+.header {
+  margin-bottom: 2.5rem;
+  max-width: 680px;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.heading {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 760;
+  line-height: 1.15;
+  color: var(--ifm-font-color-base);
+}
+
+.sub {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Tabla ── */
+.tableWrapper {
+  overflow-x: auto;
+  margin-bottom: 1.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Cabecera de columna */
+.thActor,
+.thAxis {
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 50%, transparent);
+}
+
+.thActor {
+  width: 18%;
+}
+
+/* Filas */
+.row {
+  transition: background 100ms ease;
+}
+
+.row:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 40%, transparent);
+}
+
+.row:not(:last-child) td {
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Celda de actor */
+.tdActor {
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+  vertical-align: top;
+  white-space: nowrap;
+  width: 18%;
+}
+
+/* Celda de posición */
+.tdCell {
+  padding: 0.85rem 1rem;
+  vertical-align: top;
+}
+
+/* Chip de alineación */
+.alignChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  flex-shrink: 0;
+  float: left;
+  margin-top: 2px;
+}
+
+.alignChip--agree {
+  background: color-mix(in srgb, #4A6B5D 10%, transparent);
+  color: #4A6B5D;
+}
+
+html[data-theme='dark'] .alignChip--agree {
+  background: color-mix(in srgb, #6ee7b7 12%, transparent);
+  color: #6ee7b7;
+}
+
+.alignChip--debate {
+  background: color-mix(in srgb, #8a6b3d 10%, transparent);
+  color: #8a6b3d;
+}
+
+html[data-theme='dark'] .alignChip--debate {
+  background: color-mix(in srgb, #fcd34d 12%, transparent);
+  color: #fcd34d;
+}
+
+.alignChip--disagree {
+  background: color-mix(in srgb, #6b1024 8%, transparent);
+  color: #6b1024;
+}
+
+html[data-theme='dark'] .alignChip--disagree {
+  background: color-mix(in srgb, #d18da0 12%, transparent);
+  color: #d18da0;
+}
+
+.cellText {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--ifm-color-content-secondary);
+  display: block;
+  overflow: hidden;
+}
+
+/* ── Pie ── */
+.footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cta {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary, #145c63);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cta:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.55;
+  text-align: right;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .tdActor,
+  .thActor {
+    white-space: normal;
+    width: auto;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .note {
+    text-align: left;
+  }
+}

@@ -2,8 +2,10 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HomeHero from '@site/src/components/HomeHero';
-import HomeArgument from '@site/src/components/HomeArgument';
+import HomeThesisPanel from '@site/src/components/HomeThesisPanel';
 import HomeReadingPaths from '@site/src/components/HomeReadingPaths';
+import HomeIncidentTimeline from '@site/src/components/HomeIncidentTimeline';
+import HomeNarrativeMatrix from '@site/src/components/HomeNarrativeMatrix';
 import HomeAnnexes from '@site/src/components/HomeAnnexes';
 import HomeChatInvite from '@site/src/components/HomeChatInvite';
 
@@ -37,8 +39,10 @@ export default function Home() {
       description={t.description}
     >
       <HomeHero />
-      <HomeArgument />
+      <HomeThesisPanel />
       <HomeReadingPaths />
+      <HomeIncidentTimeline />
+      <HomeNarrativeMatrix />
       <HomeAnnexes />
       <HomeChatInvite />
     </Layout>

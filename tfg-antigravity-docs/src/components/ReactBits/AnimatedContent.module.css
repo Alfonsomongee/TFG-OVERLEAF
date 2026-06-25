@@ -1,0 +1,24 @@
+/* AnimatedContent.module.css */
+
+.base {
+  opacity: 0;
+  transform: translateY(var(--ac-distance, 40px));
+  transition-property: opacity, transform;
+  transition-duration: var(--ac-duration, 600ms);
+  transition-delay: var(--ac-delay, 0ms);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

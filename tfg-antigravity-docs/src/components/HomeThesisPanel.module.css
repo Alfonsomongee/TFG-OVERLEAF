@@ -1,0 +1,182 @@
+/* HomeThesisPanel.module.css
+   Bloque de tesis — posición 2 de la homepage.
+   Sin efectos decorativos. Editorial puro.
+   Hereda el sistema de variables del proyecto (--home-*, --ifm-*).
+*/
+
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Columna izquierda — tesis en prosa ── */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.thesis {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 650;
+  line-height: 1.5;
+  color: var(--ifm-font-color-base);
+  text-wrap: balance;
+}
+
+.detail {
+  margin: 0;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  line-height: 1.7;
+  color: var(--ifm-color-content-secondary, #6b7280);
+  max-width: 68ch;
+}
+
+/* ── Columna derecha — chips de síntesis ── */
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.chip {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+
+.chipLabel {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.chipText {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Chip "No fue" — tono neutro/advertencia */
+.chip--not {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-200) 40%, transparent);
+  border-left-color: var(--ifm-color-emphasis-400);
+}
+
+.chip--not .chipLabel {
+  color: var(--ifm-color-content-secondary);
+}
+
+.chip--not .chipText {
+  color: var(--ifm-font-color-base);
+  font-weight: 400;
+}
+
+/* Chip "Sí fue" — acento burdeos (--annex-critical del sistema) */
+.chip--yes {
+  background: color-mix(in srgb, #6b1024 5%, transparent);
+  border-left-color: #6b1024;
+}
+
+html[data-theme='dark'] .chip--yes {
+  background: color-mix(in srgb, #d18da0 8%, transparent);
+  border-left-color: #d18da0;
+}
+
+.chip--yes .chipLabel {
+  color: #6b1024;
+}
+
+html[data-theme='dark'] .chip--yes .chipLabel {
+  color: #d18da0;
+}
+
+.chip--yes .chipText {
+  color: var(--ifm-font-color-base);
+}
+
+/* Chip "Lección" — acento teal del sistema */
+.chip--lesson {
+  background: color-mix(in srgb, var(--ifm-color-primary, #145c63) 5%, transparent);
+  border-left-color: var(--ifm-color-primary, #145c63);
+}
+
+.chip--lesson .chipLabel {
+  color: var(--ifm-color-primary, #145c63);
+}
+
+html[data-theme='dark'] .chip--lesson .chipLabel {
+  color: var(--ifm-color-primary-lightest, #83bdc2);
+}
+
+.chip--lesson .chipText {
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .right {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    padding-top: 1.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .chip {
+    flex: 1 1 200px;
+  }
+}
+
+@media (max-width: 540px) {
+  .right {
+    flex-direction: column;
+  }
+
+  .chip {
+    flex: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* sin transiciones en este componente */
+}

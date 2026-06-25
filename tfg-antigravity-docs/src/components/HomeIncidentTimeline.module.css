@@ -1,0 +1,306 @@
+/* HomeIncidentTimeline.module.css
+   Cronología compacta del colapso — CSS/SVG puro, sin librerías.
+   Línea horizontal con 5 fases, hover con detalle expandido.
+*/
+
+/* ── Paleta de colores de fases ── */
+:root {
+  --tl-neutral:   #7a7062;
+  --tl-warning:   #8a6b3d;
+  --tl-critical:  #6b1024;
+  --tl-blackout:  #191814;
+}
+
+html[data-theme='dark'] {
+  --tl-neutral:   #91a4bc;
+  --tl-warning:   #d9bd82;
+  --tl-critical:  #d18da0;
+  --tl-blackout:  #f4f7fb;
+}
+
+/* ── Sección ── */
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Cabecera ── */
+.header {
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.heading {
+  margin: 0 0 0.4rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 760;
+  line-height: 1.1;
+  color: var(--ifm-font-color-base);
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.5;
+}
+
+/* ── Línea temporal ── */
+.timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+/* Línea de conexión detrás de los puntos */
+.track {
+  position: absolute;
+  top: 10px;  /* altura del centro del punto */
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: var(--ifm-color-emphasis-300);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Cada fase */
+.phase {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding-top: 0;
+  cursor: default;
+  z-index: 1;
+}
+
+/* Punto en la línea */
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ifm-background-color, #fff);
+  border: 1.5px solid var(--ifm-color-emphasis-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 150ms ease, transform 150ms ease;
+  flex-shrink: 0;
+}
+
+.dotInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ifm-color-emphasis-400);
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+/* Timestamp */
+.time {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-content-secondary);
+  white-space: nowrap;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiqueta de fase (enlace) */
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  line-height: 1.3;
+  padding: 0 0.25rem;
+  transition: color 150ms ease;
+}
+
+.label:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* Número de orden */
+.index {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ifm-color-emphasis-400);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Estados de color por fase ── */
+.phase--neutral .dotInner  { background: var(--tl-neutral); }
+.phase--warning .dotInner  { background: var(--tl-warning); }
+.phase--critical .dotInner { background: var(--tl-critical); }
+.phase--blackout .dotInner { background: var(--tl-blackout); }
+
+.phase--neutral .dot  { border-color: var(--tl-neutral); }
+.phase--warning .dot  { border-color: var(--tl-warning); }
+.phase--critical .dot { border-color: var(--tl-critical); }
+.phase--blackout .dot { border-color: var(--tl-blackout); }
+
+/* Estado activo (hover/focus) */
+.isActive .dot {
+  transform: scale(1.25);
+}
+
+.isActive.phase--neutral .label  { color: var(--tl-neutral); }
+.isActive.phase--warning .label  { color: var(--tl-warning); }
+.isActive.phase--critical .label { color: var(--tl-critical); }
+.isActive.phase--blackout .label { color: var(--tl-blackout); }
+
+.isActive .index {
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Panel de detalle ── */
+.detail {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 60%, transparent);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  padding: 1.15rem 1.35rem;
+  min-height: 110px;
+  transition: background 150ms ease;
+}
+
+.detailInner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.detailDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.detailDot--neutral  { background: var(--tl-neutral); }
+.detailDot--warning  { background: var(--tl-warning); }
+.detailDot--critical { background: var(--tl-critical); }
+.detailDot--blackout { background: var(--tl-blackout); }
+
+.detailTime {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ifm-color-content-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.detailLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+}
+
+.detailDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--ifm-color-content-secondary);
+}
+
+.detailLink {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary, #145c63);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.detailLink:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  /* En mobile, la timeline se convierte en lista vertical */
+  .timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .track {
+    display: none;
+  }
+
+  .phase {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    width: 100%;
+  }
+
+  .phase:last-child {
+    border-bottom: none;
+  }
+
+  .dot {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .time {
+    text-align: left;
+  }
+
+  .label {
+    text-align: left;
+  }
+
+  .index {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .dotInner,
+  .detail {
+    transition: none;
+  }
+}
