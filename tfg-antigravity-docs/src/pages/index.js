@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import HomeHero from '@site/src/components/HomeHero';
+import HomeKeyMetrics from '@site/src/components/HomeKeyMetrics';
 import HomeThesisPanel from '@site/src/components/HomeThesisPanel';
 import HomeReadingPaths from '@site/src/components/HomeReadingPaths';
 import HomeIncidentTimeline from '@site/src/components/HomeIncidentTimeline';
@@ -39,6 +40,7 @@ export default function Home() {
       description={t.description}
     >
       <HomeHero />
+      <HomeKeyMetrics />
       <HomeThesisPanel />
       <HomeReadingPaths />
       <HomeIncidentTimeline />

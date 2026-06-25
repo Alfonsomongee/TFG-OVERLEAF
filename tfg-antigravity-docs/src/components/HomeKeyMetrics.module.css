@@ -1,0 +1,176 @@
+/* HomeKeyMetrics.module.css
+   Bloque de 4 KPIs del incidente — estética de ficha técnica.
+   Números grandes, contexto corto, fuente discreta.
+   Sin contadores animados. Sin dashboard pesado.
+*/
+
+.section {
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 40%, transparent);
+}
+
+html[data-theme='dark'] .section {
+  background: color-mix(in srgb, var(--ifm-background-surface-color) 60%, transparent);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Eyebrow ── */
+.eyebrow {
+  margin: 0 0 1.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+/* ── Grid de 4 tarjetas ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--ifm-color-emphasis-200);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ── Tarjeta individual ── */
+.card {
+  background: var(--ifm-background-color, #fff);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  transition: background 150ms ease;
+}
+
+html[data-theme='dark'] .card {
+  background: var(--ifm-background-surface-color, #1a2332);
+}
+
+.card:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 60%, var(--ifm-background-color));
+}
+
+html[data-theme='dark'] .card:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-200) 30%, var(--ifm-background-surface-color));
+}
+
+/* Acento de color en el borde superior por tipo */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ifm-color-emphasis-300);
+}
+
+.card--time::before   { background: var(--ifm-color-primary, #145c63); }
+.card--power::before  { background: #6b1024; }
+.card--ufls::before   { background: #8a6b3d; }
+.card--restoration::before { background: var(--ifm-color-primary, #145c63); opacity: 0.5; }
+
+html[data-theme='dark'] .card--power::before  { background: #d18da0; }
+html[data-theme='dark'] .card--ufls::before   { background: #d9bd82; }
+
+/* ── Número principal ── */
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 0.1rem;
+}
+
+.value {
+  font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+  font-weight: 760;
+  line-height: 1;
+  color: var(--ifm-font-color-base);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+  font-weight: 600;
+  color: var(--ifm-color-content-secondary);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 0.2rem;
+}
+
+/* ── Etiqueta ── */
+.label {
+  margin: 0;
+  font-size: clamp(0.8rem, 1.2vw, 0.92rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Detalle contextual ── */
+.detail {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Fuente ── */
+.source {
+  margin: 0.35rem 0 0;
+  font-size: 0.65rem;
+  color: var(--ifm-color-emphasis-500);
+  line-height: 1.3;
+  font-style: italic;
+}
+
+/* ── Tablet ── */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 540px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+  }
+
+  .value {
+    font-size: 1.7rem;
+  }
+
+  .detail {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
