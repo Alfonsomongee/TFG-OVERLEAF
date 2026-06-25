@@ -92,7 +92,7 @@ export default function ForecastTransferChart() {
   }));
 
   const isDay1 = activeDay === 'dataset_1';
-  // ApagÃ³n fue a las 12:35 el 28 Abril, que cae en el MTU 12:00 - 13:00.
+  // Apagón fue a las 12:35 el 28 Abril, que cae en el MTU 12:00 - 13:00.
   const blackoutIndex = isDay1 ? chartData.findIndex(d => d.hour === '12:00') : -1;
 
   return (
@@ -124,8 +124,8 @@ export default function ForecastTransferChart() {
         </div>
         <div style={{ display: 'flex', gap: '4px', background: palette.bgTabs, border: `1px solid ${palette.border}`, padding: '4px', borderRadius: '8px' }}>
           {[
-            { id: 'FR', label: 'EspaÃ±a - Francia' },
-            { id: 'PT', label: 'EspaÃ±a - Portugal' }
+            { id: 'FR', label: 'España - Francia' },
+            { id: 'PT', label: 'España - Portugal' }
           ].map(opt => (
             <button
               key={opt.id}
@@ -202,7 +202,7 @@ export default function ForecastTransferChart() {
                   stroke={palette.exportLine}
                   strokeWidth={3}
                   dot={false}
-                  name={isEs ? "ES âž FR (ExportaciÃ³n)" : "ES âž FR (Export)"}
+                  name={isEs ? "ES → FR (Exportación)" : "ES → FR (Export)"}
                 />
                 <Line
                   type="stepAfter"
@@ -210,7 +210,7 @@ export default function ForecastTransferChart() {
                   stroke={palette.importFrance}
                   strokeWidth={3}
                   dot={false}
-                  name={isEs ? "FR âž ES (ImportaciÃ³n)" : "FR âž ES (Import)"}
+                  name={isEs ? "FR → ES (Importación)" : "FR → ES (Import)"}
                 />
               </>
             ) : (
@@ -221,7 +221,7 @@ export default function ForecastTransferChart() {
                   stroke={palette.exportLine}
                   strokeWidth={3}
                   dot={false}
-                  name={isEs ? "ES âž PT (ExportaciÃ³n)" : "ES âž PT (Export)"}
+                  name={isEs ? "ES → PT (Exportación)" : "ES → PT (Export)"}
                 />
                 <Line
                   type="stepAfter"
@@ -229,7 +229,7 @@ export default function ForecastTransferChart() {
                   stroke={palette.importPortugal}
                   strokeWidth={3}
                   dot={false}
-                  name={isEs ? "PT âž ES (ImportaciÃ³n)" : "PT âž ES (Import)"}
+                  name={isEs ? "PT → ES (Importación)" : "PT → ES (Import)"}
                 />
               </>
             )}
@@ -241,7 +241,7 @@ export default function ForecastTransferChart() {
                 strokeDasharray="3 3"
                 label={{
                   position: 'top',
-                  value: isEs ? 'ApagÃ³n' : 'Blackout',
+                  value: isEs ? 'Apagón' : 'Blackout',
                   fill: palette.blackout,
                   fontSize: 12,
                   fontWeight: 700,

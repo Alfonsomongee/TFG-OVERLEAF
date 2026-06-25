@@ -1,10 +1,13 @@
 ---
 sidebar_label: Conceptual index of annexes
+title: Conceptual index of annexes
+hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexIndexGateway from '@site/src/components/annex/AnnexIndexGateway';
 import AnnexConceptIndex from '@site/src/components/annex/AnnexConceptIndex';
 
 <AnnexLayout
@@ -12,21 +15,41 @@ import AnnexConceptIndex from '@site/src/components/annex/AnnexConceptIndex';
   title="Cross-cutting map of evidence and annexes"
   description="Thematic entry point to the figures, tables, interactives, and historical series of the Bachelor's Thesis."
   meta={[
-    { label: 'Criterion', value: 'Topics T1–T9' },
-    { label: 'Routes', value: 'Existing annexes' },
+    { label: 'Criterion', value: 'Topics T1-T9' },
+    { label: 'Coverage', value: '10 annexes' },
     { label: 'Status', value: 'Cross-cutting index' },
   ]}
+  wide
 >
-  <AnnexMethodNote type="reconstruccion">
-    This index does not duplicate the annexes nor replace their original routes. It acts as a conceptual navigation layer over the existing documentary repositories.
-  </AnnexMethodNote>
+  <AnnexSection
+    id="annex-map"
+    eyebrow="Documentary access"
+    title="Map of the ten annexes"
+    description="Direct entry to each evidence repository, ordered by technical domain and by its role within the investigation."
+  >
+    <AnnexIndexGateway />
+  </AnnexSection>
 
-  <AnnexMethodNote type="dato-vivo">
-    Some linked elements, especially operational comparators and vulnerability radars, may incorporate live or updatable data. Their interpretation must be separated from the historical reconstruction of April 28.
-  </AnnexMethodNote>
-
-  
-
+  <AnnexSection
+    id="thematic-index"
+    eyebrow="Cross-reading"
+    title="Index by concepts, figures, and models"
+    description="Curated selection of evidence grouped by the nine conceptual axes that connect the annexes to one another."
+  >
     <AnnexConceptIndex />
+  </AnnexSection>
 
+  <AnnexSection
+    id="reading-criteria"
+    eyebrow="Reading criteria"
+    title="How to interpret this index"
+  >
+<AnnexMethodNote type="reconstruccion">
+  This index does not duplicate the annexes nor replace their original routes. It acts as a conceptual navigation layer over the existing documentary repositories.
+</AnnexMethodNote>
+
+<AnnexMethodNote type="dato-vivo">
+  Some linked elements, especially operational comparators and vulnerability radars, may incorporate live or updatable data. Their interpretation must be separated from the historical reconstruction of April 28.
+</AnnexMethodNote>
+  </AnnexSection>
 </AnnexLayout>

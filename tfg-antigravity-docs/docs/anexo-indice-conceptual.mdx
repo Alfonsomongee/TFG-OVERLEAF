@@ -1,10 +1,13 @@
 ---
 sidebar_label: Índice conceptual de anexos
+title: Índice conceptual de anexos
+hide_title: true
 ---
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
 import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexIndexGateway from '@site/src/components/annex/AnnexIndexGateway';
 import AnnexConceptIndex from '@site/src/components/annex/AnnexConceptIndex';
 
 <AnnexLayout
@@ -12,21 +15,41 @@ import AnnexConceptIndex from '@site/src/components/annex/AnnexConceptIndex';
   title="Mapa transversal de evidencias y anexos"
   description="Punto de entrada temático a las figuras, tablas, interactivos y series históricas del TFG."
   meta={[
-    { label: 'Criterio', value: 'Temas T1–T9' },
-    { label: 'Rutas', value: 'Anexos existentes' },
+    { label: 'Criterio', value: 'Temas T1-T9' },
+    { label: 'Cobertura', value: '10 anexos' },
     { label: 'Estado', value: 'Índice transversal' },
   ]}
+  wide
 >
-  <AnnexMethodNote type="reconstruccion">
-    Este índice no duplica los anexos ni sustituye sus rutas originales. Actúa como una capa de navegación conceptual sobre los repositorios documentales existentes.
-  </AnnexMethodNote>
+  <AnnexSection
+    id="mapa-anexos"
+    eyebrow="Acceso documental"
+    title="Mapa de los diez anexos"
+    description="Entrada directa a cada repositorio de evidencias, ordenado por dominio técnico y función dentro de la investigación."
+  >
+    <AnnexIndexGateway />
+  </AnnexSection>
 
-  <AnnexMethodNote type="dato-vivo">
-    Algunos elementos enlazados, especialmente comparadores operativos y radares de vulnerabilidad, pueden incorporar datos vivos o actualizables. Su interpretación debe separarse de la reconstrucción histórica del 28-A.
-  </AnnexMethodNote>
-
-  
-
+  <AnnexSection
+    id="indice-tematico"
+    eyebrow="Lectura transversal"
+    title="Índice por conceptos, figuras y modelos"
+    description="Selección curada de evidencias agrupadas por los nueve ejes conceptuales que conectan los anexos entre sí."
+  >
     <AnnexConceptIndex />
+  </AnnexSection>
 
+  <AnnexSection
+    id="criterios-lectura"
+    eyebrow="Criterios de lectura"
+    title="Cómo interpretar este índice"
+  >
+<AnnexMethodNote type="reconstruccion">
+  Este índice no duplica los anexos ni sustituye sus rutas originales. Actúa como una capa de navegación conceptual sobre los repositorios documentales existentes.
+</AnnexMethodNote>
+
+<AnnexMethodNote type="dato-vivo">
+  Algunos elementos enlazados, especialmente comparadores operativos y radares de vulnerabilidad, pueden incorporar datos vivos o actualizables. Su interpretación debe separarse de la reconstrucción histórica del 28-A.
+</AnnexMethodNote>
+  </AnnexSection>
 </AnnexLayout>

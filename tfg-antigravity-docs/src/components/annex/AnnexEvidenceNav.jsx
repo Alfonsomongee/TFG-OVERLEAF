@@ -100,10 +100,10 @@ export default function AnnexEvidenceNav({ items = [] }) {
 
   const getNavLabel = (l) => {
     switch (l) {
-      case 'en': return 'Explore evidence';
-      case 'de': return 'Nachweise erkunden';
-      case 'zh-Hans': return '浏览证据';
-      default: return 'Explorar evidencias';
+      case 'en': return 'Sections';
+      case 'de': return 'Abschnitte';
+      case 'zh-Hans': return '章节';
+      default: return 'Secciones';
     }
   };
 

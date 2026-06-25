@@ -77,13 +77,14 @@ export default function SplitText({
       // El aria-label en el wrapper hace que los lectores de pantalla
       // lean el texto completo y no cada <span> individual
       aria-label={text}
+      role="text"
     >
       {wordData.map((word, wordIdx) => (
         <React.Fragment key={wordIdx}>
           {/* Espacio entre palabras (excepto antes de la primera) */}
           {wordIdx > 0 && (
             <span className={styles.space} aria-hidden="true">
-              {' '}
+              {'\u00A0'}
             </span>
           )}
           {/* Palabra como contenedor inline-block para respetar word-wrap */}

@@ -63,6 +63,7 @@ module.exports = {
       className: 'sidebar-icon-book sidebar-bottom-start',
       items: [
         'resumen-de-cifras',
+        'anexo-indice-conceptual',
         // cronologia eliminada del sidebar — la ruta física /cronologia sigue activa.
         // El VerticalTimeline (timeline/T3) está integrado en Anexo III.
         'anexo-demanda-generacion-balance',

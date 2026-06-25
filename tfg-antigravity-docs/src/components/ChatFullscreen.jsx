@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { ColorModeProvider } from '@docusaurus/theme-common/internal';
+import { Send } from 'lucide-react';
 import { imageGalleryData } from '@site/src/data/imageGalleryData';
 
 async function fetchFigureContext(question, answer, caption, figureTitle, figureId, fig) {
@@ -563,6 +564,7 @@ export default function ChatFullscreen({
   const [panelVisible, setPanelVisible]     = useState(true);
   const [presentationMode, setPresentationMode] = useState(false);
   const [chatWidth, setChatWidth] = useState(360);
+  const [isNarrowViewport, setIsNarrowViewport] = useState(false);
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartWidth = useRef(360);
@@ -572,6 +574,15 @@ export default function ChatFullscreen({
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const syncViewport = () => setIsNarrowViewport(window.innerWidth <= 760);
+
+    syncViewport();
+    window.addEventListener('resize', syncViewport);
+    return () => window.removeEventListener('resize', syncViewport);
+  }, []);
 
   const startListening = useCallback(() => {
     if (!('webkitSpeechRecognition' in window) && 
@@ -1324,7 +1335,7 @@ export default function ChatFullscreen({
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 99999,
-      backgroundColor: 'var(--cfs-accent-text)',
+      backgroundColor: 'var(--cfs-bg)',
       display: 'flex', flexDirection: 'column',
       animation: 'fadeInUp 0.2s ease',
     }}>
@@ -1332,13 +1343,14 @@ export default function ChatFullscreen({
       <div style={{
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '10px 20px',
+        gap: isNarrowViewport ? 8 : 16,
+        padding: isNarrowViewport ? '8px 10px' : '10px 20px',
         borderBottom: '1px solid var(--cfs-border-soft)',
         backgroundColor: 'var(--cfs-bg)',
         flexShrink: 0, minHeight: 48,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, flex: '1 1 auto' }}>
+          <svg width={isNarrowViewport ? 16 : 18} height={isNarrowViewport ? 16 : 18} viewBox="0 0 28 28" fill="none" style={{ flexShrink: 0 }}>
             <polygon points="15,4 9,15 14,15 11,26 21,13 15,13"
               fill="var(--accent-electric, hsl(190 100% 60%))"
               strokeWidth="0.6" strokeLinejoin="round"/>
@@ -1347,6 +1359,9 @@ export default function ChatFullscreen({
             fontWeight: 700, fontSize: 14, letterSpacing: '0.06em',
             color: 'var(--cfs-text-1)',
             textTransform: 'uppercase',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}>
             {t.header}
           </span>
@@ -1354,10 +1369,10 @@ export default function ChatFullscreen({
             fontSize: 9,
             color: 'var(--cfs-text-3)',
             letterSpacing: '0.06em',
-            display: 'flex',
             gap: 8,
             alignItems: 'center',
             marginLeft: 12,
+            display: 'none',
           }}>
             <span style={{
               border: '1px solid var(--cfs-border)',
@@ -1385,7 +1400,7 @@ export default function ChatFullscreen({
             }}>⌘→</span>
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <button
             onClick={() => setPresentationMode(p => !p)}
             title={presentationMode
@@ -1398,7 +1413,7 @@ export default function ChatFullscreen({
               borderRadius: 8,
               color: presentationMode ? 'var(--cfs-accent-text)' : 'var(--cfs-accent)',
               cursor: 'pointer',
-              padding: '5px 14px',
+              padding: isNarrowViewport ? '5px 9px' : '5px 14px',
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: '0.1em',
@@ -1420,6 +1435,8 @@ export default function ChatFullscreen({
           >
             {presentationMode
               ? (lang === 'en' ? 'CHAT' : lang === 'de' ? 'CHAT' : lang === 'zh-Hans' ? '聊天' : 'CHAT')
+              : isNarrowViewport
+              ? (lang === 'en' ? 'PRES' : lang === 'de' ? 'PRÄS' : lang === 'zh-Hans' ? '演示' : 'PRES')
               : (lang === 'en' ? 'PRESENT' : lang === 'de' ? 'PRÄSENTATION' : lang === 'zh-Hans' ? '演示' : 'PRESENTAR')
             }
           </button>
@@ -1431,7 +1448,7 @@ export default function ChatFullscreen({
               borderRadius: 8,
               color: 'var(--cfs-accent)',
               cursor: 'pointer',
-              padding: '5px 14px',
+              padding: isNarrowViewport ? '5px 10px' : '5px 14px',
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: '0.1em',
@@ -1446,14 +1463,16 @@ export default function ChatFullscreen({
               e.currentTarget.style.color = 'var(--cfs-accent)';
             }}
           >
-            {ui.exit.toUpperCase()} ×
+            {isNarrowViewport ? '×' : `${ui.exit.toUpperCase()} ×`}
           </button>
         </div>
       </div>
 
       {/* ── MAIN GRID ── */}
       <div style={{
-        flex: 1, display: 'grid',
+        flex: 1,
+        display: isNarrowViewport ? 'flex' : 'grid',
+        flexDirection: isNarrowViewport ? 'column' : undefined,
         gridTemplateColumns: presentationMode 
           ? '0px 1fr' 
           : `${chatWidth}px 8px 1fr`,
@@ -1464,12 +1483,17 @@ export default function ChatFullscreen({
         {/* ── LEFT: CHAT ── */}
         <div style={{
           display: 'flex', flexDirection: 'column',
-          borderRight: '1px solid var(--cfs-border-soft)',
+          borderRight: isNarrowViewport ? 0 : '1px solid var(--cfs-border-soft)',
+          borderBottom: isNarrowViewport && allTabs.length > 0 ? '1px solid var(--cfs-border-soft)' : 0,
           overflow: presentationMode ? 'hidden' : 'hidden',
           opacity: presentationMode ? 0 : 1,
           transition: 'opacity 0.3s ease',
           pointerEvents: presentationMode ? 'none' : 'auto',
           backgroundColor: 'var(--cfs-bg)',
+          minHeight: 0,
+          flex: isNarrowViewport
+            ? (allTabs.length > 0 ? '0 0 min(54%, 440px)' : '1 1 auto')
+            : undefined,
         }}>
           {/* Messages */}
           <div style={{
@@ -1736,7 +1760,9 @@ export default function ChatFullscreen({
               onClick={handleSend}
               disabled={loading || !question.trim()}
               style={{
-                padding: '10px 16px', borderRadius: 10,
+                width: 42,
+                minWidth: 42,
+                padding: '10px 0', borderRadius: 10,
                 backgroundColor: loading || !question.trim()
                   ? 'var(--cfs-border)'
                   : 'var(--cfs-accent)',
@@ -1745,15 +1771,18 @@ export default function ChatFullscreen({
                 cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
                 fontSize: 14, fontWeight: 600,
                 transition: 'background-color 0.2s',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              ➤
+              <Send size={14} strokeWidth={2.3} aria-hidden="true" />
             </button>
           </div>
         </div>
 
         {/* ── DIVISOR ARRASTRABLE ── */}
-        {!presentationMode && (
+        {!presentationMode && !isNarrowViewport && (
           <div
             onMouseDown={handleDragStart}
             style={{
@@ -1791,9 +1820,12 @@ export default function ChatFullscreen({
 
         {/* ── RIGHT: CONTENT PANEL ── */}
         <div style={{
-          display: 'flex', flexDirection: 'column',
+          display: isNarrowViewport && allTabs.length === 0 ? 'none' : 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
           backgroundColor: 'var(--cfs-surface-bg)',
+          minHeight: 0,
+          flex: isNarrowViewport ? '1 1 auto' : undefined,
         }}>
           {/* Tabs */}
           {allTabs.length > 0 && (

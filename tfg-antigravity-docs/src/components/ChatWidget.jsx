@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, X } from 'lucide-react';
+import { Maximize2, Send } from 'lucide-react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ChatFullscreen, { preloadAllSimulators } from './ChatFullscreen';
 
@@ -232,48 +232,50 @@ export default function ChatWidget() {
 
   return (
     <>
-      <button
-        className="chat-fab"
-        onClick={() => setOpen(!open)}
-        aria-label={open ? t.ariaClose : t.ariaOpen}
-        title={t.title}
-        onMouseEnter={() => preloadAllSimulators()}
-      >
-        {open ? (
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"
-            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <line x1="6" y1="6" x2="22" y2="22"
-              stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-            <line x1="22" y1="6" x2="6" y2="22"
-              stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
-          </svg>
-        ) : (
-          <>
-            <span className="chat-fab__ring chat-fab__ring--1" aria-hidden="true"/>
-            <span className="chat-fab__ring chat-fab__ring--2" aria-hidden="true"/>
-            <span className="chat-fab__spark chat-fab__spark--1" aria-hidden="true"/>
-            <span className="chat-fab__spark chat-fab__spark--2" aria-hidden="true"/>
-            <span className="chat-fab__spark chat-fab__spark--3" aria-hidden="true"/>
-            <svg
-              className="chat-fab__icon"
-              width="28" height="28"
-              viewBox="0 0 28 28"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <polygon
-                points="15,4 9,15 14,15 11,26 21,13 15,13"
-                fill="var(--fab-spark-color)"
-                stroke="var(--fab-spark-stroke)"
-                strokeWidth="0.6"
-                strokeLinejoin="round"
-              />
+      {!fullscreen && (
+        <button
+          className="chat-fab"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? t.ariaClose : t.ariaOpen}
+          title={t.title}
+          onMouseEnter={() => preloadAllSimulators()}
+        >
+          {open ? (
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <line x1="6" y1="6" x2="22" y2="22"
+                stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+              <line x1="22" y1="6" x2="6" y2="22"
+                stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
             </svg>
-            <span className="chat-fab__label" aria-hidden="true">ASK AI</span>
-          </>
-        )}
-      </button>
+          ) : (
+            <>
+              <span className="chat-fab__ring chat-fab__ring--1" aria-hidden="true"/>
+              <span className="chat-fab__ring chat-fab__ring--2" aria-hidden="true"/>
+              <span className="chat-fab__spark chat-fab__spark--1" aria-hidden="true"/>
+              <span className="chat-fab__spark chat-fab__spark--2" aria-hidden="true"/>
+              <span className="chat-fab__spark chat-fab__spark--3" aria-hidden="true"/>
+              <svg
+                className="chat-fab__icon"
+                width="28" height="28"
+                viewBox="0 0 28 28"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <polygon
+                  points="15,4 9,15 14,15 11,26 21,13 15,13"
+                  fill="var(--fab-spark-color)"
+                  stroke="var(--fab-spark-stroke)"
+                  strokeWidth="0.6"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="chat-fab__label" aria-hidden="true">ASK AI</span>
+            </>
+          )}
+        </button>
+      )}
 
       {/* Panel del chat */}
       <style>
@@ -322,9 +324,12 @@ export default function ChatWidget() {
           }
         `}
       </style>
-      {open && (
+      {open && !fullscreen && (
         <div style={{
-          position: 'fixed', bottom: 160, right: 24, width: 380,
+          position: 'fixed',
+          bottom: 'calc(144px + env(safe-area-inset-bottom, 0px))',
+          right: 'max(16px, env(safe-area-inset-right, 0px))',
+          width: 'min(380px, calc(100vw - 32px))',
           maxHeight: 520, backgroundColor: 'var(--chat-widget-bg)',
           border: '1px solid var(--chat-widget-border)', borderRadius: 16,
           display: 'flex', flexDirection: 'column',
@@ -372,9 +377,7 @@ export default function ChatWidget() {
                 e.currentTarget.style.borderColor = 'var(--chat-widget-accent-border)';
               }}
             >
-              <svg width="11" height="11" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <path d="M2 2h5v2H4v3H2V2zM11 2h5v5h-2V4h-3V2zM2 11h2v3h3v2H2v-5zM14 14h-3v2h5v-5h-2v3z" fill="currentColor"/>
-              </svg>
+              <Maximize2 size={12} strokeWidth={2.4} aria-hidden="true" />
               EXPAND
             </button>
           </div>
@@ -508,55 +511,21 @@ export default function ChatWidget() {
               onClick={handleSend}
               disabled={loading || !question.trim()}
               style={{
-                padding: '10px 16px', borderRadius: 10,
+                width: 42,
+                minWidth: 42,
+                padding: '10px 0', borderRadius: 10,
                 backgroundColor: loading || !question.trim() ? 'var(--chat-btn-bg-disabled)' : 'var(--chat-btn-bg)',
                 color: 'var(--chat-btn-text)', border: 'none',
                 cursor: loading || !question.trim() ? 'not-allowed' : 'pointer',
                 fontSize: 14, fontWeight: 500, transition: 'background-color 0.2s',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              ➤
+              <Send size={14} strokeWidth={2.3} aria-hidden="true" />
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Badge invitación pantalla completa */}
-      {open && messages.length >= 3 && !fullscreen && (
-        <div
-          onClick={() => setFullscreen(true)}
-          style={{
-            position: 'fixed',
-            bottom: 170,
-            right: 24,
-            backgroundColor: 'var(--chat-widget-accent)',
-            color: 'var(--chat-widget-accent-text)',
-            borderRadius: 20,
-            padding: '6px 14px',
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            cursor: 'pointer',
-            zIndex: 10000,
-            boxShadow: 'var(--chat-widget-badge-shadow)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            userSelect: 'none',
-            animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--chat-widget-accent-border)',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = 'var(--chat-widget-shadow)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = 'var(--chat-widget-badge-shadow)';
-          }}
-        >
-          EXPAND
         </div>
       )}
 

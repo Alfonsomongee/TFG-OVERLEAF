@@ -3587,18 +3587,18 @@ html[data-theme='light'] .chat-fab {
    Variables de tema para el ChatWidget
    ============================================================ */
 html[data-theme='dark'] {
-  --chat-bg: #1e2937;
-  --chat-border: #374151;
-  --chat-header-color: #f59e0b; /* Naranja acento secundario */
-  --chat-user-msg-bg: #3b82f6; /* Azul */
+  --chat-bg: #101d35;
+  --chat-border: rgba(226, 232, 240, 0.16);
+  --chat-header-color: #f4f7fb;
+  --chat-user-msg-bg: rgba(125, 205, 227, 0.14);
   --chat-user-msg-text: #ffffff;
-  --chat-assistant-msg-bg: #F4F1EA;
-  --chat-assistant-msg-text: #2C2620;
-  --chat-input-bg: #F4F1EA;
-  --chat-input-text: #2C2620;
-  --chat-btn-bg: #f59e0b; /* Naranja acento */
-  --chat-btn-bg-disabled: #374151;
-  --chat-btn-text: #ffffff;
+  --chat-assistant-msg-bg: rgba(226, 232, 240, 0.07);
+  --chat-assistant-msg-text: #f4f7fb;
+  --chat-input-bg: rgba(7, 19, 38, 0.78);
+  --chat-input-text: #f4f7fb;
+  --chat-btn-bg: #7dcde3;
+  --chat-btn-bg-disabled: rgba(226, 232, 240, 0.12);
+  --chat-btn-text: #071326;
 }
 
 html[data-theme='light'] {
@@ -4232,54 +4232,6 @@ html[data-theme='dark'] [class*="sectionContent"] {
   border-left-color: color-mix(in srgb, var(--annex-accent, #83bdc2) 15%, transparent) !important;
 }
 
-
-/* ── 2. SECTION SUMMARY — indicador de colapsable ───────────
-   El <summary> elimina el marker pero no añade indicador visual.
-   El usuario no sabe que las secciones son colapsables.
-   ──────────────────────────────────────────────────────────── */
-
-[class*="sectionSummary"]::after {
-  content: '▾';
-  display: inline-block;
-  margin-left: 0.5rem;
-  font-size: 0.75em;
-  opacity: 0.4;
-  transition: transform 200ms ease, opacity 200ms ease;
-}
-
-details:not([open]) > [class*="sectionSummary"]::after {
-  transform: rotate(-90deg);
-}
-
-details[open] > [class*="sectionSummary"]::after {
-  opacity: 0.6;
-}
-
-
-/* ── 3. EVIDENCE CHIPS — más legibles en proyector ──────────
-   Los chips actuales (0.60rem) son ilegibles a 3 metros.
-   ──────────────────────────────────────────────────────────── */
-
-[class*="chip1"],
-[class*="chip2"] {
-  font-size: 0.68rem !important;
-  padding: 0.3rem 0.75rem !important;
-  border-radius: 4px !important;
-}
-
-
-/* ── 4. EVIDENCE LEVEL 1 — fondo más perceptible ────────────
-   El background actual (opacity 0.02) es invisible.
-   ──────────────────────────────────────────────────────────── */
-
-[class*="level1"] {
-  background-color: rgba(107, 16, 36, 0.04) !important;
-  padding: 1rem 1.25rem !important;
-}
-
-html[data-theme='dark'] [class*="level1"] {
-  background-color: rgba(107, 16, 36, 0.08) !important;
-}
 
 
 /* ── 5. EVIDENCE GRID — separación visual entre items ───────
@@ -5001,6 +4953,53 @@ html[data-theme='light'] .footer {
   .navbar__items .navbar__link:hover::before,
   .navbar__items .navbar__item--active .navbar__link::before {
     animation: none !important;
+  }
+}
+
+/* ============================================================
+   FINAL DELIVERY POLISH — mobile navbar containment
+   ============================================================ */
+
+@media (max-width: 996px) {
+  .navbar__inner {
+    min-width: 0;
+  }
+
+  .navbar__brand {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  .navbar__title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .navbar__items--right {
+    flex: 0 0 auto;
+    min-width: 0;
+    gap: 0.1rem;
+  }
+
+  .navbar__items--right > .navbar__item:not(:has(.DocSearch-Button)):not(.navbar__search),
+  .navbar__items--right > .navbar__link {
+    display: none !important;
+  }
+
+  .navbar .DocSearch-Button {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  .navbar .DocSearch-Button-Placeholder,
+  .navbar .DocSearch-Button-Keys {
+    display: none !important;
   }
 }
 

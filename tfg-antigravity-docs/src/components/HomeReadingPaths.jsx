@@ -174,7 +174,9 @@ export default function HomeReadingPaths() {
     return useBaseUrl(path);
   };
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (link) => {
+    if (link.to === '/anexo-indice-conceptual') return;
+
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('zen-mode', 'true');
@@ -202,7 +204,7 @@ export default function HomeReadingPaths() {
               <ul className={styles.cardLinks}>
                 {path.links.map((link) => (
                   <li key={link.to}>
-                    <a href={getLocalizedUrl(link.to)} className={styles.cardLink} onClick={handleLinkClick}>
+                    <a href={getLocalizedUrl(link.to)} className={styles.cardLink} onClick={() => handleLinkClick(link)}>
                       {link.text} →
                     </a>
                   </li>

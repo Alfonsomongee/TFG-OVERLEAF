@@ -7,11 +7,8 @@ hide_title: true
 
 import AnnexLayout from '@site/src/components/annex/AnnexLayout';
 import AnnexSection from '@site/src/components/annex/AnnexSection';
-import AnnexMethodNote from '@site/src/components/annex/AnnexMethodNote';
+import AnnexOpening from '@site/src/components/annex/AnnexOpening';
 import AnnexEvidenceNav from '@site/src/components/annex/AnnexEvidenceNav';
-import AnnexKeyQuestion from '@site/src/components/annex/AnnexKeyQuestion';
-import AnnexThesisBox from '@site/src/components/annex/AnnexThesisBox';
-import AnnexBlackoutRelevance from '@site/src/components/annex/AnnexBlackoutRelevance';
 import AnnexSectionSummary from '@site/src/components/annex/AnnexSectionSummary';
 import AnnexCrossLinks from '@site/src/components/annex/AnnexCrossLinks';
 import AnnexEvidence from '@site/src/components/annex/AnnexEvidence';
@@ -24,36 +21,28 @@ import AnnexEvidenceGrid from '@site/src/components/annex/AnnexEvidenceGrid';
   title="Mercado eléctrico: la vulnerabilidad invisible"
   description="Señales de precio, costes de desvíos y servicios de balance durante el 28-A. El mercado marginalista operó a ciegas frente a la degradación de la estabilidad dinámica."
   meta={[
-{ label: 'Eje técnico', value: 'Mercado eléctrico y servicios de balance' },
-{ label: 'Indicadores ESIOS', value: '600, 1001, 151, 541, 1395' },
-{ label: 'Capítulos asociados', value: 'Cap. 7b (Finanzas) · Cap. 7 (Resiliencia) · Dim. Europea (PICASSO)' },
+    { label: 'Eje técnico', value: 'Mercado eléctrico y servicios de balance' },
+    { label: 'Indicadores ESIOS', value: '600, 1001, 151, 541, 1395' },
+    { label: 'Capítulos asociados', value: 'Cap. 7b (Finanzas) · Cap. 7 (Resiliencia) · Dim. Europea (PICASSO)' },
   ]}
 >
-  <AnnexKeyQuestion>
-¿Por qué las señales de precios del mercado eléctrico y de los servicios de balance no reflejaron la creciente vulnerabilidad dinámica del sistema peninsular?
-  </AnnexKeyQuestion>
-
-  <AnnexThesisBox>
-El 28-A, el mercado marginalista liquidó la energía a precios negativos (−3,00 €/MWh a las 12:00 CEST) por el excedente solar. Este abaratamiento ocultaba un coste de seguridad dinámica que el mercado no remunera: inercia, potencia de cortocircuito y reactiva dinámica. Las señales de precio del mercado diario, los servicios de balance paneuropeos (PICASSO) y los precios de desvíos resultaron ciegos a la fragilidad física del sistema. El diseño actual carece de mecanismos para valorar la resiliencia en tiempo real.
-  </AnnexThesisBox>
-
-  <AnnexBlackoutRelevance>
-Este anexo documenta la desconexión entre la economía del mercado y la seguridad física de la red. El precio negativo del SPOT en la hora del colapso no es una consecuencia del apagón — se fijó 24 horas antes — sino la señal de un diseño que expulsaba activamente la generación síncrona cuando más se necesitaba.
-  </AnnexBlackoutRelevance>
-
-  <AnnexMethodNote type="reconstruccion">
-Fuentes: OMIE (mercado diario y saldos), ESIOS/REE (indicadores 600, 1001, 151, 541, 1395), ENTSO-E Factual Report (TR 12.1, 13.1, 17.1), CNMC, PwC/ConsumES, NERA, ESIG. Series horarias y de 15 minutos. Los precios del mercado diario se fijaron 24 horas antes del evento y no reflejan el colapso en sí, sino las condiciones de oferta-demanda previstas.
-  </AnnexMethodNote>
+  <AnnexOpening
+    question="¿Por qué las señales de precios del mercado eléctrico y de los servicios de balance no reflejaron la creciente vulnerabilidad dinámica del sistema peninsular?"
+    thesis="El 28-A, el mercado marginalista liquidó la energía a precios negativos (−3,00 €/MWh a las 12:00 CEST) por el excedente solar. Este abaratamiento ocultaba un coste de seguridad dinámica que el mercado no remunera: inercia, potencia de cortocircuito y reactiva dinámica. Las señales de precio del mercado diario, los servicios de balance paneuropeos (PICASSO) y los precios de desvíos resultaron ciegos a la fragilidad física del sistema. El diseño actual carece de mecanismos para valorar la resiliencia en tiempo real."
+    relevance="Este anexo documenta la desconexión entre la economía del mercado y la seguridad física de la red. El precio negativo del SPOT en la hora del colapso no es una consecuencia del apagón — se fijó 24 horas antes — sino la señal de un diseño que expulsaba activamente la generación síncrona cuando más se necesitaba."
+    sources="OMIE (mercado diario y saldos), ESIOS/REE (indicadores 600, 1001, 151, 541, 1395), ENTSO-E Factual Report (TR 12.1, 13.1, 17.1), CNMC, PwC/ConsumES, NERA, ESIG. Series horarias y de 15 minutos. Los precios del mercado diario se fijaron 24 horas antes del evento y no reflejan el colapso en sí, sino las condiciones de oferta-demanda previstas."
+  />
 
   Este anexo se organiza en tres secciones. La primera examina los precios del mercado diario y la tarifa PVPC, mostrando cómo el abaratamiento comercial ocultaba un coste de seguridad creciente. La segunda analiza los mercados de balance y desvíos, documentando las señales de estrés previas al colapso y su desaparición durante el evento. La tercera plantea la arquitectura de los servicios de resiliencia (ERS) como respuesta al fallo de mercado documentado.
 
   <AnnexEvidenceNav
-items={[
+  items={[
   { label: 'El precio ciego',              target: 'precio-ciego' },
   { label: 'Los mercados de balance',       target: 'mercados-balance' },
   { label: 'La resiliencia no remunerada',  target: 'resiliencia-no-remunerada' },
 ]}
   />
+
   <AnnexSection id="precio-ciego" eyebrow="Sección 1" title="El precio que no vio el colapso">
 
 A las 12:00 CEST del 28 de abril, el precio del mercado diario OMIE era de −3,00 €/MWh: el sistema pagaba a los generadores por retirar su energía. Simultáneamente, la tarifa PVPC que pagaban los consumidores domésticos superaba los 130 €/MWh en la misma franja horaria. Esta brecha — precio mayorista negativo frente a tarifa minorista elevada — es la señal económica más directa del desequilibrio entre el coste de la energía y el coste de la estabilidad.
