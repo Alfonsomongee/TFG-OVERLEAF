@@ -1,0 +1,4024 @@
+# HOMEPAGE COMPLETA — CÓDIGO FUENTE CONSOLIDADO
+
+Este documento recopila el código fuente completo e intacto de la homepage del TFG, incluyendo la página principal y sus 8 secciones con sus respectivos CSS Modules.
+
+Orden de renderizado: Hero → KeyMetrics → ThesisPanel → ReadingPaths → IncidentTimeline → NarrativeMatrix → Annexes → ChatInvite
+
+---
+
+## ARCHIVO: `src/pages/index.js`
+
+```javascript
+import React from 'react';
+import Layout from '@theme/Layout';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import HomeHero from '@site/src/components/HomeHero';
+import HomeKeyMetrics from '@site/src/components/HomeKeyMetrics';
+import HomeThesisPanel from '@site/src/components/HomeThesisPanel';
+import HomeReadingPaths from '@site/src/components/HomeReadingPaths';
+import HomeIncidentTimeline from '@site/src/components/HomeIncidentTimeline';
+import HomeNarrativeMatrix from '@site/src/components/HomeNarrativeMatrix';
+import HomeAnnexes from '@site/src/components/HomeAnnexes';
+import HomeChatInvite from '@site/src/components/HomeChatInvite';
+
+const TRANSLATIONS = {
+  es: {
+    title: "Análisis forense del apagón ibérico del 28-A",
+    description: "Reconstrucción técnica, económica y social de la mayor perturbación del área síncrona continental europea. 170 evidencias, 10 anexos, 28 simuladores interactivos."
+  },
+  en: {
+    title: "Forensic analysis of the 28-A Iberian blackout",
+    description: "Technical, economic, and social reconstruction of the largest disturbance in the European continental synchronous area in two decades. 170 evidences, 10 annexes, 28 interactive simulators."
+  },
+  de: {
+    title: "Forensische Analyse des 28-A iberischen Blackouts",
+    description: "Technische, wirtschaftliche und soziale Rekonstruktion der größten Störung im europäischen kontinentalen Synchrongebiet seit zwei Jahrzehnten. 170 Nachweise, 10 Anhänge, 28 interaktive Simulatoren."
+  },
+  'zh-Hans': {
+    title: "28-A伊比利亚大停电事故法医分析",
+    description: "对两年来欧洲大陆同步电网最大一次扰动进行的技术、经济和社交重构。包含170项证据、10个附录、28个互动模拟器。"
+  }
+};
+
+export default function Home() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  return (
+    <Layout
+      title={t.title}
+      description={t.description}
+    >
+      <HomeHero />
+      <HomeKeyMetrics />
+      <HomeThesisPanel />
+      <HomeReadingPaths />
+      <HomeIncidentTimeline />
+      <HomeNarrativeMatrix />
+      <HomeAnnexes />
+      <HomeChatInvite />
+    </Layout>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeHero.jsx`
+
+```jsx
+import React from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeHero.module.css';
+import ParticlesBackground from './ReactBits/ParticlesBackground';
+import BlurText from './ReactBits/BlurText';
+import SplitText from './ReactBits/SplitText';
+import ShinyText from './ReactBits/ShinyText';
+import SubtleReveal from './ui/SubtleReveal';
+import MetricCountUp from './ui/MetricCountUp';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Análisis forense · Apagón ibérico del 28 de abril de 2025',
+    titlePrefix: 'El colapso del',
+    titleAccent: 'sistema eléctrico',
+    titleSuffix: 'peninsular',
+    subtitle: 'Reconstrucción técnica, económica y social de la mayor perturbación del área síncrona continental europea en dos décadas. Ciento setenta evidencias, diez anexos, veintiocho simuladores.',
+    readIntro: 'Leer la introducción',
+    techAnalysis: 'Análisis técnico',
+    glossary: 'Glosario técnico',
+    ariaLabelChain: 'Cadena causal del colapso',
+    chain: [
+      {
+        label: 'Condición previa',
+        time: '12:30 CEST',
+        detail: '82% IBR · 11 unidades síncronas · H = 2,3 s',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        label: 'Disparo raíz',
+        time: '12:32:56,993 CEST',
+        detail: '355 MW — Granada · Tap-Lag · sobretensión invisible',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Cascada IBR',
+        time: '12:33:07 CEST',
+        detail: '4.500 MW en 11 s · protecciones ANSI 59',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Separación Francia',
+        time: '12:33:21,535 CEST',
+        detail: '48,46 Hz · 15.000 MW perdidos',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Cero de tensión',
+        time: '12:33:29,741 CEST',
+        detail: '57 millones sin suministro · área ibérica aislada',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    numbers: [
+      { value: '57 M', label: 'personas afectadas' },
+      { value: '15.000', label: 'MW perdidos' },
+      { value: '33 s', label: 'de colapso total' },
+      { value: '18,5 h', label: 'de reposición' },
+      { value: '>666 M€', label: 'coste Op. Reforzada' },
+    ],
+  },
+  en: {
+    eyebrow: 'Forensic analysis · Iberian blackout of April 28, 2025',
+    titlePrefix: 'The collapse of the',
+    titleAccent: 'peninsular power system',
+    titleSuffix: '',
+    subtitle: 'Technical, economic, and social reconstruction of the largest disturbance in the European continental synchronous area in two decades. One hundred and seventy evidences, ten annexes, twenty-eight simulators.',
+    readIntro: 'Read the introduction',
+    techAnalysis: 'Technical analysis',
+    glossary: 'Technical glossary',
+    ariaLabelChain: 'Causal chain of the collapse',
+    chain: [
+      {
+        label: 'Prior condition',
+        time: '12:30 CEST',
+        detail: '82% IBR · 11 synchronous units · H = 2.3 s',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        label: 'Root trip',
+        time: '12:32:56.993 CEST',
+        detail: '355 MW — Granada · Tap-Lag · invisible overvoltage',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'IBR cascade',
+        time: '12:33:07 CEST',
+        detail: '4,500 MW in 11 s · ANSI 59 protections',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'French separation',
+        time: '12:33:21.535 CEST',
+        detail: '48.46 Hz · 15,000 MW lost',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Voltage blackout',
+        time: '12:33:29.741 CEST',
+        detail: '57 million without supply · Iberian area isolated',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    numbers: [
+      { value: '57 M', label: 'people affected' },
+      { value: '15,000', label: 'MW lost' },
+      { value: '33 s', label: 'of total collapse' },
+      { value: '18.5 h', label: 'of restoration' },
+      { value: '>666 M€', label: 'Reinforced Op. cost' },
+    ],
+  },
+  de: {
+    eyebrow: 'Forensische Analyse · Iberischer Blackout vom 28. April 2025',
+    titlePrefix: 'Der Zusammenbruch des',
+    titleAccent: 'halbinsularen Stromsystems',
+    titleSuffix: '',
+    subtitle: 'Technische, wirtschaftliche und soziale Rekonstruktion der größten Störung im europäischen kontinentalen Synchrongebiet seit zwei Jahrzehnten. Einhundertsiebzig Nachweise, zehn Anhänge, achtundzwanzig Simulatoren.',
+    readIntro: 'Einleitung lesen',
+    techAnalysis: 'Technische Analyse',
+    glossary: 'Technisches Glossar',
+    ariaLabelChain: 'Kausalkette des Zusammenbruchs',
+    chain: [
+      {
+        label: 'Vorbedingung',
+        time: '12:30 CEST',
+        detail: '82% IBR · 11 Synchronmaschinen · H = 2,3 s',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        label: 'Ursprungsauslösung',
+        time: '12:32:56,993 CEST',
+        detail: '355 MW — Granada · Tap-Lag · unsichtbare Überspannung',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'IBR-Kaskade',
+        time: '12:33:07 CEST',
+        detail: '4.500 MW in 11 s · ANSI 59-Schutz',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Trennung Frankreich',
+        time: '12:33:21,535 CEST',
+        detail: '48,46 Hz · 15.000 MW verloren',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'Spannungsnull',
+        time: '12:33:29,741 CEST',
+        detail: '57 Millionen ohne Versorgung · iberisches Gebiet isoliert',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    numbers: [
+      { value: '57 M', label: 'betroffene Personen' },
+      { value: '15.000', label: 'verlorene MW' },
+      { value: '33 s', label: 'bis zum Gesamtzusammenbruch' },
+      { value: '18,5 h', label: 'Wiederversorgungszeit' },
+      { value: '>666 M€', label: 'Kosten verstärkter Betrieb' },
+    ],
+  },
+  'zh-Hans': {
+    eyebrow: '法医分析 · 2025年4月28日伊比利亚大停电',
+    titlePrefix: '半岛电力系统的',
+    titleAccent: '全面崩溃',
+    titleSuffix: '的分析',
+    subtitle: '对二十年来欧洲大陆同步电网最大一次扰动进行的技术、经济和社交重构。包含170项证据、10个附录、28个模拟器。',
+    readIntro: '阅读引言',
+    techAnalysis: '技术分析',
+    glossary: '技术词汇表',
+    ariaLabelChain: '崩溃因果链',
+    chain: [
+      {
+        label: '前提条件',
+        time: '12:30 CEST',
+        detail: '82% IBR · 11个同步单元 · H = 2.3 s',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        label: '根源跳闸',
+        time: '12:32:56.993 CEST',
+        detail: '355 MW — 格拉纳达 · 分接头延迟 · 隐形过电压',
+        href: '/analisis-incidente',
+      },
+      {
+        label: 'IBR级联',
+        time: '12:33:07 CEST',
+        detail: '11秒内损失4500 MW · ANSI 59保护',
+        href: '/analisis-incidente',
+      },
+      {
+        label: '与法国解列',
+        time: '12:33:21.535 CEST',
+        detail: '48.46 Hz · 损失15000 MW',
+        href: '/analisis-incidente',
+      },
+      {
+        label: '电压归零',
+        time: '12:33:29.741 CEST',
+        detail: '5700万人无电力供应 · 伊比利亚区域孤网运行',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    numbers: [
+      { value: '57 M', label: '受影响人数' },
+      { value: '15,000', label: '损失兆瓦' },
+      { value: '33 秒', label: '全网崩溃时间' },
+      { value: '18.5 小时', label: '恢复供电耗时' },
+      { value: '>6.66 亿€', label: '强化运维成本' },
+    ],
+  }
+};
+
+export default function HomeHero() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
+
+  const parseMetric = (str, locale) => {
+    const match = str.match(/^([^\d]*)((?:\d+[.,\s]?)+)([^\d]*)$/);
+    if (!match) return { value: str, isNumeric: false };
+    
+    let cleanNumStr = match[2].replace(/\s/g, '');
+    if (locale === 'en' || locale === 'zh-Hans') {
+      cleanNumStr = cleanNumStr.replace(/,/g, '');
+    } else {
+      cleanNumStr = cleanNumStr.replace(/\./g, '').replace(/,/g, '.');
+    }
+    
+    const endValue = parseFloat(cleanNumStr);
+    if (isNaN(endValue)) return { value: str, isNumeric: false };
+    
+    const decimals = cleanNumStr.includes('.') ? cleanNumStr.split('.')[1].length : 0;
+    return { isNumeric: true, prefix: match[1], endValue, suffix: match[3], decimals };
+  };
+
+  const getLocaleForIntl = (loc) => {
+    if (loc === 'es') return 'es-ES';
+    if (loc === 'de') return 'de-DE';
+    if (loc === 'zh-Hans') return 'zh-CN';
+    return 'en-US';
+  };
+
+  return (
+    <section className={styles.hero}>
+      <ParticlesBackground />
+      <div className={styles.inner}>
+        <div className={styles.leftCol}>
+          {/* Eyebrow */}
+          <p className={styles.eyebrow}>
+            {t.eyebrow}
+          </p>
+
+          {/* Título */}
+          <h1 className={styles.title} aria-label={`${t.titlePrefix} ${t.titleAccent} ${t.titleSuffix}`}>
+            <SplitText
+              text={t.titlePrefix}
+              tag="span"
+              splitBy="words"
+              delay={40}
+              duration={600}
+              className={styles.titleLine}
+            />
+            {' '}
+            <ShinyText
+              className={styles.titleAccent}
+              shinyColor="rgba(255, 255, 255, 0.95)"
+              baseColor="var(--home-hero-accent)"
+              speed={3}
+            >
+              {t.titleAccent}
+            </ShinyText>
+            {t.titleSuffix && (
+              <>
+                {' '}
+                <SplitText
+                  text={t.titleSuffix}
+                  tag="span"
+                  splitBy="words"
+                  delay={40}
+                  duration={600}
+                  className={styles.titleLine}
+                />
+              </>
+            )}
+          </h1>
+
+          <p className={styles.subtitle}>
+            <BlurText text={t.subtitle} delay={30} />
+          </p>
+
+          {/* CTAs */}
+          <div className={styles.ctas}>
+            <a href={getLocalizedUrl('/introduccion')} className={styles.ctaPrimary} onClick={handleLinkClick}>
+              <ShinyText shinyColor="#fff" baseColor="rgba(255, 255, 255, 0.85)">{t.readIntro}</ShinyText>
+            </a>
+            <a href={getLocalizedUrl('/contexto')} className={styles.ctaSecondary} onClick={handleLinkClick}>
+              {t.techAnalysis}
+            </a>
+            <a href={getLocalizedUrl('/glosario')} className={styles.ctaTertiary} onClick={handleLinkClick}>
+              {t.glossary}
+            </a>
+          </div>
+        </div>
+
+        <div className={styles.rightCol}>
+          {/* Cadena causal */}
+          <div className={styles.chain} aria-label={t.ariaLabelChain}>
+            {t.chain.map((step, i) => (
+              <React.Fragment key={step.label}>
+                <SubtleReveal delay={300 + i * 200} as="a" href={getLocalizedUrl(step.href)} className={styles.node} style={{ '--step-index': i + 1 }} onClick={handleLinkClick}>
+                  <span className={styles.nodeIndex}>{String(i + 1).padStart(2, '0')}</span>
+                  <span className={styles.nodeTime}>{step.time}</span>
+                  <span className={styles.nodeLabel}>{step.label}</span>
+                  <span className={styles.nodeDetail}>{step.detail}</span>
+                </SubtleReveal>
+                {i < t.chain.length - 1 && (
+                  <SubtleReveal delay={400 + i * 200} className={styles.arrow} aria-hidden="true">
+                    <div className={styles.arrowLine} />
+                    <div className={styles.arrowHead}>▼</div>
+                  </SubtleReveal>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Franja de cifras */}
+      <div className={styles.strip}>
+        {t.numbers.map((n) => {
+          const parsed = parseMetric(n.value, currentLocale);
+          return (
+            <div key={n.label} className={styles.stripItem}>
+              {parsed.isNumeric ? (
+                <MetricCountUp
+                  endValue={parsed.endValue}
+                  decimals={parsed.decimals}
+                  prefix={parsed.prefix}
+                  suffix={parsed.suffix}
+                  locale={getLocaleForIntl(currentLocale)}
+                  className={styles.stripValue}
+                />
+              ) : (
+                <span className={styles.stripValue}>{n.value}</span>
+              )}
+              <span className={styles.stripLabel}>{n.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeHero.module.css`
+
+```css
+/* ── HomeHero ──────────────────────────────────────────────── */
+
+.hero {
+  --home-hero-accent: #6B1024;
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid rgba(107, 16, 36, 0.12);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(107, 16, 36, 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(107, 16, 36, 0.025) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 72%);
+}
+
+html[data-theme='dark'] .hero {
+  --home-hero-accent: #c0556e;
+}
+
+html[data-theme='dark'] .hero::before {
+  background:
+    linear-gradient(90deg, rgba(192, 85, 110, 0.05) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(192, 85, 110, 0.035) 1px, transparent 1px);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem 3.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightCol {
+  padding-top: 1rem;
+}
+
+/* Eyebrow */
+.eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B1024;
+  margin-bottom: 1.25rem;
+}
+
+html[data-theme='dark'] .eyebrow {
+  color: #c0556e;
+}
+
+/* Title */
+.title {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 1.5rem;
+}
+
+.titleLine {
+  display: inline;
+}
+
+.titleAccent {
+  color: #6B1024;
+  display: inline;
+}
+
+html[data-theme='dark'] .titleAccent {
+  color: #c0556e;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  max-width: 640px;
+  margin: 0 0 3rem;
+}
+
+html[data-theme='dark'] .subtitle {
+  color: #a9b6c7;
+}
+
+/* ── Cadena causal ── */
+.chain {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  margin: 0 0 3rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(107, 16, 36, 0.18);
+}
+
+.chain::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 0.5rem;
+  width: 1px;
+  height: calc(100% - 1rem);
+  background: linear-gradient(to bottom, transparent, rgba(107, 16, 36, 0.9), transparent);
+  animation: heroSignal 4.8s ease-in-out infinite;
+}
+
+html[data-theme='dark'] .chain {
+  border-left-color: rgba(192, 85, 110, 0.20);
+}
+
+html[data-theme='dark'] .chain::before {
+  background: linear-gradient(to bottom, transparent, rgba(192, 85, 110, 0.95), transparent);
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1.25rem 0.85rem 2.4rem;
+  border-radius: 0 6px 6px 0;
+  text-decoration: none !important;
+  color: inherit !important;
+  background: transparent;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  opacity: 0;
+  animation: nodeFadeIn 0.4s ease both;
+  position: relative;
+}
+
+.node::before {
+  content: '';
+  position: absolute;
+  left: -1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6B1024;
+  border: 2px solid var(--ifm-background-color);
+  box-shadow: 0 0 0 0 rgba(107, 16, 36, 0.28);
+  animation: nodePulse 2.8s ease-in-out infinite;
+  animation-delay: calc(var(--step-index) * 0.18s);
+}
+
+html[data-theme='dark'] .node::before {
+  background: #c0556e;
+}
+
+.node:hover {
+  background: rgba(107, 16, 36, 0.04);
+  text-decoration: none;
+  transform: translateX(3px);
+  box-shadow: inset 2px 0 0 rgba(107, 16, 36, 0.45);
+}
+
+html[data-theme='dark'] .node:hover {
+  background: rgba(192, 85, 110, 0.07);
+}
+
+.nodeTime {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #6B1024;
+  font-variant-numeric: tabular-nums;
+}
+
+.nodeIndex {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.88rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: rgba(107, 16, 36, 0.38);
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-theme='dark'] .nodeIndex {
+  color: rgba(192, 85, 110, 0.48);
+}
+
+html[data-theme='dark'] .nodeTime {
+  color: #c0556e;
+}
+
+.nodeLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+  line-height: 1.2;
+}
+
+.nodeDetail {
+  font-size: 0.78rem;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  line-height: 1.4;
+}
+
+html[data-theme='dark'] .nodeDetail {
+  color: #91a4bc;
+}
+
+.arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 0 1.25rem;
+  opacity: 0.3;
+  height: 0.6rem;
+}
+
+.arrowLine {
+  display: none;
+}
+
+.arrowHead {
+  font-size: 0.55rem;
+  color: #6B1024;
+  line-height: 1;
+}
+
+html[data-theme='dark'] .arrowHead {
+  color: #c0556e;
+}
+
+@keyframes nodeFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(107, 16, 36, 0.24); }
+  50% { box-shadow: 0 0 0 7px rgba(107, 16, 36, 0); }
+}
+
+@keyframes heroSignal {
+  0%, 100% { opacity: 0.22; transform: scaleY(0.35); transform-origin: top; }
+  50% { opacity: 0.9; transform: scaleY(1); transform-origin: top; }
+}
+
+/* ── CTAs ── */
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.ctaPrimary {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 6px;
+  background: #6B1024;
+  color: #fff !important;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none !important;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ctaPrimary:hover {
+  background: #8a1a30;
+  transform: translateY(-1px);
+}
+
+.ctaSecondary {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 6px;
+  border: 1.5px solid #6B1024;
+  color: #6B1024 !important;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+}
+
+.ctaSecondary:hover {
+  background: rgba(107, 16, 36, 0.06);
+  transform: translateY(-1px);
+}
+
+html[data-theme='dark'] .ctaSecondary {
+  border-color: #c0556e;
+  color: #c0556e !important;
+}
+
+.ctaTertiary {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  color: var(--ifm-color-secondary-darkest, #64707d) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  border-bottom: 1px dashed rgba(0,0,0,0.25);
+  transition: color 0.15s ease;
+}
+
+.ctaTertiary:hover {
+  color: #6B1024 !important;
+}
+
+html[data-theme='dark'] .ctaTertiary {
+  border-bottom-color: rgba(255,255,255,0.2);
+}
+
+html[data-theme='dark'] .ctaTertiary:hover {
+  color: #c0556e !important;
+}
+
+/* ── Strip de cifras ── */
+.strip {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-top: 1px solid rgba(107, 16, 36, 0.10);
+  background: rgba(107, 16, 36, 0.025);
+}
+
+html[data-theme='dark'] .strip {
+  background: rgba(192, 85, 110, 0.05);
+  border-top-color: rgba(192, 85, 110, 0.12);
+}
+
+.stripItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 1.25rem 0.5rem;
+  border-right: 1px solid rgba(107, 16, 36, 0.08);
+  overflow: hidden;
+}
+
+.stripItem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.42), transparent 70%);
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.stripItem:hover::before {
+  opacity: 1;
+  animation: metricSweep 0.8s ease;
+}
+
+.stripItem:last-child {
+  border-right: none;
+}
+
+.stripValue {
+  font-size: clamp(1.15rem, 2.5vw, 1.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #6B1024;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+html[data-theme='dark'] .stripValue {
+  color: #c0556e;
+}
+
+.stripLabel {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  text-align: center;
+}
+
+@keyframes metricSweep {
+  to { transform: translateX(120%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chain::before,
+  .node::before,
+  .stripItem:hover::before {
+    animation: none;
+  }
+
+  .node:hover {
+    transform: none;
+  }
+}
+
+html[data-theme='dark'] .stripLabel {
+  color: #91a4bc;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .inner {
+    padding: 3.5rem 1.25rem 2.5rem;
+  }
+
+  .chain {
+    padding-left: 0.75rem;
+  }
+
+  .strip {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+
+  .stripItem:nth-child(3) {
+    border-right: none;
+  }
+
+  .stripItem:nth-child(4),
+  .stripItem:nth-child(5) {
+    border-top: 1px solid rgba(107,16,36,0.08);
+  }
+
+  .ctas {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .rightCol {
+    padding-top: 0;
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeKeyMetrics.jsx`
+
+```jsx
+/**
+ * HomeKeyMetrics.jsx
+ * src/components/HomeKeyMetrics.jsx
+ *
+ * Bloque de 4 KPIs del incidente — posición 2 de la homepage,
+ * entre HomeHero y HomeThesisPanel.
+ *
+ * Datos consolidados en todas las fuentes primarias:
+ * ENTSO-E Factual Report (2025), Comité de Análisis del Gobierno (2025), REE.
+ *
+ * Sin contadores animados llamativos. Números grandes, contexto corto,
+ * fuente discreta. Estética de ficha técnica, no de dashboard.
+ */
+
+import React from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeKeyMetrics.module.css';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Magnitud del incidente',
+    metrics: [
+      {
+        id: 'time',
+        value: '12:33',
+        unit: 'CEST',
+        label: 'Inicio del colapso operativo',
+        detail: '28 de abril de 2025',
+        source: 'ENTSO-E / Comité del Gobierno',
+      },
+      {
+        id: 'power',
+        value: '≈15.000',
+        unit: 'MW',
+        label: 'Generación desconectada en cascada',
+        detail: 'Aprox. 60 % de la generación activa en ese instante',
+        source: 'ENTSO-E Factual Report (2025)',
+      },
+      {
+        id: 'ufls',
+        value: '>10.600',
+        unit: 'MW',
+        label: 'Deslastre automático de carga (UFLS)',
+        detail: 'Esquemas de defensa por subfrecuencia',
+        source: 'Comité de Análisis del Gobierno (2025)',
+      },
+      {
+        id: 'restoration',
+        value: '≈16',
+        unit: 'h',
+        label: 'Reposición del suministro',
+        detail: 'Hasta recuperación prácticamente completa',
+        source: 'REE / REN / ENTSO-E',
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'Incident magnitude',
+    metrics: [
+      {
+        id: 'time',
+        value: '12:33',
+        unit: 'CEST',
+        label: 'Start of operational collapse',
+        detail: 'April 28, 2025',
+        source: 'ENTSO-E / Government Committee',
+      },
+      {
+        id: 'power',
+        value: '≈15,000',
+        unit: 'MW',
+        label: 'Generation disconnected in cascade',
+        detail: 'Approx. 60% of active generation at that moment',
+        source: 'ENTSO-E Factual Report (2025)',
+      },
+      {
+        id: 'ufls',
+        value: '>10,600',
+        unit: 'MW',
+        label: 'Automatic load shedding (UFLS)',
+        detail: 'Under-frequency defense schemes',
+        source: 'Government Analysis Committee (2025)',
+      },
+      {
+        id: 'restoration',
+        value: '≈16',
+        unit: 'h',
+        label: 'Supply restoration',
+        detail: 'Until near-complete recovery',
+        source: 'REE / REN / ENTSO-E',
+      },
+    ],
+  },
+  de: {
+    eyebrow: 'Ausmaß des Vorfalls',
+    metrics: [
+      {
+        id: 'time',
+        value: '12:33',
+        unit: 'CEST',
+        label: 'Beginn des Betriebszusammenbruchs',
+        detail: '28. April 2025',
+        source: 'ENTSO-E / Regierungsausschuss',
+      },
+      {
+        id: 'power',
+        value: '≈15.000',
+        unit: 'MW',
+        label: 'In Kaskade abgeschaltete Erzeugung',
+        detail: 'Ca. 60 % der aktiven Erzeugung in diesem Moment',
+        source: 'ENTSO-E Factual Report (2025)',
+      },
+      {
+        id: 'ufls',
+        value: '>10.600',
+        unit: 'MW',
+        label: 'Automatischer Lastabwurf (UFLS)',
+        detail: 'Unterfrequenz-Schutzschemas',
+        source: 'Regierungsanalysausschuss (2025)',
+      },
+      {
+        id: 'restoration',
+        value: '≈16',
+        unit: 'h',
+        label: 'Wiederherstellung der Versorgung',
+        detail: 'Bis zur nahezu vollständigen Erholung',
+        source: 'REE / REN / ENTSO-E',
+      },
+    ],
+  },
+  'zh-Hans': {
+    eyebrow: '事故规模',
+    metrics: [
+      {
+        id: 'time',
+        value: '12:33',
+        unit: 'CEST',
+        label: '电网运行崩溃开始时刻',
+        detail: '2025年4月28日',
+        source: 'ENTSO-E / 政府分析委员会',
+      },
+      {
+        id: 'power',
+        value: '≈15,000',
+        unit: 'MW',
+        label: '级联断路损失的发电容量',
+        detail: '约占事故时刻在网发电量的60%',
+        source: 'ENTSO-E事实报告（2025）',
+      },
+      {
+        id: 'ufls',
+        value: '>10,600',
+        unit: 'MW',
+        label: '低频减载自动切除负荷（UFLS）',
+        detail: '欠频防御保护方案动作',
+        source: '政府分析委员会（2025）',
+      },
+      {
+        id: 'restoration',
+        value: '≈16',
+        unit: 'h',
+        label: '电力恢复供应耗时',
+        detail: '直至供电基本完全恢复',
+        source: 'REE / REN / ENTSO-E',
+      },
+    ],
+  },
+};
+
+export default function HomeKeyMetrics() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  return (
+    <section className={styles.section} aria-label={t.eyebrow}>
+      <div className={styles.inner}>
+
+        <p className={styles.eyebrow}>{t.eyebrow}</p>
+
+        <div className={styles.grid}>
+          {t.metrics.map((m) => (
+            <div key={m.id} className={`${styles.card} ${styles[`card--${m.id}`]}`}>
+              {/* Número principal */}
+              <div className={styles.valueRow}>
+                <span className={styles.value}>{m.value}</span>
+                <span className={styles.unit}>{m.unit}</span>
+              </div>
+
+              {/* Etiqueta */}
+              <p className={styles.label}>{m.label}</p>
+
+              {/* Detalle contextual */}
+              <p className={styles.detail}>{m.detail}</p>
+
+              {/* Fuente */}
+              <p className={styles.source}>{m.source}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeKeyMetrics.module.css`
+
+```css
+/* HomeKeyMetrics.module.css
+   Bloque de 4 KPIs del incidente — estética de ficha técnica.
+   Números grandes, contexto corto, fuente discreta.
+   Sin contadores animados. Sin dashboard pesado.
+*/
+
+.section {
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 40%, transparent);
+}
+
+html[data-theme='dark'] .section {
+  background: color-mix(in srgb, var(--ifm-background-surface-color) 60%, transparent);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Eyebrow ── */
+.eyebrow {
+  margin: 0 0 1.5rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+/* ── Grid de 4 tarjetas ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--ifm-color-emphasis-200);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ── Tarjeta individual ── */
+.card {
+  background: var(--ifm-background-color, #fff);
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  transition: background 150ms ease;
+}
+
+html[data-theme='dark'] .card {
+  background: var(--ifm-background-surface-color, #1a2332);
+}
+
+.card:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 60%, var(--ifm-background-color));
+}
+
+html[data-theme='dark'] .card:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-200) 30%, var(--ifm-background-surface-color));
+}
+
+/* Acento de color en el borde superior por tipo */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ifm-color-emphasis-300);
+}
+
+.card--time::before   { background: var(--ifm-color-primary, #145c63); }
+.card--power::before  { background: #6b1024; }
+.card--ufls::before   { background: #8a6b3d; }
+.card--restoration::before { background: var(--ifm-color-primary, #145c63); opacity: 0.5; }
+
+html[data-theme='dark'] .card--power::before  { background: #d18da0; }
+html[data-theme='dark'] .card--ufls::before   { background: #d9bd82; }
+
+/* ── Número principal ── */
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-bottom: 0.1rem;
+}
+
+.value {
+  font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+  font-weight: 760;
+  line-height: 1;
+  color: var(--ifm-font-color-base);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+  font-weight: 600;
+  color: var(--ifm-color-content-secondary);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 0.2rem;
+}
+
+/* ── Etiqueta ── */
+.label {
+  margin: 0;
+  font-size: clamp(0.8rem, 1.2vw, 0.92rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Detalle contextual ── */
+.detail {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Fuente ── */
+.source {
+  margin: 0.35rem 0 0;
+  font-size: 0.65rem;
+  color: var(--ifm-color-emphasis-500);
+  line-height: 1.3;
+  font-style: italic;
+}
+
+/* ── Tablet ── */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 540px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+  }
+
+  .value {
+    font-size: 1.7rem;
+  }
+
+  .detail {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeThesisPanel.jsx`
+
+```jsx
+/**
+ * HomeThesisPanel.jsx
+ *
+ * Bloque de tesis en posición 2 de la homepage.
+ * Comunica la distinción central del TFG en el primer scroll:
+ * colapso Q-V capacitivo, no déficit de frecuencia primaria.
+ *
+ * Diseño: 2 columnas — izquierda: tesis larga en prosa;
+ * derecha: 3 chips verticales con la distinción sintetizada.
+ * Sin efectos decorativos. Editorial puro.
+ */
+
+import React from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeThesisPanel.module.css';
+import AnimatedContent from '@site/src/components/ReactBits/AnimatedContent';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'La tesis central',
+    thesis:
+      'El 28-A no fue un accidente de frecuencia ni un fallo de generación convencional. Fue una inestabilidad de tensión en régimen capacitivo, desencadenada en un sistema con baja potencia de cortocircuito, escasa absorción dinámica de reactiva y un marco operativo diseñado para una red que ya no existe.',
+    detail:
+      'Las previsiones de demanda eran correctas. Los precios de mercado no anticipaban ningún riesgo. La frecuencia permaneció en banda hasta los últimos segundos. La vulnerabilidad era invisible para las herramientas convencionales porque residía en las propiedades dinámicas del mix, no en la cantidad de potencia disponible.',
+    chips: [
+      {
+        type: 'not',
+        label: 'No fue',
+        text: 'Déficit de generación ni colapso clásico de frecuencia primaria',
+      },
+      {
+        type: 'yes',
+        label: 'Sí fue',
+        text: 'Inestabilidad de tensión multifactorial: baja fortaleza síncrona, pérdida de control reactivo y desconexiones en cascada',
+      },
+      {
+        type: 'lesson',
+        label: 'Lección',
+        text: 'Rediseñar la estabilidad dinámica en sistemas dominados por inversores IBR',
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'The central thesis',
+    thesis:
+      'The 28-A was neither a frequency accident nor a conventional generation failure. It was a capacitive voltage instability triggered in a system with low short-circuit power, scarce dynamic reactive absorption, and an operational framework designed for a grid that no longer exists.',
+    detail:
+      'Demand forecasts were accurate. Market prices anticipated no risk. Frequency remained within band until the last seconds. The vulnerability was invisible to conventional tools because it resided in the dynamic properties of the mix, not in the amount of available power.',
+    chips: [
+      {
+        type: 'not',
+        label: 'Was not',
+        text: 'Generation deficit or classic primary frequency collapse',
+      },
+      {
+        type: 'yes',
+        label: 'Was',
+        text: 'Multifactorial voltage instability: low synchronous strength, loss of reactive control, and cascading disconnections',
+      },
+      {
+        type: 'lesson',
+        label: 'Lesson',
+        text: 'Redesign dynamic stability in inverter-based resource (IBR) dominated systems',
+      },
+    ],
+  },
+  de: {
+    eyebrow: 'Die zentrale These',
+    thesis:
+      'Der 28-A war weder ein Frequenzunfall noch ein konventioneller Erzeugungsausfall. Es war eine kapazitive Spannungsinstabilität, ausgelöst in einem System mit geringer Kurzschlussleistung, unzureichender dynamischer Blindleistungsabsorption und einem Betriebsrahmen, der für ein Netz konzipiert wurde, das nicht mehr existiert.',
+    detail:
+      'Die Lastprognosen waren korrekt. Die Marktpreise signalisierten kein Risiko. Die Frequenz blieb bis zu den letzten Sekunden im Normalbereich. Die Schwachstelle war für konventionelle Werkzeuge unsichtbar, da sie in den dynamischen Eigenschaften des Erzeugungsmix lag, nicht in der verfügbaren Leistungsmenge.',
+    chips: [
+      {
+        type: 'not',
+        label: 'War nicht',
+        text: 'Erzeugungsdefizit oder klassischer primärer Frequenzeinbruch',
+      },
+      {
+        type: 'yes',
+        label: 'War',
+        text: 'Multifaktorielle Spannungsinstabilität: geringe Synchronstärke, Verlust der Blindleistungsregelung und Kaskaden-Abschaltungen',
+      },
+      {
+        type: 'lesson',
+        label: 'Lehre',
+        text: 'Dynamische Stabilität in IBR-dominierten Systemen neu gestalten',
+      },
+    ],
+  },
+  'zh-Hans': {
+    eyebrow: '核心论点',
+    thesis:
+      '28-A大停电既不是频率事故，也不是传统发电侧的容量不足。它是一次容性电压失稳事件，发生在短路容量低、动态无功吸收能力不足、运行框架未能适应当前电网实际的系统之中。',
+    detail:
+      '负荷预测是准确的。市场价格没有预示任何风险。频率直到最后几秒钟才偏离正常范围。这一脆弱性对传统监控工具而言是不可见的，因为它根植于电源结构的动态特性，而非可用功率的总量。',
+    chips: [
+      {
+        type: 'not',
+        label: '不是',
+        text: '发电容量不足或经典的一次调频崩溃',
+      },
+      {
+        type: 'yes',
+        label: '而是',
+        text: '多因素电压失稳：低同步强度、无功控制失效与级联断路',
+      },
+      {
+        type: 'lesson',
+        label: '启示',
+        text: '在逆变器主导（IBR）的电力系统中重新设计动态稳定机制',
+      },
+    ],
+  },
+};
+
+export default function HomeThesisPanel() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+
+        {/* Columna izquierda — tesis en prosa */}
+        <AnimatedContent distance={32} duration={700} delay={0} threshold={0.15}>
+          <div className={styles.left}>
+            <p className={styles.eyebrow}>{t.eyebrow}</p>
+            <p className={styles.thesis}>{t.thesis}</p>
+            <p className={styles.detail}>{t.detail}</p>
+          </div>
+        </AnimatedContent>
+
+        {/* Columna derecha — 3 chips de síntesis */}
+        <AnimatedContent distance={32} duration={700} delay={150} threshold={0.15}>
+          <div className={styles.right}>
+            {t.chips.map((chip) => (
+              <div key={chip.type} className={`${styles.chip} ${styles[`chip--${chip.type}`]}`}>
+                <span className={styles.chipLabel}>{chip.label}</span>
+                <p className={styles.chipText}>{chip.text}</p>
+              </div>
+            ))}
+          </div>
+        </AnimatedContent>
+
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeThesisPanel.module.css`
+
+```css
+/* HomeThesisPanel.module.css
+   Bloque de tesis — posición 2 de la homepage.
+   Sin efectos decorativos. Editorial puro.
+   Hereda el sistema de variables del proyecto (--home-*, --ifm-*).
+*/
+
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Columna izquierda — tesis en prosa ── */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.thesis {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 650;
+  line-height: 1.5;
+  color: var(--ifm-font-color-base);
+  text-wrap: balance;
+}
+
+.detail {
+  margin: 0;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  line-height: 1.7;
+  color: var(--ifm-color-content-secondary, #6b7280);
+  max-width: 68ch;
+}
+
+/* ── Columna derecha — chips de síntesis ── */
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.chip {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+
+.chipLabel {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.chipText {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Chip "No fue" — tono neutro/advertencia */
+.chip--not {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-200) 40%, transparent);
+  border-left-color: var(--ifm-color-emphasis-400);
+}
+
+.chip--not .chipLabel {
+  color: var(--ifm-color-content-secondary);
+}
+
+.chip--not .chipText {
+  color: var(--ifm-font-color-base);
+  font-weight: 400;
+}
+
+/* Chip "Sí fue" — acento burdeos (--annex-critical del sistema) */
+.chip--yes {
+  background: color-mix(in srgb, #6b1024 5%, transparent);
+  border-left-color: #6b1024;
+}
+
+html[data-theme='dark'] .chip--yes {
+  background: color-mix(in srgb, #d18da0 8%, transparent);
+  border-left-color: #d18da0;
+}
+
+.chip--yes .chipLabel {
+  color: #6b1024;
+}
+
+html[data-theme='dark'] .chip--yes .chipLabel {
+  color: #d18da0;
+}
+
+.chip--yes .chipText {
+  color: var(--ifm-font-color-base);
+}
+
+/* Chip "Lección" — acento teal del sistema */
+.chip--lesson {
+  background: color-mix(in srgb, var(--ifm-color-primary, #145c63) 5%, transparent);
+  border-left-color: var(--ifm-color-primary, #145c63);
+}
+
+.chip--lesson .chipLabel {
+  color: var(--ifm-color-primary, #145c63);
+}
+
+html[data-theme='dark'] .chip--lesson .chipLabel {
+  color: var(--ifm-color-primary-lightest, #83bdc2);
+}
+
+.chip--lesson .chipText {
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .right {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    padding-top: 1.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .chip {
+    flex: 1 1 200px;
+  }
+}
+
+@media (max-width: 540px) {
+  .right {
+    flex-direction: column;
+  }
+
+  .chip {
+    flex: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* sin transiciones en este componente */
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeReadingPaths.jsx`
+
+```jsx
+import React from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeReadingPaths.module.css';
+import SpotlightCard from './ReactBits/SpotlightCard';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Tres formas de recorrer la investigación',
+    paths: [
+      {
+        id: '01',
+        label: 'Ruta rápida',
+        time: '10–15 min',
+        description: 'Los hechos esenciales, la causa raíz y el coste del colapso sin entrar en detalle técnico.',
+        links: [
+          { to: '/resumen-de-cifras', text: 'Resumen de cifras' },
+          { to: '/analisis-incidente', text: 'Análisis del incidente' },
+          { to: '/07b-consecuencias-financieras', text: 'Consecuencias financieras' },
+        ],
+      },
+      {
+        id: '02',
+        label: 'Ruta técnica',
+        time: '45–60 min',
+        description: 'La secuencia eléctrica completa: condición previa, mecanismos de colapso, protecciones, interconexiones y reposición.',
+        links: [
+          { to: '/contexto', text: 'Contexto técnico' },
+          { to: '/analisis-incidente', text: 'Análisis del incidente' },
+          { to: '/analisis-informes', text: 'Contraste de informes' },
+          { to: '/resiliencia-futuro', text: 'Resiliencia y futuro' },
+        ],
+      },
+      {
+        id: '03',
+        label: 'Ruta documental',
+        time: 'A demanda',
+        description: 'Consulta directa de evidencias, datos, modelos y figuras organizadas por tema en los diez anexos.',
+        links: [
+          { to: '/anexo-indice-conceptual', text: 'Índice conceptual' },
+          { to: '/glosario', text: 'Glosario técnico' },
+          { to: '/anexo-metodologia-modelos-datos-vivos', text: 'Metodología y fuentes' },
+        ],
+      },
+    ]
+  },
+  en: {
+    eyebrow: 'Three ways to navigate the investigation',
+    paths: [
+      {
+        id: '01',
+        label: 'Quick path',
+        time: '10–15 min',
+        description: 'The essential facts, the root cause, and the cost of the collapse without going into technical details.',
+        links: [
+          { to: '/resumen-de-cifras', text: 'Summary of figures' },
+          { to: '/analisis-incidente', text: 'Incident analysis' },
+          { to: '/07b-consecuencias-financieras', text: 'Financial consequences' },
+        ],
+      },
+      {
+        id: '02',
+        label: 'Technical path',
+        time: '45–60 min',
+        description: 'The complete electrical sequence: pre-condition, collapse mechanisms, protections, interconnections, and restoration.',
+        links: [
+          { to: '/contexto', text: 'Technical context' },
+          { to: '/analisis-incidente', text: 'Incident analysis' },
+          { to: '/analisis-informes', text: 'Reports comparison' },
+          { to: '/resiliencia-futuro', text: 'Resilience and future' },
+        ],
+      },
+      {
+        id: '03',
+        label: 'Documentary path',
+        time: 'On demand',
+        description: 'Direct query of evidence, data, models, and figures organized by topic in the ten annexes.',
+        links: [
+          { to: '/anexo-indice-conceptual', text: 'Conceptual index' },
+          { to: '/glosario', text: 'Technical glossary' },
+          { to: '/anexo-metodologia-modelos-datos-vivos', text: 'Methodology and sources' },
+        ],
+      },
+    ]
+  },
+  de: {
+    eyebrow: 'Drei Wege zur Erkundung der Untersuchung',
+    paths: [
+      {
+        id: '01',
+        label: 'Schnellkurs',
+        time: '10–15 Min.',
+        description: 'Die wesentlichen Fakten, die Hauptursache und die Kosten des Zusammenbruchs ohne technische Details.',
+        links: [
+          { to: '/resumen-de-cifras', text: 'Zahlen im Überblick' },
+          { to: '/analisis-incidente', text: 'Analyse des Vorfalls' },
+          { to: '/07b-consecuencias-financieras', text: 'Finanzielle Folgen' },
+        ],
+      },
+      {
+        id: '02',
+        label: 'Technische Route',
+        time: '45–60 Min.',
+        description: 'Der vollständige elektrische Ablauf: Vorbedingung, Kollapsmechanismen, Schutzsysteme, Netzkuppelstellen und Wiederversorgung.',
+        links: [
+          { to: '/contexto', text: 'Technischer Kontext' },
+          { to: '/analisis-incidente', text: 'Analyse des Vorfalls' },
+          { to: '/analisis-informes', text: 'Berichtvergleich' },
+          { to: '/resiliencia-futuro', text: 'Resilienz und Zukunft' },
+        ],
+      },
+      {
+        id: '03',
+        label: 'Dokumentarische Route',
+        time: 'Nach Bedarf',
+        description: 'Direkte Einsicht in Nachweise, Daten, Modelle und Abbildungen, die nach Themen in den zehn Anhängen geordnet sind.',
+        links: [
+          { to: '/anexo-indice-conceptual', text: 'Begriffliches Verzeichnis' },
+          { to: '/glosario', text: 'Technisches Glossar' },
+          { to: '/anexo-metodologia-modelos-datos-vivos', text: 'Methodik und Quellen' },
+        ],
+      },
+    ]
+  },
+  'zh-Hans': {
+    eyebrow: '三种浏览本研究的方式',
+    paths: [
+      {
+        id: '01',
+        label: '快速通道',
+        time: '10–15 分钟',
+        description: '基本事实、停电根本原因以及崩溃造成的经济损失，无需深究复杂的工程细节。',
+        links: [
+          { to: '/resumen-de-cifras', text: '核心数据摘要' },
+          { to: '/analisis-incidente', text: '事故过程分析' },
+          { to: '/07b-consecuencias-financieras', text: '财务与经济后果' },
+        ],
+      },
+      {
+        id: '02',
+        label: '专业技术路线',
+        time: '45–60 分钟',
+        description: '完整的电力故障 & 演变过程：前置运行工况、崩溃物理机制、继电保护动作、跨国联络线以及电网黑启动重建。',
+        links: [
+          { to: '/contexto', text: '系统技术背景' },
+          { to: '/analisis-incidente', text: '事故过程分析' },
+          { to: '/analisis-informes', text: '各方报告对比' },
+          { to: '/resiliencia-futuro', text: '系统韧性与未来展望' },
+        ],
+      },
+      {
+        id: '03',
+        label: '文献与证据路线',
+        time: '按需检索',
+        description: '直接检索和查阅分布在十个附录中、按专业领域组织的工程证据、实时数据、系统模型及图表。',
+        links: [
+          { to: '/anexo-indice-conceptual', text: '概念索引' },
+          { to: '/glosario', text: '技术词汇表' },
+          { to: '/anexo-metodologia-modelos-datos-vivos', text: '研究方法与数据源' },
+        ],
+      },
+    ]
+  }
+};
+
+export default function HomeReadingPaths() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = (link) => {
+    if (link.to === '/anexo-indice-conceptual') return;
+
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+        <p className={styles.eyebrow}>{t.eyebrow}</p>
+        <div className={styles.grid}>
+          {t.paths.map((path) => (
+            <SpotlightCard key={path.id} className={styles.card} spotlightColor="rgba(107, 16, 36, 0.13)">
+              <div className={styles.cardHeader}>
+                <span className={styles.cardId}>{path.id}</span>
+                <div>
+                  <h3 className={styles.cardLabel}>{path.label}</h3>
+                  <span className={styles.cardTime}>{path.time}</span>
+                </div>
+              </div>
+              <p className={styles.cardDesc}>{path.description}</p>
+              <ul className={styles.cardLinks}>
+                {path.links.map((link) => (
+                  <li key={link.to}>
+                    <a href={getLocalizedUrl(link.to)} className={styles.cardLink} onClick={() => handleLinkClick(link)}>
+                      {link.text} →
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </SpotlightCard>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeReadingPaths.module.css`
+
+```css
+.section {
+  padding: 4.5rem 2rem;
+  background: rgba(107, 16, 36, 0.02);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(107, 16, 36, 0.07), transparent 28rem),
+    linear-gradient(90deg, transparent, rgba(107, 16, 36, 0.035), transparent);
+}
+
+html[data-theme='dark'] .section {
+  background: rgba(192, 85, 110, 0.03);
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B1024;
+  margin-bottom: 2rem;
+}
+
+html[data-theme='dark'] .eyebrow {
+  color: #c0556e;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.card {
+  padding: 1.75rem !important;
+  border: 1px solid rgba(107, 16, 36, 0.10);
+  border-radius: 8px !important;
+  background: color-mix(in srgb, var(--ifm-background-color) 94%, #6B1024 6%) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 100%;
+  box-shadow: 0 14px 36px rgba(25, 16, 20, 0.06);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.card::before {
+  top: 10px;
+  left: 10px;
+  border-top: 1px solid rgba(107, 16, 36, 0.55);
+  border-left: 1px solid rgba(107, 16, 36, 0.55);
+}
+
+.card::after {
+  right: 10px;
+  bottom: 10px;
+  border-right: 1px solid rgba(107, 16, 36, 0.55);
+  border-bottom: 1px solid rgba(107, 16, 36, 0.55);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(107, 16, 36, 0.28);
+  box-shadow: 0 18px 42px rgba(25, 16, 20, 0.10);
+}
+
+.card:hover::before,
+.card:hover::after {
+  opacity: 1;
+}
+
+html[data-theme='dark'] .card {
+  border-color: rgba(192, 85, 110, 0.14);
+  background: rgba(13, 26, 53, 0.56) !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cardId {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: rgba(107, 16, 36, 0.15);
+  line-height: 1;
+  flex-shrink: 0;
+  letter-spacing: -0.04em;
+}
+
+html[data-theme='dark'] .cardId {
+  color: rgba(192, 85, 110, 0.2);
+}
+
+.cardLabel {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 0.2rem;
+}
+
+.cardTime {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #6B1024;
+}
+
+html[data-theme='dark'] .cardTime {
+  color: #c0556e;
+}
+
+.cardDesc {
+  font-size: 0.845rem;
+  line-height: 1.65;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  margin: 0;
+  flex: 1;
+}
+
+html[data-theme='dark'] .cardDesc {
+  color: #91a4bc;
+}
+
+.cardLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-top: 1px solid rgba(107, 16, 36, 0.08);
+  padding-top: 1rem;
+}
+
+html[data-theme='dark'] .cardLinks {
+  border-top-color: rgba(192, 85, 110, 0.10);
+}
+
+.cardLink {
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: #6B1024 !important;
+  text-decoration: none !important;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  display: inline-block;
+}
+
+.cardLink:hover {
+  opacity: 0.7;
+  text-decoration: underline !important;
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardLink {
+    transition: none;
+  }
+
+  .card:hover,
+  .cardLink:hover {
+    transform: none;
+  }
+}
+
+html[data-theme='dark'] .cardLink {
+  color: #c0556e !important;
+}
+
+@media (max-width: 820px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeIncidentTimeline.jsx`
+
+```jsx
+/**
+ * HomeIncidentTimeline.jsx
+ *
+ * Cronología compacta del colapso — posición 4 de la homepage.
+ * 5 fases del 28-A en línea horizontal con timestamps exactos.
+ * CSS/SVG puro: sin Recharts ni librerías de gráficos.
+ *
+ * Interactividad: hover sobre cada fase muestra descripción expandida.
+ * Cada fase enlaza al capítulo correspondiente.
+ *
+ * Los datos de la cadena causal se reutilizan del mismo objeto
+ * que usa HomeHero (t.chain), importados aquí como constante local
+ * para no crear dependencia entre componentes.
+ */
+
+import React, { useState } from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeIncidentTimeline.module.css';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Cronología del colapso',
+    heading: 'Menos de un minuto',
+    sub: 'Del disparo raíz en Granada al cero de tensión en la península ibérica',
+    phases: [
+      {
+        id: 'pre',
+        time: '12:30 CEST',
+        label: 'Condición previa',
+        color: 'neutral',
+        desc: '82 % de generación IBR, solo 11 unidades síncronas acopladas. Inercia equivalente en mínimo histórico de 2025. Las herramientas de mercado no detectan anomalía.',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        id: 'root',
+        time: '12:32:56',
+        label: 'Disparo raíz',
+        color: 'warning',
+        desc: 'Pérdida de 355 MW en Granada por Tap-Lag y sobretensión invisible al SCADA. Primera perturbación que inicia la cascada de tensión.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'cascade',
+        time: '12:33:07',
+        label: 'Cascada IBR',
+        color: 'critical',
+        desc: '4.500 MW perdidos en 11 segundos. Protecciones ANSI 59 de inversores fotovoltaicos disparan en cascada por sobretensión capacitiva generalizada.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'france',
+        time: '12:33:21',
+        label: 'Separación Francia',
+        color: 'critical',
+        desc: 'La interconexión con Francia se pierde a 48,46 Hz. El sistema ibérico queda aislado del área síncrona continental con 15.000 MW de déficit.',
+        href: '/anexo-interconexiones-flujos',
+      },
+      {
+        id: 'zero',
+        time: '12:33:29',
+        label: 'Cero de tensión',
+        color: 'blackout',
+        desc: 'Más de 50 millones de personas sin suministro en España y Portugal. Tensión a cero en la península ibérica. Comienza el proceso de reposición por Black Start.',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    linkLabel: 'Ver capítulo →',
+  },
+  en: {
+    eyebrow: 'Timeline of the collapse',
+    heading: 'Under one minute',
+    sub: 'From the root trip in Granada to voltage zero across the Iberian Peninsula',
+    phases: [
+      {
+        id: 'pre',
+        time: '12:30 CEST',
+        label: 'Prior condition',
+        color: 'neutral',
+        desc: '82% IBR generation, only 11 synchronous units online. Equivalent inertia at 2025 historical minimum. Market tools detect no anomaly.',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        id: 'root',
+        time: '12:32:56',
+        label: 'Root trip',
+        color: 'warning',
+        desc: 'Loss of 355 MW in Granada due to Tap-Lag and overvoltage invisible to SCADA. First disturbance triggering the voltage cascade.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'cascade',
+        time: '12:33:07',
+        label: 'IBR cascade',
+        color: 'critical',
+        desc: '4,500 MW lost in 11 seconds. ANSI 59 protections of photovoltaic inverters trip in cascade due to generalized capacitive overvoltage.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'france',
+        time: '12:33:21',
+        label: 'French separation',
+        color: 'critical',
+        desc: 'Interconnection with France lost at 48.46 Hz. Iberian system isolated from the continental synchronous area with 15,000 MW deficit.',
+        href: '/anexo-interconexiones-flujos',
+      },
+      {
+        id: 'zero',
+        time: '12:33:29',
+        label: 'Voltage zero',
+        color: 'blackout',
+        desc: 'More than 50 million people without supply in Spain and Portugal. Voltage at zero across the Iberian Peninsula. Black Start restoration process begins.',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    linkLabel: 'See chapter →',
+  },
+  de: {
+    eyebrow: 'Chronologie des Zusammenbruchs',
+    heading: 'Weniger als eine Minute',
+    sub: 'Von der Ursprungsauslösung in Granada bis zum Spannungsnull auf der iberischen Halbinsel',
+    phases: [
+      {
+        id: 'pre',
+        time: '12:30 CEST',
+        label: 'Vorbedingung',
+        color: 'neutral',
+        desc: '82% IBR-Erzeugung, nur 11 Synchronmaschinen im Netz. Äquivalente Trägheit auf historischem Tiefstand 2025. Marktinstrumente erkennen keine Anomalie.',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        id: 'root',
+        time: '12:32:56',
+        label: 'Ursprungsauslösung',
+        color: 'warning',
+        desc: 'Verlust von 355 MW in Granada durch Tap-Lag und für SCADA unsichtbare Überspannung. Erste Störung, die die Spannungskaskade auslöst.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'cascade',
+        time: '12:33:07',
+        label: 'IBR-Kaskade',
+        color: 'critical',
+        desc: '4.500 MW in 11 Sekunden verloren. ANSI 59-Schutz von PV-Wechselrichtern löst in Kaskade durch generalisierte kapazitive Überspannung aus.',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'france',
+        time: '12:33:21',
+        label: 'Trennung Frankreich',
+        color: 'critical',
+        desc: 'Netzkuppelleitung nach Frankreich bei 48,46 Hz verloren. Iberisches System vom kontinentalen Synchrongebiet mit 15.000 MW Defizit getrennt.',
+        href: '/anexo-interconexiones-flujos',
+      },
+      {
+        id: 'zero',
+        time: '12:33:29',
+        label: 'Spannungsnull',
+        color: 'blackout',
+        desc: 'Mehr als 50 Millionen Menschen ohne Versorgung in Spanien und Portugal. Spannung auf der iberischen Halbinsel bei null. Black-Start-Wiederversorgung beginnt.',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    linkLabel: 'Kapitel ansehen →',
+  },
+  'zh-Hans': {
+    eyebrow: '停电事故时间轴',
+    heading: '不足一分钟',
+    sub: '从格拉纳达根源跳闸到伊比利亚半岛电压归零的完整过程',
+    phases: [
+      {
+        id: 'pre',
+        time: '12:30 CEST',
+        label: '前置运行工况',
+        color: 'neutral',
+        desc: '82%逆变器电源，仅11台同步机在网运行。等效惯量创2025年历史最低。市场工具未检测到任何异常。',
+        href: '/anexo-demanda-generacion-balance',
+      },
+      {
+        id: 'root',
+        time: '12:32:56',
+        label: '根源跳闸',
+        color: 'warning',
+        desc: '格拉纳达因有载调压延迟（Tap-Lag）和SCADA不可见的过电压损失355兆瓦。触发电压级联的首次扰动。',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'cascade',
+        time: '12:33:07',
+        label: 'IBR级联跳闸',
+        color: 'critical',
+        desc: '11秒内损失4500兆瓦。光伏逆变器ANSI 59保护因全网容性过电压级联动作。',
+        href: '/analisis-incidente',
+      },
+      {
+        id: 'france',
+        time: '12:33:21',
+        label: '与法国解列',
+        color: 'critical',
+        desc: '法国联络线在48.46赫兹时断开。伊比利亚系统与欧洲大陆同步电网解列，功率缺额15000兆瓦。',
+        href: '/anexo-interconexiones-flujos',
+      },
+      {
+        id: 'zero',
+        time: '12:33:29',
+        label: '电压归零',
+        color: 'blackout',
+        desc: '西班牙和葡萄牙逾5000万人失去电力供应。伊比利亚半岛电压归零。黑启动恢复进程启动。',
+        href: '/resumen-de-cifras',
+      },
+    ],
+    linkLabel: '查看章节 →',
+  },
+};
+
+export default function HomeIncidentTimeline() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+  const [activeId, setActiveId] = useState(null);
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const activePhase = t.phases.find((p) => p.id === activeId) || t.phases[0];
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+
+        {/* Cabecera */}
+        <div className={styles.header}>
+          <p className={styles.eyebrow}>{t.eyebrow}</p>
+          <h2 className={styles.heading}>{t.heading}</h2>
+          <p className={styles.sub}>{t.sub}</p>
+        </div>
+
+        {/* Línea temporal */}
+        <div className={styles.timeline} role="list" aria-label={t.eyebrow}>
+          {/* Línea de conexión */}
+          <div className={styles.track} aria-hidden="true" />
+
+          {t.phases.map((phase, i) => (
+            <div
+              key={phase.id}
+              className={`${styles.phase} ${styles[`phase--${phase.color}`]} ${activeId === phase.id ? styles.isActive : ''}`}
+              role="listitem"
+              onMouseEnter={() => setActiveId(phase.id)}
+              onMouseLeave={() => setActiveId(null)}
+              onFocus={() => setActiveId(phase.id)}
+              onBlur={() => setActiveId(null)}
+            >
+              {/* Punto en la línea */}
+              <div className={styles.dot} aria-hidden="true">
+                <span className={styles.dotInner} />
+              </div>
+
+              {/* Timestamp */}
+              <span className={styles.time}>{phase.time}</span>
+
+              {/* Etiqueta de fase */}
+              <a
+                href={getLocalizedUrl(phase.href)}
+                className={styles.label}
+                tabIndex={0}
+                aria-label={`${phase.label} — ${phase.time}`}
+              >
+                {phase.label}
+              </a>
+
+              {/* Número de orden */}
+              <span className={styles.index} aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Panel de detalle — se actualiza con hover/focus */}
+        <div className={styles.detail} aria-live="polite" aria-atomic="true">
+          <div className={styles.detailInner}>
+            <div className={styles.detailHeader}>
+              <span className={`${styles.detailDot} ${styles[`detailDot--${activePhase.color}`]}`} aria-hidden="true" />
+              <span className={styles.detailTime}>{activePhase.time}</span>
+              <span className={styles.detailLabel}>{activePhase.label}</span>
+            </div>
+            <p className={styles.detailDesc}>{activePhase.desc}</p>
+            <a href={getLocalizedUrl(activePhase.href)} className={styles.detailLink}>
+              {t.linkLabel}
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeIncidentTimeline.module.css`
+
+```css
+/* HomeIncidentTimeline.module.css
+   Cronología compacta del colapso — CSS/SVG puro, sin librerías.
+   Línea horizontal con 5 fases, hover con detalle expandido.
+*/
+
+/* ── Paleta de colores de fases ── */
+:root {
+  --tl-neutral:   #7a7062;
+  --tl-warning:   #8a6b3d;
+  --tl-critical:  #6b1024;
+  --tl-blackout:  #191814;
+}
+
+html[data-theme='dark'] {
+  --tl-neutral:   #91a4bc;
+  --tl-warning:   #d9bd82;
+  --tl-critical:  #d18da0;
+  --tl-blackout:  #f4f7fb;
+}
+
+/* ── Sección ── */
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Cabecera ── */
+.header {
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.heading {
+  margin: 0 0 0.4rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 760;
+  line-height: 1.1;
+  color: var(--ifm-font-color-base);
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.5;
+}
+
+/* ── Línea temporal ── */
+.timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+/* Línea de conexión detrás de los puntos */
+.track {
+  position: absolute;
+  top: 10px;  /* altura del centro del punto */
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: var(--ifm-color-emphasis-300);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Cada fase */
+.phase {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding-top: 0;
+  cursor: default;
+  z-index: 1;
+}
+
+/* Punto en la línea */
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ifm-background-color, #fff);
+  border: 1.5px solid var(--ifm-color-emphasis-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 150ms ease, transform 150ms ease;
+  flex-shrink: 0;
+}
+
+.dotInner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ifm-color-emphasis-400);
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+/* Timestamp */
+.time {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-content-secondary);
+  white-space: nowrap;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiqueta de fase (enlace) */
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  line-height: 1.3;
+  padding: 0 0.25rem;
+  transition: color 150ms ease;
+}
+
+.label:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* Número de orden */
+.index {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ifm-color-emphasis-400);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Estados de color por fase ── */
+.phase--neutral .dotInner  { background: var(--tl-neutral); }
+.phase--warning .dotInner  { background: var(--tl-warning); }
+.phase--critical .dotInner { background: var(--tl-critical); }
+.phase--blackout .dotInner { background: var(--tl-blackout); }
+
+.phase--neutral .dot  { border-color: var(--tl-neutral); }
+.phase--warning .dot  { border-color: var(--tl-warning); }
+.phase--critical .dot { border-color: var(--tl-critical); }
+.phase--blackout .dot { border-color: var(--tl-blackout); }
+
+/* Estado activo (hover/focus) */
+.isActive .dot {
+  transform: scale(1.25);
+}
+
+.isActive.phase--neutral .label  { color: var(--tl-neutral); }
+.isActive.phase--warning .label  { color: var(--tl-warning); }
+.isActive.phase--critical .label { color: var(--tl-critical); }
+.isActive.phase--blackout .label { color: var(--tl-blackout); }
+
+.isActive .index {
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Panel de detalle ── */
+.detail {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 60%, transparent);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  padding: 1.15rem 1.35rem;
+  min-height: 110px;
+  transition: background 150ms ease;
+}
+
+.detailInner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.detailDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.detailDot--neutral  { background: var(--tl-neutral); }
+.detailDot--warning  { background: var(--tl-warning); }
+.detailDot--critical { background: var(--tl-critical); }
+.detailDot--blackout { background: var(--tl-blackout); }
+
+.detailTime {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ifm-color-content-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.detailLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+}
+
+.detailDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--ifm-color-content-secondary);
+}
+
+.detailLink {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary, #145c63);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.detailLink:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  /* En mobile, la timeline se convierte en lista vertical */
+  .timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .track {
+    display: none;
+  }
+
+  .phase {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    width: 100%;
+  }
+
+  .phase:last-child {
+    border-bottom: none;
+  }
+
+  .dot {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .time {
+    text-align: left;
+  }
+
+  .label {
+    text-align: left;
+  }
+
+  .index {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .dotInner,
+  .detail {
+    transition: none;
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeNarrativeMatrix.jsx`
+
+```jsx
+/**
+ * HomeNarrativeMatrix.jsx
+ *
+ * Mapa de controversias — posición 5 de la homepage.
+ * Matriz 4 actores × 3 ejes que muestra que el TFG compara
+ * posiciones periciales, no construye un relato único.
+ *
+ * Diseño: tabla ligera con mucho aire. Sin borde pesado.
+ * Chip de alineación por celda: ↑ acuerdo, ↕ debate, ↓ discrepancia.
+ * CTA al pie hacia capítulo 5 y conclusiones.
+ */
+
+import React from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeNarrativeMatrix.module.css';
+import AnimatedContent from '@site/src/components/ReactBits/AnimatedContent';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Mapa de controversias',
+    heading: 'Cuatro informes. Tres disputas.',
+    sub: 'Los informes periciales coinciden en los hechos pero divergen en el peso causal, el papel de la inercia y las medidas regulatorias necesarias.',
+    axes: ['Causa raíz', 'Papel de la inercia', 'Medidas propuestas'],
+    actors: [
+      {
+        id: 'gobierno',
+        name: 'Gobierno / Comité',
+        positions: [
+          { text: 'Cascada de protecciones sobre baja fortaleza síncrona', align: 'agree' },
+          { text: 'Factor agravante, no causa primaria', align: 'debate' },
+          { text: 'Servicios de inercia sintética obligatorios', align: 'agree' },
+        ],
+      },
+      {
+        id: 'iit',
+        name: 'IIT-ICAI / Sector',
+        positions: [
+          { text: 'Decisiones operativas del TSO sobre despacho de generación síncrona', align: 'disagree' },
+          { text: 'Causa directa del colapso', align: 'disagree' },
+          { text: 'Responsabilidad operativa del TSO', align: 'disagree' },
+        ],
+      },
+      {
+        id: 'entsoe',
+        name: 'ENTSO-E',
+        positions: [
+          { text: 'Inestabilidad de tensión por baja potencia de cortocircuito', align: 'agree' },
+          { text: 'Determinante en la velocidad de propagación', align: 'agree' },
+          { text: 'Revisión de ajustes de protección de inversores IBR', align: 'agree' },
+        ],
+      },
+      {
+        id: 'nrel',
+        name: 'NREL / MIT / Brattle',
+        positions: [
+          { text: 'Primer colapso sistémico IBR por sobretensión, no subfrecuencia', align: 'agree' },
+          { text: 'Insuficiente, pero necesario redefinir su medición', align: 'debate' },
+          { text: 'Mercados de resiliencia dinámica y GFM obligatorios', align: 'agree' },
+        ],
+      },
+    ],
+    alignLabels: {
+      agree: 'Acuerdo',
+      debate: 'Debate',
+      disagree: 'Discrepancia',
+    },
+    cta: 'Análisis completo en el Capítulo 5 →',
+    ctaHref: '/analisis-informes',
+    note: 'Fuentes: Comité de Análisis del Gobierno (2025), IIT-ICAI / Compass Lexecon (2025), ENTSO-E Factual Report (2025), NREL / arXiv 2511.17433 (2025).',
+  },
+  en: {
+    eyebrow: 'Controversy map',
+    heading: 'Four reports. Three disputes.',
+    sub: 'Expert reports agree on the facts but diverge on causal weight, the role of inertia, and the necessary regulatory measures.',
+    axes: ['Root cause', 'Role of inertia', 'Proposed measures'],
+    actors: [
+      {
+        id: 'gobierno',
+        name: 'Government / Committee',
+        positions: [
+          { text: 'Protection cascade over low synchronous strength', align: 'agree' },
+          { text: 'Aggravating factor, not primary cause', align: 'debate' },
+          { text: 'Mandatory synthetic inertia services', align: 'agree' },
+        ],
+      },
+      {
+        id: 'iit',
+        name: 'IIT-ICAI / Industry',
+        positions: [
+          { text: 'TSO dispatch decisions on synchronous generation commitment', align: 'disagree' },
+          { text: 'Direct cause of the collapse', align: 'disagree' },
+          { text: 'TSO operational liability', align: 'disagree' },
+        ],
+      },
+      {
+        id: 'entsoe',
+        name: 'ENTSO-E',
+        positions: [
+          { text: 'Voltage instability due to low short-circuit power', align: 'agree' },
+          { text: 'Determinant in propagation speed', align: 'agree' },
+          { text: 'Revision of IBR inverter protection settings', align: 'agree' },
+        ],
+      },
+      {
+        id: 'nrel',
+        name: 'NREL / MIT / Brattle',
+        positions: [
+          { text: 'First systemic IBR collapse by overvoltage, not underfrequency', align: 'agree' },
+          { text: 'Insufficient, but its measurement must be redefined', align: 'debate' },
+          { text: 'Dynamic resilience markets and mandatory GFM', align: 'agree' },
+        ],
+      },
+    ],
+    alignLabels: {
+      agree: 'Agreement',
+      debate: 'Debate',
+      disagree: 'Dispute',
+    },
+    cta: 'Full analysis in Chapter 5 →',
+    ctaHref: '/analisis-informes',
+    note: 'Sources: Government Analysis Committee (2025), IIT-ICAI / Compass Lexecon (2025), ENTSO-E Factual Report (2025), NREL / arXiv 2511.17433 (2025).',
+  },
+  de: {
+    eyebrow: 'Kontroversenkarte',
+    heading: 'Vier Berichte. Drei Streitpunkte.',
+    sub: 'Die Gutachten stimmen in den Fakten überein, weichen jedoch bei der Kausalgewichtung, der Rolle der Trägheit und den erforderlichen Regulierungsmaßnahmen ab.',
+    axes: ['Hauptursache', 'Rolle der Trägheit', 'Vorgeschlagene Maßnahmen'],
+    actors: [
+      {
+        id: 'gobierno',
+        name: 'Regierung / Ausschuss',
+        positions: [
+          { text: 'Schutzkaskade über geringe Synchronstärke', align: 'agree' },
+          { text: 'Erschwerender Faktor, keine Primärursache', align: 'debate' },
+          { text: 'Obligatorische synthetische Trägheitsdienste', align: 'agree' },
+        ],
+      },
+      {
+        id: 'iit',
+        name: 'IIT-ICAI / Sektor',
+        positions: [
+          { text: 'Einsatzentscheidungen des ÜNB zur Synchrongeneratorverfügbarkeit', align: 'disagree' },
+          { text: 'Unmittelbare Ursache des Zusammenbruchs', align: 'disagree' },
+          { text: 'Betriebliche Haftung des ÜNB', align: 'disagree' },
+        ],
+      },
+      {
+        id: 'entsoe',
+        name: 'ENTSO-E',
+        positions: [
+          { text: 'Spannungsinstabilität durch geringe Kurzschlussleistung', align: 'agree' },
+          { text: 'Bestimmend für die Ausbreitungsgeschwindigkeit', align: 'agree' },
+          { text: 'Überprüfung der Schutzeinstellungen von IBR-Wechselrichtern', align: 'agree' },
+        ],
+      },
+      {
+        id: 'nrel',
+        name: 'NREL / MIT / Brattle',
+        positions: [
+          { text: 'Erster systemischer IBR-Kollaps durch Überspannung, nicht Unterfrequenz', align: 'agree' },
+          { text: 'Unzureichend, aber Messung muss neu definiert werden', align: 'debate' },
+          { text: 'Märkte für dynamische Resilienz und obligatorisches GFM', align: 'agree' },
+        ],
+      },
+    ],
+    alignLabels: {
+      agree: 'Einigkeit',
+      debate: 'Debatte',
+      disagree: 'Disput',
+    },
+    cta: 'Vollständige Analyse in Kapitel 5 →',
+    ctaHref: '/analisis-informes',
+    note: 'Quellen: Regierungsanalysausschuss (2025), IIT-ICAI / Compass Lexecon (2025), ENTSO-E Factual Report (2025), NREL / arXiv 2511.17433 (2025).',
+  },
+  'zh-Hans': {
+    eyebrow: '争议观点图谱',
+    heading: '四份报告。三个分歧。',
+    sub: '各方专家报告在事实上基本一致，但在因果权重、惯量作用以及所需监管措施方面存在明显分歧。',
+    axes: ['根本原因', '惯量的作用', '建议措施'],
+    actors: [
+      {
+        id: 'gobierno',
+        name: '政府 / 分析委员会',
+        positions: [
+          { text: '在低同步强度背景下发生的保护级联动作', align: 'agree' },
+          { text: '加剧因素，非主要原因', align: 'debate' },
+          { text: '强制推行合成惯量服务', align: 'agree' },
+        ],
+      },
+      {
+        id: 'iit',
+        name: 'IIT-ICAI / 行业方',
+        positions: [
+          { text: '输电系统运营商关于同步发电机组调度的运行决策', align: 'disagree' },
+          { text: '停电的直接原因', align: 'disagree' },
+          { text: '输电系统运营商的运行责任', align: 'disagree' },
+        ],
+      },
+      {
+        id: 'entsoe',
+        name: 'ENTSO-E',
+        positions: [
+          { text: '短路容量不足导致的电压失稳', align: 'agree' },
+          { text: '决定事故传播速度的关键因素', align: 'agree' },
+          { text: '修订逆变器保护整定值', align: 'agree' },
+        ],
+      },
+      {
+        id: 'nrel',
+        name: 'NREL / MIT / Brattle',
+        positions: [
+          { text: '首次因过电压（而非低频）引发的系统性IBR崩溃', align: 'agree' },
+          { text: '不充分，但需要重新定义其测量方法', align: 'debate' },
+          { text: '动态韧性市场与强制构网型逆变器部署', align: 'agree' },
+        ],
+      },
+    ],
+    alignLabels: {
+      agree: '共识',
+      debate: '争议',
+      disagree: '分歧',
+    },
+    cta: '第5章完整分析 →',
+    ctaHref: '/analisis-informes',
+    note: '来源：西班牙政府分析委员会（2025）、IIT-ICAI / Compass Lexecon（2025）、ENTSO-E事实报告（2025）、NREL / arXiv 2511.17433（2025）。',
+  },
+};
+
+const ALIGN_ICONS = {
+  agree:    '↑',
+  debate:   '↕',
+  disagree: '↓',
+};
+
+export default function HomeNarrativeMatrix() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+
+        {/* Cabecera */}
+        <div className={styles.header}>
+          <p className={styles.eyebrow}>{t.eyebrow}</p>
+          <h2 className={styles.heading}>{t.heading}</h2>
+          <p className={styles.sub}>{t.sub}</p>
+        </div>
+
+        {/* Matriz */}
+        <AnimatedContent distance={24} duration={600} delay={100} threshold={0.1}>
+          <div className={styles.tableWrapper}>
+            <table className={styles.table} aria-label={t.heading}>
+              <thead>
+                <tr>
+                  <th className={styles.thActor} scope="col" />
+                  {t.axes.map((axis) => (
+                    <th key={axis} className={styles.thAxis} scope="col">
+                      {axis}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {t.actors.map((actor) => (
+                  <tr key={actor.id} className={styles.row}>
+                    <td className={styles.tdActor} scope="row">
+                      {actor.name}
+                    </td>
+                    {actor.positions.map((pos, i) => (
+                      <td key={i} className={styles.tdCell}>
+                        <span
+                          className={`${styles.alignChip} ${styles[`alignChip--${pos.align}`]}`}
+                          title={t.alignLabels[pos.align]}
+                          aria-label={t.alignLabels[pos.align]}
+                        >
+                          {ALIGN_ICONS[pos.align]}
+                        </span>
+                        <span className={styles.cellText}>{pos.text}</span>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </AnimatedContent>
+
+        {/* Pie: CTA + nota de fuentes */}
+        <div className={styles.footer}>
+          <a href={getLocalizedUrl(t.ctaHref)} className={styles.cta}>
+            {t.cta}
+          </a>
+          <p className={styles.note}>{t.note}</p>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeNarrativeMatrix.module.css`
+
+```css
+/* HomeNarrativeMatrix.module.css
+   Mapa de controversias — tabla ligera 4×3 con mucho aire.
+   Sin bordes pesados. Chips de alineación en 3 estados.
+*/
+
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.inner {
+  max-width: var(--ifm-container-width, 1200px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ── Cabecera ── */
+.header {
+  margin-bottom: 2.5rem;
+  max-width: 680px;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary, #145c63);
+  opacity: 0.75;
+}
+
+html[data-theme='dark'] .eyebrow {
+  opacity: 0.6;
+}
+
+.heading {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 760;
+  line-height: 1.15;
+  color: var(--ifm-font-color-base);
+}
+
+.sub {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* ── Tabla ── */
+.tableWrapper {
+  overflow-x: auto;
+  margin-bottom: 1.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Cabecera de columna */
+.thActor,
+.thAxis {
+  padding: 0.65rem 1rem;
+  text-align: left;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ifm-color-content-secondary);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 50%, transparent);
+}
+
+.thActor {
+  width: 18%;
+}
+
+/* Filas */
+.row {
+  transition: background 100ms ease;
+}
+
+.row:hover {
+  background: color-mix(in srgb, var(--ifm-color-emphasis-100) 40%, transparent);
+}
+
+.row:not(:last-child) td {
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Celda de actor */
+.tdActor {
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+  vertical-align: top;
+  white-space: nowrap;
+  width: 18%;
+}
+
+/* Celda de posición */
+.tdCell {
+  padding: 0.85rem 1rem;
+  vertical-align: top;
+}
+
+/* Chip de alineación */
+.alignChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  flex-shrink: 0;
+  float: left;
+  margin-top: 2px;
+}
+
+.alignChip--agree {
+  background: color-mix(in srgb, #4A6B5D 10%, transparent);
+  color: #4A6B5D;
+}
+
+html[data-theme='dark'] .alignChip--agree {
+  background: color-mix(in srgb, #6ee7b7 12%, transparent);
+  color: #6ee7b7;
+}
+
+.alignChip--debate {
+  background: color-mix(in srgb, #8a6b3d 10%, transparent);
+  color: #8a6b3d;
+}
+
+html[data-theme='dark'] .alignChip--debate {
+  background: color-mix(in srgb, #fcd34d 12%, transparent);
+  color: #fcd34d;
+}
+
+.alignChip--disagree {
+  background: color-mix(in srgb, #6b1024 8%, transparent);
+  color: #6b1024;
+}
+
+html[data-theme='dark'] .alignChip--disagree {
+  background: color-mix(in srgb, #d18da0 12%, transparent);
+  color: #d18da0;
+}
+
+.cellText {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--ifm-color-content-secondary);
+  display: block;
+  overflow: hidden;
+}
+
+/* ── Pie ── */
+.footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cta {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary, #145c63);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cta:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.55;
+  text-align: right;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .tdActor,
+  .thActor {
+    white-space: normal;
+    width: auto;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .note {
+    text-align: left;
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeAnnexes.jsx`
+
+```jsx
+import React from 'react';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeAnnexes.module.css';
+import ScrollFloat from './ScrollFloat';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Sistema de evidencias',
+    heading: 'Diez anexos',
+    sub: '170 elementos documentales — figuras, tablas, series e interactivos — organizados por dominio técnico.',
+    annexes: [
+      { num: 'I', title: 'Demanda y balance', slug: '/anexo-demanda-generacion-balance', desc: 'Mix generación, previsiones, capacidad' },
+      { num: 'II', title: 'Estabilidad dinámica', slug: '/anexo-estabilidad-dinamica-tension', desc: 'Tensión, frecuencia, inercia, PMU' },
+      { num: 'III', title: 'Protecciones y cascada', slug: '/anexo-cascada-protecciones-desconexiones', desc: 'Tap-Lag, ANSI 59, deslastre UFLS' },
+      { num: 'IV', title: 'Interconexiones', slug: '/anexo-interconexiones-flujos', desc: 'Flujos transfronterizos, HVDC, Francia' },
+      { num: 'V', title: 'Mercado eléctrico', slug: '/anexo-mercado-costes', desc: 'Precios SPOT, desvíos, ERS' },
+      { num: 'VI', title: 'Reposición', slug: '/anexo-reposicion-blackstart', desc: 'Black Start, islas, demanda restituida' },
+      { num: 'VII', title: 'Impacto socioeconómico', slug: '/anexo-impacto-resiliencia', desc: 'VoLL, costes, comparativa histórica' },
+      { num: 'VIII', title: 'Comunicación', slug: '/anexo-comunicacion-fuentes', desc: 'Prensa, relato público, consenso pericial' },
+      { num: 'IX', title: 'Metodología', slug: '/anexo-metodologia-modelos-datos-vivos', desc: 'Fuentes, contraste pericial, modelos' },
+      { num: 'X', title: 'Ecuaciones y simuladores', slug: '/anexo-ecuaciones-matematicas', desc: '28 simuladores interactivos' },
+    ]
+  },
+  en: {
+    eyebrow: 'Evidence system',
+    heading: 'Ten annexes',
+    sub: '170 documentary elements — figures, tables, series, and interactives — organized by technical domain.',
+    annexes: [
+      { num: 'I', title: 'Demand and balance', slug: '/anexo-demanda-generacion-balance', desc: 'Generation mix, forecasts, capacity' },
+      { num: 'II', title: 'Dynamic stability', slug: '/anexo-estabilidad-dinamica-tension', desc: 'Voltage, frequency, inertia, PMU' },
+      { num: 'III', title: 'Protections and cascade', slug: '/anexo-cascada-protecciones-desconexiones', desc: 'Tap-Lag, ANSI 59, UFLS shedding' },
+      { num: 'IV', title: 'Interconnections', slug: '/anexo-interconexiones-flujos', desc: 'Cross-border flows, HVDC, France' },
+      { num: 'V', title: 'Electricity market', slug: '/anexo-mercado-costes', desc: 'SPOT prices, deviations, ERS' },
+      { num: 'VI', title: 'Restoration', slug: '/anexo-reposicion-blackstart', desc: 'Black Start, islands, restored demand' },
+      { num: 'VII', title: 'Socioeconomic impact', slug: '/anexo-impacto-resiliencia', desc: 'VoLL, costs, historical comparison' },
+      { num: 'VIII', title: 'Communication', slug: '/anexo-comunicacion-fuentes', desc: 'Press, public narrative, expert consensus' },
+      { num: 'IX', title: 'Methodology', slug: '/anexo-metodologia-modelos-datos-vivos', desc: 'Sources, expert comparison, models' },
+      { num: 'X', title: 'Equations and simulators', slug: '/anexo-ecuaciones-matematicas', desc: '28 interactive simulators' },
+    ]
+  },
+  de: {
+    eyebrow: 'Nachweissystem',
+    heading: 'Zehn Anhänge',
+    sub: '170 dokumentarische Elemente — Abbildungen, Tabellen, Reihen und interaktive Inhalte — geordnet nach Fachgebiet.',
+    annexes: [
+      { num: 'I', title: 'Nachfrage und Bilanz', slug: '/anexo-demanda-generacion-balance', desc: 'Erzeugungsmix, Prognosen, Kapazität' },
+      { num: 'II', title: 'Dynamische Stabilität', slug: '/anexo-estabilidad-dinamica-tension', desc: 'Spannung, Frequenz, Trägheit, PMU' },
+      { num: 'III', title: 'Schutzsysteme und Kaskade', slug: '/anexo-cascada-protecciones-desconexiones', desc: 'Tap-Lag, ANSI 59, UFLS-Lastabwurf' },
+      { num: 'IV', title: 'Netzkuppelstellen', slug: '/anexo-interconexiones-flujos', desc: 'Grenzüberschreitende Flüsse, HGÜ, Frankreich' },
+      { num: 'V', title: 'Strommarkt', slug: '/anexo-mercado-costes', desc: 'SPOT-Preise, Abweichungen, ERS' },
+      { num: 'VI', title: 'Wiederversorgung', slug: '/anexo-reposicion-blackstart', desc: 'Black Start, Inselnetzbetrieb, wiederversorgte Last' },
+      { num: 'VII', title: 'Sozioökonomische Folgen', slug: '/anexo-impacto-resiliencia', desc: 'VoLL, Kosten, historischer Vergleich' },
+      { num: 'VIII', title: 'Kommunikation', slug: '/anexo-comunicacion-fuentes', desc: 'Presse, öffentliche Wahrnehmung, Gutachterkonsens' },
+      { num: 'IX', title: 'Methodik', slug: '/anexo-metodologia-modelos-datos-vivos', desc: 'Quellen, Gutachtervergleich, Modelle' },
+      { num: 'X', title: 'Gleichungen und Simulatoren', slug: '/anexo-ecuaciones-matematicas', desc: '28 interaktive Simulatoren' },
+    ]
+  },
+  'zh-Hans': {
+    eyebrow: '证据体系',
+    heading: '十个附录',
+    sub: '170项实证要素——包括图表、数据表、时间序列和交互模块——按工程技术领域组织。',
+    annexes: [
+      { num: 'I', title: '负荷需求与电力平衡', slug: '/anexo-demanda-generacion-balance', desc: '发电结构、负荷预测、系统容量' },
+      { num: 'II', title: '动态稳定性', slug: '/anexo-estabilidad-dinamica-tension', desc: '电压、频率、转动惯量、相量测量单元' },
+      { num: 'III', title: '继电保护与级联跳闸', slug: '/anexo-cascada-protecciones-desconexiones', desc: '有载调压延迟、ANSI 59、低频减载' },
+      { num: 'IV', title: '联络线输电', slug: '/anexo-interconexiones-flujos', desc: '跨国联络潮流、高压直流、与法国通道' },
+      { num: 'V', title: '电力市场', slug: '/anexo-mercado-costes', desc: '现货价格、偏差考核、辅助服务' },
+      { num: 'VI', title: '电网黑启动与重建', slug: '/anexo-reposicion-blackstart', desc: '黑启动、孤网运行、负荷恢复进度' },
+      { num: 'VII', title: '社会经济影响', slug: '/anexo-impacto-resiliencia', desc: '缺供电能价值、事故损失估算、历史对比' },
+      { num: 'VIII', title: '公众沟通与舆情', slug: '/anexo-comunicacion-fuentes', desc: '新闻舆论、官方叙事、专家共识对比' },
+      { num: 'IX', title: '研究方法', slug: '/anexo-metodologia-modelos-datos-vivos', desc: '数据来源、报告对比分析、系统模型' },
+      { num: 'X', title: '数学方程与模拟器', slug: '/anexo-ecuaciones-matematicas', desc: '28个互动式物理模拟器' },
+    ]
+  }
+};
+
+export default function HomeAnnexes() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  const getLocalizedUrl = (url) => {
+    const prefix = currentLocale === 'es' ? '' : `/${currentLocale}`;
+    const path = `${prefix}${url}`.replace(/\/+/g, '/');
+    return useBaseUrl(path);
+  };
+
+  const handleLinkClick = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('zen-mode', 'true');
+      } catch (err) {
+        console.error('Error setting zen-mode:', err);
+      }
+    }
+  };
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+        <div className={styles.header}>
+          <p className={styles.eyebrow}>{t.eyebrow}</p>
+          <ScrollFloat tag="h2" className={styles.heading}>{t.heading}</ScrollFloat>
+          <p className={styles.sub}>{t.sub}</p>
+        </div>
+        <div className={styles.grid}>
+          {t.annexes.map((a) => (
+            <a
+              key={a.num}
+              href={getLocalizedUrl(a.slug)}
+              className={styles.card}
+              onClick={handleLinkClick}
+            >
+              <span className={styles.cardNum}>{a.num}</span>
+              <span className={styles.cardTitle}>{a.title}</span>
+              <span className={styles.cardDesc}>{a.desc}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeAnnexes.module.css`
+
+```css
+.section {
+  padding: 4.5rem 2rem;
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.section::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(107, 16, 36, 0.35), transparent);
+}
+
+html[data-theme='dark'] .section {
+  border-bottom-color: rgba(255,255,255,0.06);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B1024;
+  margin-bottom: 0.5rem;
+}
+
+html[data-theme='dark'] .eyebrow {
+  color: #c0556e;
+}
+
+.heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 0.5rem;
+}
+
+.sub {
+  font-size: 0.88rem;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  margin: 0;
+}
+
+html[data-theme='dark'] .sub {
+  color: #91a4bc;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  border: 1px solid rgba(107, 16, 36, 0.10);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(107, 16, 36, 0.06);
+  box-shadow: 0 18px 42px rgba(25, 16, 20, 0.06);
+}
+
+html[data-theme='dark'] .grid {
+  background: rgba(192, 85, 110, 0.08);
+  border-color: rgba(192, 85, 110, 0.14);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.25rem 1rem;
+  background: var(--ifm-background-color);
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: background 0.15s ease, transform 0.15s ease;
+  overflow: hidden;
+  opacity: 0;
+  animation: annexCardIn 0.4s ease forwards;
+}
+
+.card:nth-child(1)  { animation-delay: 0s; }
+.card:nth-child(2)  { animation-delay: 0.04s; }
+.card:nth-child(3)  { animation-delay: 0.08s; }
+.card:nth-child(4)  { animation-delay: 0.12s; }
+.card:nth-child(5)  { animation-delay: 0.16s; }
+.card:nth-child(6)  { animation-delay: 0.20s; }
+.card:nth-child(7)  { animation-delay: 0.24s; }
+.card:nth-child(8)  { animation-delay: 0.28s; }
+.card:nth-child(9)  { animation-delay: 0.32s; }
+.card:nth-child(10) { animation-delay: 0.36s; }
+
+@keyframes annexCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(107, 16, 36, 0.08), transparent 72%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(107, 16, 36, 0.0);
+  pointer-events: none;
+  transition: border-color 0.15s ease;
+}
+
+html[data-theme='dark'] .card {
+  background: #0d1421;
+}
+
+.card:hover {
+  background: rgba(107, 16, 36, 0.04);
+  transform: translateY(-1px);
+}
+
+.card:hover::before {
+  transform: translateX(120%);
+}
+
+.card:hover::after {
+  border-color: rgba(107, 16, 36, 0.18);
+}
+
+html[data-theme='dark'] .card:hover {
+  background: rgba(192, 85, 110, 0.07);
+}
+
+.cardNum {
+  position: relative;
+  z-index: 1;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #6B1024;
+  text-transform: uppercase;
+}
+
+html[data-theme='dark'] .cardNum {
+  color: #c0556e;
+}
+
+.cardTitle {
+  position: relative;
+  z-index: 1;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+  line-height: 1.3;
+}
+
+.cardDesc {
+  position: relative;
+  z-index: 1;
+  font-size: 0.70rem;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  line-height: 1.4;
+}
+
+html[data-theme='dark'] .cardDesc {
+  color: #91a4bc;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::before {
+    transition: none;
+    animation: none;
+    opacity: 1;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeChatInvite.jsx`
+
+```jsx
+import React from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './HomeChatInvite.module.css';
+import ScrollFloat from './ScrollFloat';
+import DecryptedText from './ReactBits/DecryptedText';
+
+const TRANSLATIONS = {
+  es: {
+    eyebrow: 'Asistente pericial',
+    heading: 'Pregunta directamente\nal análisis forense',
+    desc: 'El chatbot RAG tiene indexadas las 170 evidencias, los 28 simuladores y los capítulos del TFG. Responde con cadenas causales, cifras exactas y enlaces directos a las secciones relevantes.',
+    note: 'Disponible en la esquina inferior derecha de cualquier página.',
+    terminalTitle: 'Asistente del TFG — Apagón 28A',
+    welcome: 'Hola. Soy el asistente pericial del TFG sobre el apagón del 28-A. Pregúntame sobre causas técnicas, evidencias, cifras o fuentes documentales.',
+    suggestions: [
+      '¿Por qué el UFLS agravó el colapso?',
+      '¿Cuántos MW se perdieron en la cascada?',
+      '¿Qué diferencia hay entre GFL y GFM?',
+      '¿Por qué colapsó el sistema si había energía suficiente?',
+    ]
+  },
+  en: {
+    eyebrow: 'Expert assistant',
+    heading: 'Ask the forensic\nanalysis directly',
+    desc: 'The RAG chatbot has indexed all 170 pieces of evidence, 28 simulators, and the thesis chapters. It responds with causal chains, exact figures, and direct links to the relevant sections.',
+    note: 'Available in the bottom-right corner of any page.',
+    terminalTitle: 'Thesis Assistant — 28A Blackout',
+    welcome: 'Hello. I am the expert assistant for the thesis on the 28-A blackout. Ask me about technical causes, evidence, figures, or documentary sources.',
+    suggestions: [
+      'Why did UFLS aggravate the collapse?',
+      'How many MW were lost in the cascade?',
+      'What is the difference between GFL and GFM?',
+      'Why did the system collapse if there was enough energy?',
+    ]
+  },
+  de: {
+    eyebrow: 'Gutachterlicher Assistent',
+    heading: 'Fragen Sie die forensische\nAnalyse direkt',
+    desc: 'Der RAG-Chatbot hat die 170 Nachweise, die 28 Simulatoren und die Kapitel der Arbeit indexiert. Er antwortet mit Kausalketten, exakten Zahlen und direkten Links zu den relevanten Abschnitten.',
+    note: 'Verfügbar in der unteren rechten Ecke jeder Seite.',
+    terminalTitle: 'Abschlussarbeits-Assistent — 28A Blackout',
+    welcome: 'Hallo. Ich bin der gutachterliche Assistent für die Arbeit über den 28-A-Blackout. Fragen Sie mich nach technischen Ursachen, Nachweisen, Zahlen oder dokumentarischen Quellen.',
+    suggestions: [
+      'Warum hat der UFLS-Lastabwurf den Zusammenbruch verschlimmert?',
+      'Wie viele MW gingen in der Kaskade verloren?',
+      'Was ist der Unterschied zwischen GFL und GFM?',
+      'Warum brach das System zusammen, obwohl genügend Energie vorhanden war?',
+    ]
+  },
+  'zh-Hans': {
+    eyebrow: '专家级AI助手',
+    heading: '直接提问法医分析',
+    desc: '本项目的检索增强（RAG）聊天机器人已完整索引了170项实证证据、28个模拟器和论文的所有章节。它可以快速回答故障的因果链条、精确数据，并提供直达相关章节的链接。',
+    note: '在任何页面的右下角均可使用。',
+    terminalTitle: '毕业设计AI助手 — 28A大停电',
+    welcome: '您好！我是关于28-A大停电毕业设计的法医分析助手。您可以向我咨询任何技术原因、实证数据、图表或文献来源。',
+    suggestions: [
+      '为什么低频减载（UFLS）反而加剧了系统崩溃？',
+      '电网级联跳闸中共损失了多少兆瓦的容量？',
+      '跟网型（GFL）和构网型（GFM）逆变器有什么区别？',
+      '既然当时系统备用容量充足，为什么还会发生全网崩溃？',
+    ]
+  }
+};
+
+export default function HomeChatInvite() {
+  const { i18n } = useDocusaurusContext();
+  const currentLocale = i18n.currentLocale || 'es';
+  const t = TRANSLATIONS[currentLocale] || TRANSLATIONS.es;
+
+  return (
+    <section className={styles.section}>
+      <div className={styles.inner}>
+        <div className={styles.left}>
+          <p className={styles.eyebrow}>{t.eyebrow}</p>
+          <ScrollFloat tag="h2" className={styles.heading}>
+            {t.heading.replace(/\n/g, ' ')}
+          </ScrollFloat>
+          <p className={styles.desc}>{t.desc}</p>
+          <p className={styles.note}>{t.note}</p>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.terminal}>
+            <div className={styles.terminalHeader}>
+              <span className={styles.dot} style={{ background: '#ff5f57' }} />
+              <span className={styles.dot} style={{ background: '#febc2e' }} />
+              <span className={styles.dot} style={{ background: '#28c840' }} />
+              <DecryptedText text={t.terminalTitle} className={styles.terminalTitle} speed={24} maxIterations={10} />
+            </div>
+            <div className={styles.terminalBody}>
+              <div className={styles.msg}>
+                <span className={styles.msgLabel}>asistente</span>
+                <span className={styles.msgText}>
+                  <DecryptedText text={t.welcome} speed={16} maxIterations={18} />
+                  <span className={styles.cursor} aria-hidden="true" />
+                </span>
+              </div>
+              <div className={styles.suggestions}>
+                {t.suggestions.map((s) => (
+                  <button
+                    key={s}
+                    className={styles.suggestion}
+                    tabIndex={-1}
+                    aria-hidden="true"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+```
+
+---
+
+## ARCHIVO: `src/components/HomeChatInvite.module.css`
+
+```css
+.section {
+  padding: 4.5rem 2rem 5rem;
+  background: rgba(107, 16, 36, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(107, 16, 36, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 78% 45%, rgba(107, 16, 36, 0.10), transparent 22rem);
+  background-size: 36px 36px, auto;
+}
+
+html[data-theme='dark'] .section {
+  background: rgba(13, 20, 33, 0.6);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B1024;
+  margin-bottom: 0.75rem;
+}
+
+html[data-theme='dark'] .eyebrow {
+  color: #c0556e;
+}
+
+.heading {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--ifm-font-color-base);
+  margin: 0 0 1.25rem;
+}
+
+.desc {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  margin: 0 0 1rem;
+}
+
+html[data-theme='dark'] .desc {
+  color: #a9b6c7;
+}
+
+.note {
+  font-size: 0.75rem;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  font-style: italic;
+  margin: 0;
+}
+
+html[data-theme='dark'] .note {
+  color: #91a4bc;
+}
+
+/* Terminal mock */
+.terminal {
+  position: relative;
+  border: 1px solid rgba(107, 16, 36, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  background: var(--ifm-background-color);
+}
+
+.terminal::before,
+.terminal::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.terminal::before {
+  top: 10px;
+  left: 10px;
+  border-top: 1px solid rgba(107, 16, 36, 0.45);
+  border-left: 1px solid rgba(107, 16, 36, 0.45);
+}
+
+.terminal::after {
+  right: 10px;
+  bottom: 10px;
+  border-right: 1px solid rgba(107, 16, 36, 0.45);
+  border-bottom: 1px solid rgba(107, 16, 36, 0.45);
+}
+
+html[data-theme='dark'] .terminal {
+  background: #0d1117;
+  border-color: rgba(255,255,255,0.10);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.terminalHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(107, 16, 36, 0.04);
+  border-bottom: 1px solid rgba(107, 16, 36, 0.08);
+}
+
+html[data-theme='dark'] .terminalHeader {
+  background: rgba(255,255,255,0.04);
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.terminalTitle {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  margin-left: 0.5rem;
+}
+
+html[data-theme='dark'] .terminalTitle {
+  color: #91a4bc;
+}
+
+.terminalBody {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.msgLabel {
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #6B1024;
+}
+
+html[data-theme='dark'] .msgLabel {
+  color: #c0556e;
+}
+
+.msgText {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--ifm-font-color-base);
+  background: rgba(107, 16, 36, 0.04);
+  padding: 0.75rem 1rem;
+  border-radius: 0 8px 8px 8px;
+  border: 1px solid rgba(107, 16, 36, 0.08);
+  min-height: 6.7rem;
+}
+
+html[data-theme='dark'] .msgText {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.1em;
+  background: var(--ifm-color-primary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.suggestion {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  background: transparent;
+  border: 1px solid rgba(107, 16, 36, 0.15);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--ifm-color-secondary-darkest, #64707d);
+  text-align: left;
+  cursor: default;
+  pointer-events: auto;
+  font-family: inherit;
+  transform: translateX(0);
+  animation: suggestionIn 0.45s ease both;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.suggestion:hover {
+  background: rgba(107, 16, 36, 0.05);
+  border-color: rgba(107, 16, 36, 0.30);
+  transform: translateX(3px);
+}
+
+html[data-theme='dark'] .suggestion:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.20);
+}
+
+.suggestion:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.suggestion:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.suggestion:nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+html[data-theme='dark'] .suggestion {
+  border-color: rgba(255,255,255,0.10);
+  color: #91a4bc;
+}
+
+@keyframes suggestionIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suggestion {
+    animation: none;
+    transition: none;
+  }
+
+  .suggestion:hover {
+    transform: none;
+  }
+
+  .cursor {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 820px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+```
+
+---
+

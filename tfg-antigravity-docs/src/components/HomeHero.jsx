@@ -279,14 +279,14 @@ export default function HomeHero() {
               className={styles.titleLine}
             />
             {' '}
-            <SplitText
-              text={t.titleAccent}
-              tag="span"
-              splitBy="words"
-              delay={40}
-              duration={700}
-              className={`${styles.titleAccent} ${styles.titleLine}`}
-            />
+            <ShinyText
+              className={styles.titleAccent}
+              shinyColor="rgba(255, 255, 255, 0.95)"
+              baseColor="var(--home-hero-accent)"
+              speed={3}
+            >
+              {t.titleAccent}
+            </ShinyText>
             {t.titleSuffix && (
               <>
                 {' '}
