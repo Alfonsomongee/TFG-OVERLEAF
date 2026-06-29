@@ -15,10 +15,8 @@ import { createPortal } from 'react-dom';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import styles from './AnnexEvidenceViewer.module.css';
 
-// ChartViewer se carga sólo cuando el usuario abre una gráfica
-const ChartViewerLazy = lazy(() =>
-  import(/* webpackChunkName: "annex-chart-viewer" */ '../ForensicGallery2/ChartViewer')
-);
+// ChartViewer eliminado junto con ForensicGallery2 — funcionalidad retirada
+const ChartViewerLazy = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Diccionario de traducciones
@@ -514,11 +512,15 @@ function ChartSeriesViewer({ item, lang }) {
                 </div>
               }
             >
-              <ChartViewerLazy
-                chartId={currentId}
-                locale={lang}
-                onSelectChart={setCurrentId}
-              />
+              {ChartViewerLazy ? (
+                <ChartViewerLazy
+                  chartId={currentId}
+                  locale={lang}
+                  onSelectChart={setCurrentId}
+                />
+              ) : (
+                <div className={styles.fsLoadingMsg}>Vista de gráfica no disponible.</div>
+              )}
             </Suspense>
           )}
         </BrowserOnly>

@@ -16,16 +16,8 @@ const GridUnavailabilityGauge = lazy(() => import(/* webpackChunkName: "chart-gr
 const EmissionsVsRenewablesChart = lazy(() => import(/* webpackChunkName: "chart-emissions-renewables" */ './EmissionsVsRenewablesChart'));
 const SectorialResilienceChart = lazy(() => import(/* webpackChunkName: "chart-sectorial-resilience" */ './SectorialResilienceChart'));
 const CollapseSismograph = lazy(() => import(/* webpackChunkName: "chart-sismograph" */ './CollapseSismograph'));
-const PVCurveSimulator = lazy(() => import(/* webpackChunkName: "chart-pvcurve" */ './PVCurveSimulator'));
-const ANSI59Cascade = lazy(() => import(/* webpackChunkName: "chart-ansi59" */ './ANSI59Cascade'));
 const FerrantiCapacitiveLineSimulator = lazy(() => import(/* webpackChunkName: "chart-ferranti" */ './FerrantiCapacitiveLineSimulator/FerrantiCapacitiveLineSimulator'));
 const GridStrengthCalculator = lazy(() => import(/* webpackChunkName: "chart-grid-strength-calc" */ './GridStrengthCalculator'));
-const HvdcControlModeResponseFigure = lazy(() => import(/* webpackChunkName: "chart-hvdc" */ './HvdcControlModeResponseFigure/HvdcControlModeResponseFigure'));
-const PowerFlowJacobianCollapseFigure = lazy(() => import(/* webpackChunkName: "chart-jacobian" */ './PowerFlowJacobianCollapseFigure/PowerFlowJacobianCollapseFigure'));
-const TransformerInrushDecayFigure = lazy(() => import(/* webpackChunkName: "chart-inrush" */ './TransformerInrushDecayFigure/TransformerInrushDecayFigure'));
-const PQCapabilitySimulator = lazy(() => import(/* webpackChunkName: "chart-pqcap" */ './PQCapabilitySimulator/PQCapabilitySimulator'));
-const GfmDroopResponseFigure = lazy(() => import(/* webpackChunkName: "chart-gfmdroop" */ './GfmDroopResponseFigure/GfmDroopResponseFigure'));
-const EnergyTrilemmaSimulator = lazy(() => import(/* webpackChunkName: "chart-trilemma" */ './EnergyTrilemmaSimulator'));
 
 const LOLEBarChart = lazy(() => import(/* webpackChunkName: "chart-lole" */ './LOLEBarChart'));
 const BESSBoomChart = lazy(() => import(/* webpackChunkName: "chart-bess-boom" */ './BESSBoomChart'));
@@ -37,14 +29,7 @@ const TrilemmaTriangle = lazy(() => import(/* webpackChunkName: "chart-trilemma-
 
 const ResolutionRoadmap = lazy(() => import(/* webpackChunkName: "chart-resolution-roadmap" */ './ResolutionRoadmap'));
 const ResearchAgendaScatter = lazy(() => import(/* webpackChunkName: "chart-research-agenda" */ './ResearchAgendaScatter'));
-const DcopfCongestionManagementFigure = lazy(() => import(/* webpackChunkName: "chart-dcopf" */ './new-graphics/DcopfCongestionManagementFigure'));
-const LmpCongestionDecompositionFigure = lazy(() => import(/* webpackChunkName: "chart-lmp-congestion" */ './new-graphics/LmpCongestionDecompositionFigure'));
-const SIRDisinformationDelayFigure = lazy(() => import(/* webpackChunkName: "chart-sir-delay" */ './new-graphics/SIRDisinformationDelayFigure'));
-const TrilemmaStateSpaceFigure = lazy(() => import(/* webpackChunkName: "chart-trilemma-space" */ './new-graphics/TrilemmaStateSpaceFigure'));
-const VoLLSectorIntegralFigure = lazy(() => import(/* webpackChunkName: "chart-voll-sector" */ './new-graphics/VoLLSectorIntegralFigure'));
-const CecoelSimulator = lazy(() => import(/* webpackChunkName: "chart-cecoel-simulator" */ './CecoelSimulator/CecoelSimulator'));
-const ForensicArbitrator = lazy(() => import(/* webpackChunkName: "chart-forensic-arbitrator" */ './ForensicArbitrator/ForensicArbitrator'));
-const CarbonCalculator = lazy(() => import(/* webpackChunkName: "chart-carbon-calculator" */ './CarbonCalculator/CarbonCalculator'));
+
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 export const getGraphicData = (id, lang) => {
@@ -316,9 +301,7 @@ const MixGeneracion = lazy(() => import(/* webpackChunkName: "chart-mix-generaci
 const SynchrophasorPlot = lazy(() => import(/* webpackChunkName: "chart-synchrophasor" */ './SynchrophasorPlot'));
 const PhasePlanePlot = lazy(() => import(/* webpackChunkName: "chart-phaseplane" */ './PhasePlanePlot'));
 const InterconnectionDashboard = lazy(() => import(/* webpackChunkName: "chart-interconnection" */ './InterconnectionDashboard'));
-const SwingEquationSimulator = lazy(() => import(/* webpackChunkName: "chart-swing" */ './SwingEquationSimulator/SwingEquationSimulator'));
 const StickyCollapse = lazy(() => import(/* webpackChunkName: "chart-sticky-collapse" */ './StickyCollapse'));
-const UFLSVisualizer = lazy(() => import(/* webpackChunkName: "chart-ufls" */ './UFLSVisualizer/UFLSVisualizer'));
 
 const Comparador28A = lazy(() => import(/* webpackChunkName: "chart-comparador28a" */ './Comparador28A'));
 const RadarVulnerabilidad = lazy(() => import(/* webpackChunkName: "chart-radar-vulnerabilidad" */ './RadarVulnerabilidad'));
@@ -335,49 +318,28 @@ export const graphicsData = [
   { id: 'phasor', icon: '🧭', component: SynchrophasorPlot , tema: 'T2' },
   { id: 'phaseplane', icon: '🌀', component: PhasePlanePlot , tema: ['T9', 'T10-gen'] },
   { id: 'interconnection', icon: '🔌', component: InterconnectionDashboard , tema: 'T4' },
-  { id: 'swing', icon: '⚖️', component: SwingEquationSimulator , tema: ['T9', 'T10-gen'] },
-  { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix , tema: 'T5' },  // costes de ajuste → T5 mercado/costes
-  { id: 'pvcurve', icon: '📈', component: PVCurveSimulator , tema: ['T9', 'T10-red'] },
-  { id: 'ansi59', icon: '⚡', component: ANSI59Cascade , tema: 'T3' },
+  { id: 'matrix', icon: '💸', component: ThermalAdjustmentCostMatrix , tema: 'T5' },
   { id: 'sticky-collapse', icon: '🎬', component: StickyCollapse , tema: 'T3' },
-  { id: 'ufls', icon: '🎛️', component: UFLSVisualizer , tema: ['T3', 'T10-gen'], nature: 'didactic' },
 
   { id: 'comparador-28a', icon: '📡', component: Comparador28A , tema: ['T9', 'T10-gen'] },
   { id: 'radar-vulnerabilidad', icon: '🕷️', component: RadarVulnerabilidad , tema: ['T9', 'T10-gen'] },
   { id: 'tap-lag-sequence', icon: '⚙️', component: TapLagSequence , tema: 'T3' },
   // ── Visualizaciones forenses migradas desde datos-tiempo-real ───────────────
   { id: 'mix-generacion', icon: '🔋', component: MixGeneracion, tema: 'T1' },
-  { id: 'grid-unavailability', icon: '⛔', component: GridUnavailabilityGauge , tema: 'T3' },  // cascada/protecciones/desconexiones
-  { id: 'emissions-renewables', icon: '🌿', component: EmissionsVsRenewablesChart , tema: 'T1' },  // demanda/generación/balance
+  { id: 'grid-unavailability', icon: '⛔', component: GridUnavailabilityGauge , tema: 'T3' },
+  { id: 'emissions-renewables', icon: '🌿', component: EmissionsVsRenewablesChart , tema: 'T1' },
   { id: 'sectorial-resilience', icon: '🏭', component: SectorialResilienceChart , tema: 'T7' },
   { id: 'ferranti', icon: '⚡', component: FerrantiCapacitiveLineSimulator , tema: ['T3', 'T10-red'] },
-{ id: 'lole-chart', icon: '📊', component: LOLEBarChart , tema: ['T1', 'T10-gen'] },
+  { id: 'lole-chart', icon: '📊', component: LOLEBarChart , tema: ['T1', 'T10-gen'] },
   { id: 'bess-boom-chart', icon: '🔋', component: BESSBoomChart , tema: ['T1', 'T10-gen'] },
   { id: 'mrscr-comparator', icon: '📈', component: MRSCRComparator , tema: ['T2', 'T10-red'] },
   { id: 'dynamic-security-shift', icon: '🛡️', component: DynamicSecurityShift , tema: ['T2', 'T10-red'] },
   { id: 'then-vs-now-panel', icon: '⚖️', component: ThenVsNowPanel , tema: ['T2', 'T9', 'T10-gen'] },
   { id: 'picaso-price-chart', icon: '💸', component: PicasoPriceChart , tema: ['T5', 'T10-mer'] },
   { id: 'trilemma-triangle', icon: '🔺', component: TrilemmaTriangle , tema: ['T7', 'T10-mer'] },
-
   { id: 'resolution-roadmap', icon: '🗺️', component: ResolutionRoadmap , tema: ['T9', 'T10-red'] },
   { id: 'research-agenda-scatter', icon: '🔬', component: ResearchAgendaScatter , tema: ['T9', 'T10-red'] },
-{ id: 'dcopf-congestion', icon: '⚡', component: DcopfCongestionManagementFigure , tema: 'T10-mer' },
-  { id: 'lmp-congestion', icon: '💸', component: LmpCongestionDecompositionFigure , tema: 'T10-mer' },
-  { id: 'voll-sector', icon: '🏭', component: VoLLSectorIntegralFigure , tema: 'T10-mer' },
-  { id: 'sir-disinformation', icon: '📡', component: SIRDisinformationDelayFigure , tema: 'T10-sis' },
-  { id: 'trilemma-state-space', icon: '⚖️', component: TrilemmaStateSpaceFigure , tema: 'T10-sis' },
-
-
   { id: 'grid-strength-scr', icon: '📈', component: GridStrengthCalculator , tema: 'T10-red' },
-  { id: 'hvdc-control', icon: '🎛️', component: HvdcControlModeResponseFigure , tema: 'T10-red' },
-  { id: 'power-flow-jacobian', icon: '🌀', component: PowerFlowJacobianCollapseFigure , tema: 'T10-red' },
-  { id: 'transformer-inrush', icon: '🔌', component: TransformerInrushDecayFigure , tema: 'T10-red' },
-  { id: 'pq-capability', icon: '📊', component: PQCapabilitySimulator , tema: 'T10-gen' },
-  { id: 'gfm-droop', icon: '📉', component: GfmDroopResponseFigure , tema: 'T10-gen' },
-  { id: 'energy-trilemma', icon: '⚖️', component: EnergyTrilemmaSimulator , tema: ['T9', 'T10-mer'] },  // impacto/resiliencia
-  { id: 'cecoel-simulator', icon: '🎛️', component: CecoelSimulator , tema: 'T10-red' },
-  { id: 'forensic-arbitrator', icon: '⚖️', component: ForensicArbitrator , tema: 'T10-sis' },
-  { id: 'carbon-calculator', icon: '🌱', component: CarbonCalculator , tema: 'T10-mer' },
 ];
 
 export default function InteractiveGraphicsGallery({ propLang }) {

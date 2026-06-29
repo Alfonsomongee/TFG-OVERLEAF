@@ -35,12 +35,9 @@ function lazyWithPreload(importFn) {
 
 // ── Lazy imports de simuladores (Anexo C) ──────────────────────
 const FrequencyChart      = lazyWithPreload(() => import('./FrequencyChart'));
-const SwingEquationSimulator = lazyWithPreload(() => import('./SwingEquationSimulator'));
 const TapLagSequence      = lazyWithPreload(() => import('./TapLagSequence'));
 const BlackoutPropagationMap = lazyWithPreload(() => import('./BlackoutPropagationMap'));
 const CollapseSismograph  = lazyWithPreload(() => import('./CollapseSismograph'));
-const PVCurveSimulator    = lazyWithPreload(() => import('./PVCurveSimulator'));
-const ANSI59Cascade       = lazyWithPreload(() => import('./ANSI59Cascade'));
 const InterconnectionDashboard = lazyWithPreload(() => import('./InterconnectionDashboard'));
 const IberianGridTopology = lazyWithPreload(() => import('./IberianGridTopology'));
 const MixGeneracion       = lazyWithPreload(() => import('./MixGeneracion'));
@@ -58,25 +55,9 @@ const SynchrophasorPlot        = lazyWithPreload(() => import('./SynchrophasorPl
 const GridUnavailabilityGauge  = lazyWithPreload(() => import('./GridUnavailabilityGauge'));
 const SectorialResilienceChart = lazyWithPreload(() => import('./SectorialResilienceChart'));
 const EmissionsVsRenewablesChart = lazyWithPreload(() => import('./EmissionsVsRenewablesChart'));
-// ── Lazy imports ENTSO-E Charts ───────────────────────────────
-const EntsoeActualGeneration   = lazyWithPreload(() => import('./EntsoeCharts/ActualGenerationChart'));
-const EntsoeCostCongestion     = lazyWithPreload(() => import('./EntsoeCharts/CostCongestionChart'));
-const EntsoeCrossBorderFlows   = lazyWithPreload(() => import('./EntsoeCharts/CrossBorderFlowsChart'));
-const EntsoeCurrentBalancing   = lazyWithPreload(() => import('./EntsoeCharts/CurrentBalancingStateChart'));
-const EntsoeEnergyPrices       = lazyWithPreload(() => import('./EntsoeCharts/EnergyPricesChart'));
-const EntsoeFallbacks          = lazyWithPreload(() => import('./EntsoeCharts/FallbacksChart'));
-const EntsoeForecastTransfer   = lazyWithPreload(() => import('./EntsoeCharts/ForecastTransferChart'));
-const EntsoeFrrCapacity        = lazyWithPreload(() => import('./EntsoeCharts/FrrCapacityChart'));
-const EntsoeHydroReservoir     = lazyWithPreload(() => import('./EntsoeCharts/HydroReservoirChart'));
-const EntsoeImbalance          = lazyWithPreload(() => import('./EntsoeCharts/ImbalanceChart'));
-const EntsoeImbalancePrices    = lazyWithPreload(() => import('./EntsoeCharts/ImbalancePricesChart'));
-const EntsoeInstalledCapacity  = lazyWithPreload(() => import('./EntsoeCharts/InstalledCapacityChart'));
-const EntsoeScheduledExchanges = lazyWithPreload(() => import('./EntsoeCharts/ScheduledCommercialExchangesChart'));
-const EntsoeTotalLoad          = lazyWithPreload(() => import('./EntsoeCharts/TotalLoadChart'));
 
 // ── Mapa anchor → componente interactivo ──────────────────────
 const INTERACTIVE_MAP = {
-  'swing':           SwingEquationSimulator,
   'tap-lag':         TapLagSequence,
   'tap-lag-sequence': TapLagSequence,
   'frequency':       FrequencyChart,
@@ -84,11 +65,8 @@ const INTERACTIVE_MAP = {
   'blackout-map':    BlackoutPropagationMap,
   'blackout3d':      BlackoutPropagationMap,
   'map':             BlackoutPropagationMap,
-  'pvcurve':         PVCurveSimulator,
-  'pv-curve':        PVCurveSimulator,
   'ufls':            CollapseSismograph,
   'sismograph':      CollapseSismograph,
-  'ansi59':          ANSI59Cascade,
   'interconnection': InterconnectionDashboard,
   'topology':        IberianGridTopology,
   'iberian-grid':    IberianGridTopology,
@@ -112,32 +90,8 @@ const INTERACTIVE_MAP = {
   'emissions-renewables': EmissionsVsRenewablesChart,
 };
 
-// ── Mapa chart-id → componente ENTSO-E (Fix ENTSO-E inline) ──
-const ENTSOE_CHART_MAP = {
-  'chart-1':  EntsoeTotalLoad,          // Demanda Peninsular (Total Load)
-  'chart-2':  EntsoeTotalLoad,          // Total Load — ES + PT
-  'chart-3':  EntsoeActualGeneration,   // Programa de Producción
-  'chart-4':  EntsoeActualGeneration,   // Potencia Disponible por Tecnología
-  'chart-5':  EntsoeInstalledCapacity,  // Installed Capacity per Type
-  'chart-6':  EntsoeActualGeneration,   // Actual Generation per Unit
-  'chart-7':  EntsoeHydroReservoir,     // Water Reservoirs & Hydro
-  'chart-8':  EntsoeActualGeneration,   // Otros Indicadores — CO₂ + Renovables
-  'chart-9':  EntsoeEnergyPrices,       // Mercados y Precios — SPOT vs PVPC
-  'chart-10': EntsoeEnergyPrices,       // Precio Final Desglosado
-  'chart-11': EntsoeEnergyPrices,       // Energy Prices — Europa
-  'chart-12': EntsoeImbalancePrices,    // Precios de Desvíos Tiempo Real
-  'chart-13': EntsoeCrossBorderFlows,   // Saldos por Frontera (P48)
-  'chart-14': EntsoeCrossBorderFlows,   // Cross-Border Physical Flows
-  'chart-15': EntsoeScheduledExchanges, // Scheduled Commercial Exchanges
-  'chart-16': EntsoeScheduledExchanges,
-  'chart-17': EntsoeForecastTransfer,   // Forecast Transfer Capacities
-  'chart-18': EntsoeCurrentBalancing,   // Current Balancing State
-  'chart-19': EntsoeImbalance,          // Imbalance — Volumen MW
-  'chart-20': EntsoeImbalancePrices,    // Imbalance Prices
-  'chart-21': EntsoeFrrCapacity,        // FRR Capacity — Reservas
-  'chart-22': EntsoeCostCongestion,     // Cost of Congestion Management
-  'chart-23': EntsoeFallbacks,          // Fall-backs y Protocolos Emergencia
-};
+// ── Mapa chart-id → componente ENTSO-E (eliminado: EntsoeCharts borrado) ──
+const ENTSOE_CHART_MAP = {};
 
 // ── Mapa keywords → figuras estáticas (Anexo A) ───────────────
 // Índice plano de todas las figuras con sus keywords
@@ -1897,9 +1851,9 @@ export default function ChatFullscreen({
 
 export function preloadAllSimulators() {
   [
-    FrequencyChart, SwingEquationSimulator, TapLagSequence,
-    BlackoutPropagationMap, CollapseSismograph, PVCurveSimulator,
-    ANSI59Cascade, InterconnectionDashboard, IberianGridTopology,
+    FrequencyChart, TapLagSequence,
+    BlackoutPropagationMap, CollapseSismograph,
+    InterconnectionDashboard, IberianGridTopology,
     MixGeneracion, FinancialWaterfallChart, EnergyTransitionStreamgraph,
     AnimatedRestorationMap, VerticalTimeline, ThermalAdjustmentCostMatrix,
   ].forEach(C => { if (C?.preload) C.preload().catch(() => {}); });
