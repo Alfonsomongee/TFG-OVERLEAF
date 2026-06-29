@@ -1,237 +1,272 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import GlitchTitle from './GlitchTitle';
 import styles from './AuthorProfile.module.css';
 
-const STRINGS = {
+const CONTENT = {
   es: {
-    subtitle: 'Graduando en Ingeniería de la Energía | Especialista en Estabilidad del Sistema Eléctrico e Integración Renovable',
-    status: 'Disponible para oportunidades',
-    trayectoria: 'Trayectoria',
-    p1: 'A punto de finalizar mis estudios de grado, me preparo para dar el salto al mercado laboral como ingeniero junior. Mi enfoque profesional se centra en los retos técnicos y operativos que plantea la descarbonización masiva de la red.',
-    p2: 'A lo largo de mi formación he aplicado conceptos teóricos en entornos reales, desde el cálculo de instalaciones fotovoltaicas hasta el análisis de ubicación de aerogeneradores. Recientemente, una estancia Erasmus de nueve meses en Polonia me ha aportado una alta capacidad de adaptación y una perspectiva pan-europea fundamental para comprender los mercados interconectados.',
-    p3: 'Me apasiona la investigación técnica profunda: la evolución estructural del mix energético, la pérdida crítica de inercia síncrona y el estudio exhaustivo de incidencias a gran escala en sistemas de potencia.',
-    competencias: 'Competencias Técnicas',
-    skills: [
-      { icon: '🔥', label: 'Termodinámica' },
-      { icon: '⚡', label: 'Estabilidad de Red Ibérica' },
-      { icon: '♨️', label: 'Generadores de Vapor' },
-      { icon: '⚖️', label: 'Balances Energéticos' },
-      { icon: '⚛️', label: 'React / MDX' },
-      { icon: '📄', label: 'Redacción Avanzada LaTeX' },
+    name: 'Alfonso Monge Díaz-Ángel',
+    role: 'Graduando en Ingeniería de la Energía',
+    line: 'Análisis de sistemas eléctricos, integración renovable y estabilidad de red.',
+    meta: ['Universidad de Sevilla', 'Ingeniería de la Energía', 'TFG 28-A'],
+    profileTitle: 'Perfil breve',
+    profile: [
+      'Alfonso Monge Díaz-Ángel es graduando en Ingeniería de la Energía, con interés en la estabilidad de sistemas eléctricos, la integración masiva de renovables y el análisis técnico de redes dominadas por electrónica de potencia.',
+      'Este Trabajo de Fin de Grado nace de una preocupación central: cómo mantener la seguridad operativa del sistema eléctrico en una transición energética acelerada, donde la sustitución de generación síncrona por recursos basados en inversores modifica las reglas físicas de estabilidad, control de tensión e inercia.',
+      'El enfoque del proyecto combina revisión documental, contraste de informes técnicos, modelado conceptual y comunicación visual. El objetivo no es reducir el apagón del 28-A a una causa simple, sino reconstruir sus mecanismos físicos, regulatorios y operativos con una lectura crítica y trazable.',
     ],
-    enfoque: 'Enfoque del Proyecto',
-    quote: 'He dedicado esta investigación al apagón ibérico y al análisis histórico del sistema porque considero vital aprender de nuestras vulnerabilidades. Entender por qué un sistema colapsa es el primer paso indispensable para construir la red del mañana.',
-    email: 'Email Profesional',
-    cv: 'Descargar CV',
+    whyTitle: 'Por qué este TFG',
+    why: 'El apagón ibérico del 28-A concentra varios retos centrales de la transición energética: estabilidad de tensión, potencia reactiva, integración renovable, electrónica de potencia, coordinación de protecciones y resiliencia operativa. Por eso funciona como caso de estudio para observar cómo un sistema eléctrico moderno puede perder margen físico, regulatorio y operativo de forma simultánea.',
+    methodTitle: 'Método de trabajo',
+    method: 'La investigación se apoya en revisión documental, contraste de informes, análisis técnico de mecanismos eléctricos, anexos conceptuales, figuras explicativas y validación física de las hipótesis. La prioridad ha sido mantener una cadena de razonamiento trazable entre datos, modelos, límites de interpretación y conclusiones.',
+    interestsTitle: 'Líneas de interés técnico',
+    interests: [
+      'Estabilidad de sistemas eléctricos',
+      'Control de tensión y potencia reactiva',
+      'Integración fotovoltaica y eólica',
+      'Recursos basados en inversores',
+      'Análisis documental técnico',
+      'Visualización de datos y MDX',
+      'Modelado energético',
+      'Comunicación técnica',
+    ],
+    pathTitle: 'Trayectoria compacta',
+    path: [
+      ['Universidad de Sevilla', 'Formación de grado en Ingeniería de la Energía.'],
+      ['AGH University of Krakow', 'Estancia Erasmus y perspectiva europea sobre sistemas energéticos.'],
+      ['Proyectos técnicos de energía', 'Aplicación de criterios de cálculo, modelado y análisis energético.'],
+      ['TFG sobre el apagón ibérico 28-A', 'Reconstrucción técnica, documental y visual de un incidente sistémico.'],
+    ],
+    kickerLabel: 'Sobre el autor',
+    areaLabel: 'Área',
+    contactAriaLabel: 'Contacto profesional',
+    contactTitle: 'Cierre profesional',
+    contactText: 'Contacto académico y profesional para conversación técnica, continuidad investigadora o revisión del proyecto.',
+    links: {
+      email: 'Email',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'CV',
+    },
   },
   en: {
-    subtitle: 'Energy Engineering Graduate | Specialist in Electrical System Stability and Renewable Integration',
-    status: 'Open to opportunities',
-    trayectoria: 'Background',
-    p1: 'About to complete my undergraduate degree, I am preparing to enter the job market as a junior engineer. My professional focus centres on the technical and operational challenges posed by the massive decarbonisation of the grid.',
-    p2: 'Throughout my studies I have applied theoretical concepts in real environments, from photovoltaic system design to wind turbine siting analysis. A nine-month Erasmus stay in Poland has given me strong adaptability and a pan-European perspective essential for understanding interconnected energy markets.',
-    p3: 'I am passionate about deep technical research: the structural evolution of the energy mix, the critical loss of synchronous inertia, and the exhaustive study of large-scale incidents in power systems.',
-    competencias: 'Technical Skills',
-    skills: [
-      { icon: '🔥', label: 'Thermodynamics' },
-      { icon: '⚡', label: 'Iberian Grid Stability' },
-      { icon: '♨️', label: 'Steam Generators' },
-      { icon: '⚖️', label: 'Energy Balances' },
-      { icon: '⚛️', label: 'React / MDX' },
-      { icon: '📄', label: 'Advanced LaTeX Writing' },
+    name: 'Alfonso Monge Díaz-Ángel',
+    role: 'Energy Engineering undergraduate',
+    line: 'Power-system analysis, renewable integration, and grid stability.',
+    meta: ['University of Seville', 'Energy Engineering', '28-A thesis'],
+    profileTitle: 'Brief Profile',
+    profile: [
+      'Alfonso Monge Díaz-Ángel is an Energy Engineering undergraduate interested in power-system stability, large-scale renewable integration, and the technical analysis of grids increasingly shaped by power electronics.',
+      'This thesis starts from a central concern: how to preserve operational security during an accelerated energy transition, where inverter-based resources replace synchronous generation and alter the physical rules of stability, voltage control, and inertia.',
+      'The project combines documentary review, comparison of technical reports, conceptual modelling, and visual communication. Its aim is not to reduce the 28-A blackout to a single cause, but to reconstruct its physical, regulatory, and operational mechanisms through a critical and traceable reading.',
     ],
-    enfoque: 'Project Focus',
-    quote: "I dedicated this research to the Iberian blackout and the historical analysis of the system because I believe it is vital to learn from our vulnerabilities. Understanding why a system collapses is the indispensable first step towards building tomorrow's grid.",
-    email: 'Professional Email',
-    cv: 'Download CV',
+    whyTitle: 'Why This Thesis',
+    why: 'The 28-A Iberian blackout brings together core challenges of the energy transition: voltage stability, reactive power, renewable integration, power electronics, protection coordination, and operational resilience. It therefore acts as a case study for observing how a modern power system can lose physical, regulatory, and operational margins at the same time.',
+    methodTitle: 'Working Method',
+    method: 'The research is based on documentary review, comparison of reports, technical analysis of electrical mechanisms, conceptual annexes, explanatory figures, and physical validation of hypotheses. The priority has been to preserve a traceable reasoning chain between data, models, interpretation limits, and conclusions.',
+    interestsTitle: 'Technical Interests',
+    interests: [
+      'Power-system stability',
+      'Voltage control and reactive power',
+      'Photovoltaic and wind integration',
+      'Inverter-based resources',
+      'Technical document analysis',
+      'Data visualization and MDX',
+      'Energy modelling',
+      'Technical communication',
+    ],
+    pathTitle: 'Compact Path',
+    path: [
+      ['University of Seville', 'Undergraduate training in Energy Engineering.'],
+      ['AGH University of Krakow', 'Erasmus stay and European perspective on energy systems.'],
+      ['Technical energy projects', 'Application of calculation, modelling, and energy-analysis criteria.'],
+      ['Thesis on the 28-A Iberian blackout', 'Technical, documentary, and visual reconstruction of a systemic incident.'],
+    ],
+    kickerLabel: 'About the author',
+    areaLabel: 'Area',
+    contactAriaLabel: 'Professional contact',
+    contactTitle: 'Professional Closing',
+    contactText: 'Academic and professional contact for technical conversation, research continuity, or project review.',
+    links: {
+      email: 'Email',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'CV',
+    },
   },
   de: {
-    subtitle: 'Energieingenieur-Absolvent | Spezialist für elektrische Systemstabilität und erneuerbare Integration',
-    status: 'Offen für Möglichkeiten',
-    trayectoria: 'Werdegang',
-    p1: 'Kurz vor dem Abschluss meines Bachelorstudiums bereite ich mich darauf vor, als Junioringenieur in den Arbeitsmarkt einzutreten. Mein beruflicher Schwerpunkt liegt auf den technischen und betrieblichen Herausforderungen der massiven Dekarbonisierung des Netzes.',
-    p2: 'Im Laufe meines Studiums habe ich theoretische Konzepte in realen Umgebungen angewendet, von der Berechnung von Photovoltaikanlagen bis zur Analyse von Windkraftanlagenstandorten. Ein neunmonatiger Erasmus-Aufenthalt in Polen hat mir eine hohe Anpassungsfähigkeit und eine pan-europäische Perspektive vermittelt.',
-    p3: 'Ich bin begeistert von tiefgreifender technischer Forschung: die strukturelle Entwicklung des Energiemix, der kritische Verlust synchroner Trägheit und die umfassende Untersuchung von Großstörungen in Energiesystemen.',
-    competencias: 'Technische Kompetenzen',
-    skills: [
-      { icon: '🔥', label: 'Thermodynamik' },
-      { icon: '⚡', label: 'Iberische Netzstabilität' },
-      { icon: '♨️', label: 'Dampferzeuger' },
-      { icon: '⚖️', label: 'Energiebilanzen' },
-      { icon: '⚛️', label: 'React / MDX' },
-      { icon: '📄', label: 'Fortgeschrittenes LaTeX' },
+    name: 'Alfonso Monge Díaz-Ángel',
+    role: 'Student der Energietechnik',
+    line: 'Analyse elektrischer Systeme, Integration erneuerbarer Energien und Netzstabilität.',
+    meta: ['Universität Sevilla', 'Energietechnik', '28-A Abschlussarbeit'],
+    profileTitle: 'Kurzprofil',
+    profile: [
+      'Alfonso Monge Díaz-Ángel ist Student der Energietechnik mit Interesse an der Stabilität elektrischer Systeme, der Integration großer Mengen erneuerbarer Energien und der technischen Analyse von Netzen mit wachsendem Anteil leistungselektronischer Ressourcen.',
+      'Diese Abschlussarbeit geht von einer zentralen Frage aus: Wie lässt sich die Betriebssicherheit des Stromsystems in einer beschleunigten Energiewende erhalten, wenn inverterbasierte Ressourcen synchrone Erzeugung ersetzen und die physikalischen Regeln von Stabilität, Spannungsregelung und Trägheit verändern?',
+      'Der Ansatz verbindet Dokumentenrecherche, Vergleich technischer Berichte, konzeptionelle Modellierung und visuelle Kommunikation. Ziel ist nicht, den Blackout vom 28-A auf eine einzelne Ursache zu reduzieren, sondern seine physikalischen, regulatorischen und betrieblichen Mechanismen kritisch und nachvollziehbar zu rekonstruieren.',
     ],
-    enfoque: 'Projektfokus',
-    quote: 'Ich habe diese Forschung dem iberischen Stromausfall gewidmet, weil ich es für entscheidend halte, aus unseren Schwachstellen zu lernen. Zu verstehen, warum ein System kollabiert, ist der unverzichtbare erste Schritt zum Aufbau des Netzes von morgen.',
-    email: 'Professionelle E-Mail',
-    cv: 'Lebenslauf herunterladen',
+    whyTitle: 'Warum diese Arbeit',
+    why: 'Der iberische Blackout vom 28-A bündelt zentrale Herausforderungen der Energiewende: Spannungsstabilität, Blindleistung, Integration erneuerbarer Energien, Leistungselektronik, Schutzkoordination und operative Resilienz. Er eignet sich deshalb als Fallstudie dafür, wie ein modernes Stromsystem gleichzeitig physikalische, regulatorische und betriebliche Reserven verlieren kann.',
+    methodTitle: 'Arbeitsmethode',
+    method: 'Die Untersuchung stützt sich auf Dokumentenrecherche, Berichtvergleich, technische Analyse elektrischer Mechanismen, konzeptionelle Anhänge, erklärende Abbildungen und physikalische Plausibilisierung der Hypothesen. Im Vordergrund steht eine nachvollziehbare Argumentationskette zwischen Daten, Modellen, Interpretationsgrenzen und Schlussfolgerungen.',
+    interestsTitle: 'Technische Interessen',
+    interests: [
+      'Stabilität elektrischer Systeme',
+      'Spannungsregelung und Blindleistung',
+      'Integration von Photovoltaik und Windenergie',
+      'Inverterbasierte Ressourcen',
+      'Technische Dokumentenanalyse',
+      'Datenvisualisierung und MDX',
+      'Energiemodellierung',
+      'Technische Kommunikation',
+    ],
+    pathTitle: 'Kompakter Werdegang',
+    path: [
+      ['Universität Sevilla', 'Bachelorstudium der Energietechnik.'],
+      ['AGH University of Krakow', 'Erasmus-Aufenthalt und europäische Perspektive auf Energiesysteme.'],
+      ['Technische Energieprojekte', 'Anwendung von Berechnung, Modellierung und Energieanalyse.'],
+      ['Abschlussarbeit zum iberischen Blackout 28-A', 'Technische, dokumentarische und visuelle Rekonstruktion eines systemischen Ereignisses.'],
+    ],
+    kickerLabel: 'Über den Autor',
+    areaLabel: 'Bereich',
+    contactAriaLabel: 'Professioneller Kontakt',
+    contactTitle: 'Professioneller Abschluss',
+    contactText: 'Akademischer und beruflicher Kontakt für technische Gespräche, Forschungskontinuität oder Projektprüfung.',
+    links: {
+      email: 'E-Mail',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'CV',
+    },
   },
   'zh-Hans': {
-    subtitle: '能源工程本科毕业生 | 电力系统稳定性与可再生能源整合专家',
-    status: '开放机会',
-    trayectoria: '学术与职业背景',
-    p1: '即将完成本科学业，我正准备以初级工程师身份进入职场。我的职业重点在于大规模电网脱碳所带来的技术与运营挑战。',
-    p2: '在学习过程中，我将理论知识应用于实际环境，从光伏系统设计到风机选址分析。在波兰进行的九个月伊拉斯谟交流项目使我具备了较强的适应能力，以及理解互联能源市场所必需的泛欧洲视角。',
-    p3: '我对深度技术研究充满热情：能源结构的演变、同步惯量的关键损失，以及对电力系统大规模事故的详尽研究。',
-    competencias: '技术能力',
-    skills: [
-      { icon: '🔥', label: '热力学' },
-      { icon: '⚡', label: '伊比利亚电网稳定性' },
-      { icon: '♨️', label: '蒸汽发生器' },
-      { icon: '⚖️', label: '能量平衡' },
-      { icon: '⚛️', label: 'React / MDX' },
-      { icon: '📄', label: '高级LaTeX写作' },
+    name: 'Alfonso Monge Díaz-Ángel',
+    role: '能源工程本科毕业生',
+    line: '电力系统分析、可再生能源并网与电网稳定性。',
+    meta: ['塞维利亚大学', '能源工程', '28-A 毕业论文'],
+    profileTitle: '简要介绍',
+    profile: [
+      'Alfonso Monge Díaz-Ángel 是能源工程本科毕业生，关注电力系统稳定性、大规模可再生能源并网，以及由电力电子设备主导的电网技术分析。',
+      '本毕业论文源于一个核心问题：在快速能源转型中，如何维持电力系统的运行安全。随着基于逆变器的资源替代同步发电，稳定性、电压控制和惯量的物理规则也随之改变。',
+      '项目结合文献审查、技术报告对比、概念建模和可视化表达。目标不是把 28-A 停电简化为单一原因，而是以可追溯的方式重建其物理、监管和运行机制。',
     ],
-    enfoque: '项目重点',
-    quote: '我将这项研究献给伊比利亚停电事件，因为我认为从我们的脆弱性中学习至关重要。理解系统为何崩溃是构建未来电网不可或缺的第一步。',
-    email: '专业邮件',
-    cv: '下载简历',
+    whyTitle: '为什么研究这个题目',
+    why: '28-A 伊比利亚停电集中体现了能源转型中的若干关键挑战：电压稳定性、无功功率、可再生能源并网、电力电子、保护协调和运行韧性。因此，它可以作为观察现代电力系统如何同时失去物理、监管和运行裕度的案例。',
+    methodTitle: '工作方法',
+    method: '研究基于文献审查、报告对比、电气机制技术分析、概念附录、解释性图示以及对假设的物理验证。重点是在数据、模型、解释边界和结论之间保持可追溯的推理链。',
+    interestsTitle: '技术兴趣方向',
+    interests: [
+      '电力系统稳定性',
+      '电压控制与无功功率',
+      '光伏与风电并网',
+      '基于逆变器的资源',
+      '技术文献分析',
+      '数据可视化与 MDX',
+      '能源建模',
+      '技术传播',
+    ],
+    pathTitle: '简要经历',
+    path: [
+      ['塞维利亚大学', '能源工程本科学习。'],
+      ['AGH University of Krakow', 'Erasmus 交流经历与欧洲能源系统视角。'],
+      ['能源技术项目', '应用计算、建模和能源分析方法。'],
+      ['28-A 伊比利亚停电毕业论文', '对系统性事件进行技术、文献和视觉重建。'],
+    ],
+    kickerLabel: '关于作者',
+    areaLabel: '领域',
+    contactAriaLabel: '职业联系方式',
+    contactTitle: '职业联系',
+    contactText: '用于技术交流、研究延续或项目审阅的学术与职业联系方式。',
+    links: {
+      email: 'Email',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'CV',
+    },
   },
 };
 
-const skillVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-
-const skillItem = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.28, ease: 'easeOut' } },
-};
-
-const bentoVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
-};
-
-const bentoItem = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
-};
-
-export default function AuthorProfile() {
+export default function AuthorProfile({ lang }) {
   const { i18n: { currentLocale } } = useDocusaurusContext();
-  const s = STRINGS[currentLocale] || STRINGS.es;
+  const locale = lang || currentLocale || 'es';
+  const s = CONTENT[locale] || CONTENT.es;
 
   return (
-    <div className={styles.container}>
-
-      {/* ── Header ── */}
-      <motion.div
-        className={styles.header}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
-      >
-        {/* Animated avatar ring */}
-        <div className={styles.avatarRing}>
-          <div className={styles.avatarInner}>AM</div>
-        </div>
-
-        <div className={styles.headerText}>
-          <GlitchTitle as="h1" style={{ fontSize: '2.4rem', marginBottom: '0.25rem' }}>
-            Alfonso Monge Díaz-Ángel
-          </GlitchTitle>
-          <div className={styles.subtitle}>{s.subtitle}</div>
-          <span className={styles.statusBadge}>
-            <span className={styles.statusDot} />
-            {s.status}
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ── Bento grid ── */}
-      <motion.div
-        className={styles.bento}
-        variants={bentoVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Bio — full width */}
-        <motion.div
-          variants={bentoItem}
-          className={`${styles.bentoCell} ${styles.bentoBio}`}
-        >
-          <span className={styles.sectionTitle}>{s.trayectoria}</span>
-          <div className={styles.bioText}>
-            <p>{s.p1}</p>
-            <p>{s.p2}</p>
-            <p>{s.p3}</p>
-          </div>
-        </motion.div>
-
-        {/* Skills */}
-        <motion.div
-          variants={bentoItem}
-          className={`${styles.bentoCell} ${styles.bentoSkills}`}
-        >
-          <span className={styles.sectionTitle}>{s.competencias}</span>
-          <motion.div
-            className={styles.skillsGrid}
-            variants={skillVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {s.skills.map((skill) => (
-              <motion.span key={skill.label} variants={skillItem} className={styles.skillTag}>
-                {skill.icon} {skill.label}
-              </motion.span>
+    <article className={styles.profile} aria-labelledby="author-profile-title">
+      <header className={styles.hero}>
+        <div className={styles.monogram} aria-hidden="true">AM</div>
+        <div className={styles.heroText}>
+          <p className={styles.kicker}>{s.kickerLabel}</p>
+          <h1 id="author-profile-title" className={styles.name}>{s.name}</h1>
+          <p className={styles.role}>{s.role}</p>
+          <p className={styles.line}>{s.line}</p>
+          <dl className={styles.meta}>
+            {s.meta.map((item) => (
+              <div key={item} className={styles.metaItem}>
+                <dt className={styles.metaLabel}>{s.areaLabel}</dt>
+                <dd>{item}</dd>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </dl>
+        </div>
+      </header>
 
-        {/* Quote */}
-        <motion.div
-          variants={bentoItem}
-          className={`${styles.bentoCell} ${styles.bentoQuote}`}
-        >
-          <span className={styles.sectionTitle}>{s.enfoque}</span>
-          <blockquote className={styles.quoteBlock}>
-            {s.quote}
-          </blockquote>
-        </motion.div>
-      </motion.div>
+      <section className={styles.section} aria-labelledby="profile-brief-title">
+        <h2 id="profile-brief-title" className={styles.sectionTitle}>{s.profileTitle}</h2>
+        <div className={styles.prose}>
+          {s.profile.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </section>
 
-      {/* ── CTA buttons ── */}
-      <motion.div
-        className={styles.cta}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.4 }}
-      >
-        <a
-          href="mailto:alfonsomongediazangel@gmail.com"
-          className={styles.btnPrimary}
-        >
-          {s.email}
-        </a>
-        <a
-          href="https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/"
-          target="_blank"
-          rel="noreferrer"
-          className={`${styles.btnSecondary} ${styles.btnLinkedin}`}
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://github.com/alfonsomongee"
-          target="_blank"
-          rel="noreferrer"
-          className={`${styles.btnSecondary} ${styles.btnGithub}`}
-        >
-          GitHub
-        </a>
-        <a
-          href="/cv.pdf"
-          target="_blank"
-          rel="noreferrer"
-          className={`${styles.btnSecondary} ${styles.btnCv}`}
-        >
-          {s.cv}
-        </a>
-      </motion.div>
-    </div>
+      <div className={styles.twoColumn}>
+        <section className={styles.panel} aria-labelledby="why-thesis-title">
+          <h2 id="why-thesis-title" className={styles.sectionTitle}>{s.whyTitle}</h2>
+          <p>{s.why}</p>
+        </section>
+
+        <section className={styles.panel} aria-labelledby="method-title">
+          <h2 id="method-title" className={styles.sectionTitle}>{s.methodTitle}</h2>
+          <p>{s.method}</p>
+        </section>
+      </div>
+
+      <section className={styles.section} aria-labelledby="interests-title">
+        <h2 id="interests-title" className={styles.sectionTitle}>{s.interestsTitle}</h2>
+        <ul className={styles.interestPills}>
+          {s.interests.map((interest) => (
+            <li key={interest}>{interest}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section className={styles.section} aria-labelledby="path-title">
+        <h2 id="path-title" className={styles.sectionTitle}>{s.pathTitle}</h2>
+        <ol className={styles.timeline}>
+          {s.path.map(([title, text], idx) => (
+            <li key={title}>
+              <span className={styles.timelineIndex} aria-hidden="true">
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+              <span className={styles.timelineTitle}>{title}</span>
+              <span className={styles.timelineText}>{text}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <footer className={styles.contact} aria-labelledby="contact-title">
+        <div>
+          <h2 id="contact-title" className={styles.sectionTitle}>{s.contactTitle}</h2>
+          <p>{s.contactText}</p>
+        </div>
+        <nav className={styles.actions} aria-label={s.contactAriaLabel}>
+          <a href="mailto:alfonsomongediazangel@gmail.com">{s.links.email}</a>
+          <a href="https://www.linkedin.com/in/alfonso-monge-diaz-angel-971941277/" target="_blank" rel="noreferrer">{s.links.linkedin}</a>
+          <a href="https://github.com/alfonsomongee" target="_blank" rel="noreferrer">{s.links.github}</a>
+          <a href="/cv.pdf" target="_blank" rel="noreferrer">{s.links.cv}</a>
+        </nav>
+      </footer>
+    </article>
   );
 }

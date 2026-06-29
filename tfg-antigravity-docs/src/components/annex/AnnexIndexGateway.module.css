@@ -20,6 +20,7 @@ html[data-theme='dark'] .gateway {
   --aig-accent: var(--annex-accent, #83bdc2);
 }
 
+/* ── Lead ── */
 .lead {
   display: grid;
   gap: 0.45rem;
@@ -50,12 +51,130 @@ html[data-theme='dark'] .gateway {
   line-height: 1.68;
 }
 
+/* ── Barra de búsqueda ── */
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 480px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 1rem;
+  color: var(--aig-muted);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.52rem 2.2rem 0.52rem 2.1rem;
+  color: var(--aig-text);
+  background: var(--aig-surface);
+  border: 1px solid var(--aig-border);
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  transition: border-color 150ms ease;
+  appearance: none;
+}
+
+.searchInput::placeholder {
+  color: var(--aig-muted);
+  opacity: 0.8;
+}
+
+.searchInput:focus {
+  outline: 2px solid var(--aig-accent);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--aig-accent) 40%, var(--aig-border));
+}
+
+.searchClear {
+  position: absolute;
+  right: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  color: var(--aig-muted);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.searchClear:hover {
+  color: var(--aig-text);
+}
+
+/* ── Filtros ── */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: -0.5rem;
+}
+
+.filterBtn {
+  padding: 0.3rem 0.78rem;
+  color: var(--aig-muted);
+  background: transparent;
+  border: 1px solid var(--aig-border);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 560;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.filterBtn:hover {
+  color: var(--aig-text);
+  border-color: color-mix(in srgb, var(--aig-accent) 30%, var(--aig-border));
+}
+
+.filterBtn:focus-visible {
+  outline: 2px solid var(--aig-accent);
+  outline-offset: 2px;
+}
+
+.filterBtnActive {
+  color: var(--aig-accent);
+  background: color-mix(in srgb, var(--aig-accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--aig-accent) 36%, var(--aig-border));
+  font-weight: 700;
+}
+
+/* ── Sin resultados ── */
+.noResults {
+  margin: 0;
+  padding: 1.5rem 0;
+  color: var(--aig-muted);
+  font-size: 0.94rem;
+  text-align: center;
+}
+
+/* ── Grid ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(0.65rem, 1.2vw, 0.95rem);
 }
 
+/* ── Card ── */
 .card {
   position: relative;
   display: grid;
@@ -65,28 +184,14 @@ html[data-theme='dark'] .gateway {
   padding: clamp(1rem, 1.7vw, 1.22rem);
   color: var(--aig-text);
   text-decoration: none;
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--aig-surface) 96%, transparent),
-      color-mix(in srgb, var(--aig-accent) 2%, transparent)
-    );
+  background: var(--aig-surface);
   border: 1px solid var(--aig-border);
-  border-radius: 8px;
+  border-left: 2px solid color-mix(in srgb, var(--aig-accent) 48%, transparent);
+  border-radius: 0 8px 8px 0;
   transition:
     background-color 160ms ease,
     border-color 160ms ease,
     transform 160ms ease;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 2px;
-  background: color-mix(in srgb, var(--aig-accent) 48%, transparent);
-  opacity: 0.58;
-  border-radius: 8px 0 0 8px;
 }
 
 .card:hover,
@@ -95,6 +200,7 @@ html[data-theme='dark'] .gateway {
   text-decoration: none;
   background: var(--aig-surface-hover);
   border-color: color-mix(in srgb, var(--aig-accent) 28%, var(--aig-border));
+  border-left-color: var(--aig-accent);
   transform: translateY(-2px);
 }
 
@@ -103,6 +209,7 @@ html[data-theme='dark'] .gateway {
   outline-offset: 3px;
 }
 
+/* ── Contenidos de la card ── */
 .number {
   color: color-mix(in srgb, var(--aig-accent) 86%, var(--aig-text));
   font-size: 0.75rem;
@@ -129,6 +236,7 @@ html[data-theme='dark'] .gateway {
   line-height: 1.5;
 }
 
+/* ── Tags como pills ── */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -137,22 +245,26 @@ html[data-theme='dark'] .gateway {
 }
 
 .tag {
+  padding: 0.18rem 0.48rem;
   color: color-mix(in srgb, var(--aig-accent) 78%, var(--aig-text));
-  font-size: 0.58rem;
-  font-weight: 760;
-  letter-spacing: 0.07em;
-  line-height: 1.1;
+  border: 0.5px solid color-mix(in srgb, var(--aig-accent) 22%, var(--aig-border));
+  border-radius: 20px;
+  font-size: 0.62rem;
+  font-weight: 680;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
+/* ── Arrow siempre visible ── */
 .arrow {
   position: absolute;
   right: 1rem;
   top: 0.92rem;
   color: var(--aig-accent);
   font-size: 1rem;
-  opacity: 0;
-  transform: translateX(-5px);
+  opacity: 0.35;
+  transform: translateX(0);
   transition:
     opacity 160ms ease,
     transform 160ms ease;
@@ -160,10 +272,11 @@ html[data-theme='dark'] .gateway {
 
 .card:hover .arrow,
 .card:focus-visible .arrow {
-  opacity: 0.9;
-  transform: translateX(0);
+  opacity: 1;
+  transform: translateX(3px);
 }
 
+/* ── Responsive ── */
 @media (max-width: 1080px) {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -177,5 +290,23 @@ html[data-theme='dark'] .gateway {
 
   .card {
     min-height: 0;
+  }
+
+  .filters {
+    gap: 0.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .arrow,
+  .filterBtn,
+  .searchInput {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: none;
   }
 }
