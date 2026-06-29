@@ -17,9 +17,16 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 A pesar de que la demanda máxima de electricidad en España lleva más de una década en estancamiento estructural, el parque de generación ha experimentado una transformación profunda. Si en 2010 las fuentes térmicas y nucleares representaban el 65 % de la producción, en 2024 las renovables habían invertido esa proporción, alcanzando el 59 % del mix total. En el primer cuatrimestre de 2025, el sistema peninsular consolidó este escenario con más de 100 GW de capacidad renovable instalada: a enero de 2025, casi el 66 % de la capacidad procedía de fuentes descarbonizadas, con energía eólica y solar fotovoltaica en paridad técnica (24,9 % cada una).
 
 <figure id="fig-b1">
-  <div style={{ marginBottom: '2rem', marginTop: '2rem', padding: '1rem', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '8px', textAlign: 'center', color: 'var(--ifm-color-emphasis-600)' }}>
-    Gráfica de capacidad instalada — datos disponibles en <a href="https://transparency.entsoe.eu" target="_blank" rel="noopener noreferrer">ENTSO-E Transparency Platform</a> (Installed Capacity per Type, enero 2025).
-  </div>
+<BrowserOnly>
+  {() => {
+    const InstalledCapacityChart = require('@site/src/components/EntsoeCharts/InstalledCapacityChart').default;
+    return (
+      <div style={{ marginBottom: '2rem', marginTop: '2rem' }}>
+        <InstalledCapacityChart hideFooter={true} />
+      </div>
+    );
+  }}
+</BrowserOnly>
   <figcaption>
     <strong>Figura B1.</strong> Capacidad instalada por tecnología en el sistema ibérico antes del 28-A. Fuente: ENTSO-E, serie Installed Capacity per Type, enero de 2025.
   </figcaption>
