@@ -29,14 +29,14 @@ const TRANSLATIONS = {
       },
       {
         label: 'Disparo raíz',
-        time: '12:32:56,993 CEST',
+        time: '12:32:57 CEST',
         detail: '355 MW — Granada · Tap-Lag · sobretensión invisible',
         href: '/analisis-incidente',
       },
       {
         label: 'Cascada IBR',
-        time: '12:33:07 CEST',
-        detail: '4.500 MW en 11 s · protecciones ANSI 59',
+        time: '12:33:16 CEST',
+        detail: '1.655 MW en 3 s · protecciones ANSI 59',
         href: '/analisis-incidente',
       },
       {
@@ -48,12 +48,12 @@ const TRANSLATIONS = {
       {
         label: 'Cero de tensión',
         time: '12:33:29,741 CEST',
-        detail: '57 millones sin suministro · área ibérica aislada',
+        detail: '~60 millones sin suministro · área ibérica aislada',
         href: '/resumen-de-cifras',
       },
     ],
     numbers: [
-      { value: '57 M', label: 'personas afectadas' },
+      { value: '60 M', label: 'personas afectadas' },
       { value: '15.000', label: 'MW perdidos' },
       { value: '33 s', label: 'de colapso total' },
       { value: '18,5 h', label: 'de reposición' },
@@ -79,14 +79,14 @@ const TRANSLATIONS = {
       },
       {
         label: 'Root trip',
-        time: '12:32:56.993 CEST',
+        time: '12:32:57 CEST',
         detail: '355 MW — Granada · Tap-Lag · invisible overvoltage',
         href: '/analisis-incidente',
       },
       {
         label: 'IBR cascade',
-        time: '12:33:07 CEST',
-        detail: '4,500 MW in 11 s · ANSI 59 protections',
+        time: '12:33:16 CEST',
+        detail: '1,655 MW in 3 s · ANSI 59 protections',
         href: '/analisis-incidente',
       },
       {
@@ -98,12 +98,12 @@ const TRANSLATIONS = {
       {
         label: 'Voltage blackout',
         time: '12:33:29.741 CEST',
-        detail: '57 million without supply · Iberian area isolated',
+        detail: '~60 million without supply · Iberian area isolated',
         href: '/resumen-de-cifras',
       },
     ],
     numbers: [
-      { value: '57 M', label: 'people affected' },
+      { value: '60 M', label: 'people affected' },
       { value: '15,000', label: 'MW lost' },
       { value: '33 s', label: 'of total collapse' },
       { value: '18.5 h', label: 'of restoration' },
@@ -129,14 +129,14 @@ const TRANSLATIONS = {
       },
       {
         label: 'Ursprungsauslösung',
-        time: '12:32:56,993 CEST',
+        time: '12:32:57 CEST',
         detail: '355 MW — Granada · Tap-Lag · unsichtbare Überspannung',
         href: '/analisis-incidente',
       },
       {
         label: 'IBR-Kaskade',
-        time: '12:33:07 CEST',
-        detail: '4.500 MW in 11 s · ANSI 59-Schutz',
+        time: '12:33:16 CEST',
+        detail: '1.655 MW in 3 s · ANSI 59-Schutz',
         href: '/analisis-incidente',
       },
       {
@@ -148,12 +148,12 @@ const TRANSLATIONS = {
       {
         label: 'Spannungsnull',
         time: '12:33:29,741 CEST',
-        detail: '57 Millionen ohne Versorgung · iberisches Gebiet isoliert',
+        detail: '~60 Millionen ohne Versorgung · iberisches Gebiet isoliert',
         href: '/resumen-de-cifras',
       },
     ],
     numbers: [
-      { value: '57 M', label: 'betroffene Personen' },
+      { value: '60 M', label: 'betroffene Personen' },
       { value: '15.000', label: 'verlorene MW' },
       { value: '33 s', label: 'bis zum Gesamtzusammenbruch' },
       { value: '18,5 h', label: 'Wiederversorgungszeit' },
@@ -179,14 +179,14 @@ const TRANSLATIONS = {
       },
       {
         label: '根源跳闸',
-        time: '12:32:56.993 CEST',
+        time: '12:32:57 CEST',
         detail: '355 MW — 格拉纳达 · 分接头延迟 · 隐形过电压',
         href: '/analisis-incidente',
       },
       {
         label: 'IBR级联',
-        time: '12:33:07 CEST',
-        detail: '11秒内损失4500 MW · ANSI 59保护',
+        time: '12:33:16 CEST',
+        detail: '3秒内损失1655 MW · ANSI 59保护',
         href: '/analisis-incidente',
       },
       {
@@ -198,12 +198,12 @@ const TRANSLATIONS = {
       {
         label: '电压归零',
         time: '12:33:29.741 CEST',
-        detail: '5700万人无电力供应 · 伊比利亚区域孤网运行',
+        detail: '~6000万人无电力供应 · 伊比利亚区域孤网运行',
         href: '/resumen-de-cifras',
       },
     ],
     numbers: [
-      { value: '57 M', label: '受影响人数' },
+      { value: '60 M', label: '受影响人数' },
       { value: '15,000', label: '损失兆瓦' },
       { value: '33 秒', label: '全网崩溃时间' },
       { value: '18.5 小时', label: '恢复供电耗时' },

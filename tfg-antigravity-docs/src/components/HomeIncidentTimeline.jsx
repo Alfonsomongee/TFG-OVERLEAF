@@ -34,7 +34,7 @@ const TRANSLATIONS = {
       },
       {
         id: 'root',
-        time: '12:32:56',
+        time: '12:32:57',
         label: 'Disparo raíz',
         color: 'warning',
         desc: 'Pérdida de 355 MW en Granada por Tap-Lag y sobretensión invisible al SCADA. Primera perturbación que inicia la cascada de tensión.',
@@ -42,10 +42,10 @@ const TRANSLATIONS = {
       },
       {
         id: 'cascade',
-        time: '12:33:07',
+        time: '12:33:16',
         label: 'Cascada IBR',
         color: 'critical',
-        desc: '4.500 MW perdidos en 11 segundos. Protecciones ANSI 59 de inversores fotovoltaicos disparan en cascada por sobretensión capacitiva generalizada.',
+        desc: '1.655 MW perdidos en 3 segundos. Protecciones ANSI 59 de inversores fotovoltaicos disparan en cascada por sobretensión capacitiva generalizada.',
         href: '/analisis-incidente',
       },
       {
@@ -82,7 +82,7 @@ const TRANSLATIONS = {
       },
       {
         id: 'root',
-        time: '12:32:56',
+        time: '12:32:57',
         label: 'Root trip',
         color: 'warning',
         desc: 'Loss of 355 MW in Granada due to Tap-Lag and overvoltage invisible to SCADA. First disturbance triggering the voltage cascade.',
@@ -90,10 +90,10 @@ const TRANSLATIONS = {
       },
       {
         id: 'cascade',
-        time: '12:33:07',
+        time: '12:33:16',
         label: 'IBR cascade',
         color: 'critical',
-        desc: '4,500 MW lost in 11 seconds. ANSI 59 protections of photovoltaic inverters trip in cascade due to generalized capacitive overvoltage.',
+        desc: '1,655 MW lost in 3 seconds. ANSI 59 protections of photovoltaic inverters trip in cascade due to generalized capacitive overvoltage.',
         href: '/analisis-incidente',
       },
       {
@@ -130,7 +130,7 @@ const TRANSLATIONS = {
       },
       {
         id: 'root',
-        time: '12:32:56',
+        time: '12:32:57',
         label: 'Ursprungsauslösung',
         color: 'warning',
         desc: 'Verlust von 355 MW in Granada durch Tap-Lag und für SCADA unsichtbare Überspannung. Erste Störung, die die Spannungskaskade auslöst.',
@@ -138,10 +138,10 @@ const TRANSLATIONS = {
       },
       {
         id: 'cascade',
-        time: '12:33:07',
+        time: '12:33:16',
         label: 'IBR-Kaskade',
         color: 'critical',
-        desc: '4.500 MW in 11 Sekunden verloren. ANSI 59-Schutz von PV-Wechselrichtern löst in Kaskade durch generalisierte kapazitive Überspannung aus.',
+        desc: '1.655 MW in 3 Sekunden verloren. ANSI 59-Schutz von PV-Wechselrichtern löst in Kaskade durch generalisierte kapazitive Überspannung aus.',
         href: '/analisis-incidente',
       },
       {
@@ -178,7 +178,7 @@ const TRANSLATIONS = {
       },
       {
         id: 'root',
-        time: '12:32:56',
+        time: '12:32:57',
         label: '根源跳闸',
         color: 'warning',
         desc: '格拉纳达因有载调压延迟（Tap-Lag）和SCADA不可见的过电压损失355兆瓦。触发电压级联的首次扰动。',
@@ -186,10 +186,10 @@ const TRANSLATIONS = {
       },
       {
         id: 'cascade',
-        time: '12:33:07',
+        time: '12:33:16',
         label: 'IBR级联跳闸',
         color: 'critical',
-        desc: '11秒内损失4500兆瓦。光伏逆变器ANSI 59保护因全网容性过电压级联动作。',
+        desc: '3秒内损失1655兆瓦。光伏逆变器ANSI 59保护因全网容性过电压级联动作。',
         href: '/analisis-incidente',
       },
       {
